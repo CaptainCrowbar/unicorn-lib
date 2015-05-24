@@ -866,19 +866,148 @@ namespace {
 
     void check_expand() {
 
-        // TODO
-        u8string s8, t8;
-        // u16string s16, t16;
-        // u32string s32, t32;
         std::vector<int> tabs {5,10,15,20};
 
-        TRY(t8 = str_expand_tabs(s8));               TEST_EQUAL(t8, "");
-        TRY(t8 = str_expand_tabs(s8, tabs));         TEST_EQUAL(t8, "");
-        TRY(t8 = str_expand_tabs(s8, {4,8,12,16}));  TEST_EQUAL(t8, "");
+        const u8string a8 = u8"";
+        const u8string b8 = u8"Hello world\tGoodbye";
+        const u8string c8 = u8"ab\tcd\tef\tgh\tij\tkl\tmn\top";
+        const u8string d8 = u8"ab\tcd\nef\tgh\nij\tkl\nmn\top";
+        const u8string e8 = u8"abc\t\t\txyz";
+        const u8string f8 = u8"€uro\t∈lement\t∃";
 
-        t8 = s8;  TRY(str_expand_tabs_in(t8));               TEST_EQUAL(t8, "");
-        t8 = s8;  TRY(str_expand_tabs_in(t8, tabs));         TEST_EQUAL(t8, "");
-        t8 = s8;  TRY(str_expand_tabs_in(t8, {4,8,12,16}));  TEST_EQUAL(t8, "");
+        u8string s8;
+
+        TRY(s8 = str_expand_tabs(a8));               TEST_EQUAL(s8, u8"");
+        TRY(s8 = str_expand_tabs(b8));               TEST_EQUAL(s8, u8"Hello world     Goodbye");
+        TRY(s8 = str_expand_tabs(c8));               TEST_EQUAL(s8, u8"ab      cd      ef      gh      ij      kl      mn      op");
+        TRY(s8 = str_expand_tabs(d8));               TEST_EQUAL(s8, u8"ab      cd\nef      gh\nij      kl\nmn      op");
+        TRY(s8 = str_expand_tabs(e8));               TEST_EQUAL(s8, u8"abc                     xyz");
+        TRY(s8 = str_expand_tabs(f8));               TEST_EQUAL(s8, u8"€uro    ∈lement ∃");
+        TRY(s8 = str_expand_tabs(a8, tabs));         TEST_EQUAL(s8, u8"");
+        TRY(s8 = str_expand_tabs(b8, tabs));         TEST_EQUAL(s8, u8"Hello world    Goodbye");
+        TRY(s8 = str_expand_tabs(c8, tabs));         TEST_EQUAL(s8, u8"ab   cd   ef   gh   ij   kl   mn   op");
+        TRY(s8 = str_expand_tabs(d8, tabs));         TEST_EQUAL(s8, u8"ab   cd\nef   gh\nij   kl\nmn   op");
+        TRY(s8 = str_expand_tabs(e8, tabs));         TEST_EQUAL(s8, u8"abc            xyz");
+        TRY(s8 = str_expand_tabs(f8, tabs));         TEST_EQUAL(s8, u8"€uro ∈lement   ∃");
+        TRY(s8 = str_expand_tabs(a8, {4,8,12,16}));  TEST_EQUAL(s8, u8"");
+        TRY(s8 = str_expand_tabs(b8, {4,8,12,16}));  TEST_EQUAL(s8, u8"Hello world Goodbye");
+        TRY(s8 = str_expand_tabs(c8, {4,8,12,16}));  TEST_EQUAL(s8, u8"ab  cd  ef  gh  ij  kl  mn  op");
+        TRY(s8 = str_expand_tabs(d8, {4,8,12,16}));  TEST_EQUAL(s8, u8"ab  cd\nef  gh\nij  kl\nmn  op");
+        TRY(s8 = str_expand_tabs(e8, {4,8,12,16}));  TEST_EQUAL(s8, u8"abc         xyz");
+        TRY(s8 = str_expand_tabs(f8, {4,8,12,16}));  TEST_EQUAL(s8, u8"€uro    ∈lement ∃");
+
+        s8 = a8;  TRY(str_expand_tabs_in(s8));               TEST_EQUAL(s8, u8"");
+        s8 = b8;  TRY(str_expand_tabs_in(s8));               TEST_EQUAL(s8, u8"Hello world     Goodbye");
+        s8 = c8;  TRY(str_expand_tabs_in(s8));               TEST_EQUAL(s8, u8"ab      cd      ef      gh      ij      kl      mn      op");
+        s8 = d8;  TRY(str_expand_tabs_in(s8));               TEST_EQUAL(s8, u8"ab      cd\nef      gh\nij      kl\nmn      op");
+        s8 = e8;  TRY(str_expand_tabs_in(s8));               TEST_EQUAL(s8, u8"abc                     xyz");
+        s8 = f8;  TRY(str_expand_tabs_in(s8));               TEST_EQUAL(s8, u8"€uro    ∈lement ∃");
+        s8 = a8;  TRY(str_expand_tabs_in(s8, tabs));         TEST_EQUAL(s8, u8"");
+        s8 = b8;  TRY(str_expand_tabs_in(s8, tabs));         TEST_EQUAL(s8, u8"Hello world    Goodbye");
+        s8 = c8;  TRY(str_expand_tabs_in(s8, tabs));         TEST_EQUAL(s8, u8"ab   cd   ef   gh   ij   kl   mn   op");
+        s8 = d8;  TRY(str_expand_tabs_in(s8, tabs));         TEST_EQUAL(s8, u8"ab   cd\nef   gh\nij   kl\nmn   op");
+        s8 = e8;  TRY(str_expand_tabs_in(s8, tabs));         TEST_EQUAL(s8, u8"abc            xyz");
+        s8 = f8;  TRY(str_expand_tabs_in(s8, tabs));         TEST_EQUAL(s8, u8"€uro ∈lement   ∃");
+        s8 = a8;  TRY(str_expand_tabs_in(s8, {4,8,12,16}));  TEST_EQUAL(s8, u8"");
+        s8 = b8;  TRY(str_expand_tabs_in(s8, {4,8,12,16}));  TEST_EQUAL(s8, u8"Hello world Goodbye");
+        s8 = c8;  TRY(str_expand_tabs_in(s8, {4,8,12,16}));  TEST_EQUAL(s8, u8"ab  cd  ef  gh  ij  kl  mn  op");
+        s8 = d8;  TRY(str_expand_tabs_in(s8, {4,8,12,16}));  TEST_EQUAL(s8, u8"ab  cd\nef  gh\nij  kl\nmn  op");
+        s8 = e8;  TRY(str_expand_tabs_in(s8, {4,8,12,16}));  TEST_EQUAL(s8, u8"abc         xyz");
+        s8 = f8;  TRY(str_expand_tabs_in(s8, {4,8,12,16}));  TEST_EQUAL(s8, u8"€uro    ∈lement ∃");
+
+        const u16string a16 = u"";
+        const u16string b16 = u"Hello world\tGoodbye";
+        const u16string c16 = u"ab\tcd\tef\tgh\tij\tkl\tmn\top";
+        const u16string d16 = u"ab\tcd\nef\tgh\nij\tkl\nmn\top";
+        const u16string e16 = u"abc\t\t\txyz";
+        const u16string f16 = u"€uro\t∈lement\t∃";
+
+        u16string s16;
+
+        TRY(s16 = str_expand_tabs(a16));               TEST_EQUAL(s16, u"");
+        TRY(s16 = str_expand_tabs(b16));               TEST_EQUAL(s16, u"Hello world     Goodbye");
+        TRY(s16 = str_expand_tabs(c16));               TEST_EQUAL(s16, u"ab      cd      ef      gh      ij      kl      mn      op");
+        TRY(s16 = str_expand_tabs(d16));               TEST_EQUAL(s16, u"ab      cd\nef      gh\nij      kl\nmn      op");
+        TRY(s16 = str_expand_tabs(e16));               TEST_EQUAL(s16, u"abc                     xyz");
+        TRY(s16 = str_expand_tabs(f16));               TEST_EQUAL(s16, u"€uro    ∈lement ∃");
+        TRY(s16 = str_expand_tabs(a16, tabs));         TEST_EQUAL(s16, u"");
+        TRY(s16 = str_expand_tabs(b16, tabs));         TEST_EQUAL(s16, u"Hello world    Goodbye");
+        TRY(s16 = str_expand_tabs(c16, tabs));         TEST_EQUAL(s16, u"ab   cd   ef   gh   ij   kl   mn   op");
+        TRY(s16 = str_expand_tabs(d16, tabs));         TEST_EQUAL(s16, u"ab   cd\nef   gh\nij   kl\nmn   op");
+        TRY(s16 = str_expand_tabs(e16, tabs));         TEST_EQUAL(s16, u"abc            xyz");
+        TRY(s16 = str_expand_tabs(f16, tabs));         TEST_EQUAL(s16, u"€uro ∈lement   ∃");
+        TRY(s16 = str_expand_tabs(a16, {4,8,12,16}));  TEST_EQUAL(s16, u"");
+        TRY(s16 = str_expand_tabs(b16, {4,8,12,16}));  TEST_EQUAL(s16, u"Hello world Goodbye");
+        TRY(s16 = str_expand_tabs(c16, {4,8,12,16}));  TEST_EQUAL(s16, u"ab  cd  ef  gh  ij  kl  mn  op");
+        TRY(s16 = str_expand_tabs(d16, {4,8,12,16}));  TEST_EQUAL(s16, u"ab  cd\nef  gh\nij  kl\nmn  op");
+        TRY(s16 = str_expand_tabs(e16, {4,8,12,16}));  TEST_EQUAL(s16, u"abc         xyz");
+        TRY(s16 = str_expand_tabs(f16, {4,8,12,16}));  TEST_EQUAL(s16, u"€uro    ∈lement ∃");
+
+        s16 = a16;  TRY(str_expand_tabs_in(s16));               TEST_EQUAL(s16, u"");
+        s16 = b16;  TRY(str_expand_tabs_in(s16));               TEST_EQUAL(s16, u"Hello world     Goodbye");
+        s16 = c16;  TRY(str_expand_tabs_in(s16));               TEST_EQUAL(s16, u"ab      cd      ef      gh      ij      kl      mn      op");
+        s16 = d16;  TRY(str_expand_tabs_in(s16));               TEST_EQUAL(s16, u"ab      cd\nef      gh\nij      kl\nmn      op");
+        s16 = e16;  TRY(str_expand_tabs_in(s16));               TEST_EQUAL(s16, u"abc                     xyz");
+        s16 = f16;  TRY(str_expand_tabs_in(s16));               TEST_EQUAL(s16, u"€uro    ∈lement ∃");
+        s16 = a16;  TRY(str_expand_tabs_in(s16, tabs));         TEST_EQUAL(s16, u"");
+        s16 = b16;  TRY(str_expand_tabs_in(s16, tabs));         TEST_EQUAL(s16, u"Hello world    Goodbye");
+        s16 = c16;  TRY(str_expand_tabs_in(s16, tabs));         TEST_EQUAL(s16, u"ab   cd   ef   gh   ij   kl   mn   op");
+        s16 = d16;  TRY(str_expand_tabs_in(s16, tabs));         TEST_EQUAL(s16, u"ab   cd\nef   gh\nij   kl\nmn   op");
+        s16 = e16;  TRY(str_expand_tabs_in(s16, tabs));         TEST_EQUAL(s16, u"abc            xyz");
+        s16 = f16;  TRY(str_expand_tabs_in(s16, tabs));         TEST_EQUAL(s16, u"€uro ∈lement   ∃");
+        s16 = a16;  TRY(str_expand_tabs_in(s16, {4,8,12,16}));  TEST_EQUAL(s16, u"");
+        s16 = b16;  TRY(str_expand_tabs_in(s16, {4,8,12,16}));  TEST_EQUAL(s16, u"Hello world Goodbye");
+        s16 = c16;  TRY(str_expand_tabs_in(s16, {4,8,12,16}));  TEST_EQUAL(s16, u"ab  cd  ef  gh  ij  kl  mn  op");
+        s16 = d16;  TRY(str_expand_tabs_in(s16, {4,8,12,16}));  TEST_EQUAL(s16, u"ab  cd\nef  gh\nij  kl\nmn  op");
+        s16 = e16;  TRY(str_expand_tabs_in(s16, {4,8,12,16}));  TEST_EQUAL(s16, u"abc         xyz");
+        s16 = f16;  TRY(str_expand_tabs_in(s16, {4,8,12,16}));  TEST_EQUAL(s16, u"€uro    ∈lement ∃");
+
+        const u32string a32 = U"";
+        const u32string b32 = U"Hello world\tGoodbye";
+        const u32string c32 = U"ab\tcd\tef\tgh\tij\tkl\tmn\top";
+        const u32string d32 = U"ab\tcd\nef\tgh\nij\tkl\nmn\top";
+        const u32string e32 = U"abc\t\t\txyz";
+        const u32string f32 = U"€uro\t∈lement\t∃";
+
+        u32string s32;
+
+        TRY(s32 = str_expand_tabs(a32));               TEST_EQUAL(s32, U"");
+        TRY(s32 = str_expand_tabs(b32));               TEST_EQUAL(s32, U"Hello world     Goodbye");
+        TRY(s32 = str_expand_tabs(c32));               TEST_EQUAL(s32, U"ab      cd      ef      gh      ij      kl      mn      op");
+        TRY(s32 = str_expand_tabs(d32));               TEST_EQUAL(s32, U"ab      cd\nef      gh\nij      kl\nmn      op");
+        TRY(s32 = str_expand_tabs(e32));               TEST_EQUAL(s32, U"abc                     xyz");
+        TRY(s32 = str_expand_tabs(f32));               TEST_EQUAL(s32, U"€uro    ∈lement ∃");
+        TRY(s32 = str_expand_tabs(a32, tabs));         TEST_EQUAL(s32, U"");
+        TRY(s32 = str_expand_tabs(b32, tabs));         TEST_EQUAL(s32, U"Hello world    Goodbye");
+        TRY(s32 = str_expand_tabs(c32, tabs));         TEST_EQUAL(s32, U"ab   cd   ef   gh   ij   kl   mn   op");
+        TRY(s32 = str_expand_tabs(d32, tabs));         TEST_EQUAL(s32, U"ab   cd\nef   gh\nij   kl\nmn   op");
+        TRY(s32 = str_expand_tabs(e32, tabs));         TEST_EQUAL(s32, U"abc            xyz");
+        TRY(s32 = str_expand_tabs(f32, tabs));         TEST_EQUAL(s32, U"€uro ∈lement   ∃");
+        TRY(s32 = str_expand_tabs(a32, {4,8,12,16}));  TEST_EQUAL(s32, U"");
+        TRY(s32 = str_expand_tabs(b32, {4,8,12,16}));  TEST_EQUAL(s32, U"Hello world Goodbye");
+        TRY(s32 = str_expand_tabs(c32, {4,8,12,16}));  TEST_EQUAL(s32, U"ab  cd  ef  gh  ij  kl  mn  op");
+        TRY(s32 = str_expand_tabs(d32, {4,8,12,16}));  TEST_EQUAL(s32, U"ab  cd\nef  gh\nij  kl\nmn  op");
+        TRY(s32 = str_expand_tabs(e32, {4,8,12,16}));  TEST_EQUAL(s32, U"abc         xyz");
+        TRY(s32 = str_expand_tabs(f32, {4,8,12,16}));  TEST_EQUAL(s32, U"€uro    ∈lement ∃");
+
+        s32 = a32;  TRY(str_expand_tabs_in(s32));               TEST_EQUAL(s32, U"");
+        s32 = b32;  TRY(str_expand_tabs_in(s32));               TEST_EQUAL(s32, U"Hello world     Goodbye");
+        s32 = c32;  TRY(str_expand_tabs_in(s32));               TEST_EQUAL(s32, U"ab      cd      ef      gh      ij      kl      mn      op");
+        s32 = d32;  TRY(str_expand_tabs_in(s32));               TEST_EQUAL(s32, U"ab      cd\nef      gh\nij      kl\nmn      op");
+        s32 = e32;  TRY(str_expand_tabs_in(s32));               TEST_EQUAL(s32, U"abc                     xyz");
+        s32 = f32;  TRY(str_expand_tabs_in(s32));               TEST_EQUAL(s32, U"€uro    ∈lement ∃");
+        s32 = a32;  TRY(str_expand_tabs_in(s32, tabs));         TEST_EQUAL(s32, U"");
+        s32 = b32;  TRY(str_expand_tabs_in(s32, tabs));         TEST_EQUAL(s32, U"Hello world    Goodbye");
+        s32 = c32;  TRY(str_expand_tabs_in(s32, tabs));         TEST_EQUAL(s32, U"ab   cd   ef   gh   ij   kl   mn   op");
+        s32 = d32;  TRY(str_expand_tabs_in(s32, tabs));         TEST_EQUAL(s32, U"ab   cd\nef   gh\nij   kl\nmn   op");
+        s32 = e32;  TRY(str_expand_tabs_in(s32, tabs));         TEST_EQUAL(s32, U"abc            xyz");
+        s32 = f32;  TRY(str_expand_tabs_in(s32, tabs));         TEST_EQUAL(s32, U"€uro ∈lement   ∃");
+        s32 = a32;  TRY(str_expand_tabs_in(s32, {4,8,12,16}));  TEST_EQUAL(s32, U"");
+        s32 = b32;  TRY(str_expand_tabs_in(s32, {4,8,12,16}));  TEST_EQUAL(s32, U"Hello world Goodbye");
+        s32 = c32;  TRY(str_expand_tabs_in(s32, {4,8,12,16}));  TEST_EQUAL(s32, U"ab  cd  ef  gh  ij  kl  mn  op");
+        s32 = d32;  TRY(str_expand_tabs_in(s32, {4,8,12,16}));  TEST_EQUAL(s32, U"ab  cd\nef  gh\nij  kl\nmn  op");
+        s32 = e32;  TRY(str_expand_tabs_in(s32, {4,8,12,16}));  TEST_EQUAL(s32, U"abc         xyz");
+        s32 = f32;  TRY(str_expand_tabs_in(s32, {4,8,12,16}));  TEST_EQUAL(s32, U"€uro    ∈lement ∃");
 
     }
 

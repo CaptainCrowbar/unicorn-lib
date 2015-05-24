@@ -815,15 +815,15 @@ namespace Unicorn {
     namespace UnicornDetail {
 
         template <typename C>
-        basic_string<C> expand_tabs(const basic_string<C>& str, std::vector<size_t> tabs, Crow::Flagset flags) {
-            if (tabs.empty())
-                tabs.push_back(8);
-            size_t delta;
-            if (tabs.size() == 1)
-                delta = tabs[0];
-            else
-                delta = tabs.end()[-1] - tabs.end()[-2];
-            auto t = tabs.begin(), t_end = tabs.end();
+        basic_string<C> expand_tabs(const basic_string<C>& str, const std::vector<size_t>& tabs, Crow::Flagset flags) {
+            std::vector<size_t> fixtabs = {0};
+            for (auto t: tabs)
+                if (t > fixtabs.back())
+                    fixtabs.push_back(t);
+            size_t delta = 8;
+            if (fixtabs.size() > 1)
+                delta = fixtabs.end()[-1] - fixtabs.end()[-2];
+            auto t = fixtabs.begin(), t_end = fixtabs.end();
             auto u = utf_begin(str), u_end = utf_end(str);
             basic_string<C> result;
             size_t col = 0;
@@ -831,21 +831,24 @@ namespace Unicorn {
                 auto start = u;
                 while (u != u_end && *u != U'\t' && ! char_is_line_break(*u))
                     ++u;
-                if (u != start) {
+                size_t nextcol = 0;
+                if (col > 0) {
                     while (t != t_end && *t <= col)
                         ++t;
-                    size_t spaces;
                     if (t == t_end)
-                        spaces = tabs.back() + delta * ((col - tabs.back()) / delta + 1);
+                        nextcol = fixtabs.back() + delta * ((col - fixtabs.back()) / delta + 1);
                     else
-                        spaces = *t - col;
-                    result.append(spaces, C(' '));
-                    str_append(result, start, u);
-                    col += spaces + str_length(start, u, flags);
+                        nextcol = *t;
+                    result.append(nextcol - col, C(' '));
                 }
+                str_append(result, start, u);
+                col = nextcol + str_length(start, u, flags);
                 if (u == u_end)
                     break;
-                if (*u != U'\t') {
+                if (char_is_line_break(*u)) {
+                    size_t last = result.find_last_not_of(C(' '));
+                    if (last != npos)
+                        result.resize(last + 1);
                     result += *u;
                     col = 0;
                 }

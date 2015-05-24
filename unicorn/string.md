@@ -292,7 +292,7 @@ number of characters in `str`.
 * `template <typename C, typename IntType> void str_expand_tabs_in(basic_string<C>& str, initializer_list<IntType> tabs, Crow::Flagset flags = {})`
 
 Expand tab characters to spaces. If the input string contains multiple lines
-(delimited by any of the standard Unicoed line break characters), each line
+(delimited by any of the standard Unicode line break characters), each line
 will be expanded separately. The `tabs` argument is a list of tab positions,
 passed either as a range of integers, or as an explicit braced initializer
 list of integers. The `flags` argument indicates which units will be used to
@@ -303,8 +303,8 @@ less than or equal to the previous tab stop are ignored. If more tab stops
 beyond the last one listed are needed, the difference between the last two tab
 stops is used to increment the last one (e.g. `{5,10,20}` will be expanded to
 `{5,10,20,30,40,...}`). An implicit tab stop at position zero is always
-assumed. If no tab stops greater than zero are listed, the default 8 column
-tabs will be used.
+assumed. If no tab position greater than zero is supplied, 8 column tabs will
+be used by default.
 
 * `template <typename C> basic_string<C> str_fix_left(const basic_string<C>& str, size_t length, char32_t c = U' ', Crow::Flagset flags = {})`
 * `template <typename C> void str_fix_left_in(basic_string<C>& str, size_t length, char32_t c = U' ', Crow::Flagset flags = {})`
