@@ -1,2 +1,3 @@
-# unicorn-lib
-Unicode library for C++
+# Unicorn Library #
+
+Unicode library for C++ by Ross Smith

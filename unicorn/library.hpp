@@ -1,0 +1,18 @@
+#pragma once
+
+#include "Makefile"
+#include "unicorn/character.hpp"
+#include "unicorn/core.hpp"
+#include "unicorn/file.hpp"
+#include "unicorn/format.hpp"
+#include "unicorn/io.hpp"
+#include "unicorn/lexer.hpp"
+#include "unicorn/mbcs.hpp"
+#include "unicorn/normal.hpp"
+#include "unicorn/options.hpp"
+#include "unicorn/property-values.hpp"
+#include "unicorn/regex.hpp"
+#include "unicorn/segment.hpp"
+#include "unicorn/string.hpp"
+#include "unicorn/unit-test.hpp"
+#include "unicorn/utf.hpp"

@@ -1,0 +1,755 @@
+#!/usr/bin/env python3
+
+import codecs
+import re
+import zlib
+
+head = '#include "unicorn/ucd-tables.hpp"\n\nnamespace Unicorn {\nnamespace UnicornDetail {\n'
+tail = '\n}\n}\n'
+
+def hex_chars(chars):
+    return ','.join(['0x{0:x}'.format(c) for c in chars])
+
+def field_type(size):
+    return 'char32_t' if size == 1 else 'std::array<char32_t, {0}>'.format(size)
+
+def field_value(field, size):
+    multiple = isinstance(field, (list, tuple))
+    if size == 1:
+        if multiple:
+            if len(field) > 1:
+                raise ValueError('Expected {0} characters, found {1}'.format(size, hex_chars(field)))
+            c = field[0]
+        else:
+            c = field
+        return '0x{0:x}'.format(c)
+    else:
+        if multiple:
+            cs = list(field)
+        else:
+            cs = [field]
+        if len(field) > size:
+            raise ValueError('Expected {0} characters, found {1}'.format(size, hex_chars(field)))
+        cs.extend([0] * (size - len(field)))
+        return '{{{{{0}}}}}'.format(hex_chars(cs))
+
+def hexrange(field):
+    prefix, sep, suffix = field.partition('..')
+    if sep:
+        return range(int(prefix, 16), int(suffix, 16) + 1)
+    else:
+        return [int(field, 16)]
+
+def split_codes(field):
+    return tuple([int(w, 16) for w in field.split()])
+
+def process_file(filename, callback, minfields, delim=';'):
+    with open(filename, 'r', encoding='utf-8') as f:
+        for line in f:
+            text = line.partition('#')[0].strip()
+            if text:
+                fields = text.split(delim)
+                if (len(fields) >= minfields):
+                    if len(fields) > minfields:
+                        fields = fields[0:minfields]
+                    callback([f.strip() for f in fields])
+
+def write_array_header(cpp, entrytype, name):
+    cpp.write('\n{0} const {1}_array[] {{\n'.format(entrytype, name))
+
+def write_array_footer(cpp, entrytype, name):
+    cpp.write('};\n\n')
+    cpp.write('const Irange<{0} const*> {1}_table {{CROW_BOUNDS({1}_array)}};\n'.format(entrytype, name))
+
+# Explicit array of individual strings:
+def write_array(cpp, name, table, entrytype, nlines=False):
+    write_array_header(cpp, entrytype, name)
+    lnum = 0
+    for entry in table:
+        lnum += 1
+        if nlines:
+            cpp.write('/*{0}*/ '.format(lnum))
+        cpp.write(entry + ',\n')
+    write_array_footer(cpp, entrytype, name)
+
+# Explicit array of individual characters:
+def write_charset(cpp, name, table):
+    write_array_header(cpp, 'char32_t', name)
+    for entry in table:
+        cpp.write('0x{0:x},\n'.format(entry))
+    write_array_footer(cpp, 'char32_t', name)
+
+# Explicit array of fixed-size arrays:
+def write_nested_array(cpp, name, table, columntype, nlines=False):
+    entrytype = 'std::array<{0}, {1}>'.format(columntype, len(table[0]))
+    write_array_header(cpp, entrytype, name)
+    lnum = 0
+    for row in table:
+        lnum += 1
+        if nlines:
+            cpp.write('/*{0}*/ '.format(lnum))
+        cpp.write('{{{{{0}}}}},\n'.format(','.join(row)))
+    write_array_footer(cpp, entrytype, name)
+
+def write_table_header(cpp, ktype, vtype, name):
+    cpp.write('\nconst KeyValue<{0}, {1}> {2}_array[] {{\n'.format(ktype, vtype, name))
+
+def write_table_footer(cpp, ktype, vtype, name):
+    cpp.write('};\n\n')
+    cpp.write('const TableView<{0}, {1}> {2}_table {{CROW_BOUNDS({2}_array)}};\n'.format(ktype, vtype, name))
+
+# Explicit map from a character to one or more characters:
+def write_charmap(cpp, name, table, keysize=1, valsize=1):
+    codes = sorted(table)
+    ktype = field_type(keysize)
+    vtype = field_type(valsize)
+    write_table_header(cpp, ktype, vtype, name)
+    for c in codes:
+        cpp.write('{{{0},{1}}},\n'.format(field_value(c, keysize), field_value(table[c], valsize)))
+    write_table_footer(cpp, ktype, vtype, name)
+
+# Compressed set of characters:
+def write_sparse_set(cpp, name, table):
+    codes = sorted(table)
+    subranges = {}
+    first = last = -99
+    for c in codes:
+        if c != last + 1:
+            first = c
+        subranges[first] = last = c
+    write_charmap(cpp, name, subranges)
+
+# Compressed map from a character to a value type:
+def write_sparse_table(cpp, vtype, name, table, defval=None):
+    if defval == None:
+        defval = 'static_cast<{0}>(0)'.format(vtype)
+    write_table_header(cpp, 'char32_t', vtype, name)
+    lastv = None
+    for k in range(0, max(table) + 2):
+        v = table.get(k, defval)
+        if v != lastv:
+            cpp.write('{{0x{0:x},{1}}},\n'.format(k, v))
+        lastv = v
+    write_table_footer(cpp, 'char32_t', vtype, name)
+
+class BooleanUcdRecord:
+    # [0] Code
+    def __init__(self, table):
+        self.table = table
+    def __call__(self, fields):
+        self.table.update(hexrange(fields[0]))
+
+class NamedBooleanUcdRecord:
+    # [0] Code
+    # [1] Property
+    def __init__(self, table, prop):
+        self.table = table
+        self.prop = prop
+    def __call__(self, fields):
+        if fields[1] == self.prop:
+            self.table.update(hexrange(fields[0]))
+
+class EnumUcdRecord:
+    # [0] Code
+    # [1] Value
+    def __init__(self, table, prefix = '', quote = False):
+        self.table = table
+        self.prefix = prefix
+        self.quote = quote
+    def __call__(self, fields):
+        for c in hexrange(fields[0]):
+            field = self.prefix + fields[1]
+            if self.quote:
+                field = '"{0}"'.format(field)
+            self.table[c] = field
+
+# Mapping from script property values to ISO 15924 codes
+# http://www.unicode.org/iso15924/iso15924-codes.html
+
+script_index = {
+
+    'Arabic':                  'arab',
+    'Armenian':                'armn',
+    'Avestan':                 'avst',
+    'Balinese':                'bali',
+    'Bamum':                   'bamu',
+    'Bassa_Vah':               'bass',
+    'Batak':                   'batk',
+    'Bengali':                 'beng',
+    'Bopomofo':                'bopo',
+    'Brahmi':                  'brah',
+    'Braille':                 'brai',
+    'Buginese':                'bugi',
+    'Buhid':                   'buhd',
+    'Canadian_Aboriginal':     'cans',
+    'Caucasian_Albanian':      'aghb',
+    'Carian':                  'cari',
+    'Chakma':                  'cakm',
+    'Cham':                    'cham',
+    'Cherokee':                'cher',
+    'Common':                  'zyyy',
+    'Coptic':                  'copt',
+    'Cuneiform':               'xsux',
+    'Cypriot':                 'cprt',
+    'Cyrillic':                'cyrl',
+    'Deseret':                 'dsrt',
+    'Devanagari':              'deva',
+    'Duployan':                'dupl',
+    'Egyptian_Hieroglyphs':    'egyp',
+    'Elbasan':                 'elba',
+    'Ethiopic':                'ethi',
+    'Georgian':                'geor',
+    'Glagolitic':              'glag',
+    'Gothic':                  'goth',
+    'Grantha':                 'gran',
+    'Greek':                   'grek',
+    'Gujarati':                'gujr',
+    'Gurmukhi':                'guru',
+    'Han':                     'hani',
+    'Hangul':                  'hang',
+    'Hanunoo':                 'hano',
+    'Hebrew':                  'hebr',
+    'Hiragana':                'hira',
+    'Imperial_Aramaic':        'armi',
+    'Inherited':               'zinh',
+    'Inscriptional_Pahlavi':   'phli',
+    'Inscriptional_Parthian':  'prti',
+    'Javanese':                'java',
+    'Kaithi':                  'kthi',
+    'Kannada':                 'knda',
+    'Katakana':                'kana',
+    'Katakana_Or_Hiragana':    'hrkt',
+    'Kayah_Li':                'kali',
+    'Kharoshthi':              'khar',
+    'Khmer':                   'khmr',
+    'Khojki':                  'khoj',
+    'Khudawadi':               'sind',
+    'Lao':                     'laoo',
+    'Latin':                   'latn',
+    'Lepcha':                  'lepc',
+    'Limbu':                   'limb',
+    'Linear_A':                'lina',
+    'Linear_B':                'linb',
+    'Lisu':                    'lisu',
+    'Lycian':                  'lyci',
+    'Lydian':                  'lydi',
+    'Mahajani':                'mahj',
+    'Malayalam':               'mlym',
+    'Mandaic':                 'mand',
+    'Manichaean':              'mani',
+    'Meetei_Mayek':            'mtei',
+    'Mende_Kikakui':           'mend',
+    'Meroitic_Cursive':        'merc',
+    'Meroitic_Hieroglyphs':    'mero',
+    'Miao':                    'plrd',
+    'Modi':                    'modi',
+    'Mongolian':               'mong',
+    'Mro':                     'mroo',
+    'Myanmar':                 'mymr',
+    'Nabataean':               'nbat',
+    'New_Tai_Lue':             'talu',
+    'Nko':                     'nkoo',
+    'Ogham':                   'ogam',
+    'Ol_Chiki':                'olck',
+    'Old_Italic':              'ital',
+    'Old_North_Arabian':       'narb',
+    'Old_Permic':              'perm',
+    'Old_Persian':             'xpeo',
+    'Old_South_Arabian':       'sarb',
+    'Old_Turkic':              'orkh',
+    'Oriya':                   'orya',
+    'Osmanya':                 'osma',
+    'Pahawh_Hmong':            'hmng',
+    'Palmyrene':               'palm',
+    'Pau_Cin_Hau':             'pauc',
+    'Phags_Pa':                'phag',
+    'Phoenician':              'phnx',
+    'Psalter_Pahlavi':         'phlp',
+    'Rejang':                  'rjng',
+    'Runic':                   'runr',
+    'Samaritan':               'samr',
+    'Saurashtra':              'saur',
+    'Sharada':                 'shrd',
+    'Shavian':                 'shaw',
+    'Siddham':                 'sidd',
+    'Sinhala':                 'sinh',
+    'Sora_Sompeng':            'sora',
+    'Sundanese':               'sund',
+    'Syloti_Nagri':            'sylo',
+    'Syriac':                  'syrc',
+    'Tagalog':                 'tglg',
+    'Tagbanwa':                'tagb',
+    'Tai_Le':                  'tale',
+    'Tai_Tham':                'lana',
+    'Tai_Viet':                'tavt',
+    'Takri':                   'takr',
+    'Tamil':                   'taml',
+    'Telugu':                  'telu',
+    'Thaana':                  'thaa',
+    'Thai':                    'thai',
+    'Tibetan':                 'tibt',
+    'Tifinagh':                'tfng',
+    'Tirhuta':                 'tirh',
+    'Ugaritic':                'ugar',
+    'Unknown':                 'zzzz',
+    'Vai':                     'vaii',
+    'Warang_Citi':             'wara',
+    'Yi':                      'yiii',
+
+}
+
+# Common data in UnicodeData.txt
+
+character_names = {}
+range_bounds = []
+general_category = {}
+combining_class = {}
+bidi_class = {}
+bidi_mirrored = set()
+canonical = {}
+composition_exclusion = set()
+short_compatibility = {}
+long_compatibility = {}
+simple_upper = {}
+simple_lower = {}
+simple_title = {}
+simple_fold = {}
+
+def unicode_data_record(fields):
+    # [0] Code
+    # [1] Name
+    # [2] General category
+    # [3] Canonical combining class
+    # [4] Bidi class
+    # [5] Decomposition
+    # [6] Numeric value 1
+    # [7] Numeric value 2
+    # [8] Numeric value 3
+    # [9] Bidi mirrored
+    # [10] Unicode 1 name
+    # [11] ISO comment
+    # [12] Simple uppercase mapping
+    # [13] Simple lowercase mapping
+    # [14] Simple titlecase mapping
+    code = int(fields[0], 16)
+    if not fields[1].startswith('<'):
+        character_names[code] = fields[1]
+    if fields[1].endswith(' First>'):
+        range_bounds.append([code, code])
+    elif fields[1].endswith(' Last>'):
+        range_bounds[-1][1] = code
+    general_category[code] = '0x{0:4x}'.format(256 * ord(fields[2][0]) + ord(fields[2][1]))
+    combining_class[code] = int(fields[3])
+    bidi_class[code] = 'Bidi_Class::' + fields[4]
+    if fields[9] == 'Y':
+        bidi_mirrored.add(code)
+    decomp = fields[5]
+    if decomp:
+        canon = decomp[0] != '<'
+        if not canon:
+            decomp = decomp.partition('>')[2].strip()
+        dchars = split_codes(decomp)
+        if canon:
+            canonical[code] = dchars
+            if len(dchars) == 1:
+                composition_exclusion.add(code)
+        else:
+            if len(dchars) <= 3:
+                short_compatibility[code] = dchars
+            else:
+                long_compatibility[code] = dchars
+    ucf = fields[12]
+    lcf = fields[13]
+    tcf = fields[14]
+    uc = int(ucf, 16) if ucf else code
+    lc = int(lcf, 16) if lcf else code
+    tc = int(tcf, 16) if tcf else uc
+    if uc != code:
+        simple_upper[code] = uc
+    if lc != code:
+        simple_lower[code] = lc
+    if tc != uc:
+        simple_title[code] = tc
+
+process_file('ucd/UnicodeData.txt', unicode_data_record, 15)
+
+for rb in range_bounds:
+    gc = general_category[rb[0]]
+    bc = bidi_class[rb[0]]
+    bm = rb[0] in bidi_mirrored
+    for code in range(rb[0] + 1, rb[1]):
+        general_category[code] = gc
+        bidi_class[code] = bc
+        if bm:
+            bidi_mirrored.add(code)
+
+# Character names
+
+names_list = ''
+for code in sorted(character_names):
+    names_list += '{0:x};{1};'.format(code, character_names[code])
+names_bytes = names_list.encode('ascii')
+names_zip = zlib.compress(names_bytes)
+names_hex = codecs.encode(names_zip, 'hex_codec')
+names_hexstr = names_hex.decode('ascii')
+names_escape = re.sub(r'(..)', r'\x\1', names_hexstr)
+
+corrected_names = {}
+
+def name_aliases_record(fields):
+    if fields[2] == 'correction':
+        code = int(fields[0], 16)
+        corrected_names[code] = fields[1]
+
+process_file('ucd/NameAliases.txt', name_aliases_record, 3)
+
+with open('unicorn/ucd-character-names.cpp', 'w', encoding='utf-8', newline='\n') as cpp:
+    cpp.write(head)
+    cpp.write('\nconst char* const main_names_data = \n')
+    pos = 0
+    while pos < len(names_escape):
+        cpp.write('"')
+        cpp.write(names_escape[pos:pos+128])
+        cpp.write('"\n')
+        pos += 128
+    cpp.write(';\n\n')
+    cpp.write('const size_t main_names_compressed = {0};\n'.format(len(names_zip)))
+    cpp.write('const size_t main_names_expanded = {0};\n'.format(len(names_bytes)))
+    write_table_header(cpp, 'char32_t', 'char const*', 'corrected_names')
+    for c in sorted(corrected_names):
+        cpp.write('{{0x{0:x},"{1}"}},\n'.format(c, corrected_names[c]))
+    write_table_footer(cpp, 'char32_t', 'char const*', 'corrected_names')
+    cpp.write(tail)
+
+# Character property tables
+
+joining_group = {}            # ArabicShaping.txt
+joining_type = {}             # ArabicShaping.txt
+default_ignorable = set()     # DerivedCoreProperties.txt
+id_continue = set()           # DerivedCoreProperties.txt
+id_start = set()              # DerivedCoreProperties.txt
+xid_continue = set()          # DerivedCoreProperties.txt
+xid_start = set()             # DerivedCoreProperties.txt
+east_asian_width = {}         # EastAsianWidth.txt
+hangul_syllable_type = {}     # HangulSyllableType.txt
+indic_matra_category = {}     # IndicMatraCategory.txt
+indic_syllabic_category = {}  # IndicSyllabicCategory.txt
+line_break = {}               # LineBreak.txt
+other_lowercase = set()       # PropList.txt
+other_uppercase = set()       # PropList.txt
+pattern_syntax = set()        # PropList.txt
+pattern_white_space = set()   # PropList.txt
+soft_dotted = set()           # PropList.txt
+white_space = set()           # PropList.txt
+grapheme_cluster_break = {}   # auxiliary/GraphemeBreakProperty.txt
+sentence_break = {}           # auxiliary/SentenceBreakProperty.txt
+word_break = {}               # auxiliary/WordBreakProperty.txt
+numeric_type = {}             # extracted/DerivedNumericType.txt
+
+process_file('ucd/DerivedCoreProperties.txt', NamedBooleanUcdRecord(default_ignorable, 'Default_Ignorable_Code_Point'), 2)
+process_file('ucd/DerivedCoreProperties.txt', NamedBooleanUcdRecord(id_continue, 'ID_Continue'), 2)
+process_file('ucd/DerivedCoreProperties.txt', NamedBooleanUcdRecord(id_start, 'ID_Start'), 2)
+process_file('ucd/DerivedCoreProperties.txt', NamedBooleanUcdRecord(xid_continue, 'XID_Continue'), 2)
+process_file('ucd/DerivedCoreProperties.txt', NamedBooleanUcdRecord(xid_start, 'XID_Start'), 2)
+process_file('ucd/EastAsianWidth.txt', EnumUcdRecord(east_asian_width, 'East_Asian_Width::'), 2)
+process_file('ucd/HangulSyllableType.txt', EnumUcdRecord(hangul_syllable_type, 'Hangul_Syllable_Type::'), 2)
+process_file('ucd/IndicMatraCategory.txt', EnumUcdRecord(indic_matra_category, 'Indic_Matra_Category::'), 2)
+process_file('ucd/IndicSyllabicCategory.txt', EnumUcdRecord(indic_syllabic_category, 'Indic_Syllabic_Category::'), 2)
+process_file('ucd/LineBreak.txt', EnumUcdRecord(line_break, 'Line_Break::'), 2)
+process_file('ucd/PropList.txt', NamedBooleanUcdRecord(other_lowercase, 'Other_Lowercase'), 2)
+process_file('ucd/PropList.txt', NamedBooleanUcdRecord(other_uppercase, 'Other_Uppercase'), 2)
+process_file('ucd/PropList.txt', NamedBooleanUcdRecord(pattern_syntax, 'Pattern_Syntax'), 2)
+process_file('ucd/PropList.txt', NamedBooleanUcdRecord(pattern_white_space, 'Pattern_White_Space'), 2)
+process_file('ucd/PropList.txt', NamedBooleanUcdRecord(soft_dotted, 'Soft_Dotted'), 2)
+process_file('ucd/PropList.txt', NamedBooleanUcdRecord(white_space, 'White_Space'), 2)
+process_file('ucd/auxiliary/GraphemeBreakProperty.txt', EnumUcdRecord(grapheme_cluster_break, 'Grapheme_Cluster_Break::'), 2)
+process_file('ucd/auxiliary/SentenceBreakProperty.txt', EnumUcdRecord(sentence_break, 'Sentence_Break::'), 2)
+process_file('ucd/auxiliary/WordBreakProperty.txt', EnumUcdRecord(word_break, 'Word_Break::'), 2)
+process_file('ucd/extracted/DerivedNumericType.txt', EnumUcdRecord(numeric_type, 'Numeric_Type::'), 2)
+
+id_nonstart = id_continue - id_start
+xid_nonstart = xid_continue - xid_start
+
+def arabic_shaping_record(fields):
+    # [0] Code
+    # [1] Name
+    # [2] Joining type
+    # [3] Joining group
+    code = int(fields[0], 16)
+    type = fields[2]
+    if type == 'R': type = 'Right_Joining'
+    elif type == 'L': type = 'Left_Joining'
+    elif type == 'D': type = 'Dual_Joining'
+    elif type == 'C': type = 'Join_Causing'
+    elif type == 'U': type = 'Non_Joining'
+    elif type == 'T': type = 'Transparent'
+    joining_type[code] = 'Joining_Type::' + type
+    group = fields[3]
+    if group != 'No_Joining_Group':
+        joining_group[code] = 'Joining_Group::' + group.title().replace(' ', '_')
+
+process_file('ucd/ArabicShaping.txt', arabic_shaping_record, 4)
+
+with open('unicorn/ucd-property-tables.cpp', 'w', encoding='utf-8', newline='\n') as cpp:
+    cpp.write(head)
+    write_sparse_table(cpp, 'uint16_t', 'general_category', general_category, '0x436e') # default = Cn
+    write_sparse_table(cpp, 'Joining_Type', 'joining_type', joining_type)
+    write_sparse_table(cpp, 'Joining_Group', 'joining_group', joining_group)
+    write_sparse_set(cpp, 'default_ignorable', default_ignorable)
+    write_sparse_set(cpp, 'soft_dotted', soft_dotted)
+    write_sparse_set(cpp, 'white_space', white_space)
+    write_sparse_set(cpp, 'id_start', id_start)
+    write_sparse_set(cpp, 'id_nonstart', id_nonstart)
+    write_sparse_set(cpp, 'xid_start', xid_start)
+    write_sparse_set(cpp, 'xid_nonstart', xid_nonstart)
+    write_sparse_set(cpp, 'pattern_syntax', pattern_syntax)
+    write_sparse_set(cpp, 'pattern_white_space', pattern_white_space)
+    write_sparse_table(cpp, 'East_Asian_Width', 'east_asian_width', east_asian_width)
+    write_sparse_table(cpp, 'Hangul_Syllable_Type', 'hangul_syllable_type', hangul_syllable_type)
+    write_sparse_table(cpp, 'Indic_Matra_Category', 'indic_matra_category', indic_matra_category)
+    write_sparse_table(cpp, 'Indic_Syllabic_Category', 'indic_syllabic_category', indic_syllabic_category)
+    write_sparse_table(cpp, 'Grapheme_Cluster_Break', 'grapheme_cluster_break', grapheme_cluster_break)
+    write_sparse_table(cpp, 'Line_Break', 'line_break', line_break)
+    write_sparse_table(cpp, 'Sentence_Break', 'sentence_break', sentence_break)
+    write_sparse_table(cpp, 'Word_Break', 'word_break', word_break)
+    write_sparse_table(cpp, 'Numeric_Type', 'numeric_type', numeric_type)
+    cpp.write(tail)
+
+# Bidirectional property tables
+
+bidi_mirroring_glyph = {}
+bidi_paired_bracket = {}
+bidi_paired_bracket_type = {}
+
+def bidi_brackets_record(fields):
+    # [0] Code
+    # [1] Pair character
+    # [2] Pair type
+    code = int(fields[0], 16)
+    bidi_paired_bracket[code] = int(fields[1], 16)
+    bidi_paired_bracket_type[code] = ord(fields[2])
+
+def bidi_mirroring_record(fields):
+    # [0] Code
+    # [1] Mirror character
+    code = int(fields[0], 16)
+    mirror = int(fields[1], 16)
+    bidi_mirroring_glyph[code] = mirror
+
+process_file('ucd/BidiBrackets.txt', bidi_brackets_record, 3)
+process_file('ucd/BidiMirroring.txt', bidi_mirroring_record, 2)
+
+with open('unicorn/ucd-bidi-tables.cpp', 'w', encoding='utf-8', newline='\n') as cpp:
+    cpp.write(head)
+    write_sparse_table(cpp, 'Bidi_Class', 'bidi_class', bidi_class)
+    write_charset(cpp, 'bidi_mirrored', sorted(bidi_mirrored))
+    write_charmap(cpp, 'bidi_mirroring_glyph', bidi_mirroring_glyph)
+    write_charmap(cpp, 'bidi_paired_bracket', bidi_paired_bracket)
+    write_charmap(cpp, 'bidi_paired_bracket_type', bidi_paired_bracket_type)
+    cpp.write(tail)
+
+# Block tables
+
+blocks = {}
+
+def blocks_record(fields):
+    # [0] Code range
+    # [1] Block name
+    range = hexrange(fields[0])
+    name = '"{0}"'.format(fields[1])
+    for c in range:
+        blocks[c] = name
+
+process_file('ucd/Blocks.txt', blocks_record, 2)
+
+with open('unicorn/ucd-block-tables.cpp', 'w', encoding='utf-8', newline='\n') as cpp:
+    cpp.write(head)
+    write_sparse_table(cpp, 'char const*', 'blocks', blocks)
+    cpp.write(tail)
+
+# Case mapping tables
+
+full_upper = {}
+full_lower = {}
+full_title = {}
+full_fold = {}
+
+def special_casing_record(fields):
+    # [0] Code
+    # [1] Lower
+    # [2] Title
+    # [3] Upper
+    # [4] Conditions
+    if not fields[4]:
+        code = int(fields[0], 16)
+        values = split_codes(fields[1])
+        if len(values) > 1:
+            full_lower[code] = values
+        values = split_codes(fields[2])
+        if len(values) > 1:
+            full_title[code] = values
+        values = split_codes(fields[3])
+        if len(values) > 1:
+            full_upper[code] = values
+
+def case_folding_record(fields):
+    # [0] Code
+    # [1] Status
+    # [2] Mapping
+    code = int(fields[0], 16)
+    status = fields[1]
+    if status == 'C' or status == 'S':
+        mapping = int(fields[2], 16)
+        simple_fold[code] = mapping
+    elif status == 'F':
+        values = split_codes(fields[2])
+        if len(values) > 1:
+            full_fold[code] = values
+
+process_file('ucd/SpecialCasing.txt', special_casing_record, 5)
+process_file('ucd/CaseFolding.txt', case_folding_record, 3)
+
+for code in simple_lower:
+    if code not in simple_fold:
+        simple_fold[code] = code
+temp_fold = {}
+for code in simple_fold:
+    if code not in simple_lower or simple_lower[code] != simple_fold[code]:
+        temp_fold[code] = simple_fold[code]
+simple_fold = temp_fold
+
+with open('unicorn/ucd-case-tables.cpp', 'w', encoding='utf-8', newline='\n') as cpp:
+    cpp.write(head)
+    write_sparse_set(cpp, 'other_lowercase', other_lowercase)
+    write_sparse_set(cpp, 'other_uppercase', other_uppercase)
+    write_charmap(cpp, 'simple_uppercase', simple_upper)
+    write_charmap(cpp, 'simple_lowercase', simple_lower)
+    write_charmap(cpp, 'simple_titlecase', simple_title)
+    write_charmap(cpp, 'simple_casefold', simple_fold)
+    write_charmap(cpp, 'full_uppercase', full_upper, valsize=3)
+    write_charmap(cpp, 'full_lowercase', full_lower, valsize=3)
+    write_charmap(cpp, 'full_titlecase', full_title, valsize=3)
+    write_charmap(cpp, 'full_casefold', full_fold, valsize=3)
+    cpp.write(tail)
+
+# Decomposition tables
+
+process_file('ucd/CompositionExclusions.txt', BooleanUcdRecord(composition_exclusion), 1)
+
+for c in canonical:
+    if combining_class[c] != 0 or combining_class.get(canonical[c][0], 0) != 0:
+        composition_exclusion.add(c)
+
+composition = {}
+
+for c in canonical:
+    if c not in composition_exclusion:
+        composition[canonical[c]] = c
+
+with open('unicorn/ucd-decomposition-tables.cpp', 'w', encoding='utf-8', newline='\n') as cpp:
+    cpp.write(head)
+    write_sparse_table(cpp, 'int', 'combining_class', combining_class, 0)
+    write_charmap(cpp, 'canonical', canonical, valsize=2)
+    write_charmap(cpp, 'short_compatibility', short_compatibility, valsize=3)
+    write_charmap(cpp, 'long_compatibility', long_compatibility, valsize=18)
+    write_charmap(cpp, 'composition', composition, keysize=2)
+    cpp.write(tail)
+
+# Numeric tables
+
+numeric_value = {}
+
+def numeric_value_record(fields):
+    # [0] Code
+    # [1] Decimal value
+    # [2] Not used
+    # [3] Rational value
+    codes = hexrange(fields[0])
+    num, _, den = fields[3].partition('/')
+    if not den:
+        den = '1'
+    for c in codes:
+        numeric_value[c] = '{{{0},{1}}}'.format(num, den)
+
+process_file('ucd/extracted/DerivedNumericValues.txt', numeric_value_record, 4)
+
+with open('unicorn/ucd-numeric-tables.cpp', 'w', encoding='utf-8', newline='\n') as cpp:
+    cpp.write(head)
+    write_sparse_table(cpp, 'PackedPair<long long>', 'numeric_value', numeric_value, '{0,1}')
+    cpp.write(tail)
+
+# Script tables
+
+scripts = {}
+script_extensions = {}
+
+def encode_script(abbr):
+    tag = 0
+    for c in abbr.lower():
+        tag = (tag << 8) + ord(c)
+    return tag
+
+def script_record(fields):
+    codes = hexrange(fields[0])
+    script = script_index[fields[1]]
+    for c in codes:
+        scripts[c] = encode_script(script)
+
+def script_extensions_record(fields):
+    codes = hexrange(fields[0])
+    scripts = '"{0}"'.format(fields[1])
+    for c in codes:
+        script_extensions[c] = scripts
+
+process_file('ucd/Scripts.txt', script_record, 2)
+process_file('ucd/ScriptExtensions.txt', script_extensions_record, 2)
+
+with open('unicorn/ucd-script-tables.cpp', 'w', encoding='utf-8', newline='\n') as cpp:
+    cpp.write(head)
+    write_sparse_table(cpp, 'uint32_t', 'scripts', scripts, 0x7a7a7a7a)
+    write_sparse_table(cpp, 'char const*', 'script_extensions', script_extensions)
+    cpp.write(tail)
+
+# Normalization tests
+
+normalization_tests = []
+normalization_identity = set(range(0, 0x110000)) - set(range(0xd800, 0xe000))
+
+def normalization_test_record(fields):
+    normalization_tests.append(['"{0}"'.format(f) for f in fields])
+    if ' ' not in fields[0]:
+        normalization_identity.discard(int(fields[0], 16))
+
+process_file('ucd/NormalizationTest.txt', normalization_test_record, 5)
+
+with open('unicorn/ucd-normalization-test.cpp', 'w', encoding='utf-8', newline='\n') as cpp:
+    cpp.write(head)
+    write_nested_array(cpp, 'normalization_test', normalization_tests, 'char const*', nlines=True)
+    write_sparse_set(cpp, 'normalization_identity', normalization_identity)
+    cpp.write(tail)
+
+# Segmentation tests
+
+segmentation_tests = []
+
+def segmentation_test_record(fields):
+    text = fields[0].strip(' ×÷').replace(' ', '').replace('×', ' ').replace('÷', '/')
+    segmentation_tests.append('"{0}"'.format(text))
+
+process_file('ucd/auxiliary/GraphemeBreakTest.txt', segmentation_test_record, 1)
+grapheme_break_tests = segmentation_tests
+segmentation_tests = []
+
+process_file('ucd/auxiliary/WordBreakTest.txt', segmentation_test_record, 1)
+word_break_tests = segmentation_tests
+segmentation_tests = []
+
+process_file('ucd/auxiliary/SentenceBreakTest.txt', segmentation_test_record, 1)
+sentence_break_tests = segmentation_tests
+
+with open('unicorn/ucd-segmentation-test.cpp', 'w', encoding='utf-8', newline='\n') as cpp:
+    cpp.write(head)
+    write_array(cpp, 'grapheme_break_test', grapheme_break_tests, 'char const*', nlines=True)
+    write_array(cpp, 'word_break_test', word_break_tests, 'char const*', nlines=True)
+    write_array(cpp, 'sentence_break_test', sentence_break_tests, 'char const*', nlines=True)
+    cpp.write(tail)

@@ -1,0 +1,208 @@
+Title: Unicorn Library: Introduction
+CSS: style.css
+
+# [Unicorn Library](index.html): Introduction #
+
+#### Unicode library for C++ by Ross Smith ####
+
+Please keep in mind that the Unicorn documentation does not attempt to be a
+[Unicode](http://unicode.org/) tutorial; the reader is assumed to be familiar
+with the basic concepts and terminology involved. I recommend reading the
+Unicorn documentation with a copy of the Unicode standard on hand.
+
+## Contents ##
+
+* [Compatibility][]
+* [Design philosophy][]
+* [Coding conventions][]
+* [Exception safety][]
+* [Building Unicorn][]
+* [Using Unicorn][]
+
+## Compatibility ##
+
+Unicorn is written in C++14; you will need an up-to-date C++ compiler,
+probably a recent version of Clang or GCC. I developed it mainly on Mac OS X,
+using Clang 6.1 (LLVM 3.6). All test builds are made using strict compilation
+mode (`-Wall -Wextra -Werror`).
+
+Unicorn has also been tested with GCC 4.9 on Ubuntu GNU/Linux,
+[Cygwin](http://www.cygwin.com/) on Microsoft Windows, and native Windows
+using [Nuwen-Mingw](http://nuwen.net/mingw.html). It will not work with any
+existing release of Microsoft Visual C++, due to that compiler's poor C++14
+support, although it may be usable with the upcoming 2015 release.
+
+## Design philosophy ##
+
+The Unicorn library is still in a fairly early form. The code is primarily
+striving to be correct, with performance a secondary consideration; aggressive
+optimization can come later.
+
+One of the basic design goals of Unicorn was to make it work well with code
+written in the style of existing idiomatic C++11/14, rather than requiring
+users to change their coding style to accommodate Unicorn. In particular, it
+uses the existing string classes supplied by the standard C++ library, rather
+than adding its own new string type. I would have preferred to also work with
+standard C++11 regular expressions instead of creating a new regex class, but
+this turned out to be impractical (see the [`unicorn/regex`](regex.html)
+documentation for the details).
+
+UTF-8, 16, and 32 strings are represented by `u8string`, `u16string`, and
+`u32string` respectively; you can also use `wstring` for UTF-16 or 32,
+whichever is appropriate for your system (systems where `wstring` is not
+UTF-16 or 32 are not supported). The name `u8string` is an alias for
+`std::string`; the intention here is that `u8string` is used for strings
+required to contain valid UTF-8 (or ASCII), while plain `string` is used for
+strings in some other encoding, or for when a string is used simply as an
+array of bytes with no assumptions about encoding. This is intended purely as
+an aid to code clarity, and has no effect on the compiler; `u8string` is just
+an alias for `string`, not a new type.
+
+Unicorn assumes that most or all of your string processing will be done in
+Unicode. Programs that need to work with text in other formats should convert
+the text to Unicode at the earliest opportunity upon reading it in, do their
+processing with strings known to be valid Unicode, and then convert to other
+encodings, if necessary, upon output. You can use any of the four standard
+string types to hold Unicode text, depending on which encoding you choose; as
+far as possible, everything in Unicorn will work with any of the UTF
+encodings. Functions for conversion between Unicode and other encodings can be
+found in the [`unicorn/mbcs`](mbcs.html) and [`unicorn/io`](io.html) modules.
+
+Most of the other modules are intended to work only with Unicode strings that
+have already been validated. The documentation for the
+[`unicorn/utf`](utf.html) module explains the details of how the handling of
+invalid encoding is controlled.
+
+## Coding conventions ##
+
+In the context of Unicode and other text encodings, the word "character" is
+often used confusingly with any number of different meanings. In the Unicorn
+documentation, **character** is normally used to mean one Unicode scalar
+value, represented conceptually as a single 21 bit integer, and in practise as
+one to four bytes in various encodings. Following the standard Unicode
+terminology, the integer types used for encoding (`char` in UTF-8, `char16_t`
+in UTF-16, and `char32_t` in UTF-32) are referred to as **code units**.
+
+A Unicode "character" is a character as seen by the programmer, rather than a
+character as seen by the user; a single user-perceived character (or
+**grapheme cluster** in the official Unicode terminology) may contain one or
+more Unicode characters, and the same user-perceived character may be
+represented in different ways in the encoded text (e.g. composed vs decomposed
+characters). The Unicorn library includes functions for identifying grapheme
+clusters (in the [`unicorn/segment`](segment.html) module), and for converting
+text to the standard normalization forms (in the
+[`unicorn/normal`](normal.html) module).
+
+A related point of confusion is the concept of the "length" of a string. When
+text may be represented in variable-length encodings such as UTF-8 and UTF-16,
+we need to be clear on whether we are measuring in characters, code units, or
+some other unit such as grapheme clusters. In Unicorn, I have adopted the
+convention that a **count** is the size of a string in code units, while a
+**length** is in characters; similarly, an **offset** is a position within a
+string measured in code units from the start of the string, while an **index**
+is a position measured in characters.
+
+In some contexts a string's size may be measured in other units, such as
+grapheme clusters; these variations are described in the documentation of the
+relevant functions (in particular, see the `str_length()` function in
+[`unicorn/string`](string.html)).
+
+The term **character type** is used to mean one of the four standard types
+that can be used as the code unit type in an instantiation of
+`std::basic_string`, i.e. `char`, `char16_t`, `char32_t`, and `wchar_t`. Note
+that this does not include `signed char` or `unsigned char`; although these
+are "character types" in a sense, they can't be used as the value type of a
+standard string (at least not without writing a new traits class; Unicorn is
+not intended to be compatible with custom string types).
+
+Template parameters are usually named to indicate what kind of type is
+expected (the requirement may not be explicitly documented if I think the
+parameter name makes it sufficiently clear). When a parameter type is named
+`C` (or `C1`, `C2`, etc), it is expected to be a character type as defined
+above.
+
+The abbreviations `src` and `dst` are frequently used for source and
+destination objects (i.e. input and output parameters).
+
+When a function's behaviour can be controlled by a selection of boolean flags,
+the `Flagset` class defined in the [Crow
+library](https://github.com/CaptainCrowbar/crow-lib) is usually used. This
+allows a set of flags to be passed either in a long form, as a list of named
+flags combined using bitwise _or_, or in a short form, as a string containing
+characters representing the flags. Refer to the `Flagset` documentation for
+details of how this works.
+
+## Exception safety ##
+
+The `noexcept` qualifier is used as much as possible to indicate functions
+that will never throw exceptions (in the absence of undefined behaviour).
+
+In a library primarily concerned with string manipulation, almost any
+operation might implicitly allocate one or more strings and therefore
+potentially trigger an out-of-memory error. You should assume that any
+function not marked `noexcept` may throw a `std::bad_alloc` exception; because
+this is so ubiquitous it is not usually mentioned in the documentation for
+individual functions.
+
+Functions that take a `Flagset` argument will throw `FlagError` if an invalid
+combination of flags is passed. Functions that take a callback function as an
+argument will propagate any exceptions thrown by that function.
+
+Functions that accept UTF iterator arguments (see the
+[`unicorn/utf`](utf.html) module) can throw `EncodingError` if invalid Unicode
+is encountered and the appropriate error handling flag was selected when the
+iterators were created.
+
+Any other exceptions that a function might throw are described in that
+function's description. If a function is not marked `noexcept`, but its
+documentation does not explicitly mention any exceptions, then it may throw
+`bad_alloc`, and possibly `FlagError` or `EncodingError` where appropriate,
+but will not throw anything else.
+
+## Building Unicorn ##
+
+A makefile is included, although it may not be as portable as I would like.
+Building Unicorn using your preferred build tool should be simple enough. To
+build the library, compile all the `.cpp` files whose names don't include the
+word `test`; to build the test program, compile all the test modules and link
+them with the library.
+
+If you want to make changes to the code, you may need to rebuild the Unicode
+character tables from the original data. You can do this by first running
+`scripts/download-ucd` to download the original tables from the Unicode
+website, then `scripts/make-tables` to generate the C++ tables used by Unicorn
+(this script requires Python 3.2+). This is not necessary if you're just
+building the library and not modifying it, or if your changes don't require
+any tables to be rebuilt; all the precompiled tables are already included in
+the source tree.
+
+Rebuilding the documentation (`make doc`) requires
+[Multimarkdown](http://fletcherpenney.net/multimarkdown/) 4.5+ and Python
+3.2+. The scripts expect Python 3 to be callable as `python3`.
+
+Unicorn requires some other libraries to be linked with programs that use it;
+all of these should be present or easily installed on most systems:
+
+* [PCRE](http://www.pcre.org/) (`-lpcre` required, `-lpcre16` and `-lpcre32` recommended; see below)
+* [Zlib](http://www.zlib.net/) (`-lz`)
+* Iconv for Unix targets (on some systems this requires `-liconv`)
+* The system thread library (`-lpthread` on most Unix systems, `-mthreads` on Mingw)
+
+Unicorn's [regular expression module](regex.html) uses PCRE as its underlying
+regex engine. If you only need to support UTF-8 and byte-mode regexes, it will
+work with just the 8-bit version (`-lpcre`). If you want UTF-16 and UTF-32
+regexes as well, you will also need `-lpcre16` and `-lpcre32`. If you don't
+have all three versions of the library, define `UNICORN_NO_PCRE16` and/or
+`UNICORN_NO_PCRE32` when building Unicorn to indicate which ones are missing.
+(The supplied makefile will attempt to detect which versions are available and
+set these automatically.)
+
+## Using Unicorn ##
+
+You can import the whole library using `#include "unicorn/library.hpp"`, or
+include the individual modules that you need. Link with `-lunicorn -lcrow`,
+and with the other required libraries described above.
+
+Everything in the Unicorn library is in `namespace Unicorn` (or a subordinate
+namespace inside `Unicorn`). You can either qualify all calls with the
+`Unicorn::` prefix, or use `using namespace Unicorn`.

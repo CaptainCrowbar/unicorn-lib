@@ -1,0 +1,6 @@
+build
+doc
+ucd
+*.stackdump
+*.zip
+__*
