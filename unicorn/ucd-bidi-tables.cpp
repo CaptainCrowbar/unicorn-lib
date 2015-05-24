@@ -2404,7 +2404,7 @@ char32_t const bidi_mirrored_array[] {
 0x1d7c3,
 };
 
-const Irange<char32_t const*> bidi_mirrored_table {CROW_BOUNDS(bidi_mirrored_array)};
+const Crow::Irange<char32_t const*> bidi_mirrored_table {CROW_BOUNDS(bidi_mirrored_array)};
 
 const KeyValue<char32_t, char32_t> bidi_mirroring_glyph_array[] {
 {0x28,0x29},

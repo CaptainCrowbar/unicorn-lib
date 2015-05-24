@@ -408,7 +408,7 @@ char const* const grapheme_break_test_array[] {
 /*402*/ "0646 200D/0020",
 };
 
-const Irange<char const* const*> grapheme_break_test_table {CROW_BOUNDS(grapheme_break_test_array)};
+const Crow::Irange<char const* const*> grapheme_break_test_table {CROW_BOUNDS(grapheme_break_test_array)};
 
 char const* const word_break_test_array[] {
 /*1*/ "0001/0001",
@@ -1785,7 +1785,7 @@ char const* const word_break_test_array[] {
 /*1372*/ "0646 200D/0020",
 };
 
-const Irange<char const* const*> word_break_test_table {CROW_BOUNDS(word_break_test_array)};
+const Crow::Irange<char const* const*> word_break_test_table {CROW_BOUNDS(word_break_test_array)};
 
 char const* const sentence_break_test_array[] {
 /*1*/ "0001 0001",
@@ -2285,7 +2285,7 @@ char const* const sentence_break_test_array[] {
 /*495*/ "0646 200D 0020",
 };
 
-const Irange<char const* const*> sentence_break_test_table {CROW_BOUNDS(sentence_break_test_array)};
+const Crow::Irange<char const* const*> sentence_break_test_table {CROW_BOUNDS(sentence_break_test_array)};
 
 }
 }

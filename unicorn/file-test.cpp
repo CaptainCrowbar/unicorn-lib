@@ -8,6 +8,7 @@
 #include <utility>
 
 using namespace std::literals;
+using namespace Crow;
 using namespace Unicorn;
 
 #if defined(_XOPEN_SOURCE)

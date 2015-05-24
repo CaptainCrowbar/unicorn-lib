@@ -18587,7 +18587,7 @@ std::array<char const*, 5> const normalization_test_array[] {
 /*18581*/ {{"115B9 0334 115AF","115B9 0334 115AF","115B9 0334 115AF","115B9 0334 115AF","115B9 0334 115AF"}},
 };
 
-const Irange<std::array<char const*, 5> const*> normalization_test_table {CROW_BOUNDS(normalization_test_array)};
+const Crow::Irange<std::array<char const*, 5> const*> normalization_test_table {CROW_BOUNDS(normalization_test_array)};
 
 const KeyValue<char32_t, char32_t> normalization_identity_array[] {
 {0x0,0x9f},

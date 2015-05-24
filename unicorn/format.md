@@ -11,7 +11,7 @@ This module provides facilities for formatting various kinds of data as
 Unicode strings, in a manner similar to `printf()` in C, `str.format()` in
 Python, etc. Formatters are supplied for commonly used standard types
 (booleans, integers, floating point, characters, strings, and time points and
-durations), as well as for the library's `Uuid` and `Version` types; user
+durations), as well as for the Crow library's `Uuid` and `Version` types; user
 defined formatters for other types can also be supplied.
 
 Basic formatting for range types (containers and arrays) is provided; these
@@ -41,7 +41,7 @@ for details.
 ## Basic formatting functions ##
 
 * `template <typename T> class FormatType`
-    * `[string type] operator()(T t, Flagset flags, int prec) const`
+    * `[string type] operator()(T t, Crow::Flagset flags, int prec) const`
 
 TODO
 
@@ -74,15 +74,15 @@ TODO
 * `template <> class FormatType<wchar_t>`
 * `template <> class FormatType<std::chrono::system_clock::time_point>`
 * `template <typename R, typename P> class FormatType<std::chrono::duration<R, P>>`
-* `template <> class FormatType<Uuid>`
-* `template <> class FormatType<Version>`
+* `template <> class FormatType<Crow::Uuid>`
+* `template <> class FormatType<Crow::Version>`
 
 TODO
 
-* `template <typename T, typename C> void format_type(const T& t, basic_string<C>& dst, Flagset flags = {}, int prec = -1, size_t width = 0, char32_t pad = U' ')`
+* `template <typename T, typename C> void format_type(const T& t, basic_string<C>& dst, Crow::Flagset flags = {}, int prec = -1, size_t width = 0, char32_t pad = U' ')`
 * `template <typename T, typename C> void format_type(const T& t, basic_string<C>& dst, const basic_string<C>& flags)`
 * `template <typename T, typename C> void format_type(const T& t, basic_string<C>& dst, const C* flags)`
-* `template <typename C, typename T> basic_string<C> format_as(const T& t, Flagset flags = {}, int prec = -1, size_t width = 0, char32_t pad = U' ')`
+* `template <typename C, typename T> basic_string<C> format_as(const T& t, Crow::Flagset flags = {}, int prec = -1, size_t width = 0, char32_t pad = U' ')`
 * `template <typename C, typename T> basic_string<C> format_as(const T& t, const basic_string<C>& flags)`
 * `template <typename C, typename T> basic_string<C> format_as(const T& t, const C* flags)`
 

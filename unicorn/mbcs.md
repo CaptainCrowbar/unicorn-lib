@@ -30,13 +30,13 @@ Exception thrown to report an unknown encoding name or number.
 ## Conversion functions ##
 
 * `template <typename C> void import_string(const string& src, basic_string<C>& dst)`
-* `template <typename C, typename C2> void import_string(const string& src, basic_string<C>& dst, const basic_string<C2>& enc, Flagset flags = {})`
-* `template <typename C, typename C2> void import_string(const string& src, basic_string<C>& dst, const C2* enc, Flagset flags = {})`
-* `template <typename C> void import_string(const string& src, basic_string<C>& dst, uint32_t enc, Flagset flags = {})`
+* `template <typename C, typename C2> void import_string(const string& src, basic_string<C>& dst, const basic_string<C2>& enc, Crow::Flagset flags = {})`
+* `template <typename C, typename C2> void import_string(const string& src, basic_string<C>& dst, const C2* enc, Crow::Flagset flags = {})`
+* `template <typename C> void import_string(const string& src, basic_string<C>& dst, uint32_t enc, Crow::Flagset flags = {})`
 * `template <typename C> void export_string(const basic_string<C>& src, string& dst)`
-* `template <typename C, typename C2> void export_string(const basic_string<C>& src, string& dst, const basic_string<C2>& enc, Flagset flags = {})`
-* `template <typename C, typename C2> void export_string(const basic_string<C>& src, string& dst, const C2* enc, Flagset flags = {})`
-* `template <typename C> void export_string(const basic_string<C>& src, string& dst, uint32_t enc, Flagset flags = {})`
+* `template <typename C, typename C2> void export_string(const basic_string<C>& src, string& dst, const basic_string<C2>& enc, Crow::Flagset flags = {})`
+* `template <typename C, typename C2> void export_string(const basic_string<C>& src, string& dst, const C2* enc, Crow::Flagset flags = {})`
+* `template <typename C> void export_string(const basic_string<C>& src, string& dst, uint32_t enc, Crow::Flagset flags = {})`
 
 These functions convert from an external multibyte encoding to Unicode
 (`import_string()`), and from Unicode to an external multibyte encoding

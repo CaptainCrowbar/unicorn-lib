@@ -146,17 +146,17 @@ namespace Unicorn {
         using token_type = BasicToken<char_type>;
         using callback_type = std::function<size_t(const string_type&, size_t)>;
         using token_iterator = BasicTokenIterator<CX>;
-        using token_range = Irange<token_iterator>;
+        using token_range = Crow::Irange<token_iterator>;
         BasicLexer(): lexemes(), prefix_table(prefix_count) {}
         token_range operator()(const string_type& text) const { return lex(text); }
         token_range lex(const string_type& text) const;
         void call(int tag, const callback_type& call);
         void exact(int tag, const string_type& pattern);
-        void exact(int tag, const char_type* pattern) { exact(tag, cstr(pattern)); }
+        void exact(int tag, const char_type* pattern) { exact(tag, Crow::cstr(pattern)); }
         void match(int tag, const regex_type& pattern) { add_match(tag, pattern); }
-        void match(int tag, const string_type& pattern, Flagset flags = {})
+        void match(int tag, const string_type& pattern, Crow::Flagset flags = {})
             { add_match(tag, regex_type(pattern, flags)); }
-        void match(int tag, const char_type* pattern, Flagset flags = {})
+        void match(int tag, const char_type* pattern, Crow::Flagset flags = {})
             { add_match(tag, regex_type(pattern, flags)); }
     private:
         friend class BasicTokenIterator<CX>;
@@ -216,7 +216,7 @@ namespace Unicorn {
     void BasicLexer<CX>::add_match(int tag, regex_type pattern) {
         if (pattern.empty())
             return;
-        Flagset new_flags = (pattern.flags() | rx_notempty | rx_partialsoft) & ~ rx_partialhard;
+        Crow::Flagset new_flags = (pattern.flags() | rx_notempty | rx_partialsoft) & ~ rx_partialhard;
         if (new_flags != pattern.flags())
             pattern = regex_type(pattern.pattern(), new_flags);
         auto call = [pattern] (const string_type& text, size_t offset)

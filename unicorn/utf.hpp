@@ -12,13 +12,13 @@ namespace Unicorn {
 
     // Constants
 
-    constexpr auto err_ignore   = Flagset::value('I');  // Assume valid UTF input
-    constexpr auto err_replace  = Flagset::value('R');  // Replace invalid UTF with `U+FFFD`
-    constexpr auto err_throw    = Flagset::value('T');  // Throw `EncodingError` on invalid UTF
+    constexpr auto err_ignore   = Crow::Flagset::value('I');  // Assume valid UTF input
+    constexpr auto err_replace  = Crow::Flagset::value('R');  // Replace invalid UTF with `U+FFFD`
+    constexpr auto err_throw    = Crow::Flagset::value('T');  // Throw `EncodingError` on invalid UTF
 
     namespace UnicornDetail {
 
-        void utf_flags(Flagset& flags);
+        void utf_flags(Crow::Flagset& flags);
 
         // UtfEncoding::decode() reads one encoded character from src, writes
         // it to dst, and returns the number of code units consumed. n is the
@@ -157,7 +157,7 @@ namespace Unicorn {
         UtfIterator() noexcept { static const string_type dummy; str = &dummy; }
         explicit UtfIterator(const string_type& src): str(&src)
             { UnicornDetail::utf_flags(fset); ++*this; }
-        UtfIterator(const string_type& src, size_t offset, Flagset flags = {}):
+        UtfIterator(const string_type& src, size_t offset, Crow::Flagset flags = {}):
             str(&src), ofs(std::min(offset, src.size())), fset(flags)
             { UnicornDetail::utf_flags(fset); ++*this; }
         const char32_t& operator*() const noexcept { return u; }
@@ -178,7 +178,7 @@ namespace Unicorn {
         size_t ofs = 0;                    // Offset of current character in source
         size_t units = 0;                  // Code units in current character
         char32_t u = 0;                    // Current decoded character
-        Flagset fset = err_ignore;         // Error handling flag
+        Crow::Flagset fset = err_ignore;   // Error handling flag
         bool ok = false;                   // Current character is valid
     };
 
@@ -226,31 +226,31 @@ namespace Unicorn {
     }
 
     using Utf8Iterator = UtfIterator<char>;
-    using Utf8Range = Irange<Utf8Iterator>;
+    using Utf8Range = Crow::Irange<Utf8Iterator>;
     using Utf16Iterator = UtfIterator<char16_t>;
-    using Utf16Range = Irange<Utf16Iterator>;
+    using Utf16Range = Crow::Irange<Utf16Iterator>;
     using Utf32Iterator = UtfIterator<char32_t>;
-    using Utf32Range = Irange<Utf32Iterator>;
+    using Utf32Range = Crow::Irange<Utf32Iterator>;
     using WcharIterator = UtfIterator<wchar_t>;
-    using WcharRange = Irange<WcharIterator>;
+    using WcharRange = Crow::Irange<WcharIterator>;
 
     template <typename C>
-    UtfIterator<C> utf_begin(const basic_string<C>& src, Flagset flags = {}) {
+    UtfIterator<C> utf_begin(const basic_string<C>& src, Crow::Flagset flags = {}) {
         return {src, 0, flags};
     }
 
     template <typename C>
-    UtfIterator<C> utf_end(const basic_string<C>& src, Flagset flags = {}) {
+    UtfIterator<C> utf_end(const basic_string<C>& src, Crow::Flagset flags = {}) {
         return {src, src.size(), flags};
     }
 
     template <typename C>
-    UtfIterator<C> utf_iterator(const basic_string<C>& src, size_t offset, Flagset flags = {}) {
+    UtfIterator<C> utf_iterator(const basic_string<C>& src, size_t offset, Crow::Flagset flags = {}) {
         return {src, offset, flags};
     }
 
     template <typename C>
-    Irange<UtfIterator<C>> utf_range(const basic_string<C>& src, Flagset flags = {}) {
+    Crow::Irange<UtfIterator<C>> utf_range(const basic_string<C>& src, Crow::Flagset flags = {}) {
         return {utf_begin(src, flags), utf_end(src, flags)};
     }
 
@@ -260,7 +260,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    basic_string<C> u_str(const Irange<UtfIterator<C>>& range) {
+    basic_string<C> u_str(const Crow::Irange<UtfIterator<C>>& range) {
         return u_str(CROW_BOUNDS(range));
     }
 
@@ -279,7 +279,7 @@ namespace Unicorn {
         UtfWriter() noexcept {}
         explicit UtfWriter(string_type& dst) noexcept:
             str(&dst) { UnicornDetail::utf_flags(fset); }
-        UtfWriter(string_type& dst, Flagset flags) noexcept:
+        UtfWriter(string_type& dst, Crow::Flagset flags) noexcept:
             str(&dst), fset(flags) { UnicornDetail::utf_flags(fset); }
         UtfWriter& operator=(char32_t u);
         UtfWriter& operator*() noexcept { return *this; }
@@ -291,9 +291,9 @@ namespace Unicorn {
         friend bool operator!=(const UtfWriter& lhs, const UtfWriter& rhs) noexcept
             { return ! (lhs == rhs); }
     private:
-        string_type* str = nullptr;  // Destination string
-        Flagset fset = err_ignore;   // Error handling flag
-        bool ok = false;             // Most recent character is valid
+        string_type* str = nullptr;       // Destination string
+        Crow::Flagset fset = err_ignore;  // Error handling flag
+        bool ok = false;                  // Most recent character is valid
     };
 
     template <typename C>
@@ -328,7 +328,7 @@ namespace Unicorn {
     using WcharWriter = UtfWriter<wchar_t>;
 
     template <typename C>
-    UtfWriter<C> utf_writer(basic_string<C>& dst, Flagset flags = {}) noexcept {
+    UtfWriter<C> utf_writer(basic_string<C>& dst, Crow::Flagset flags = {}) noexcept {
         return {dst, flags};
     }
 
@@ -338,7 +338,7 @@ namespace Unicorn {
 
         template <typename C1, typename C2>
         struct Recode {
-            void operator()(const C1* src, size_t n, basic_string<C2>& dst, Flagset flags) const {
+            void operator()(const C1* src, size_t n, basic_string<C2>& dst, Crow::Flagset flags) const {
                 UnicornDetail::utf_flags(flags);
                 if (! src)
                     return;
@@ -361,7 +361,7 @@ namespace Unicorn {
 
         template <typename C1>
         struct Recode<C1, char32_t> {
-            void operator()(const C1* src, size_t n, u32string& dst, Flagset flags) const {
+            void operator()(const C1* src, size_t n, u32string& dst, Crow::Flagset flags) const {
                 UnicornDetail::utf_flags(flags);
                 if (! src)
                     return;
@@ -389,7 +389,7 @@ namespace Unicorn {
 
         template <typename C2>
         struct Recode<char32_t, C2> {
-            void operator()(const char32_t* src, size_t n, basic_string<C2>& dst, Flagset flags) const {
+            void operator()(const char32_t* src, size_t n, basic_string<C2>& dst, Crow::Flagset flags) const {
                 UnicornDetail::utf_flags(flags);
                 if (! src)
                     return;
@@ -412,7 +412,7 @@ namespace Unicorn {
 
         template <typename C>
         struct Recode<C, C> {
-            void operator()(const C* src, size_t n, basic_string<C>& dst, Flagset flags) const {
+            void operator()(const C* src, size_t n, basic_string<C>& dst, Crow::Flagset flags) const {
                 UnicornDetail::utf_flags(flags);
                 if (! src)
                     return;
@@ -444,7 +444,7 @@ namespace Unicorn {
 
         template <>
         struct Recode<char32_t, char32_t> {
-            void operator()(const char32_t* src, size_t n, u32string& dst, Flagset flags) const {
+            void operator()(const char32_t* src, size_t n, u32string& dst, Crow::Flagset flags) const {
                 UnicornDetail::utf_flags(flags);
                 if (! src)
                     return;
@@ -465,7 +465,7 @@ namespace Unicorn {
 
     template <typename C1, typename C2>
     void recode(const basic_string<C1>& src, basic_string<C2>& dst,
-            Flagset flags = {}) {
+            Crow::Flagset flags = {}) {
         basic_string<C2> result;
         UnicornDetail::Recode<C1, C2>()(src.data(), src.size(), result, flags);
         dst.swap(result);
@@ -473,7 +473,7 @@ namespace Unicorn {
 
     template <typename C1, typename C2>
     void recode(const basic_string<C1>& src, size_t offset, basic_string<C2>& dst,
-            Flagset flags = {}) {
+            Crow::Flagset flags = {}) {
         basic_string<C2> result;
         if (offset < src.size())
             UnicornDetail::Recode<C1, C2>()(src.data() + offset, src.size() - offset, result, flags);
@@ -481,21 +481,21 @@ namespace Unicorn {
     }
 
     template <typename C1, typename C2>
-    void recode(const C1* src, size_t count, basic_string<C2>& dst, Flagset flags = {}) {
+    void recode(const C1* src, size_t count, basic_string<C2>& dst, Crow::Flagset flags = {}) {
         basic_string<C2> result;
         UnicornDetail::Recode<C1, C2>()(src, count, result, flags);
         dst.swap(result);
     }
 
     template <typename C2, typename C1>
-    basic_string<C2> recode(const basic_string<C1>& src, Flagset flags = {}) {
+    basic_string<C2> recode(const basic_string<C1>& src, Crow::Flagset flags = {}) {
         basic_string<C2> result;
         UnicornDetail::Recode<C1, C2>()(src.data(), src.size(), result, flags);
         return result;
     }
 
     template <typename C2, typename C1>
-    basic_string<C2> recode(const basic_string<C1>& src, size_t offset, Flagset flags) {
+    basic_string<C2> recode(const basic_string<C1>& src, size_t offset, Crow::Flagset flags) {
         basic_string<C2> result;
         if (offset < src.size())
             UnicornDetail::Recode<C1, C2>()(src.data() + offset, src.size() - offset, result, flags);
@@ -503,22 +503,22 @@ namespace Unicorn {
     }
 
     template <typename C>
-    u8string to_utf8(const basic_string<C>& src, Flagset flags = {}) {
+    u8string to_utf8(const basic_string<C>& src, Crow::Flagset flags = {}) {
         return recode<char>(src, flags);
     }
 
     template <typename C>
-    u16string to_utf16(const basic_string<C>& src, Flagset flags = {}) {
+    u16string to_utf16(const basic_string<C>& src, Crow::Flagset flags = {}) {
         return recode<char16_t>(src, flags);
     }
 
     template <typename C>
-    u32string to_utf32(const basic_string<C>& src, Flagset flags = {}) {
+    u32string to_utf32(const basic_string<C>& src, Crow::Flagset flags = {}) {
         return recode<char32_t>(src, flags);
     }
 
     template <typename C>
-    wstring to_wstring(const basic_string<C>& src, Flagset flags = {}) {
+    wstring to_wstring(const basic_string<C>& src, Crow::Flagset flags = {}) {
         return recode<wchar_t>(src, flags);
     }
 

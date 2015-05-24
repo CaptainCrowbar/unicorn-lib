@@ -12,7 +12,7 @@ namespace Unicorn {
 
     namespace UnicornDetail {
 
-        void utf_flags(Flagset& flags) {
+        void utf_flags(Crow::Flagset& flags) {
             flags.allow(err_ignore | err_replace | err_throw, "UTF error handling");
             flags.exclusive(err_ignore | err_replace | err_throw, "UTF error handling");
             if (flags.empty())

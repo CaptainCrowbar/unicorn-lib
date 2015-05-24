@@ -7,6 +7,7 @@
 #include <vector>
 
 using namespace std::literals;
+using namespace Crow;
 using namespace Unicorn;
 
 TEST_MAIN;

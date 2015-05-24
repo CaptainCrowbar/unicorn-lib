@@ -59,7 +59,7 @@ def write_array_header(cpp, entrytype, name):
 
 def write_array_footer(cpp, entrytype, name):
     cpp.write('};\n\n')
-    cpp.write('const Irange<{0} const*> {1}_table {{CROW_BOUNDS({1}_array)}};\n'.format(entrytype, name))
+    cpp.write('const Crow::Irange<{0} const*> {1}_table {{CROW_BOUNDS({1}_array)}};\n'.format(entrytype, name))
 
 # Explicit array of individual strings:
 def write_array(cpp, name, table, entrytype, nlines=False):

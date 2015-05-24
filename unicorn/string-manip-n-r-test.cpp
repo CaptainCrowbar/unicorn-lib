@@ -6,6 +6,7 @@
 #include <string>
 
 using namespace std::literals;
+using namespace Crow;
 using namespace Unicorn;
 
 namespace {

@@ -15,7 +15,7 @@ namespace Unicorn {
         };
 
         ArgType arg_type(const u8string& arg) {
-            if (arg.size() < 2 || arg[0] != '-' || ascii_isdigit(arg[1]))
+            if (arg.size() < 2 || arg[0] != '-' || Crow::ascii_isdigit(arg[1]))
                 return is_argument;
             else if (arg[1] != '-' && arg[1] != '=')
                 return is_short_option;
@@ -132,7 +132,7 @@ namespace Unicorn {
         return text;
     }
 
-    void Options::add_option(const u8string& name, const u8string& abbrev, const u8string& info, Flagset flags,
+    void Options::add_option(const u8string& name, const u8string& abbrev, const u8string& info, Crow::Flagset flags,
             const u8string& defval, const u8string& pattern, const u8string& group) {
         static const Regex match_float("[+-]?(\\d+(\\.\\d*)?|\\.\\d+)(e[+-]?\\d+)?"s, rx_caseless);
         static const Regex match_integer("[+-]?\\d+"s, rx_caseless);
@@ -188,7 +188,7 @@ namespace Unicorn {
         return i != npos ? opts[i].values : std::vector<u8string>();
     }
 
-    void Options::parse_args(std::vector<u8string> args, Flagset flags) {
+    void Options::parse_args(std::vector<u8string> args, Crow::Flagset flags) {
         // Add the help and version options
         if (opt_index("--help") == npos) {
             option_type opt;
@@ -329,7 +329,7 @@ namespace Unicorn {
         }
     }
 
-    u8string Options::arg_convert(const string& str, Flagset flags) {
+    u8string Options::arg_convert(const string& str, Crow::Flagset flags) {
         if (! flags.get(opt_locale))
             return str;
         u8string utf8;

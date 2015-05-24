@@ -19,7 +19,7 @@ namespace Unicorn {
 
         // Alignment and padding
 
-        void translate_flags(const u8string& str, Flagset& flags, int& prec, size_t& width, char32_t& pad) {
+        void translate_flags(const u8string& str, Crow::Flagset& flags, int& prec, size_t& width, char32_t& pad) {
             prec = -1;
             width = 0;
             pad = U' ';
@@ -43,7 +43,7 @@ namespace Unicorn {
                     ++i;
                 }
             }
-            flags = Flagset(flagstr);
+            flags = Crow::Flagset(flagstr);
         }
 
         namespace {
@@ -193,7 +193,7 @@ namespace Unicorn {
 
             // String and character formatting helper functions
 
-            u8string string_escape(const u8string& s, Flagset mode) {
+            u8string string_escape(const u8string& s, Crow::Flagset mode) {
                 u8string result;
                 result.reserve(s.size() + 2);
                 if (mode.get(fx_quote))
@@ -250,7 +250,7 @@ namespace Unicorn {
 
         // Formatting for specific types
 
-        u8string format_boolean(bool t, Flagset flags) {
+        u8string format_boolean(bool t, Crow::Flagset flags) {
             flags.allow(fx_global_flags | fx_binary | fx_tf | fx_yesno, "boolean formatting");
             flags.exclusive(fx_binary | fx_tf | fx_yesno, "boolean formatting");
             if (flags.get(fx_binary))
@@ -261,7 +261,7 @@ namespace Unicorn {
                 return t ? "true" : "false";
         }
 
-        u8string format_integer(unsigned long long t, Flagset flags, int prec) {
+        u8string format_integer(unsigned long long t, Crow::Flagset flags, int prec) {
             flags.allow(fx_global_flags | fx_binary | fx_decimal | fx_hex | fx_roman | fx_sign | fx_signz,
                 "integer formatting");
             flags.exclusive(fx_binary | fx_decimal | fx_hex | fx_roman, "integer formatting");
@@ -276,7 +276,7 @@ namespace Unicorn {
                 return int_radix<char>(t, 10, prec);
         }
 
-        u8string format_floating(long double t, Flagset flags, int prec) {
+        u8string format_floating(long double t, Crow::Flagset flags, int prec) {
             using std::fabs;
             flags.allow(fx_global_flags | fx_digits | fx_exp | fx_fixed | fx_general | fx_prob
                 | fx_sign | fx_signz | fx_stripz, "floating point formatting");
@@ -306,7 +306,7 @@ namespace Unicorn {
             return s;
         }
 
-        u8string format_string(const u8string& t, Flagset flags, int prec) {
+        u8string format_string(const u8string& t, Crow::Flagset flags, int prec) {
             flags.allow(fx_global_flags | fx_ascii | fx_ascquote | fx_decimal | fx_escape | fx_hex
                 | fx_hex8 | fx_hex16 | fx_quote, "string formatting");
             flags.exclusive(fx_ascii | fx_ascquote  | fx_escape | fx_decimal | fx_hex
@@ -331,13 +331,13 @@ namespace Unicorn {
                 return t;
         }
 
-        u8string format_timepoint(system_clock::time_point t, Flagset flags, int prec) {
+        u8string format_timepoint(system_clock::time_point t, Crow::Flagset flags, int prec) {
             flags.allow(fx_global_flags | fx_iso | fx_common | fx_local, "date formatting");
             flags.exclusive(fx_iso | fx_common, "date formatting");
-            auto zone = flags.get(fx_local) ? local_date : utc_date;
+            auto zone = flags.get(fx_local) ? Crow::local_date : Crow::utc_date;
             if (flags.get(fx_common))
-                return format_date(t, "%c"s, zone);
-            auto result = format_date(t, prec, zone);
+                return Crow::format_date(t, "%c"s, zone);
+            auto result = Crow::format_date(t, prec, zone);
             if (flags.get(fx_iso)) {
                 auto pos = result.find(' ');
                 if (pos != npos)

@@ -33,7 +33,7 @@ namespace Unicorn {
         };
 
         using CharacterFunction = char32_t (*)(char32_t);
-        template <typename K, typename V> using TableView = Irange<const KeyValue<K, V>*>;
+        template <typename K, typename V> using TableView = Crow::Irange<const KeyValue<K, V>*>;
 
         template <typename T>
         struct __attribute__((__packed__)) PackedPair {
@@ -45,7 +45,7 @@ namespace Unicorn {
         // Lookup functions
 
         template <typename T, typename K, typename V>
-        V table_lookup(Irange<const T*> table, K key, V def) noexcept {
+        V table_lookup(Crow::Irange<const T*> table, K key, V def) noexcept {
             T t;
             t.key = key;
             auto it = std::lower_bound(CROW_BOUNDS(table), t);
@@ -57,7 +57,7 @@ namespace Unicorn {
 
         template <size_t N>
         size_t extended_table_lookup(char32_t key, char32_t* dst,
-                Irange<const KeyValue<char32_t, std::array<char32_t, N>>*> table,
+                Crow::Irange<const KeyValue<char32_t, std::array<char32_t, N>>*> table,
                 CharacterFunction fallback = nullptr) noexcept {
             std::array<char32_t, N> value;
             value[0] = not_found;
@@ -76,7 +76,7 @@ namespace Unicorn {
         }
 
         template <typename K>
-        bool sparse_set_lookup(Irange<const KeyValue<K, K>*> table, K key) noexcept {
+        bool sparse_set_lookup(Crow::Irange<const KeyValue<K, K>*> table, K key) noexcept {
             if (std::begin(table) == std::end(table))
                 return false;
             KeyValue<K, K> t;
@@ -89,7 +89,7 @@ namespace Unicorn {
         }
 
         template <typename T, typename K>
-        typename T::mapped_type sparse_table_lookup(Irange<const T*> table, K key) noexcept {
+        typename T::mapped_type sparse_table_lookup(Crow::Irange<const T*> table, K key) noexcept {
             using V = typename T::mapped_type;
             if (std::begin(table) == std::end(table))
                 return V();
@@ -121,7 +121,7 @@ namespace Unicorn {
         // Bidirectional property tables
 
         extern const TableView<char32_t, Bidi_Class> bidi_class_table;
-        extern const Irange<char32_t const*> bidi_mirrored_table;
+        extern const Crow::Irange<char32_t const*> bidi_mirrored_table;
         extern const TableView<char32_t, char32_t> bidi_mirroring_glyph_table;
         extern const TableView<char32_t, char32_t> bidi_paired_bracket_table;
         extern const TableView<char32_t, char32_t> bidi_paired_bracket_type_table;
@@ -187,14 +187,14 @@ namespace Unicorn {
 
         // Normalization test tables
 
-        extern const Irange<const std::array<char const*, 5>*> normalization_test_table;
+        extern const Crow::Irange<const std::array<char const*, 5>*> normalization_test_table;
         extern const TableView<char32_t, char32_t> normalization_identity_table;
 
         // Segmentation test tables
 
-        extern const Irange<char const* const*> grapheme_break_test_table;
-        extern const Irange<char const* const*> word_break_test_table;
-        extern const Irange<char const* const*> sentence_break_test_table;
+        extern const Crow::Irange<char const* const*> grapheme_break_test_table;
+        extern const Crow::Irange<char const* const*> word_break_test_table;
+        extern const Crow::Irange<char const* const*> sentence_break_test_table;
 
     }
 

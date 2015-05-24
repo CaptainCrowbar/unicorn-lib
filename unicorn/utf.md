@@ -76,7 +76,7 @@ UTF encoding implied by the character type `C`.
     * `using UtfIterator::value_type = char32_t`
     * `UtfIterator::UtfIterator() noexcept`
     * `explicit UtfIterator::UtfIterator(const string_type& src)`
-    * `UtfIterator::UtfIterator(const string_type& src, size_t offset, Flagset flags = {})`
+    * `UtfIterator::UtfIterator(const string_type& src, size_t offset, Crow::Flagset flags = {})`
     * `const string_type& UtfIterator::source() const noexcept`
     * `size_t UtfIterator::offset() const noexcept`
     * `size_t UtfIterator::count() const noexcept`
@@ -119,27 +119,27 @@ errors.
 * `using Utf16Iterator = UtfIterator<char16_t>`
 * `using Utf32Iterator = UtfIterator<char32_t>`
 * `using WcharIterator = UtfIterator<wchar_t>`
-* `using Utf8Range = Irange<Utf8Iterator>`
-* `using Utf16Range = Irange<Utf16Iterator>`
-* `using Utf32Range = Irange<Utf32Iterator>`
-* `using WcharRange = Irange<WcharIterator>`
+* `using Utf8Range = Crow::Irange<Utf8Iterator>`
+* `using Utf16Range = Crow::Irange<Utf16Iterator>`
+* `using Utf32Range = Crow::Irange<Utf32Iterator>`
+* `using WcharRange = Crow::Irange<WcharIterator>`
 
 Convenience aliases for specific iterators and ranges.
 
-* `template <typename C> UtfIterator<C> utf_begin(const basic_string<C>& src, Flagset flags = {})`
-* `template <typename C> UtfIterator<C> utf_end(const basic_string<C>& src, Flagset flags = {})`
-* `template <typename C> Irange<UtfIterator<C>> utf_range(const basic_string<C>& src, Flagset flags = {})`
+* `template <typename C> UtfIterator<C> utf_begin(const basic_string<C>& src, Crow::Flagset flags = {})`
+* `template <typename C> UtfIterator<C> utf_end(const basic_string<C>& src, Crow::Flagset flags = {})`
+* `template <typename C> Crow::Irange<UtfIterator<C>> utf_range(const basic_string<C>& src, Crow::Flagset flags = {})`
 
 These return iterators over an encoded string.
 
-* `template <typename C> UtfIterator<C> utf_iterator(const basic_string<C>& src, size_t offset, Flagset flags = {})`
+* `template <typename C> UtfIterator<C> utf_iterator(const basic_string<C>& src, size_t offset, Crow::Flagset flags = {})`
 
 Returns an iterator pointing to a specific offset in a string. If the offset
 does not point to a character boundary, it will be treated as an invalid
 character.
 
 * `template <typename C> basic_string<C> u_str(const UtfIterator<C>& i, const UtfIterator<C>& j)`
-* `template <typename C> basic_string<C> u_str(const Irange<UtfIterator<C>>& range)`
+* `template <typename C> basic_string<C> u_str(const Crow::Irange<UtfIterator<C>>& range)`
 
 These return a copy of the substring between two iterators.
 
@@ -177,16 +177,16 @@ same way as for `UtfIterator`.
 
 Convenience aliases for specific iterators.
 
-* `template <typename C> UtfWriter<C> utf_writer(basic_string<C>& dst, Flagset flags = {}) noexcept`
+* `template <typename C> UtfWriter<C> utf_writer(basic_string<C>& dst, Crow::Flagset flags = {}) noexcept`
 
 Returns an encoding iterator writing to the given destination string.
 
 ## UTF conversion functions ##
 
-* `template <typename C1, typename C2> void recode(const basic_string<C1>& src, basic_string<C2>& dst, Flagset flags = {})`
-* `template <typename C1, typename C2> void recode(const basic_string<C1>& src, size_t offset, basic_string<C2>& dst, Flagset flags = {})`
-* `template <typename C1, typename C2> void recode(const C1* src, size_t count, basic_string<C2>& dst, Flagset flags = {})`
-* `template <typename C2, typename C1> basic_string<C2> recode(const basic_string<C1>& src, Flagset flags = {})`
+* `template <typename C1, typename C2> void recode(const basic_string<C1>& src, basic_string<C2>& dst, Crow::Flagset flags = {})`
+* `template <typename C1, typename C2> void recode(const basic_string<C1>& src, size_t offset, basic_string<C2>& dst, Crow::Flagset flags = {})`
+* `template <typename C1, typename C2> void recode(const C1* src, size_t count, basic_string<C2>& dst, Crow::Flagset flags = {})`
+* `template <typename C2, typename C1> basic_string<C2> recode(const basic_string<C1>& src, Crow::Flagset flags = {})`
 * `template <typename C2, typename C1> basic_string<C2> recode(const basic_string<C1>& src, size_t offset, int on_error)`
 
 Encoding conversion functions. These convert from one UTF encoding to another;
@@ -203,10 +203,10 @@ The `flags` argument has its usual meaning. If the destination string was
 supplied by reference, after an exception is thrown the destination string
 will contain the successfully converted part of the string before the error.
 
-* `template <typename C> u8string to_utf8(const basic_string<C>& src, Flagset flags = {})`
-* `template <typename C> u16string to_utf16(const basic_string<C>& src, Flagset flags = {})`
-* `template <typename C> u32string to_utf32(const basic_string<C>& src, Flagset flags = {})`
-* `template <typename C> wstring to_wstring(const basic_string<C>& src, Flagset flags = {})`
+* `template <typename C> u8string to_utf8(const basic_string<C>& src, Crow::Flagset flags = {})`
+* `template <typename C> u16string to_utf16(const basic_string<C>& src, Crow::Flagset flags = {})`
+* `template <typename C> u32string to_utf32(const basic_string<C>& src, Crow::Flagset flags = {})`
+* `template <typename C> wstring to_wstring(const basic_string<C>& src, Crow::Flagset flags = {})`
 
 These are just shorthand for the corresponding invocation of `recode()`.
 

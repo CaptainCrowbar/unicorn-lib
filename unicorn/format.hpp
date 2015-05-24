@@ -20,14 +20,14 @@ namespace Unicorn {
     template <typename T> class FormatType;
 
     template <typename T, typename C>
-        void format_type(const T& t, basic_string<C>& dst, Flagset flags = {},
+        void format_type(const T& t, basic_string<C>& dst, Crow::Flagset flags = {},
             int prec = -1, size_t width = 0, char32_t pad = U' ');
     template <typename T, typename C>
         void format_type(const T& t, basic_string<C>& dst, const basic_string<C>& flags);
     template <typename T, typename C>
         void format_type(const T& t, basic_string<C>& dst, const C* flags);
     template <typename C, typename T>
-        basic_string<C> format_as(const T& t, Flagset flags = {},
+        basic_string<C> format_as(const T& t, Crow::Flagset flags = {},
             int prec = -1, size_t width = 0, char32_t pad = U' ');
     template <typename C, typename T>
         basic_string<C> format_as(const T& t, const basic_string<C>& flags);
@@ -36,35 +36,35 @@ namespace Unicorn {
 
     // Formatting behaviour flags
 
-    constexpr auto fx_left      = Flagset::value('<');  // Left align                      all  --    --   --     --    --  --
-    constexpr auto fx_centre    = Flagset::value('=');  // Centre align                    all  --    --   --     --    --  --
-    constexpr auto fx_right     = Flagset::value('>');  // Right align                     all  --    --   --     --    --  --
-    constexpr auto fx_upper     = Flagset::value('U');  // Convert to upper case           all  --    --   --     --    --  --
-    constexpr auto fx_lower     = Flagset::value('L');  // Convert to lower case           all  --    --   --     --    --  --
-    constexpr auto fx_title     = Flagset::value('T');  // Convert to title case           all  --    --   --     --    --  --
-    constexpr auto fx_tf        = Flagset::value('t');  // Write as true/false             --   bool  --   --     --    --  --
-    constexpr auto fx_yesno     = Flagset::value('y');  // Write as yes/no                 --   bool  --   --     --    --  --
-    constexpr auto fx_binary    = Flagset::value('b');  // Binary number                   --   bool  int  --     --    --  --
-    constexpr auto fx_decimal   = Flagset::value('n');  // Decimal number                  --   --    int  --     char  string  --
-    constexpr auto fx_hex       = Flagset::value('x');  // Hexadecimal number              --   --    int  --     char  string  --
-    constexpr auto fx_roman     = Flagset::value('r');  // Roman numerals                  --   --    int  --     --    --  --
-    constexpr auto fx_sign      = Flagset::value('s');  // Always show a sign              --   --    int  float  --    --  --
-    constexpr auto fx_signz     = Flagset::value('i');  // Always show a sign unless zero  --   --    int  float  --    --  --
-    constexpr auto fx_digits    = Flagset::value('d');  // Fixed significant figures       --   --    --   float  --    --  --
-    constexpr auto fx_exp       = Flagset::value('e');  // Scientific notation             --   --    --   float  --    --  --
-    constexpr auto fx_fixed     = Flagset::value('f');  // Fixed point notation            --   --    --   float  --    --  --
-    constexpr auto fx_general   = Flagset::value('g');  // Use the shorter of d or e       --   --    --   float  --    --  --
-    constexpr auto fx_prob      = Flagset::value('p');  // Probability format              --   --    --   float  --    --  --
-    constexpr auto fx_stripz    = Flagset::value('z');  // Strip trailing zeros            --   --    --   float  --    --  --
-    constexpr auto fx_ascii     = Flagset::value('a');  // Escape if not printable ASCII   --   --    --   --     char  string  --
-    constexpr auto fx_escape    = Flagset::value('c');  // Escape if C0/C1 control         --   --    --   --     char  string  --
-    constexpr auto fx_quote     = Flagset::value('q');  // Quote string, escape C0/C1      --   --    --   --     char  string  --
-    constexpr auto fx_ascquote  = Flagset::value('o');  // Quote string, escape non-ASCII  --   --    --   --     char  string  --
-    constexpr auto fx_hex8      = Flagset::value('u');  // Hex UTF-8 bytes                 --   --    --   --     char  string  --
-    constexpr auto fx_hex16     = Flagset::value('v');  // Hex UTF-16 code units           --   --    --   --     char  string  --
-    constexpr auto fx_iso       = Flagset::value('t');  // ISO 8601 with T delimiter       --   --    --   --     --    --      date
-    constexpr auto fx_common    = Flagset::value('c');  // Local standard format           --   --    --   --     --    --      date
-    constexpr auto fx_local     = Flagset::value('l');  // Local time zone                 --   --    --   --     --    --      date
+    constexpr auto fx_left      = Crow::Flagset::value('<');  // Left align                      all  --    --   --     --    --  --
+    constexpr auto fx_centre    = Crow::Flagset::value('=');  // Centre align                    all  --    --   --     --    --  --
+    constexpr auto fx_right     = Crow::Flagset::value('>');  // Right align                     all  --    --   --     --    --  --
+    constexpr auto fx_upper     = Crow::Flagset::value('U');  // Convert to upper case           all  --    --   --     --    --  --
+    constexpr auto fx_lower     = Crow::Flagset::value('L');  // Convert to lower case           all  --    --   --     --    --  --
+    constexpr auto fx_title     = Crow::Flagset::value('T');  // Convert to title case           all  --    --   --     --    --  --
+    constexpr auto fx_tf        = Crow::Flagset::value('t');  // Write as true/false             --   bool  --   --     --    --  --
+    constexpr auto fx_yesno     = Crow::Flagset::value('y');  // Write as yes/no                 --   bool  --   --     --    --  --
+    constexpr auto fx_binary    = Crow::Flagset::value('b');  // Binary number                   --   bool  int  --     --    --  --
+    constexpr auto fx_decimal   = Crow::Flagset::value('n');  // Decimal number                  --   --    int  --     char  string  --
+    constexpr auto fx_hex       = Crow::Flagset::value('x');  // Hexadecimal number              --   --    int  --     char  string  --
+    constexpr auto fx_roman     = Crow::Flagset::value('r');  // Roman numerals                  --   --    int  --     --    --  --
+    constexpr auto fx_sign      = Crow::Flagset::value('s');  // Always show a sign              --   --    int  float  --    --  --
+    constexpr auto fx_signz     = Crow::Flagset::value('i');  // Always show a sign unless zero  --   --    int  float  --    --  --
+    constexpr auto fx_digits    = Crow::Flagset::value('d');  // Fixed significant figures       --   --    --   float  --    --  --
+    constexpr auto fx_exp       = Crow::Flagset::value('e');  // Scientific notation             --   --    --   float  --    --  --
+    constexpr auto fx_fixed     = Crow::Flagset::value('f');  // Fixed point notation            --   --    --   float  --    --  --
+    constexpr auto fx_general   = Crow::Flagset::value('g');  // Use the shorter of d or e       --   --    --   float  --    --  --
+    constexpr auto fx_prob      = Crow::Flagset::value('p');  // Probability format              --   --    --   float  --    --  --
+    constexpr auto fx_stripz    = Crow::Flagset::value('z');  // Strip trailing zeros            --   --    --   float  --    --  --
+    constexpr auto fx_ascii     = Crow::Flagset::value('a');  // Escape if not printable ASCII   --   --    --   --     char  string  --
+    constexpr auto fx_escape    = Crow::Flagset::value('c');  // Escape if C0/C1 control         --   --    --   --     char  string  --
+    constexpr auto fx_quote     = Crow::Flagset::value('q');  // Quote string, escape C0/C1      --   --    --   --     char  string  --
+    constexpr auto fx_ascquote  = Crow::Flagset::value('o');  // Quote string, escape non-ASCII  --   --    --   --     char  string  --
+    constexpr auto fx_hex8      = Crow::Flagset::value('u');  // Hex UTF-8 bytes                 --   --    --   --     char  string  --
+    constexpr auto fx_hex16     = Crow::Flagset::value('v');  // Hex UTF-16 code units           --   --    --   --     char  string  --
+    constexpr auto fx_iso       = Crow::Flagset::value('t');  // ISO 8601 with T delimiter       --   --    --   --     --    --      date
+    constexpr auto fx_common    = Crow::Flagset::value('c');  // Local standard format           --   --    --   --     --    --      date
+    constexpr auto fx_local     = Crow::Flagset::value('l');  // Local time zone                 --   --    --   --     --    --      date
 
     namespace UnicornDetail {
 
@@ -78,7 +78,7 @@ namespace Unicorn {
 
         template <typename C>
         void format_align(basic_string<C> src, basic_string<C>& dst,
-                Flagset flags, size_t width, char32_t pad) {
+                Crow::Flagset flags, size_t width, char32_t pad) {
             flags.exclusive(fx_left | fx_centre | fx_right, "formatting");
             flags.exclusive(fx_lower | fx_title | fx_upper, "formatting");
             if (flags.get(fx_lower))
@@ -104,25 +104,25 @@ namespace Unicorn {
                 dst += unit;
         }
 
-        void translate_flags(const u8string& str, Flagset& flags, int& prec, size_t& width, char32_t& pad);
+        void translate_flags(const u8string& str, Crow::Flagset& flags, int& prec, size_t& width, char32_t& pad);
 
         // Formatting for specific types
 
-        u8string format_boolean(bool t, Flagset flags);
-        u8string format_integer(unsigned long long t, Flagset flags, int prec);
-        u8string format_floating(long double t, Flagset flags, int prec);
-        u8string format_string(const u8string& t, Flagset flags, int prec);
-        u8string format_timepoint(std::chrono::system_clock::time_point t, Flagset flags, int prec);
+        u8string format_boolean(bool t, Crow::Flagset flags);
+        u8string format_integer(unsigned long long t, Crow::Flagset flags, int prec);
+        u8string format_floating(long double t, Crow::Flagset flags, int prec);
+        u8string format_string(const u8string& t, Crow::Flagset flags, int prec);
+        u8string format_timepoint(std::chrono::system_clock::time_point t, Crow::Flagset flags, int prec);
 
         struct FormatBoolean {
-            u8string operator()(bool t, Flagset flags, int /*prec*/) const {
+            u8string operator()(bool t, Crow::Flagset flags, int /*prec*/) const {
                 return format_boolean(t, flags);
             }
         };
 
         template <typename T>
         struct FormatInteger {
-            u8string operator()(T t, Flagset flags, int prec) const {
+            u8string operator()(T t, Crow::Flagset flags, int prec) const {
                 unsigned long long n = 0;
                 char sign = 0;
                 if (t > static_cast<T>(0)) {
@@ -145,54 +145,54 @@ namespace Unicorn {
 
         template <typename T>
         struct FormatFloatingPoint {
-            u8string operator()(T t, Flagset flags, int prec) const {
+            u8string operator()(T t, Crow::Flagset flags, int prec) const {
                 return format_floating(t, flags, prec);
             }
         };
 
         template <typename C>
         struct FormatString {
-            u8string operator()(const basic_string<C>& t, Flagset flags, int prec) const {
+            u8string operator()(const basic_string<C>& t, Crow::Flagset flags, int prec) const {
                 return format_string(to_utf8(t), flags, prec);
             }
         };
 
         template <typename C>
         struct FormatCharacterPointer {
-            u8string operator()(const C* t, Flagset flags, int prec) const {
-                return format_string(to_utf8(cstr(t)), flags, prec);
+            u8string operator()(const C* t, Crow::Flagset flags, int prec) const {
+                return format_string(to_utf8(Crow::cstr(t)), flags, prec);
             }
         };
 
         template <typename C>
         struct FormatCharacter {
-            u8string operator()(C t, Flagset flags, int prec) const {
+            u8string operator()(C t, Crow::Flagset flags, int prec) const {
                 return format_string(str_chars<char>(t), flags, prec);
             }
         };
 
         struct FormatDate {
-            u8string operator()(std::chrono::system_clock::time_point tp, Flagset flags, int prec) const {
+            u8string operator()(std::chrono::system_clock::time_point tp, Crow::Flagset flags, int prec) const {
                 return format_timepoint(tp, flags, prec);
             }
         };
 
         template <typename R, typename P>
         struct FormatTime {
-            u8string operator()(std::chrono::duration<R, P> t, Flagset /*flags*/, int prec) const {
-                return format_time(t, prec);
+            u8string operator()(std::chrono::duration<R, P> t, Crow::Flagset /*flags*/, int prec) const {
+                return Crow::format_time(t, prec);
             }
         };
 
         struct FormatUuid {
-            u8string operator()(const Uuid& t, Flagset flags, int /*prec*/) const {
+            u8string operator()(const Crow::Uuid& t, Crow::Flagset flags, int /*prec*/) const {
                 flags.allow(fx_global_flags, "UUID formatting");
                 return t.str();
             }
         };
 
         struct FormatVersion {
-            u8string operator()(const Version& t, Flagset flags, int /*prec*/) const {
+            u8string operator()(const Crow::Version& t, Crow::Flagset flags, int /*prec*/) const {
                 flags.allow(fx_global_flags | fx_stripz, "version formatting");
                 return t.str(flags.get(fx_stripz) ? 1 : 3);
             }
@@ -203,7 +203,7 @@ namespace Unicorn {
         template <typename R, typename I = decltype(std::begin(std::declval<R>())),
             typename V = typename std::iterator_traits<I>::value_type>
         struct FormatRange {
-            u8string operator()(const R& r, Flagset flags, int prec) const {
+            u8string operator()(const R& r, Crow::Flagset flags, int prec) const {
                 u8string s;
                 for (auto& v: r) {
                     s += format_as<char>(v, flags, prec);
@@ -215,9 +215,9 @@ namespace Unicorn {
             }
         };
 
-        template <typename T, bool = IsRange<T>::value>
+        template <typename T, bool = Crow::IsRange<T>::value>
         struct FormatObject {
-            u8string operator()(T t, Flagset /*flags*/, int /*prec*/) const {
+            u8string operator()(T t, Crow::Flagset /*flags*/, int /*prec*/) const {
                 std::ostringstream out;
                 out << t;
                 auto s = out.str();
@@ -232,7 +232,7 @@ namespace Unicorn {
 
         template <typename T1, typename T2>
         struct FormatObject<std::pair<T1, T2>, false> {
-            u8string operator()(const std::pair<T1, T2>& p, Flagset flags, int prec) const {
+            u8string operator()(const std::pair<T1, T2>& p, Crow::Flagset flags, int prec) const {
                 u8string s = format_as<char>(p.first, flags, prec);
                 s += ':';
                 s += format_as<char>(p.second, flags, prec);
@@ -274,13 +274,13 @@ namespace Unicorn {
     template <> class FormatType<wchar_t>: public UnicornDetail::FormatCharacter<wchar_t> {};
     template <> class FormatType<std::chrono::system_clock::time_point>: public UnicornDetail::FormatDate {};
     template <typename R, typename P> class FormatType<std::chrono::duration<R, P>>: public UnicornDetail::FormatTime<R, P> {};
-    template <> class FormatType<Uuid>: public UnicornDetail::FormatUuid {};
-    template <> class FormatType<Version>: public UnicornDetail::FormatVersion {};
+    template <> class FormatType<Crow::Uuid>: public UnicornDetail::FormatUuid {};
+    template <> class FormatType<Crow::Version>: public UnicornDetail::FormatVersion {};
 
     // Basic formatting functions
 
     template <typename T, typename C>
-    void format_type(const T& t, basic_string<C>& dst, Flagset flags,
+    void format_type(const T& t, basic_string<C>& dst, Crow::Flagset flags,
             int prec, size_t width, char32_t pad) {
         using namespace UnicornDetail;
         auto s = FormatType<std::decay_t<T>>()(t, flags & ~ fx_toplevel_flags, prec);
@@ -290,7 +290,7 @@ namespace Unicorn {
     template <typename T, typename C>
     void format_type(const T& t, basic_string<C>& dst, const basic_string<C>& flags) {
         using namespace UnicornDetail;
-        Flagset f;
+        Crow::Flagset f;
         int prec = 0;
         size_t width = 0;
         char32_t pad = U' ';
@@ -300,11 +300,11 @@ namespace Unicorn {
 
     template <typename T, typename C>
     void format_type(const T& t, basic_string<C>& dst, const C* flags) {
-        format_type(t, dst, cstr(flags));
+        format_type(t, dst, Crow::cstr(flags));
     }
 
     template <typename C, typename T>
-    basic_string<C> format_as(const T& t, Flagset flags,
+    basic_string<C> format_as(const T& t, Crow::Flagset flags,
             int prec, size_t width, char32_t pad) {
         basic_string<C> dst;
         format_type(t, dst, flags, prec, width, pad);
@@ -339,12 +339,12 @@ namespace Unicorn {
         string_type format() const { return fmt; }
     private:
         struct element {
-            int index;         // 0 = literal text, 1+ = field reference
-            string_type text;  // Literal text
-            Flagset flags;     // Field formatting flags
-            int prec;          // Field precision
-            size_t width;      // Field width
-            char32_t pad;      // Padding character
+            int index;            // 0 = literal text, 1+ = field reference
+            string_type text;     // Literal text
+            Crow::Flagset flags;  // Field formatting flags
+            int prec;             // Field precision
+            size_t width;         // Field width
+            char32_t pad;         // Padding character
         };
         using sequence = std::vector<element>;
         using string_list = std::vector<string_type>;
@@ -362,11 +362,11 @@ namespace Unicorn {
     Format<C>::Format(const string_type& format):
     fmt(format), seq() {
         using regex_type = BasicRegex<C>;
-        static const u8string ascii_pattern =
+        static const u8string pattern_ascii =
             "(?:\\$(\\d+)(\\w*))"
             "|(?:\\$\\{(\\d+)([^{}]*)\\})"
             "|(?:\\$(.?))";
-        static const regex_type pattern(recode<C>(ascii_pattern));
+        static const regex_type pattern(recode<C>(pattern_ascii));
         size_t prev = 0;
         for (;;) {
             auto match = pattern.search(format, prev);
@@ -433,15 +433,15 @@ namespace Unicorn {
 
     template <typename C>
     Format<C> format(const C* fmt) {
-        return Format<C>(cstr(fmt));
+        return Format<C>(Crow::cstr(fmt));
     }
 
     namespace Literals {
 
-        inline auto operator"" _fmt(const char* ptr, size_t len) { return Format<char>(cstr(ptr, len)); }
-        inline auto operator"" _fmt(const char16_t* ptr, size_t len) { return Format<char16_t>(cstr(ptr, len)); }
-        inline auto operator"" _fmt(const char32_t* ptr, size_t len) { return Format<char32_t>(cstr(ptr, len)); }
-        inline auto operator"" _fmt(const wchar_t* ptr, size_t len) { return Format<wchar_t>(cstr(ptr, len)); }
+        inline auto operator"" _fmt(const char* ptr, size_t len) { return Format<char>(Crow::cstr(ptr, len)); }
+        inline auto operator"" _fmt(const char16_t* ptr, size_t len) { return Format<char16_t>(Crow::cstr(ptr, len)); }
+        inline auto operator"" _fmt(const char32_t* ptr, size_t len) { return Format<char32_t>(Crow::cstr(ptr, len)); }
+        inline auto operator"" _fmt(const wchar_t* ptr, size_t len) { return Format<wchar_t>(Crow::cstr(ptr, len)); }
     }
 
 }

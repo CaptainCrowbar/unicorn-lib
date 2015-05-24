@@ -12,13 +12,13 @@ namespace Unicorn {
 
     // Constants
 
-    constexpr auto unicode_words    = Flagset::value('u');  // Report all UAX29 words (default)
-    constexpr auto alpha_words      = Flagset::value('w');  // Report only words with alphanumerics
-    constexpr auto keep_breaks      = Flagset::value('k');  // Include line/para terminators in returned strings (default)
-    constexpr auto strip_breaks     = Flagset::value('s');  // Do not include line/para terminators
-    constexpr auto multiline_paras  = Flagset::value('m');  // Divide into paragraphs using multiple line breaks (default)
-    constexpr auto line_paras       = Flagset::value('l');  // Divide into paragraphs using any line break
-    constexpr auto unicode_paras    = Flagset::value('u');  // Divide into paragraphs using only PS
+    constexpr auto unicode_words    = Crow::Flagset::value('u');  // Report all UAX29 words (default)
+    constexpr auto alpha_words      = Crow::Flagset::value('w');  // Report only words with alphanumerics
+    constexpr auto keep_breaks      = Crow::Flagset::value('k');  // Include line/para terminators in results (default)
+    constexpr auto strip_breaks     = Crow::Flagset::value('s');  // Do not include line/para terminators
+    constexpr auto multiline_paras  = Crow::Flagset::value('m');  // Divide into paragraphs using multiple breaks (default)
+    constexpr auto line_paras       = Crow::Flagset::value('l');  // Divide into paragraphs using any line break
+    constexpr auto unicode_paras    = Crow::Flagset::value('u');  // Divide into paragraphs using only PS
 
     // Common base template for grapheme, word, and sentence iterators
 
@@ -40,11 +40,11 @@ namespace Unicorn {
         using utf_iterator = UtfIterator<C>;
         using difference_type = ptrdiff_t;
         using iterator_category = std::forward_iterator_tag;
-        using value_type = Irange<utf_iterator>;
+        using value_type = Crow::Irange<utf_iterator>;
         using pointer = const value_type*;
         using reference = const value_type&;
         BasicSegmentIterator() noexcept {}
-        BasicSegmentIterator(const utf_iterator& i, const utf_iterator& j, Flagset flags):
+        BasicSegmentIterator(const utf_iterator& i, const utf_iterator& j, Crow::Flagset flags):
             seg{i, i}, ends(j), next(i), bufsize(initsize), mode(flags) { ++*this; }
         const value_type& operator*() const noexcept { return seg; }
         const value_type* operator->() const noexcept { return &seg; }
@@ -60,7 +60,7 @@ namespace Unicorn {
         utf_iterator next {};         // End of buffer contents
         std::deque<Property> buf {};  // Property lookahead buffer
         size_t bufsize {0};           // Current lookahead limit
-        Flagset mode {};              // Mode flags
+        Crow::Flagset mode {};        // Mode flags
         bool select_segment() const noexcept;
     };
 
@@ -100,17 +100,17 @@ namespace Unicorn {
     template <typename C> using GraphemeIterator
         = BasicSegmentIterator<C, Grapheme_Cluster_Break, grapheme_cluster_break, UnicornDetail::find_grapheme_break>;
 
-    template <typename C> Irange<GraphemeIterator<C>>
+    template <typename C> Crow::Irange<GraphemeIterator<C>>
     grapheme_range(const UtfIterator<C>& i, const UtfIterator<C>& j) {
         return {{i, j, {}}, {j, j, {}}};
     }
 
-    template <typename C> Irange<GraphemeIterator<C>>
-    grapheme_range(const Irange<UtfIterator<C>>& source) {
+    template <typename C> Crow::Irange<GraphemeIterator<C>>
+    grapheme_range(const Crow::Irange<UtfIterator<C>>& source) {
         return grapheme_range(CROW_BOUNDS(source));
     }
 
-    template <typename C> Irange<GraphemeIterator<C>>
+    template <typename C> Crow::Irange<GraphemeIterator<C>>
     grapheme_range(const basic_string<C>& source) {
         return grapheme_range(utf_range(source));
     }
@@ -120,20 +120,20 @@ namespace Unicorn {
     template <typename C> using WordIterator
         = BasicSegmentIterator<C, Word_Break, word_break, UnicornDetail::find_word_break>;
 
-    template <typename C> Irange<WordIterator<C>>
-    word_range(const UtfIterator<C>& i, const UtfIterator<C>& j, Flagset flags = {}) {
+    template <typename C> Crow::Irange<WordIterator<C>>
+    word_range(const UtfIterator<C>& i, const UtfIterator<C>& j, Crow::Flagset flags = {}) {
         flags.allow(unicode_words | alpha_words, "word breaking");
         flags.exclusive(unicode_words | alpha_words, "word breaking");
         return {{i, j, flags}, {j, j, flags}};
     }
 
-    template <typename C> Irange<WordIterator<C>>
-    word_range(const Irange<UtfIterator<C>>& source, Flagset flags = {}) {
+    template <typename C> Crow::Irange<WordIterator<C>>
+    word_range(const Crow::Irange<UtfIterator<C>>& source, Crow::Flagset flags = {}) {
         return word_range(CROW_BOUNDS(source), flags);
     }
 
-    template <typename C> Irange<WordIterator<C>>
-    word_range(const basic_string<C>& source, Flagset flags = {}) {
+    template <typename C> Crow::Irange<WordIterator<C>>
+    word_range(const basic_string<C>& source, Crow::Flagset flags = {}) {
         return word_range(utf_range(source), flags);
     }
 
@@ -142,17 +142,17 @@ namespace Unicorn {
     template <typename C> using SentenceIterator
         = BasicSegmentIterator<C, Sentence_Break, sentence_break, UnicornDetail::find_sentence_break>;
 
-    template <typename C> Irange<SentenceIterator<C>>
+    template <typename C> Crow::Irange<SentenceIterator<C>>
     sentence_range(const UtfIterator<C>& i, const UtfIterator<C>& j) {
         return {{i, j, {}}, {j, j, {}}};
     }
 
-    template <typename C> Irange<SentenceIterator<C>>
-    sentence_range(const Irange<UtfIterator<C>>& source) {
+    template <typename C> Crow::Irange<SentenceIterator<C>>
+    sentence_range(const Crow::Irange<UtfIterator<C>>& source) {
         return sentence_range(CROW_BOUNDS(source));
     }
 
-    template <typename C> Irange<SentenceIterator<C>>
+    template <typename C> Crow::Irange<SentenceIterator<C>>
     sentence_range(const basic_string<C>& source) {
         return sentence_range(utf_range(source));
     }
@@ -166,7 +166,7 @@ namespace Unicorn {
         // end-of-block marker.
 
         template <typename C>
-        using FindBlockFunction = Irange<UtfIterator<C>> (*)(const UtfIterator<C>&, const UtfIterator<C>&);
+        using FindBlockFunction = Crow::Irange<UtfIterator<C>> (*)(const UtfIterator<C>&, const UtfIterator<C>&);
 
         inline bool is_restricted_line_break(char32_t c)
             { return c == U'\n' || c == U'\v' || c == U'\r' || c == 0x85; }
@@ -175,7 +175,7 @@ namespace Unicorn {
             { return is_restricted_line_break(c) || c == paragraph_separator_char; }
 
         template <typename C>
-        Irange<UtfIterator<C>> find_end_of_line(const UtfIterator<C>& current, const UtfIterator<C>& endstr) {
+        Crow::Irange<UtfIterator<C>> find_end_of_line(const UtfIterator<C>& current, const UtfIterator<C>& endstr) {
             auto i = std::find_if(current, endstr, char_is_line_break);
             auto j = i;
             if (j != endstr)
@@ -186,7 +186,7 @@ namespace Unicorn {
         }
 
         template <typename C>
-        Irange<UtfIterator<C>> find_basic_para(const UtfIterator<C>& current, const UtfIterator<C>& endstr) {
+        Crow::Irange<UtfIterator<C>> find_basic_para(const UtfIterator<C>& current, const UtfIterator<C>& endstr) {
             auto i = std::find_if(current, endstr, is_basic_para_break);
             auto j = i;
             if (j != endstr)
@@ -197,7 +197,7 @@ namespace Unicorn {
         }
 
         template <typename C>
-        Irange<UtfIterator<C>> find_multiline_para(const UtfIterator<C>& current, const UtfIterator<C>& endstr) {
+        Crow::Irange<UtfIterator<C>> find_multiline_para(const UtfIterator<C>& current, const UtfIterator<C>& endstr) {
             auto from = current;
             UtfIterator<C> i, j;
             for (;;) {
@@ -228,7 +228,7 @@ namespace Unicorn {
         }
 
         template <typename C>
-        Irange<UtfIterator<C>> find_unicode_para(const UtfIterator<C>& current, const UtfIterator<C>& endstr) {
+        Crow::Irange<UtfIterator<C>> find_unicode_para(const UtfIterator<C>& current, const UtfIterator<C>& endstr) {
             auto i = std::find(current, endstr, paragraph_separator_char);
             auto j = i;
             if (j != endstr)
@@ -246,11 +246,11 @@ namespace Unicorn {
         using utf_iterator = UtfIterator<C>;
         using difference_type = ptrdiff_t;
         using iterator_category = std::forward_iterator_tag;
-        using value_type = Irange<utf_iterator>;
+        using value_type = Crow::Irange<utf_iterator>;
         using pointer = const value_type*;
         using reference = const value_type&;
         BlockSegmentIterator() = default;
-        BlockSegmentIterator(const utf_iterator& i, const utf_iterator& j, Flagset flags, find_block f) noexcept:
+        BlockSegmentIterator(const utf_iterator& i, const utf_iterator& j, Crow::Flagset flags, find_block f) noexcept:
             next(i), ends(j), mode(flags), find(f) { ++*this; }
         const value_type& operator*() const noexcept { return seg; }
         const value_type* operator->() const noexcept { return &seg; }
@@ -262,7 +262,7 @@ namespace Unicorn {
         value_type seg {{}, {}};    // Iterator pair marking current block
         utf_iterator next {};       // Start of next block
         utf_iterator ends {};       // End of source string
-        Flagset mode {};            // Mode flags
+        Crow::Flagset mode {};      // Mode flags
         find_block find {nullptr};  // Find end of block
     };
 
@@ -283,7 +283,8 @@ namespace Unicorn {
     template <typename C> using LineIterator = BlockSegmentIterator<C>;
 
     template <typename C>
-    Irange<BlockSegmentIterator<C>> line_range(const UtfIterator<C>& i, const UtfIterator<C>& j, Flagset flags = {}) {
+    Crow::Irange<BlockSegmentIterator<C>> line_range(const UtfIterator<C>& i, const UtfIterator<C>& j,
+            Crow::Flagset flags = {}) {
         using namespace UnicornDetail;
         flags.allow(keep_breaks | strip_breaks, "line breaking");
         flags.exclusive(keep_breaks | strip_breaks, "line breaking");
@@ -291,12 +292,14 @@ namespace Unicorn {
     }
 
     template <typename C>
-    Irange<BlockSegmentIterator<C>> line_range(const Irange<UtfIterator<C>>& source, Flagset flags = {}) {
+    Crow::Irange<BlockSegmentIterator<C>> line_range(const Crow::Irange<UtfIterator<C>>& source,
+            Crow::Flagset flags = {}) {
         return line_range(CROW_BOUNDS(source), flags);
     }
 
     template <typename C>
-    Irange<BlockSegmentIterator<C>> line_range(const basic_string<C>& source, Flagset flags = {}) {
+    Crow::Irange<BlockSegmentIterator<C>> line_range(const basic_string<C>& source,
+            Crow::Flagset flags = {}) {
         return line_range(utf_range(source), flags);
     }
 
@@ -305,7 +308,8 @@ namespace Unicorn {
     template <typename C> using ParagraphIterator = BlockSegmentIterator<C>;
 
     template <typename C>
-    Irange<BlockSegmentIterator<C>> paragraph_range(const UtfIterator<C>& i, const UtfIterator<C>& j, Flagset flags = {}) {
+    Crow::Irange<BlockSegmentIterator<C>> paragraph_range(const UtfIterator<C>& i, const UtfIterator<C>& j,
+            Crow::Flagset flags = {}) {
         using namespace UnicornDetail;
         flags.allow(keep_breaks | strip_breaks | multiline_paras | line_paras | unicode_paras, "paragraph breaking");
         flags.exclusive(keep_breaks | strip_breaks, "paragraph breaking");
@@ -321,12 +325,14 @@ namespace Unicorn {
     }
 
     template <typename C>
-    Irange<BlockSegmentIterator<C>> paragraph_range(const Irange<UtfIterator<C>>& source, Flagset flags = {}) {
+    Crow::Irange<BlockSegmentIterator<C>> paragraph_range(const Crow::Irange<UtfIterator<C>>& source,
+            Crow::Flagset flags = {}) {
         return paragraph_range(CROW_BOUNDS(source), flags);
     }
 
     template <typename C>
-    Irange<BlockSegmentIterator<C>> paragraph_range(const basic_string<C>& source, Flagset flags = {}) {
+    Crow::Irange<BlockSegmentIterator<C>> paragraph_range(const basic_string<C>& source,
+            Crow::Flagset flags = {}) {
         return paragraph_range(utf_range(source), flags);
     }
 

@@ -233,9 +233,9 @@ will fail if the source and destination are on different file systems.
     * `using DirectoryIterator::pointer = const value_type*`
     * `using DirectoryIterator::reference = const value_type&`
     * `DirectoryIterator::DirectoryIterator()`
-    * `explicit DirectoryIterator::DirectoryIterator(const value_type& dir, Flagset flags = {})`
+    * `explicit DirectoryIterator::DirectoryIterator(const value_type& dir, Crow::Flagset flags = {})`
     * `[standard iterator operations]`
-* `template <typename C> Irange<DirectoryIterator<C>> directory(const basic_string<C>& dir, Flagset flags = {})`
+* `template <typename C> Crow::Irange<DirectoryIterator<C>> directory(const basic_string<C>& dir, Crow::Flagset flags = {})`
 
 Bitmask         | Letter  | Description
 -------         | ------  | -----------

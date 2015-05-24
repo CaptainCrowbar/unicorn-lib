@@ -12,7 +12,7 @@ namespace Unicorn {
     // Exceptions
 
     u8string IOError::assemble(const char* msg, const u8string& file, int error) {
-        auto s = cstr(msg);
+        auto s = Crow::cstr(msg);
         if (s.empty())
             s = "I/O error";
         if (! file.empty()) {
@@ -24,7 +24,7 @@ namespace Unicorn {
         }
         if (error) {
             s += "; error ";
-            s += dec(error);
+            s += Crow::dec(error);
             string details;
             import_string(system_message(error), details);
             if (! details.empty()) {
@@ -64,14 +64,14 @@ namespace Unicorn {
 
     namespace UnicornDetail {
 
-        void native_load_file(const NativeString& file, string& dst, Flagset flags) {
+        void native_load_file(const NativeString& file, string& dst, Crow::Flagset flags) {
             static constexpr size_t bufsize = 65536;
             static const NativeString dashfile{NativeCharacter('-')};
             dst.clear();
             flags.allow(io_stdin | io_nofail, "load file");
             SharedFile handle;
             if (flags.get(io_stdin) && (file.empty() || file == dashfile))
-                handle.reset(stdin, no_delete);
+                handle.reset(stdin, Crow::no_delete);
             else
                 handle = shared_fopen(file, 'r', ! flags.get(io_nofail));
             if (! handle)
@@ -86,15 +86,15 @@ namespace Unicorn {
             }
         }
 
-        void native_save_file(const NativeString& file, const void* ptr, size_t n, Flagset flags) {
+        void native_save_file(const NativeString& file, const void* ptr, size_t n, Crow::Flagset flags) {
             static const NativeString dashfile{NativeCharacter('-')};
             flags.allow(io_append | io_stderr | io_stdout, "save file");
             flags.exclusive(io_stderr | io_stdout, "save file");
             SharedFile handle;
             if (flags.get(io_stdout) && (file.empty() || file == dashfile))
-                handle.reset(stdout, no_delete);
+                handle.reset(stdout, Crow::no_delete);
             else if (flags.get(io_stderr) && (file.empty() || file == dashfile))
-                handle.reset(stderr, no_delete);
+                handle.reset(stderr, Crow::no_delete);
             else
                 handle = shared_fopen(file, flags.get(io_append) ? 'a' : 'w', true);
             fwrite(ptr, 1, n, handle.get());
@@ -111,7 +111,7 @@ namespace Unicorn {
         u8string line8;
         string rdbuf;
         NativeString name;
-        Flagset flags;
+        Crow::Flagset flags;
         u8string enc;
         u8string eol;
         SharedFile handle;
@@ -132,7 +132,7 @@ namespace Unicorn {
         return *this;
     }
 
-    void FileReader::init(const NativeString& file, Flagset flags, const u8string& enc, const u8string& eol) {
+    void FileReader::init(const NativeString& file, Crow::Flagset flags, const u8string& enc, const u8string& eol) {
         static const NativeString dashfile{NativeCharacter('-')};
         flags.allow(err_replace | err_throw | io_bom | io_crlf | io_lf
             | io_nofail | io_notempty | io_stdin | io_striplf | io_striptws
@@ -147,7 +147,7 @@ namespace Unicorn {
         if (enc.empty() || enc == "0")
             impl->enc = "utf-8";
         if (flags.get(io_stdin) && (file.empty() || file == dashfile))
-            impl->handle.reset(stdin, no_delete);
+            impl->handle.reset(stdin, Crow::no_delete);
         else
             impl->handle = shared_fopen(file, 'r', ! flags.get(io_nofail));
         ++*this;
@@ -223,10 +223,10 @@ namespace Unicorn {
     struct FileWriter::impl_type {
         u8string wrbuf;
         NativeString name;
-        Flagset flags;
+        Crow::Flagset flags;
         u8string enc;
         SharedFile handle;
-        std::shared_ptr<Mutex> mutex;
+        std::shared_ptr<Crow::Mutex> mutex;
     };
 
     void FileWriter::flush() {
@@ -236,10 +236,10 @@ namespace Unicorn {
             throw WriteError(impl->name, errno);
     }
 
-    void FileWriter::init(const NativeString& file, Flagset flags, const u8string& enc) {
+    void FileWriter::init(const NativeString& file, Crow::Flagset flags, const u8string& enc) {
         static const NativeString dashfile{NativeCharacter('-')};
-        static Mutex stdout_mutex;
-        static Mutex stderr_mutex;
+        static Crow::Mutex stdout_mutex;
+        static Crow::Mutex stderr_mutex;
         flags.allow(err_replace | err_throw | io_append | io_autoline | io_bom
             | io_crlf | io_lf | io_linebuf | io_mutex | io_stderr
             | io_stdout | io_unbuf | io_writeline, "file output");
@@ -255,18 +255,18 @@ namespace Unicorn {
         if (enc.empty() || enc == "0")
             impl->enc = "utf-8";
         if (flags.get(io_stdout) && (file.empty() || file == dashfile))
-            impl->handle.reset(stdout, no_delete);
+            impl->handle.reset(stdout, Crow::no_delete);
         else if (flags.get(io_stderr) && (file.empty() || file == dashfile))
-            impl->handle.reset(stderr, no_delete);
+            impl->handle.reset(stderr, Crow::no_delete);
         else
             impl->handle = shared_fopen(file, flags.get(io_append) ? 'a' : 'w', true);
         if (flags.get(io_mutex)) {
             if (impl->handle.get() == stdout)
-                impl->mutex.reset(&stdout_mutex, no_delete);
+                impl->mutex.reset(&stdout_mutex, Crow::no_delete);
             else if (impl->handle.get() == stderr)
-                impl->mutex.reset(&stderr_mutex, no_delete);
+                impl->mutex.reset(&stderr_mutex, Crow::no_delete);
             else
-                impl->mutex = std::make_shared<Mutex>();
+                impl->mutex = std::make_shared<Crow::Mutex>();
         }
     }
 
@@ -319,7 +319,7 @@ namespace Unicorn {
             string encoded;
             export_string(str, encoded, impl->enc, impl->flags & (err_replace | err_throw));
             if (impl->mutex) {
-                MutexLock lock(*impl->mutex);
+                Crow::MutexLock lock(*impl->mutex);
                 writembcs(encoded);
             } else {
                 writembcs(encoded);

@@ -69,25 +69,25 @@ namespace Unicorn {
             u8string result;
             size_t i = 0, size = name.size();
             while (i < size) {
-                while (i < size && ! ascii_isalnum(name[i]))
+                while (i < size && ! Crow::ascii_isalnum(name[i]))
                     ++i;
                 if (i == size)
                     break;
                 auto j = i + 1;
-                if (ascii_isdigit(name[i])) {
-                    while (j < size && ascii_isdigit(name[j]))
+                if (Crow::ascii_isdigit(name[i])) {
+                    while (j < size && Crow::ascii_isdigit(name[j]))
                         ++j;
                     if (stripz)
                         while (i < j - 1 && name[i] == '0')
                             ++i;
                 } else {
-                    while (j < size && ascii_isalpha(name[j]))
+                    while (j < size && Crow::ascii_isalpha(name[j]))
                         ++j;
                 }
                 result.append(name, i, j - i);
                 i = j;
             }
-            return ascii_lowercase(result);
+            return Crow::ascii_lowercase(result);
         }
 
         class NameIterator {
@@ -126,7 +126,7 @@ namespace Unicorn {
             return *this;
         }
 
-        Irange<NameIterator> name_range(const char* p) {
+        Crow::Irange<NameIterator> name_range(const char* p) {
             return {NameIterator(p), NameIterator()};
         }
 
@@ -221,7 +221,7 @@ namespace Unicorn {
             CharsetPtr csp = nullptr;
             if (match || match_integer.match(current)) {
                 // Name is an integer, presumably a code page
-                auto page = static_cast<uint32_t>(decnum(current));
+                auto page = static_cast<uint32_t>(Crow::decnum(current));
                 #if defined(_XOPEN_SOURCE)
                     // Look the number up in the {codepage => charset} map
                     csp = map[page];
@@ -287,7 +287,7 @@ namespace Unicorn {
         #if defined(_XOPEN_SOURCE)
 
             void native_recode(const string& src, string& dst, const u8string& from, const u8string& to,
-                    const u8string& tag, Flagset flags) {
+                    const u8string& tag, Crow::Flagset flags) {
                 Iconv conv(from, to);
                 if (! conv)
                     throw UnknownEncoding(tag);
@@ -347,7 +347,7 @@ namespace Unicorn {
             static constexpr const char* locale_vars[] {"LC_ALL", "LC_CTYPE", "LANG"};
             u8string name;
             for (auto key: locale_vars) {
-                string value = safe_getenv(key);
+                string value = Crow::safe_getenv(key);
                 size_t dot = value.find('.');
                 if (dot != npos) {
                     value.erase(0, dot + 1);
@@ -363,7 +363,7 @@ namespace Unicorn {
         #else
             CPINFOEX info;
             if (GetCPInfoEx(CP_THREAD_ACP, 0, &info) && info.CodePage > 0)
-                return dec(info.CodePage);
+                return Crow::dec(info.CodePage);
         #endif
         return default_encoding;
     }
@@ -371,7 +371,7 @@ namespace Unicorn {
     u8string system_message(int error) {
         if (error == 0)
             return {};
-        auto s = str_trim(cstr(strerror(error)));
+        auto s = str_trim(Crow::cstr(strerror(error)));
         u8string u;
         import_string(s, u);
         return u;
@@ -455,8 +455,8 @@ namespace Unicorn {
 
         EncodingTag lookup_encoding(const u8string& name) {
             static std::map<u8string, EncodingTag> cache;
-            static Mutex mtx;
-            auto lcname = ascii_lowercase(name);
+            static Crow::Mutex mtx;
+            auto lcname = Crow::ascii_lowercase(name);
             if (lcname.empty())
                 throw UnknownEncoding();
             else if (lcname == "char")
@@ -466,7 +466,7 @@ namespace Unicorn {
             else if (lcname == "utf")
                 return EncodingTag();
             {
-                MutexLock lock(mtx);
+                Crow::MutexLock lock(mtx);
                 auto it = cache.find(lcname);
                 if (it != std::end(cache))
                     return it->second;
@@ -474,31 +474,31 @@ namespace Unicorn {
             auto tag = EncodingTag();
             #if ! defined(_XOPEN_SOURCE)
                 if (lcname.find_first_not_of("0123456789") == npos)
-                    tag = lookup_encoding(static_cast<uint32_t>(decnum(lcname)));
+                    tag = lookup_encoding(static_cast<uint32_t>(Crow::decnum(lcname)));
             #endif
             if (tag == EncodingTag())
                 tag = find_encoding(lcname);
             if (tag == EncodingTag())
                 throw UnknownEncoding(name);
-            MutexLock lock(mtx);
+            Crow::MutexLock lock(mtx);
             cache[lcname] = tag;
             return tag;
         }
 
         EncodingTag lookup_encoding(uint32_t page) {
             static std::map<uint32_t, EncodingTag> cache;
-            static Mutex mtx;
+            static Crow::Mutex mtx;
             if (page == 0)
                 throw UnknownEncoding();
             {
-                MutexLock lock(mtx);
+                Crow::MutexLock lock(mtx);
                 auto it = cache.find(page);
                 if (it != std::end(cache))
                     return it->second;
             }
             auto tag = EncodingTag();
             #if defined(_XOPEN_SOURCE)
-                tag = lookup_encoding(dec(page));
+                tag = lookup_encoding(Crow::dec(page));
             #else
                 if (page == utf8_tag || page == utf16_tag || page == utf16swap_tag
                         || page == utf32_tag || page == utf32swap_tag || valid_codepage(page))
@@ -506,12 +506,12 @@ namespace Unicorn {
             #endif
             if (tag == EncodingTag())
                 throw UnknownEncoding(page);
-            MutexLock lock(mtx);
+            Crow::MutexLock lock(mtx);
             cache[page] = tag;
             return tag;
         }
 
-        void mbcs_flags(Flagset& flags) {
+        void mbcs_flags(Crow::Flagset& flags) {
             flags.allow(err_replace | err_throw, "MBCS error handling");
             flags.exclusive(err_replace | err_throw, "MBCS error handling");
             if (flags.empty())
@@ -520,17 +520,17 @@ namespace Unicorn {
 
         #if defined(_XOPEN_SOURCE)
 
-            void native_import(const string& src, string& dst, u8string tag, Flagset flags) {
+            void native_import(const string& src, string& dst, u8string tag, Crow::Flagset flags) {
                 native_recode(src, dst, tag, "utf-8"s, tag, flags);
             }
 
-            void native_export(const string& src, string& dst, u8string tag, Flagset flags) {
+            void native_export(const string& src, string& dst, u8string tag, Crow::Flagset flags) {
                 native_recode(src, dst, "utf-8"s, tag, tag, flags);
             }
 
         #else
 
-            void native_import(const string& src, wstring& dst, uint32_t tag, Flagset flags) {
+            void native_import(const string& src, wstring& dst, uint32_t tag, Crow::Flagset flags) {
                 uint32_t wflags = 0;
                 if (flags.get(err_throw))
                     wflags |= MB_ERR_INVALID_CHARS;
@@ -538,15 +538,15 @@ namespace Unicorn {
                 if (rc == 0) {
                     auto err = GetLastError();
                     if (err == ERROR_NO_UNICODE_TRANSLATION)
-                        throw EncodingError(dec(tag));
+                        throw EncodingError(Crow::dec(tag));
                     else
-                        throw UnknownEncoding(dec(tag), to_utf8(windows_message(GetLastError())));
+                        throw UnknownEncoding(Crow::dec(tag), to_utf8(windows_message(GetLastError())));
                 }
                 dst.resize(rc);
                 MultiByteToWideChar(tag, wflags, src.data(), static_cast<int>(src.size()), &dst[0], static_cast<int>(rc));
             }
 
-            void native_export(const wstring& src, string& dst, uint32_t tag, Flagset flags) {
+            void native_export(const wstring& src, string& dst, uint32_t tag, Crow::Flagset flags) {
                 std::vector<uint32_t> tryflags;
                 if (flags.get(err_throw))
                     tryflags = {WC_NO_BEST_FIT_CHARS | WC_ERR_INVALID_CHARS, WC_ERR_INVALID_CHARS, WC_NO_BEST_FIT_CHARS, 0};
@@ -556,16 +556,17 @@ namespace Unicorn {
                 uint32_t err = 0, wflags = 0;
                 for (auto f: tryflags) {
                     wflags = f;
-                    rc = WideCharToMultiByte(tag, wflags, &src[0], static_cast<int>(src.size()), nullptr, 0, nullptr, nullptr);
+                    rc = WideCharToMultiByte(tag, wflags, &src[0], static_cast<int>(src.size()),
+                        nullptr, 0, nullptr, nullptr);
                     err = GetLastError();
                     if (rc > 0 || err != ERROR_INVALID_FLAGS)
                         break;
                 }
                 if (rc == 0) {
                     if (err == ERROR_NO_UNICODE_TRANSLATION)
-                        throw EncodingError(dec(tag));
+                        throw EncodingError(Crow::dec(tag));
                     else
-                        throw UnknownEncoding(dec(tag), to_utf8(windows_message(GetLastError())));
+                        throw UnknownEncoding(Crow::dec(tag), to_utf8(windows_message(GetLastError())));
                 }
                 dst.resize(rc);
                 WideCharToMultiByte(tag, wflags, &src[0], static_cast<int>(src.size()), &dst[0], rc, nullptr, nullptr);
@@ -573,7 +574,7 @@ namespace Unicorn {
 
         #endif
 
-        bool utf_import(const string& src, NativeString& dst, EncodingTag tag, Flagset flags) {
+        bool utf_import(const string& src, NativeString& dst, EncodingTag tag, Crow::Flagset flags) {
             if (tag == utf8_tag) {
                 recode(src, dst, flags);
                 return true;
@@ -608,7 +609,7 @@ namespace Unicorn {
             }
         }
 
-        bool utf_export(const NativeString& src, string& dst, EncodingTag tag, Flagset flags) {
+        bool utf_export(const NativeString& src, string& dst, EncodingTag tag, Crow::Flagset flags) {
             if (tag == utf8_tag) {
                 recode(src, dst, flags);
                 return true;

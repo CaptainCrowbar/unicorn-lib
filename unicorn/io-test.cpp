@@ -8,6 +8,7 @@
 #include <vector>
 
 using namespace std::literals;
+using namespace Crow;
 using namespace Unicorn;
 
 namespace {

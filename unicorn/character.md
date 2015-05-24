@@ -113,8 +113,8 @@ corresponds to.
 
 ## Version information ##
 
-* `Version unicorn_version() noexcept`
-* `Version unicode_version() noexcept`
+* `Crow::Version unicorn_version() noexcept`
+* `Crow::Version unicode_version() noexcept`
 
 These return the version of the Unicorn library and the supported version of
 the Unicode standard.
@@ -323,7 +323,7 @@ library).
 
 ## Character names ##
 
-* `u8string char_name(char32_t c, Flagset flags = {})`
+* `u8string char_name(char32_t c, Crow::Flagset flags = {})`
 
 Bitmask               | Letter  | Description
 -------               | ------  | -----------

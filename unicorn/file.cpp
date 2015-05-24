@@ -26,7 +26,7 @@ namespace Unicorn {
         u8string s = "File system error" + files;
         if (error) {
             s += "; error ";
-            s += dec(error);
+            s += Crow::dec(error);
             string details;
             #if defined(_XOPEN_SOURCE)
                 import_string(system_message(error), details);
@@ -180,7 +180,7 @@ namespace Unicorn {
             }
 
             bool native_file_is_drive_relative(const u8string& file) {
-                return file.size() >= 2 && ascii_isalpha(file[0]) && file[1] == ':' && file[2] != '\\';
+                return file.size() >= 2 && Crow::ascii_isalpha(file[0]) && file[1] == ':' && file[2] != '\\';
             }
 
             bool native_file_is_root(const u8string& file) {

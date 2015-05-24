@@ -11,6 +11,7 @@
 #include <utility>
 
 using namespace std::literals;
+using namespace Crow;
 using namespace Unicorn;
 
 #define NORM_TEST(type, mode, index, expect) \

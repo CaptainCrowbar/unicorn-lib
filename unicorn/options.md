@@ -52,8 +52,8 @@ TODO
 
 TODO
 
-* `template <typename C> void Options::add(const basic_string<C>& name, C abbrev, const basic_string<C>& info, Flagset flags = {}, const basic_string<C>& defval = {}, const basic_string<C>& pattern = {}, const basic_string<C>& group = {})`
-* `template <typename C> void Options::add(const C* name, C abbrev, const C* info, Flagset flags = {}, const C* defval = {}, const C* pattern = {}, const C* group = {})`
+* `template <typename C> void Options::add(const basic_string<C>& name, C abbrev, const basic_string<C>& info, Crow::Flagset flags = {}, const basic_string<C>& defval = {}, const basic_string<C>& pattern = {}, const basic_string<C>& group = {})`
+* `template <typename C> void Options::add(const C* name, C abbrev, const C* info, Crow::Flagset flags = {}, const C* defval = {}, const C* pattern = {}, const C* group = {})`
 
 TODO
 
@@ -77,9 +77,9 @@ TODO
 
 TODO
 
-* `template <typename C> void Options::parse(const std::vector<basic_string<C>>& args, Flagset flags = {})`
-* `template <typename C> void Options::parse(const basic_string<C>& args, Flagset flags = {})`
-* `template <typename C> void Options::parse(int argc, C** argv, Flagset flags = {})`
+* `template <typename C> void Options::parse(const std::vector<basic_string<C>>& args, Crow::Flagset flags = {})`
+* `template <typename C> void Options::parse(const basic_string<C>& args, Crow::Flagset flags = {})`
+* `template <typename C> void Options::parse(int argc, C** argv, Crow::Flagset flags = {})`
 
 TODO
 

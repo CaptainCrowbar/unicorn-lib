@@ -52,47 +52,47 @@ namespace Unicorn {
 
     // I/O flags
 
-    constexpr auto io_bom        = Flagset::value('B');  // Strip or insert a BOM              FileReader  FileWriter
-    constexpr auto io_lf         = Flagset::value('n');  // Convert all line breaks to LF      FileReader  FileWriter
-    constexpr auto io_crlf       = Flagset::value('c');  // Convert all line breaks to CR+LF   FileReader  FileWriter
-    constexpr auto io_stdin      = Flagset::value('i');  // Default to stdin                   FileReader  --
-    constexpr auto io_nofail     = Flagset::value('f');  // Treat nonexistent file as empty    FileReader  --
-    constexpr auto io_striplf    = Flagset::value('s');  // Strip line breaks                  FileReader  --
-    constexpr auto io_striptws   = Flagset::value('t');  // Strip trailing whitespace          FileReader  --
-    constexpr auto io_stripws    = Flagset::value('S');  // Strip whitespace                   FileReader  --
-    constexpr auto io_notempty   = Flagset::value('z');  // Skip empty lines                   FileReader  --
-    constexpr auto io_stdout     = Flagset::value('o');  // Default to stdout                  --          FileWriter
-    constexpr auto io_stderr     = Flagset::value('e');  // Default to stderr                  --          FileWriter
-    constexpr auto io_append     = Flagset::value('a');  // Append to file                     --          FileWriter
-    constexpr auto io_linebuf    = Flagset::value('l');  // Line buffered output               --          FileWriter
-    constexpr auto io_unbuf      = Flagset::value('u');  // Unbuffered output                  --          FileWriter
-    constexpr auto io_writeline  = Flagset::value('L');  // Write LF after every write         --          FileWriter
-    constexpr auto io_autoline   = Flagset::value('A');  // Write LF if not already there      --          FileWriter
-    constexpr auto io_mutex      = Flagset::value('m');  // Hold per-file mutex while writing  --          FileWriter
+    constexpr auto io_bom        = Crow::Flagset::value('B');  // Strip or insert a BOM              FileReader  FileWriter
+    constexpr auto io_lf         = Crow::Flagset::value('n');  // Convert all line breaks to LF      FileReader  FileWriter
+    constexpr auto io_crlf       = Crow::Flagset::value('c');  // Convert all line breaks to CR+LF   FileReader  FileWriter
+    constexpr auto io_stdin      = Crow::Flagset::value('i');  // Default to stdin                   FileReader  --
+    constexpr auto io_nofail     = Crow::Flagset::value('f');  // Treat nonexistent file as empty    FileReader  --
+    constexpr auto io_striplf    = Crow::Flagset::value('s');  // Strip line breaks                  FileReader  --
+    constexpr auto io_striptws   = Crow::Flagset::value('t');  // Strip trailing whitespace          FileReader  --
+    constexpr auto io_stripws    = Crow::Flagset::value('S');  // Strip whitespace                   FileReader  --
+    constexpr auto io_notempty   = Crow::Flagset::value('z');  // Skip empty lines                   FileReader  --
+    constexpr auto io_stdout     = Crow::Flagset::value('o');  // Default to stdout                  --          FileWriter
+    constexpr auto io_stderr     = Crow::Flagset::value('e');  // Default to stderr                  --          FileWriter
+    constexpr auto io_append     = Crow::Flagset::value('a');  // Append to file                     --          FileWriter
+    constexpr auto io_linebuf    = Crow::Flagset::value('l');  // Line buffered output               --          FileWriter
+    constexpr auto io_unbuf      = Crow::Flagset::value('u');  // Unbuffered output                  --          FileWriter
+    constexpr auto io_writeline  = Crow::Flagset::value('L');  // Write LF after every write         --          FileWriter
+    constexpr auto io_autoline   = Crow::Flagset::value('A');  // Write LF if not already there      --          FileWriter
+    constexpr auto io_mutex      = Crow::Flagset::value('m');  // Hold per-file mutex while writing  --          FileWriter
 
     // Simple file I/O
 
     namespace UnicornDetail {
 
-        void native_load_file(const NativeString& file, string& dst, Flagset flags);
-        void native_save_file(const NativeString& file, const void* ptr, size_t n, Flagset flags);
+        void native_load_file(const NativeString& file, string& dst, Crow::Flagset flags);
+        void native_save_file(const NativeString& file, const void* ptr, size_t n, Crow::Flagset flags);
 
     }
 
     template <typename C>
-    void load_file(const basic_string<C>& file, string& dst, Flagset flags = {}) {
+    void load_file(const basic_string<C>& file, string& dst, Crow::Flagset flags = {}) {
         using namespace UnicornDetail;
         native_load_file(native_file(file), dst, flags);
     }
 
     template <typename C>
-    void save_file(const basic_string<C>& file, const string& src, Flagset flags = {}) {
+    void save_file(const basic_string<C>& file, const string& src, Crow::Flagset flags = {}) {
         using namespace UnicornDetail;
         native_save_file(native_file(file), src.data(), src.size(), flags);
     }
 
     template <typename C>
-    void save_file(const basic_string<C>& file, const void* ptr, size_t n, Flagset flags = {}) {
+    void save_file(const basic_string<C>& file, const void* ptr, size_t n, Crow::Flagset flags = {}) {
         using namespace UnicornDetail;
         native_save_file(native_file(file), ptr, n, flags);
     }
@@ -111,22 +111,22 @@ namespace Unicorn {
             explicit FileReader(const basic_string<C>& file)
             { init(recode_filename<NativeCharacter>(file), {}, {}, {}); }
         template <typename C>
-            FileReader(const basic_string<C>& file, Flagset flags)
+            FileReader(const basic_string<C>& file, Crow::Flagset flags)
             { init(recode_filename<NativeCharacter>(file), flags, {}, {}); }
         template <typename C1, typename C2>
-            FileReader(const basic_string<C1>& file, Flagset flags, const basic_string<C2>& enc)
+            FileReader(const basic_string<C1>& file, Crow::Flagset flags, const basic_string<C2>& enc)
             { init(recode_filename<NativeCharacter>(file), flags, to_utf8(enc), {}); }
         template <typename C>
-            FileReader(const basic_string<C>& file, Flagset flags, uint32_t enc)
-            { init(recode_filename<NativeCharacter>(file), flags, dec(enc), {}); }
+            FileReader(const basic_string<C>& file, Crow::Flagset flags, uint32_t enc)
+            { init(recode_filename<NativeCharacter>(file), flags, Crow::dec(enc), {}); }
         template <typename C1, typename C2, typename C3>
-            FileReader(const basic_string<C1>& file, Flagset flags, const basic_string<C2>& enc,
+            FileReader(const basic_string<C1>& file, Crow::Flagset flags, const basic_string<C2>& enc,
                 const basic_string<C3>& eol)
             { init(recode_filename<NativeCharacter>(file), flags, to_utf8(enc), to_utf8(eol)); }
         template <typename C1, typename C2>
-            FileReader(const basic_string<C1>& file, Flagset flags, uint32_t enc,
+            FileReader(const basic_string<C1>& file, Crow::Flagset flags, uint32_t enc,
                 const basic_string<C2>& eol)
-            { init(recode_filename<NativeCharacter>(file), flags, dec(enc), to_utf8(eol)); }
+            { init(recode_filename<NativeCharacter>(file), flags, Crow::dec(enc), to_utf8(eol)); }
         const u8string& operator*() const noexcept;
         const u8string* operator->() const noexcept { return &**this; }
         FileReader& operator++();
@@ -136,27 +136,27 @@ namespace Unicorn {
     private:
         struct impl_type;
         std::shared_ptr<impl_type> impl;
-        void init(const NativeString& file, Flagset flags, const u8string& enc, const u8string& eol);
+        void init(const NativeString& file, Crow::Flagset flags, const u8string& enc, const u8string& eol);
         void fixline();
         void getline();
         void getmore(size_t n);
     };
 
     template <typename C>
-        Irange<FileReader> read_lines(const basic_string<C>& file, Flagset flags = {})
+        Crow::Irange<FileReader> read_lines(const basic_string<C>& file, Crow::Flagset flags = {})
         { return {FileReader{file, flags}, {}}; }
     template <typename C1, typename C2>
-        Irange<FileReader> read_lines(const basic_string<C1>& file, Flagset flags, const basic_string<C2>& enc)
+        Crow::Irange<FileReader> read_lines(const basic_string<C1>& file, Crow::Flagset flags, const basic_string<C2>& enc)
         { return {{file, flags, enc}, {}}; }
     template <typename C>
-        Irange<FileReader> read_lines(const basic_string<C>& file, Flagset flags, uint32_t enc)
+        Crow::Irange<FileReader> read_lines(const basic_string<C>& file, Crow::Flagset flags, uint32_t enc)
         { return {{file, flags, enc}, {}}; }
     template <typename C1, typename C2, typename C3>
-        Irange<FileReader> read_lines(const basic_string<C1>& file, Flagset flags, const basic_string<C2>& enc,
+        Crow::Irange<FileReader> read_lines(const basic_string<C1>& file, Crow::Flagset flags, const basic_string<C2>& enc,
             const basic_string<C3>& eol)
         { return {{file, flags, enc, eol}, {}}; }
     template <typename C1, typename C2>
-        Irange<FileReader> read_lines(const basic_string<C1>& file, Flagset flags, uint32_t enc,
+        Crow::Irange<FileReader> read_lines(const basic_string<C1>& file, Crow::Flagset flags, uint32_t enc,
             const basic_string<C2>& eol)
         { return {{file, flags, enc, eol}, {}}; }
 
@@ -174,18 +174,18 @@ namespace Unicorn {
             explicit FileWriter(const basic_string<C>& file)
             { init(recode_filename<NativeCharacter>(file), {}, {}); }
         template <typename C>
-            FileWriter(const basic_string<C>& file, Flagset flags)
+            FileWriter(const basic_string<C>& file, Crow::Flagset flags)
             { init(recode_filename<NativeCharacter>(file), flags, {}); }
         template <typename C1, typename C2>
-            FileWriter(const basic_string<C1>& file, Flagset flags, const basic_string<C2>& enc)
+            FileWriter(const basic_string<C1>& file, Crow::Flagset flags, const basic_string<C2>& enc)
             { init(recode_filename<NativeCharacter>(file), flags, to_utf8(enc)); }
         template <typename C>
-            FileWriter(const basic_string<C>& file, Flagset flags, uint32_t enc)
-            { init(recode_filename<NativeCharacter>(file), flags, dec(enc)); }
+            FileWriter(const basic_string<C>& file, Crow::Flagset flags, uint32_t enc)
+            { init(recode_filename<NativeCharacter>(file), flags, Crow::dec(enc)); }
         template <typename C> FileWriter& operator=(const basic_string<C>& str)
             { write(to_utf8(str)); return *this; }
         template <typename C> FileWriter& operator=(const C* str)
-            { write(to_utf8(cstr(str))); return *this; }
+            { write(to_utf8(Crow::cstr(str))); return *this; }
         FileWriter& operator*() noexcept { return *this; }
         FileWriter& operator++() noexcept { return *this; }
         FileWriter& operator++(int) noexcept { return *this; }
@@ -195,7 +195,7 @@ namespace Unicorn {
     private:
         struct impl_type;
         std::shared_ptr<impl_type> impl;
-        void init(const NativeString& file, Flagset flags, const u8string& enc);
+        void init(const NativeString& file, Crow::Flagset flags, const u8string& enc);
         void fixtext(u8string& str) const;
         void write(u8string str);
         void writembcs(const string& str);
