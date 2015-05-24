@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>Unicorn Library: Input and Output</title>
+	<link type="text/css" rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<h1 id="unicornlibrary:inputandoutput"><a href="index.html">Unicorn Library</a>: Input and Output</h1>
+
+<h4 id="unicodelibraryforcbyrosssmith">Unicode library for C++ by Ross Smith</h4>
+
+<h4 id="includeunicornio.hpp"><code>#include &quot;unicorn/io.hpp&quot;</code></h4>
+
+<p>The functions and classes in this module provided line oriented input and
+output, with automatic conversion between Unicode and external legacy
+encodings, as well as other conveniences such as normalization of line breaks.</p>
+
+<h2 id="contents">Contents</h2>
+
+<ul>
+<li><a href="#exceptions">Exceptions</a></li>
+<li><a href="#simplefileio">Simple file I/O</a></li>
+<li><a href="#fileinputiterator">File input iterator</a></li>
+<li><a href="#fileoutputiterator">File output iterator</a></li>
+</ul>
+
+<h2 id="exceptions">Exceptions</h2>
+
+<ul>
+<li><code>class <strong>IOError</strong>: public std::runtime_error</code>
+
+<ul>
+<li><code>IOError::<strong>IOError</strong>()</code></li>
+<li><code>explicit IOError::<strong>IOError</strong>(const char* msg)</code></li>
+<li><code>template &lt;typename C&gt; IOError::<strong>IOError</strong>(const char* msg, const basic_string&lt;C&gt;&amp; file, int error = 0)</code></li>
+<li><code>NativeString IOError::<strong>file</strong>() const</code></li>
+<li><code>int IOError::<strong>error</strong>() const noexcept</code></li>
+</ul></li>
+<li><code>class <strong>ReadError</strong>: public IOError</code>
+
+<ul>
+<li><code>ReadError::<strong>ReadError</strong>()</code></li>
+<li><code>template &lt;typename C&gt; explicit ReadError::<strong>ReadError</strong>(const basic_string&lt;C&gt;&amp; file, int error = 0)</code></li>
+</ul></li>
+<li><code>class <strong>WriteError</strong>: public IOError</code>
+
+<ul>
+<li><code>WriteError::<strong>WriteError</strong>()</code></li>
+<li><code>template &lt;typename C&gt; explicit WriteError::<strong>WriteError</strong>(const basic_string&lt;C&gt;&amp; file, int error = 0)</code></li>
+</ul></li>
+</ul>
+
+<p>TODO</p>
+
+<h2 id="simplefileio">Simple file I/O</h2>
+
+<ul>
+<li><code>template &lt;typename C&gt; void <strong>load_file</strong>(const basic_string&lt;C&gt;&amp; file, string&amp; dst, Crow::Flagset flags = {})</code></li>
+</ul>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Bitmask</th>
+	<th style="text-align:left;">Letter</th>
+	<th style="text-align:left;">Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><code>io_stdin</code></td>
+	<td style="text-align:left;"><code>i</code></td>
+	<td style="text-align:left;">Default to stdin</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>io_nofail</code></td>
+	<td style="text-align:left;"><code>f</code></td>
+	<td style="text-align:left;">Treat nonexistent file as empty</td>
+</tr>
+</tbody>
+</table>
+
+<p>TODO</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; void <strong>save_file</strong>(const basic_string&lt;C&gt;&amp; file, const string&amp; src, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; void <strong>save_file</strong>(const basic_string&lt;C&gt;&amp; file, const void* ptr, size_t n, Crow::Flagset flags = {})</code></li>
+</ul>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Bitmask</th>
+	<th style="text-align:left;">Letter</th>
+	<th style="text-align:left;">Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><code>io_stdout</code></td>
+	<td style="text-align:left;"><code>o</code></td>
+	<td style="text-align:left;">Default to stdout</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>io_stderr</code></td>
+	<td style="text-align:left;"><code>e</code></td>
+	<td style="text-align:left;">Default to stderr</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>io_append</code></td>
+	<td style="text-align:left;"><code>a</code></td>
+	<td style="text-align:left;">Append to file</td>
+</tr>
+</tbody>
+</table>
+
+<p>TODO</p>
+
+<h2 id="fileinputiterator">File input iterator</h2>
+
+<ul>
+<li><code>class <strong>FileReader</strong></code>
+
+<ul>
+<li><code>using FileReader::<strong>difference_type</strong> = ptrdiff_t</code></li>
+<li><code>using FileReader::<strong>iterator_category</strong> = std::input_iterator_tag</code></li>
+<li><code>using FileReader::<strong>pointer</strong> = const u8string*</code></li>
+<li><code>using FileReader::<strong>reference</strong> = const u8string&amp;</code></li>
+<li><code>using FileReader::<strong>value_type</strong> = u8string</code></li>
+<li><code>FileReader::<strong>FileReader</strong>()</code></li>
+<li><code>template &lt;typename C&gt; explicit FileReader::<strong>FileReader</strong>(const basic_string&lt;C&gt;&amp; file)</code></li>
+<li><code>template &lt;typename C&gt; FileReader::<strong>FileReader</strong>(const basic_string&lt;C&gt;&amp; file, Crow::Flagset flags)</code></li>
+<li><code>template &lt;typename C1, typename C2&gt; FileReader::<strong>FileReader</strong>(const basic_string&lt;C1&gt;&amp; file, Crow::Flagset flags, const basic_string&lt;C2&gt;&amp; enc)</code></li>
+<li><code>template &lt;typename C&gt; FileReader::<strong>FileReader</strong>(const basic_string&lt;C&gt;&amp; file, Crow::Flagset flags, uint32_t enc)</code></li>
+<li><code>template &lt;typename C1, typename C2, typename C3&gt; FileReader::<strong>FileReader</strong>(const basic_string&lt;C1&gt;&amp; file, Crow::Flagset flags, const basic_string&lt;C2&gt;&amp; enc, const basic_string&lt;C3&gt;&amp; eol)</code></li>
+<li><code>template &lt;typename C1, typename C2&gt; FileReader::<strong>FileReader</strong>(const basic_string&lt;C1&gt;&amp; file, Crow::Flagset flags, uint32_t enc, const basic_string&lt;C2&gt;&amp; eol)</code></li>
+<li><code>[standard input iterator operations]</code></li>
+</ul></li>
+</ul>
+
+<p>TODO</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Bitmask</th>
+	<th style="text-align:left;">Letter</th>
+	<th style="text-align:left;">Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><code>io_stdin</code></td>
+	<td style="text-align:left;"><code>i</code></td>
+	<td style="text-align:left;">Default to stdin</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>io_nofail</code></td>
+	<td style="text-align:left;"><code>f</code></td>
+	<td style="text-align:left;">Treat nonexistent file as empty</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>io_bom</code></td>
+	<td style="text-align:left;"><code>B</code></td>
+	<td style="text-align:left;">Strip leading BOM</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>io_lf</code></td>
+	<td style="text-align:left;"><code>n</code></td>
+	<td style="text-align:left;">Convert all line breaks to LF</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>io_crlf</code></td>
+	<td style="text-align:left;"><code>c</code></td>
+	<td style="text-align:left;">Convert all line breaks to CR+LF</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>io_striplf</code></td>
+	<td style="text-align:left;"><code>s</code></td>
+	<td style="text-align:left;">Strip line breaks</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>io_striptws</code></td>
+	<td style="text-align:left;"><code>t</code></td>
+	<td style="text-align:left;">Strip trailing whitespace</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>io_stripws</code></td>
+	<td style="text-align:left;"><code>S</code></td>
+	<td style="text-align:left;">Strip whitespace</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>io_notempty</code></td>
+	<td style="text-align:left;"><code>z</code></td>
+	<td style="text-align:left;">Skip empty lines</td>
+</tr>
+</tbody>
+</table>
+
+<p>(May be combined with err_replace/throw)</p>
+
+<p>TODO</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; Crow::Irange&lt;FileReader&gt; <strong>read_lines</strong>(const basic_string&lt;C&gt;&amp; file, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C1, typename C2&gt; Crow::Irange&lt;FileReader&gt; <strong>read_lines</strong>(const basic_string&lt;C1&gt;&amp; file, Crow::Flagset flags, const basic_string&lt;C2&gt;&amp; enc)</code></li>
+<li><code>template &lt;typename C&gt; Crow::Irange&lt;FileReader&gt; <strong>read_lines</strong>(const basic_string&lt;C&gt;&amp; file, Crow::Flagset flags, uint32_t enc)</code></li>
+<li><code>template &lt;typename C1, typename C2, typename C3&gt; Crow::Irange&lt;FileReader&gt; <strong>read_lines</strong>(const basic_string&lt;C1&gt;&amp; file, Crow::Flagset flags, const basic_string&lt;C2&gt;&amp; enc, const basic_string&lt;C3&gt;&amp; eol)</code></li>
+<li><code>template &lt;typename C1, typename C2&gt; Crow::Irange&lt;FileReader&gt; <strong>read_lines</strong>(const basic_string&lt;C1&gt;&amp; file, Crow::Flagset flags, uint32_t enc, const basic_string&lt;C2&gt;&amp; eol)</code></li>
+</ul>
+
+<p>TODO</p>
+
+<h2 id="fileoutputiterator">File output iterator</h2>
+
+<ul>
+<li><code>class <strong>FileWriter</strong></code>
+
+<ul>
+<li><code>using FileWriter::<strong>difference_type</strong> = void</code></li>
+<li><code>using FileWriter::<strong>iterator_category</strong> = std::output_iterator_tag</code></li>
+<li><code>using FileWriter::<strong>pointer</strong> = void</code></li>
+<li><code>using FileWriter::<strong>reference</strong> = void</code></li>
+<li><code>using FileWriter::<strong>value_type</strong> = void</code></li>
+<li><code>FileWriter::<strong>FileWriter</strong>()</code></li>
+<li><code>template &lt;typename C&gt; explicit FileWriter::<strong>FileWriter</strong>(const basic_string&lt;C&gt;&amp; file)</code></li>
+<li><code>template &lt;typename C&gt; FileWriter::<strong>FileWriter</strong>(const basic_string&lt;C&gt;&amp; file, Crow::Flagset flags)</code></li>
+<li><code>template &lt;typename C1, typename C2&gt; FileWriter::<strong>FileWriter</strong>(const basic_string&lt;C1&gt;&amp; file, Crow::Flagset flags, const basic_string&lt;C2&gt;&amp; enc)</code></li>
+<li><code>template &lt;typename C&gt; FileWriter::<strong>FileWriter</strong>(const basic_string&lt;C&gt;&amp; file, Crow::Flagset flags, uint32_t enc)</code></li>
+<li><code>void FileWriter::<strong>flush</strong>()</code></li>
+<li><code>[standard output iterator operations]</code></li>
+</ul></li>
+</ul>
+
+<p>TODO</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Bitmask</th>
+	<th style="text-align:left;">Letter</th>
+	<th style="text-align:left;">Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><code>io_stdout</code></td>
+	<td style="text-align:left;"><code>o</code></td>
+	<td style="text-align:left;">Default to stdout</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>io_stderr</code></td>
+	<td style="text-align:left;"><code>e</code></td>
+	<td style="text-align:left;">Default to stderr</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>io_append</code></td>
+	<td style="text-align:left;"><code>a</code></td>
+	<td style="text-align:left;">Append to file</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>io_bom</code></td>
+	<td style="text-align:left;"><code>B</code></td>
+	<td style="text-align:left;">Insert leading BOM if not already there</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>io_lf</code></td>
+	<td style="text-align:left;"><code>n</code></td>
+	<td style="text-align:left;">Convert all line breaks to LF</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>io_crlf</code></td>
+	<td style="text-align:left;"><code>c</code></td>
+	<td style="text-align:left;">Convert all line breaks to CR+LF</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>io_writeline</code></td>
+	<td style="text-align:left;"><code>L</code></td>
+	<td style="text-align:left;">Write LF after every write</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>io_autoline</code></td>
+	<td style="text-align:left;"><code>A</code></td>
+	<td style="text-align:left;">Write LF if not already there</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>io_linebuf</code></td>
+	<td style="text-align:left;"><code>l</code></td>
+	<td style="text-align:left;">Line buffered output</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>io_unbuf</code></td>
+	<td style="text-align:left;"><code>u</code></td>
+	<td style="text-align:left;">Unbuffered output</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>io_mutex</code></td>
+	<td style="text-align:left;"><code>m</code></td>
+	<td style="text-align:left;">Hold per-file mutex while writing</td>
+</tr>
+</tbody>
+</table>
+
+<p>(May be combined with err_replace/throw)</p>
+
+<p>TODO</p>
+
+</body>
+</html>

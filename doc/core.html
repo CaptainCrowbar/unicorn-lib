@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>Unicorn Library: Core Definitions</title>
+	<link type="text/css" rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<h1 id="unicornlibrary:coredefinitions"><a href="index.html">Unicorn Library</a>: Core Definitions</h1>
+
+<h4 id="unicodelibraryforcbyrosssmith">Unicode library for C++ by Ross Smith</h4>
+
+<h4 id="includeunicorncore.hpp"><code>#include &quot;unicorn/core.hpp&quot;</code></h4>
+
+<p>This module provides some common definitions used throughout the library.</p>
+
+<h2 id="contents">Contents</h2>
+
+<ul>
+<li><a href="#imports">Imports</a></li>
+<li><a href="#exceptions">Exceptions</a></li>
+<li><a href="#othertypes">Other types</a></li>
+<li><a href="#versioninformation">Version information</a></li>
+</ul>
+
+<h2 id="imports">Imports</h2>
+
+<ul>
+<li><code>using Crow::<strong>basic_string</strong>      [= std::basic_string]</code></li>
+<li><code>using Crow::<strong>string</strong>            [= std::string]</code></li>
+<li><code>using Crow::<strong>u8string</strong>          [= std::string]</code></li>
+<li><code>using Crow::<strong>u16string</strong>         [= std::u16string]</code></li>
+<li><code>using Crow::<strong>u32string</strong>         [= std::u32string]</code></li>
+<li><code>using Crow::<strong>wstring</strong>           [= std::wstring]</code></li>
+<li><code>using Crow::<strong>ascii_whitespace</strong>  [= &quot;\t\n\v\f\r &quot;]</code></li>
+<li><code>using Crow::<strong>npos</strong>              [= std::string::npos]</code></li>
+</ul>
+
+<p>Imported for convenience from the Crow library.</p>
+
+<h2 id="exceptions">Exceptions</h2>
+
+<ul>
+<li><code>class <strong>EncodingError</strong>: public std::runtime_error</code>
+
+<ul>
+<li><code>EncodingError::<strong>EncodingError</strong>()</code></li>
+<li><code>explicit EncodingError::<strong>EncodingError</strong>(const u8string&amp; encoding, size_t offset = 0)</code></li>
+<li><code>template &lt;typename C&gt; EncodingError::<strong>EncodingError</strong>(const u8string&amp; encoding, size_t offset, const C* ptr, size_t n = 1)</code></li>
+<li><code>u8string EncodingError::<strong>encoding</strong>() const</code></li>
+<li><code>size_t EncodingError::<strong>offset</strong>() const noexcept</code></li>
+</ul></li>
+</ul>
+
+<p>An exception thrown to indicate a text encoding error encountered when
+converting a string from one encoding to another, or when checking an encoded
+string for validity. The offset of the offending data within the source string
+(when available) can be retrieved through the <code>offset()</code> method. If possible,
+a hexadecimal representation of the offending data will be included in the
+error message.</p>
+
+<h2 id="othertypes">Other types</h2>
+
+<ul>
+<li><code>using <strong>NativeCharacter</strong> = [char on Unix, wchar_t on Windows]</code></li>
+<li><code>using <strong>NativeString</strong> = [string on Unix, wstring on Windows]</code></li>
+</ul>
+
+<p>These are the character and string types used in the operating system&#8217;s native
+ABI.</p>
+
+<ul>
+<li><code>using <strong>WcharEquivalent</strong> = [char16_t or char32_t]</code></li>
+<li><code>using <strong>WstringEquivalent</strong> = [u16string or u32string]</code></li>
+</ul>
+
+<p>These are defined to indicate which UTF encoding the system&#8217;s <code>wstring</code> class
+corresponds to.</p>
+
+<h2 id="versioninformation">Version information</h2>
+
+<ul>
+<li><code>Crow::Version <strong>unicorn_version</strong>() noexcept</code></li>
+<li><code>Crow::Version <strong>unicode_version</strong>() noexcept</code></li>
+</ul>
+
+<p>These return the version of the Unicorn library and the supported version of
+the Unicode standard.</p>
+
+</body>
+</html>

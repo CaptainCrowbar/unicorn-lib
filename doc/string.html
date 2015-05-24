@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>Unicorn Library: String Operations</title>
+	<link type="text/css" rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<h1 id="unicornlibrary:stringoperations"><a href="index.html">Unicorn Library</a>: String Operations</h1>
+
+<h4 id="unicodelibraryforcbyrosssmith">Unicode library for C++ by Ross Smith</h4>
+
+<h4 id="includeunicornstring.hpp"><code>#include &quot;unicorn/string.hpp&quot;</code></h4>
+
+<p>This module contains assorted functions related to strings that don&#8217;t belong
+in other modules with a more specific focus.</p>
+
+<h2 id="contents">Contents</h2>
+
+<ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#stringsizefunctions">String size functions</a></li>
+<li><a href="#otherstringproperties">Other string properties</a></li>
+<li><a href="#stringalgorithms">String algorithms</a></li>
+<li><a href="#stringmanipulationfunctions">String manipulation functions</a></li>
+<li><a href="#casemappingfunctions">Case mapping functions</a></li>
+<li><a href="#typeconversionfunctions">Type conversion functions</a></li>
+</ul>
+
+<h2 id="introduction">Introduction</h2>
+
+<p>Not all of these functions are directly related to Unicode; some, such as the
+<code>str_starts_with()</code> and <code>str_ends_with()</code> tests or the <code>str_replace()</code>
+function, simply operate on the string as a sequence of code units, without
+needing to know anything about how it is interpreted. Functions that do need
+to be aware of how Unicode encoding works usually operate on, or return, UTF
+iterators (see <a href="utf.html"><code>unicorn/utf</code></a>); many of these can accept either an
+actual string or a UTF iterator range as their subject string.</p>
+
+<p>All of the functions here are intended to be used only with known valid
+Unicode strings. They all use <code>ignore_errors</code> mode internally, and do not
+provide any other error handling options.</p>
+
+<p>Many of the string manipulation functions in this module come in two versions,
+on that takes the subject string by <code>const</code> reference and returns the modified
+string, and one that takes it by non-<code>const</code> reference and modifies it in
+place. Usually the in-place version has a name ending with <code>_in</code> to
+distinguish them, since in many cases they have identical argument lists apart
+from the <code>const</code> vs non-<code>const</code> argument, and therefore would not be reliably
+distinguished by overload resolution if they had the same name.</p>
+
+<p>In some cases the in-place version of the function takes a non-<code>const</code>
+reference to the subject string accompanied by one or more UTF iterators (see
+<a href="utf.html"><code>unicorn/utf</code></a>) to indicate positions in the string, whereas the
+return-value version of the function does not need to be passed the string
+explicitly since it can obtain a <code>const</code> reference to it from the iterators.
+In the in-place function, behaviour is undefined if the iterators do not point
+to the same string passed to the reference argument. (In all functions that
+take iterators, behaviour is undefined if a pair of iterators that are
+expected to mark the beginning and end of a substring do not point to the same
+string or are in the wrong order.)</p>
+
+<p>Any function that implicitly compares strings uses a simple literal
+comparison, making no attempt to handle Unicode&#8217;s concepts of canonical or
+compatibility equivalence; if your code needs to be aware of such things, you
+will need to normalise your strings first (see
+<a href="normal.html"><code>unicorn/normal</code></a>).</p>
+
+<p>When a function can take a string argument as either a string object or a
+character pointer, a null pointer is always treated as equivalent to an empty
+string. (When it takes a pointer and size, the size is ignored if the pointer
+is null.)</p>
+
+<h2 id="stringsizefunctions">String size functions</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Bitmask</th>
+	<th style="text-align:left;">Letter</th>
+	<th style="text-align:left;">Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><code>character_units</code></td>
+	<td style="text-align:left;"><code>C</code></td>
+	<td style="text-align:left;">Count the number of Unicode characters in the string (this is normally the default)</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>grapheme_units</code></td>
+	<td style="text-align:left;"><code>G</code></td>
+	<td style="text-align:left;">Count the number of grapheme clusters (user-perceived characters) in the string</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>narrow_context</code></td>
+	<td style="text-align:left;"><code>N</code></td>
+	<td style="text-align:left;">Calculate the East Asian width; ambiguous characters default to narrow</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>wide_context</code></td>
+	<td style="text-align:left;"><code>W</code></td>
+	<td style="text-align:left;">Calculate the East Asian width; ambiguous characters default to wide</td>
+</tr>
+</tbody>
+</table>
+
+<p>Most functions that need to calculate the size of a string, in this module and
+others, accept one of these flags to indicate which definition of &#8220;size&#8221; the
+caller wants. The various methods of measurement are implemented in the
+<code>str_length()</code> function, described below; anything else that needs a string
+size will normally obtain it by calling <code>str_length()</code> (or a related function
+such as <code>str_find_index()</code>).</p>
+
+<p>By default, a string&#8217;s length is a count of characters (Unicode scalar
+values); you can also select a count of grapheme clusters (user-perceived
+characters; see <a href="segment.html"><code>unicorn/segment</code></a>), or calculate the East
+Asian width. The two options for East Asian width determine how ambiguous
+width characters are handled, defaulting to narrow (one unit) or wide (two
+units). The <code>grapheme_units</code> flag can be combined with either of the East
+Asian width options, giving a size based on the width of the base character of
+each grapheme cluster.</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; size_t <strong>str_length</strong>(const basic_string&lt;C&gt;&amp; str, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; size_t <strong>str_length</strong>(const Crow::Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; range, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; size_t <strong>str_length</strong>(const UtfIterator&lt;C&gt;&amp; begin, const UtfIterator&lt;C&gt;&amp; end, Crow::Flagset flags = {})</code></li>
+</ul>
+
+<p>Return the length of the string, measured according to the flags supplied.</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_index</strong>(const basic_string&lt;C&gt;&amp; str, size_t pos, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_index</strong>(const Crow::Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; range, size_t pos, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_index</strong>(const UtfIterator&lt;C&gt;&amp; begin, const UtfIterator&lt;C&gt;&amp; end, size_t pos, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; size_t <strong>str_find_offset</strong>(basic_string&lt;C&gt;&amp; str, size_t pos, Crow::Flagset flags = {})</code></li>
+</ul>
+
+<p>These return an iterator, or an offset in code units, pointing to the
+character at a given position, measured according to the flags supplied. If
+the requested position would be past the end of the string, an end iterator
+will be returned (or <code>npos</code> for <code>str_find_offset()</code>). If the position can&#8217;t be
+adjusted to exactly the specified value (because one of the East Asian width
+options was selected and wide characters are present), the first valid
+position after the requested point will be returned.</p>
+
+<h2 id="otherstringproperties">Other string properties</h2>
+
+<ul>
+<li><code>template &lt;typename C&gt; char32_t <strong>str_char_at</strong>(const basic_string&lt;C&gt;&amp; str, size_t index) noexcept</code></li>
+</ul>
+
+<p>Returns the character at a specific index, or zero if the index is out of
+range.</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; char32_t <strong>str_first_char</strong>(const basic_string&lt;C&gt;&amp; str) noexcept</code></li>
+<li><code>template &lt;typename C&gt; char32_t <strong>str_last_char</strong>(const basic_string&lt;C&gt;&amp; str) noexcept</code></li>
+</ul>
+
+<p>Return the first or last character in a string, or zero if the string is
+empty.</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; bool <strong>str_is_east_asian</strong>(const basic_string&lt;C&gt;&amp; str)</code></li>
+</ul>
+
+<p>True if the string contains any East Asian characters.</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; bool <strong>str_starts_with</strong>(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; prefix) noexcept</code></li>
+<li><code>template &lt;typename C&gt; bool <strong>str_starts_with</strong>(const basic_string&lt;C&gt;&amp; str, const C* prefix) noexcept</code></li>
+<li><code>template &lt;typename C&gt; bool <strong>str_ends_with</strong>(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; suffix) noexcept</code></li>
+<li><code>template &lt;typename C&gt; bool <strong>str_ends_with</strong>(const basic_string&lt;C&gt;&amp; str, const C* suffix) noexcept</code></li>
+</ul>
+
+<p>These return true if the string starts or ends with the specified substring.</p>
+
+<h2 id="stringalgorithms">String algorithms</h2>
+
+<ul>
+<li><code>struct <strong>StringCompare</strong></code>
+
+<ul>
+<li><code>template &lt;typename C&gt; bool StringCompare::<strong>operator()</strong>(const basic_string&lt;C&gt;&amp; lhs, const basic_string&lt;C&gt;&amp; rhs) const noexcept</code></li>
+</ul></li>
+<li><code>constexpr StringCompare <strong>str_compare</strong></code></li>
+</ul>
+
+<p>A function object that performs a simple less-than comparison on two strings
+in any UTF encoding. The result always reflects Unicode lexicographical order,
+regardless of encoding. For UTF&#8211;8 and UTF&#8211;32 this is just a trivial call to
+<code>basic_string</code>&#8217;s less-than operator, but for UTF&#8211;16 it needs to be slightly
+more complicated to preserve the expected order (in UTF&#8211;16, unlike UTF&#8211;8 and
+32, code unit order is not the same as code point order).</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; bool <strong>str_expect</strong>(UtfIterator&lt;C&gt;&amp; i, const basic_string&lt;C&gt;&amp; prefix)</code></li>
+<li><code>template &lt;typename C&gt; bool <strong>str_expect</strong>(UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; end, const basic_string&lt;C&gt;&amp; prefix)</code></li>
+</ul>
+
+<p>If the string starting from <code>i</code> starts with <code>prefix</code>, <code>str_expect()</code> updates
+<code>i</code> to point to the end of the prefix and returns <code>true</code>; otherwise, it leaves
+<code>i</code> unchanged and returns <code>false</code>. Optionally an endpoint other than the end
+of the string can be supplied. These will always return <code>false</code> if <code>prefix</code> is
+empty.</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_char</strong>(const basic_string&lt;C&gt;&amp; str, char32_t c)</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_char</strong>(const UtfIterator&lt;C&gt;&amp; begin, const UtfIterator&lt;C&gt;&amp; end, char32_t c)</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_char</strong>(const Crow::Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; range, char32_t c)</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_last_char</strong>(const basic_string&lt;C&gt;&amp; str, char32_t c)</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_last_char</strong>(const UtfIterator&lt;C&gt;&amp; begin, const UtfIterator&lt;C&gt;&amp; end, char32_t c)</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_last_char</strong>(const Crow::Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; range, char32_t c)</code></li>
+</ul>
+
+<p>These return an iterator pointing to the first or last occurrence of the
+specified character, or an end iterator if it is not found.</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_first_of</strong>(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; target)</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_first_of</strong>(const basic_string&lt;C&gt;&amp; str, const C* target)</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_first_of</strong>(const UtfIterator&lt;C&gt;&amp; begin, const UtfIterator&lt;C&gt;&amp; end, const basic_string&lt;C&gt;&amp; target)</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_first_of</strong>(const UtfIterator&lt;C&gt;&amp; begin, const UtfIterator&lt;C&gt;&amp; end, const C* target)</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_first_of</strong>(const Crow::Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; range, const basic_string&lt;C&gt;&amp; target)</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_first_of</strong>(const Crow::Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; range, const C* target)</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_first_not_of</strong>(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; target)</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_first_not_of</strong>(const basic_string&lt;C&gt;&amp; str, const C* target)</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_first_not_of</strong>(const UtfIterator&lt;C&gt;&amp; begin, const UtfIterator&lt;C&gt;&amp; end, const basic_string&lt;C&gt;&amp; target)</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_first_not_of</strong>(const UtfIterator&lt;C&gt;&amp; begin, const UtfIterator&lt;C&gt;&amp; end, const C* target)</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_first_not_of</strong>(const Crow::Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; range, const basic_string&lt;C&gt;&amp; target)</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_first_not_of</strong>(const Crow::Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; range, const C* target)</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_last_of</strong>(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; target)</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_last_of</strong>(const basic_string&lt;C&gt;&amp; str, const C* target)</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_last_of</strong>(const UtfIterator&lt;C&gt;&amp; begin, const UtfIterator&lt;C&gt;&amp; end, const basic_string&lt;C&gt;&amp; target)</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_last_of</strong>(const UtfIterator&lt;C&gt;&amp; begin, const UtfIterator&lt;C&gt;&amp; end, const C* target)</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_last_of</strong>(const Crow::Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; range, const basic_string&lt;C&gt;&amp; target)</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_last_of</strong>(const Crow::Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; range, const C* target)</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_last_not_of</strong>(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; target)</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_last_not_of</strong>(const basic_string&lt;C&gt;&amp; str, const C* target)</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_last_not_of</strong>(const UtfIterator&lt;C&gt;&amp; begin, const UtfIterator&lt;C&gt;&amp; end, const basic_string&lt;C&gt;&amp; target)</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_last_not_of</strong>(const UtfIterator&lt;C&gt;&amp; begin, const UtfIterator&lt;C&gt;&amp; end, const C* target)</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_last_not_of</strong>(const Crow::Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; range, const basic_string&lt;C&gt;&amp; target)</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_last_not_of</strong>(const Crow::Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; range, const C* target)</code></li>
+</ul>
+
+<p>These find the first or last character in their subject range that is in, or
+not in, the target list of characters. They return an end iterator if no
+matching character is found. (They are essentially the same as the similarly
+named member functions in standard strings, except that they work on
+characters instead of code units.)</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_search</strong>(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; target)</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_search</strong>(const basic_string&lt;C&gt;&amp; str, const C* target)</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_search</strong>(const UtfIterator&lt;C&gt;&amp; begin, const UtfIterator&lt;C&gt;&amp; end, const basic_string&lt;C&gt;&amp; target)</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_search</strong>(const UtfIterator&lt;C&gt;&amp; begin, const UtfIterator&lt;C&gt;&amp; end, const C* target)</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_search</strong>(const Crow::Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; range, const basic_string&lt;C&gt;&amp; target)</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_search</strong>(const Crow::Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; range, const C* target)</code></li>
+</ul>
+
+<p>Find the first occurrence of the target substring in the subject range,
+returning an iterator pointing to the beginning of the located substring, or
+an end iterator if it was not found.</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; size_t <strong>str_skipws</strong>(UtfIterator&lt;C&gt;&amp; i)</code></li>
+<li><code>template &lt;typename C&gt; size_t <strong>str_skipws</strong>(UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; end)</code></li>
+</ul>
+
+<p>Advances <code>i</code> to point to the next non-whitespace character, or the end of the
+string if no such character was found. Optionally an endpoint other than the
+end of the string can be supplied. The return value is the number of
+characters skipped.</p>
+
+<h2 id="stringmanipulationfunctions">String manipulation functions</h2>
+
+<ul>
+<li><code>template &lt;typename C, typename C2&gt; void <strong>str_append</strong>(basic_string&lt;C&gt;&amp; str, const basic_string&lt;C2&gt;&amp; suffix)</code></li>
+<li><code>template &lt;typename C, typename C2&gt; void <strong>str_append</strong>(basic_string&lt;C&gt;&amp; str, const Crow::Irange&lt;UtfIterator&lt;C2&gt;&gt;&amp; suffix)</code></li>
+<li><code>template &lt;typename C, typename C2&gt; void <strong>str_append</strong>(basic_string&lt;C&gt;&amp; str, const UtfIterator&lt;C2&gt;&amp; suffix_begin, const UtfIterator&lt;C2&gt;&amp; suffix_end)</code></li>
+<li><code>template &lt;typename C, typename C2&gt; void <strong>str_append</strong>(basic_string&lt;C&gt;&amp; str, const C2* suffix)</code></li>
+<li><code>template &lt;typename C, typename C2&gt; void <strong>str_append</strong>(basic_string&lt;C&gt;&amp; dst, const C2* ptr, size_t n)</code></li>
+<li><code>template &lt;typename C, typename C2, typename... Chars&gt; void <strong>str_append_char</strong>(basic_string&lt;C&gt;&amp; dst, C2 c2, Chars... chars)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_append_chars</strong>(basic_string&lt;C&gt;&amp; dst, char32_t c, size_t n)</code></li>
+</ul>
+
+<p>These append one or more characters to a Unicode string, performing any
+necessary encoding conversions.</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_change</strong>(const Crow::Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; dst, const basic_string&lt;C&gt;&amp; src)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_change</strong>(const Crow::Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; dst, const Crow::Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; src)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_change</strong>(const UtfIterator&lt;C&gt;&amp; dst_begin, const UtfIterator&lt;C&gt;&amp; dst_end, const basic_string&lt;C&gt;&amp; src)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_change</strong>(const UtfIterator&lt;C&gt;&amp; dst_begin, const UtfIterator&lt;C&gt;&amp; dst_end, const UtfIterator&lt;C&gt;&amp; src_begin, const UtfIterator&lt;C&gt;&amp; src_end)</code></li>
+<li><code>template &lt;typename C&gt; Crow::Irange&lt;UtfIterator&lt;C&gt;&gt; <strong>str_change_in</strong>(basic_string&lt;C&gt;&amp; dst, const Crow::Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; range, const basic_string&lt;C&gt;&amp; src)</code></li>
+<li><code>template &lt;typename C&gt; Crow::Irange&lt;UtfIterator&lt;C&gt;&gt; <strong>str_change_in</strong>(basic_string&lt;C&gt;&amp; dst, const Crow::Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; range, const Crow::Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; src)</code></li>
+<li><code>template &lt;typename C&gt; Crow::Irange&lt;UtfIterator&lt;C&gt;&gt; <strong>str_change_in</strong>(basic_string&lt;C&gt;&amp; dst, const UtfIterator&lt;C&gt;&amp; range_begin, const UtfIterator&lt;C&gt;&amp; range_end, const basic_string&lt;C&gt;&amp; src)</code></li>
+<li><code>template &lt;typename C&gt; Crow::Irange&lt;UtfIterator&lt;C&gt;&gt; <strong>str_change_in</strong>(basic_string&lt;C&gt;&amp; dst, const UtfIterator&lt;C&gt;&amp; range_begin, const UtfIterator&lt;C&gt;&amp; range_end, const UtfIterator&lt;C&gt;&amp; src_begin, const UtfIterator&lt;C&gt;&amp; src_end)</code></li>
+</ul>
+
+<p>These replace the destination substring with a copy of the source string. The
+effect is the same as the <code>basic_string::replace()</code> methods, except that
+positions within the string are specified by UTF iterators instead of ordinary
+string iterators or offsets. The <code>str_change()</code> functions return the modified
+string, obtained by taking the underlying string from the destination
+iterators, and replacing the delimited substring with the source string; the
+<code>str_change_in()</code> functions update the destination string in place, replacing
+the substring delimited by <code>range</code> with the source string, and return a pair
+of iterators delimiting the newly inserted replacement string within the
+updated <code>dst</code>.</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_chars</strong>(char32_t c, size_t n = 1)</code></li>
+</ul>
+
+<p>Returns a string containing <code>n</code> copies of the character, in the appropriate
+encoding.</p>
+
+<ul>
+<li><code>template &lt;typename C, typename... Strings&gt; basic_string&lt;C&gt; <strong>str_concat</strong>(const basic_string&lt;C&gt;&amp; s, const Strings&amp;... ss)</code></li>
+<li><code>template &lt;typename C, typename... Strings&gt; basic_string&lt;C&gt; <strong>str_concat</strong>(const C* s, const Strings&amp;... ss)</code></li>
+<li><code>template &lt;typename C, typename... Strings&gt; basic_string&lt;C&gt; <strong>str_concat_with</strong>(const basic_string&lt;C&gt;&amp; delim, const Strings&amp;... ss)</code></li>
+<li><code>template &lt;typename C, typename... Strings&gt; basic_string&lt;C&gt; <strong>str_concat_with</strong>(const C* delim, const Strings&amp;... ss)</code></li>
+</ul>
+
+<p>These concatenate one or more strings, which can be an arbitrary mixture of
+different Unicode encodings. The <code>str_concat_with()</code> versions insert a
+delimiter between each pair of strings. The encoding type of the returned
+string matches that of the first argument (the delimiter in
+<code>str_concat_with()</code>).</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_drop_prefix</strong>(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; prefix)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_drop_prefix</strong>(const basic_string&lt;C&gt;&amp; str, const C* prefix)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_drop_prefix_in</strong>(basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; prefix) noexcept</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_drop_prefix_in</strong>(basic_string&lt;C&gt;&amp; str, const C* prefix) noexcept</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_drop_suffix</strong>(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; suffix)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_drop_suffix</strong>(const basic_string&lt;C&gt;&amp; str, const C* suffix)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_drop_suffix_in</strong>(basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; suffix) noexcept</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_drop_suffix_in</strong>(basic_string&lt;C&gt;&amp; str, const C* suffix) noexcept</code></li>
+</ul>
+
+<p>If the first argument string starts or ends with the given prefix or suffix,
+remove it; otherwise, just return the original string unchanged.</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_erase_left</strong>(const basic_string&lt;C&gt;&amp; str, size_t length)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_erase_left_in</strong>(basic_string&lt;C&gt;&amp; str, size_t length) noexcept</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_erase_right</strong>(const basic_string&lt;C&gt;&amp; str, size_t length)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_erase_right_in</strong>(basic_string&lt;C&gt;&amp; str, size_t length) noexcept</code></li>
+</ul>
+
+<p>Erase the specified number of Unicode characters from the beginning or end of
+the string. These will return an empty string if <code>length</code> is greater than the
+number of characters in <code>str</code>.</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_expand_tabs</strong>(const basic_string&lt;C&gt;&amp; str)</code></li>
+<li><code>template &lt;typename C, typename IntList&gt; basic_string&lt;C&gt; <strong>str_expand_tabs</strong>(const basic_string&lt;C&gt;&amp; str, const IntList&amp; tabs, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C, typename IntType&gt; basic_string&lt;C&gt; <strong>str_expand_tabs</strong>(const basic_string&lt;C&gt;&amp; str, initializer_list&lt;IntType&gt; tabs, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_expand_tabs_in</strong>(basic_string&lt;C&gt;&amp; str)</code></li>
+<li><code>template &lt;typename C, typename IntList&gt; void <strong>str_expand_tabs_in</strong>(basic_string&lt;C&gt;&amp; str, const IntList&amp; tabs, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C, typename IntType&gt; void <strong>str_expand_tabs_in</strong>(basic_string&lt;C&gt;&amp; str, initializer_list&lt;IntType&gt; tabs, Crow::Flagset flags = {})</code></li>
+</ul>
+
+<p>Expand tab characters to spaces. If the input string contains multiple lines
+(delimited by any of the standard Unicoed line break characters), each line
+will be expanded separately. The <code>tabs</code> argument is a list of tab positions,
+passed either as a range of integers, or as an explicit braced initializer
+list of integers. The <code>flags</code> argument indicates which units will be used to
+measure horizontal position.</p>
+
+<p>By default, a tab stop every 8 columns is assumed. Tab stop positions that are
+less than or equal to the previous tab stop are ignored. If more tab stops
+beyond the last one listed are needed, the difference between the last two tab
+stops is used to increment the last one (e.g. <code>{5,10,20}</code> will be expanded to
+<code>{5,10,20,30,40,...}</code>). An implicit tab stop at position zero is always
+assumed. If no tab stops greater than zero are listed, the default 8 column
+tabs will be used.</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_fix_left</strong>(const basic_string&lt;C&gt;&amp; str, size_t length, char32_t c = U' ', Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_fix_left_in</strong>(basic_string&lt;C&gt;&amp; str, size_t length, char32_t c = U' ', Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_fix_right</strong>(const basic_string&lt;C&gt;&amp; str, size_t length, char32_t c = U' ', Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_fix_right_in</strong>(basic_string&lt;C&gt;&amp; str, size_t length, char32_t c = U' ', Crow::Flagset flags = {})</code></li>
+</ul>
+
+<p>Pad or truncate a string to a specific length; the character argument <code>c</code> is
+used for padding (converted to the appropriate encoding). The <code>str_fix_left()</code>
+function anchors the string on the left and pads or truncates on the right;
+this is similar to <code>basic_string::resize()</code>, except that the flags determine
+how the length of the string is measured. The <code>str_fix_right()</code> function
+anchors the string on the right and pads or truncates on the left. If the
+string can&#8217;t be adjusted to exactly the specified size (because one of the
+East Asian width options was selected and wide characters are present), the
+result will be one unit longer than the requested length.</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_fold_whitespace</strong>(const basic_string&lt;C&gt;&amp; str, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_fold_whitespace_in</strong>(basic_string&lt;C&gt;&amp; str, Crow::Flagset flags = {})</code></li>
+</ul>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Bitmask</th>
+	<th style="text-align:left;">Letter</th>
+	<th style="text-align:left;">Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><code>fold_leading</code></td>
+	<td style="text-align:left;"><code>l</code></td>
+	<td style="text-align:left;">Strip leading whitespace when folding</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>fold_trailing</code></td>
+	<td style="text-align:left;"><code>t</code></td>
+	<td style="text-align:left;">Strip trailing whitespace when folding</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>fold_lines</code></td>
+	<td style="text-align:left;"><code>n</code></td>
+	<td style="text-align:left;">Fold all whitespace including line breaks</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>fold_control</code></td>
+	<td style="text-align:left;"><code>c</code></td>
+	<td style="text-align:left;">Include control characters as whitespace</td>
+</tr>
+</tbody>
+</table>
+
+<p>Replace any sequence of one or more whitespace characters with a single ASCII
+space. If <code>fold_leading</code> or <code>fold_trailing</code> is passed, leading or trailing
+whitespace on each line is stripped. By default only inline whitespace is
+folded, leaving line breaks unchanged; if <code>fold_lines</code> is passed, all line
+breaks will be folded as if they were ordinary whitespace. If <code>fold_leading</code>
+or <code>fold_trailing</code> is combined with <code>fold_lines</code>, only whitespace at the
+beginning or end of the whole string will be stripped (not each line).</p>
+
+<ul>
+<li><code>template &lt;typename FwdRange&gt; basic_string&lt;[character type]&gt; <strong>str_join</strong>(const FwdRange&amp; r)</code></li>
+<li><code>template &lt;typename FwdRange, typename C&gt; basic_string&lt;C&gt; <strong>str_join</strong>(const FwdRange&amp; r, const basic_string&lt;C&gt;&amp; delim)</code></li>
+<li><code>template &lt;typename FwdRange, typename C&gt; basic_string&lt;C&gt; <strong>str_join</strong>(const FwdRange&amp; r, const C* delim)</code></li>
+</ul>
+
+<p>These concatenate a list of strings, optionally inserting a delimiter between
+each pair of strings. The character types of the string list and the delimiter
+must match.</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_pad_left</strong>(const basic_string&lt;C&gt;&amp; str, size_t length, char32_t c = U' ', Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_pad_left_in</strong>(basic_string&lt;C&gt;&amp; str, size_t length, char32_t c = U' ', Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_pad_right</strong>(const basic_string&lt;C&gt;&amp; str, size_t length, char32_t c = U' ', Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_pad_right_in</strong>(basic_string&lt;C&gt;&amp; str, size_t length, char32_t c = U' ', Crow::Flagset flags = {})</code></li>
+</ul>
+
+<p>Pad a string on the left or right to a specified length; the character
+argument <code>c</code> is used for padding (converted to the appropriate encoding). The
+string will be returned unchanged if it is already equal to or longer than the
+required length. If the string can&#8217;t be adjusted to exactly the specified size
+(because one of the East Asian width options was selected and wide characters
+are present), the result will be one unit longer than the requested length.</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; bool <strong>str_partition</strong>(const basic_string&lt;C&gt;&amp; str, basic_string&lt;C&gt;&amp; prefix, basic_string&lt;C&gt;&amp; suffix)</code></li>
+<li><code>template &lt;typename C&gt; bool <strong>str_partition_at</strong>(const basic_string&lt;C&gt;&amp; str, basic_string&lt;C&gt;&amp; prefix, basic_string&lt;C&gt;&amp; suffix, const basic_string&lt;C&gt;&amp; delim)</code></li>
+<li><code>template &lt;typename C&gt; bool <strong>str_partition_at</strong>(const basic_string&lt;C&gt;&amp; str, basic_string&lt;C&gt;&amp; prefix, basic_string&lt;C&gt;&amp; suffix, const C* delim)</code></li>
+<li><code>template &lt;typename C&gt; bool <strong>str_partition_by</strong>(const basic_string&lt;C&gt;&amp; str, basic_string&lt;C&gt;&amp; prefix, basic_string&lt;C&gt;&amp; suffix, const basic_string&lt;C&gt;&amp; delim)</code></li>
+<li><code>template &lt;typename C&gt; bool <strong>str_partition_by</strong>(const basic_string&lt;C&gt;&amp; str, basic_string&lt;C&gt;&amp; prefix, basic_string&lt;C&gt;&amp; suffix, const C* delim)</code></li>
+</ul>
+
+<p>These split a string into two parts at the first occurrence of a given
+delimiter. If the delimiter is found, the two parts are written into <code>prefix</code>
+and <code>suffix</code> (the delimiter itself is discarded), and the function returns
+<code>true</code>; otherwise, the original string is copied into <code>prefix</code>, <code>suffix</code> is
+made empty, and the function returns <code>false</code>. The <code>str_partition()</code> function
+splits the string on the first contiguous sequence of whitespace characters;
+<code>str_partition_at()</code> splits it at the first occurrence of the <code>delim</code> string;
+and <code>str_partition_by()</code> splits it at the first contiguous sequence of
+characters that are in the <code>delim</code> list. In <code>str_partition_at()</code> and
+<code>str_partition_by()</code>, an empty delimiter string will be treated as never being
+found.</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_repeat</strong>(const basic_string&lt;C&gt;&amp; str, size_t n)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_repeat</strong>(const C* str, size_t n)</code></li>
+</ul>
+
+<p>Return a string formed by concatenating <code>n</code> copies of the original string.</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_replace</strong>(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; target, const basic_string&lt;C&gt;&amp; sub, size_t n = npos)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_replace</strong>(const basic_string&lt;C&gt;&amp; str, const C* target, const basic_string&lt;C&gt;&amp; sub, size_t n = npos)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_replace</strong>(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; target, const C* sub, size_t n = npos)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_replace</strong>(const basic_string&lt;C&gt;&amp; str, const C* target, const C* sub, size_t n = npos)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_replace_in</strong>(basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; target, const basic_string&lt;C&gt;&amp; sub, size_t n = npos)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_replace_in</strong>(basic_string&lt;C&gt;&amp; str, const C* target, const basic_string&lt;C&gt;&amp; sub, size_t n = npos)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_replace_in</strong>(basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; target, const C* sub, size_t n = npos)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_replace_in</strong>(basic_string&lt;C&gt;&amp; str, const C* target, const C* sub, size_t n = npos)</code></li>
+</ul>
+
+<p>These return a copy of the first argument string, with the first <code>n</code>
+substrings that match <code>target</code> replaced with <code>sub</code>. By default, all matches
+are replaced. The string will be returned unchanged if <code>target</code> is empty or
+<code>n=0</code>.</p>
+
+<ul>
+<li><code>template &lt;typename C, typename OutIter&gt; void <strong>str_split</strong>(const basic_string&lt;C&gt;&amp; src, OutIter dst)</code></li>
+<li><code>template &lt;typename C, typename OutIter&gt; void <strong>str_split_at</strong>(const basic_string&lt;C&gt;&amp; src, OutIter dst, const basic_string&lt;C&gt;&amp; delim)</code></li>
+<li><code>template &lt;typename C, typename OutIter&gt; void <strong>str_split_at</strong>(const basic_string&lt;C&gt;&amp; src, OutIter dst, const C* delim)</code></li>
+<li><code>template &lt;typename C, typename OutIter&gt; void <strong>str_split_by</strong>(const basic_string&lt;C&gt;&amp; src, OutIter dst, const basic_string&lt;C&gt;&amp; delim)</code></li>
+<li><code>template &lt;typename C, typename OutIter&gt; void <strong>str_split_by</strong>(const basic_string&lt;C&gt;&amp; src, OutIter dst, const C* delim)</code></li>
+</ul>
+
+<p>These split a string into substrings, using the specified delimiter to mark
+the substring boundaries, and copying the resulting substrings into the
+destination defined by the output iterator. The <code>str_split()</code> function splits
+the string on each contiguous sequence of whitespace characters;
+<code>str_split_at()</code> splits it at each occurrence of the <code>delim</code> string; and
+<code>str_split_by()</code> splits it at each contiguous sequence of characters that are
+in the <code>delim</code> list. Nothing will be written if the original source string is
+empty; if the delimiter string is empty (but the source string is not), a
+single string will be written.</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_substring</strong>(const basic_string&lt;C&gt;&amp; str, size_t offset, size_t count = npos)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>utf_substring</strong>(const basic_string&lt;C&gt;&amp; str, size_t index, size_t length = npos, Crow::Flagset flags = {})</code></li>
+</ul>
+
+<p>These return a substring of the original string. The <code>str_substring()</code> function
+returns the same string as <code>basic_string::substr()</code>, except that an offset out
+of bounds will yield an empty string instead of undefined behaviour;
+<code>utf_substring()</code> does the same thing, except that the position and length of
+the substring are measured according according to the <code>flags</code> argument instead
+of by code units (the flags are the same as for <code>str_length()</code>, defaulting to
+characters).</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_translate</strong>(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; target, const basic_string&lt;C&gt;&amp; sub)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_translate</strong>(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; target, const C* sub)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_translate</strong>(const basic_string&lt;C&gt;&amp; str, const C* target, const basic_string&lt;C&gt;&amp; sub)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_translate</strong>(const basic_string&lt;C&gt;&amp; str, const C* target, const C* sub)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_translate_in</strong>(basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; target, const basic_string&lt;C&gt;&amp; sub)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_translate_in</strong>(basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; target, const C* sub)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_translate_in</strong>(basic_string&lt;C&gt;&amp; str, const C* target, const basic_string&lt;C&gt;&amp; sub)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_translate_in</strong>(basic_string&lt;C&gt;&amp; str, const C* target, const C* sub)</code></li>
+</ul>
+
+<p>These return a copy of the first argument string, with any characters that
+occur in <code>target</code> replaced with the corresponding character in <code>sub</code>. The
+string will be returned unchanged if either <code>target</code> or <code>sub</code> is empty. If
+<code>target</code> is longer than <code>sub</code>, <code>sub</code> will be extended to match the length of
+<code>target</code> by repeating its last character; if <code>target</code> is shorter than <code>sub</code>,
+the extra characters in <code>sub</code> are ignored. If the same character occurs more
+than once in <code>target</code>, only the first is used. (This function is similar to
+the Unix <code>tr</code> utility.)</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_trim</strong>(const basic_string&lt;C&gt;&amp; str)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_trim</strong>(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; chars)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_trim</strong>(const basic_string&lt;C&gt;&amp; str, const C* chars)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_trim_in</strong>(basic_string&lt;C&gt;&amp; str)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_trim_in</strong>(basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; chars)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_trim_in</strong>(basic_string&lt;C&gt;&amp; str, const C* chars)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_trim_left</strong>(const basic_string&lt;C&gt;&amp; str)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_trim_left</strong>(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; chars)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_trim_left</strong>(const basic_string&lt;C&gt;&amp; str, const C* chars)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_trim_left_in</strong>(basic_string&lt;C&gt;&amp; str)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_trim_left_in</strong>(basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; chars)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_trim_left_in</strong>(basic_string&lt;C&gt;&amp; str, const C* chars)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_trim_right</strong>(const basic_string&lt;C&gt;&amp; str)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_trim_right</strong>(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; chars)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_trim_right</strong>(const basic_string&lt;C&gt;&amp; str, const C* chars)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_trim_right_in</strong>(basic_string&lt;C&gt;&amp; str)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_trim_right_in</strong>(basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; chars)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_trim_right_in</strong>(basic_string&lt;C&gt;&amp; str, const C* chars)</code></li>
+<li><code>template &lt;typename C, typename Pred&gt; basic_string&lt;C&gt; <strong>str_trim_if</strong>(const basic_string&lt;C&gt;&amp; str, Pred p)</code></li>
+<li><code>template &lt;typename C, typename Pred&gt; basic_string&lt;C&gt; <strong>str_trim_if_not</strong>(const basic_string&lt;C&gt;&amp; str, Pred p)</code></li>
+<li><code>template &lt;typename C, typename Pred&gt; void <strong>str_trim_in_if</strong>(const basic_string&lt;C&gt;&amp; str, Pred p)</code></li>
+<li><code>template &lt;typename C, typename Pred&gt; void <strong>str_trim_in_if_not</strong>(const basic_string&lt;C&gt;&amp; str, Pred p)</code></li>
+<li><code>template &lt;typename C, typename Pred&gt; basic_string&lt;C&gt; <strong>str_trim_left_if</strong>(const basic_string&lt;C&gt;&amp; str, Pred p)</code></li>
+<li><code>template &lt;typename C, typename Pred&gt; basic_string&lt;C&gt; <strong>str_trim_left_if_not</strong>(const basic_string&lt;C&gt;&amp; str, Pred p)</code></li>
+<li><code>template &lt;typename C, typename Pred&gt; void <strong>str_trim_left_in_if</strong>(const basic_string&lt;C&gt;&amp; str, Pred p)</code></li>
+<li><code>template &lt;typename C, typename Pred&gt; void <strong>str_trim_left_in_if_not</strong>(const basic_string&lt;C&gt;&amp; str, Pred p)</code></li>
+<li><code>template &lt;typename C, typename Pred&gt; basic_string&lt;C&gt; <strong>str_trim_right_if</strong>(const basic_string&lt;C&gt;&amp; str, Pred p)</code></li>
+<li><code>template &lt;typename C, typename Pred&gt; basic_string&lt;C&gt; <strong>str_trim_right_if_not</strong>(const basic_string&lt;C&gt;&amp; str, Pred p)</code></li>
+<li><code>template &lt;typename C, typename Pred&gt; void <strong>str_trim_right_in_if</strong>(const basic_string&lt;C&gt;&amp; str, Pred p)</code></li>
+<li><code>template &lt;typename C, typename Pred&gt; void <strong>str_trim_right_in_if_not</strong>(const basic_string&lt;C&gt;&amp; str, Pred p)</code></li>
+</ul>
+
+<p>These trim unwanted characters from one or both ends of the string. By
+default, any whitespace characters (according to the Unicode property) are
+stripped; alternatively, you can supply a string containing the list of
+unwanted characters, or a predicate function that takes a character and
+returns <code>true</code> if the character should be trimmed. (Note that the predicate
+always takes a Unicode character, i.e. a <code>char32_t</code>, regardless of the code
+unit type, <code>C</code>.)</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_unify_lines</strong>(const basic_string&lt;C&gt;&amp; str)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_unify_lines</strong>(const basic_string&lt;C&gt;&amp; str, char32_t newline)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_unify_lines</strong>(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; newline)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_unify_lines</strong>(const basic_string&lt;C&gt;&amp; str, const C* newline)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_unify_lines_in</strong>(basic_string&lt;C&gt;&amp; str)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_unify_lines_in</strong>(basic_string&lt;C&gt;&amp; str, char32_t newline)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_unify_lines_in</strong>(basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; newline)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_unify_lines_in</strong>(basic_string&lt;C&gt;&amp; str, const C* newline)</code></li>
+</ul>
+
+<p>These convert all line breaks to the same form, a single <code>LF</code> by default. Any
+Unicode line or paragraph breaking character is recognised and replaced; the
+<code>CR+LF</code> sequence is also treated as a single line break.</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_wrap</strong>(const basic_string&lt;C&gt;&amp; str, Crow::Flagset flags = {}, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_wrap_in</strong>(basic_string&lt;C&gt;&amp; str, Crow::Flagset flags = {}, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos)</code></li>
+</ul>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Bitmask</th>
+	<th style="text-align:left;">Letter</th>
+	<th style="text-align:left;">Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><code>wrap_crlf</code></td>
+	<td style="text-align:left;"><code>r</code></td>
+	<td style="text-align:left;">Use CR+LF for line breaks (default LF)</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>wrap_enforce</code></td>
+	<td style="text-align:left;"><code>e</code></td>
+	<td style="text-align:left;">Enforce right margin strictly</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>wrap_preserve</code></td>
+	<td style="text-align:left;"><code>p</code></td>
+	<td style="text-align:left;">Preserve layout on already indented lines</td>
+</tr>
+</tbody>
+</table>
+
+<p>Wrap the text in a string to a given width. Wrapping is done separately for
+each paragraph; paragraphs are delimited by two or more line breaks (as usual,
+<code>CR+LF</code> is counted as a single line break), or a single paragraph separator
+character (<code>U+2029</code>). Words are simply delimited by whitespace, which may not
+be appropriate for all languages; no attempt is made at anything more
+sophisticated such as hyphenation or locale-specific word breaking rules.</p>
+
+<p>If the <code>width</code> argument is zero or <code>npos</code>, the width is set to two characters
+less than the current terminal width, obtained from the <code>COLUMNS</code> environment
+variable; the terminal width is assumed to be 80 characters if <code>COLUMNS</code> is
+undefined or invalid. The <code>margin1</code> and <code>margin2</code> arguments determine the
+number of spaces used to indent the first and subsequent lines, respectively,
+of a paragraph (the width includes the indentation). If <code>margin2=npos</code>,
+<code>margin1</code> is used for all lines. The function will throw <code>std::length_error</code>
+if either margin is greater than or equal to the width.</p>
+
+<p>Any line breaking already present in the input text is discarded, except for
+the special behaviour described for <code>wrap_preserve</code> below.</p>
+
+<p>The <code>flags</code> argument determines the details of the word wrapping behaviour. In
+addition to the flags listed above, the standard flags for determining string
+length are respected.</p>
+
+<p>By default, a single <code>LF</code> is used to break lines; setting <code>wrap_crlf</code> causes
+<code>CR+LF</code> to be used instead.</p>
+
+<p>If a single word is too long to fit on one line, the default behaviour is to
+allow it to violate the right margin. If the <code>wrap_enforce</code> flag is set, this
+will cause the function to throw <code>std::length_error</code> instead.</p>
+
+<p>If the <code>wrap_preserve</code> flag is set, any paragraphs that start with an indented
+line are left in their original format.</p>
+
+<h2 id="casemappingfunctions">Case mapping functions</h2>
+
+<ul>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_uppercase</strong>(const basic_string&lt;C&gt;&amp; str)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_uppercase_in</strong>(basic_string&lt;C&gt;&amp; str)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_lowercase</strong>(const basic_string&lt;C&gt;&amp; str)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_lowercase_in</strong>(basic_string&lt;C&gt;&amp; str)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_titlecase</strong>(const basic_string&lt;C&gt;&amp; str)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_titlecase_in</strong>(basic_string&lt;C&gt;&amp; str)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_casefold</strong>(const basic_string&lt;C&gt;&amp; str)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_casefold_in</strong>(basic_string&lt;C&gt;&amp; str)</code></li>
+</ul>
+
+<p>These convert a string to upper case, lower case, title case, or the case
+folded form (the form recommended by Unicode for case insensitive string
+comparison; this is similar, but not always identical, to the lower case
+form). These use the full Unicode case mappings; the returned string will not
+necessarily be the same length as the original string (measured either in code
+units or characters). These functions only perform the default case mappings
+recommended by the Unicode standard; they do not make any attempt at
+localisation.</p>
+
+<ul>
+<li><code>struct <strong>IcaseEqual</strong></code>
+
+<ul>
+<li><code>template &lt;typename C&gt; bool IcaseEqual::<strong>operator()</strong>(const basic_string&lt;C&gt;&amp; lhs, const basic_string&lt;C&gt;&amp; rhs) const noexcept</code></li>
+</ul></li>
+<li><code>struct <strong>IcaseCompare</strong></code>
+
+<ul>
+<li><code>template &lt;typename C&gt; bool IcaseCompare::<strong>operator()</strong>(const basic_string&lt;C&gt;&amp; lhs, const basic_string&lt;C&gt;&amp; rhs) const noexcept</code></li>
+</ul></li>
+<li><code>constexpr IcaseEqual <strong>str_icase_equal</strong></code></li>
+<li><code>constexpr IcaseCompare <strong>str_icase_compare</strong></code></li>
+</ul>
+
+<p>Function objects that perform case insensitive string comparison, with
+equality or less-than semantics. These are equivalent to calling <code>casefold()</code>
+on the argument strings before comparison; using these functions is usually
+more efficient for a small number of comparisons, while calling <code>casefold()</code>
+and saving the case folded form of the string will be more efficient if the
+same string is going to be compared frequently.</p>
+
+<h2 id="typeconversionfunctions">Type conversion functions</h2>
+
+<ul>
+<li><code>template &lt;typename T, typename C&gt; size_t <strong>str_to_integer</strong>(T&amp; t, const basic_string&lt;C&gt;&amp; str, size_t offset = 0)</code></li>
+<li><code>template &lt;typename T, typename C&gt; T <strong>str_to_integer</strong>(const basic_string&lt;C&gt;&amp; str, size_t offset = 0)</code></li>
+<li><code>template &lt;typename T, typename C&gt; size_t <strong>hex_to_integer</strong>(T&amp; t, const basic_string&lt;C&gt;&amp; str, size_t offset = 0)</code></li>
+<li><code>template &lt;typename T, typename C&gt; T <strong>hex_to_integer</strong>(const basic_string&lt;C&gt;&amp; str, size_t offset = 0)</code></li>
+<li><code>template &lt;typename T, typename C&gt; size_t <strong>str_to_real</strong>(T&amp; t, const basic_string&lt;C&gt;&amp; str, size_t offset = 0)</code></li>
+<li><code>template &lt;typename T, typename C&gt; T <strong>str_to_real</strong>(const basic_string&lt;C&gt;&amp; str, size_t offset = 0)</code></li>
+</ul>
+
+<p>Conversions from a string to an integer (in decimal or hexadecimal) or a
+floating point number. In each pair of functions, the first version writes the
+result into a variable passed by reference, and returns the number of
+characters read from the string; the second version returns the result, and
+requires the return type to be explicitly specified at the call site.</p>
+
+<p>A value out of range for the return type will be clamped to the nearest end of
+its valid range. The result will be zero if the string does not contain a
+valid number. Any characters after a valid number are ignored. Note that,
+unlike the otherwise similar <code>strtol()</code> and related functions, these do not
+skip leading whitespace.</p>
+
+<p>All of the characters that might be part of a number are in the ASCII range,
+so the return value of the first version of each function does not need to
+distinguish between characters and code points.</p>
+
+</body>
+</html>

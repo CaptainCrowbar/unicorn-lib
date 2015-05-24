@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>Unicorn Library: Non-Unicode Encodings</title>
+	<link type="text/css" rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<h1 id="unicornlibrary:non-unicodeencodings"><a href="index.html">Unicorn Library</a>: Non-Unicode Encodings</h1>
+
+<h4 id="unicodelibraryforcbyrosssmith">Unicode library for C++ by Ross Smith</h4>
+
+<h4 id="includeunicornmbcs.hpp"><code>#include &quot;unicorn/mbcs.hpp&quot;</code></h4>
+
+<p>This module defines functions for conversion between UTF and non-Unicode
+encodings, as well as between internal and external UTF encodings with a
+specific byte order.</p>
+
+<h2 id="contents">Contents</h2>
+
+<ul>
+<li><a href="#exceptions">Exceptions</a></li>
+<li><a href="#conversionfunctions">Conversion functions</a></li>
+<li><a href="#utilityfunctions">Utility functions</a></li>
+</ul>
+
+<h2 id="exceptions">Exceptions</h2>
+
+<ul>
+<li><code>class <strong>UnknownEncoding</strong>: public std::runtime_error</code>
+
+<ul>
+<li><code>UnknownEncoding::<strong>UnknownEncoding</strong>()</code></li>
+<li><code>explicit UnknownEncoding::<strong>UnknownEncoding</strong>(const u8string&amp; encoding, const u8string&amp; details = {})</code></li>
+<li><code>explicit UnknownEncoding::<strong>UnknownEncoding</strong>(uint32_t encoding, const u8string&amp; details = {})</code></li>
+<li><code>u8string UnknownEncoding::<strong>encoding</strong>() const</code></li>
+</ul></li>
+</ul>
+
+<p>Exception thrown to report an unknown encoding name or number.</p>
+
+<h2 id="conversionfunctions">Conversion functions</h2>
+
+<ul>
+<li><code>template &lt;typename C&gt; void <strong>import_string</strong>(const string&amp; src, basic_string&lt;C&gt;&amp; dst)</code></li>
+<li><code>template &lt;typename C, typename C2&gt; void <strong>import_string</strong>(const string&amp; src, basic_string&lt;C&gt;&amp; dst, const basic_string&lt;C2&gt;&amp; enc, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C, typename C2&gt; void <strong>import_string</strong>(const string&amp; src, basic_string&lt;C&gt;&amp; dst, const C2* enc, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; void <strong>import_string</strong>(const string&amp; src, basic_string&lt;C&gt;&amp; dst, uint32_t enc, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; void <strong>export_string</strong>(const basic_string&lt;C&gt;&amp; src, string&amp; dst)</code></li>
+<li><code>template &lt;typename C, typename C2&gt; void <strong>export_string</strong>(const basic_string&lt;C&gt;&amp; src, string&amp; dst, const basic_string&lt;C2&gt;&amp; enc, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C, typename C2&gt; void <strong>export_string</strong>(const basic_string&lt;C&gt;&amp; src, string&amp; dst, const C2* enc, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; void <strong>export_string</strong>(const basic_string&lt;C&gt;&amp; src, string&amp; dst, uint32_t enc, Crow::Flagset flags = {})</code></li>
+</ul>
+
+<p>These functions convert from an external multibyte encoding to Unicode
+(<code>import_string()</code>), and from Unicode to an external multibyte encoding
+(<code>export_string()</code>). They work by calling the operating system&#8217;s native code
+conversion API, <code>iconv()</code> on Unix or <code>MultiByteToWideChar()</code> and
+<code>WideCharToMultiByte()</code> on Windows.</p>
+
+<p>Encodings can be identified either by name or by a Windows &#8220;code page&#8221; number.
+Either kind of identifier can be used on any system; a built-in lookup table
+is used to convert to the form required by the native API. Besides the normal
+names and numbers associated with standard encodings, the following special
+values can be used:</p>
+
+<ul>
+<li><code>&quot;char&quot;</code> = Use the current locale&#8217;s default multibyte character encoding.</li>
+<li><code>&quot;wchar_t&quot;</code> = Use the operating system&#8217;s default wide character encoding.</li>
+<li><code>&quot;utf&quot;</code> = Inspect the string and try to guess the UTF encoding.</li>
+</ul>
+
+<p>The default local encoding is used if no encoding is specified.</p>
+
+<p>An unrecognised encoding name or number will cause an <code>UnknownEncoding</code>
+exception to be thrown. The code that parses encoding names allows a good deal
+of leeway for variations in punctuation and capitalization, but since we are
+relying on system APIs for the actual conversion, no promises can be made
+about any particular encoding (other than the UTF encodings) being correctly
+recognised and handled.</p>
+
+<p>The <code>flags</code> argument can be <code>err_replace</code> (the default) or <code>err_throw</code> (these
+are defined in <a href="utf.html"><code>unicorn/utf</code></a>). If <code>err_replace</code> is selected,
+invalid data in the input string will be replaced with a system-defined
+replacement character (not necessarily <code>U+FFFD</code>); if <code>err_throw</code> is selected,
+invalid data will cause an <code>EncodingError</code> exception to be thrown, if this is
+detectable (see below).</p>
+
+<p>These functions necessarily inherit some of the limitations of the underlying
+native APIs. In particular, the Windows APIs do not reliably report encoding
+errors; although the wrapper functions make a good faith attempt to respect
+the error handling flags, in some cases the underlying conversion function
+will go ahead and replace invalid data without reporting an error.</p>
+
+<h2 id="utilityfunctions">Utility functions</h2>
+
+<ul>
+<li><code>u8string <strong>local_encoding</strong>(const u8string&amp; default_encoding = &quot;utf-8&quot;)</code></li>
+</ul>
+
+<p>Returns the encoding of the current default locale. The default value will be
+returned if no encoding information can be obtained from the operating system.</p>
+
+<ul>
+<li><code>u8string <strong>system_message</strong>(int error)</code></li>
+<li><code>u8string <strong>windows_message</strong>(uint32_t error) [only on Windows]</code></li>
+</ul>
+
+<p>Translate an error code returned by the operating system into an error
+message. These call <code>strerror()</code> and <code>FormatMessageW()</code> respectively; the
+message returned by <code>strerror()</code> is assumed to be in the default local
+encoding, and converted to UTF&#8211;8 (<code>FormatMessageW()</code> always returns UTF&#8211;16).</p>
+
+</body>
+</html>

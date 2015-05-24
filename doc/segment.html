@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>Unicorn Library: Text Segmentation</title>
+	<link type="text/css" rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<h1 id="unicornlibrary:textsegmentation"><a href="index.html">Unicorn Library</a>: Text Segmentation</h1>
+
+<h4 id="unicodelibraryforcbyrosssmith">Unicode library for C++ by Ross Smith</h4>
+
+<h4 id="includeunicornsegment.hpp"><code>#include &quot;unicorn/segment.hpp&quot;</code></h4>
+
+<p>This module contains classes and functions for breaking text up into
+characters, words, sentences, lines, and paragraphs. Most of the rules
+followed here are defined in <a href="http://www.unicode.org/reports/tr29/">Unicode Standard Annex 29: Unicode Text
+Segmentation</a>.</p>
+
+<h2 id="contents">Contents</h2>
+
+<ul>
+<li><a href="#graphemeclusterboundaries">Grapheme cluster boundaries</a></li>
+<li><a href="#wordboundaries">Word boundaries</a></li>
+<li><a href="#sentenceboundaries">Sentence boundaries</a></li>
+<li><a href="#lineboundaries">Line boundaries</a></li>
+<li><a href="#paragraphboundaries">Paragraph boundaries</a></li>
+</ul>
+
+<h2 id="graphemeclusterboundaries">Grapheme cluster boundaries</h2>
+
+<ul>
+<li><code>template &lt;typename C&gt; class <strong>GraphemeIterator</strong></code>
+
+<ul>
+<li><code>using GraphemeIterator::<strong>utf_iterator</strong> = UtfIterator&lt;C&gt;</code></li>
+<li><code>using GraphemeIterator::<strong>difference_type</strong> = ptrdiff_t</code></li>
+<li><code>using GraphemeIterator::<strong>iterator_category</strong> = std::forward_iterator_tag</code></li>
+<li><code>using GraphemeIterator::<strong>value_type</strong> = Crow::Irange&lt;utf_iterator&gt;</code></li>
+<li><code>using GraphemeIterator::<strong>pointer</strong> = const value_type*</code></li>
+<li><code>using GraphemeIterator::<strong>reference</strong> = const value_type&amp;</code></li>
+<li><code>GraphemeIterator::<strong>GraphemeIterator</strong>()</code></li>
+<li><code>[standard iterator operations]</code></li>
+</ul></li>
+</ul>
+
+<p>TODO</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; Crow::Irange&lt;GraphemeIterator&lt;C&gt;&gt; <strong>grapheme_range</strong>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j)</code></li>
+<li><code>template &lt;typename C&gt; Crow::Irange&lt;GraphemeIterator&lt;C&gt;&gt; <strong>grapheme_range</strong>(const Crow::Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; source)</code></li>
+<li><code>template &lt;typename C&gt; Crow::Irange&lt;GraphemeIterator&lt;C&gt;&gt; <strong>grapheme_range</strong>(const basic_string&lt;C&gt;&amp; source)</code></li>
+</ul>
+
+<p>TODO</p>
+
+<h2 id="wordboundaries">Word boundaries</h2>
+
+<ul>
+<li><code>template &lt;typename C&gt; class <strong>WordIterator</strong></code>
+
+<ul>
+<li><code>using WordIterator::<strong>utf_iterator</strong> = UtfIterator&lt;C&gt;</code></li>
+<li><code>using WordIterator::<strong>difference_type</strong> = ptrdiff_t</code></li>
+<li><code>using WordIterator::<strong>iterator_category</strong> = std::forward_iterator_tag</code></li>
+<li><code>using WordIterator::<strong>value_type</strong> = Crow::Irange&lt;utf_iterator&gt;</code></li>
+<li><code>using WordIterator::<strong>pointer</strong> = const value_type*</code></li>
+<li><code>using WordIterator::<strong>reference</strong> = const value_type&amp;</code></li>
+<li><code>WordIterator::<strong>WordIterator</strong>()</code></li>
+<li><code>[standard iterator operations]</code></li>
+</ul></li>
+</ul>
+
+<p>TODO</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; Crow::Irange&lt;WordIterator&lt;C&gt;&gt; <strong>word_range</strong>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; Crow::Irange&lt;WordIterator&lt;C&gt;&gt; <strong>word_range</strong>(const Crow::Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; source, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; Crow::Irange&lt;WordIterator&lt;C&gt;&gt; <strong>word_range</strong>(const basic_string&lt;C&gt;&amp; source, Crow::Flagset flags = {})</code></li>
+</ul>
+
+<p>TODO</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Bitmask</th>
+	<th style="text-align:left;">Letter</th>
+	<th style="text-align:left;">Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><code>unicode_words</code></td>
+	<td style="text-align:left;"><code>u</code></td>
+	<td style="text-align:left;">Report all UAX29 words (default)</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>alpha_words</code></td>
+	<td style="text-align:left;"><code>a</code></td>
+	<td style="text-align:left;">Report only words with alphanumerics</td>
+</tr>
+</tbody>
+</table>
+
+<p>TODO</p>
+
+<h2 id="sentenceboundaries">Sentence boundaries</h2>
+
+<ul>
+<li><code>template &lt;typename C&gt; class <strong>SentenceIterator</strong></code>
+
+<ul>
+<li><code>using SentenceIterator::<strong>utf_iterator</strong> = UtfIterator&lt;C&gt;</code></li>
+<li><code>using SentenceIterator::<strong>difference_type</strong> = ptrdiff_t</code></li>
+<li><code>using SentenceIterator::<strong>iterator_category</strong> = std::forward_iterator_tag</code></li>
+<li><code>using SentenceIterator::<strong>value_type</strong> = Crow::Irange&lt;utf_iterator&gt;</code></li>
+<li><code>using SentenceIterator::<strong>pointer</strong> = const value_type*</code></li>
+<li><code>using SentenceIterator::<strong>reference</strong> = const value_type&amp;</code></li>
+<li><code>SentenceIterator::<strong>SentenceIterator</strong>()</code></li>
+<li><code>[standard iterator operations]</code></li>
+</ul></li>
+</ul>
+
+<p>TODO</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; Crow::Irange&lt;SentenceIterator&lt;C&gt;&gt; <strong>sentence_range</strong>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j)</code></li>
+<li><code>template &lt;typename C&gt; Crow::Irange&lt;SentenceIterator&lt;C&gt;&gt; <strong>sentence_range</strong>(const Crow::Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; source)</code></li>
+<li><code>template &lt;typename C&gt; Crow::Irange&lt;SentenceIterator&lt;C&gt;&gt; <strong>sentence_range</strong>(const basic_string&lt;C&gt;&amp; source)</code></li>
+</ul>
+
+<p>TODO</p>
+
+<h2 id="lineboundaries">Line boundaries</h2>
+
+<ul>
+<li><code>template &lt;typename C&gt; class <strong>LineIterator</strong></code>
+
+<ul>
+<li><code>using LineIterator::<strong>utf_iterator</strong> = UtfIterator&lt;C&gt;</code></li>
+<li><code>using LineIterator::<strong>difference_type</strong> = ptrdiff_t</code></li>
+<li><code>using LineIterator::<strong>iterator_category</strong> = std::forward_iterator_tag</code></li>
+<li><code>using LineIterator::<strong>value_type</strong> = Crow::Irange&lt;utf_iterator&gt;</code></li>
+<li><code>using LineIterator::<strong>pointer</strong> = const value_type*</code></li>
+<li><code>using LineIterator::<strong>reference</strong> = const value_type&amp;</code></li>
+<li><code>LineIterator::<strong>LineIterator</strong>()</code></li>
+<li><code>[standard iterator operations]</code></li>
+</ul></li>
+</ul>
+
+<p>TODO</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; Crow::Irange&lt;LineIterator&lt;C&gt;&gt; <strong>line_range</strong>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; Crow::Irange&lt;LineIterator&lt;C&gt;&gt; <strong>line_range</strong>(const Crow::Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; source, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; Crow::Irange&lt;LineIterator&lt;C&gt;&gt; <strong>line_range</strong>(const basic_string&lt;C&gt;&amp; source, Crow::Flagset flags = {})</code></li>
+</ul>
+
+<p>TODO</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Bitmask</th>
+	<th style="text-align:left;">Letter</th>
+	<th style="text-align:left;">Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><code>keep_breaks</code></td>
+	<td style="text-align:left;"><code>k</code></td>
+	<td style="text-align:left;">Include line terminators in returned strings (default)</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>strip_breaks</code></td>
+	<td style="text-align:left;"><code>s</code></td>
+	<td style="text-align:left;">Do not include line terminators</td>
+</tr>
+</tbody>
+</table>
+
+<p>TODO</p>
+
+<h2 id="paragraphboundaries">Paragraph boundaries</h2>
+
+<ul>
+<li><code>template &lt;typename C&gt; class <strong>ParagraphIterator</strong></code>
+
+<ul>
+<li><code>using ParagraphIterator::<strong>utf_iterator</strong> = UtfIterator&lt;C&gt;</code></li>
+<li><code>using ParagraphIterator::<strong>difference_type</strong> = ptrdiff_t</code></li>
+<li><code>using ParagraphIterator::<strong>iterator_category</strong> = std::forward_iterator_tag</code></li>
+<li><code>using ParagraphIterator::<strong>value_type</strong> = Crow::Irange&lt;utf_iterator&gt;</code></li>
+<li><code>using ParagraphIterator::<strong>pointer</strong> = const value_type*</code></li>
+<li><code>using ParagraphIterator::<strong>reference</strong> = const value_type&amp;</code></li>
+<li><code>ParagraphIterator::<strong>ParagraphIterator</strong>()</code></li>
+<li><code>[standard iterator operations]</code></li>
+</ul></li>
+</ul>
+
+<p>TODO</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; Crow::Irange&lt;ParagraphIterator&lt;C&gt;&gt; <strong>paragraph_range</strong>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; Crow::Irange&lt;ParagraphIterator&lt;C&gt;&gt; <strong>paragraph_range</strong>(const Crow::Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; source, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; Crow::Irange&lt;ParagraphIterator&lt;C&gt;&gt; <strong>paragraph_range</strong>(const basic_string&lt;C&gt;&amp; source, Crow::Flagset flags = {})</code></li>
+</ul>
+
+<p>TODO</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Bitmask</th>
+	<th style="text-align:left;">Letter</th>
+	<th style="text-align:left;">Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><code>keep_breaks</code></td>
+	<td style="text-align:left;"><code>k</code></td>
+	<td style="text-align:left;">Include paragraph terminators in returned strings (default)</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>strip_breaks</code></td>
+	<td style="text-align:left;"><code>s</code></td>
+	<td style="text-align:left;">Do not include paragraph terminators</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>multiline_paras</code></td>
+	<td style="text-align:left;"><code>m</code></td>
+	<td style="text-align:left;">Divide into paragraphs using multiple line breaks (default)</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>line_paras</code></td>
+	<td style="text-align:left;"><code>l</code></td>
+	<td style="text-align:left;">Divide into paragraphs using any line break</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>unicode_paras</code></td>
+	<td style="text-align:left;"><code>u</code></td>
+	<td style="text-align:left;">Divide into paragraphs using only PS</td>
+</tr>
+</tbody>
+</table>
+
+<p>TODO</p>
+
+</body>
+</html>

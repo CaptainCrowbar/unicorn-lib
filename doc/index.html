@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>Unicorn Library</title>
+	<link type="text/css" rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<h1 id="unicornlibrary">Unicorn Library</h1>
+
+<h4 id="unicodelibraryforcbyrosssmith">Unicode library for C++ by Ross Smith</h4>
+
+<p>The Unicorn library is intended to make <a href="http://www.unicode.org/">Unicode</a>
+text manipulation easy for programmers using modern C++. It implements most of
+the main requirements of the <a href="http://www.unicode.org/versions/latest/">Unicode
+standard</a>, currently supporting
+Unicode version 7.0.0. The major missing features in the current version are
+localization support through the <a href="http://cldr.unicode.org/index">CLDR</a>, and
+the Unicode bidirectional algorithm.</p>
+
+<p>The library is divided into the modules listed below; you can import only the
+ones you need, or just import the whole API using <code>&quot;unicorn/library.hpp&quot;</code>.
+Everything in the Unicorn library is in <code>namespace Unicorn</code> (or a subordinate
+namespace inside <code>Unicorn</code>). You can either qualify all calls with the
+<code>Unicorn::</code> prefix, or use <code>using namespace Unicorn</code>.</p>
+
+<p>The Unicorn library depends on the utilities and unit testing framework in my
+<a href="https://github.com/CaptainCrowbar/crow-lib">Crow library</a>.</p>
+
+<ul>
+<li><strong>Documentation</strong>
+
+<ul>
+<li><a href="intro.html">Introduction to the Unicorn Library</a></li>
+</ul></li>
+<li><strong>Core definitions</strong>
+
+<ul>
+<li><a href="core.html"><code>&quot;unicorn/core.hpp&quot;</code></a> &#8211; Core definitions.</li>
+</ul></li>
+<li><strong>Character and string encoding</strong>
+
+<ul>
+<li><a href="character.html"><code>&quot;unicorn/character.hpp&quot;</code></a> &#8211; Unicode characters and their basic properties.</li>
+<li><a href="utf.html"><code>&quot;unicorn/utf.hpp&quot;</code></a> &#8211; The standard UTF encodings, and conversions between them.</li>
+<li><a href="mbcs.html"><code>&quot;unicorn/mbcs.hpp&quot;</code></a> &#8211; Conversion between UTF and non-Unicode encodings.</li>
+</ul></li>
+<li><strong>Operations on strings</strong>
+
+<ul>
+<li><a href="string.html"><code>&quot;unicorn/string.hpp&quot;</code></a> &#8211; A collection of generic string manipulation functions.</li>
+<li><a href="regex.html"><code>&quot;unicorn/regex.hpp&quot;</code></a> &#8211; Unicode regular expressions.</li>
+<li><a href="normal.html"><code>&quot;unicorn/normal.hpp&quot;</code></a> &#8211; The standard Unicode normalization forms.</li>
+</ul></li>
+<li><strong>Text formatting and parsing</strong>
+
+<ul>
+<li><a href="segment.html"><code>&quot;unicorn/segment.hpp&quot;</code></a> &#8211; Breaking text up into characters, words, sentences, lines, and paragraphs.</li>
+<li><a href="format.html"><code>&quot;unicorn/format.hpp&quot;</code></a> &#8211; Formatting various kinds of data as Unicode strings.</li>
+<li><a href="lexer.html"><code>&quot;unicorn/lexer.hpp&quot;</code></a> &#8211; Breaking text up into tokens by user-defined rules.</li>
+</ul></li>
+<li><strong>Interfacing with the outside world</strong>
+
+<ul>
+<li><a href="file.html"><code>&quot;unicorn/file.hpp&quot;</code></a> &#8211; Basic operations on the file system.</li>
+<li><a href="io.html"><code>&quot;unicorn/io.hpp&quot;</code></a> &#8211; File input and output.</li>
+<li><a href="options.html"><code>&quot;unicorn/options.hpp&quot;</code></a> &#8211; Parsing command line options.</li>
+</ul></li>
+</ul>
+
+</body>
+</html>

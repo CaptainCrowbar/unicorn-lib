@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>Unicorn Library: Text Tokenization</title>
+	<link type="text/css" rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<h1 id="unicornlibrary:texttokenization"><a href="index.html">Unicorn Library</a>: Text Tokenization</h1>
+
+<h4 id="unicodelibraryforcbyrosssmith">Unicode library for C++ by Ross Smith</h4>
+
+<h4 id="includeunicornlexer.hpp"><code>#include &quot;unicorn/lexer.hpp&quot;</code></h4>
+
+<p>This module defined a simple lexer or tokenizer, which can split text up into
+tokens (optionally discarding unwanted tokens such as whitespace or comments)
+according to rules defined by the user.</p>
+
+<p>This module calls the <a href="regex.html"><code>unicorn/regex</code></a> module, which in turn
+calls the PCRE library. It will only work with encodings for which the
+corresponding PCRE library has been linked; see the regex module documentation
+for details.</p>
+
+<h2 id="contents">Contents</h2>
+
+<ul>
+<li><a href="#exceptions">Exceptions</a></li>
+<li><a href="#tokenstructure">Token structure</a></li>
+<li><a href="#tokeniterator">Token iterator</a></li>
+<li><a href="#lexerclass">Lexer class</a></li>
+</ul>
+
+<h2 id="exceptions">Exceptions</h2>
+
+<ul>
+<li><code>class <strong>SyntaxError</strong>: public std::runtime_error</code>
+
+<ul>
+<li><code>SyntaxError::<strong>SyntaxError</strong>(const u8string&amp; text, size_t offset)</code></li>
+<li><code>u8string SyntaxError::<strong>text</strong>() const</code></li>
+<li><code>size_t SyntaxError::<strong>offset</strong>() const</code></li>
+</ul></li>
+</ul>
+
+<p>TODO</p>
+
+<h2 id="tokenstructure">Token structure</h2>
+
+<ul>
+<li><code>template &lt;typename C&gt; struct <strong>BasicToken</strong></code>
+
+<ul>
+<li><code>using BasicToken::<strong>char_type</strong> = C</code></li>
+<li><code>using BasicToken::<strong>string_type</strong> = basic_string&lt;C&gt;</code></li>
+<li><code>const BasicToken::string_type* <strong>text</strong></code></li>
+<li><code>size_t BasicToken::<strong>offset</strong></code></li>
+<li><code>size_t BasicToken::<strong>count</strong></code></li>
+<li><code>int BasicToken::<strong>tag</strong></code></li>
+<li><code>BasicToken::<strong>operator string_type</strong>() const</code></li>
+</ul></li>
+<li><code>using <strong>Token</strong> = BasicToken&lt;char&gt;</code></li>
+<li><code>using <strong>Token16</strong> = BasicToken&lt;char16_t&gt;</code></li>
+<li><code>using <strong>Token32</strong> = BasicToken&lt;char32_t&gt;</code></li>
+<li><code>using <strong>WideToken</strong> = BasicToken&lt;wchar_t&gt;</code></li>
+</ul>
+
+<p>TODO</p>
+
+<h2 id="tokeniterator">Token iterator</h2>
+
+<ul>
+<li><code>template &lt;typename CX&gt; class <strong>BasicTokenIterator</strong></code>
+
+<ul>
+<li><code>using BasicTokenIterator::<strong>char_type</strong> = [char if CX is ByteMode, otherwise CX]</code></li>
+<li><code>using BasicTokenIterator::<strong>string_type</strong> = basic_string&lt;char_type&gt;</code></li>
+<li><code>using BasicTokenIterator::<strong>difference_type</strong> = ptrdiff_t</code></li>
+<li><code>using BasicTokenIterator::<strong>iterator_category</strong> = std::forward_iterator_tag</code></li>
+<li><code>using BasicTokenIterator::<strong>pointer</strong> = const BasicToken&lt;char_type&gt;*</code></li>
+<li><code>using BasicTokenIterator::<strong>reference</strong> = const BasicToken&lt;char_type&gt;&amp;</code></li>
+<li><code>using BasicTokenIterator::<strong>value_type</strong> = BasicToken&lt;char_type&gt;</code></li>
+<li><code>BasicTokenIterator::<strong>BasicTokenIterator</strong>()</code></li>
+<li><code>[standard iterator operations]</code></li>
+</ul></li>
+<li><code>using <strong>TokenIterator</strong> = BasicTokenIterator&lt;char&gt;</code></li>
+<li><code>using <strong>TokenIterator16</strong> = BasicTokenIterator&lt;char16_t&gt;</code></li>
+<li><code>using <strong>TokenIterator32</strong> = BasicTokenIterator&lt;char32_t&gt;</code></li>
+<li><code>using <strong>WideTokenIterator</strong> = BasicTokenIterator&lt;wchar_t&gt;</code></li>
+<li><code>using <strong>ByteTokenIterator</strong> = BasicTokenIterator&lt;ByteMode&gt;</code></li>
+</ul>
+
+<p>TODO</p>
+
+<h2 id="lexerclass">Lexer class</h2>
+
+<ul>
+<li><code>template &lt;typename CX&gt; class <strong>BasicLexer</strong></code></li>
+<li><code>using <strong>Lexer</strong> = BasicLexer&lt;char&gt;</code></li>
+<li><code>using <strong>Lexer16</strong> = BasicLexer&lt;char16_t&gt;</code></li>
+<li><code>using <strong>Lexer32</strong> = BasicLexer&lt;char32_t&gt;</code></li>
+<li><code>using <strong>WideLexer</strong> = BasicLexer&lt;wchar_t&gt;</code></li>
+<li><code>using <strong>ByteLexer</strong> = BasicLexer&lt;ByteMode&gt;</code></li>
+</ul>
+
+<p>TODO</p>
+
+<ul>
+<li><code>using BasicLexer::<strong>char_type</strong> = [char if CX is ByteMode, otherwise CX]</code></li>
+<li><code>using BasicLexer::<strong>string_type</strong> = basic_string&lt;char_type&gt;</code></li>
+<li><code>using BasicLexer::<strong>regex_type</strong> = BasicRegex&lt;CX&gt;</code></li>
+<li><code>using BasicLexer::<strong>token_type</strong> = BasicToken&lt;char_type&gt;</code></li>
+<li><code>using BasicLexer::<strong>callback_type</strong> = std::function&lt;size_t(const string_type&amp;, size_t)&gt;</code></li>
+<li><code>using BasicLexer::<strong>token_iterator</strong> = BasicTokenIterator&lt;CX&gt;</code></li>
+<li><code>using BasicLexer::<strong>token_range</strong> = Crow::Irange&lt;token_iterator&gt;</code></li>
+</ul>
+
+<p>TODO</p>
+
+<ul>
+<li><code>BasicLexer::<strong>BasicLexer</strong>()</code></li>
+<li><code>BasicLexer::<strong>BasicLexer</strong>(const BasicLexer&amp; lex)</code></li>
+<li><code>BasicLexer::<strong>BasicLexer</strong>(BasicLexer&amp;&amp; lex)</code></li>
+<li><code>BasicLexer::<strong>~BasicLexer</strong>()</code></li>
+<li><code>BasicLexer&amp; BasicLexer::<strong>operator=</strong>(const BasicLexer&amp; lex)</code></li>
+<li><code>BasicLexer&amp; BasicLexer::<strong>operator=</strong>(BasicLexer&amp;&amp; lex)</code></li>
+</ul>
+
+<p>TODO</p>
+
+<ul>
+<li><code>BasicLexer::token_range BasicLexer::<strong>lex</strong>(const string_type&amp; text) const</code></li>
+<li><code>BasicLexer::token_range BasicLexer::<strong>operator()</strong>(const string_type&amp; text) const</code></li>
+</ul>
+
+<p>TODO</p>
+
+<ul>
+<li><code>void BasicLexer::<strong>call</strong>(int tag, const callback_type&amp; call)</code></li>
+<li><code>void BasicLexer::<strong>exact</strong>(int tag, const string_type&amp; pattern)</code></li>
+<li><code>void BasicLexer::<strong>exact</strong>(int tag, const char_type* pattern)</code></li>
+<li><code>void BasicLexer::<strong>match</strong>(int tag, const regex_type&amp; pattern)</code></li>
+<li><code>void BasicLexer::<strong>match</strong>(int tag, const string_type&amp; pattern, Crow::Flagset flags = {})</code></li>
+<li><code>void BasicLexer::<strong>match</strong>(int tag, const char_type* pattern, Crow::Flagset flags = {})</code></li>
+</ul>
+
+<p>TODO</p>
+
+</body>
+</html>

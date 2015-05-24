@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>Unicorn Library: String Formatting</title>
+	<link type="text/css" rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<h1 id="unicornlibrary:stringformatting"><a href="index.html">Unicorn Library</a>: String Formatting</h1>
+
+<h4 id="unicodelibraryforcbyrosssmith">Unicode library for C++ by Ross Smith</h4>
+
+<h4 id="includeunicornformat.hpp"><code>#include &quot;unicorn/format.hpp&quot;</code></h4>
+
+<p>This module provides facilities for formatting various kinds of data as
+Unicode strings, in a manner similar to <code>printf()</code> in C, <code>str.format()</code> in
+Python, etc. Formatters are supplied for commonly used standard types
+(booleans, integers, floating point, characters, strings, and time points and
+durations), as well as for the Crow library&#8217;s <code>Uuid</code> and <code>Version</code> types; user
+defined formatters for other types can also be supplied.</p>
+
+<p>Basic formatting for range types (containers and arrays) is provided; these
+will be written in comma delimited form. Pairs will be written in
+<code>&quot;key:value&quot;</code> format. More elaborate formatting for ranges is beyond the scope
+of this module and will need to be handled by the caller.</p>
+
+<p>This module calls the <a href="regex.html"><code>unicorn/regex</code></a> module, which in turn
+calls the PCRE library. It will only work with encodings for which the
+corresponding PCRE library has been linked; see the regex module documentation
+for details.</p>
+
+<h2 id="contents">Contents</h2>
+
+<ul>
+<li><a href="#basicformattingfunctions">Basic formatting functions</a></li>
+<li><a href="#formatterclass">Formatter class</a></li>
+<li><a href="#formattingforspecifictypes">Formatting for specific types</a>
+
+<ul>
+<li><a href="#globalflags">Global flags</a></li>
+<li><a href="#booleanformatting">Boolean formatting</a></li>
+<li><a href="#integerformatting">Integer formatting</a></li>
+<li><a href="#floatingpointformatting">Floating point formatting</a></li>
+<li><a href="#characterandstringformatting">Character and string formatting</a></li>
+<li><a href="#timeanddateformatting">Time and date formatting</a></li>
+<li><a href="#uuidformatting">UUID formatting</a></li>
+<li><a href="#versionnumberformatting">Version number formatting</a></li>
+</ul></li>
+</ul>
+
+<h2 id="basicformattingfunctions">Basic formatting functions</h2>
+
+<ul>
+<li><code>template &lt;typename T&gt; class <strong>FormatType</strong></code>
+
+<ul>
+<li><code>[string type] <strong>operator()</strong>(T t, Crow::Flagset flags, int prec) const</code></li>
+</ul></li>
+</ul>
+
+<p>TODO</p>
+
+<ul>
+<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;bool&gt;</code></li>
+<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;signed char&gt;</code></li>
+<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;unsigned char&gt;</code></li>
+<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;short&gt;</code></li>
+<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;unsigned short&gt;</code></li>
+<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;int&gt;</code></li>
+<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;unsigned&gt;</code></li>
+<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;long&gt;</code></li>
+<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;unsigned long&gt;</code></li>
+<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;long long&gt;</code></li>
+<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;unsigned long long&gt;</code></li>
+<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;float&gt;</code></li>
+<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;double&gt;</code></li>
+<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;long double&gt;</code></li>
+<li><code>template &lt;typename C&gt; class <strong>FormatType</strong>&lt;basic_string&lt;C&gt;&gt;</code></li>
+<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;char*&gt;</code></li>
+<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;char16_t*&gt;</code></li>
+<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;char32_t*&gt;</code></li>
+<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;wchar_t*&gt;</code></li>
+<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;const char*&gt;</code></li>
+<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;const char16_t*&gt;</code></li>
+<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;const char32_t*&gt;</code></li>
+<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;const wchar_t*&gt;</code></li>
+<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;char&gt;</code></li>
+<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;char16_t&gt;</code></li>
+<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;char32_t&gt;</code></li>
+<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;wchar_t&gt;</code></li>
+<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;std::chrono::system_clock::time_point&gt;</code></li>
+<li><code>template &lt;typename R, typename P&gt; class <strong>FormatType</strong>&lt;std::chrono::duration&lt;R, P&gt;&gt;</code></li>
+<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;Crow::Uuid&gt;</code></li>
+<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;Crow::Version&gt;</code></li>
+</ul>
+
+<p>TODO</p>
+
+<ul>
+<li><code>template &lt;typename T, typename C&gt; void <strong>format_type</strong>(const T&amp; t, basic_string&lt;C&gt;&amp; dst, Crow::Flagset flags = {}, int prec = -1, size_t width = 0, char32_t pad = U' ')</code></li>
+<li><code>template &lt;typename T, typename C&gt; void <strong>format_type</strong>(const T&amp; t, basic_string&lt;C&gt;&amp; dst, const basic_string&lt;C&gt;&amp; flags)</code></li>
+<li><code>template &lt;typename T, typename C&gt; void <strong>format_type</strong>(const T&amp; t, basic_string&lt;C&gt;&amp; dst, const C* flags)</code></li>
+<li><code>template &lt;typename C, typename T&gt; basic_string&lt;C&gt; <strong>format_as</strong>(const T&amp; t, Crow::Flagset flags = {}, int prec = -1, size_t width = 0, char32_t pad = U' ')</code></li>
+<li><code>template &lt;typename C, typename T&gt; basic_string&lt;C&gt; <strong>format_as</strong>(const T&amp; t, const basic_string&lt;C&gt;&amp; flags)</code></li>
+<li><code>template &lt;typename C, typename T&gt; basic_string&lt;C&gt; <strong>format_as</strong>(const T&amp; t, const C* flags)</code></li>
+</ul>
+
+<p>TODO</p>
+
+<h2 id="formatterclass">Formatter class</h2>
+
+<ul>
+<li><code>template &lt;typename C&gt; class <strong>Format</strong></code>
+
+<ul>
+<li><code>using Format::<strong>char_type</strong> = C</code></li>
+<li><code>using Format::<strong>string_type</strong> = basic_string&lt;C&gt;</code></li>
+<li><code>Format::<strong>Format</strong>()</code></li>
+<li><code>explicit Format::<strong>Format</strong>(const string_type&amp; format)</code></li>
+<li><code>Format::<strong>Format</strong>(const Format&amp; f)</code></li>
+<li><code>Format::<strong>Format</strong>(Format&amp;&amp; f)</code></li>
+<li><code>Format::<strong>~Format</strong>()</code></li>
+<li><code>Format&amp; Format::<strong>operator=</strong>(const Format&amp; f)</code></li>
+<li><code>Format&amp; Format::<strong>operator=</strong>(Format&amp;&amp; f)</code></li>
+<li><code>template &lt;typename... Args&gt; Format::string_type Format::<strong>operator()</strong>(const Args&amp;... args) const</code></li>
+<li><code>size_t Format::<strong>fields</strong>() const</code></li>
+<li><code>Format::string_type Format::<strong>format</strong>() const</code></li>
+</ul></li>
+</ul>
+
+<p>TODO</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; Format&lt;C&gt; <strong>format</strong>(const basic_string&lt;C&gt;&amp; fmt)</code></li>
+<li><code>template &lt;typename C&gt; Format&lt;C&gt; <strong>format</strong>(const C* fmt)</code></li>
+</ul>
+
+<p>TODO</p>
+
+<ul>
+<li><code>namespace Literals</code>
+
+<ul>
+<li><code>Format&lt;char&gt; <strong>operator&quot;&quot; _fmt</strong>(const char* ptr, size_t len)</code></li>
+<li><code>Format&lt;char16_t&gt; <strong>operator&quot;&quot; _fmt</strong>(const char16_t* ptr, size_t len)</code></li>
+<li><code>Format&lt;char32_t&gt; <strong>operator&quot;&quot; _fmt</strong>(const char32_t* ptr, size_t len)</code></li>
+<li><code>Format&lt;wchar_t&gt; <strong>operator&quot;&quot; _fmt</strong>(const wchar_t* ptr, size_t len)</code></li>
+</ul></li>
+</ul>
+
+<p>TODO</p>
+
+<h2 id="formattingforspecifictypes">Formatting for specific types</h2>
+
+<h3 id="globalflags">Global flags</h3>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Bitmask</th>
+	<th style="text-align:left;">Letter</th>
+	<th style="text-align:left;">Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><code>fx_left</code></td>
+	<td style="text-align:left;"><code>&lt;</code></td>
+	<td style="text-align:left;">Left align (default)</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>fx_right</code></td>
+	<td style="text-align:left;"><code>&gt;</code></td>
+	<td style="text-align:left;">Right align</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>fx_centre</code></td>
+	<td style="text-align:left;"><code>=</code></td>
+	<td style="text-align:left;">Centre align</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>fx_upper</code></td>
+	<td style="text-align:left;"><code>U</code></td>
+	<td style="text-align:left;">Convert to upper case</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>fx_lower</code></td>
+	<td style="text-align:left;"><code>L</code></td>
+	<td style="text-align:left;">Convert to lower case</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>fx_title</code></td>
+	<td style="text-align:left;"><code>T</code></td>
+	<td style="text-align:left;">Convert to title case</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>character_units</code></td>
+	<td style="text-align:left;"><code>C</code></td>
+	<td style="text-align:left;">Measure string in characters (default)</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>grapheme_units</code></td>
+	<td style="text-align:left;"><code>G</code></td>
+	<td style="text-align:left;">Measure string in grapheme clusters</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>narrow_context</code></td>
+	<td style="text-align:left;"><code>N</code></td>
+	<td style="text-align:left;">East Asian width, defaulting to narrow</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>wide_context</code></td>
+	<td style="text-align:left;"><code>W</code></td>
+	<td style="text-align:left;">East Asian width, defaulting to wide</td>
+</tr>
+</tbody>
+</table>
+
+<p>TODO</p>
+
+<h3 id="booleanformatting">Boolean formatting</h3>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Bitmask</th>
+	<th style="text-align:left;">Letter</th>
+	<th style="text-align:left;">Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><code>fx_tf</code></td>
+	<td style="text-align:left;"><code>t</code></td>
+	<td style="text-align:left;">Write as true or false (default)</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>fx_binary</code></td>
+	<td style="text-align:left;"><code>b</code></td>
+	<td style="text-align:left;">Write as 1 or 0</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>fx_yesno</code></td>
+	<td style="text-align:left;"><code>y</code></td>
+	<td style="text-align:left;">Write as yes or no</td>
+</tr>
+</tbody>
+</table>
+
+<p>TODO</p>
+
+<h3 id="integerformatting">Integer formatting</h3>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Bitmask</th>
+	<th style="text-align:left;">Letter</th>
+	<th style="text-align:left;">Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><code>fx_decimal</code></td>
+	<td style="text-align:left;"><code>n</code></td>
+	<td style="text-align:left;">Decimal number (default)</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>fx_binary</code></td>
+	<td style="text-align:left;"><code>b</code></td>
+	<td style="text-align:left;">Binary number</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>fx_hex</code></td>
+	<td style="text-align:left;"><code>x</code></td>
+	<td style="text-align:left;">Hexadecimal number</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>fx_roman</code></td>
+	<td style="text-align:left;"><code>r</code></td>
+	<td style="text-align:left;">Roman numerals</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>fx_sign</code></td>
+	<td style="text-align:left;"><code>s</code></td>
+	<td style="text-align:left;">Always show a sign</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>fx_signz</code></td>
+	<td style="text-align:left;"><code>i</code></td>
+	<td style="text-align:left;">Always show a sign unless zero</td>
+</tr>
+</tbody>
+</table>
+
+<p>TODO</p>
+
+<h3 id="floatingpointformatting">Floating point formatting</h3>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Bitmask</th>
+	<th style="text-align:left;">Letter</th>
+	<th style="text-align:left;">Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><code>fx_digits</code></td>
+	<td style="text-align:left;"><code>d</code></td>
+	<td style="text-align:left;">Fixed significant figures</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>fx_exp</code></td>
+	<td style="text-align:left;"><code>e</code></td>
+	<td style="text-align:left;">Scientific notation</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>fx_fixed</code></td>
+	<td style="text-align:left;"><code>f</code></td>
+	<td style="text-align:left;">Fixed point notation</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>fx_general</code></td>
+	<td style="text-align:left;"><code>g</code></td>
+	<td style="text-align:left;">Use the shorter of d or e (default)</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>fx_prob</code></td>
+	<td style="text-align:left;"><code>p</code></td>
+	<td style="text-align:left;">Probability format</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>fx_sign</code></td>
+	<td style="text-align:left;"><code>s</code></td>
+	<td style="text-align:left;">Always show a sign</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>fx_signz</code></td>
+	<td style="text-align:left;"><code>i</code></td>
+	<td style="text-align:left;">Always show a sign unless zero</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>fx_stripz</code></td>
+	<td style="text-align:left;"><code>z</code></td>
+	<td style="text-align:left;">Strip trailing zeros</td>
+</tr>
+</tbody>
+</table>
+
+<p>TODO</p>
+
+<h3 id="characterandstringformatting">Character and string formatting</h3>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Bitmask</th>
+	<th style="text-align:left;">Letter</th>
+	<th style="text-align:left;">Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><code>fx_ascii</code></td>
+	<td style="text-align:left;"><code>a</code></td>
+	<td style="text-align:left;">Escape if not printable ASCII</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>fx_escape</code></td>
+	<td style="text-align:left;"><code>c</code></td>
+	<td style="text-align:left;">Escape C0/C1 controls</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>fx_quote</code></td>
+	<td style="text-align:left;"><code>q</code></td>
+	<td style="text-align:left;">Quote string, escape C0/C1</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>fx_ascquote</code></td>
+	<td style="text-align:left;"><code>o</code></td>
+	<td style="text-align:left;">Quote string, escape non-ASCII</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>fx_decimal</code></td>
+	<td style="text-align:left;"><code>n</code></td>
+	<td style="text-align:left;">Decimal number</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>fx_hex</code></td>
+	<td style="text-align:left;"><code>x</code></td>
+	<td style="text-align:left;">Hexadecimal number</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>fx_hex8</code></td>
+	<td style="text-align:left;"><code>u</code></td>
+	<td style="text-align:left;">Hex UTF&#8211;8 bytes</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>fx_hex16</code></td>
+	<td style="text-align:left;"><code>v</code></td>
+	<td style="text-align:left;">Hex UTF&#8211;16 code units</td>
+</tr>
+</tbody>
+</table>
+
+<p>TODO</p>
+
+<h3 id="timeanddateformatting">Time and date formatting</h3>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Bitmask</th>
+	<th style="text-align:left;">Letter</th>
+	<th style="text-align:left;">Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><code>fx_iso</code></td>
+	<td style="text-align:left;"><code>t</code></td>
+	<td style="text-align:left;">ISO 8601 with T delimiter</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>fx_common</code></td>
+	<td style="text-align:left;"><code>c</code></td>
+	<td style="text-align:left;">Local standard format</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>fx_local</code></td>
+	<td style="text-align:left;"><code>l</code></td>
+	<td style="text-align:left;">Local time zone</td>
+</tr>
+</tbody>
+</table>
+
+<p>TODO</p>
+
+<h3 id="uuidformatting">UUID formatting</h3>
+
+<p>No type-specific flags are defined.</p>
+
+<h3 id="versionnumberformatting">Version number formatting</h3>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Bitmask</th>
+	<th style="text-align:left;">Letter</th>
+	<th style="text-align:left;">Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><code>fx_stripz</code></td>
+	<td style="text-align:left;"><code>z</code></td>
+	<td style="text-align:left;">Strip trailing zeros</td>
+</tr>
+</tbody>
+</table>
+
+<p>TODO</p>
+
+</body>
+</html>

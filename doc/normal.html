@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>Unicorn Library: String Normalization</title>
+	<link type="text/css" rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<h1 id="unicornlibrary:stringnormalization"><a href="index.html">Unicorn Library</a>: String Normalization</h1>
+
+<h4 id="unicodelibraryforcbyrosssmith">Unicode library for C++ by Ross Smith</h4>
+
+<h4 id="includeunicornnormal.hpp"><code>#include &quot;unicorn/normal.hpp&quot;</code></h4>
+
+<p>This is a small module (really just one function), with the specific purpose
+of converting Unicode strings into the four standard normalization forms.</p>
+
+<h2 id="normalizationfunctions">Normalization functions</h2>
+
+<ul>
+<li><code>enum <strong>NormalizationForm</strong></code>
+
+<ul>
+<li><code>NFC, NFD, NFKC, NFKD</code></li>
+</ul></li>
+</ul>
+
+<p>The standard Unicode normalization forms.</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>normalize</strong>(const basic_string&lt;C&gt;&amp; src, NormalizationForm form)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>normalize_in</strong>(basic_string&lt;C&gt;&amp; src, NormalizationForm form)</code></li>
+</ul>
+
+<p>Convert a string to one of the normalized forms. The <code>normalize()</code> function
+returns the normalized string, while <code>normalize_in()</code> updates the source
+string in place. As usual, these functions assume valid Unicode input, and
+will emit garbage if the input contains invalid UTF encoding.</p>
+
+</body>
+</html>

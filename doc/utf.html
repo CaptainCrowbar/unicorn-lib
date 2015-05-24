@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>Unicorn Library: UTF Encodings</title>
+	<link type="text/css" rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<h1 id="unicornlibrary:utfencodings"><a href="index.html">Unicorn Library</a>: UTF Encodings</h1>
+
+<h4 id="unicodelibraryforcbyrosssmith">Unicode library for C++ by Ross Smith</h4>
+
+<h4 id="includeunicornutf.hpp"><code>#include &quot;unicorn/utf.hpp&quot;</code></h4>
+
+<p>This module defines classes and functions for encoding, decoding, and
+converting between the standard Unicode transformation formats: UTF&#8211;8, UTF&#8211;16,
+and UTF&#8211;32. Encoded strings are stored in any of the standard C++ string
+classes, with the encoding defined by the size of the code units: <code>string</code> (or
+<code>u8string</code>) holds UTF&#8211;8, <code>u16string</code> holds UTF&#8211;16, and <code>u32string</code> holds
+UTF&#8211;32; <code>wstring</code> may hold either UTF&#8211;16 or UTF&#8211;32, depending on the compiler.</p>
+
+<h2 id="contents">Contents</h2>
+
+<ul>
+<li><a href="#constants">Constants</a></li>
+<li><a href="#utilityfunctions">Utility functions</a></li>
+<li><a href="#utfdecodingiterator">UTF decoding iterator</a></li>
+<li><a href="#utfencodingiterator">UTF encoding iterator</a></li>
+<li><a href="#utfconversionfunctions">UTF conversion functions</a></li>
+<li><a href="#utfvalidationfunctions">UTF validation functions</a></li>
+</ul>
+
+<h2 id="constants">Constants</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Bitmask</th>
+	<th style="text-align:left;">Letter</th>
+	<th style="text-align:left;">Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><code>err_ignore</code></td>
+	<td style="text-align:left;"><code>I</code></td>
+	<td style="text-align:left;">Assume valid UTF input</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>err_replace</code></td>
+	<td style="text-align:left;"><code>R</code></td>
+	<td style="text-align:left;">Replace invalid UTF with <code>U+FFFD</code></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>err_throw</code></td>
+	<td style="text-align:left;"><code>T</code></td>
+	<td style="text-align:left;">Throw <code>EncodingError</code> on invalid UTF</td>
+</tr>
+</tbody>
+</table>
+
+<p>These flags are used in most encoding conversion functions, and some related
+functions, to indicate how to handle encoding errors in the input data.</p>
+
+<p>The <code>err_ignore</code> option is the default for the UTF conversion functions. This
+tells the function to assume that the input is already known to be a valid UTF
+encoding. If this is not true, behaviour is unspecified (but not undefined);
+basically, the output will be garbage. The UTF conversion code is optimized
+for this case.</p>
+
+<p>The <code>err_replace</code> option causes invalid input encoding to be replaced with the
+standard Unicode replacement character (<code>U+FFFD</code>). Error handling for invalid
+UTF&#8211;8 subsequences follows the Unicode recommended behaviour (Unicode Standard
+7.0, section 3.9, page 128).</p>
+
+<p>The <code>err_throw</code> option causes any input encoding error to throw an
+<code>EncodingError</code> exception.</p>
+
+<p>If ignoring errors sounds like an unsafe choice for the default action,
+remember that the Unicorn library is designed with the intention that text
+manipulation within a program will be done entirely in Unicode; text is
+normally converted back and forth to other encodings, and checked for
+validity, only at the point of input and output. Unlike the UTF conversion
+functions in this module, the functions in <a href="mbcs.html"><code>unicorn/mbcs</code></a> that
+convert between Unicode and other encodings default to <code>err_replace</code>, and do
+not accept the <code>err_ignore</code> option.</p>
+
+<h2 id="utilityfunctions">Utility functions</h2>
+
+<ul>
+<li><code>template &lt;typename C&gt; unsigned <strong>code_units</strong>(char32_t c)</code></li>
+</ul>
+
+<p>Returns the number of code units in the encoding of the character <code>c</code>, in the
+UTF encoding implied by the character type <code>C</code>.</p>
+
+<h2 id="utfdecodingiterator">UTF decoding iterator</h2>
+
+<ul>
+<li><code>template &lt;typename C&gt; class <strong>UtfIterator</strong></code>
+
+<ul>
+<li><code>using UtfIterator::<strong>code_unit</strong> = C</code></li>
+<li><code>using UtfIterator::<strong>string_type</strong> = basic_string&lt;C&gt;</code></li>
+<li><code>using UtfIterator::<strong>difference_type</strong> = ptrdiff_t</code></li>
+<li><code>using UtfIterator::<strong>iterator_category</strong> = std::bidirectional_iterator_tag</code></li>
+<li><code>using UtfIterator::<strong>pointer</strong> = const char32_t*</code></li>
+<li><code>using UtfIterator::<strong>reference</strong> = const char32_t&amp;</code></li>
+<li><code>using UtfIterator::<strong>value_type</strong> = char32_t</code></li>
+<li><code>UtfIterator::<strong>UtfIterator</strong>() noexcept</code></li>
+<li><code>explicit UtfIterator::<strong>UtfIterator</strong>(const string_type&amp; src)</code></li>
+<li><code>UtfIterator::<strong>UtfIterator</strong>(const string_type&amp; src, size_t offset, Crow::Flagset flags = {})</code></li>
+<li><code>const string_type&amp; UtfIterator::<strong>source</strong>() const noexcept</code></li>
+<li><code>size_t UtfIterator::<strong>offset</strong>() const noexcept</code></li>
+<li><code>size_t UtfIterator::<strong>count</strong>() const noexcept</code></li>
+<li><code>bool UtfIterator::<strong>valid</strong>() const noexcept</code></li>
+<li><code>[standard iterator operations]</code></li>
+</ul></li>
+</ul>
+
+<p>This is a bidirectional iterator over any UTF-encoded text. The template
+argument type (<code>C</code>) is the code unit type of the underlying encoded string,
+the encoding form is determined by the size of the code unit. The iterator
+dereferences to a Unicode character; incrementing or decrementing the iterator
+moves it to the next or previous encoded character. The iterator holds a
+reference to the underlying string; UTF iterators are invalidated by any of
+the same operations on the underlying string that would invalidate an ordinary
+string iterator.</p>
+
+<p>The <code>flags</code> argument determines the behaviour when invalid encoded data is
+found, as described above. If an <code>EncodingError</code> exception is caught and
+handled, the iterator is still in a valid state, and can be dereferenced
+(yielding <code>U+FFFD</code>), incremented, or decremented in the normal way.</p>
+
+<p>When invalid UTF&#8211;8 data is replaced, the substitution rules recommended in the
+Unicode Standard (section 3.9, table 3&#8211;8) are followed. Replacements in UTF&#8211;16
+or 32 are always one-for-one.</p>
+
+<p>Besides the normal operations that can be applied to an iterator,
+<code>UtfIterator</code> has some extra member functions that can be used to query its
+state. The <code>source()</code> function returns a reference to the underlying encoded
+string. The <code>offset()</code> and <code>count()</code> functions return the position and length
+(in code units) of the current encoded character (or the group of code units
+currently being interpreted as an invalid character). The <code>valid()</code> function
+indicates whether the current character is valid; it will always be true if
+<code>err_ignore</code> was set, and its value is unspecified on a past-the-end iterator.</p>
+
+<p>If the underlying string is UTF&#8211;32, this is just a simple pass-through
+iterator, but if one of the non-default error handling options is selected, it
+will check for valid Unicode characters and treat invalid code points as
+errors.</p>
+
+<ul>
+<li><code>using <strong>Utf8Iterator</strong> = UtfIterator&lt;char&gt;</code></li>
+<li><code>using <strong>Utf16Iterator</strong> = UtfIterator&lt;char16_t&gt;</code></li>
+<li><code>using <strong>Utf32Iterator</strong> = UtfIterator&lt;char32_t&gt;</code></li>
+<li><code>using <strong>WcharIterator</strong> = UtfIterator&lt;wchar_t&gt;</code></li>
+<li><code>using <strong>Utf8Range</strong> = Crow::Irange&lt;Utf8Iterator&gt;</code></li>
+<li><code>using <strong>Utf16Range</strong> = Crow::Irange&lt;Utf16Iterator&gt;</code></li>
+<li><code>using <strong>Utf32Range</strong> = Crow::Irange&lt;Utf32Iterator&gt;</code></li>
+<li><code>using <strong>WcharRange</strong> = Crow::Irange&lt;WcharIterator&gt;</code></li>
+</ul>
+
+<p>Convenience aliases for specific iterators and ranges.</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>utf_begin</strong>(const basic_string&lt;C&gt;&amp; src, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>utf_end</strong>(const basic_string&lt;C&gt;&amp; src, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; Crow::Irange&lt;UtfIterator&lt;C&gt;&gt; <strong>utf_range</strong>(const basic_string&lt;C&gt;&amp; src, Crow::Flagset flags = {})</code></li>
+</ul>
+
+<p>These return iterators over an encoded string.</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>utf_iterator</strong>(const basic_string&lt;C&gt;&amp; src, size_t offset, Crow::Flagset flags = {})</code></li>
+</ul>
+
+<p>Returns an iterator pointing to a specific offset in a string. If the offset
+does not point to a character boundary, it will be treated as an invalid
+character.</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>u_str</strong>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>u_str</strong>(const Crow::Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; range)</code></li>
+</ul>
+
+<p>These return a copy of the substring between two iterators.</p>
+
+<h2 id="utfencodingiterator">UTF encoding iterator</h2>
+
+<ul>
+<li><code>template &lt;typename C&gt; class <strong>UtfWriter</strong></code>
+
+<ul>
+<li><code>using UtfWriter::<strong>code_unit</strong> = C</code></li>
+<li><code>using UtfWriter::<strong>string_type</strong> = basic_string&lt;C&gt;</code></li>
+<li><code>using UtfWriter::<strong>difference_type</strong> = void</code></li>
+<li><code>using UtfWriter::<strong>iterator_category</strong> = std::output_iterator_tag</code></li>
+<li><code>using UtfWriter::<strong>pointer</strong> = void</code></li>
+<li><code>using UtfWriter::<strong>reference</strong> = void</code></li>
+<li><code>using UtfWriter::<strong>value_type</strong> = char32_t</code></li>
+<li><code>UtfWriter::<strong>UtfWriter</strong>() noexcept</code></li>
+<li><code>explicit UtfWriter::<strong>UtfWriter</strong>(string_type&amp; dst) noexcept</code></li>
+<li><code>UtfWriter::<strong>UtfWriter</strong>(string_type&amp; dst, int on_error) noexcept</code></li>
+<li><code>bool UtfWriter::<strong>valid</strong>() const noexcept</code></li>
+<li><code>[standard iterator operations]</code></li>
+</ul></li>
+</ul>
+
+<p>This is an output iterator that writes encoded characters onto the end of a
+string. As with <code>UtfIterator</code>, the encoding form is determined by the size of
+the code unit type (<code>C</code>), and behaviour is undefined if the destination string
+is destroyed while the iterator exists. Changing the destination string
+through other means is allowed, however; the <code>UtfWriter</code> will continue to
+write to the end of the modified string.</p>
+
+<p>If an exception is thrown, nothing will be written to the output string.
+Otherwise, the <code>flags</code> argument and the <code>valid()</code> function work in much the
+same way as for <code>UtfIterator</code>.</p>
+
+<ul>
+<li><code>using <strong>Utf8Writer</strong> = UtfWriter&lt;char&gt;</code></li>
+<li><code>using <strong>Utf16Writer</strong> = UtfWriter&lt;char16_t&gt;</code></li>
+<li><code>using <strong>Utf32Writer</strong> = UtfWriter&lt;char32_t&gt;</code></li>
+<li><code>using <strong>WcharWriter</strong> = UtfWriter&lt;wchar_t&gt;</code></li>
+</ul>
+
+<p>Convenience aliases for specific iterators.</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; UtfWriter&lt;C&gt; <strong>utf_writer</strong>(basic_string&lt;C&gt;&amp; dst, Crow::Flagset flags = {}) noexcept</code></li>
+</ul>
+
+<p>Returns an encoding iterator writing to the given destination string.</p>
+
+<h2 id="utfconversionfunctions">UTF conversion functions</h2>
+
+<ul>
+<li><code>template &lt;typename C1, typename C2&gt; void <strong>recode</strong>(const basic_string&lt;C1&gt;&amp; src, basic_string&lt;C2&gt;&amp; dst, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C1, typename C2&gt; void <strong>recode</strong>(const basic_string&lt;C1&gt;&amp; src, size_t offset, basic_string&lt;C2&gt;&amp; dst, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C1, typename C2&gt; void <strong>recode</strong>(const C1* src, size_t count, basic_string&lt;C2&gt;&amp; dst, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C2, typename C1&gt; basic_string&lt;C2&gt; <strong>recode</strong>(const basic_string&lt;C1&gt;&amp; src, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C2, typename C1&gt; basic_string&lt;C2&gt; <strong>recode</strong>(const basic_string&lt;C1&gt;&amp; src, size_t offset, int on_error)</code></li>
+</ul>
+
+<p>Encoding conversion functions. These convert from one UTF encoding to another;
+as usual, the encoding forms are determined by the size of the input (<code>C1</code>)
+and output (<code>C2</code>) code units. The input string can be supplied as a string
+object (with an optional starting offset), or a code unit pointer and length
+(a null pointer is treated as an empty string).</p>
+
+<p>The last two versions return the converted string instead of writing it to a
+destination string passed by reference; in this case the output code unit type
+must be supplied explicitly as a template argument.</p>
+
+<p>The <code>flags</code> argument has its usual meaning. If the destination string was
+supplied by reference, after an exception is thrown the destination string
+will contain the successfully converted part of the string before the error.</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; u8string <strong>to_utf8</strong>(const basic_string&lt;C&gt;&amp; src, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; u16string <strong>to_utf16</strong>(const basic_string&lt;C&gt;&amp; src, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; u32string <strong>to_utf32</strong>(const basic_string&lt;C&gt;&amp; src, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; wstring <strong>to_wstring</strong>(const basic_string&lt;C&gt;&amp; src, Crow::Flagset flags = {})</code></li>
+</ul>
+
+<p>These are just shorthand for the corresponding invocation of <code>recode()</code>.</p>
+
+<h2 id="utfvalidationfunctions">UTF validation functions</h2>
+
+<ul>
+<li><code>template &lt;typename C&gt; void <strong>sanitize</strong>(basic_string&lt;C&gt;&amp; str)</code></li>
+</ul>
+
+<p>This ensures that the string is a valid UTF encoding, by replacing any invalid
+data with the <code>U+FFFD</code> replacement character.</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; bool <strong>valid_string</strong>(const basic_string&lt;C&gt;&amp; str)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>check_string</strong>(const basic_string&lt;C&gt;&amp; str)</code></li>
+</ul>
+
+<p>These check for valid encoding. If the string contains invalid UTF,
+<code>valid_string()</code> returns <code>false</code>, while <code>check_string()</code> throws
+<code>EncodingError</code>.</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; size_t <strong>valid_count</strong>(const basic_string&lt;C&gt;&amp; str) noexcept</code></li>
+</ul>
+
+<p>Finds the position of the first invalid UTF encoding in a string. The return
+value is the offset (in code units) to the first invalid code unit, or <code>npos</code>
+if no invalid encoding is found.</p>
+
+</body>
+</html>
