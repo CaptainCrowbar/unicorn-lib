@@ -1,7 +1,7 @@
 #pragma once
 
+#include "crow/core.hpp"
 #include "unicorn/character.hpp"
-#include "unicorn/core.hpp"
 #include "unicorn/utf.hpp"
 #include <algorithm>
 #include <deque>

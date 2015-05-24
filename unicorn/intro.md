@@ -28,9 +28,11 @@ mode (`-Wall -Wextra -Werror`).
 
 Unicorn has also been tested with GCC 4.9 on Ubuntu GNU/Linux,
 [Cygwin](http://www.cygwin.com/) on Microsoft Windows, and native Windows
-using [Nuwen-Mingw](http://nuwen.net/mingw.html). It will not work with any
-existing release of Microsoft Visual C++, due to that compiler's poor C++14
-support, although it may be usable with the upcoming 2015 release.
+using [Nuwen-Mingw](http://nuwen.net/mingw.html), although I can't promise
+that the most recent checkin will have been tested with all of those. It will
+not work with any existing release of Microsoft Visual C++, due to that
+compiler's poor C++14 support, although it may be usable with the upcoming
+2015 release.
 
 ## Design philosophy ##
 

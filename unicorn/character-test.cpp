@@ -1,13 +1,15 @@
+#include "crow/core.hpp"
 #include "unicorn/character.hpp"
-#include "unicorn/core.hpp"
 #include "unicorn/ucd-tables.hpp"
-#include "unicorn/unit-test.hpp"
+#include "crow/unit-test.hpp"
 #include <map>
 #include <string>
 #include <vector>
 
 using namespace std::literals;
 using namespace Unicorn;
+
+TEST_MAIN;
 
 #define PROPTEST(type, value) TEST_EQUAL(property_value(type::value), # value)
 

@@ -1,8 +1,6 @@
 #pragma once
 
-#include "Makefile"
 #include "unicorn/character.hpp"
-#include "unicorn/core.hpp"
 #include "unicorn/file.hpp"
 #include "unicorn/format.hpp"
 #include "unicorn/io.hpp"
@@ -14,5 +12,4 @@
 #include "unicorn/regex.hpp"
 #include "unicorn/segment.hpp"
 #include "unicorn/string.hpp"
-#include "unicorn/unit-test.hpp"
 #include "unicorn/utf.hpp"
