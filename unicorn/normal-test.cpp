@@ -68,13 +68,13 @@ namespace {
         e = std::min(e, range_count(normalization_test_table));
         b = std::min(b, e);
         std::vector<u8string> hexcodes;
-        std::vector<std::u32string> unicode;
+        std::vector<u32string> unicode;
         auto row_iter = std::begin(normalization_test_table) + b;
         for (size_t line = b; line < e; ++line) {
             auto& row = *row_iter++;
             unicode.clear();
             for (auto&& field: row) {
-                unicode.push_back(std::u32string());
+                unicode.push_back(u32string());
                 str_split(u8string(field), overwrite(hexcodes));
                 for (auto&& hc: hexcodes)
                     unicode.back() += char32_t(strtoul(hc.data(), nullptr, 16));
@@ -82,9 +82,9 @@ namespace {
             TEST_EQUAL(unicode.size(), 5);
             if (unicode.size() == 5) {
                 NORM_TEST_TYPE(u8string);
-                NORM_TEST_TYPE(std::u16string);
-                NORM_TEST_TYPE(std::u32string);
-                NORM_TEST_TYPE(std::wstring);
+                NORM_TEST_TYPE(u16string);
+                NORM_TEST_TYPE(u32string);
+                NORM_TEST_TYPE(wstring);
             }
         }
     }
@@ -93,11 +93,11 @@ namespace {
         e = std::min(e, uchars.size());
         b = std::min(b, e);
         for (size_t i = b; i < e; ++i) {
-            std::u32string uni{uchars[i]};
+            u32string uni{uchars[i]};
             NORM_IDENTITY_TEST(u8string);
-            NORM_IDENTITY_TEST(std::u16string);
-            NORM_IDENTITY_TEST(std::u32string);
-            NORM_IDENTITY_TEST(std::wstring);
+            NORM_IDENTITY_TEST(u16string);
+            NORM_IDENTITY_TEST(u32string);
+            NORM_IDENTITY_TEST(wstring);
         }
     }
 

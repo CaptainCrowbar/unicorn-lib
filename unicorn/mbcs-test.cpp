@@ -29,7 +29,7 @@ namespace {
 
     void check_locale_detection() {
 
-        std::string s;
+        string s;
 
         u8string loc;
         TRY(loc = local_encoding());
@@ -94,8 +94,8 @@ namespace {
     void check_mbcs_to_unicode() {
 
         u8string s8;
-        std::u16string s16;
-        std::u32string s32;
+        u16string s16;
+        u32string s32;
 
         TRY(import_string(euro_utf8, s8, "utf-8"));                TEST_EQUAL(s8, euro_utf8);
         TRY(import_string(euro_utf16be, s8, "utf-16be"));          TEST_EQUAL(s8, euro_utf8);
@@ -210,7 +210,7 @@ namespace {
 
     void check_unicode_to_mbcs() {
 
-        std::string s;
+        string s;
 
         TRY(export_string(euro_utf8, s, "utf-8"));         TEST_EQUAL(s, euro_utf8);
         TRY(export_string(euro_utf8, s, "utf-16be"));      TEST_EQUAL(s, euro_utf16be);
@@ -306,7 +306,7 @@ namespace {
 
     void check_local_encoding_round_trip() {
 
-        std::string s;
+        string s;
         u8string s8;
 
         TRY(export_string(euro_utf8, s, "char"));

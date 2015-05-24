@@ -416,7 +416,7 @@ namespace {
 
             Regex16 r;
             Match16 m;
-            std::u16string s = u"(Hello world)", t;
+            u16string s = u"(Hello world)", t;
 
             TRY(r = Regex16(u"\\b[a-z]+\\b"));
             TRY(m = r(s));
@@ -424,7 +424,7 @@ namespace {
             TEST_EQUAL(m.str(), u"world");
 
             Irange<MatchIterator16> mr;
-            std::vector<std::u16string> v;
+            std::vector<u16string> v;
 
             TRY(r = Regex16(u"\\w+"));
             TRY(mr = r.grep(s));
@@ -460,7 +460,7 @@ namespace {
 
             Regex32 r;
             Match32 m;
-            std::u32string s = U"(Hello world)", t;
+            u32string s = U"(Hello world)", t;
 
             TRY(r = Regex32(U"\\b[a-z]+\\b"));
             TRY(m = r(s));
@@ -468,7 +468,7 @@ namespace {
             TEST_EQUAL(m.str(), U"world");
 
             Irange<MatchIterator32> mr;
-            std::vector<std::u32string> v;
+            std::vector<u32string> v;
 
             TRY(r = Regex32(U"\\w+"));
             TRY(mr = r.grep(s));
@@ -504,7 +504,7 @@ namespace {
 
             WideRegex r;
             WideMatch m;
-            std::wstring s = L"(Hello world)", t;
+            wstring s = L"(Hello world)", t;
 
             TRY(r = WideRegex(L"\\b[a-z]+\\b"));
             TRY(m = r(s));
@@ -512,7 +512,7 @@ namespace {
             TEST_EQUAL(m.str(), L"world");
 
             Irange<WideMatchIterator> mr;
-            std::vector<std::wstring> v;
+            std::vector<wstring> v;
 
             TRY(r = WideRegex(L"\\w+"));
             TRY(mr = r.grep(s));
@@ -546,7 +546,7 @@ namespace {
 
         ByteRegex r;
         ByteMatch m;
-        std::string s1, s2, s3;
+        string s1, s2, s3;
 
         s1 = "(Hello world)";
         TRY(r = ByteRegex("\\b[a-z]+\\b"));
@@ -573,7 +573,7 @@ namespace {
         TRY(m = r.search(s1, 15));  TEST(! m.matched());  TEST_EQUAL(m.offset(), npos);  TEST_EQUAL(m.str(), "");
 
         Irange<ByteMatchIterator> mr;
-        std::vector<std::string> v;
+        std::vector<string> v;
 
         TRY(r = ByteRegex("\\w+"));
         TRY(mr = r.grep(s1));

@@ -25,7 +25,7 @@ namespace Unicorn {
         if (error) {
             s += "; error ";
             s += dec(error);
-            std::string details;
+            string details;
             import_string(system_message(error), details);
             if (! details.empty()) {
                 s += "; ";
@@ -64,7 +64,7 @@ namespace Unicorn {
 
     namespace UnicornDetail {
 
-        void native_load_file(const NativeString& file, std::string& dst, Flagset flags) {
+        void native_load_file(const NativeString& file, string& dst, Flagset flags) {
             static constexpr size_t bufsize = 65536;
             static const NativeString dashfile{NativeCharacter('-')};
             dst.clear();
@@ -76,7 +76,7 @@ namespace Unicorn {
                 handle = shared_fopen(file, 'r', ! flags.get(io_nofail));
             if (! handle)
                 return;
-            std::string buf(bufsize, 0);
+            string buf(bufsize, 0);
             while (! feof(handle.get())) {
                 auto rc = fread(&buf[0], 1, bufsize, handle.get());
                 auto err = errno;
@@ -109,7 +109,7 @@ namespace Unicorn {
 
     struct FileReader::impl_type {
         u8string line8;
-        std::string rdbuf;
+        string rdbuf;
         NativeString name;
         Flagset flags;
         u8string enc;
@@ -198,7 +198,7 @@ namespace Unicorn {
             impl.reset();
             return;
         }
-        std::string encoded(impl->rdbuf, 0, eolpos + eolbytes);
+        string encoded(impl->rdbuf, 0, eolpos + eolbytes);
         impl->rdbuf.erase(0, eolpos + eolbytes);
         if (impl->flags.get(io_lf | io_crlf | io_striplf | io_striptws | io_stripws))
             encoded.resize(eolpos);
@@ -316,7 +316,7 @@ namespace Unicorn {
                     str.insert(0, utf8_bom);
                 impl->flags.set(io_bom, false);
             }
-            std::string encoded;
+            string encoded;
             export_string(str, encoded, impl->enc, impl->flags & (err_replace | err_throw));
             if (impl->mutex) {
                 MutexLock lock(*impl->mutex);
@@ -327,7 +327,7 @@ namespace Unicorn {
         }
     }
 
-    void FileWriter::writembcs(const std::string& str) {
+    void FileWriter::writembcs(const string& str) {
         fwrite(str.data(), 1, str.size(), impl->handle.get());
         auto err = errno;
         if (ferror(impl->handle.get()))

@@ -14,6 +14,17 @@ namespace Unicorn {
 
     using namespace Crow;
 
+    // Imports
+
+    using Crow::basic_string;      // std::basic_string
+    using Crow::string;            // std::string
+    using Crow::u8string;          // std::string
+    using Crow::u16string;         // std::u16string
+    using Crow::u32string;         // std::u32string
+    using Crow::wstring;           // std::wstring
+    using Crow::ascii_whitespace;  // "\t\n\v\f\r "
+    using Crow::npos;              // std::string::npos
+
     // Constants
 
     constexpr char32_t last_ascii_char                = 0x7f;            // Highest ASCII code point
@@ -95,8 +106,8 @@ namespace Unicorn {
         using WcharEquivalent = char32_t;
     #endif
 
-    using NativeString = std::basic_string<NativeCharacter>;
-    using WstringEquivalent = std::basic_string<WcharEquivalent>;
+    using NativeString = basic_string<NativeCharacter>;
+    using WstringEquivalent = basic_string<WcharEquivalent>;
 
     // Version information
 

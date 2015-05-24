@@ -73,7 +73,7 @@ namespace Unicorn {
     template <typename C>
     struct BasicToken {
         using char_type = C;
-        using string_type = std::basic_string<C>;
+        using string_type = basic_string<C>;
         const string_type* text;
         size_t offset;
         size_t count;
@@ -87,7 +87,7 @@ namespace Unicorn {
     class BasicTokenIterator {
     public:
         using char_type = typename UnicornDetail::CharType<CX>::type;
-        using string_type = std::basic_string<char_type>;
+        using string_type = basic_string<char_type>;
         using difference_type = ptrdiff_t;
         using iterator_category = std::forward_iterator_tag;
         using pointer = const BasicToken<char_type>*;
@@ -141,7 +141,7 @@ namespace Unicorn {
     class BasicLexer {
     public:
         using char_type = typename UnicornDetail::CharType<CX>::type;
-        using string_type = std::basic_string<char_type>;
+        using string_type = basic_string<char_type>;
         using regex_type = BasicRegex<CX>;
         using token_type = BasicToken<char_type>;
         using callback_type = std::function<size_t(const string_type&, size_t)>;

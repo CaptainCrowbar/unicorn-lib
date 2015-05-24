@@ -12,7 +12,7 @@ namespace Unicorn {
     namespace UnicornDetail {
 
         template <typename C>
-        void apply_decomposition(const std::basic_string<C>& src, std::u32string& dst, bool k) {
+        void apply_decomposition(const basic_string<C>& src, u32string& dst, bool k) {
             auto decompose = k ? compatibility_decomposition : canonical_decomposition;
             size_t max_decompose = k ? max_compatibility_decomposition : max_canonical_decomposition;
             char32_t buf[max_decompose];
@@ -37,8 +37,8 @@ namespace Unicorn {
             }
         }
 
-        void apply_ordering(std::u32string& str);
-        void apply_composition(std::u32string& str);
+        void apply_ordering(u32string& str);
+        void apply_composition(u32string& str);
 
     }
 
@@ -47,9 +47,9 @@ namespace Unicorn {
     };
 
     template <typename C>
-    std::basic_string<C> normalize(const std::basic_string<C>& src, NormalizationForm form) {
+    basic_string<C> normalize(const basic_string<C>& src, NormalizationForm form) {
         using namespace UnicornDetail;
-        std::u32string utf32;
+        u32string utf32;
         apply_decomposition(src, utf32, form == NFKC || form == NFKD);
         apply_ordering(utf32);
         if (form == NFC || form == NFKC)
@@ -58,9 +58,9 @@ namespace Unicorn {
     }
 
     template <typename C>
-    void normalize_in(std::basic_string<C>& src, NormalizationForm form) {
+    void normalize_in(basic_string<C>& src, NormalizationForm form) {
         using namespace UnicornDetail;
-        std::u32string utf32;
+        u32string utf32;
         apply_decomposition(src, utf32, form == NFKC || form == NFKD);
         apply_ordering(utf32);
         if (form == NFC || form == NFKC)

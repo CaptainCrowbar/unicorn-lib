@@ -33,7 +33,7 @@ namespace Unicorn {
 
     namespace UnicornDetail {
 
-        void apply_ordering(std::u32string& str) {
+        void apply_ordering(u32string& str) {
             auto i = std::begin(str), j = i, e = std::end(str);
             while (j != e) {
                 i = std::find_if(j, e, combining_class);
@@ -45,7 +45,7 @@ namespace Unicorn {
             }
         }
 
-        void apply_composition(std::u32string& str) {
+        void apply_composition(u32string& str) {
             if (str.size() < 2)
                 return;
             auto i = std::begin(str), e = std::end(str);

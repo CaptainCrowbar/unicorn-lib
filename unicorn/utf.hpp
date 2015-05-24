@@ -125,7 +125,7 @@ namespace Unicorn {
             static const char* name() noexcept { return "wchar_t"; }
         };
 
-        template <typename C> inline void append_error(std::basic_string<C>& str)
+        template <typename C> inline void append_error(basic_string<C>& str)
             { str += static_cast<C>(replacement_char); }
         inline void append_error(u8string& str) { str += utf8_replacement; }
 
@@ -148,7 +148,7 @@ namespace Unicorn {
     class UtfIterator {
     public:
         using code_unit = C;
-        using string_type = std::basic_string<C>;
+        using string_type = basic_string<C>;
         using difference_type = ptrdiff_t;
         using iterator_category = std::bidirectional_iterator_tag;
         using pointer = const char32_t*;
@@ -235,32 +235,32 @@ namespace Unicorn {
     using WcharRange = Irange<WcharIterator>;
 
     template <typename C>
-    UtfIterator<C> utf_begin(const std::basic_string<C>& src, Flagset flags = {}) {
+    UtfIterator<C> utf_begin(const basic_string<C>& src, Flagset flags = {}) {
         return {src, 0, flags};
     }
 
     template <typename C>
-    UtfIterator<C> utf_end(const std::basic_string<C>& src, Flagset flags = {}) {
+    UtfIterator<C> utf_end(const basic_string<C>& src, Flagset flags = {}) {
         return {src, src.size(), flags};
     }
 
     template <typename C>
-    UtfIterator<C> utf_iterator(const std::basic_string<C>& src, size_t offset, Flagset flags = {}) {
+    UtfIterator<C> utf_iterator(const basic_string<C>& src, size_t offset, Flagset flags = {}) {
         return {src, offset, flags};
     }
 
     template <typename C>
-    Irange<UtfIterator<C>> utf_range(const std::basic_string<C>& src, Flagset flags = {}) {
+    Irange<UtfIterator<C>> utf_range(const basic_string<C>& src, Flagset flags = {}) {
         return {utf_begin(src, flags), utf_end(src, flags)};
     }
 
     template <typename C>
-    std::basic_string<C> u_str(const UtfIterator<C>& i, const UtfIterator<C>& j) {
+    basic_string<C> u_str(const UtfIterator<C>& i, const UtfIterator<C>& j) {
         return i.source().substr(i.offset(), j.offset() - i.offset());
     }
 
     template <typename C>
-    std::basic_string<C> u_str(const Irange<UtfIterator<C>>& range) {
+    basic_string<C> u_str(const Irange<UtfIterator<C>>& range) {
         return u_str(CROW_BOUNDS(range));
     }
 
@@ -270,7 +270,7 @@ namespace Unicorn {
     class UtfWriter {
     public:
         using code_unit = C;
-        using string_type = std::basic_string<C>;
+        using string_type = basic_string<C>;
         using difference_type = void;
         using iterator_category = std::output_iterator_tag;
         using pointer = void;
@@ -328,7 +328,7 @@ namespace Unicorn {
     using WcharWriter = UtfWriter<wchar_t>;
 
     template <typename C>
-    UtfWriter<C> utf_writer(std::basic_string<C>& dst, Flagset flags = {}) noexcept {
+    UtfWriter<C> utf_writer(basic_string<C>& dst, Flagset flags = {}) noexcept {
         return {dst, flags};
     }
 
@@ -338,7 +338,7 @@ namespace Unicorn {
 
         template <typename C1, typename C2>
         struct Recode {
-            void operator()(const C1* src, size_t n, std::basic_string<C2>& dst, Flagset flags) const {
+            void operator()(const C1* src, size_t n, basic_string<C2>& dst, Flagset flags) const {
                 UnicornDetail::utf_flags(flags);
                 if (! src)
                     return;
@@ -361,7 +361,7 @@ namespace Unicorn {
 
         template <typename C1>
         struct Recode<C1, char32_t> {
-            void operator()(const C1* src, size_t n, std::u32string& dst, Flagset flags) const {
+            void operator()(const C1* src, size_t n, u32string& dst, Flagset flags) const {
                 UnicornDetail::utf_flags(flags);
                 if (! src)
                     return;
@@ -389,7 +389,7 @@ namespace Unicorn {
 
         template <typename C2>
         struct Recode<char32_t, C2> {
-            void operator()(const char32_t* src, size_t n, std::basic_string<C2>& dst, Flagset flags) const {
+            void operator()(const char32_t* src, size_t n, basic_string<C2>& dst, Flagset flags) const {
                 UnicornDetail::utf_flags(flags);
                 if (! src)
                     return;
@@ -412,7 +412,7 @@ namespace Unicorn {
 
         template <typename C>
         struct Recode<C, C> {
-            void operator()(const C* src, size_t n, std::basic_string<C>& dst, Flagset flags) const {
+            void operator()(const C* src, size_t n, basic_string<C>& dst, Flagset flags) const {
                 UnicornDetail::utf_flags(flags);
                 if (! src)
                     return;
@@ -444,7 +444,7 @@ namespace Unicorn {
 
         template <>
         struct Recode<char32_t, char32_t> {
-            void operator()(const char32_t* src, size_t n, std::u32string& dst, Flagset flags) const {
+            void operator()(const char32_t* src, size_t n, u32string& dst, Flagset flags) const {
                 UnicornDetail::utf_flags(flags);
                 if (! src)
                     return;
@@ -464,75 +464,75 @@ namespace Unicorn {
     };
 
     template <typename C1, typename C2>
-    void recode(const std::basic_string<C1>& src, std::basic_string<C2>& dst,
+    void recode(const basic_string<C1>& src, basic_string<C2>& dst,
             Flagset flags = {}) {
-        std::basic_string<C2> result;
+        basic_string<C2> result;
         UnicornDetail::Recode<C1, C2>()(src.data(), src.size(), result, flags);
         dst.swap(result);
     }
 
     template <typename C1, typename C2>
-    void recode(const std::basic_string<C1>& src, size_t offset, std::basic_string<C2>& dst,
+    void recode(const basic_string<C1>& src, size_t offset, basic_string<C2>& dst,
             Flagset flags = {}) {
-        std::basic_string<C2> result;
+        basic_string<C2> result;
         if (offset < src.size())
             UnicornDetail::Recode<C1, C2>()(src.data() + offset, src.size() - offset, result, flags);
         dst.swap(result);
     }
 
     template <typename C1, typename C2>
-    void recode(const C1* src, size_t count, std::basic_string<C2>& dst, Flagset flags = {}) {
-        std::basic_string<C2> result;
+    void recode(const C1* src, size_t count, basic_string<C2>& dst, Flagset flags = {}) {
+        basic_string<C2> result;
         UnicornDetail::Recode<C1, C2>()(src, count, result, flags);
         dst.swap(result);
     }
 
     template <typename C2, typename C1>
-    std::basic_string<C2> recode(const std::basic_string<C1>& src, Flagset flags = {}) {
-        std::basic_string<C2> result;
+    basic_string<C2> recode(const basic_string<C1>& src, Flagset flags = {}) {
+        basic_string<C2> result;
         UnicornDetail::Recode<C1, C2>()(src.data(), src.size(), result, flags);
         return result;
     }
 
     template <typename C2, typename C1>
-    std::basic_string<C2> recode(const std::basic_string<C1>& src, size_t offset, Flagset flags) {
-        std::basic_string<C2> result;
+    basic_string<C2> recode(const basic_string<C1>& src, size_t offset, Flagset flags) {
+        basic_string<C2> result;
         if (offset < src.size())
             UnicornDetail::Recode<C1, C2>()(src.data() + offset, src.size() - offset, result, flags);
         return result;
     }
 
     template <typename C>
-    u8string to_utf8(const std::basic_string<C>& src, Flagset flags = {}) {
+    u8string to_utf8(const basic_string<C>& src, Flagset flags = {}) {
         return recode<char>(src, flags);
     }
 
     template <typename C>
-    std::u16string to_utf16(const std::basic_string<C>& src, Flagset flags = {}) {
+    u16string to_utf16(const basic_string<C>& src, Flagset flags = {}) {
         return recode<char16_t>(src, flags);
     }
 
     template <typename C>
-    std::u32string to_utf32(const std::basic_string<C>& src, Flagset flags = {}) {
+    u32string to_utf32(const basic_string<C>& src, Flagset flags = {}) {
         return recode<char32_t>(src, flags);
     }
 
     template <typename C>
-    std::wstring to_wstring(const std::basic_string<C>& src, Flagset flags = {}) {
+    wstring to_wstring(const basic_string<C>& src, Flagset flags = {}) {
         return recode<wchar_t>(src, flags);
     }
 
     // UTF validation functions
 
     template <typename C>
-    void sanitize(std::basic_string<C>& str) {
-        std::basic_string<C> result;
+    void sanitize(basic_string<C>& str) {
+        basic_string<C> result;
         recode(str, result, err_replace);
         str.swap(result);
     }
 
     template <typename C>
-    bool valid_string(const std::basic_string<C>& str) {
+    bool valid_string(const basic_string<C>& str) {
         using namespace UnicornDetail;
         auto data = str.data();
         size_t pos = 0, size = str.size();
@@ -548,7 +548,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    void check_string(const std::basic_string<C>& str) {
+    void check_string(const basic_string<C>& str) {
         using namespace UnicornDetail;
         auto data = str.data();
         size_t pos = 0, size = str.size();
@@ -562,7 +562,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    size_t valid_count(const std::basic_string<C>& str) noexcept {
+    size_t valid_count(const basic_string<C>& str) noexcept {
         using namespace UnicornDetail;
         auto data = str.data();
         size_t pos = 0, size = str.size();

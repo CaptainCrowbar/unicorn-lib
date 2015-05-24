@@ -286,12 +286,12 @@ namespace Unicorn {
 
         #if defined(_XOPEN_SOURCE)
 
-            void native_recode(const std::string& src, std::string& dst,
-                    const u8string& from, const u8string& to, const u8string& tag, Flagset flags) {
+            void native_recode(const string& src, string& dst, const u8string& from, const u8string& to,
+                    const u8string& tag, Flagset flags) {
                 Iconv conv(from, to);
                 if (! conv)
                     throw UnknownEncoding(tag);
-                std::string buf(src.size(), 0);
+                string buf(src.size(), 0);
                 size_t inpos = 0, outpos = 0;
                 while (inpos < src.size()) {
                     auto inbuf = const_cast<char*>(&src[inpos]); // Posix brain damage
@@ -347,7 +347,7 @@ namespace Unicorn {
             static constexpr const char* locale_vars[] {"LC_ALL", "LC_CTYPE", "LANG"};
             u8string name;
             for (auto key: locale_vars) {
-                std::string value = safe_getenv(key);
+                string value = safe_getenv(key);
                 size_t dot = value.find('.');
                 if (dot != npos) {
                     value.erase(0, dot + 1);
@@ -402,7 +402,7 @@ namespace Unicorn {
             auto rc = FormatMessageW(flags, nullptr, static_cast<uint32_t>(error), 0,
                 buf.indirect<wchar_t>(), 0, nullptr);
             if (rc > 0)
-                return to_utf8(str_trim(std::wstring(buf.get<wchar_t>(), rc)));
+                return to_utf8(str_trim(wstring(buf.get<wchar_t>(), rc)));
             else
                 return {};
         }
@@ -413,7 +413,7 @@ namespace Unicorn {
 
     namespace UnicornDetail {
 
-        u8string guess_utf(const std::string& str) {
+        u8string guess_utf(const string& str) {
             constexpr size_t max_check_bytes = 100;
             if (str.empty())
                 return "utf-8";
@@ -520,17 +520,17 @@ namespace Unicorn {
 
         #if defined(_XOPEN_SOURCE)
 
-            void native_import(const std::string& src, std::string& dst, u8string tag, Flagset flags) {
+            void native_import(const string& src, string& dst, u8string tag, Flagset flags) {
                 native_recode(src, dst, tag, "utf-8"s, tag, flags);
             }
 
-            void native_export(const std::string& src, std::string& dst, u8string tag, Flagset flags) {
+            void native_export(const string& src, string& dst, u8string tag, Flagset flags) {
                 native_recode(src, dst, "utf-8"s, tag, tag, flags);
             }
 
         #else
 
-            void native_import(const std::string& src, std::wstring& dst, uint32_t tag, Flagset flags) {
+            void native_import(const string& src, wstring& dst, uint32_t tag, Flagset flags) {
                 uint32_t wflags = 0;
                 if (flags.get(err_throw))
                     wflags |= MB_ERR_INVALID_CHARS;
@@ -546,7 +546,7 @@ namespace Unicorn {
                 MultiByteToWideChar(tag, wflags, src.data(), static_cast<int>(src.size()), &dst[0], static_cast<int>(rc));
             }
 
-            void native_export(const std::wstring& src, std::string& dst, uint32_t tag, Flagset flags) {
+            void native_export(const wstring& src, string& dst, uint32_t tag, Flagset flags) {
                 std::vector<uint32_t> tryflags;
                 if (flags.get(err_throw))
                     tryflags = {WC_NO_BEST_FIT_CHARS | WC_ERR_INVALID_CHARS, WC_ERR_INVALID_CHARS, WC_NO_BEST_FIT_CHARS, 0};
@@ -573,7 +573,7 @@ namespace Unicorn {
 
         #endif
 
-        bool utf_import(const std::string& src, NativeString& dst, EncodingTag tag, Flagset flags) {
+        bool utf_import(const string& src, NativeString& dst, EncodingTag tag, Flagset flags) {
             if (tag == utf8_tag) {
                 recode(src, dst, flags);
                 return true;
@@ -582,7 +582,7 @@ namespace Unicorn {
                 if (extra && flags.get(err_throw))
                     throw EncodingError("UTF-16", src.size() - extra,
                         src.data() + src.size() - extra, extra);
-                std::u16string src16(src.size() / 2, 0);
+                u16string src16(src.size() / 2, 0);
                 memcpy(&src16[0], src.data(), src.size());
                 if (tag == utf16swap_tag)
                     std::transform(CROW_BOUNDS(src16), std::begin(src16), reverse_char16);
@@ -595,7 +595,7 @@ namespace Unicorn {
                 if (extra && flags.get(err_throw))
                     throw EncodingError("UTF-32", src.size() - extra,
                         src.data() + src.size() - extra, extra);
-                std::u32string src32(src.size() / 4, 0);
+                u32string src32(src.size() / 4, 0);
                 memcpy(&src32[0], src.data(), src.size());
                 if (tag == utf32swap_tag)
                     std::transform(CROW_BOUNDS(src32), std::begin(src32), reverse_char32);
@@ -608,12 +608,12 @@ namespace Unicorn {
             }
         }
 
-        bool utf_export(const NativeString& src, std::string& dst, EncodingTag tag, Flagset flags) {
+        bool utf_export(const NativeString& src, string& dst, EncodingTag tag, Flagset flags) {
             if (tag == utf8_tag) {
                 recode(src, dst, flags);
                 return true;
             } else if (tag == utf16_tag || tag == utf16swap_tag) {
-                std::u16string dst16;
+                u16string dst16;
                 recode(src, dst16, flags);
                 if (tag == utf16swap_tag)
                     std::transform(CROW_BOUNDS(dst16), std::begin(dst16), reverse_char16);
@@ -621,7 +621,7 @@ namespace Unicorn {
                 memcpy(&dst[0], dst16.data(), dst.size());
                 return true;
             } else if (tag == utf32_tag || tag == utf32swap_tag) {
-                std::u32string dst32;
+                u32string dst32;
                 recode(src, dst32, flags);
                 if (tag == utf32swap_tag)
                     std::transform(CROW_BOUNDS(dst32), std::begin(dst32), reverse_char32);

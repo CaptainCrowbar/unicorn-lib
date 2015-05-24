@@ -14,8 +14,8 @@ namespace {
     void check_fix() {
 
         u8string s8;
-        std::u16string s16;
-        std::u32string s32;
+        u16string s16;
+        u32string s32;
 
         TEST_EQUAL(str_fix_left(""s, 0), "");
         TEST_EQUAL(str_fix_left(""s, 1), " ");
@@ -322,8 +322,8 @@ namespace {
     void check_fold() {
 
         u8string s8;
-        std::u16string s16;
-        std::u32string s32;
+        u16string s16;
+        u32string s32;
 
         TEST_EQUAL(str_fold_whitespace(""s), "");
         TEST_EQUAL(str_fold_whitespace("\t\t"s), " ");
@@ -450,8 +450,8 @@ namespace {
     void check_join() {
 
         std::vector<u8string> v8;
-        std::vector<std::u16string> v16;
-        std::vector<std::u32string> v32;
+        std::vector<u16string> v16;
+        std::vector<u32string> v32;
 
         v8.clear();                      TEST_EQUAL(str_join(v8), "");
         v8 = {"Hello"};                  TEST_EQUAL(str_join(v8), "Hello");

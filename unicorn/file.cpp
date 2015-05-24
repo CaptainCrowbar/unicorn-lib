@@ -27,7 +27,7 @@ namespace Unicorn {
         if (error) {
             s += "; error ";
             s += dec(error);
-            std::string details;
+            string details;
             #if defined(_XOPEN_SOURCE)
                 import_string(system_message(error), details);
             #else
@@ -58,8 +58,8 @@ namespace Unicorn {
 
             // File properties
 
-            std::string native_current_directory() {
-                std::string name(256, '\0');
+            string native_current_directory() {
+                string name(256, '\0');
                 for (;;) {
                     if (getcwd(&name[0], name.size()))
                         break;
@@ -70,22 +70,22 @@ namespace Unicorn {
                 return name;
             }
 
-            bool native_file_exists(const std::string& file) noexcept {
+            bool native_file_exists(const string& file) noexcept {
                 struct stat s;
                 return stat(file.data(), &s) == 0;
             }
 
-            bool native_file_is_directory(const std::string& file) noexcept {
+            bool native_file_is_directory(const string& file) noexcept {
                 struct stat s;
                 return stat(file.data(), &s) == 0 && S_ISDIR(s.st_mode);
             }
 
-            bool native_file_is_hidden(const std::string& file) noexcept {
+            bool native_file_is_hidden(const string& file) noexcept {
                 auto leaf = split_path(file).second;
                 return leaf[0] == '.' && leaf != "." && leaf != "..";
             }
 
-            bool native_file_is_symlink(const std::string& file) noexcept {
+            bool native_file_is_symlink(const string& file) noexcept {
                 struct stat s;
                 return lstat(file.data(), &s) == 0 && S_ISLNK(s.st_mode);
             }
@@ -94,7 +94,7 @@ namespace Unicorn {
 
             namespace {
 
-                bool remove_file_helper(const std::string& file, bool dir_check) {
+                bool remove_file_helper(const string& file, bool dir_check) {
                     int rc = remove(file.data());
                     int err = errno;
                     if (rc == 0 || err == ENOENT)
@@ -107,7 +107,7 @@ namespace Unicorn {
 
             }
 
-            void native_make_directory(const std::string& dir, bool recurse) {
+            void native_make_directory(const string& dir, bool recurse) {
                 if (mkdir(dir.data(), 0777) == 0)
                     return;
                 auto error = errno;
@@ -123,7 +123,7 @@ namespace Unicorn {
                     throw FileError(errno, dir);
             }
 
-            void native_rename_file(const std::string& src, const std::string& dst) {
+            void native_rename_file(const string& src, const string& dst) {
                 if (rename(src.data(), dst.data()))
                     throw FileError(errno, src, dst);
             }
@@ -131,14 +131,14 @@ namespace Unicorn {
             // Directory iterators
 
             struct DirectoryHelper::impl_type {
-                std::string name;
+                string name;
                 dirent entry;
                 char padding[NAME_MAX + 1];
                 DIR* dp;
                 ~impl_type() { if (dp) closedir(dp); }
             };
 
-            void DirectoryHelper::init(const std::string& dir) {
+            void DirectoryHelper::init(const string& dir) {
                 impl = std::make_shared<impl_type>();
                 memset(&impl->entry, 0, sizeof(impl->entry));
                 memset(impl->padding, 0, sizeof(impl->padding));
@@ -150,8 +150,8 @@ namespace Unicorn {
                     impl.reset();
             }
 
-            const std::string& DirectoryHelper::file() const noexcept {
-                static const std::string dummy {};
+            const string& DirectoryHelper::file() const noexcept {
+                static const string dummy {};
                 return impl ? impl->name : dummy;
             }
 
@@ -192,20 +192,20 @@ namespace Unicorn {
 
             namespace {
 
-                uint32_t get_attributes(const std::wstring& file) {
+                uint32_t get_attributes(const wstring& file) {
                     auto rc = GetFileAttributes(file.data());
                     return rc == INVALID_FILE_ATTRIBUTES ? 0 : rc;
                 }
 
-                bool is_drive(const std::wstring& file) {
+                bool is_drive(const wstring& file) {
                     auto rc = GetDriveType(file.data());
                     return rc != DRIVE_NO_ROOT_DIR && rc != DRIVE_UNKNOWN;
                 }
 
             }
 
-            std::wstring native_current_directory() {
-                std::wstring name(256, L'\0');
+            wstring native_current_directory() {
+                wstring name(256, L'\0');
                 for (;;) {
                     auto rc = GetCurrentDirectoryW(name.size(), &name[0]);
                     if (rc == 0)
@@ -217,22 +217,22 @@ namespace Unicorn {
                 return name;
             }
 
-            bool native_file_exists(const std::wstring& file) noexcept {
+            bool native_file_exists(const wstring& file) noexcept {
                 return file == L"." || file == L".." || get_attributes(file) || is_drive(file);
             }
 
-            bool native_file_is_directory(const std::wstring& file) noexcept {
+            bool native_file_is_directory(const wstring& file) noexcept {
                 return file == L"." || file == L".."
                     || (get_attributes(file) & FILE_ATTRIBUTE_DIRECTORY)
                     || is_drive(file);
             }
 
-            bool native_file_is_hidden(const std::wstring& file) noexcept {
+            bool native_file_is_hidden(const wstring& file) noexcept {
                 return ! file_is_root(file)
                     && get_attributes(file) & (FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM);
             }
 
-            bool native_file_is_symlink(const std::wstring& file) noexcept {
+            bool native_file_is_symlink(const wstring& file) noexcept {
                 if (! (get_attributes(file) & FILE_ATTRIBUTE_REPARSE_POINT))
                     return false;
                 WIN32_FIND_DATAW info;
@@ -250,7 +250,7 @@ namespace Unicorn {
 
             namespace {
 
-                bool remove_file_helper(const std::wstring& file, bool dir_check) {
+                bool remove_file_helper(const wstring& file, bool dir_check) {
                     uint32_t error = 0;
                     if (file_is_directory(file)) {
                         if (RemoveDirectoryW(file.data()))
@@ -271,7 +271,7 @@ namespace Unicorn {
 
             }
 
-            void native_make_directory(const std::wstring& dir, bool recurse) {
+            void native_make_directory(const wstring& dir, bool recurse) {
                 if (CreateDirectoryW(dir.c_str(), nullptr))
                     return;
                 auto error = GetLastError();
@@ -288,7 +288,7 @@ namespace Unicorn {
 
             }
 
-            void native_rename_file(const std::wstring& src, const std::wstring& dst) {
+            void native_rename_file(const wstring& src, const wstring& dst) {
                 if (! MoveFileW(src.c_str(), dst.c_str()))
                     throw FileError(GetLastError(), src, dst);
             }
@@ -302,14 +302,14 @@ namespace Unicorn {
             // can do about it.
 
             struct DirectoryHelper::impl_type {
-                std::wstring name;
+                wstring name;
                 HANDLE handle;
                 WIN32_FIND_DATAW info;
                 bool first;
                 ~impl_type() { if (handle) FindClose(handle); }
             };
 
-            void DirectoryHelper::init(const std::wstring& dir) {
+            void DirectoryHelper::init(const wstring& dir) {
                 if (! file_is_directory(dir))
                     return;
                 impl = std::make_shared<impl_type>();
@@ -321,8 +321,8 @@ namespace Unicorn {
                     impl.reset();
             }
 
-            const std::wstring& DirectoryHelper::file() const noexcept {
-                static const std::wstring dummy {};
+            const wstring& DirectoryHelper::file() const noexcept {
+                static const wstring dummy {};
                 return impl ? impl->name : dummy;
             }
 

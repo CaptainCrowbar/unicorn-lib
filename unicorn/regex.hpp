@@ -111,7 +111,7 @@ namespace Unicorn {
 
         template <typename C>
         struct RegexInfo {
-            using string_type = std::basic_string<C>;
+            using string_type = basic_string<C>;
             using pcre_ref = PcreRef<C>;
             string_type pat {};
             Flagset fset {};
@@ -127,7 +127,7 @@ namespace Unicorn {
 
         template <typename C>
         struct MatchInfo {
-            using string_type = std::basic_string<C>;
+            using string_type = basic_string<C>;
             using pcre_ref = PcreRef<C>;
             std::vector<int> ofs {};
             Flagset fset {};
@@ -163,47 +163,47 @@ namespace Unicorn {
         template <typename CX>
         struct SubjectIterator {
             using iterator = UtfIterator<CX>;
-            static iterator make_iterator(const std::basic_string<CX>& text, size_t offset) noexcept
+            static iterator make_iterator(const basic_string<CX>& text, size_t offset) noexcept
                 { return utf_iterator(text, offset); }
         };
 
         template <>
         struct SubjectIterator<ByteMode> {
-            using iterator = typename std::string::const_iterator;
-            static iterator make_iterator(const std::string& text, size_t offset) noexcept
+            using iterator = typename string::const_iterator;
+            static iterator make_iterator(const string& text, size_t offset) noexcept
                 { return text.begin() + offset; }
         };
 
         // Type-specific implementation wrapper functions
 
         size_t count_groups(const PcreRef<char>& p) noexcept;
-        size_t named_group(const PcreRef<char>& p, const std::string& name) noexcept;
-        void init_regex(RegexInfo<char>& r, const std::string& pattern, Flagset flags, bool unicode);
-        void init_match(MatchInfo<char>& m, const RegexInfo<char>& r, const std::string& text);
-        void next_match(MatchInfo<char>& m, const std::string& pattern, size_t start, int anchors);
+        size_t named_group(const PcreRef<char>& p, const string& name) noexcept;
+        void init_regex(RegexInfo<char>& r, const string& pattern, Flagset flags, bool unicode);
+        void init_match(MatchInfo<char>& m, const RegexInfo<char>& r, const string& text);
+        void next_match(MatchInfo<char>& m, const string& pattern, size_t start, int anchors);
 
         #if ! defined(UNICORN_NO_PCRE16)
             size_t count_groups(const PcreRef<char16_t>& p) noexcept;
-            size_t named_group(const PcreRef<char16_t>& p, const std::u16string& name) noexcept;
-            void init_regex(RegexInfo<char16_t>& r, const std::u16string& pattern, Flagset flags, bool unicode);
-            void init_match(MatchInfo<char16_t>& m, const RegexInfo<char16_t>& r, const std::u16string& text);
-            void next_match(MatchInfo<char16_t>& m, const std::string& pattern, size_t start, int anchors);
+            size_t named_group(const PcreRef<char16_t>& p, const u16string& name) noexcept;
+            void init_regex(RegexInfo<char16_t>& r, const u16string& pattern, Flagset flags, bool unicode);
+            void init_match(MatchInfo<char16_t>& m, const RegexInfo<char16_t>& r, const u16string& text);
+            void next_match(MatchInfo<char16_t>& m, const string& pattern, size_t start, int anchors);
         #endif
 
         #if ! defined(UNICORN_NO_PCRE32)
             size_t count_groups(const PcreRef<char32_t>& p) noexcept;
-            size_t named_group(const PcreRef<char32_t>& p, const std::u32string& name) noexcept;
-            void init_regex(RegexInfo<char32_t>& r, const std::u32string& pattern, Flagset flags, bool unicode);
-            void init_match(MatchInfo<char32_t>& m, const RegexInfo<char32_t>& r, const std::u32string& text);
-            void next_match(MatchInfo<char32_t>& m, const std::string& pattern, size_t start, int anchors);
+            size_t named_group(const PcreRef<char32_t>& p, const u32string& name) noexcept;
+            void init_regex(RegexInfo<char32_t>& r, const u32string& pattern, Flagset flags, bool unicode);
+            void init_match(MatchInfo<char32_t>& m, const RegexInfo<char32_t>& r, const u32string& text);
+            void next_match(MatchInfo<char32_t>& m, const string& pattern, size_t start, int anchors);
         #endif
 
         #if ! defined(UNICORN_NO_PCRE_WCHAR)
             size_t count_groups(const PcreRef<wchar_t>& p) noexcept;
-            size_t named_group(const PcreRef<wchar_t>& p, const std::wstring& name) noexcept;
-            void init_regex(RegexInfo<wchar_t>& r, const std::wstring& pattern, Flagset flags, bool unicode);
-            void init_match(MatchInfo<wchar_t>& m, const RegexInfo<wchar_t>& r, const std::wstring& text);
-            void next_match(MatchInfo<wchar_t>& m, const std::string& pattern, size_t start, int anchors);
+            size_t named_group(const PcreRef<wchar_t>& p, const wstring& name) noexcept;
+            void init_regex(RegexInfo<wchar_t>& r, const wstring& pattern, Flagset flags, bool unicode);
+            void init_match(MatchInfo<wchar_t>& m, const RegexInfo<wchar_t>& r, const wstring& text);
+            void next_match(MatchInfo<wchar_t>& m, const string& pattern, size_t start, int anchors);
         #endif
 
         // Helper functions
@@ -228,7 +228,7 @@ namespace Unicorn {
 
         template <typename CX>
         struct MakeUtf8 {
-            using string_type = std::basic_string<CX>;
+            using string_type = basic_string<CX>;
             u8string operator()(const string_type& pattern) const {
                 return to_utf8(pattern);
             }
@@ -236,9 +236,9 @@ namespace Unicorn {
 
         template <>
         struct MakeUtf8<ByteMode> {
-            using string_type = std::string;
-            u8string operator()(const std::string& pattern) const {
-                std::u32string p32;
+            using string_type = string;
+            u8string operator()(const string& pattern) const {
+                u32string p32;
                 std::transform(CROW_BOUNDS(pattern), append(p32),
                     [] (char c) { return static_cast<uint8_t>(c); });
                 return to_utf8(p32);
@@ -266,19 +266,19 @@ namespace Unicorn {
         template <typename Regex, typename Match, typename CX>
         struct RegexHelper {
             using utf_iterator = UtfIterator<CX>;
-            Match anchor(const std::basic_string<CX>& text, size_t offset = 0) const
+            Match anchor(const basic_string<CX>& text, size_t offset = 0) const
                 { return static_cast<const Regex*>(this)->exec(text, offset, 1); }
             Match anchor(const utf_iterator& start) const
                 { return anchor(start.source(), start.offset()); }
-            Match match(const std::basic_string<CX>& text, size_t offset = 0) const
+            Match match(const basic_string<CX>& text, size_t offset = 0) const
                 { return static_cast<const Regex*>(this)->exec(text, offset, 2); }
             Match match(const utf_iterator& start) const
                 { return match(start.source(), start.offset()); }
-            Match search(const std::basic_string<CX>& text, size_t offset = 0) const
+            Match search(const basic_string<CX>& text, size_t offset = 0) const
                 { return static_cast<const Regex*>(this)->exec(text, offset, 0); }
             Match search(const utf_iterator& start) const
                 { return search(start.source(), start.offset()); }
-            Match operator()(const std::basic_string<CX>& text, size_t offset = 0) const
+            Match operator()(const basic_string<CX>& text, size_t offset = 0) const
                 { return search(text, offset); }
             Match operator()(const utf_iterator& start) const
                 { return search(start.source(), start.offset()); }
@@ -286,13 +286,13 @@ namespace Unicorn {
 
         template <typename Regex, typename Match>
         struct RegexHelper<Regex, Match, ByteMode> {
-            Match anchor(const std::string& text, size_t offset = 0) const
+            Match anchor(const string& text, size_t offset = 0) const
                 { return static_cast<const Regex*>(this)->exec(text, offset, 1); }
-            Match match(const std::string& text, size_t offset = 0) const
+            Match match(const string& text, size_t offset = 0) const
                 { return static_cast<const Regex*>(this)->exec(text, offset, 2); }
-            Match search(const std::string& text, size_t offset = 0) const
+            Match search(const string& text, size_t offset = 0) const
                 { return static_cast<const Regex*>(this)->exec(text, offset, 0); }
-            Match operator()(const std::string& text, size_t offset = 0) const
+            Match operator()(const string& text, size_t offset = 0) const
                 { return search(text, offset); }
         };
 
@@ -350,7 +350,7 @@ namespace Unicorn {
     public:
         using char_type = typename UnicornDetail::CharType<CX>::type;
         using cx_type = CX;
-        using string_type = std::basic_string<char_type>;
+        using string_type = basic_string<char_type>;
         using regex_type = BasicRegex<CX>;
         using const_iterator = const char_type*;
         using const_reference = const char_type&;
@@ -450,7 +450,7 @@ namespace Unicorn {
     public:
         using char_type = typename UnicornDetail::CharType<CX>::type;
         using cx_type = CX;
-        using string_type = std::basic_string<char_type>;
+        using string_type = basic_string<char_type>;
         using match_type = BasicMatch<CX>;
         using match_iterator = BasicMatchIterator<CX>;
         using match_range = Irange<match_iterator>;
@@ -520,7 +520,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    BasicRegex<C> regex(const std::basic_string<C>& pattern, Flagset flags = {}) {
+    BasicRegex<C> regex(const basic_string<C>& pattern, Flagset flags = {}) {
         return BasicRegex<C>(pattern, flags);
     }
 
@@ -541,7 +541,7 @@ namespace Unicorn {
     public:
         using char_type = typename UnicornDetail::CharType<CX>::type;
         using cx_type = CX;
-        using string_type = std::basic_string<char_type>;
+        using string_type = basic_string<char_type>;
         using regex_type = BasicRegex<CX>;
         using match_type = BasicMatch<CX>;
         BasicRegexFormat() = default;
@@ -769,19 +769,19 @@ namespace Unicorn {
     }
 
     template <typename C>
-    BasicRegexFormat<C> regex_format(const std::basic_string<C>& pattern,
-            const std::basic_string<C>& format, Flagset flags = {}) {
+    BasicRegexFormat<C> regex_format(const basic_string<C>& pattern,
+            const basic_string<C>& format, Flagset flags = {}) {
         return {pattern, format, flags};
     }
 
     template <typename C>
-    BasicRegexFormat<C> regex_format(const std::basic_string<C>& pattern,
+    BasicRegexFormat<C> regex_format(const basic_string<C>& pattern,
             const C* format, Flagset flags = {}) {
         return {pattern, cstr(format), flags};
     }
 
     template <typename C>
-    BasicRegexFormat<C> regex_format(const C* pattern, const std::basic_string<C>& format,
+    BasicRegexFormat<C> regex_format(const C* pattern, const basic_string<C>& format,
             Flagset flags = {}) {
         return {cstr(pattern), format, flags};
     }
@@ -803,7 +803,7 @@ namespace Unicorn {
     public:
         using char_type = typename UnicornDetail::CharType<CX>::type;
         using cx_type = CX;
-        using string_type = std::basic_string<char_type>;
+        using string_type = basic_string<char_type>;
         using regex_type = BasicRegex<CX>;
         using match_type = BasicMatch<CX>;
         using difference_type = ptrdiff_t;
@@ -824,7 +824,7 @@ namespace Unicorn {
             { return ! (lhs == rhs); }
     private:
         match_type mat;
-        std::string pat;
+        string pat;
     };
 
     template <typename CX>
@@ -841,7 +841,7 @@ namespace Unicorn {
     public:
         using char_type = typename UnicornDetail::CharType<CX>::type;
         using cx_type = CX;
-        using string_type = std::basic_string<char_type>;
+        using string_type = basic_string<char_type>;
         using regex_type = BasicRegex<CX>;
         using match_type = BasicMatch<CX>;
         using match_iterator = BasicMatchIterator<CX>;
@@ -891,7 +891,7 @@ namespace Unicorn {
     namespace UnicornDetail {
 
         template <typename C>
-        void escape_char(C c, std::basic_string<C>& dst) {
+        void escape_char(C c, basic_string<C>& dst) {
             static constexpr const char* hexdigits = "0123456789abcdef";
             switch (c) {
                 case 0:
@@ -937,16 +937,16 @@ namespace Unicorn {
     }
 
     template <typename C>
-    std::basic_string<C> regex_escape(const std::basic_string<C>& str) {
-        std::basic_string<C> dst;
+    basic_string<C> regex_escape(const basic_string<C>& str) {
+        basic_string<C> dst;
         for (auto c: str)
             UnicornDetail::escape_char(c, dst);
         return dst;
     }
 
     template <typename C>
-    std::basic_string<C> regex_escape(const C* str) {
-        std::basic_string<C> dst;
+    basic_string<C> regex_escape(const C* str) {
+        basic_string<C> dst;
         if (str)
             while (*str)
                 UnicornDetail::escape_char(*str++, dst);

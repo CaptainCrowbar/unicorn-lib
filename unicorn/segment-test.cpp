@@ -14,10 +14,10 @@ using namespace Unicorn;
 
 namespace {
 
-    std::u32string decode_hex(const u8string& code) {
+    u32string decode_hex(const u8string& code) {
         std::vector<u8string> hexcodes;
         str_split_by(code, append(hexcodes), " /");
-        std::u32string str;
+        u32string str;
         std::transform(CROW_BOUNDS(hexcodes), append(str), hexnum);
         return str;
     }
@@ -61,20 +61,20 @@ namespace {
             auto wsource = to_wstring(source32);
             std::vector<u8string> breakdown;
             str_split_by(line, append(breakdown), "/");
-            std::vector<std::u32string> expect32;
+            std::vector<u32string> expect32;
             std::transform(CROW_BOUNDS(breakdown), append(expect32), decode_hex);
             std::vector<u8string> expect8(expect32.size());
-            std::vector<std::u16string> expect16(expect32.size());
-            std::vector<std::wstring> wexpect(expect32.size());
+            std::vector<u16string> expect16(expect32.size());
+            std::vector<wstring> wexpect(expect32.size());
             for (size_t i = 0; i < expect32.size(); ++i) {
                 expect8[i] = recode<char>(expect32[i]);
                 expect16[i] = recode<char16_t>(expect32[i]);
                 wexpect[i] = recode<wchar_t>(expect32[i]);
             }
             std::vector<u8string> segments8;
-            std::vector<std::u16string> segments16;
-            std::vector<std::u32string> segments32;
-            std::vector<std::wstring> wsegments;
+            std::vector<u16string> segments16;
+            std::vector<u32string> segments32;
+            std::vector<wstring> wsegments;
             TRY(Split()(source8, segments8));
             TRY(Split()(source16, segments16));
             TRY(Split()(source32, segments32));

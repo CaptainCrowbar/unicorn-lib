@@ -21,7 +21,7 @@ namespace {
     using UnicornDetail::normalize_file;
 
     template <typename C>
-    void touch(const std::basic_string<C>& file) {
+    void touch(const basic_string<C>& file) {
         std::ofstream(to_utf8(file));
     }
 
@@ -440,8 +440,8 @@ namespace {
     void check_file_path_operations() {
 
         std::pair<u8string, u8string> p8;
-        std::pair<std::u16string, std::u16string> p16;
-        std::pair<std::u32string, std::u32string> p32;
+        std::pair<u16string, u16string> p16;
+        std::pair<u32string, u32string> p32;
 
         TRY(p8 = split_path(""s));           TEST_EQUAL(p8.first, "");        TEST_EQUAL(p8.second, "");
         TRY(p8 = split_file(""s));           TEST_EQUAL(p8.first, "");        TEST_EQUAL(p8.second, "");
@@ -690,8 +690,8 @@ namespace {
 
     void check_file_system_operations_utf8() {
 
-        std::string d1, d2, f1, f2;
-        std::vector<std::string> vec;
+        string d1, d2, f1, f2;
+        std::vector<string> vec;
 
         TEST(file_exists("."s));
         TEST(file_exists(".."s));
@@ -844,8 +844,8 @@ namespace {
 
     void check_file_system_operations_utf16() {
 
-        std::u16string d1, d2, f1, f2;
-        std::vector<std::u16string> vec;
+        u16string d1, d2, f1, f2;
+        std::vector<u16string> vec;
 
         TEST(file_exists(u"."s));
         TEST(file_exists(u".."s));
@@ -998,8 +998,8 @@ namespace {
 
     void check_file_system_operations_utf32() {
 
-        std::u32string d1, d2, f1, f2;
-        std::vector<std::u32string> vec;
+        u32string d1, d2, f1, f2;
+        std::vector<u32string> vec;
 
         TEST(file_exists(U"."s));
         TEST(file_exists(U".."s));

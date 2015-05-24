@@ -13,8 +13,8 @@ namespace {
     void check_case_conversions() {
 
         u8string s8;
-        std::u16string s16;
-        std::u32string s32;
+        u16string s16;
+        u32string s32;
 
         TEST_EQUAL(str_uppercase(u8""s), u8"");
         TEST_EQUAL(str_uppercase(u8"HELLO WORLD"s), u8"HELLO WORLD");

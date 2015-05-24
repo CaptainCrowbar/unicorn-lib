@@ -1151,21 +1151,21 @@ namespace {
                 size_t n; \
                 TRY(n = mode ## _decomposition(as_uchar(chr), buf)); \
                 TEST_EQUAL(n, length); \
-                std::u32string decomp(buf + 0, buf + n); \
+                u32string decomp(buf + 0, buf + n); \
                 TEST_EQUAL(decomp, expect); \
             } while (false)
 
-        DECOMPOSITION_TEST(canonical, 'A', 0, std::u32string{});
-        DECOMPOSITION_TEST(canonical, 0xc0, 2, (std::u32string{'A',0x300}));
-        DECOMPOSITION_TEST(canonical, 0xff, 2, (std::u32string{'y',0x308}));
-        DECOMPOSITION_TEST(compatibility, 'A', 0, std::u32string{});
-        DECOMPOSITION_TEST(compatibility, 0xb5, 1, (std::u32string{0x3bc}));
-        DECOMPOSITION_TEST(compatibility, 0xbd, 3, (std::u32string{'1',0x2044,'2'}));
+        DECOMPOSITION_TEST(canonical, 'A', 0, u32string{});
+        DECOMPOSITION_TEST(canonical, 0xc0, 2, (u32string{'A',0x300}));
+        DECOMPOSITION_TEST(canonical, 0xff, 2, (u32string{'y',0x308}));
+        DECOMPOSITION_TEST(compatibility, 'A', 0, u32string{});
+        DECOMPOSITION_TEST(compatibility, 0xb5, 1, (u32string{0x3bc}));
+        DECOMPOSITION_TEST(compatibility, 0xbd, 3, (u32string{'1',0x2044,'2'}));
         DECOMPOSITION_TEST(compatibility, 0xfdfa, 18,
-            (std::u32string{0x635,0x644,0x649,' ',0x627,0x644,0x644,0x647,' ',
+            (u32string{0x635,0x644,0x649,' ',0x627,0x644,0x644,0x647,' ',
             0x639,0x644,0x64a,0x647,' ',0x648,0x633,0x644,0x645}));
-        DECOMPOSITION_TEST(canonical, 0xd4db, 2, (std::u32string{0xd4cc,0x11b6}));
-        DECOMPOSITION_TEST(canonical, 0xd4cc, 2, (std::u32string{0x1111,0x1171}));
+        DECOMPOSITION_TEST(canonical, 0xd4db, 2, (u32string{0xd4cc,0x11b6}));
+        DECOMPOSITION_TEST(canonical, 0xd4cc, 2, (u32string{0x1111,0x1171}));
 
         TEST_EQUAL(canonical_composition(0x41, 0x42), 0);
         TEST_EQUAL(canonical_composition(0x41, 0x300), 0xc0);

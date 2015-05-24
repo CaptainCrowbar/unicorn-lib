@@ -23,7 +23,7 @@ namespace Unicorn {
     #endif
 
     template <typename C1, typename C2>
-    void recode_filename(const std::basic_string<C1>& src, std::basic_string<C2>& dst) {
+    void recode_filename(const basic_string<C1>& src, basic_string<C2>& dst) {
         if (sizeof(C1) == sizeof(C2))
             dst.assign(reinterpret_cast<const C2*>(src.data()), src.size());
         else
@@ -31,9 +31,9 @@ namespace Unicorn {
     }
 
     template <typename C2, typename C1>
-    std::basic_string<C2> recode_filename(const std::basic_string<C1>& src) {
+    basic_string<C2> recode_filename(const basic_string<C1>& src) {
         if (sizeof(C1) == sizeof(C2))
-            return std::basic_string<C2>(reinterpret_cast<const C2*>(src.data()), src.size());
+            return basic_string<C2>(reinterpret_cast<const C2*>(src.data()), src.size());
         else
             return recode<C2>(src, 0, err_replace);
     }
@@ -76,7 +76,7 @@ namespace Unicorn {
     namespace UnicornDetail {
 
         template <typename C>
-        std::basic_string<C> normalize_file(const std::basic_string<C>& file) {
+        basic_string<C> normalize_file(const basic_string<C>& file) {
             #if defined(_XOPEN_SOURCE)
                 return file;
             #else
@@ -91,7 +91,7 @@ namespace Unicorn {
         }
 
         template <typename C>
-        NativeString native_file(const std::basic_string<C>& file) {
+        NativeString native_file(const basic_string<C>& file) {
             NativeString nfile;
             recode_filename(file, nfile);
             return normalize_file(nfile);
@@ -108,12 +108,12 @@ namespace Unicorn {
     }
 
     template <typename C>
-    bool file_is_absolute(const std::basic_string<C>& file) {
+    bool file_is_absolute(const basic_string<C>& file) {
         return UnicornDetail::native_file_is_absolute(to_utf8(file));
     }
 
     template <typename C>
-    bool file_is_drive_absolute(const std::basic_string<C>& file) {
+    bool file_is_drive_absolute(const basic_string<C>& file) {
         #if defined(_XOPEN_SOURCE)
             (void)file;
             return false;
@@ -123,7 +123,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    bool file_is_drive_relative(const std::basic_string<C>& file) {
+    bool file_is_drive_relative(const basic_string<C>& file) {
         #if defined(_XOPEN_SOURCE)
             (void)file;
             return false;
@@ -133,27 +133,27 @@ namespace Unicorn {
     }
 
     template <typename C>
-    bool file_is_relative(const std::basic_string<C>& file) {
+    bool file_is_relative(const basic_string<C>& file) {
         return ! (file_is_absolute(file) || file_is_drive_absolute(file) || file_is_drive_relative(file));
     }
 
     template <typename C>
-    bool file_is_root(const std::basic_string<C>& file) {
+    bool file_is_root(const basic_string<C>& file) {
         return UnicornDetail::native_file_is_root(to_utf8(file));
     }
 
     template <typename C>
-    std::basic_string<C> file_path(const std::basic_string<C>& file) {
+    basic_string<C> file_path(const basic_string<C>& file) {
         return UnicornDetail::normalize_file(file);
     }
 
     template <typename C>
-    std::basic_string<C> file_path(const C* file) {
+    basic_string<C> file_path(const C* file) {
         return UnicornDetail::normalize_file(cstr(file));
     }
 
     template <typename C, typename... Args>
-    std::basic_string<C> file_path(const std::basic_string<C>& file1, const std::basic_string<C>& file2,
+    basic_string<C> file_path(const basic_string<C>& file1, const basic_string<C>& file2,
             Args... args) {
         using namespace UnicornDetail;
         auto prefix = normalize_file(file1), suffix = normalize_file(file2);
@@ -167,22 +167,22 @@ namespace Unicorn {
     }
 
     template <typename C, typename... Args>
-    std::basic_string<C> file_path(const std::basic_string<C>& file1, const C* file2, Args... args) {
+    basic_string<C> file_path(const basic_string<C>& file1, const C* file2, Args... args) {
         return file_path(file1, cstr(file2), args...);
     }
 
     template <typename C, typename... Args>
-    std::basic_string<C> file_path(const C* file1, const std::basic_string<C>& file2, Args... args) {
+    basic_string<C> file_path(const C* file1, const basic_string<C>& file2, Args... args) {
         return file_path(cstr(file1), file2, args...);
     }
 
     template <typename C, typename... Args>
-    std::basic_string<C> file_path(const C* file1, const C* file2, Args... args) {
+    basic_string<C> file_path(const C* file1, const C* file2, Args... args) {
         return file_path(cstr(file1), cstr(file2), args...);
     }
 
     template <typename C>
-    std::pair<std::basic_string<C>, std::basic_string<C>> split_path(const std::basic_string<C>& file) {
+    std::pair<basic_string<C>, basic_string<C>> split_path(const basic_string<C>& file) {
         auto nfile = UnicornDetail::normalize_file(file);
         auto cut = nfile.find_last_of(static_cast<C>(file_delimiter));
         #if ! defined(_XOPEN_SOURCE)
@@ -200,7 +200,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    std::pair<std::basic_string<C>, std::basic_string<C>> split_file(const std::basic_string<C>& file) {
+    std::pair<basic_string<C>, basic_string<C>> split_file(const basic_string<C>& file) {
         auto nfile = UnicornDetail::normalize_file(file);
         auto cut = nfile.find_last_of(static_cast<C>(file_delimiter));
         #if ! defined(_XOPEN_SOURCE)
@@ -233,37 +233,37 @@ namespace Unicorn {
     }
 
     template <typename C>
-    std::basic_string<C> current_directory() {
-        std::basic_string<C> dir;
+    basic_string<C> current_directory() {
+        basic_string<C> dir;
         recode_filename(UnicornDetail::native_current_directory(), dir);
         return dir;
     }
 
     template <typename C>
-    void current_directory(std::basic_string<C>& dir) {
+    void current_directory(basic_string<C>& dir) {
         recode_filename(UnicornDetail::native_current_directory(), dir);
     }
 
     template <typename C>
-    bool file_exists(const std::basic_string<C>& file) noexcept {
+    bool file_exists(const basic_string<C>& file) noexcept {
         using namespace UnicornDetail;
         return native_file_exists(native_file(file));
     }
 
     template <typename C>
-    bool file_is_directory(const std::basic_string<C>& file) noexcept {
+    bool file_is_directory(const basic_string<C>& file) noexcept {
         using namespace UnicornDetail;
         return native_file_is_directory(native_file(file));
     }
 
     template <typename C>
-    bool file_is_hidden(const std::basic_string<C>& file) noexcept {
+    bool file_is_hidden(const basic_string<C>& file) noexcept {
         using namespace UnicornDetail;
         return native_file_is_hidden(native_file(file));
     }
 
     template <typename C>
-    bool file_is_symlink(const std::basic_string<C>& file) noexcept {
+    bool file_is_symlink(const basic_string<C>& file) noexcept {
         using namespace UnicornDetail;
         return native_file_is_symlink(native_file(file));
     }
@@ -279,19 +279,19 @@ namespace Unicorn {
     }
 
     template <typename C>
-    void make_directory(const std::basic_string<C>& dir, bool recurse = false) {
+    void make_directory(const basic_string<C>& dir, bool recurse = false) {
         using namespace UnicornDetail;
         native_make_directory(native_file(dir), recurse);
     }
 
     template <typename C>
-    void remove_file(const std::basic_string<C>& file, bool recurse = false) {
+    void remove_file(const basic_string<C>& file, bool recurse = false) {
         using namespace UnicornDetail;
         native_remove_file(native_file(file), recurse);
     }
 
     template <typename C>
-    void rename_file(const std::basic_string<C>& src, const std::basic_string<C>& dst) {
+    void rename_file(const basic_string<C>& src, const basic_string<C>& dst) {
         using namespace UnicornDetail;
         native_rename_file(native_file(src), native_file(dst));
     }
@@ -323,7 +323,7 @@ namespace Unicorn {
     public:
         using difference_type = ptrdiff_t;
         using iterator_category = std::input_iterator_tag;
-        using value_type = std::basic_string<C>;
+        using value_type = basic_string<C>;
         using pointer = const value_type*;
         using reference = const value_type&;
         DirectoryIterator() = default;
@@ -383,7 +383,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    Irange<DirectoryIterator<C>> directory(const std::basic_string<C>& dir, Flagset flags = {}) {
+    Irange<DirectoryIterator<C>> directory(const basic_string<C>& dir, Flagset flags = {}) {
         return {DirectoryIterator<C>(dir, flags), DirectoryIterator<C>()};
     }
 

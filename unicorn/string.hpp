@@ -141,7 +141,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    size_t str_length(const std::basic_string<C>& str, Flagset flags = {}) {
+    size_t str_length(const basic_string<C>& str, Flagset flags = {}) {
         return str_length(utf_range(str), flags);
     }
 
@@ -156,12 +156,12 @@ namespace Unicorn {
     }
 
     template <typename C>
-    UtfIterator<C> str_find_index(const std::basic_string<C>& str, size_t pos, Flagset flags = {}) {
+    UtfIterator<C> str_find_index(const basic_string<C>& str, size_t pos, Flagset flags = {}) {
         return str_find_index(utf_range(str), pos, flags);
     }
 
     template <typename C>
-    size_t str_find_offset(const std::basic_string<C>& str, size_t pos, Flagset flags = {}) {
+    size_t str_find_offset(const basic_string<C>& str, size_t pos, Flagset flags = {}) {
         auto rc = UnicornDetail::find_position(utf_range(str), pos, flags);
         return rc.second ? rc.first.offset() : npos;
     }
@@ -169,8 +169,8 @@ namespace Unicorn {
     // Functions needed early
 
     template <typename C>
-    std::basic_string<C> str_repeat(const std::basic_string<C>& str, size_t n) {
-        using string_type = std::basic_string<C>;
+    basic_string<C> str_repeat(const basic_string<C>& str, size_t n) {
+        using string_type = basic_string<C>;
         if (n == 0 || str.empty())
             return {};
         if (str.size() == 1)
@@ -185,16 +185,16 @@ namespace Unicorn {
     }
 
     template <typename C>
-    std::basic_string<C> str_repeat(const C* str, size_t n) {
+    basic_string<C> str_repeat(const C* str, size_t n) {
         return str_repeat(cstr(str), n);
     }
 
     template <typename C>
-    std::basic_string<C> str_chars(char32_t c, size_t n = 1) {
+    basic_string<C> str_chars(char32_t c, size_t n = 1) {
         using namespace UnicornDetail;
         if (n == 0)
             return {};
-        std::basic_string<C> str(UtfEncoding<C>::max_units, static_cast<C>(0));
+        basic_string<C> str(UtfEncoding<C>::max_units, static_cast<C>(0));
         auto len = UtfEncoding<C>::encode(c, &str[0]);
         if (len == 0)
             len = UtfEncoding<C>::encode(replacement_char, &str[0]);
@@ -205,7 +205,7 @@ namespace Unicorn {
     // Other string properties
 
     template <typename C>
-    char32_t str_char_at(const std::basic_string<C>& str, size_t index) noexcept {
+    char32_t str_char_at(const basic_string<C>& str, size_t index) noexcept {
         for (auto&& c: utf_range(str))
             if (! index--)
                 return c;
@@ -213,17 +213,17 @@ namespace Unicorn {
     }
 
     template <typename C>
-    char32_t str_first_char(const std::basic_string<C>& str) noexcept {
+    char32_t str_first_char(const basic_string<C>& str) noexcept {
         return str.empty() ? 0 : *utf_begin(str);
     }
 
     template <typename C>
-    char32_t str_last_char(const std::basic_string<C>& str) noexcept {
+    char32_t str_last_char(const basic_string<C>& str) noexcept {
         return str.empty() ? 0 : *std::prev(utf_end(str));
     }
 
     template <typename C>
-    bool str_is_east_asian(const std::basic_string<C>& str) {
+    bool str_is_east_asian(const basic_string<C>& str) {
         for (auto c: utf_range(str)) {
             auto w = east_asian_width(c);
             if (w == East_Asian_Width::F || w == East_Asian_Width::H || w == East_Asian_Width::W)
@@ -233,13 +233,13 @@ namespace Unicorn {
     }
 
     template <typename C>
-    bool str_starts_with(const std::basic_string<C>& str, const std::basic_string<C>& prefix) noexcept {
+    bool str_starts_with(const basic_string<C>& str, const basic_string<C>& prefix) noexcept {
         return str.size() >= prefix.size()
             && memcmp(str.data(), prefix.data(), sizeof(C) * prefix.size()) == 0;
     }
 
     template <typename C>
-    bool str_starts_with(const std::basic_string<C>& str, const C* prefix) noexcept {
+    bool str_starts_with(const basic_string<C>& str, const C* prefix) noexcept {
         if (! prefix)
             return true;
         auto count = cstr_size(prefix);
@@ -247,13 +247,13 @@ namespace Unicorn {
     }
 
     template <typename C>
-    bool str_ends_with(const std::basic_string<C>& str, const std::basic_string<C>& suffix) noexcept {
+    bool str_ends_with(const basic_string<C>& str, const basic_string<C>& suffix) noexcept {
         return str.size() >= suffix.size()
             && memcmp(str.data() + str.size() - suffix.size(), suffix.data(), sizeof(C) * suffix.size()) == 0;
     }
 
     template <typename C>
-    bool str_ends_with(const std::basic_string<C>& str, const C* suffix) noexcept {
+    bool str_ends_with(const basic_string<C>& str, const C* suffix) noexcept {
         if (! suffix)
             return true;
         auto count = cstr_size(suffix);
@@ -266,7 +266,7 @@ namespace Unicorn {
 
         template <typename C, size_t N = sizeof(C)>
         struct StringCompareHelper {
-            using string_type = std::basic_string<C>;
+            using string_type = basic_string<C>;
             static bool less(const string_type& lhs, const string_type& rhs) noexcept {
                 return lhs < rhs;
             }
@@ -274,7 +274,7 @@ namespace Unicorn {
 
         template <typename C>
         struct StringCompareHelper<C, 2> {
-            using string_type = std::basic_string<C>;
+            using string_type = basic_string<C>;
             static bool less(const string_type& lhs, const string_type& rhs) noexcept {
                 auto a = utf_range(lhs), b = utf_range(rhs);
                 return std::lexicographical_compare(CROW_BOUNDS(a), CROW_BOUNDS(b));
@@ -285,8 +285,8 @@ namespace Unicorn {
 
     struct StringCompare {
         template <typename C>
-        bool operator()(const std::basic_string<C>& lhs,
-                const std::basic_string<C>& rhs) const noexcept {
+        bool operator()(const basic_string<C>& lhs,
+                const basic_string<C>& rhs) const noexcept {
             return UnicornDetail::StringCompareHelper<C>::less(lhs, rhs);
         }
     };
@@ -294,7 +294,7 @@ namespace Unicorn {
     constexpr StringCompare str_compare {};
 
     template <typename C>
-    bool str_expect(UtfIterator<C>& i, const UtfIterator<C>& end, const std::basic_string<C>& prefix) {
+    bool str_expect(UtfIterator<C>& i, const UtfIterator<C>& end, const basic_string<C>& prefix) {
         size_t psize = prefix.size();
         if (psize == 0 || end.offset() - i.offset() < psize
                 || memcmp(i.source().data() + i.offset(), prefix.data(), psize) != 0)
@@ -304,7 +304,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    bool str_expect(UtfIterator<C>& i, const std::basic_string<C>& prefix) {
+    bool str_expect(UtfIterator<C>& i, const basic_string<C>& prefix) {
         return str_expect(i, utf_end(i.source()), prefix);
     }
 
@@ -319,7 +319,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    UtfIterator<C> str_find_char(const std::basic_string<C>& str, char32_t c) {
+    UtfIterator<C> str_find_char(const basic_string<C>& str, char32_t c) {
         return utf_iterator(str, str.find(str_chars<C>(c)));
     }
 
@@ -340,25 +340,25 @@ namespace Unicorn {
     }
 
     template <typename C>
-    UtfIterator<C> str_find_last_char(const std::basic_string<C>& str, char32_t c) {
+    UtfIterator<C> str_find_last_char(const basic_string<C>& str, char32_t c) {
         return utf_iterator(str, str.rfind(str_chars<C>(c)));
     }
 
     template <typename C>
     UtfIterator<C> str_find_first_of(const UtfIterator<C>& b, const UtfIterator<C>& e,
-            const std::basic_string<C>& target) {
+            const basic_string<C>& target) {
         auto u_target = to_utf32(target);
         return std::find_if(b, e,
             [&] (char32_t c) { return u_target.find(c) != npos; });
     }
 
     template <typename C>
-    UtfIterator<C> str_find_first_of(const Irange<UtfIterator<C>>& range, const std::basic_string<C>& target) {
+    UtfIterator<C> str_find_first_of(const Irange<UtfIterator<C>>& range, const basic_string<C>& target) {
         return str_find_first_of(CROW_BOUNDS(range), target);
     }
 
     template <typename C>
-    UtfIterator<C> str_find_first_of(const std::basic_string<C>& str, const std::basic_string<C>& target) {
+    UtfIterator<C> str_find_first_of(const basic_string<C>& str, const basic_string<C>& target) {
         return str_find_first_of(utf_begin(str), utf_end(str), target);
     }
 
@@ -373,13 +373,13 @@ namespace Unicorn {
     }
 
     template <typename C>
-    UtfIterator<C> str_find_first_of(const std::basic_string<C>& str, const C* target) {
+    UtfIterator<C> str_find_first_of(const basic_string<C>& str, const C* target) {
         return str_find_first_of(utf_begin(str), utf_end(str), cstr(target));
     }
 
     template <typename C>
     UtfIterator<C> str_find_first_not_of(const UtfIterator<C>& b, const UtfIterator<C>& e,
-            const std::basic_string<C>& target) {
+            const basic_string<C>& target) {
         auto u_target = to_utf32(target);
         return std::find_if(b, e,
             [&] (char32_t c) { return u_target.find(c) == npos; });
@@ -387,13 +387,13 @@ namespace Unicorn {
 
     template <typename C>
     UtfIterator<C> str_find_first_not_of(const Irange<UtfIterator<C>>& range,
-            const std::basic_string<C>& target) {
+            const basic_string<C>& target) {
         return str_find_first_not_of(CROW_BOUNDS(range), target);
     }
 
     template <typename C>
-    UtfIterator<C> str_find_first_not_of(const std::basic_string<C>& str,
-            const std::basic_string<C>& target) {
+    UtfIterator<C> str_find_first_not_of(const basic_string<C>& str,
+            const basic_string<C>& target) {
         return str_find_first_not_of(utf_begin(str), utf_end(str), target);
     }
 
@@ -409,13 +409,13 @@ namespace Unicorn {
     }
 
     template <typename C>
-    UtfIterator<C> str_find_first_not_of(const std::basic_string<C>& str, const C* target) {
+    UtfIterator<C> str_find_first_not_of(const basic_string<C>& str, const C* target) {
         return str_find_first_not_of(utf_begin(str), utf_end(str), cstr(target));
     }
 
     template <typename C>
     UtfIterator<C> str_find_last_of(const UtfIterator<C>& b, const UtfIterator<C>& e,
-            const std::basic_string<C>& target) {
+            const basic_string<C>& target) {
         auto u_target = to_utf32(target);
         auto i = e;
         while (i != b) {
@@ -427,12 +427,12 @@ namespace Unicorn {
     }
 
     template <typename C>
-    UtfIterator<C> str_find_last_of(const Irange<UtfIterator<C>>& range, const std::basic_string<C>& target) {
+    UtfIterator<C> str_find_last_of(const Irange<UtfIterator<C>>& range, const basic_string<C>& target) {
         return str_find_last_of(CROW_BOUNDS(range), target);
     }
 
     template <typename C>
-    UtfIterator<C> str_find_last_of(const std::basic_string<C>& str, const std::basic_string<C>& target) {
+    UtfIterator<C> str_find_last_of(const basic_string<C>& str, const basic_string<C>& target) {
         return str_find_last_of(utf_begin(str), utf_end(str), target);
     }
 
@@ -447,13 +447,13 @@ namespace Unicorn {
     }
 
     template <typename C>
-    UtfIterator<C> str_find_last_of(const std::basic_string<C>& str, const C* target) {
+    UtfIterator<C> str_find_last_of(const basic_string<C>& str, const C* target) {
         return str_find_last_of(utf_begin(str), utf_end(str), cstr(target));
     }
 
     template <typename C>
     UtfIterator<C> str_find_last_not_of(const UtfIterator<C>& b, const UtfIterator<C>& e,
-            const std::basic_string<C>& target) {
+            const basic_string<C>& target) {
         auto u_target = to_utf32(target);
         auto i = e;
         while (i != b) {
@@ -466,13 +466,13 @@ namespace Unicorn {
 
     template <typename C>
     UtfIterator<C> str_find_last_not_of(const Irange<UtfIterator<C>>& range,
-            const std::basic_string<C>& target) {
+            const basic_string<C>& target) {
         return str_find_last_not_of(CROW_BOUNDS(range), target);
     }
 
     template <typename C>
-    UtfIterator<C> str_find_last_not_of(const std::basic_string<C>& str,
-            const std::basic_string<C>& target) {
+    UtfIterator<C> str_find_last_not_of(const basic_string<C>& str,
+            const basic_string<C>& target) {
         return str_find_last_not_of(utf_begin(str), utf_end(str), target);
     }
 
@@ -488,24 +488,24 @@ namespace Unicorn {
     }
 
     template <typename C>
-    UtfIterator<C> str_find_last_not_of(const std::basic_string<C>& str, const C* target) {
+    UtfIterator<C> str_find_last_not_of(const basic_string<C>& str, const C* target) {
         return str_find_last_not_of(utf_begin(str), utf_end(str), cstr(target));
     }
 
     template <typename C>
     UtfIterator<C> str_search(const UtfIterator<C>& b, const UtfIterator<C>& e,
-            const std::basic_string<C>& target) {
+            const basic_string<C>& target) {
         auto u_target = to_utf32(target);
         return std::search(b, e, CROW_BOUNDS(u_target));
     }
 
     template <typename C>
-    UtfIterator<C> str_search(const Irange<UtfIterator<C>>& range, const std::basic_string<C>& target) {
+    UtfIterator<C> str_search(const Irange<UtfIterator<C>>& range, const basic_string<C>& target) {
         return str_search(CROW_BOUNDS(range), target);
     }
 
     template <typename C>
-    UtfIterator<C> str_search(const std::basic_string<C>& str, const std::basic_string<C>& target) {
+    UtfIterator<C> str_search(const basic_string<C>& str, const basic_string<C>& target) {
         return str_search(utf_begin(str), utf_end(str), target);
     }
 
@@ -520,7 +520,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    UtfIterator<C> str_search(const std::basic_string<C>& str, const C* target) {
+    UtfIterator<C> str_search(const basic_string<C>& str, const C* target) {
         return str_search(utf_begin(str), utf_end(str), cstr(target));
     }
 
@@ -539,27 +539,27 @@ namespace Unicorn {
     // String manipulation functions
 
     template <typename C, typename C2>
-    void str_append(std::basic_string<C>& str, const std::basic_string<C2>& suffix) {
+    void str_append(basic_string<C>& str, const basic_string<C2>& suffix) {
         std::copy(utf_begin(suffix), utf_end(suffix), utf_writer(str));
     }
 
     template <typename C, typename C2>
-    void str_append(std::basic_string<C>& str, const Irange<UtfIterator<C2>>& suffix) {
+    void str_append(basic_string<C>& str, const Irange<UtfIterator<C2>>& suffix) {
         std::copy(std::begin(suffix), std::end(suffix), utf_writer(str));
     }
 
     template <typename C, typename C2>
-    void str_append(std::basic_string<C>& str, const UtfIterator<C2>& suffix_begin, const UtfIterator<C2>& suffix_end) {
+    void str_append(basic_string<C>& str, const UtfIterator<C2>& suffix_begin, const UtfIterator<C2>& suffix_end) {
         std::copy(suffix_begin, suffix_end, utf_writer(str));
     }
 
     template <typename C, typename C2>
-    void str_append(std::basic_string<C>& str, const C2* suffix) {
+    void str_append(basic_string<C>& str, const C2* suffix) {
         str_append(str, cstr(suffix));
     }
 
     template <typename C, typename C2>
-    void str_append(std::basic_string<C>& dst, const C2* ptr, size_t n) {
+    void str_append(basic_string<C>& dst, const C2* ptr, size_t n) {
         auto out = utf_writer(dst);
         if (ptr)
             for (; n; --n)
@@ -567,18 +567,18 @@ namespace Unicorn {
     }
 
     template <typename C, typename C2>
-    void str_append_char(std::basic_string<C>& dst, C2 c2) {
+    void str_append_char(basic_string<C>& dst, C2 c2) {
         *utf_writer(dst) = as_uchar(c2);
     }
 
     template <typename C, typename C2, typename C3, typename... Chars>
-    void str_append_char(std::basic_string<C>& dst, C2 c2, C3 c3, Chars... chars) {
+    void str_append_char(basic_string<C>& dst, C2 c2, C3 c3, Chars... chars) {
         str_append_char(dst, c2);
         str_append_char(dst, c3, chars...);
     }
 
     template <typename C>
-    void str_append_chars(std::basic_string<C>& dst, char32_t c, size_t n) {
+    void str_append_chars(basic_string<C>& dst, char32_t c, size_t n) {
         auto s = str_chars<C>(c);
         if (s.size() == 1)
             dst.append(n, s[0]);
@@ -587,35 +587,35 @@ namespace Unicorn {
     }
 
     template <typename C>
-    std::basic_string<C> str_change(const UtfIterator<C>& dst_begin, const UtfIterator<C>& dst_end,
+    basic_string<C> str_change(const UtfIterator<C>& dst_begin, const UtfIterator<C>& dst_end,
             const UtfIterator<C>& src_begin, const UtfIterator<C>& src_end) {
-        std::basic_string<C> result(dst_begin.source(), 0, dst_begin.offset());
+        basic_string<C> result(dst_begin.source(), 0, dst_begin.offset());
         result.append(src_begin.source(), src_begin.offset(), src_end.offset() - src_begin.offset());
         result.append(dst_end.source(), dst_end.offset(), npos);
         return result;
     }
 
     template <typename C>
-    std::basic_string<C> str_change(const Irange<UtfIterator<C>>& dst, const Irange<UtfIterator<C>>& src) {
+    basic_string<C> str_change(const Irange<UtfIterator<C>>& dst, const Irange<UtfIterator<C>>& src) {
         return str_change(CROW_BOUNDS(dst), CROW_BOUNDS(src));
     }
 
     template <typename C>
-    std::basic_string<C> str_change(const UtfIterator<C>& dst_begin, const UtfIterator<C>& dst_end,
-            const std::basic_string<C>& src) {
-        std::basic_string<C> result(dst_begin.source(), 0, dst_begin.offset());
+    basic_string<C> str_change(const UtfIterator<C>& dst_begin, const UtfIterator<C>& dst_end,
+            const basic_string<C>& src) {
+        basic_string<C> result(dst_begin.source(), 0, dst_begin.offset());
         result += src;
         result.append(dst_end.source(), dst_end.offset(), npos);
         return result;
     }
 
     template <typename C>
-    std::basic_string<C> str_change(const Irange<UtfIterator<C>>& dst, const std::basic_string<C>& src) {
+    basic_string<C> str_change(const Irange<UtfIterator<C>>& dst, const basic_string<C>& src) {
         return str_change(CROW_BOUNDS(dst), utf_begin(src), utf_end(src));
     }
 
     template <typename C>
-    Irange<UtfIterator<C>> str_change_in(std::basic_string<C>& dst,
+    Irange<UtfIterator<C>> str_change_in(basic_string<C>& dst,
             const UtfIterator<C>& range_begin, const UtfIterator<C>& range_end,
             const UtfIterator<C>& src_begin, const UtfIterator<C>& src_end) {
         size_t pos1 = range_begin.offset(), n1 = range_end.offset() - pos1,
@@ -625,23 +625,23 @@ namespace Unicorn {
     }
 
     template <typename C>
-    Irange<UtfIterator<C>> str_change_in(std::basic_string<C>& dst, const Irange<UtfIterator<C>>& range,
+    Irange<UtfIterator<C>> str_change_in(basic_string<C>& dst, const Irange<UtfIterator<C>>& range,
             const Irange<UtfIterator<C>>& src) {
         return str_change_in(dst, CROW_BOUNDS(range), CROW_BOUNDS(src));
     }
 
     template <typename C>
-    Irange<UtfIterator<C>> str_change_in(std::basic_string<C>& dst,
+    Irange<UtfIterator<C>> str_change_in(basic_string<C>& dst,
             const UtfIterator<C>& range_begin, const UtfIterator<C>& range_end,
-            const std::basic_string<C>& src) {
+            const basic_string<C>& src) {
         size_t pos1 = range_begin.offset(), n1 = range_end.offset() - pos1;
         dst.replace(pos1, n1, src);
         return {utf_iterator(dst, pos1), utf_iterator(dst, pos1 + src.size())};
     }
 
     template <typename C>
-    Irange<UtfIterator<C>> str_change_in(std::basic_string<C>& dst, const Irange<UtfIterator<C>>& range,
-            const std::basic_string<C>& src) {
+    Irange<UtfIterator<C>> str_change_in(basic_string<C>& dst, const Irange<UtfIterator<C>>& range,
+            const basic_string<C>& src) {
         return str_change_in(dst, CROW_BOUNDS(range), utf_begin(src), utf_end(src));
     }
 
@@ -660,108 +660,108 @@ namespace Unicorn {
     }
 
     template <typename C, typename... Strings>
-    std::basic_string<C> str_concat(const std::basic_string<C>& s, const Strings&... ss) {
+    basic_string<C> str_concat(const basic_string<C>& s, const Strings&... ss) {
         auto result = s;
-        UnicornDetail::concat_helper(result, std::basic_string<C>(), ss...);
+        UnicornDetail::concat_helper(result, basic_string<C>(), ss...);
         return result;
     }
 
     template <typename C, typename... Strings>
-    std::basic_string<C> str_concat(const C* s, const Strings&... ss) {
+    basic_string<C> str_concat(const C* s, const Strings&... ss) {
         auto result = cstr(s);
-        UnicornDetail::concat_helper(result, std::basic_string<C>(), ss...);
+        UnicornDetail::concat_helper(result, basic_string<C>(), ss...);
         return result;
     }
 
     template <typename C>
-    std::basic_string<C> str_concat_with(const std::basic_string<C>& /*delim*/) {
+    basic_string<C> str_concat_with(const basic_string<C>& /*delim*/) {
         return {};
     }
 
     template <typename C>
-    std::basic_string<C> str_concat_with(const C* /*delim*/) {
+    basic_string<C> str_concat_with(const C* /*delim*/) {
         return {};
     }
 
     template <typename C1, typename C2, typename... Strings>
-    std::basic_string<C1> str_concat_with(const std::basic_string<C1>& delim,
-            const std::basic_string<C2>& s, const Strings&... ss) {
-        std::basic_string<C1> result;
+    basic_string<C1> str_concat_with(const basic_string<C1>& delim,
+            const basic_string<C2>& s, const Strings&... ss) {
+        basic_string<C1> result;
         recode(s, result);
         UnicornDetail::concat_helper(result, delim, ss...);
         return result;
     }
 
     template <typename C1, typename C2, typename... Strings>
-    std::basic_string<C1> str_concat_with(const std::basic_string<C1>& delim, const C2* s, const Strings&... ss) {
-        std::basic_string<C1> result;
+    basic_string<C1> str_concat_with(const basic_string<C1>& delim, const C2* s, const Strings&... ss) {
+        basic_string<C1> result;
         recode(s, result);
         UnicornDetail::concat_helper(result, delim, ss...);
         return result;
     }
 
     template <typename C1, typename C2, typename... Strings>
-    std::basic_string<C1> str_concat_with(const C1* delim, const std::basic_string<C2>& s, const Strings&... ss) {
-        std::basic_string<C1> result;
+    basic_string<C1> str_concat_with(const C1* delim, const basic_string<C2>& s, const Strings&... ss) {
+        basic_string<C1> result;
         recode(s, result);
         UnicornDetail::concat_helper(result, cstr(delim), ss...);
         return result;
     }
 
     template <typename C1, typename C2, typename... Strings>
-    std::basic_string<C1> str_concat_with(const C1* delim, const C2* s, const Strings&... ss) {
-        std::basic_string<C1> result;
+    basic_string<C1> str_concat_with(const C1* delim, const C2* s, const Strings&... ss) {
+        basic_string<C1> result;
         recode(cstr(s), result);
         UnicornDetail::concat_helper(result, cstr(delim), ss...);
         return result;
     }
 
     template <typename C>
-    std::basic_string<C> str_drop_prefix(const std::basic_string<C>& str, const std::basic_string<C>& prefix) {
+    basic_string<C> str_drop_prefix(const basic_string<C>& str, const basic_string<C>& prefix) {
         return str_starts_with(str, prefix) ? str.substr(prefix.size()) : str;
     }
 
     template <typename C>
-    std::basic_string<C> str_drop_prefix(const std::basic_string<C>& str, const C* prefix) {
+    basic_string<C> str_drop_prefix(const basic_string<C>& str, const C* prefix) {
         return str_starts_with(str, prefix) ? str.substr(cstr_size(prefix)) : str;
     }
 
     template <typename C>
-    void str_drop_prefix_in(std::basic_string<C>& str, const std::basic_string<C>& prefix) noexcept {
+    void str_drop_prefix_in(basic_string<C>& str, const basic_string<C>& prefix) noexcept {
         if (str_starts_with(str, prefix))
             str.erase(0, prefix.size());
     }
 
     template <typename C>
-    void str_drop_prefix_in(std::basic_string<C>& str, const C* prefix) noexcept {
+    void str_drop_prefix_in(basic_string<C>& str, const C* prefix) noexcept {
         if (str_starts_with(str, prefix))
             str.erase(0, cstr_size(prefix));
     }
 
     template <typename C>
-    std::basic_string<C> str_drop_suffix(const std::basic_string<C>& str, const std::basic_string<C>& suffix) {
+    basic_string<C> str_drop_suffix(const basic_string<C>& str, const basic_string<C>& suffix) {
         return str_ends_with(str, suffix) ? str.substr(0, str.size() - suffix.size()) : str;
     }
 
     template <typename C>
-    std::basic_string<C> str_drop_suffix(const std::basic_string<C>& str, const C* suffix) {
+    basic_string<C> str_drop_suffix(const basic_string<C>& str, const C* suffix) {
         return str_ends_with(str, suffix) ? str.substr(0, str.size() - cstr_size(suffix)) : str;
     }
 
     template <typename C>
-    void str_drop_suffix_in(std::basic_string<C>& str, const std::basic_string<C>& suffix) noexcept {
+    void str_drop_suffix_in(basic_string<C>& str, const basic_string<C>& suffix) noexcept {
         if (str_ends_with(str, suffix))
             str.resize(str.size() - suffix.size());
     }
 
     template <typename C>
-    void str_drop_suffix_in(std::basic_string<C>& str, const C* suffix) noexcept {
+    void str_drop_suffix_in(basic_string<C>& str, const C* suffix) noexcept {
         if (str_ends_with(str, suffix))
             str.resize(str.size() - cstr_size(suffix));
     }
 
     template <typename C>
-    std::basic_string<C> str_erase_left(const std::basic_string<C>& str, size_t length) {
+    basic_string<C> str_erase_left(const basic_string<C>& str, size_t length) {
         if (length == 0)
             return str;
         auto range = utf_range(str);
@@ -774,7 +774,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    void str_erase_left_in(std::basic_string<C>& str, size_t length) noexcept {
+    void str_erase_left_in(basic_string<C>& str, size_t length) noexcept {
         if (length == 0)
             return;
         auto range = utf_range(str);
@@ -787,7 +787,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    std::basic_string<C> str_erase_right(const std::basic_string<C>& str, size_t length) {
+    basic_string<C> str_erase_right(const basic_string<C>& str, size_t length) {
         if (length == 0)
             return str;
         auto range = utf_range(str);
@@ -800,7 +800,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    void str_erase_right_in(std::basic_string<C>& str, size_t length) noexcept {
+    void str_erase_right_in(basic_string<C>& str, size_t length) noexcept {
         if (length == 0)
             return;
         auto range = utf_range(str);
@@ -815,7 +815,7 @@ namespace Unicorn {
     namespace UnicornDetail {
 
         template <typename C>
-        std::basic_string<C> expand_tabs(const std::basic_string<C>& str, std::vector<size_t> tabs, Flagset flags) {
+        basic_string<C> expand_tabs(const basic_string<C>& str, std::vector<size_t> tabs, Flagset flags) {
             if (tabs.empty())
                 tabs.push_back(8);
             size_t delta;
@@ -825,7 +825,7 @@ namespace Unicorn {
                 delta = tabs.end()[-1] - tabs.end()[-2];
             auto t = tabs.begin(), t_end = tabs.end();
             auto u = utf_begin(str), u_end = utf_end(str);
-            std::basic_string<C> result;
+            basic_string<C> result;
             size_t col = 0;
             while (u != u_end) {
                 auto start = u;
@@ -857,40 +857,40 @@ namespace Unicorn {
     }
 
     template <typename C, typename IntList>
-    std::basic_string<C> str_expand_tabs(const std::basic_string<C>& str, const IntList& tabs,
+    basic_string<C> str_expand_tabs(const basic_string<C>& str, const IntList& tabs,
             Flagset flags = {}) {
         std::vector<size_t> tv(CROW_BOUNDS(tabs));
         return UnicornDetail::expand_tabs(str, tv, flags);
     }
 
     template <typename C, typename IntType>
-    std::basic_string<C> str_expand_tabs(const std::basic_string<C>& str, std::initializer_list<IntType> tabs,
+    basic_string<C> str_expand_tabs(const basic_string<C>& str, std::initializer_list<IntType> tabs,
             Flagset flags = {}) {
         std::vector<size_t> tv(CROW_BOUNDS(tabs));
         return UnicornDetail::expand_tabs(str, tv, flags);
     }
 
     template <typename C>
-    std::basic_string<C> str_expand_tabs(const std::basic_string<C>& str) {
+    basic_string<C> str_expand_tabs(const basic_string<C>& str) {
         return UnicornDetail::expand_tabs(str, {}, {});
     }
 
     template <typename C, typename IntList>
-    void str_expand_tabs_in(std::basic_string<C>& str, const IntList& tabs,
+    void str_expand_tabs_in(basic_string<C>& str, const IntList& tabs,
             Flagset flags = {}) {
         auto result = str_expand_tabs(str, tabs, flags);
         str.swap(result);
     }
 
     template <typename C, typename IntType>
-    void str_expand_tabs_in(std::basic_string<C>& str, std::initializer_list<IntType> tabs,
+    void str_expand_tabs_in(basic_string<C>& str, std::initializer_list<IntType> tabs,
             Flagset flags = {}) {
         auto result = str_expand_tabs(str, tabs, flags);
         str.swap(result);
     }
 
     template <typename C>
-    void str_expand_tabs_in(std::basic_string<C>& str) {
+    void str_expand_tabs_in(basic_string<C>& str) {
         auto result = str_expand_tabs(str);
         str.swap(result);
     }
@@ -898,7 +898,7 @@ namespace Unicorn {
     namespace UnicornDetail {
 
         template <typename C>
-        void insert_padding(std::basic_string<C>& str, size_t old_length, size_t new_length,
+        void insert_padding(basic_string<C>& str, size_t old_length, size_t new_length,
                 char32_t c, Flagset flags, char side) {
             size_t pad_chars = new_length - old_length;
             if (flags.get(east_asian_flags)) {
@@ -924,7 +924,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    std::basic_string<C> str_fix_left(const std::basic_string<C>& str, size_t length,
+    basic_string<C> str_fix_left(const basic_string<C>& str, size_t length,
             char32_t c = U' ', Flagset flags = {}) {
         size_t offset = str_find_offset(str, length, flags);
         if (offset == npos) {
@@ -937,7 +937,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    void str_fix_left_in(std::basic_string<C>& str, size_t length,
+    void str_fix_left_in(basic_string<C>& str, size_t length,
             char32_t c = U' ', Flagset flags = {}) {
         size_t offset = str_find_offset(str, length, flags);
         if (offset == npos)
@@ -947,7 +947,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    std::basic_string<C> str_fix_right(const std::basic_string<C>& str, size_t length,
+    basic_string<C> str_fix_right(const basic_string<C>& str, size_t length,
             char32_t c = U' ', Flagset flags = {}) {
         size_t old_length = str_length(str, flags);
         if (old_length < length) {
@@ -961,7 +961,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    void str_fix_right_in(std::basic_string<C>& str, size_t length,
+    void str_fix_right_in(basic_string<C>& str, size_t length,
             char32_t c = U' ', Flagset flags = {}) {
         size_t old_length = str_length(str, flags);
         if (old_length < length) {
@@ -973,7 +973,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    std::basic_string<C> str_fold_whitespace(const std::basic_string<C>& str, Flagset flags = {}) {
+    basic_string<C> str_fold_whitespace(const basic_string<C>& str, Flagset flags = {}) {
         static constexpr auto space = C(' ');
         flags.allow(fold_leading | fold_trailing | fold_lines | fold_control, "Whitespace folding");
         bool strip_leading = flags.get(fold_leading), strip_trailing = flags.get(fold_trailing),
@@ -984,7 +984,7 @@ namespace Unicorn {
                 || (strip_control && char_is_control(c));
         };
         auto i = utf_begin(str), j = i, e = utf_end(str);
-        std::basic_string<C> result;
+        basic_string<C> result;
         while (i != e) {
             if (is_space(*i)) {
                 j = std::find_if_not(i, e, is_space);
@@ -1005,14 +1005,14 @@ namespace Unicorn {
     }
 
     template <typename C>
-    void str_fold_whitespace_in(std::basic_string<C>& str, Flagset flags = {}) {
+    void str_fold_whitespace_in(basic_string<C>& str, Flagset flags = {}) {
         auto result = str_fold_whitespace(str, flags);
         str.swap(result);
     }
 
     template <typename FwdRange, typename C>
-    std::basic_string<C> str_join(const FwdRange& r, const std::basic_string<C>& delim) {
-        using string_type = std::basic_string<C>;
+    basic_string<C> str_join(const FwdRange& r, const basic_string<C>& delim) {
+        using string_type = basic_string<C>;
         using range_char = std::decay_t<decltype((*std::begin(r))[0])>;
         CROW_STATIC_ASSERT((std::is_same<C, range_char>::value));
         string_type s;
@@ -1030,20 +1030,20 @@ namespace Unicorn {
     }
 
     template <typename FwdRange, typename C>
-    std::basic_string<C> str_join(const FwdRange& r, const C* delim) {
+    basic_string<C> str_join(const FwdRange& r, const C* delim) {
         return str_join(r, cstr(delim));
     }
 
     template <typename FwdRange>
     auto str_join(const FwdRange& r)
-    -> std::basic_string<std::decay_t<decltype((*std::begin(r))[0])>> {
+    -> basic_string<std::decay_t<decltype((*std::begin(r))[0])>> {
         using range_char = std::decay_t<decltype((*std::begin(r))[0])>;
-        using string_type = std::basic_string<range_char>;
+        using string_type = basic_string<range_char>;
         return str_join(r, string_type());
     }
 
     template <typename C>
-    std::basic_string<C> str_pad_left(const std::basic_string<C>& str, size_t length,
+    basic_string<C> str_pad_left(const basic_string<C>& str, size_t length,
             char32_t c = U' ', Flagset flags = {}) {
         size_t old_length = str_length(str, flags);
         if (length > old_length) {
@@ -1056,7 +1056,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    void str_pad_left_in(std::basic_string<C>& str, size_t length,
+    void str_pad_left_in(basic_string<C>& str, size_t length,
             char32_t c = U' ', Flagset flags = {}) {
         size_t old_length = str_length(str, flags);
         if (length > old_length)
@@ -1064,7 +1064,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    std::basic_string<C> str_pad_right(const std::basic_string<C>& str, size_t length,
+    basic_string<C> str_pad_right(const basic_string<C>& str, size_t length,
             char32_t c = U' ', Flagset flags = {}) {
         size_t old_length = str_length(str, flags);
         if (length > old_length) {
@@ -1077,7 +1077,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    void str_pad_right_in(std::basic_string<C>& str, size_t length,
+    void str_pad_right_in(basic_string<C>& str, size_t length,
             char32_t c = U' ', Flagset flags = {}) {
         size_t old_length = str_length(str, flags);
         if (length > old_length)
@@ -1085,8 +1085,8 @@ namespace Unicorn {
     }
 
     template <typename C>
-    bool str_partition(const std::basic_string<C>& str, std::basic_string<C>& prefix,
-            std::basic_string<C>& suffix) {
+    bool str_partition(const basic_string<C>& str, basic_string<C>& prefix,
+            basic_string<C>& suffix) {
         if (str.empty()) {
             prefix.clear();
             suffix.clear();
@@ -1107,8 +1107,8 @@ namespace Unicorn {
     }
 
     template <typename C>
-    bool str_partition_at(const std::basic_string<C>& str, std::basic_string<C>& prefix,
-            std::basic_string<C>& suffix, const std::basic_string<C>& delim) {
+    bool str_partition_at(const basic_string<C>& str, basic_string<C>& prefix,
+            basic_string<C>& suffix, const basic_string<C>& delim) {
         size_t pos = delim.empty() ? npos : str.find(delim);
         if (pos == npos) {
             prefix = str;
@@ -1123,15 +1123,15 @@ namespace Unicorn {
     }
 
     template <typename C>
-    bool str_partition_at(const std::basic_string<C>& str, std::basic_string<C>& prefix,
-            std::basic_string<C>& suffix, const C* delim) {
-        using string_type = std::basic_string<C>;
+    bool str_partition_at(const basic_string<C>& str, basic_string<C>& prefix,
+            basic_string<C>& suffix, const C* delim) {
+        using string_type = basic_string<C>;
         return str_partition_at(str, prefix, suffix, delim ? string_type(delim) : string_type());
     }
 
     template <typename C>
-    bool str_partition_by(const std::basic_string<C>& str, std::basic_string<C>& prefix,
-            std::basic_string<C>& suffix, const std::basic_string<C>& delim) {
+    bool str_partition_by(const basic_string<C>& str, basic_string<C>& prefix,
+            basic_string<C>& suffix, const basic_string<C>& delim) {
         if (str.empty() || delim.empty()) {
             prefix = str;
             suffix.clear();
@@ -1168,16 +1168,16 @@ namespace Unicorn {
     }
 
     template <typename C>
-    bool str_partition_by(const std::basic_string<C>& str, std::basic_string<C>& prefix,
-            std::basic_string<C>& suffix, const C* delim) {
-        using string_type = std::basic_string<C>;
+    bool str_partition_by(const basic_string<C>& str, basic_string<C>& prefix,
+            basic_string<C>& suffix, const C* delim) {
+        using string_type = basic_string<C>;
         return str_partition_by(str, prefix, suffix, delim ? string_type(delim) : string_type());
     }
 
     template <typename C>
-    std::basic_string<C> str_replace(const std::basic_string<C>& str, const std::basic_string<C>& target,
-            const std::basic_string<C>& sub, size_t n = npos) {
-        using string_type = std::basic_string<C>;
+    basic_string<C> str_replace(const basic_string<C>& str, const basic_string<C>& target,
+            const basic_string<C>& sub, size_t n = npos) {
+        using string_type = basic_string<C>;
         if (target.empty() || n == 0)
             return str;
         string_type dst;
@@ -1199,50 +1199,50 @@ namespace Unicorn {
     }
 
     template <typename C>
-    std::basic_string<C> str_replace(const std::basic_string<C>& str, const C* target,
-            const std::basic_string<C>& sub, size_t n = npos) {
+    basic_string<C> str_replace(const basic_string<C>& str, const C* target,
+            const basic_string<C>& sub, size_t n = npos) {
         return str_replace(str, cstr(target), sub, n);
     }
 
     template <typename C>
-    std::basic_string<C> str_replace(const std::basic_string<C>& str, const std::basic_string<C>& target,
+    basic_string<C> str_replace(const basic_string<C>& str, const basic_string<C>& target,
             const C* sub, size_t n = npos) {
         return str_replace(str, target, cstr(sub), n);
     }
 
     template <typename C>
-    std::basic_string<C> str_replace(const std::basic_string<C>& str, const C* target,
+    basic_string<C> str_replace(const basic_string<C>& str, const C* target,
             const C* sub, size_t n = npos) {
         return str_replace(str, cstr(target), cstr(sub), n);
     }
 
     template <typename C>
-    void str_replace_in(std::basic_string<C>& str, const std::basic_string<C>& target,
-            const std::basic_string<C>& sub, size_t n = npos) {
+    void str_replace_in(basic_string<C>& str, const basic_string<C>& target,
+            const basic_string<C>& sub, size_t n = npos) {
         auto result = str_replace(str, target, sub, n);
         str.swap(result);
     }
 
     template <typename C>
-    void str_replace_in(std::basic_string<C>& str, const C* target,
-            const std::basic_string<C>& sub, size_t n = npos) {
+    void str_replace_in(basic_string<C>& str, const C* target,
+            const basic_string<C>& sub, size_t n = npos) {
         str_replace_in(str, cstr(target), sub, n);
     }
 
     template <typename C>
-    void str_replace_in(std::basic_string<C>& str, const std::basic_string<C>& target,
+    void str_replace_in(basic_string<C>& str, const basic_string<C>& target,
             const C* sub, size_t n = npos) {
         str_replace_in(str, target, cstr(sub), n);
     }
 
     template <typename C>
-    void str_replace_in(std::basic_string<C>& str, const C* target,
+    void str_replace_in(basic_string<C>& str, const C* target,
             const C* sub, size_t n = npos) {
         str_replace_in(str, cstr(target), cstr(sub), n);
     }
 
     template <typename C, typename OutIter>
-    void str_split(const std::basic_string<C>& src, OutIter dst) {
+    void str_split(const basic_string<C>& src, OutIter dst) {
         auto range = utf_range(src);
         auto i = std::begin(range), j = i;
         while (i != std::end(range)) {
@@ -1255,8 +1255,8 @@ namespace Unicorn {
     }
 
     template <typename C, typename OutIter>
-    void str_split_at(const std::basic_string<C>& src, OutIter dst,
-            const std::basic_string<C>& delim) {
+    void str_split_at(const basic_string<C>& src, OutIter dst,
+            const basic_string<C>& delim) {
         if (delim.empty()) {
             *dst++ = src;
             return;
@@ -1274,13 +1274,13 @@ namespace Unicorn {
     }
 
     template <typename C, typename OutIter>
-    void str_split_at(const std::basic_string<C>& src, OutIter dst, const C* delim) {
+    void str_split_at(const basic_string<C>& src, OutIter dst, const C* delim) {
         str_split_at(src, dst, cstr(delim));
     }
 
     template <typename C, typename OutIter>
-    void str_split_by(const std::basic_string<C>& src, OutIter dst,
-            const std::basic_string<C>& delim) {
+    void str_split_by(const basic_string<C>& src, OutIter dst,
+            const basic_string<C>& delim) {
         if (delim.empty()) {
             *dst++ = src;
             return;
@@ -1312,12 +1312,12 @@ namespace Unicorn {
     }
 
     template <typename C, typename OutIter>
-    void str_split_by(const std::basic_string<C>& src, OutIter dst, const C* delim) {
+    void str_split_by(const basic_string<C>& src, OutIter dst, const C* delim) {
         str_split_by(src, dst, cstr(delim));
     }
 
     template <typename C>
-    std::basic_string<C> str_substring(const std::basic_string<C>& str, size_t offset, size_t count = npos) {
+    basic_string<C> str_substring(const basic_string<C>& str, size_t offset, size_t count = npos) {
         if (offset < str.size())
             return str.substr(offset, count);
         else
@@ -1325,7 +1325,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    std::basic_string<C> utf_substring(const std::basic_string<C>& str, size_t index,
+    basic_string<C> utf_substring(const basic_string<C>& str, size_t index,
             size_t length = npos, Flagset flags = {}) {
         UnicornDetail::check_length_flags(flags);
         auto b = utf_begin(str), e = utf_end(str);
@@ -1335,9 +1335,9 @@ namespace Unicorn {
     }
 
     template <typename C>
-    std::basic_string<C> str_translate(const std::basic_string<C>& str, const std::basic_string<C>& target,
-            const std::basic_string<C>& sub) {
-        using string_type = std::basic_string<C>;
+    basic_string<C> str_translate(const basic_string<C>& str, const basic_string<C>& target,
+            const basic_string<C>& sub) {
+        using string_type = basic_string<C>;
         if (target.empty() || sub.empty())
             return str;
         auto t = to_utf32(target), s = to_utf32(sub);
@@ -1355,44 +1355,44 @@ namespace Unicorn {
     }
 
     template <typename C>
-    std::basic_string<C> str_translate(const std::basic_string<C>& str, const C* target,
-            const std::basic_string<C>& sub) {
+    basic_string<C> str_translate(const basic_string<C>& str, const C* target,
+            const basic_string<C>& sub) {
         return str_translate(str, cstr(target), sub);
     }
 
     template <typename C>
-    std::basic_string<C> str_translate(const std::basic_string<C>& str, const std::basic_string<C>& target,
+    basic_string<C> str_translate(const basic_string<C>& str, const basic_string<C>& target,
             const C* sub) {
         return str_translate(str, target, cstr(sub));
     }
 
     template <typename C>
-    std::basic_string<C> str_translate(const std::basic_string<C>& str, const C* target,
+    basic_string<C> str_translate(const basic_string<C>& str, const C* target,
             const C* sub) {
         return str_translate(str, cstr(target), cstr(sub));
     }
 
     template <typename C>
-    void str_translate_in(std::basic_string<C>& str, const std::basic_string<C>& target,
-            const std::basic_string<C>& sub) {
+    void str_translate_in(basic_string<C>& str, const basic_string<C>& target,
+            const basic_string<C>& sub) {
         auto result = str_translate(str, target, sub);
         str.swap(result);
     }
 
     template <typename C>
-    void str_translate_in(std::basic_string<C>& str, const C* target,
-            const std::basic_string<C>& sub) {
+    void str_translate_in(basic_string<C>& str, const C* target,
+            const basic_string<C>& sub) {
         str_translate_in(str, cstr(target), sub);
     }
 
     template <typename C>
-    void str_translate_in(std::basic_string<C>& str, const std::basic_string<C>& target,
+    void str_translate_in(basic_string<C>& str, const basic_string<C>& target,
             const C* sub) {
         str_translate_in(str, target, cstr(sub));
     }
 
     template <typename C>
-    void str_translate_in(std::basic_string<C>& str, const C* target,
+    void str_translate_in(basic_string<C>& str, const C* target,
             const C* sub) {
         str_translate_in(str, cstr(target), cstr(sub));
     }
@@ -1403,10 +1403,10 @@ namespace Unicorn {
 
         class CharIn {
         public:
-            CharIn(const std::u32string& chars) noexcept: x(&chars) {}
+            CharIn(const u32string& chars) noexcept: x(&chars) {}
             bool operator()(char32_t c) const noexcept { return x->find(c) != npos; }
         private:
-            const std::u32string* x;
+            const u32string* x;
         };
 
         template <typename String, typename Pred>
@@ -1455,170 +1455,170 @@ namespace Unicorn {
     }
 
     template <typename C, typename Pred>
-    std::basic_string<C> str_trim_if(const std::basic_string<C>& str, Pred p) {
+    basic_string<C> str_trim_if(const basic_string<C>& str, Pred p) {
         using namespace UnicornDetail;
         return trim_helper(str, trimleft | trimright, p);
     }
 
     template <typename C, typename Pred>
-    std::basic_string<C> str_trim_left_if(const std::basic_string<C>& str, Pred p) {
+    basic_string<C> str_trim_left_if(const basic_string<C>& str, Pred p) {
         using namespace UnicornDetail;
         return trim_helper(str, trimleft, p);
     }
 
     template <typename C, typename Pred>
-    std::basic_string<C> str_trim_right_if(const std::basic_string<C>& str, Pred p) {
+    basic_string<C> str_trim_right_if(const basic_string<C>& str, Pred p) {
         using namespace UnicornDetail;
         return trim_helper(str, trimright, p);
     }
 
     template <typename C, typename Pred>
-    std::basic_string<C> str_trim_if_not(const std::basic_string<C>& str, Pred p) {
+    basic_string<C> str_trim_if_not(const basic_string<C>& str, Pred p) {
         using namespace UnicornDetail;
         return trim_helper(str, trimleft | trimright, [p] (char32_t c) { return ! p(c); });
     }
 
     template <typename C, typename Pred>
-    std::basic_string<C> str_trim_left_if_not(const std::basic_string<C>& str, Pred p) {
+    basic_string<C> str_trim_left_if_not(const basic_string<C>& str, Pred p) {
         using namespace UnicornDetail;
         return trim_helper(str, trimleft, [p] (char32_t c) { return ! p(c); });
     }
 
     template <typename C, typename Pred>
-    std::basic_string<C> str_trim_right_if_not(const std::basic_string<C>& str, Pred p) {
+    basic_string<C> str_trim_right_if_not(const basic_string<C>& str, Pred p) {
         using namespace UnicornDetail;
         return trim_helper(str, trimright, [p] (char32_t c) { return ! p(c); });
     }
 
     template <typename C>
-    std::basic_string<C> str_trim(const std::basic_string<C>& str, const std::basic_string<C>& chars) {
+    basic_string<C> str_trim(const basic_string<C>& str, const basic_string<C>& chars) {
         return str_trim_if(str, UnicornDetail::CharIn(to_utf32(chars)));
     }
 
     template <typename C>
-    std::basic_string<C> str_trim(const std::basic_string<C>& str, const C* chars) {
+    basic_string<C> str_trim(const basic_string<C>& str, const C* chars) {
         return str_trim_if(str, UnicornDetail::CharIn(to_utf32(cstr(chars))));
     }
 
     template <typename C>
-    std::basic_string<C> str_trim(const std::basic_string<C>& str) {
+    basic_string<C> str_trim(const basic_string<C>& str) {
         return str_trim_if(str, char_is_white_space);
     }
 
     template <typename C>
-    std::basic_string<C> str_trim_left(const std::basic_string<C>& str, const std::basic_string<C>& chars) {
+    basic_string<C> str_trim_left(const basic_string<C>& str, const basic_string<C>& chars) {
         return str_trim_left_if(str, UnicornDetail::CharIn(to_utf32(chars)));
     }
 
     template <typename C>
-    std::basic_string<C> str_trim_left(const std::basic_string<C>& str, const C* chars) {
+    basic_string<C> str_trim_left(const basic_string<C>& str, const C* chars) {
         return str_trim_left_if(str, UnicornDetail::CharIn(to_utf32(cstr(chars))));
     }
 
     template <typename C>
-    std::basic_string<C> str_trim_left(const std::basic_string<C>& str) {
+    basic_string<C> str_trim_left(const basic_string<C>& str) {
         return str_trim_left_if(str, char_is_white_space);
     }
 
     template <typename C>
-    std::basic_string<C> str_trim_right(const std::basic_string<C>& str, const std::basic_string<C>& chars) {
+    basic_string<C> str_trim_right(const basic_string<C>& str, const basic_string<C>& chars) {
         return str_trim_right_if(str, UnicornDetail::CharIn(to_utf32(chars)));
     }
 
     template <typename C>
-    std::basic_string<C> str_trim_right(const std::basic_string<C>& str, const C* chars) {
+    basic_string<C> str_trim_right(const basic_string<C>& str, const C* chars) {
         return str_trim_right_if(str, UnicornDetail::CharIn(to_utf32(cstr(chars))));
     }
 
     template <typename C>
-    std::basic_string<C> str_trim_right(const std::basic_string<C>& str) {
+    basic_string<C> str_trim_right(const basic_string<C>& str) {
         return str_trim_right_if(str, char_is_white_space);
     }
 
     template <typename C, typename Pred>
-    void str_trim_in_if(std::basic_string<C>& str, Pred p) {
+    void str_trim_in_if(basic_string<C>& str, Pred p) {
         using namespace UnicornDetail;
         trim_in_helper(str, trimleft | trimright, p);
     }
 
     template <typename C, typename Pred>
-    void str_trim_left_in_if(std::basic_string<C>& str, Pred p) {
+    void str_trim_left_in_if(basic_string<C>& str, Pred p) {
         using namespace UnicornDetail;
         trim_in_helper(str, trimleft, p);
     }
 
     template <typename C, typename Pred>
-    void str_trim_right_in_if(std::basic_string<C>& str, Pred p) {
+    void str_trim_right_in_if(basic_string<C>& str, Pred p) {
         using namespace UnicornDetail;
         trim_in_helper(str, trimright, p);
     }
 
     template <typename C, typename Pred>
-    void str_trim_in_if_not(std::basic_string<C>& str, Pred p) {
+    void str_trim_in_if_not(basic_string<C>& str, Pred p) {
         using namespace UnicornDetail;
         trim_in_helper(str, trimleft | trimright, [p] (char32_t c) { return ! p(c); });
     }
 
     template <typename C, typename Pred>
-    void str_trim_left_in_if_not(std::basic_string<C>& str, Pred p) {
+    void str_trim_left_in_if_not(basic_string<C>& str, Pred p) {
         using namespace UnicornDetail;
         trim_in_helper(str, trimleft, [p] (char32_t c) { return ! p(c); });
     }
 
     template <typename C, typename Pred>
-    void str_trim_right_in_if_not(std::basic_string<C>& str, Pred p) {
+    void str_trim_right_in_if_not(basic_string<C>& str, Pred p) {
         using namespace UnicornDetail;
         trim_in_helper(str, trimright, [p] (char32_t c) { return ! p(c); });
     }
 
     template <typename C>
-    void str_trim_in(std::basic_string<C>& str, const std::basic_string<C>& chars) {
+    void str_trim_in(basic_string<C>& str, const basic_string<C>& chars) {
         str_trim_in_if(str, UnicornDetail::CharIn(to_utf32(chars)));
     }
 
     template <typename C>
-    void str_trim_in(std::basic_string<C>& str, const C* chars) {
+    void str_trim_in(basic_string<C>& str, const C* chars) {
         str_trim_in_if(str, UnicornDetail::CharIn(to_utf32(cstr(chars))));
     }
 
     template <typename C>
-    void str_trim_in(std::basic_string<C>& str) {
+    void str_trim_in(basic_string<C>& str) {
         str_trim_in_if(str, char_is_white_space);
     }
 
     template <typename C>
-    void str_trim_left_in(std::basic_string<C>& str, const std::basic_string<C>& chars) {
+    void str_trim_left_in(basic_string<C>& str, const basic_string<C>& chars) {
         str_trim_left_in_if(str, UnicornDetail::CharIn(to_utf32(chars)));
     }
 
     template <typename C>
-    void str_trim_left_in(std::basic_string<C>& str, const C* chars) {
+    void str_trim_left_in(basic_string<C>& str, const C* chars) {
         str_trim_left_in_if(str, UnicornDetail::CharIn(to_utf32(cstr(chars))));
     }
 
     template <typename C>
-    void str_trim_left_in(std::basic_string<C>& str) {
+    void str_trim_left_in(basic_string<C>& str) {
         str_trim_left_in_if(str, char_is_white_space);
     }
 
     template <typename C>
-    void str_trim_right_in(std::basic_string<C>& str, const std::basic_string<C>& chars) {
+    void str_trim_right_in(basic_string<C>& str, const basic_string<C>& chars) {
         str_trim_right_in_if(str, UnicornDetail::CharIn(to_utf32(chars)));
     }
 
     template <typename C>
-    void str_trim_right_in(std::basic_string<C>& str, const C* chars) {
+    void str_trim_right_in(basic_string<C>& str, const C* chars) {
         str_trim_right_in_if(str, UnicornDetail::CharIn(to_utf32(cstr(chars))));
     }
 
     template <typename C>
-    void str_trim_right_in(std::basic_string<C>& str) {
+    void str_trim_right_in(basic_string<C>& str) {
         str_trim_right_in_if(str, char_is_white_space);
     }
 
     template <typename C>
-    std::basic_string<C> str_unify_lines(const std::basic_string<C>& str, const std::basic_string<C>& newline) {
-        using string_type = std::basic_string<C>;
+    basic_string<C> str_unify_lines(const basic_string<C>& str, const basic_string<C>& newline) {
+        using string_type = basic_string<C>;
         auto i = utf_begin(str), e = utf_end(str);
         string_type result;
         while (i != e) {
@@ -1637,39 +1637,39 @@ namespace Unicorn {
     }
 
     template <typename C>
-    std::basic_string<C> str_unify_lines(const std::basic_string<C>& str, const C* newline) {
+    basic_string<C> str_unify_lines(const basic_string<C>& str, const C* newline) {
         return str_unify_lines(str, cstr(newline));
     }
 
     template <typename C>
-    std::basic_string<C> str_unify_lines(const std::basic_string<C>& str, char32_t newline) {
+    basic_string<C> str_unify_lines(const basic_string<C>& str, char32_t newline) {
         return str_unify_lines(str, str_chars<C>(newline));
     }
 
     template <typename C>
-    std::basic_string<C> str_unify_lines(const std::basic_string<C>& str) {
-        return str_unify_lines(str, std::basic_string<C>(1, C('\n')));
+    basic_string<C> str_unify_lines(const basic_string<C>& str) {
+        return str_unify_lines(str, basic_string<C>(1, C('\n')));
     }
 
     template <typename C>
-    void str_unify_lines_in(std::basic_string<C>& str, const std::basic_string<C>& newline) {
+    void str_unify_lines_in(basic_string<C>& str, const basic_string<C>& newline) {
         auto result = str_unify_lines(str, newline);
         str.swap(result);
     }
 
     template <typename C>
-    void str_unify_lines_in(std::basic_string<C>& str, const C* newline) {
+    void str_unify_lines_in(basic_string<C>& str, const C* newline) {
         str_unify_lines_in(str, cstr(newline));
     }
 
     template <typename C>
-    void str_unify_lines_in(std::basic_string<C>& str, char32_t newline) {
+    void str_unify_lines_in(basic_string<C>& str, char32_t newline) {
         str_unify_lines_in(str, str_chars<C>(newline));
     }
 
     template <typename C>
-    void str_unify_lines_in(std::basic_string<C>& str) {
-        str_unify_lines_in(str, std::basic_string<C>(1, C('\n')));
+    void str_unify_lines_in(basic_string<C>& str) {
+        str_unify_lines_in(str, basic_string<C>(1, C('\n')));
     }
 
     namespace UnicornDetail {
@@ -1696,10 +1696,10 @@ namespace Unicorn {
     }
 
     template <typename C>
-    std::basic_string<C> str_wrap(const std::basic_string<C>& str, Flagset flags = {},
+    basic_string<C> str_wrap(const basic_string<C>& str, Flagset flags = {},
             size_t width = 0, size_t margin1 = 0, size_t margin2 = npos) {
         using namespace UnicornDetail;
-        using string_type = std::basic_string<C>;
+        using string_type = basic_string<C>;
         flags.allow(wrap_crlf | wrap_enforce | wrap_preserve | all_length_flags, "word wrapping");
         if (width == 0 || width == npos) {
             auto columns = decnum(safe_getenv("COLUMNS"));
@@ -1774,7 +1774,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    void str_wrap_in(std::basic_string<C>& str, Flagset flags = {},
+    void str_wrap_in(basic_string<C>& str, Flagset flags = {},
             size_t width = 0, size_t margin1 = 0, size_t margin2 = npos) {
         auto result = str_wrap(str, flags, width, margin1, margin2);
         str.swap(result);
@@ -1785,8 +1785,8 @@ namespace Unicorn {
     namespace UnicornDetail {
 
         template <typename C, typename F>
-        const std::basic_string<C> casemap_helper(const std::basic_string<C>& src, F f) {
-            std::basic_string<C> dst;
+        const basic_string<C> casemap_helper(const basic_string<C>& src, F f) {
+            basic_string<C> dst;
             char32_t buf[max_case_decomposition];
             auto out = utf_writer(dst);
             for (auto c: utf_range(src)) {
@@ -1825,13 +1825,13 @@ namespace Unicorn {
     }
 
     template <typename C>
-    std::basic_string<C> str_uppercase(const std::basic_string<C>& str) {
+    basic_string<C> str_uppercase(const basic_string<C>& str) {
         return UnicornDetail::casemap_helper(str, char_to_full_uppercase);
     }
 
     template <typename C>
-    std::basic_string<C> str_lowercase(const std::basic_string<C>& str) {
-        std::basic_string<C> dst;
+    basic_string<C> str_lowercase(const basic_string<C>& str) {
+        basic_string<C> dst;
         UnicornDetail::LowerChar lc;
         auto range = utf_range(str);
         auto out = utf_writer(dst);
@@ -1841,8 +1841,8 @@ namespace Unicorn {
     }
 
     template <typename C>
-    std::basic_string<C> str_titlecase(const std::basic_string<C>& str) {
-        std::basic_string<C> dst;
+    basic_string<C> str_titlecase(const basic_string<C>& str) {
+        basic_string<C> dst;
         UnicornDetail::LowerChar lc;
         auto e = utf_end(str);
         auto out = utf_writer(dst);
@@ -1863,37 +1863,37 @@ namespace Unicorn {
     }
 
     template <typename C>
-    std::basic_string<C> str_casefold(const std::basic_string<C>& str) {
+    basic_string<C> str_casefold(const basic_string<C>& str) {
         return UnicornDetail::casemap_helper(str, char_to_full_casefold);
     }
 
     template <typename C>
-    void str_uppercase_in(std::basic_string<C>& str) {
+    void str_uppercase_in(basic_string<C>& str) {
         auto result = str_uppercase(str);
         str.swap(result);
     }
 
     template <typename C>
-    void str_lowercase_in(std::basic_string<C>& str) {
+    void str_lowercase_in(basic_string<C>& str) {
         auto result = str_lowercase(str);
         str.swap(result);
     }
 
     template <typename C>
-    void str_titlecase_in(std::basic_string<C>& str) {
+    void str_titlecase_in(basic_string<C>& str) {
         auto result = str_titlecase(str);
         str.swap(result);
     }
 
     template <typename C>
-    void str_casefold_in(std::basic_string<C>& str) {
+    void str_casefold_in(basic_string<C>& str) {
         auto result = str_casefold(str);
         str.swap(result);
     }
 
     struct IcaseCompare {
         template <typename C>
-        bool operator()(const std::basic_string<C>& lhs, const std::basic_string<C>& rhs) const noexcept {
+        bool operator()(const basic_string<C>& lhs, const basic_string<C>& rhs) const noexcept {
             if (lhs.empty() || rhs.empty())
                 return ! rhs.empty();
             auto u1 = utf_range(lhs), u2 = utf_range(rhs);
@@ -1925,7 +1925,7 @@ namespace Unicorn {
 
     struct IcaseEqual {
         template <typename C>
-        bool operator()(const std::basic_string<C>& lhs, const std::basic_string<C>& rhs) const noexcept {
+        bool operator()(const basic_string<C>& lhs, const basic_string<C>& rhs) const noexcept {
             if (lhs.empty() && rhs.empty())
                 return true;
             if (lhs.size() != rhs.size())
@@ -1965,7 +1965,7 @@ namespace Unicorn {
     namespace UnicornDetail {
 
         template <typename T, typename C>
-        size_t string_to_integer(T& t, const std::basic_string<C>& str, size_t offset, int base) {
+        size_t string_to_integer(T& t, const basic_string<C>& str, size_t offset, int base) {
             CROW_STATIC_ASSERT(std::is_integral<T>::value);
             static const auto dec_chars = recode<C>(u8string("+-0123456789"));
             static const auto hex_chars = recode<C>(u8string("+-0123456789ABCDEFabcdef"));
@@ -1996,31 +1996,31 @@ namespace Unicorn {
     }
 
     template <typename T, typename C>
-    size_t str_to_integer(T& t, const std::basic_string<C>& str, size_t offset = 0) {
+    size_t str_to_integer(T& t, const basic_string<C>& str, size_t offset = 0) {
         return UnicornDetail::string_to_integer<T>(t, str, offset, 10);
     }
 
     template <typename T, typename C>
-    T str_to_integer(const std::basic_string<C>& str, size_t offset = 0) {
+    T str_to_integer(const basic_string<C>& str, size_t offset = 0) {
         auto t = static_cast<T>(0);
         UnicornDetail::string_to_integer<T>(t, str, offset, 10);
         return t;
     }
 
     template <typename T, typename C>
-    size_t hex_to_integer(T& t, const std::basic_string<C>& str, size_t offset = 0) {
+    size_t hex_to_integer(T& t, const basic_string<C>& str, size_t offset = 0) {
         return UnicornDetail::string_to_integer<T>(t, str, offset, 16);
     }
 
     template <typename T, typename C>
-    T hex_to_integer(const std::basic_string<C>& str, size_t offset = 0) {
+    T hex_to_integer(const basic_string<C>& str, size_t offset = 0) {
         auto t = static_cast<T>(0);
         UnicornDetail::string_to_integer<T>(t, str, offset, 16);
         return t;
     }
 
     template <typename T, typename C>
-    size_t str_to_real(T& t, const std::basic_string<C>& str, size_t offset = 0) {
+    size_t str_to_real(T& t, const basic_string<C>& str, size_t offset = 0) {
         CROW_STATIC_ASSERT(std::is_floating_point<T>::value);
         static const auto float_chars = recode<C>(u8string("+-.0123456789Ee"));
         t = static_cast<T>(0);
@@ -2042,7 +2042,7 @@ namespace Unicorn {
     }
 
     template <typename T, typename C>
-    T str_to_real(const std::basic_string<C>& str, size_t offset = 0) {
+    T str_to_real(const basic_string<C>& str, size_t offset = 0) {
         auto t = static_cast<T>(0);
         str_to_real(t, str, offset);
         return t;

@@ -123,8 +123,8 @@ namespace {
             Lexer16 lex;
             Lexer16::token_iterator it;
             Lexer16::token_range range;
-            std::u16string s;
-            std::vector<std::u16string> v;
+            u16string s;
+            std::vector<u16string> v;
 
             TRY(lex.match(0, u"\\s+"));
             TRY(lex.match(0, u"#[^\\n]*"));
@@ -143,7 +143,7 @@ namespace {
             TRY(std::copy(CROW_BOUNDS(range), overwrite(v)));
             TEST_EQUAL(Test::format_range(v), "[Hello,world,2,+,2,=,4,<magic>,Goodbye]");
 
-            TRY(lex.call(5, [] (const std::u16string& str, size_t pos) -> size_t {
+            TRY(lex.call(5, [] (const u16string& str, size_t pos) -> size_t {
                 if (pos >= str.size() || str[pos] != u'(')
                     return 0;
                 int depth = 1;
@@ -182,8 +182,8 @@ namespace {
             Lexer32 lex;
             Lexer32::token_iterator it;
             Lexer32::token_range range;
-            std::u32string s;
-            std::vector<std::u32string> v;
+            u32string s;
+            std::vector<u32string> v;
 
             TRY(lex.match(0, U"\\s+"));
             TRY(lex.match(0, U"#[^\\n]*"));
@@ -202,7 +202,7 @@ namespace {
             TRY(std::copy(CROW_BOUNDS(range), overwrite(v)));
             TEST_EQUAL(Test::format_range(v), "[Hello,world,2,+,2,=,4,<magic>,Goodbye]");
 
-            TRY(lex.call(5, [] (const std::u32string& str, size_t pos) -> size_t {
+            TRY(lex.call(5, [] (const u32string& str, size_t pos) -> size_t {
                 if (pos >= str.size() || str[pos] != U'(')
                     return 0;
                 int depth = 1;
@@ -241,8 +241,8 @@ namespace {
             WideLexer lex;
             WideLexer::token_iterator it;
             WideLexer::token_range range;
-            std::wstring s;
-            std::vector<std::wstring> v;
+            wstring s;
+            std::vector<wstring> v;
 
             TRY(lex.match(0, L"\\s+"));
             TRY(lex.match(0, L"#[^\\n]*"));
@@ -261,7 +261,7 @@ namespace {
             TRY(std::copy(CROW_BOUNDS(range), overwrite(v)));
             TEST_EQUAL(Test::format_range(v), "[Hello,world,2,+,2,=,4,<magic>,Goodbye]");
 
-            TRY(lex.call(5, [] (const std::wstring& str, size_t pos) -> size_t {
+            TRY(lex.call(5, [] (const wstring& str, size_t pos) -> size_t {
                 if (pos >= str.size() || str[pos] != L'(')
                     return 0;
                 int depth = 1;
@@ -298,8 +298,8 @@ namespace {
         ByteLexer lex;
         ByteLexer::token_iterator it;
         ByteLexer::token_range range;
-        std::string s;
-        std::vector<std::string> v;
+        string s;
+        std::vector<string> v;
 
         TRY(lex.match(0, "\\s+"));
         TRY(lex.match(0, "#[^\\n]*"));
@@ -318,7 +318,7 @@ namespace {
         TRY(std::copy(CROW_BOUNDS(range), overwrite(v)));
         TEST_EQUAL(Test::format_range(v), "[Hello,world,2,+,2,=,4,<magic>,Goodbye]");
 
-        TRY(lex.call(5, [] (const std::string& str, size_t pos) -> size_t {
+        TRY(lex.call(5, [] (const string& str, size_t pos) -> size_t {
             if (pos >= str.size() || str[pos] != '(')
                 return 0;
             int depth = 1;

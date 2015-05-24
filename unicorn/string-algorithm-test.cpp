@@ -29,7 +29,7 @@ namespace {
 
         auto make_string = [&] {
             auto n = lengths(mt);
-            std::u32string s;
+            u32string s;
             while (s.size() < n) {
                 auto c = chars(mt);
                 if (char_is_unicode(c))
@@ -51,8 +51,8 @@ namespace {
     void check_expect() {
 
         u8string a8, b8 = u8"Hello world", c8 = u8"€uro ∈lement";
-        std::u16string a16, b16 = u"Hello world", c16 = u"€uro ∈lement";
-        std::u32string a32, b32 = U"Hello world", c32 = U"€uro ∈lement";
+        u16string a16, b16 = u"Hello world", c16 = u"€uro ∈lement";
+        u32string a32, b32 = U"Hello world", c32 = U"€uro ∈lement";
         UtfIterator<char> i8;
         UtfIterator<char16_t> i16;
         UtfIterator<char32_t> i32;
@@ -110,8 +110,8 @@ namespace {
     void check_find_char() {
 
         u8string s8;
-        std::u16string s16;
-        std::u32string s32;
+        u16string s16;
+        u32string s32;
         UtfIterator<char> i8;
         UtfIterator<char16_t> i16;
         UtfIterator<char32_t> i32;
@@ -175,8 +175,8 @@ namespace {
     void check_find_first() {
 
         u8string s8;
-        std::u16string s16;
-        std::u32string s32;
+        u16string s16;
+        u32string s32;
         UtfIterator<char> i8;
         UtfIterator<char16_t> i16;
         UtfIterator<char32_t> i32;
@@ -264,8 +264,8 @@ namespace {
     void check_search() {
 
         u8string s8;
-        std::u16string s16;
-        std::u32string s32;
+        u16string s16;
+        u32string s32;
         UtfIterator<char> i8;
         UtfIterator<char16_t> i16;
         UtfIterator<char32_t> i32;
@@ -305,8 +305,8 @@ namespace {
     void check_skipws() {
 
         u8string s8;
-        std::u16string s16;
-        std::u32string s32;
+        u16string s16;
+        u32string s32;
         UtfIterator<char> i8;
         UtfIterator<char16_t> i16;
         UtfIterator<char32_t> i32;

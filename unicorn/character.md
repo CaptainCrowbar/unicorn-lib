@@ -12,6 +12,7 @@ and their basic properties.
 
 ## Contents ##
 
+* [Imports][]
 * [Constants][]
 * [Exceptions][]
 * [Other types][]
@@ -27,6 +28,19 @@ and their basic properties.
 * [Enumeration properties][]
 * [Numeric properties][]
 * [Script properties][]
+
+## Imports ##
+
+* `using Crow::basic_string      [= std::basic_string]`
+* `using Crow::string            [= std::string]`
+* `using Crow::u8string          [= std::string]`
+* `using Crow::u16string         [= std::u16string]`
+* `using Crow::u32string         [= std::u32string]`
+* `using Crow::wstring           [= std::wstring]`
+* `using Crow::ascii_whitespace  [= "\t\n\v\f\r "]`
+* `using Crow::npos              [= std::string::npos]`
+
+Imported for convenience from the Crow library.
 
 ## Constants ##
 

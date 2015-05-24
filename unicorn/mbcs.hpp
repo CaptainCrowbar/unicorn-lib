@@ -45,19 +45,19 @@ namespace Unicorn {
             using NativeChar = wchar_t;
         #endif
 
-        using NativeString = std::basic_string<NativeChar>;
+        using NativeString = basic_string<NativeChar>;
 
-        u8string guess_utf(const std::string& str);
+        u8string guess_utf(const string& str);
         EncodingTag lookup_encoding(const u8string& name);
         EncodingTag lookup_encoding(uint32_t page);
         void mbcs_flags(Flagset& flags);
-        void native_import(const std::string& src, NativeString& dst, EncodingTag tag, Flagset flags);
-        void native_export(const NativeString& src, std::string& dst, EncodingTag tag, Flagset flags);
-        bool utf_import(const std::string& src, NativeString& dst, EncodingTag tag, Flagset flags);
-        bool utf_export(const NativeString& src, std::string& dst, EncodingTag tag, Flagset flags);
+        void native_import(const string& src, NativeString& dst, EncodingTag tag, Flagset flags);
+        void native_export(const NativeString& src, string& dst, EncodingTag tag, Flagset flags);
+        bool utf_import(const string& src, NativeString& dst, EncodingTag tag, Flagset flags);
+        bool utf_export(const NativeString& src, string& dst, EncodingTag tag, Flagset flags);
 
         template <typename C, typename E>
-        void import_string_helper(const std::string& src, std::basic_string<C>& dst, E enc, Flagset flags) {
+        void import_string_helper(const string& src, basic_string<C>& dst, E enc, Flagset flags) {
             mbcs_flags(flags);
             auto tag = lookup_encoding(enc);
             if (src.empty()) {
@@ -75,7 +75,7 @@ namespace Unicorn {
         }
 
         template <typename C, typename E>
-        void export_string_helper(const std::basic_string<C>& src, std::string& dst, E enc, Flagset flags) {
+        void export_string_helper(const basic_string<C>& src, string& dst, E enc, Flagset flags) {
             mbcs_flags(flags);
             auto tag = lookup_encoding(enc);
             if (src.empty()) {
@@ -91,44 +91,44 @@ namespace Unicorn {
     }
 
     template <typename C>
-    void import_string(const std::string& src, std::basic_string<C>& dst) {
+    void import_string(const string& src, basic_string<C>& dst) {
         UnicornDetail::import_string_helper(src, dst, "char", err_replace);
     }
 
     template <typename C, typename C2>
-    void import_string(const std::string& src, std::basic_string<C>& dst, const std::basic_string<C2>& enc,
+    void import_string(const string& src, basic_string<C>& dst, const basic_string<C2>& enc,
             Flagset flags = {}) {
         UnicornDetail::import_string_helper(src, dst, to_utf8(enc), flags);
     }
 
     template <typename C, typename C2>
-    void import_string(const std::string& src, std::basic_string<C>& dst, const C2* enc, Flagset flags = {}) {
+    void import_string(const string& src, basic_string<C>& dst, const C2* enc, Flagset flags = {}) {
         UnicornDetail::import_string_helper(src, dst, to_utf8(cstr(enc)), flags);
     }
 
     template <typename C>
-    void import_string(const std::string& src, std::basic_string<C>& dst, uint32_t enc, Flagset flags = {}) {
+    void import_string(const string& src, basic_string<C>& dst, uint32_t enc, Flagset flags = {}) {
         UnicornDetail::import_string_helper(src, dst, enc, flags);
     }
 
     template <typename C>
-    void export_string(const std::basic_string<C>& src, std::string& dst) {
+    void export_string(const basic_string<C>& src, string& dst) {
         UnicornDetail::export_string_helper(src, dst, "char", err_replace);
     }
 
     template <typename C, typename C2>
-    void export_string(const std::basic_string<C>& src, std::string& dst, const std::basic_string<C2>& enc,
+    void export_string(const basic_string<C>& src, string& dst, const basic_string<C2>& enc,
             Flagset flags = {}) {
         UnicornDetail::export_string_helper(src, dst, to_utf8(enc), flags);
     }
 
     template <typename C, typename C2>
-    void export_string(const std::basic_string<C>& src, std::string& dst, const C2* enc, Flagset flags = {}) {
+    void export_string(const basic_string<C>& src, string& dst, const C2* enc, Flagset flags = {}) {
         UnicornDetail::export_string_helper(src, dst, to_utf8(cstr(enc)), flags);
     }
 
     template <typename C>
-    void export_string(const std::basic_string<C>& src, std::string& dst, uint32_t enc, Flagset flags = {}) {
+    void export_string(const basic_string<C>& src, string& dst, uint32_t enc, Flagset flags = {}) {
         UnicornDetail::export_string_helper(src, dst, enc, flags);
     }
 

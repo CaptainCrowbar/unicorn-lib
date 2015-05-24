@@ -329,7 +329,7 @@ namespace Unicorn {
         }
     }
 
-    u8string Options::arg_convert(const std::string& str, Flagset flags) {
+    u8string Options::arg_convert(const string& str, Flagset flags) {
         if (! flags.get(opt_locale))
             return str;
         u8string utf8;

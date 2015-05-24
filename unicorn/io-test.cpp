@@ -29,7 +29,7 @@ namespace {
 
     void check_simple_file_io() {
 
-        std::string s;
+        string s;
         TempFile tempfile(testfile);
 
         TRY(load_file("README.md"s, s));
@@ -285,8 +285,8 @@ namespace {
 
     void check_file_writer() {
 
-        std::string s;
-        std::vector<std::u32string> vec32;
+        string s;
+        std::vector<u32string> vec32;
         FileWriter writer;
         TempFile tempfile(testfile);
 

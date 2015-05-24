@@ -14,8 +14,8 @@ namespace {
     void check_split() {
 
         std::vector<u8string> v8;
-        std::vector<std::u16string> v16;
-        std::vector<std::u32string> v32;
+        std::vector<u16string> v16;
+        std::vector<u32string> v32;
 
         TRY(str_split(""s, overwrite(v8)));                      TEST_EQUAL(v8.size(), 0);  TEST_EQUAL(str_join(v8, "/"), "");
         TRY(str_split("Hello"s, overwrite(v8)));                 TEST_EQUAL(v8.size(), 1);  TEST_EQUAL(str_join(v8, "/"), "Hello");
@@ -95,8 +95,8 @@ namespace {
         // 0010fffd  dbff dffd  f4 8f bf bd
 
         const u8string utf8_example {"\xd0\xb0\xe4\xba\x8c\xf0\x90\x8c\x82\xf4\x8f\xbf\xbd"};
-        const std::u16string utf16_example {0x430,0x4e8c,0xd800,0xdf02,0xdbff,0xdffd};
-        const std::u32string utf32_example {0x430,0x4e8c,0x10302,0x10fffd};
+        const u16string utf16_example {0x430,0x4e8c,0xd800,0xdf02,0xdbff,0xdffd};
+        const u32string utf32_example {0x430,0x4e8c,0x10302,0x10fffd};
 
         TEST_EQUAL(str_substring(""s, 0), "");
         TEST_EQUAL(str_substring(""s, 5), "");
@@ -218,8 +218,8 @@ namespace {
     void check_translate() {
 
         u8string s8;
-        std::u16string s16;
-        std::u32string s32;
+        u16string s16;
+        u32string s32;
 
         TEST_EQUAL(str_translate(""s, "", ""), "");
         TEST_EQUAL(str_translate("Hello world"s, "", ""), "Hello world");
@@ -286,8 +286,8 @@ namespace {
     void check_trim() {
 
         u8string s8;
-        std::u16string s16;
-        std::u32string s32;
+        u16string s16;
+        u32string s32;
 
         TEST_EQUAL(str_trim(u8""s), u8"");
         TEST_EQUAL(str_trim(u8"Hello"s), u8"Hello");
@@ -510,8 +510,8 @@ namespace {
     void check_trim_if() {
 
         u8string s8;
-        std::u16string s16;
-        std::u32string s32;
+        u16string s16;
+        u32string s32;
 
         TEST_EQUAL(str_trim_if(u8""s, char_is_line_break), u8"");
         TEST_EQUAL(str_trim_if(u8"Hello"s, char_is_line_break), u8"Hello");
@@ -632,8 +632,8 @@ namespace {
     void check_unify() {
 
         u8string s8;
-        std::u16string s16;
-        std::u32string s32;
+        u16string s16;
+        u32string s32;
 
         TEST_EQUAL(str_unify_lines(u8""s), u8"");
         TEST_EQUAL(str_unify_lines(u8"Hello world\nGoodbye\n"s), u8"Hello world\nGoodbye\n");
@@ -697,8 +697,8 @@ namespace {
     void check_wrap() {
 
         u8string s8, t8;
-        std::u16string s16, t16;
-        std::u32string s32, t32;
+        u16string s16, t16;
+        u32string s32, t32;
 
         TEST_EQUAL(str_wrap(""s), ""s);
         TEST_EQUAL(str_wrap("\r\n"s), ""s);

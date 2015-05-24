@@ -51,8 +51,8 @@ namespace Unicorn {
             // Integer formatting helper functions
 
             template <typename C>
-            std::basic_string<C> int_radix(unsigned long long n, int base, int prec) {
-                using string_type = std::basic_string<C>;
+            basic_string<C> int_radix(unsigned long long n, int base, int prec) {
+                using string_type = basic_string<C>;
                 if (prec < 1)
                     prec = 1;
                 string_type s;

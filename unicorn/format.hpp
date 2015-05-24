@@ -20,19 +20,19 @@ namespace Unicorn {
     template <typename T> class FormatType;
 
     template <typename T, typename C>
-        void format_type(const T& t, std::basic_string<C>& dst, Flagset flags = {},
+        void format_type(const T& t, basic_string<C>& dst, Flagset flags = {},
             int prec = -1, size_t width = 0, char32_t pad = U' ');
     template <typename T, typename C>
-        void format_type(const T& t, std::basic_string<C>& dst, const std::basic_string<C>& flags);
+        void format_type(const T& t, basic_string<C>& dst, const basic_string<C>& flags);
     template <typename T, typename C>
-        void format_type(const T& t, std::basic_string<C>& dst, const C* flags);
+        void format_type(const T& t, basic_string<C>& dst, const C* flags);
     template <typename C, typename T>
-        std::basic_string<C> format_as(const T& t, Flagset flags = {},
+        basic_string<C> format_as(const T& t, Flagset flags = {},
             int prec = -1, size_t width = 0, char32_t pad = U' ');
     template <typename C, typename T>
-        std::basic_string<C> format_as(const T& t, const std::basic_string<C>& flags);
+        basic_string<C> format_as(const T& t, const basic_string<C>& flags);
     template <typename C, typename T>
-        std::basic_string<C> format_as(const T& t, const C* flags);
+        basic_string<C> format_as(const T& t, const C* flags);
 
     // Formatting behaviour flags
 
@@ -77,7 +77,7 @@ namespace Unicorn {
         // Alignment and padding
 
         template <typename C>
-        void format_align(std::basic_string<C> src, std::basic_string<C>& dst,
+        void format_align(basic_string<C> src, basic_string<C>& dst,
                 Flagset flags, size_t width, char32_t pad) {
             flags.exclusive(fx_left | fx_centre | fx_right, "formatting");
             flags.exclusive(fx_lower | fx_title | fx_upper, "formatting");
@@ -152,7 +152,7 @@ namespace Unicorn {
 
         template <typename C>
         struct FormatString {
-            u8string operator()(const std::basic_string<C>& t, Flagset flags, int prec) const {
+            u8string operator()(const basic_string<C>& t, Flagset flags, int prec) const {
                 return format_string(to_utf8(t), flags, prec);
             }
         };
@@ -259,7 +259,7 @@ namespace Unicorn {
     template <> class FormatType<float>: public UnicornDetail::FormatFloatingPoint<float> {};
     template <> class FormatType<double>: public UnicornDetail::FormatFloatingPoint<double> {};
     template <> class FormatType<long double>: public UnicornDetail::FormatFloatingPoint<long double> {};
-    template <typename C> class FormatType<std::basic_string<C>>: public UnicornDetail::FormatString<C> {};
+    template <typename C> class FormatType<basic_string<C>>: public UnicornDetail::FormatString<C> {};
     template <> class FormatType<char*>: public UnicornDetail::FormatCharacterPointer<char> {};
     template <> class FormatType<char16_t*>: public UnicornDetail::FormatCharacterPointer<char16_t> {};
     template <> class FormatType<char32_t*>: public UnicornDetail::FormatCharacterPointer<char32_t> {};
@@ -280,7 +280,7 @@ namespace Unicorn {
     // Basic formatting functions
 
     template <typename T, typename C>
-    void format_type(const T& t, std::basic_string<C>& dst, Flagset flags,
+    void format_type(const T& t, basic_string<C>& dst, Flagset flags,
             int prec, size_t width, char32_t pad) {
         using namespace UnicornDetail;
         auto s = FormatType<std::decay_t<T>>()(t, flags & ~ fx_toplevel_flags, prec);
@@ -288,7 +288,7 @@ namespace Unicorn {
     }
 
     template <typename T, typename C>
-    void format_type(const T& t, std::basic_string<C>& dst, const std::basic_string<C>& flags) {
+    void format_type(const T& t, basic_string<C>& dst, const basic_string<C>& flags) {
         using namespace UnicornDetail;
         Flagset f;
         int prec = 0;
@@ -299,28 +299,28 @@ namespace Unicorn {
     }
 
     template <typename T, typename C>
-    void format_type(const T& t, std::basic_string<C>& dst, const C* flags) {
+    void format_type(const T& t, basic_string<C>& dst, const C* flags) {
         format_type(t, dst, cstr(flags));
     }
 
     template <typename C, typename T>
-    std::basic_string<C> format_as(const T& t, Flagset flags,
+    basic_string<C> format_as(const T& t, Flagset flags,
             int prec, size_t width, char32_t pad) {
-        std::basic_string<C> dst;
+        basic_string<C> dst;
         format_type(t, dst, flags, prec, width, pad);
         return dst;
     }
 
     template <typename C, typename T>
-    std::basic_string<C> format_as(const T& t, const std::basic_string<C>& flags) {
-        std::basic_string<C> dst;
+    basic_string<C> format_as(const T& t, const basic_string<C>& flags) {
+        basic_string<C> dst;
         format_type(t, dst, flags);
         return dst;
     }
 
     template <typename C, typename T>
-    std::basic_string<C> format_as(const T& t, const C* flags) {
-        std::basic_string<C> dst;
+    basic_string<C> format_as(const T& t, const C* flags) {
+        basic_string<C> dst;
         format_type(t, dst, flags);
         return dst;
     }
@@ -331,7 +331,7 @@ namespace Unicorn {
     class Format {
     public:
         using char_type = C;
-        using string_type = std::basic_string<C>;
+        using string_type = basic_string<C>;
         Format() = default;
         explicit Format(const string_type& format);
         template <typename... Args> string_type operator()(const Args&... args) const;
@@ -388,7 +388,7 @@ namespace Unicorn {
 
     template <typename C>
     template <typename... Args>
-    std::basic_string<C> Format<C>::operator()(const Args&... args) const {
+    basic_string<C> Format<C>::operator()(const Args&... args) const {
         string_list list(seq.size());
         for (size_t i = 0; i < seq.size(); ++i)
             if (seq[i].index == 0)
@@ -427,7 +427,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    Format<C> format(const std::basic_string<C>& fmt) {
+    Format<C> format(const basic_string<C>& fmt) {
         return Format<C>(fmt);
     }
 

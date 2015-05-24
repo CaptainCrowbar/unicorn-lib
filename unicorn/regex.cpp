@@ -55,7 +55,7 @@ namespace Unicorn {
             using extra_type = pcre_extra;
             using ccptr_type = const char*;
             using char_type = char;
-            using string_type = std::string;
+            using string_type = string;
             static constexpr auto compile2 = &pcre_compile2;
             static constexpr auto study = &pcre_study;
             static constexpr auto free_study = &pcre_free_study;
@@ -73,7 +73,7 @@ namespace Unicorn {
                 using extra_type = pcre16_extra;
                 using ccptr_type = PCRE_SPTR16;
                 using char_type = char16_t;
-                using string_type = std::u16string;
+                using string_type = u16string;
                 static constexpr auto compile2 = &pcre16_compile2;
                 static constexpr auto study = &pcre16_study;
                 static constexpr auto free_study = &pcre16_free_study;
@@ -92,7 +92,7 @@ namespace Unicorn {
                 using extra_type = pcre32_extra;
                 using ccptr_type = PCRE_SPTR32;
                 using char_type = char32_t;
-                using string_type = std::u32string;
+                using string_type = u32string;
                 static constexpr auto compile2 = &pcre32_compile2;
                 static constexpr auto study = &pcre32_study;
                 static constexpr auto free_study = &pcre32_free_study;
@@ -109,7 +109,7 @@ namespace Unicorn {
             template <> struct PcreTraits<wchar_t>:
             public PcreTraits<WcharEquivalent> {
                 using char_type = wchar_t;
-                using string_type = std::wstring;
+                using string_type = wstring;
             };
         #endif
 
@@ -160,7 +160,7 @@ namespace Unicorn {
             }
 
             template <typename C>
-            size_t named_group_impl(void* p, const std::basic_string<C>& name) noexcept {
+            size_t named_group_impl(void* p, const basic_string<C>& name) noexcept {
                 using P = PcreTraits<C>;
                 if (! p)
                     return npos;
@@ -273,7 +273,7 @@ namespace Unicorn {
             }
 
             template <typename C>
-            void next_match_impl(MatchInfo<C>& m, const std::string& pattern, size_t start, int anchors) {
+            void next_match_impl(MatchInfo<C>& m, const string& pattern, size_t start, int anchors) {
                 using pcre_traits = PcreTraits<C>;
                 m.status = PCRE_ERROR_NOMATCH;
                 if (! m.ref || start > m.text->size())
@@ -321,13 +321,13 @@ namespace Unicorn {
         void dec_pcre(void* pc, void* ex, char) noexcept { dec_pcre_impl<char>(pc, ex); }
         size_t count_groups(const PcreRef<char>& p) noexcept
             { return count_groups_impl<char>(p.pcre()); }
-        size_t named_group(const PcreRef<char>& p, const std::string& name) noexcept
+        size_t named_group(const PcreRef<char>& p, const string& name) noexcept
             { return named_group_impl(p.pcre(), name); }
-        void init_regex(RegexInfo<char>& r, const std::string& pattern, Flagset flags, bool unicode)
+        void init_regex(RegexInfo<char>& r, const string& pattern, Flagset flags, bool unicode)
             { init_regex_impl(r, pattern, flags, unicode); }
-        void init_match(MatchInfo<char>& m, const RegexInfo<char>& r, const std::string& text)
+        void init_match(MatchInfo<char>& m, const RegexInfo<char>& r, const string& text)
             { init_match_impl(m, r, text); }
-        void next_match(MatchInfo<char>& m, const std::string& pattern, size_t start, int anchors)
+        void next_match(MatchInfo<char>& m, const string& pattern, size_t start, int anchors)
             { next_match_impl(m, pattern, start, anchors); }
 
         #if ! defined(UNICORN_NO_PCRE16)
@@ -335,13 +335,13 @@ namespace Unicorn {
             void dec_pcre(void* pc, void* ex, char16_t) noexcept { dec_pcre_impl<char16_t>(pc, ex); }
             size_t count_groups(const PcreRef<char16_t>& p) noexcept
                 { return count_groups_impl<char16_t>(p.pcre()); }
-            size_t named_group(const PcreRef<char16_t>& p, const std::u16string& name) noexcept
+            size_t named_group(const PcreRef<char16_t>& p, const u16string& name) noexcept
                 { return named_group_impl(p.pcre(), name); }
-            void init_regex(RegexInfo<char16_t>& r, const std::u16string& pattern, Flagset flags, bool unicode)
+            void init_regex(RegexInfo<char16_t>& r, const u16string& pattern, Flagset flags, bool unicode)
                 { init_regex_impl(r, pattern, flags, unicode); }
-            void init_match(MatchInfo<char16_t>& m, const RegexInfo<char16_t>& r, const std::u16string& text)
+            void init_match(MatchInfo<char16_t>& m, const RegexInfo<char16_t>& r, const u16string& text)
                 { init_match_impl(m, r, text); }
-            void next_match(MatchInfo<char16_t>& m, const std::string& pattern, size_t start, int anchors)
+            void next_match(MatchInfo<char16_t>& m, const string& pattern, size_t start, int anchors)
                 { next_match_impl(m, pattern, start, anchors); }
         #endif
 
@@ -350,13 +350,13 @@ namespace Unicorn {
             void dec_pcre(void* pc, void* ex, char32_t) noexcept { dec_pcre_impl<char32_t>(pc, ex); }
             size_t count_groups(const PcreRef<char32_t>& p) noexcept
                 { return count_groups_impl<char32_t>(p.pcre()); }
-            size_t named_group(const PcreRef<char32_t>& p, const std::u32string& name) noexcept
+            size_t named_group(const PcreRef<char32_t>& p, const u32string& name) noexcept
                 { return named_group_impl(p.pcre(), name); }
-            void init_regex(RegexInfo<char32_t>& r, const std::u32string& pattern, Flagset flags, bool unicode)
+            void init_regex(RegexInfo<char32_t>& r, const u32string& pattern, Flagset flags, bool unicode)
                 { init_regex_impl(r, pattern, flags, unicode); }
-            void init_match(MatchInfo<char32_t>& m, const RegexInfo<char32_t>& r, const std::u32string& text)
+            void init_match(MatchInfo<char32_t>& m, const RegexInfo<char32_t>& r, const u32string& text)
                 { init_match_impl(m, r, text); }
-            void next_match(MatchInfo<char32_t>& m, const std::string& pattern, size_t start, int anchors)
+            void next_match(MatchInfo<char32_t>& m, const string& pattern, size_t start, int anchors)
                 { next_match_impl(m, pattern, start, anchors); }
         #endif
 
@@ -365,13 +365,13 @@ namespace Unicorn {
             void dec_pcre(void* pc, void* ex, wchar_t) noexcept { dec_pcre_impl<wchar_t>(pc, ex); }
             size_t count_groups(const PcreRef<wchar_t>& p) noexcept
                 { return count_groups_impl<wchar_t>(p.pcre()); }
-            size_t named_group(const PcreRef<wchar_t>& p, const std::wstring& name) noexcept
+            size_t named_group(const PcreRef<wchar_t>& p, const wstring& name) noexcept
                 { return named_group_impl(p.pcre(), name); }
-            void init_regex(RegexInfo<wchar_t>& r, const std::wstring& pattern, Flagset flags, bool unicode)
+            void init_regex(RegexInfo<wchar_t>& r, const wstring& pattern, Flagset flags, bool unicode)
                 { init_regex_impl(r, pattern, flags, unicode); }
-            void init_match(MatchInfo<wchar_t>& m, const RegexInfo<wchar_t>& r, const std::wstring& text)
+            void init_match(MatchInfo<wchar_t>& m, const RegexInfo<wchar_t>& r, const wstring& text)
                 { init_match_impl(m, r, text); }
-            void next_match(MatchInfo<wchar_t>& m, const std::string& pattern, size_t start, int anchors)
+            void next_match(MatchInfo<wchar_t>& m, const string& pattern, size_t start, int anchors)
                 { next_match_impl(m, pattern, start, anchors); }
         #endif
 

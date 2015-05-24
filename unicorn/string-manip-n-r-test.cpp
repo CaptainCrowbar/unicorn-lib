@@ -13,8 +13,8 @@ namespace {
     void check_pad() {
 
         u8string s8;
-        std::u16string s16;
-        std::u32string s32;
+        u16string s16;
+        u32string s32;
 
         TEST_EQUAL(str_pad_left(""s, 0), "");
         TEST_EQUAL(str_pad_left(""s, 1), " ");
@@ -357,8 +357,8 @@ namespace {
     void check_partition() {
 
         u8string s8, t8;
-        std::u16string s16, t16;
-        std::u32string s32, t32;
+        u16string s16, t16;
+        u32string s32, t32;
 
         TEST(! str_partition(""s, s8, t8));                     TEST_EQUAL(s8, "");       TEST_EQUAL(t8, "");
         TEST(! str_partition("Hello"s, s8, t8));                TEST_EQUAL(s8, "Hello");  TEST_EQUAL(t8, "");
@@ -449,8 +449,8 @@ namespace {
     void check_replace() {
 
         u8string s8;
-        std::u16string s16;
-        std::u32string s32;
+        u16string s16;
+        u32string s32;
 
         TEST_EQUAL(str_replace(""s, "", ""), "");
         TEST_EQUAL(str_replace("(abc)"s, "", ""), "(abc)");
