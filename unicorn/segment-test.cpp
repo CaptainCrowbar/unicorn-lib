@@ -93,7 +93,7 @@ namespace {
         }
     }
 
-    #define WORD_SEGMENTATION_TEST(source, all, selected) \
+    #define WORD_SEGMENTATION_TEST(source, all, graphic, alpha) \
         do { \
             auto s = cstr(source); \
             decltype(word_range(s)) segments; \
@@ -105,6 +105,14 @@ namespace {
                 str_append_char(result, ']'); \
             } \
             TEST_EQUAL(result, all); \
+            TRY(segments = word_range(s, graphic_words)); \
+            result.clear(); \
+            for (auto& subrange: segments) { \
+                str_append_char(result, '['); \
+                TRY(result += u_str(subrange)); \
+                str_append_char(result, ']'); \
+            } \
+            TEST_EQUAL(result, graphic); \
             TRY(segments = word_range(s, alpha_words)); \
             result.clear(); \
             for (auto& subrange: segments) { \
@@ -112,7 +120,7 @@ namespace {
                 TRY(result += u_str(subrange)); \
                 str_append_char(result, ']'); \
             } \
-            TEST_EQUAL(result, selected); \
+            TEST_EQUAL(result, alpha); \
         } while (false)
 
     #define BLOCK_SEGMENTATION_TEST(function, mode, source, unstripped, stripped) \
@@ -139,9 +147,9 @@ namespace {
 
     void check_word_segmentation_utf8() {
 
-        WORD_SEGMENTATION_TEST("", "", "");
-        WORD_SEGMENTATION_TEST("Hello world", "[Hello][ ][world]", "[Hello][world]");
-        WORD_SEGMENTATION_TEST("Hello-world", "[Hello][-][world]", "[Hello][world]");
+        WORD_SEGMENTATION_TEST("", "", "", "");
+        WORD_SEGMENTATION_TEST("Hello world", "[Hello][ ][world]", "[Hello][world]", "[Hello][world]");
+        WORD_SEGMENTATION_TEST("Hello-world", "[Hello][-][world]", "[Hello][-][world]", "[Hello][world]");
 
         WORD_SEGMENTATION_TEST(
 
@@ -160,6 +168,15 @@ namespace {
             "[ ]"
             "[Adams]",
 
+            "[\"]"
+            "[Don't]"
+            "[panic]"
+            "[!]"
+            "[\"]"
+            "[-]"
+            "[Douglas]"
+            "[Adams]",
+
             "[Don't]"
             "[panic]"
             "[Douglas]"
@@ -171,9 +188,9 @@ namespace {
 
     void check_word_segmentation_utf16() {
 
-        WORD_SEGMENTATION_TEST(u"", u"", u"");
-        WORD_SEGMENTATION_TEST(u"Hello world", u"[Hello][ ][world]", u"[Hello][world]");
-        WORD_SEGMENTATION_TEST(u"Hello-world", u"[Hello][-][world]", u"[Hello][world]");
+        WORD_SEGMENTATION_TEST(u"", u"", u"", u"");
+        WORD_SEGMENTATION_TEST(u"Hello world", u"[Hello][ ][world]", u"[Hello][world]", u"[Hello][world]");
+        WORD_SEGMENTATION_TEST(u"Hello-world", u"[Hello][-][world]", u"[Hello][-][world]", u"[Hello][world]");
 
         WORD_SEGMENTATION_TEST(
 
@@ -192,6 +209,15 @@ namespace {
             u"[ ]"
             u"[Adams]",
 
+            u"[\"]"
+            u"[Don't]"
+            u"[panic]"
+            u"[!]"
+            u"[\"]"
+            u"[-]"
+            u"[Douglas]"
+            u"[Adams]",
+
             u"[Don't]"
             u"[panic]"
             u"[Douglas]"
@@ -203,9 +229,9 @@ namespace {
 
     void check_word_segmentation_utf32() {
 
-        WORD_SEGMENTATION_TEST(U"", U"", U"");
-        WORD_SEGMENTATION_TEST(U"Hello world", U"[Hello][ ][world]", U"[Hello][world]");
-        WORD_SEGMENTATION_TEST(U"Hello-world", U"[Hello][-][world]", U"[Hello][world]");
+        WORD_SEGMENTATION_TEST(U"", U"", U"", U"");
+        WORD_SEGMENTATION_TEST(U"Hello world", U"[Hello][ ][world]", U"[Hello][world]", U"[Hello][world]");
+        WORD_SEGMENTATION_TEST(U"Hello-world", U"[Hello][-][world]", U"[Hello][-][world]", U"[Hello][world]");
 
         WORD_SEGMENTATION_TEST(
 
@@ -222,6 +248,15 @@ namespace {
             U"[ ]"
             U"[Douglas]"
             U"[ ]"
+            U"[Adams]",
+
+            U"[\"]"
+            U"[Don't]"
+            U"[panic]"
+            U"[!]"
+            U"[\"]"
+            U"[-]"
+            U"[Douglas]"
             U"[Adams]",
 
             U"[Don't]"

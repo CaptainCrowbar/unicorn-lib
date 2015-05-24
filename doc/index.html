@@ -15,12 +15,13 @@
 text manipulation easy for programmers using modern C++. It implements most of
 the main requirements of the <a href="http://www.unicode.org/versions/latest/">Unicode
 standard</a>, currently supporting
-Unicode version 7.0.0. The major missing features in the current version are
-localization support through the <a href="http://cldr.unicode.org/index">CLDR</a>, and
-the Unicode bidirectional algorithm.</p>
+Unicode version 7.0.0. The major missing functionality in the current version
+are localization support through the <a href="http://cldr.unicode.org/index">CLDR</a>,
+and the Unicode bidirectional algorithm. Documentation for some of the modules
+has also still to be written.</p>
 
 <p>The library is divided into the modules listed below; you can import only the
-ones you need, or just import the whole API using <code>&quot;unicorn/library.hpp&quot;</code>.
+ones you need, or import the whole API using <code>#include &quot;unicorn/library.hpp&quot;</code>.
 Everything in the Unicorn library is in <code>namespace Unicorn</code> (or a subordinate
 namespace inside <code>Unicorn</code>). You can either qualify all calls with the
 <code>Unicorn::</code> prefix, or use <code>using namespace Unicorn</code>.</p>

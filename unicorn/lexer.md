@@ -16,6 +16,8 @@ calls the PCRE library. It will only work with encodings for which the
 corresponding PCRE library has been linked; see the regex module documentation
 for details.
 
+<p class="alert">[TODO: DOCUMENTATION]</p>
+
 ## Contents ##
 
 * [Exceptions][]

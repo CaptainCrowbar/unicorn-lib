@@ -12,6 +12,11 @@ characters, words, sentences, lines, and paragraphs. Most of the rules
 followed here are defined in [Unicode Standard Annex 29: Unicode Text
 Segmentation](http://www.unicode.org/reports/tr29/).
 
+All of the iterators defined here dereference to a substring represented by a
+pair of [UTF iterators](unicorn/utf.html), bracketing the text segment of
+interest. As usual, the `u_str()` function can be used to copy the actual
+substring if this is needed.
+
 ## Contents ##
 
 * [Grapheme cluster boundaries][]
@@ -31,14 +36,12 @@ Segmentation](http://www.unicode.org/reports/tr29/).
     * `using GraphemeIterator::reference = const value_type&`
     * `GraphemeIterator::GraphemeIterator()`
     * `[standard iterator operations]`
-
-TODO
-
 * `template <typename C> Crow::Irange<GraphemeIterator<C>> grapheme_range(const UtfIterator<C>& i, const UtfIterator<C>& j)`
 * `template <typename C> Crow::Irange<GraphemeIterator<C>> grapheme_range(const Crow::Irange<UtfIterator<C>>& source)`
 * `template <typename C> Crow::Irange<GraphemeIterator<C>> grapheme_range(const basic_string<C>& source)`
 
-TODO
+A forward iterator over the grapheme clusters (user-perceived characters) in a
+Unicode string.
 
 ## Word boundaries ##
 
@@ -51,21 +54,21 @@ TODO
     * `using WordIterator::reference = const value_type&`
     * `WordIterator::WordIterator()`
     * `[standard iterator operations]`
-
-TODO
-
 * `template <typename C> Crow::Irange<WordIterator<C>> word_range(const UtfIterator<C>& i, const UtfIterator<C>& j, Crow::Flagset flags = {})`
 * `template <typename C> Crow::Irange<WordIterator<C>> word_range(const Crow::Irange<UtfIterator<C>>& source, Crow::Flagset flags = {})`
 * `template <typename C> Crow::Irange<WordIterator<C>> word_range(const basic_string<C>& source, Crow::Flagset flags = {})`
 
-TODO
+A forward iterator over the words in a Unicode string. By default, all
+segments identified as "words" by the UAX29 algorithm are returned; this will
+include whitespace between words, punctuation marks, etc. Flags can be used to
+select only words containing at least one non-whitespace character, or only
+words containing at least one alphanumeric character.
 
 Bitmask          | Letter  | Description
 -------          | ------  | -----------
 `unicode_words`  | `u`     | Report all UAX29 words (default)
-`alpha_words`    | `a`     | Report only words with alphanumerics
-
-TODO
+`graphic_words`  | `g`     | Report only words containing a non-whitespace character
+`alpha_words`    | `a`     | Report only words containing an alphanumeric character
 
 ## Sentence boundaries ##
 
@@ -78,14 +81,12 @@ TODO
     * `using SentenceIterator::reference = const value_type&`
     * `SentenceIterator::SentenceIterator()`
     * `[standard iterator operations]`
-
-TODO
-
 * `template <typename C> Crow::Irange<SentenceIterator<C>> sentence_range(const UtfIterator<C>& i, const UtfIterator<C>& j)`
 * `template <typename C> Crow::Irange<SentenceIterator<C>> sentence_range(const Crow::Irange<UtfIterator<C>>& source)`
 * `template <typename C> Crow::Irange<SentenceIterator<C>> sentence_range(const basic_string<C>& source)`
 
-TODO
+A forward iterator over the sentences in a Unicode string (as defined by
+UAX29).
 
 ## Line boundaries ##
 
@@ -98,21 +99,21 @@ TODO
     * `using LineIterator::reference = const value_type&`
     * `LineIterator::LineIterator()`
     * `[standard iterator operations]`
-
-TODO
-
 * `template <typename C> Crow::Irange<LineIterator<C>> line_range(const UtfIterator<C>& i, const UtfIterator<C>& j, Crow::Flagset flags = {})`
 * `template <typename C> Crow::Irange<LineIterator<C>> line_range(const Crow::Irange<UtfIterator<C>>& source, Crow::Flagset flags = {})`
 * `template <typename C> Crow::Irange<LineIterator<C>> line_range(const basic_string<C>& source, Crow::Flagset flags = {})`
 
-TODO
+A forward iterator over the lines in a Unicode string. Lines are ended by any
+character with the line break property. Multiple consecutive line break
+characters are treated as separate lines; except that `CR+LF` is treated as a
+single line break. By default, the segment identified by the dereferenced
+iterator includes the terminating line break; if the `strip_breaks` flag is
+set, the line break is excluded from the segment.
 
 Bitmask         | Letter  | Description
 -------         | ------  | -----------
-`keep_breaks`   | `k`     | Include line terminators in returned strings (default)
+`keep_breaks`   | `k`     | Include line terminators in reported segments (default)
 `strip_breaks`  | `s`     | Do not include line terminators
-
-TODO
 
 ## Paragraph boundaries ##
 
@@ -125,21 +126,23 @@ TODO
     * `using ParagraphIterator::reference = const value_type&`
     * `ParagraphIterator::ParagraphIterator()`
     * `[standard iterator operations]`
-
-TODO
-
 * `template <typename C> Crow::Irange<ParagraphIterator<C>> paragraph_range(const UtfIterator<C>& i, const UtfIterator<C>& j, Crow::Flagset flags = {})`
 * `template <typename C> Crow::Irange<ParagraphIterator<C>> paragraph_range(const Crow::Irange<UtfIterator<C>>& source, Crow::Flagset flags = {})`
 * `template <typename C> Crow::Irange<ParagraphIterator<C>> paragraph_range(const basic_string<C>& source, Crow::Flagset flags = {})`
 
-TODO
+A forward iterator over the paragraphs in a Unicode string. The flags passed
+to the constructor determine how paragraphs are identified. By default, any
+sequence of two or more line breaks ends a paragraph (as usual, `CR+LF` counts
+as a single line break); the `line_paras` flag causes every line break to be
+interpreted as a paragraph break, while `unicode_paras` restricts paragraph
+breaks to the Unicode paragraph separator character (`U+2029`). The
+`strip_breaks` flag works the same way as in `LineIterator`, skipping the
+paragraph delimiters.
 
 Bitmask            | Letter  | Description
 -------            | ------  | -----------
-`keep_breaks`      | `k`     | Include paragraph terminators in returned strings (default)
-`strip_breaks`     | `s`     | Do not include paragraph terminators
 `multiline_paras`  | `m`     | Divide into paragraphs using multiple line breaks (default)
 `line_paras`       | `l`     | Divide into paragraphs using any line break
-`unicode_paras`    | `u`     | Divide into paragraphs using only PS
-
-TODO
+`unicode_paras`    | `u`     | Divide into paragraphs using only Paragraph Separator
+`keep_breaks`      | `k`     | Include paragraph terminators in reported segments (default)
+`strip_breaks`     | `s`     | Do not include paragraph terminators

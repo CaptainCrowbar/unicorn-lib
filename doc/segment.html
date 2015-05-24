@@ -18,6 +18,11 @@ characters, words, sentences, lines, and paragraphs. Most of the rules
 followed here are defined in <a href="http://www.unicode.org/reports/tr29/">Unicode Standard Annex 29: Unicode Text
 Segmentation</a>.</p>
 
+<p>All of the iterators defined here dereference to a substring represented by a
+pair of <a href="unicorn/utf.html">UTF iterators</a>, bracketing the text segment of
+interest. As usual, the <code>u_str()</code> function can be used to copy the actual
+substring if this is needed.</p>
+
 <h2 id="contents">Contents</h2>
 
 <ul>
@@ -43,17 +48,13 @@ Segmentation</a>.</p>
 <li><code>GraphemeIterator::<strong>GraphemeIterator</strong>()</code></li>
 <li><code>[standard iterator operations]</code></li>
 </ul></li>
-</ul>
-
-<p>TODO</p>
-
-<ul>
 <li><code>template &lt;typename C&gt; Crow::Irange&lt;GraphemeIterator&lt;C&gt;&gt; <strong>grapheme_range</strong>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j)</code></li>
 <li><code>template &lt;typename C&gt; Crow::Irange&lt;GraphemeIterator&lt;C&gt;&gt; <strong>grapheme_range</strong>(const Crow::Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; source)</code></li>
 <li><code>template &lt;typename C&gt; Crow::Irange&lt;GraphemeIterator&lt;C&gt;&gt; <strong>grapheme_range</strong>(const basic_string&lt;C&gt;&amp; source)</code></li>
 </ul>
 
-<p>TODO</p>
+<p>A forward iterator over the grapheme clusters (user-perceived characters) in a
+Unicode string.</p>
 
 <h2 id="wordboundaries">Word boundaries</h2>
 
@@ -70,17 +71,16 @@ Segmentation</a>.</p>
 <li><code>WordIterator::<strong>WordIterator</strong>()</code></li>
 <li><code>[standard iterator operations]</code></li>
 </ul></li>
-</ul>
-
-<p>TODO</p>
-
-<ul>
 <li><code>template &lt;typename C&gt; Crow::Irange&lt;WordIterator&lt;C&gt;&gt; <strong>word_range</strong>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j, Crow::Flagset flags = {})</code></li>
 <li><code>template &lt;typename C&gt; Crow::Irange&lt;WordIterator&lt;C&gt;&gt; <strong>word_range</strong>(const Crow::Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; source, Crow::Flagset flags = {})</code></li>
 <li><code>template &lt;typename C&gt; Crow::Irange&lt;WordIterator&lt;C&gt;&gt; <strong>word_range</strong>(const basic_string&lt;C&gt;&amp; source, Crow::Flagset flags = {})</code></li>
 </ul>
 
-<p>TODO</p>
+<p>A forward iterator over the words in a Unicode string. By default, all
+segments identified as &#8220;words&#8221; by the UAX29 algorithm are returned; this will
+include whitespace between words, punctuation marks, etc. Flags can be used to
+select only words containing at least one non-whitespace character, or only
+words containing at least one alphanumeric character.</p>
 
 <table>
 <colgroup>
@@ -104,14 +104,17 @@ Segmentation</a>.</p>
 	<td style="text-align:left;">Report all UAX29 words (default)</td>
 </tr>
 <tr>
+	<td style="text-align:left;"><code>graphic_words</code></td>
+	<td style="text-align:left;"><code>g</code></td>
+	<td style="text-align:left;">Report only words containing a non-whitespace character</td>
+</tr>
+<tr>
 	<td style="text-align:left;"><code>alpha_words</code></td>
 	<td style="text-align:left;"><code>a</code></td>
-	<td style="text-align:left;">Report only words with alphanumerics</td>
+	<td style="text-align:left;">Report only words containing an alphanumeric character</td>
 </tr>
 </tbody>
 </table>
-
-<p>TODO</p>
 
 <h2 id="sentenceboundaries">Sentence boundaries</h2>
 
@@ -128,17 +131,13 @@ Segmentation</a>.</p>
 <li><code>SentenceIterator::<strong>SentenceIterator</strong>()</code></li>
 <li><code>[standard iterator operations]</code></li>
 </ul></li>
-</ul>
-
-<p>TODO</p>
-
-<ul>
 <li><code>template &lt;typename C&gt; Crow::Irange&lt;SentenceIterator&lt;C&gt;&gt; <strong>sentence_range</strong>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j)</code></li>
 <li><code>template &lt;typename C&gt; Crow::Irange&lt;SentenceIterator&lt;C&gt;&gt; <strong>sentence_range</strong>(const Crow::Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; source)</code></li>
 <li><code>template &lt;typename C&gt; Crow::Irange&lt;SentenceIterator&lt;C&gt;&gt; <strong>sentence_range</strong>(const basic_string&lt;C&gt;&amp; source)</code></li>
 </ul>
 
-<p>TODO</p>
+<p>A forward iterator over the sentences in a Unicode string (as defined by
+UAX29).</p>
 
 <h2 id="lineboundaries">Line boundaries</h2>
 
@@ -155,17 +154,17 @@ Segmentation</a>.</p>
 <li><code>LineIterator::<strong>LineIterator</strong>()</code></li>
 <li><code>[standard iterator operations]</code></li>
 </ul></li>
-</ul>
-
-<p>TODO</p>
-
-<ul>
 <li><code>template &lt;typename C&gt; Crow::Irange&lt;LineIterator&lt;C&gt;&gt; <strong>line_range</strong>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j, Crow::Flagset flags = {})</code></li>
 <li><code>template &lt;typename C&gt; Crow::Irange&lt;LineIterator&lt;C&gt;&gt; <strong>line_range</strong>(const Crow::Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; source, Crow::Flagset flags = {})</code></li>
 <li><code>template &lt;typename C&gt; Crow::Irange&lt;LineIterator&lt;C&gt;&gt; <strong>line_range</strong>(const basic_string&lt;C&gt;&amp; source, Crow::Flagset flags = {})</code></li>
 </ul>
 
-<p>TODO</p>
+<p>A forward iterator over the lines in a Unicode string. Lines are ended by any
+character with the line break property. Multiple consecutive line break
+characters are treated as separate lines; except that <code>CR+LF</code> is treated as a
+single line break. By default, the segment identified by the dereferenced
+iterator includes the terminating line break; if the <code>strip_breaks</code> flag is
+set, the line break is excluded from the segment.</p>
 
 <table>
 <colgroup>
@@ -186,7 +185,7 @@ Segmentation</a>.</p>
 <tr>
 	<td style="text-align:left;"><code>keep_breaks</code></td>
 	<td style="text-align:left;"><code>k</code></td>
-	<td style="text-align:left;">Include line terminators in returned strings (default)</td>
+	<td style="text-align:left;">Include line terminators in reported segments (default)</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>strip_breaks</code></td>
@@ -195,8 +194,6 @@ Segmentation</a>.</p>
 </tr>
 </tbody>
 </table>
-
-<p>TODO</p>
 
 <h2 id="paragraphboundaries">Paragraph boundaries</h2>
 
@@ -213,17 +210,19 @@ Segmentation</a>.</p>
 <li><code>ParagraphIterator::<strong>ParagraphIterator</strong>()</code></li>
 <li><code>[standard iterator operations]</code></li>
 </ul></li>
-</ul>
-
-<p>TODO</p>
-
-<ul>
 <li><code>template &lt;typename C&gt; Crow::Irange&lt;ParagraphIterator&lt;C&gt;&gt; <strong>paragraph_range</strong>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j, Crow::Flagset flags = {})</code></li>
 <li><code>template &lt;typename C&gt; Crow::Irange&lt;ParagraphIterator&lt;C&gt;&gt; <strong>paragraph_range</strong>(const Crow::Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; source, Crow::Flagset flags = {})</code></li>
 <li><code>template &lt;typename C&gt; Crow::Irange&lt;ParagraphIterator&lt;C&gt;&gt; <strong>paragraph_range</strong>(const basic_string&lt;C&gt;&amp; source, Crow::Flagset flags = {})</code></li>
 </ul>
 
-<p>TODO</p>
+<p>A forward iterator over the paragraphs in a Unicode string. The flags passed
+to the constructor determine how paragraphs are identified. By default, any
+sequence of two or more line breaks ends a paragraph (as usual, <code>CR+LF</code> counts
+as a single line break); the <code>line_paras</code> flag causes every line break to be
+interpreted as a paragraph break, while <code>unicode_paras</code> restricts paragraph
+breaks to the Unicode paragraph separator character (<code>U+2029</code>). The
+<code>strip_breaks</code> flag works the same way as in <code>LineIterator</code>, skipping the
+paragraph delimiters.</p>
 
 <table>
 <colgroup>
@@ -242,16 +241,6 @@ Segmentation</a>.</p>
 
 <tbody>
 <tr>
-	<td style="text-align:left;"><code>keep_breaks</code></td>
-	<td style="text-align:left;"><code>k</code></td>
-	<td style="text-align:left;">Include paragraph terminators in returned strings (default)</td>
-</tr>
-<tr>
-	<td style="text-align:left;"><code>strip_breaks</code></td>
-	<td style="text-align:left;"><code>s</code></td>
-	<td style="text-align:left;">Do not include paragraph terminators</td>
-</tr>
-<tr>
 	<td style="text-align:left;"><code>multiline_paras</code></td>
 	<td style="text-align:left;"><code>m</code></td>
 	<td style="text-align:left;">Divide into paragraphs using multiple line breaks (default)</td>
@@ -264,12 +253,20 @@ Segmentation</a>.</p>
 <tr>
 	<td style="text-align:left;"><code>unicode_paras</code></td>
 	<td style="text-align:left;"><code>u</code></td>
-	<td style="text-align:left;">Divide into paragraphs using only PS</td>
+	<td style="text-align:left;">Divide into paragraphs using only Paragraph Separator</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>keep_breaks</code></td>
+	<td style="text-align:left;"><code>k</code></td>
+	<td style="text-align:left;">Include paragraph terminators in reported segments (default)</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>strip_breaks</code></td>
+	<td style="text-align:left;"><code>s</code></td>
+	<td style="text-align:left;">Do not include paragraph terminators</td>
 </tr>
 </tbody>
 </table>
-
-<p>TODO</p>
 
 </body>
 </html>

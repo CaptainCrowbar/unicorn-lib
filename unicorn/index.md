@@ -9,12 +9,13 @@ The Unicorn library is intended to make [Unicode](http://www.unicode.org/)
 text manipulation easy for programmers using modern C++. It implements most of
 the main requirements of the [Unicode
 standard](http://www.unicode.org/versions/latest/), currently supporting
-Unicode version 7.0.0. The major missing features in the current version are
-localization support through the [CLDR](http://cldr.unicode.org/index), and
-the Unicode bidirectional algorithm.
+Unicode version 7.0.0. The major missing functionality in the current version
+are localization support through the [CLDR](http://cldr.unicode.org/index),
+and the Unicode bidirectional algorithm. Documentation for some of the modules
+has also still to be written.
 
 The library is divided into the modules listed below; you can import only the
-ones you need, or just import the whole API using `"unicorn/library.hpp"`.
+ones you need, or import the whole API using `#include "unicorn/library.hpp"`.
 Everything in the Unicorn library is in `namespace Unicorn` (or a subordinate
 namespace inside `Unicorn`). You can either qualify all calls with the
 `Unicorn::` prefix, or use `using namespace Unicorn`.

@@ -13,7 +13,8 @@ namespace Unicorn {
     // Constants
 
     constexpr auto unicode_words    = Crow::Flagset::value('u');  // Report all UAX29 words (default)
-    constexpr auto alpha_words      = Crow::Flagset::value('w');  // Report only words with alphanumerics
+    constexpr auto graphic_words    = Crow::Flagset::value('g');  // Report only words with graphic characters
+    constexpr auto alpha_words      = Crow::Flagset::value('a');  // Report only words with alphanumeric characters
     constexpr auto keep_breaks      = Crow::Flagset::value('k');  // Include line/para terminators in results (default)
     constexpr auto strip_breaks     = Crow::Flagset::value('s');  // Do not include line/para terminators
     constexpr auto multiline_paras  = Crow::Flagset::value('m');  // Divide into paragraphs using multiple breaks (default)
@@ -92,7 +93,12 @@ namespace Unicorn {
     template <typename C, typename Property, UnicornDetail::PropertyQuery<Property> PQ,
         UnicornDetail::SegmentFunction<Property> SF>
     bool BasicSegmentIterator<C, Property, PQ, SF>::select_segment() const noexcept {
-        return ! mode.get(alpha_words) || std::find_if(CROW_BOUNDS(seg), char_is_alphanumeric) != std::end(seg);
+        if (mode.get(graphic_words))
+            return std::find_if_not(CROW_BOUNDS(seg), char_is_white_space) != std::end(seg);
+        else if (mode.get(alpha_words))
+            return std::find_if(CROW_BOUNDS(seg), char_is_alphanumeric) != std::end(seg);
+        else
+            return true;
     }
 
     // Grapheme cluster boundaries
@@ -122,8 +128,8 @@ namespace Unicorn {
 
     template <typename C> Crow::Irange<WordIterator<C>>
     word_range(const UtfIterator<C>& i, const UtfIterator<C>& j, Crow::Flagset flags = {}) {
-        flags.allow(unicode_words | alpha_words, "word breaking");
-        flags.exclusive(unicode_words | alpha_words, "word breaking");
+        flags.allow(unicode_words | graphic_words | alpha_words, "word breaking");
+        flags.exclusive(unicode_words | graphic_words | alpha_words, "word breaking");
         return {{i, j, flags}, {j, j, flags}};
     }
 

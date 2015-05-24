@@ -149,8 +149,14 @@ td.inter {
     font-weight:       bold;
 }
 
+
+.alert {
+    color:        #c40;
+    font-weight:  bold;
+}
+
 .nobr { white-space: nowrap; }
 
 .good, .good code    { color: #060; }
 .maybe, .maybe code  { color: #048; }
-.bad, .bad code      { color: #840; }
+.bad, .bad code      { color: #c40; }
