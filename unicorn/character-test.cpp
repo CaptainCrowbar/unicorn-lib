@@ -1,7 +1,7 @@
-#include "crow/core.hpp"
+#include "crow/unit-test.hpp"
+#include "unicorn/core.hpp"
 #include "unicorn/character.hpp"
 #include "unicorn/ucd-tables.hpp"
-#include "crow/unit-test.hpp"
 #include <map>
 #include <string>
 #include <vector>
@@ -10,21 +10,9 @@ using namespace std::literals;
 using namespace Crow;
 using namespace Unicorn;
 
-TEST_MAIN;
-
 #define PROPTEST(type, value) TEST_EQUAL(property_value(type::value), # value)
 
 namespace {
-
-    void check_version_information() {
-
-        auto v1 = unicorn_version(), v2 = unicode_version();
-        std::cout << "... Unicorn version: " << v1 << "\n";
-        std::cout << "... Unicode version: " << v2 << "\n";
-        TEST_COMPARE(v1, >=, (Version{0,1,0}));
-        TEST_COMPARE(v2, >=, (Version{7,0,0}));
-
-    }
 
     void check_basic_character_functions() {
 
@@ -1656,7 +1644,6 @@ namespace {
 
 TEST_MODULE(unicorn, character) {
 
-    check_version_information();
     check_basic_character_functions();
     check_general_category();
     check_boolean_properties();

@@ -24,6 +24,8 @@ The Unicorn library depends on the utilities and unit testing framework in my
 
 * **Documentation**
     * [Introduction to the Unicorn Library](intro.html)
+* **Core definitions**
+    * [`"unicorn/core.hpp"`](core.html) -- Core definitions.
 * **Character and string encoding**
     * [`"unicorn/character.hpp"`](character.html) -- Unicode characters and their basic properties.
     * [`"unicorn/utf.hpp"`](utf.html) -- The standard UTF encodings, and conversions between them.

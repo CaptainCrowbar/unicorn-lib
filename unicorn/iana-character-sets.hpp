@@ -13,8 +13,7 @@
 
 #pragma once
 
-#include "crow/core.hpp"
-#include "unicorn/character.hpp"
+#include "unicorn/core.hpp"
 #include <cstdint>
 
 namespace Unicorn {
