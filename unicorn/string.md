@@ -303,8 +303,7 @@ less than or equal to the previous tab stop are ignored. If more tab stops
 beyond the last one listed are needed, the difference between the last two tab
 stops is used to increment the last one (e.g. `{5,10,20}` will be expanded to
 `{5,10,20,30,40,...}`). An implicit tab stop at position zero is always
-assumed. If no tab position greater than zero is supplied, 8 column tabs will
-be used by default.
+assumed.
 
 * `template <typename C> basic_string<C> str_fix_left(const basic_string<C>& str, size_t length, char32_t c = U' ', Crow::Flagset flags = {})`
 * `template <typename C> void str_fix_left_in(basic_string<C>& str, size_t length, char32_t c = U' ', Crow::Flagset flags = {})`
@@ -336,8 +335,9 @@ space. If `fold_leading` or `fold_trailing` is passed, leading or trailing
 whitespace on each line is stripped. By default only inline whitespace is
 folded, leaving line breaks unchanged; if `fold_lines` is passed, all line
 breaks will be folded as if they were ordinary whitespace. If `fold_leading`
-or `fold_trailing` is combined with `fold_lines`, only whitespace at the
-beginning or end of the whole string will be stripped (not each line).
+or `fold_trailing` is combined with `fold_lines`, line breaks have no
+significance and only whitespace at the beginning or end of the whole string
+will be stripped.
 
 * `template <typename FwdRange> basic_string<[character type]> str_join(const FwdRange& r)`
 * `template <typename FwdRange, typename C> basic_string<C> str_join(const FwdRange& r, const basic_string<C>& delim)`

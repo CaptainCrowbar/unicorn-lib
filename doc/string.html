@@ -384,8 +384,7 @@ less than or equal to the previous tab stop are ignored. If more tab stops
 beyond the last one listed are needed, the difference between the last two tab
 stops is used to increment the last one (e.g. <code>{5,10,20}</code> will be expanded to
 <code>{5,10,20,30,40,...}</code>). An implicit tab stop at position zero is always
-assumed. If no tab position greater than zero is supplied, 8 column tabs will
-be used by default.</p>
+assumed.</p>
 
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_fix_left</strong>(const basic_string&lt;C&gt;&amp; str, size_t length, char32_t c = U' ', Crow::Flagset flags = {})</code></li>
@@ -453,8 +452,9 @@ space. If <code>fold_leading</code> or <code>fold_trailing</code> is passed, lea
 whitespace on each line is stripped. By default only inline whitespace is
 folded, leaving line breaks unchanged; if <code>fold_lines</code> is passed, all line
 breaks will be folded as if they were ordinary whitespace. If <code>fold_leading</code>
-or <code>fold_trailing</code> is combined with <code>fold_lines</code>, only whitespace at the
-beginning or end of the whole string will be stripped (not each line).</p>
+or <code>fold_trailing</code> is combined with <code>fold_lines</code>, line breaks have no
+significance and only whitespace at the beginning or end of the whole string
+will be stripped.</p>
 
 <ul>
 <li><code>template &lt;typename FwdRange&gt; basic_string&lt;[character type]&gt; <strong>str_join</strong>(const FwdRange&amp; r)</code></li>
