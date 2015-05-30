@@ -1705,8 +1705,8 @@ namespace Unicorn {
         using string_type = basic_string<C>;
         flags.allow(wrap_crlf | wrap_enforce | wrap_preserve | all_length_flags, "word wrapping");
         if (width == 0 || width == npos) {
-            auto columns = Crow::decnum(Crow::safe_getenv("COLUMNS"));
-            if (columns <= 0)
+            auto columns = Crow::decnum(Crow::cstr(getenv("COLUMNS")));
+            if (columns < 3)
                 columns = 80;
             width = size_t(columns) - 2;
         }

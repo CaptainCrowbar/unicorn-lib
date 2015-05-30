@@ -2,6 +2,7 @@
 #include "unicorn/iana-character-sets.hpp"
 #include "unicorn/regex.hpp"
 #include "unicorn/string.hpp"
+#include "crow/thread.hpp"
 #include <algorithm>
 #include <cerrno>
 #include <cstdlib>
@@ -347,7 +348,7 @@ namespace Unicorn {
             static constexpr const char* locale_vars[] {"LC_ALL", "LC_CTYPE", "LANG"};
             u8string name;
             for (auto key: locale_vars) {
-                string value = Crow::safe_getenv(key);
+                string value = Crow::cstr(getenv(key));
                 size_t dot = value.find('.');
                 if (dot != npos) {
                     value.erase(0, dot + 1);
