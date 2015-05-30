@@ -1,2 +1,2 @@
-CORE := $(HOME)/Code/crow-lib
-include $(CORE)/Makefile
+LIBROOT := ..
+include $(LIBROOT)/crow-lib/Makefile
