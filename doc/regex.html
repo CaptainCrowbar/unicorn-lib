@@ -41,20 +41,20 @@ for details of the regular expression syntax.</p>
 regular expressions respectively. Ideally, you should have all three versions
 available, and link with all of them, to make Unicorn regular expressions work
 with all three Unicode encodings. You will always need the 8-bit PCRE library;
-if you have only one or neither of the other two, you can build Unicorn with a
-restricted set of regex classes by defining <code>UNICORN_NO_PCRE16</code> and/or
-<code>UNICORN_NO_PCRE32</code> when building Unicorn, to indicate which ones are missing
-(these are only needed when building Unicorn, not when building code that uses
-it, as long as you are careful not to try to use the missing regex types).
-Wide character (<code>wstring</code>) regexes are built if the corresponding UTF build of
-PCRE is available (16 or 32 bits, depending on the size of <code>wchar_t</code>).</p>
+depending on which of the other two you have or want to use, define
+<code>UNICORN_PCRE16</code> and/or <code>UNICORN_PCRE32</code> when building Unicorn, to indicate
+which ones are available (these are only needed when building Unicorn, not
+when building code that uses it, as long as you are careful not to try to use
+the missing regex types). Wide character (<code>wstring</code>) regexes are built if the
+corresponding UTF build of PCRE is available (16 or 32 bits, depending on the
+size of <code>wchar_t</code>).</p>
 
 <p>Some other modules in the Unicorn library (<a href="format.html"><code>unicorn/format</code></a>,
 <a href="lexer.html"><code>unicorn/lexer</code></a>, and <a href="options.html"><code>unicorn/options</code></a>) call the
 regex library to handle pattern matching in different UTF encodings, and will
 only work with encodings for which the corresponding PCRE library has been
-linked. (Other modules that also use regexes internally require only UTF&#8211;8
-support.)</p>
+linked. (A few other modules also use regexes internally; these require only
+UTF&#8211;8 support, which is always available.)</p>
 
 <p>In addition to the four UTF-based regex classes, this module also supports
 byte oriented regexes, which simply treat a <code>std::string</code> as a sequence of
@@ -62,9 +62,10 @@ arbitrary bytes, with no assumptions about content encoding. Byte regexes work
 the same as UTF&#8211;8 regexes as far as possible, except that characters in the
 regex are matched against individual bytes instead of encoded characters. The
 <code>\xHH</code> escape code (where H is a hexadecimal digit) always matches a single
-byte even if the value is greater than <code>\x7f</code> (normally this would match a
-UTF&#8211;8 encoding); the <code>\x{hex}</code> escape code can still be used, but it will be
-treated as a syntax error if the value is greater than <code>\x{ff}</code>.</p>
+byte even if the value is greater than <code>\x7f</code> (in a UTF&#8211;8 regex this would
+match a multibyte encoded character); the <code>\x{hex}</code> escape code can still be
+used, but it will be treated as a syntax error if the value is greater than
+<code>\x{ff}</code>.</p>
 
 <h2 id="unicorn::regexvsstd::regex">Unicorn::Regex vs std::regex</h2>
 

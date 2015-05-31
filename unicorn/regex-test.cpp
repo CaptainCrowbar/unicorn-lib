@@ -413,7 +413,7 @@ namespace {
 
     void check_utf16_regex() {
 
-        #if ! defined(UNICORN_NO_PCRE16)
+        #if defined(UNICORN_PCRE16)
 
             Regex16 r;
             Match16 m;
@@ -457,7 +457,7 @@ namespace {
 
     void check_utf32_regex() {
 
-        #if ! defined(UNICORN_NO_PCRE32)
+        #if defined(UNICORN_PCRE32)
 
             Regex32 r;
             Match32 m;
@@ -501,7 +501,7 @@ namespace {
 
     void check_wchar_regex() {
 
-        #if ! defined(UNICORN_NO_PCRE_WCHAR)
+        #if defined(UNICORN_PCRE_WCHAR)
 
             WideRegex r;
             WideMatch m;

@@ -203,11 +203,12 @@ all of these should be present or easily installed on most systems:</p>
 <p>Unicorn&#8217;s <a href="regex.html">regular expression module</a> uses PCRE as its underlying
 regex engine. If you only need to support UTF&#8211;8 and byte-mode regexes, it will
 work with just the 8-bit version (<code>-lpcre</code>). If you want UTF&#8211;16 and UTF&#8211;32
-regexes as well, you will also need <code>-lpcre16</code> and <code>-lpcre32</code>. If you don&#8217;t
-have all three versions of the library, define <code>UNICORN_NO_PCRE16</code> and/or
-<code>UNICORN_NO_PCRE32</code> when building Unicorn to indicate which ones are missing.
-(The supplied makefile will attempt to detect which versions are available and
-set these automatically.)</p>
+regexes as well, you will also need <code>-lpcre16</code> and <code>-lpcre32</code>. The chosen PCRE
+libraries also need to be selected at build time by defining <code>UNICORN_PCRE16</code>
+and/or <code>UNICORN_PCRE32</code>. These defines are only needed when building the
+Unicorn library itself, not when building code that uses it. The supplied
+makefile will attempt to detect which versions are available and set these
+automatically. Note that the 8-bit PCRE library is always required.</p>
 
 <h2 id="usingunicorn">Using Unicorn</h2>
 

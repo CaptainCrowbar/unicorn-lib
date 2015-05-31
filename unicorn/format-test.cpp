@@ -30,7 +30,7 @@ namespace {
         TEST_EQUAL(format_as<char>(true, "y"), "yes");
         TEST_EQUAL(format_as<char>(false, "y"), "no");
 
-        #if ! defined(UNICORN_NO_PCRE16)
+        #if defined(UNICORN_PCRE16)
             TEST_EQUAL(format_as<char16_t>(true), u"true");
             TEST_EQUAL(format_as<char16_t>(false), u"false");
             TEST_EQUAL(format_as<char16_t>(true, u"b"), u"1");
@@ -41,7 +41,7 @@ namespace {
             TEST_EQUAL(format_as<char16_t>(false, u"y"), u"no");
         #endif
 
-        #if ! defined(UNICORN_NO_PCRE32)
+        #if defined(UNICORN_PCRE32)
             TEST_EQUAL(format_as<char32_t>(true), U"true");
             TEST_EQUAL(format_as<char32_t>(false), U"false");
             TEST_EQUAL(format_as<char32_t>(true, U"b"), U"1");
@@ -52,7 +52,7 @@ namespace {
             TEST_EQUAL(format_as<char32_t>(false, U"y"), U"no");
         #endif
 
-        #if ! defined(UNICORN_NO_PCRE_WCHAR)
+        #if defined(UNICORN_PCRE_WCHAR)
             TEST_EQUAL(format_as<wchar_t>(true), L"true");
             TEST_EQUAL(format_as<wchar_t>(false), L"false");
             TEST_EQUAL(format_as<wchar_t>(true, L"b"), L"1");
@@ -131,7 +131,7 @@ namespace {
         TEST_EQUAL(format_as<char>(8888, "r"), "MMMMMMMMDCCCLXXXVIII");
         TEST_EQUAL(format_as<char>(9999, "r"), "MMMMMMMMMCMXCIX");
 
-        #if ! defined(UNICORN_NO_PCRE16)
+        #if defined(UNICORN_PCRE16)
             TEST_EQUAL(format_as<char16_t>(42), u"42");
             TEST_EQUAL(format_as<char16_t>(-42), u"-42");
             TEST_EQUAL(format_as<char16_t>(42, u"b"), u"101010");
@@ -140,7 +140,7 @@ namespace {
             TEST_EQUAL(format_as<char16_t>(9999, u"r"), u"MMMMMMMMMCMXCIX");
         #endif
 
-        #if ! defined(UNICORN_NO_PCRE32)
+        #if defined(UNICORN_PCRE32)
             TEST_EQUAL(format_as<char32_t>(42), U"42");
             TEST_EQUAL(format_as<char32_t>(-42), U"-42");
             TEST_EQUAL(format_as<char32_t>(42, U"b"), U"101010");
@@ -149,7 +149,7 @@ namespace {
             TEST_EQUAL(format_as<char32_t>(9999, U"r"), U"MMMMMMMMMCMXCIX");
         #endif
 
-        #if ! defined(UNICORN_NO_PCRE_WCHAR)
+        #if defined(UNICORN_PCRE_WCHAR)
             TEST_EQUAL(format_as<wchar_t>(42), L"42");
             TEST_EQUAL(format_as<wchar_t>(-42), L"-42");
             TEST_EQUAL(format_as<wchar_t>(42, L"b"), L"101010");
@@ -380,7 +380,7 @@ namespace {
         TEST_EQUAL(format_as<char>(0.42, "pi3"), "+0.420");
         TEST_EQUAL(format_as<char>(-0.42, "pi3"), "0");
 
-        #if ! defined(UNICORN_NO_PCRE16)
+        #if defined(UNICORN_PCRE16)
             TEST_EQUAL(format_as<char16_t>(0.0, u"d3"), u"0.00");
             TEST_EQUAL(format_as<char16_t>(42.0, u"d3"), u"42.0");
             TEST_EQUAL(format_as<char16_t>(-42.0, u"d3"), u"-42.0");
@@ -398,7 +398,7 @@ namespace {
             TEST_EQUAL(format_as<char16_t>(-0.42, u"p3"), u"0");
         #endif
 
-        #if ! defined(UNICORN_NO_PCRE32)
+        #if defined(UNICORN_PCRE32)
             TEST_EQUAL(format_as<char32_t>(0.0, U"d3"), U"0.00");
             TEST_EQUAL(format_as<char32_t>(42.0, U"d3"), U"42.0");
             TEST_EQUAL(format_as<char32_t>(-42.0, U"d3"), U"-42.0");
@@ -416,7 +416,7 @@ namespace {
             TEST_EQUAL(format_as<char32_t>(-0.42, U"p3"), U"0");
         #endif
 
-        #if ! defined(UNICORN_NO_PCRE_WCHAR)
+        #if defined(UNICORN_PCRE_WCHAR)
             TEST_EQUAL(format_as<wchar_t>(0.0, L"d3"), L"0.00");
             TEST_EQUAL(format_as<wchar_t>(42.0, L"d3"), L"42.0");
             TEST_EQUAL(format_as<wchar_t>(-42.0, L"d3"), L"-42.0");
@@ -537,7 +537,7 @@ namespace {
         TEST_EQUAL(format_as<char>(char32_t(0x10fffd), "v"), "dbff dffd");
         TEST_EQUAL(format_as<char>(char32_t(0x10fffd), "x"), "10fffd");
 
-        #if ! defined(UNICORN_NO_PCRE16)
+        #if defined(UNICORN_PCRE16)
             TEST_EQUAL(format_as<char16_t>('A'), u"A");
             TEST_EQUAL(format_as<char16_t>('A', u"a"), u"A");
             TEST_EQUAL(format_as<char16_t>('A', u"c"), u"A");
@@ -558,7 +558,7 @@ namespace {
             TEST_EQUAL(format_as<char16_t>(u'€', u"x"), u"20ac");
         #endif
 
-        #if ! defined(UNICORN_NO_PCRE32)
+        #if defined(UNICORN_PCRE32)
             TEST_EQUAL(format_as<char32_t>('A'), U"A");
             TEST_EQUAL(format_as<char32_t>('A', U"a"), U"A");
             TEST_EQUAL(format_as<char32_t>('A', U"c"), U"A");
@@ -579,7 +579,7 @@ namespace {
             TEST_EQUAL(format_as<char32_t>(u'€', U"x"), U"20ac");
         #endif
 
-        #if ! defined(UNICORN_NO_PCRE_WCHAR)
+        #if defined(UNICORN_PCRE_WCHAR)
             TEST_EQUAL(format_as<wchar_t>('A'), L"A");
             TEST_EQUAL(format_as<wchar_t>('A', L"a"), L"A");
             TEST_EQUAL(format_as<wchar_t>('A', L"c"), L"A");
@@ -703,7 +703,7 @@ namespace {
         TEST_EQUAL(format_as<char>(U"§€ αβγ\n"s, "v"), "00a7 20ac 0020 03b1 03b2 03b3 000a");
         TEST_EQUAL(format_as<char>(U"§€ αβγ\n"s, "x"), "a7 20ac 20 3b1 3b2 3b3 a");
 
-        #if ! defined(UNICORN_NO_PCRE16)
+        #if defined(UNICORN_PCRE16)
             TEST_EQUAL(format_as<char16_t>(u"§€ αβγ\n"s), u"§€ αβγ\n");
             TEST_EQUAL(format_as<char16_t>(u"§€ αβγ\n"s, u"a"), u"\\xa7\\x{20ac} \\x{3b1}\\x{3b2}\\x{3b3}\\n");
             TEST_EQUAL(format_as<char16_t>(u"§€ αβγ\n"s, u"c"), u"§€ αβγ\\n");
@@ -733,7 +733,7 @@ namespace {
             TEST_EQUAL(format_as<char16_t>(L"§€ αβγ\n"s, u"x"), u"a7 20ac 20 3b1 3b2 3b3 a");
         #endif
 
-        #if ! defined(UNICORN_NO_PCRE32)
+        #if defined(UNICORN_PCRE32)
             TEST_EQUAL(format_as<char32_t>(u"§€ αβγ\n"s), U"§€ αβγ\n");
             TEST_EQUAL(format_as<char32_t>(u"§€ αβγ\n"s, U"a"), U"\\xa7\\x{20ac} \\x{3b1}\\x{3b2}\\x{3b3}\\n");
             TEST_EQUAL(format_as<char32_t>(u"§€ αβγ\n"s, U"c"), U"§€ αβγ\\n");
@@ -763,7 +763,7 @@ namespace {
             TEST_EQUAL(format_as<char32_t>(L"§€ αβγ\n"s, U"x"), U"a7 20ac 20 3b1 3b2 3b3 a");
         #endif
 
-        #if ! defined(UNICORN_NO_PCRE_WCHAR)
+        #if defined(UNICORN_PCRE_WCHAR)
             TEST_EQUAL(format_as<wchar_t>(u"§€ αβγ\n"s), L"§€ αβγ\n");
             TEST_EQUAL(format_as<wchar_t>(u"§€ αβγ\n"s, L"a"), L"\\xa7\\x{20ac} \\x{3b1}\\x{3b2}\\x{3b3}\\n");
             TEST_EQUAL(format_as<wchar_t>(u"§€ αβγ\n"s, L"c"), L"§€ αβγ\\n");
@@ -813,7 +813,7 @@ namespace {
 
         TEST_THROW(format_as<char>(udate, "tc"), FlagError);
 
-        #if ! defined(UNICORN_NO_PCRE16)
+        #if defined(UNICORN_PCRE16)
             TEST_EQUAL(format_as<char16_t>(udate), u"2000-01-02 03:04:05");
             TEST_EQUAL(format_as<char16_t>(udate, u"3"), u"2000-01-02 03:04:05.678");
             TEST_EQUAL(format_as<char16_t>(ldate, u"l3"), u"2000-01-02 03:04:05.678");
@@ -821,7 +821,7 @@ namespace {
             TEST_EQUAL(format_as<char16_t>(ldate, u"tl3"), u"2000-01-02T03:04:05.678");
         #endif
 
-        #if ! defined(UNICORN_NO_PCRE32)
+        #if defined(UNICORN_PCRE32)
             TEST_EQUAL(format_as<char32_t>(udate), U"2000-01-02 03:04:05");
             TEST_EQUAL(format_as<char32_t>(udate, U"3"), U"2000-01-02 03:04:05.678");
             TEST_EQUAL(format_as<char32_t>(ldate, U"l3"), U"2000-01-02 03:04:05.678");
@@ -829,7 +829,7 @@ namespace {
             TEST_EQUAL(format_as<char32_t>(ldate, U"tl3"), U"2000-01-02T03:04:05.678");
         #endif
 
-        #if ! defined(UNICORN_NO_PCRE_WCHAR)
+        #if defined(UNICORN_PCRE_WCHAR)
             TEST_EQUAL(format_as<wchar_t>(udate), L"2000-01-02 03:04:05");
             TEST_EQUAL(format_as<wchar_t>(udate, L"3"), L"2000-01-02 03:04:05.678");
             TEST_EQUAL(format_as<wchar_t>(ldate, L"l3"), L"2000-01-02 03:04:05.678");
@@ -855,7 +855,7 @@ namespace {
         TRY(from_seconds(-1234, t));        TEST_EQUAL(format_as<char>(t, "3"), "-20m34.000s");
         TRY(from_seconds(-1234567890, t));  TEST_EQUAL(format_as<char>(t, "3"), "-39y044d05h31m30.000s");
 
-        #if ! defined(UNICORN_NO_PCRE16)
+        #if defined(UNICORN_PCRE16)
             TRY(from_seconds(0, t));            TEST_EQUAL(format_as<char16_t>(t), u"0s");
             TRY(from_seconds(0.25, t));         TEST_EQUAL(format_as<char16_t>(t, u"3"), u"0.250s");
             TRY(from_seconds(1234567890, t));   TEST_EQUAL(format_as<char16_t>(t, u"3"), u"39y044d05h31m30.000s");
@@ -863,7 +863,7 @@ namespace {
             TRY(from_seconds(-1234567890, t));  TEST_EQUAL(format_as<char16_t>(t, u"3"), u"-39y044d05h31m30.000s");
         #endif
 
-        #if ! defined(UNICORN_NO_PCRE32)
+        #if defined(UNICORN_PCRE32)
             TRY(from_seconds(0, t));            TEST_EQUAL(format_as<char32_t>(t), U"0s");
             TRY(from_seconds(0.25, t));         TEST_EQUAL(format_as<char32_t>(t, U"3"), U"0.250s");
             TRY(from_seconds(1234567890, t));   TEST_EQUAL(format_as<char32_t>(t, U"3"), U"39y044d05h31m30.000s");
@@ -871,7 +871,7 @@ namespace {
             TRY(from_seconds(-1234567890, t));  TEST_EQUAL(format_as<char32_t>(t, U"3"), U"-39y044d05h31m30.000s");
         #endif
 
-        #if ! defined(UNICORN_NO_PCRE_WCHAR)
+        #if defined(UNICORN_PCRE_WCHAR)
             TRY(from_seconds(0, t));            TEST_EQUAL(format_as<wchar_t>(t), L"0s");
             TRY(from_seconds(0.25, t));         TEST_EQUAL(format_as<wchar_t>(t, L"3"), L"0.250s");
             TRY(from_seconds(1234567890, t));   TEST_EQUAL(format_as<wchar_t>(t, L"3"), L"39y044d05h31m30.000s");
@@ -890,17 +890,17 @@ namespace {
         TEST_EQUAL(format_as<char>(u1), "00000000-0000-0000-0000-000000000000");
         TEST_EQUAL(format_as<char>(u2), "01234567-89ab-cdef-0123-456789abcdef");
 
-        #if ! defined(UNICORN_NO_PCRE16)
+        #if defined(UNICORN_PCRE16)
             TEST_EQUAL(format_as<char16_t>(u1), u"00000000-0000-0000-0000-000000000000");
             TEST_EQUAL(format_as<char16_t>(u2), u"01234567-89ab-cdef-0123-456789abcdef");
         #endif
 
-        #if ! defined(UNICORN_NO_PCRE32)
+        #if defined(UNICORN_PCRE32)
             TEST_EQUAL(format_as<char32_t>(u1), U"00000000-0000-0000-0000-000000000000");
             TEST_EQUAL(format_as<char32_t>(u2), U"01234567-89ab-cdef-0123-456789abcdef");
         #endif
 
-        #if ! defined(UNICORN_NO_PCRE_WCHAR)
+        #if defined(UNICORN_PCRE_WCHAR)
             TEST_EQUAL(format_as<wchar_t>(u1), L"00000000-0000-0000-0000-000000000000");
             TEST_EQUAL(format_as<wchar_t>(u2), L"01234567-89ab-cdef-0123-456789abcdef");
         #endif
@@ -922,7 +922,7 @@ namespace {
         TEST_EQUAL(format_as<char>(v100), "1.0.0");
         TEST_EQUAL(format_as<char>(v100, "z"), "1");
 
-        #if ! defined(UNICORN_NO_PCRE16)
+        #if defined(UNICORN_PCRE16)
             TEST_EQUAL(format_as<char16_t>(v123), u"1.2.3");
             TEST_EQUAL(format_as<char16_t>(v123, u"z"), u"1.2.3");
             TEST_EQUAL(format_as<char16_t>(v120), u"1.2.0");
@@ -931,7 +931,7 @@ namespace {
             TEST_EQUAL(format_as<char16_t>(v100, u"z"), u"1");
         #endif
 
-        #if ! defined(UNICORN_NO_PCRE32)
+        #if defined(UNICORN_PCRE32)
             TEST_EQUAL(format_as<char32_t>(v123), U"1.2.3");
             TEST_EQUAL(format_as<char32_t>(v123, U"z"), U"1.2.3");
             TEST_EQUAL(format_as<char32_t>(v120), U"1.2.0");
@@ -940,7 +940,7 @@ namespace {
             TEST_EQUAL(format_as<char32_t>(v100, U"z"), U"1");
         #endif
 
-        #if ! defined(UNICORN_NO_PCRE_WCHAR)
+        #if defined(UNICORN_PCRE_WCHAR)
             TEST_EQUAL(format_as<wchar_t>(v123), L"1.2.3");
             TEST_EQUAL(format_as<wchar_t>(v123, L"z"), L"1.2.3");
             TEST_EQUAL(format_as<wchar_t>(v120), L"1.2.0");
@@ -967,19 +967,19 @@ namespace {
         TEST_EQUAL(format_as<char>(ism1), "10:hello,20:world,30:goodbye");
         TEST_EQUAL(format_as<char>(ism1, "U4"), "0010:HELLO,0020:WORLD,0030:GOODBYE");
 
-        #if ! defined(UNICORN_NO_PCRE16)
+        #if defined(UNICORN_PCRE16)
             TEST_EQUAL(format_as<char16_t>(iv1), u"10,20,30,40,50");
             TEST_EQUAL(format_as<char16_t>(sv1), u"hello,world,goodbye");
             TEST_EQUAL(format_as<char16_t>(ism1), u"10:hello,20:world,30:goodbye");
         #endif
 
-        #if ! defined(UNICORN_NO_PCRE32)
+        #if defined(UNICORN_PCRE32)
             TEST_EQUAL(format_as<char32_t>(iv1), U"10,20,30,40,50");
             TEST_EQUAL(format_as<char32_t>(sv1), U"hello,world,goodbye");
             TEST_EQUAL(format_as<char32_t>(ism1), U"10:hello,20:world,30:goodbye");
         #endif
 
-        #if ! defined(UNICORN_NO_PCRE_WCHAR)
+        #if defined(UNICORN_PCRE_WCHAR)
             TEST_EQUAL(format_as<wchar_t>(iv1), L"10,20,30,40,50");
             TEST_EQUAL(format_as<wchar_t>(sv1), L"hello,world,goodbye");
             TEST_EQUAL(format_as<wchar_t>(ism1), L"10:hello,20:world,30:goodbye");
@@ -1014,7 +1014,7 @@ namespace {
         TEST_EQUAL(format_as<char>(42, ">*5"), "***42");
         TEST_EQUAL(format_as<char>(42, "=*8"), "***42***");
 
-        #if ! defined(UNICORN_NO_PCRE16)
+        #if defined(UNICORN_PCRE16)
             TEST_EQUAL(format_as<char16_t>(42, u"<"), u"42");
             TEST_EQUAL(format_as<char16_t>(42, u">"), u"42");
             TEST_EQUAL(format_as<char16_t>(42, u"="), u"42");
@@ -1026,7 +1026,7 @@ namespace {
             TEST_EQUAL(format_as<char16_t>(42, u"=*8"), u"***42***");
         #endif
 
-        #if ! defined(UNICORN_NO_PCRE32)
+        #if defined(UNICORN_PCRE32)
             TEST_EQUAL(format_as<char32_t>(42, U"<"), U"42");
             TEST_EQUAL(format_as<char32_t>(42, U">"), U"42");
             TEST_EQUAL(format_as<char32_t>(42, U"="), U"42");
@@ -1038,7 +1038,7 @@ namespace {
             TEST_EQUAL(format_as<char32_t>(42, U"=*8"), U"***42***");
         #endif
 
-        #if ! defined(UNICORN_NO_PCRE_WCHAR)
+        #if defined(UNICORN_PCRE_WCHAR)
             TEST_EQUAL(format_as<wchar_t>(42, L"<"), L"42");
             TEST_EQUAL(format_as<wchar_t>(42, L">"), L"42");
             TEST_EQUAL(format_as<wchar_t>(42, L"="), L"42");
@@ -1062,19 +1062,19 @@ namespace {
         TEST_EQUAL(format_as<char>("hello WORLD"s, "T"), "Hello World"s);
         TEST_EQUAL(format_as<char>("hello WORLD"s, "U"), "HELLO WORLD"s);
 
-        #if ! defined(UNICORN_NO_PCRE16)
+        #if defined(UNICORN_PCRE16)
             TEST_EQUAL(format_as<char16_t>(u"hello WORLD"s, u"L"), u"hello world"s);
             TEST_EQUAL(format_as<char16_t>(u"hello WORLD"s, u"T"), u"Hello World"s);
             TEST_EQUAL(format_as<char16_t>(u"hello WORLD"s, u"U"), u"HELLO WORLD"s);
         #endif
 
-        #if ! defined(UNICORN_NO_PCRE32)
+        #if defined(UNICORN_PCRE32)
             TEST_EQUAL(format_as<char32_t>(U"hello WORLD"s, U"L"), U"hello world"s);
             TEST_EQUAL(format_as<char32_t>(U"hello WORLD"s, U"T"), U"Hello World"s);
             TEST_EQUAL(format_as<char32_t>(U"hello WORLD"s, U"U"), U"HELLO WORLD"s);
         #endif
 
-        #if ! defined(UNICORN_NO_PCRE_WCHAR)
+        #if defined(UNICORN_PCRE_WCHAR)
             TEST_EQUAL(format_as<wchar_t>(L"hello WORLD"s, L"L"), L"hello world"s);
             TEST_EQUAL(format_as<wchar_t>(L"hello WORLD"s, L"T"), L"Hello World"s);
             TEST_EQUAL(format_as<wchar_t>(L"hello WORLD"s, L"U"), L"HELLO WORLD"s);
@@ -1111,7 +1111,7 @@ namespace {
         TEST_EQUAL(format("Hello $1")(U"world"), "Hello world");
         TEST_EQUAL(format("Hello $1")(L"world"), "Hello world");
 
-        #if ! defined(UNICORN_NO_PCRE16)
+        #if defined(UNICORN_PCRE16)
             TEST_EQUAL(format(u"")(), u"");
             TEST_EQUAL(format(u"Hello world")(), u"Hello world");
             TEST_EQUAL(format(u"Hello $$world")(), u"Hello $world");
@@ -1140,7 +1140,7 @@ namespace {
             TEST_EQUAL(format(u"Hello $1")(L"world"), u"Hello world");
         #endif
 
-        #if ! defined(UNICORN_NO_PCRE32)
+        #if defined(UNICORN_PCRE32)
             TEST_EQUAL(format(U"")(), U"");
             TEST_EQUAL(format(U"Hello world")(), U"Hello world");
             TEST_EQUAL(format(U"Hello $$world")(), U"Hello $world");
@@ -1169,7 +1169,7 @@ namespace {
             TEST_EQUAL(format(U"Hello $1")(L"world"), U"Hello world");
         #endif
 
-        #if ! defined(UNICORN_NO_PCRE_WCHAR)
+        #if defined(UNICORN_PCRE_WCHAR)
             TEST_EQUAL(format(L"")(), L"");
             TEST_EQUAL(format(L"Hello world")(), L"Hello world");
             TEST_EQUAL(format(L"Hello $$world")(), L"Hello $world");
@@ -1206,19 +1206,19 @@ namespace {
         TEST_EQUAL("Hello world"_fmt(), "Hello world");
         TEST_EQUAL("Hello $1"_fmt("world"), "Hello world");
 
-        #if ! defined(UNICORN_NO_PCRE16)
+        #if defined(UNICORN_PCRE16)
             TEST_EQUAL(u""_fmt(), u"");
             TEST_EQUAL(u"Hello world"_fmt(), u"Hello world");
             TEST_EQUAL(u"Hello $1"_fmt(u"world"), u"Hello world");
         #endif
 
-        #if ! defined(UNICORN_NO_PCRE32)
+        #if defined(UNICORN_PCRE32)
             TEST_EQUAL(U""_fmt(), U"");
             TEST_EQUAL(U"Hello world"_fmt(), U"Hello world");
             TEST_EQUAL(U"Hello $1"_fmt(U"world"), U"Hello world");
         #endif
 
-        #if ! defined(UNICORN_NO_PCRE_WCHAR)
+        #if defined(UNICORN_PCRE_WCHAR)
             TEST_EQUAL(L""_fmt(), L"");
             TEST_EQUAL(L"Hello world"_fmt(), L"Hello world");
             TEST_EQUAL(L"Hello $1"_fmt(L"world"), L"Hello world");

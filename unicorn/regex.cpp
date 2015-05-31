@@ -67,7 +67,7 @@ namespace Unicorn {
             static void free(void* p) { pcre_free(p); }
         };
 
-        #if ! defined(UNICORN_NO_PCRE16)
+        #if defined(UNICORN_PCRE16)
             template <> struct PcreTraits<char16_t> {
                 using base_type = pcre16;
                 using extra_type = pcre16_extra;
@@ -86,7 +86,7 @@ namespace Unicorn {
             };
         #endif
 
-        #if ! defined(UNICORN_NO_PCRE32)
+        #if defined(UNICORN_PCRE32)
             template <> struct PcreTraits<char32_t> {
                 using base_type = pcre32;
                 using extra_type = pcre32_extra;
@@ -105,7 +105,7 @@ namespace Unicorn {
             };
         #endif
 
-        #if ! defined(UNICORN_NO_PCRE_WCHAR)
+        #if defined(UNICORN_PCRE_WCHAR)
             template <> struct PcreTraits<wchar_t>:
             public PcreTraits<WcharEquivalent> {
                 using char_type = wchar_t;
@@ -330,7 +330,7 @@ namespace Unicorn {
         void next_match(MatchInfo<char>& m, const string& pattern, size_t start, int anchors)
             { next_match_impl(m, pattern, start, anchors); }
 
-        #if ! defined(UNICORN_NO_PCRE16)
+        #if defined(UNICORN_PCRE16)
             void inc_pcre(void* pc, char16_t) noexcept { inc_pcre_impl<char16_t>(pc); }
             void dec_pcre(void* pc, void* ex, char16_t) noexcept { dec_pcre_impl<char16_t>(pc, ex); }
             size_t count_groups(const PcreRef<char16_t>& p) noexcept
@@ -345,7 +345,7 @@ namespace Unicorn {
                 { next_match_impl(m, pattern, start, anchors); }
         #endif
 
-        #if ! defined(UNICORN_NO_PCRE32)
+        #if defined(UNICORN_PCRE32)
             void inc_pcre(void* pc, char32_t) noexcept { inc_pcre_impl<char32_t>(pc); }
             void dec_pcre(void* pc, void* ex, char32_t) noexcept { dec_pcre_impl<char32_t>(pc, ex); }
             size_t count_groups(const PcreRef<char32_t>& p) noexcept
@@ -360,7 +360,7 @@ namespace Unicorn {
                 { next_match_impl(m, pattern, start, anchors); }
         #endif
 
-        #if ! defined(UNICORN_NO_PCRE_WCHAR)
+        #if defined(UNICORN_PCRE_WCHAR)
             void inc_pcre(void* pc, wchar_t) noexcept { inc_pcre_impl<wchar_t>(pc); }
             void dec_pcre(void* pc, void* ex, wchar_t) noexcept { dec_pcre_impl<wchar_t>(pc, ex); }
             size_t count_groups(const PcreRef<wchar_t>& p) noexcept

@@ -13,9 +13,9 @@
 #include <utility>
 #include <vector>
 
-#if (defined(UNICORN_WCHAR_UTF16) && defined(UNICORN_NO_PCRE16)) \
-        || (defined(UNICORN_WCHAR_UTF32) && defined(UNICORN_NO_PCRE32))
-    #define UNICORN_NO_PCRE_WCHAR 1
+#if (defined(UNICORN_WCHAR_UTF16) && defined(UNICORN_PCRE16)) \
+        || (defined(UNICORN_WCHAR_UTF32) && defined(UNICORN_PCRE32))
+    #define UNICORN_PCRE_WCHAR 1
 #endif
 
 namespace Unicorn {
@@ -40,7 +40,7 @@ namespace Unicorn {
     using ByteRegexFormat = BasicRegexFormat<ByteMode>;
     using ByteSplitIterator = BasicSplitIterator<ByteMode>;
 
-    #if ! defined(UNICORN_NO_PCRE16)
+    #if defined(UNICORN_PCRE16)
         using Match16 = BasicMatch<char16_t>;
         using MatchIterator16 = BasicMatchIterator<char16_t>;
         using Regex16 = BasicRegex<char16_t>;
@@ -48,7 +48,7 @@ namespace Unicorn {
         using SplitIterator16 = BasicSplitIterator<char16_t>;
     #endif
 
-    #if ! defined(UNICORN_NO_PCRE32)
+    #if defined(UNICORN_PCRE32)
         using Match32 = BasicMatch<char32_t>;
         using MatchIterator32 = BasicMatchIterator<char32_t>;
         using Regex32 = BasicRegex<char32_t>;
@@ -56,7 +56,7 @@ namespace Unicorn {
         using SplitIterator32 = BasicSplitIterator<char32_t>;
     #endif
 
-    #if ! defined(UNICORN_NO_PCRE_WCHAR)
+    #if defined(UNICORN_PCRE_WCHAR)
         using WideMatch = BasicMatch<wchar_t>;
         using WideMatchIterator = BasicMatchIterator<wchar_t>;
         using WideRegex = BasicRegex<wchar_t>;
@@ -71,17 +71,17 @@ namespace Unicorn {
         void inc_pcre(void* pc, char) noexcept;
         void dec_pcre(void* pc, void* ex, char) noexcept;
 
-        #if ! defined(UNICORN_NO_PCRE16)
+        #if defined(UNICORN_PCRE16)
             void inc_pcre(void* pc, char16_t) noexcept;
             void dec_pcre(void* pc, void* ex, char16_t) noexcept;
         #endif
 
-        #if ! defined(UNICORN_NO_PCRE32)
+        #if defined(UNICORN_PCRE32)
             void inc_pcre(void* pc, char32_t) noexcept;
             void dec_pcre(void* pc, void* ex, char32_t) noexcept;
         #endif
 
-        #if ! defined(UNICORN_NO_PCRE_WCHAR)
+        #if defined(UNICORN_PCRE_WCHAR)
             void inc_pcre(void* pc, wchar_t) noexcept;
             void dec_pcre(void* pc, void* ex, wchar_t) noexcept;
         #endif
@@ -182,7 +182,7 @@ namespace Unicorn {
         void init_match(MatchInfo<char>& m, const RegexInfo<char>& r, const string& text);
         void next_match(MatchInfo<char>& m, const string& pattern, size_t start, int anchors);
 
-        #if ! defined(UNICORN_NO_PCRE16)
+        #if defined(UNICORN_PCRE16)
             size_t count_groups(const PcreRef<char16_t>& p) noexcept;
             size_t named_group(const PcreRef<char16_t>& p, const u16string& name) noexcept;
             void init_regex(RegexInfo<char16_t>& r, const u16string& pattern, Crow::Flagset flags, bool unicode);
@@ -190,7 +190,7 @@ namespace Unicorn {
             void next_match(MatchInfo<char16_t>& m, const string& pattern, size_t start, int anchors);
         #endif
 
-        #if ! defined(UNICORN_NO_PCRE32)
+        #if defined(UNICORN_PCRE32)
             size_t count_groups(const PcreRef<char32_t>& p) noexcept;
             size_t named_group(const PcreRef<char32_t>& p, const u32string& name) noexcept;
             void init_regex(RegexInfo<char32_t>& r, const u32string& pattern, Crow::Flagset flags, bool unicode);
@@ -198,7 +198,7 @@ namespace Unicorn {
             void next_match(MatchInfo<char32_t>& m, const string& pattern, size_t start, int anchors);
         #endif
 
-        #if ! defined(UNICORN_NO_PCRE_WCHAR)
+        #if defined(UNICORN_PCRE_WCHAR)
             size_t count_groups(const PcreRef<wchar_t>& p) noexcept;
             size_t named_group(const PcreRef<wchar_t>& p, const wstring& name) noexcept;
             void init_regex(RegexInfo<wchar_t>& r, const wstring& pattern, Crow::Flagset flags, bool unicode);

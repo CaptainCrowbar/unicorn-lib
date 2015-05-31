@@ -27,19 +27,19 @@ namespace Unicorn {
     using ByteLexer = BasicLexer<ByteMode>;
     using ByteTokenIterator = BasicTokenIterator<ByteMode>;
 
-    #if ! defined(UNICORN_NO_PCRE16)
+    #if defined(UNICORN_PCRE16)
         using Lexer16 = BasicLexer<char16_t>;
         using Token16 = BasicToken<char16_t>;
         using TokenIterator16 = BasicTokenIterator<char16_t>;
     #endif
 
-    #if ! defined(UNICORN_NO_PCRE32)
+    #if defined(UNICORN_PCRE32)
         using Lexer32 = BasicLexer<char32_t>;
         using Token32 = BasicToken<char32_t>;
         using TokenIterator32 = BasicTokenIterator<char32_t>;
     #endif
 
-    #if ! defined(UNICORN_NO_PCRE_WCHAR)
+    #if defined(UNICORN_PCRE_WCHAR)
         using WideLexer = BasicLexer<wchar_t>;
         using WideToken = BasicToken<wchar_t>;
         using WideTokenIterator = BasicTokenIterator<wchar_t>;

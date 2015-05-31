@@ -119,7 +119,7 @@ namespace {
 
     void check_utf16_lexer() {
 
-        #if ! defined(UNICORN_NO_PCRE16)
+        #if defined(UNICORN_PCRE16)
 
             Lexer16 lex;
             Lexer16::token_iterator it;
@@ -178,7 +178,7 @@ namespace {
 
     void check_utf32_lexer() {
 
-        #if ! defined(UNICORN_NO_PCRE32)
+        #if defined(UNICORN_PCRE32)
 
             Lexer32 lex;
             Lexer32::token_iterator it;
@@ -237,7 +237,7 @@ namespace {
 
     void check_wchar_lexer() {
 
-        #if ! defined(UNICORN_NO_PCRE_WCHAR)
+        #if defined(UNICORN_PCRE_WCHAR)
 
             WideLexer lex;
             WideLexer::token_iterator it;
