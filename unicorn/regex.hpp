@@ -302,7 +302,8 @@ namespace Unicorn {
 
     constexpr auto rx_caseless         = Crow::Flagset::value('i');  // Case insensitive matching                        PCRE_CASELESS
     constexpr auto rx_dfa              = Crow::Flagset::value('D');  // Use the alternative DFA algorithm                pcre_dfa_exec()
-    constexpr auto rx_dollarendonly    = Crow::Flagset::value('d');  // $ does not match line break at end               PCRE_DOLLAR_ENDONLY
+    constexpr auto rx_dollarnewline    = Crow::Flagset::value('d');  // $ may match line break at end                    ~PCRE_DOLLAR_ENDONLY
+    constexpr auto rx_dotinline        = Crow::Flagset::value('l');  // . does not match newlines                        ~PCRE_DOTALL
     constexpr auto rx_extended         = Crow::Flagset::value('x');  // Free-form mode (ignore whitespace and comments)  PCRE_EXTENDED
     constexpr auto rx_firstline        = Crow::Flagset::value('f');  // Must match in first line                         PCRE_FIRSTLINE
     constexpr auto rx_multiline        = Crow::Flagset::value('m');  // Multiline mode (^ and $ match BOL/EOL)           PCRE_MULTILINE
@@ -320,8 +321,7 @@ namespace Unicorn {
     constexpr auto rx_optimize         = Crow::Flagset::value('o');  // Take extra effort to optimize the regex          PCRE_STUDY_JIT_COMPILE
     constexpr auto rx_partialhard      = Crow::Flagset::value('P');  // Hard partial matching (prefer over full match)   PCRE_PARTIAL_HARD
     constexpr auto rx_partialsoft      = Crow::Flagset::value('p');  // Soft partial matching (only if no full match)    PCRE_PARTIAL_SOFT
-    constexpr auto rx_prefershort      = Crow::Flagset::value('S');  // Non-greedy quantifiers, or shorter DFA matches   PCRE_UNGREEDY or PCRE_DFA_SHORTEST
-    constexpr auto rx_singleline       = Crow::Flagset::value('s');  // Single line mode (. matches anything)            PCRE_DOTALL
+    constexpr auto rx_prefershort      = Crow::Flagset::value('S');  // Non-greedy quantifiers, or shorter DFA matches   PCRE_UNGREEDY,PCRE_DFA_SHORTEST
     constexpr auto rx_ucp              = Crow::Flagset::value('u');  // Use Unicode properties in escape charsets        PCRE_UCP
 
     // Exceptions

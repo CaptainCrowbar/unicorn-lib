@@ -117,7 +117,8 @@ Bitmask               | Letter  | Description                                   
 -------               | ------  | -----------                                                                    | ---------------
 `rx_caseless`         | `i`     | Matching is case insensitive                                                   | `PCRE_CASELESS`
 `rx_dfa`              | `D`     | Use the alternative DFA matching algorithm                                     | `pcre_dfa_exec()`
-`rx_dollarendonly`    | `d`     | `$` matches only the end of the string, without a line break                   | `PCRE_DOLLAR_ENDONLY`
+`rx_dollarnewline`    | `d`     | `$` may match line breaks preceding the end of the string                      | `~PCRE_DOLLAR_ENDONLY`
+`rx_dotinline`        | `l`     | `.` does not match line breaks                                                 | `~PCRE_DOTALL`
 `rx_extended`         | `x`     | Free-form mode; ignore whitespace and comments marked with `#`                 | `PCRE_EXTENDED`
 `rx_firstline`        | `f`     | Any match must start in the first line of the subject string                   | `PCRE_FIRSTLINE`
 `rx_multiline`        | `m`     | Multiline mode; `^` and `$` match the beginning and end of each line           | `PCRE_MULTILINE`
@@ -135,14 +136,18 @@ Bitmask               | Letter  | Description                                   
 `rx_optimize`         | `o`     | Optimize the regex using PCRE's JIT compiler                                   | `PCRE_STUDY_JIT_COMPILE`
 `rx_partialhard`      | `P`     | Hard partial matching; prefer a partial match to a full match                  | `PCRE_PARTIAL_HARD`
 `rx_partialsoft`      | `p`     | Soft partial matching; prefer a full match to a partial match                  | `PCRE_PARTIAL_SOFT`
-`rx_prefershort`      | `S`     | Quantifiers are non-greedy in NFA mode; prefer shorter matches in DFA mode     | `PCRE_UNGREEDY` or `PCRE_DFA_SHORTEST`
-`rx_singleline`       | `s`     | Single line mode; `.` matches all characters including line breaks             | `PCRE_DOTALL`
+`rx_prefershort`      | `S`     | Quantifiers are non-greedy in NFA mode; prefer shorter matches in DFA mode     | `PCRE_UNGREEDY,PCRE_DFA_SHORTEST`
 `rx_ucp`              | `u`     | Backslash-escape character sets use Unicode properties, instead of just ASCII  | `PCRE_UCP`
 
 Flags controlling regular expression matching behaviour. Most of these
 correspond directly to PCRE flags, but note that all flags must be specified
 when the regex is constructed (unlike PCRE, where some flags can be set at
 execution time).
+
+Note that two of the flags (`rx_dollarnewline` and `rx_dotinline`) have the
+reverse sense to the corresponding PCRE flags (`PCRE_DOLLAR_ENDONLY` and
+`PCRE_DOTALL`, respectively). This is simply because I felt that the reversed
+state was the more natural default in these cases.
 
 The four line breaking flags (`rx_newlineanycrlf`, `rx_newlinecr`,
 `rx_newlinecrlf`, and `rx_newlinelf`) also affect the behaviour of the `\R`

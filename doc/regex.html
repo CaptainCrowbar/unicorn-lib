@@ -152,10 +152,16 @@ library instead.</p>
 	<td style="text-align:left;"><code>pcre_dfa_exec()</code></td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>rx_dollarendonly</code></td>
+	<td style="text-align:left;"><code>rx_dollarnewline</code></td>
 	<td style="text-align:left;"><code>d</code></td>
-	<td style="text-align:left;"><code>$</code> matches only the end of the string, without a line break</td>
-	<td style="text-align:left;"><code>PCRE_DOLLAR_ENDONLY</code></td>
+	<td style="text-align:left;"><code>$</code> may match line breaks preceding the end of the string</td>
+	<td style="text-align:left;"><code>~PCRE_DOLLAR_ENDONLY</code></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>rx_dotinline</code></td>
+	<td style="text-align:left;"><code>l</code></td>
+	<td style="text-align:left;"><code>.</code> does not match line breaks</td>
+	<td style="text-align:left;"><code>~PCRE_DOTALL</code></td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>rx_extended</code></td>
@@ -263,13 +269,7 @@ library instead.</p>
 	<td style="text-align:left;"><code>rx_prefershort</code></td>
 	<td style="text-align:left;"><code>S</code></td>
 	<td style="text-align:left;">Quantifiers are non-greedy in NFA mode; prefer shorter matches in DFA mode</td>
-	<td style="text-align:left;"><code>PCRE_UNGREEDY</code> or <code>PCRE_DFA_SHORTEST</code></td>
-</tr>
-<tr>
-	<td style="text-align:left;"><code>rx_singleline</code></td>
-	<td style="text-align:left;"><code>s</code></td>
-	<td style="text-align:left;">Single line mode; <code>.</code> matches all characters including line breaks</td>
-	<td style="text-align:left;"><code>PCRE_DOTALL</code></td>
+	<td style="text-align:left;"><code>PCRE_UNGREEDY,PCRE_DFA_SHORTEST</code></td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>rx_ucp</code></td>
@@ -284,6 +284,11 @@ library instead.</p>
 correspond directly to PCRE flags, but note that all flags must be specified
 when the regex is constructed (unlike PCRE, where some flags can be set at
 execution time).</p>
+
+<p>Note that two of the flags (<code>rx_dollarnewline</code> and <code>rx_dotinline</code>) have the
+reverse sense to the corresponding PCRE flags (<code>PCRE_DOLLAR_ENDONLY</code> and
+<code>PCRE_DOTALL</code>, respectively). This is simply because I felt that the reversed
+state was the more natural default in these cases.</p>
 
 <p>The four line breaking flags (<code>rx_newlineanycrlf</code>, <code>rx_newlinecr</code>,
 <code>rx_newlinecrlf</code>, and <code>rx_newlinelf</code>) also affect the behaviour of the <code>\R</code>

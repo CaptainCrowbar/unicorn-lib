@@ -175,11 +175,11 @@ namespace Unicorn {
             void init_regex_impl(RegexInfo<C>& r, const typename PcreTraits<C>::string_type& pattern,
                     Crow::Flagset flags, bool unicode) {
                 using pcre_traits = PcreTraits<C>;
-                flags.allow(rx_caseless | rx_dfa | rx_dollarendonly | rx_extended | rx_firstline
-                    | rx_multiline | rx_newlineanycrlf | rx_newlinecr | rx_newlinecrlf | rx_newlinelf
-                    | rx_noautocapture | rx_nostartoptimize | rx_notbol | rx_notempty | rx_notemptyatstart
-                    | rx_noteol | rx_noutfcheck | rx_optimize | rx_partialhard | rx_partialsoft
-                    | rx_prefershort | rx_singleline | rx_ucp, "regex");
+                flags.allow(rx_caseless | rx_dfa | rx_dollarnewline | rx_dotinline | rx_extended
+                    | rx_firstline | rx_multiline | rx_newlineanycrlf | rx_newlinecr | rx_newlinecrlf
+                    | rx_newlinelf | rx_noautocapture | rx_nostartoptimize | rx_notbol | rx_notempty
+                    | rx_notemptyatstart | rx_noteol | rx_noutfcheck | rx_optimize | rx_partialhard
+                    | rx_partialsoft | rx_prefershort | rx_ucp, "regex");
                 flags.exclusive(rx_newlineanycrlf | rx_newlinecr | rx_newlinecrlf | rx_newlinelf, "regex");
                 flags.exclusive(rx_notempty | rx_notemptyatstart, "regex");
                 flags.exclusive(rx_partialhard | rx_partialsoft, "regex");
@@ -209,8 +209,10 @@ namespace Unicorn {
                 }
                 if (flags.get(rx_caseless))
                     cflags |= PCRE_CASELESS;
-                if (flags.get(rx_dollarendonly))
+                if (! flags.get(rx_dollarnewline))
                     cflags |= PCRE_DOLLAR_ENDONLY;
+                if (! flags.get(rx_dotinline))
+                    cflags |= PCRE_DOTALL;
                 if (flags.get(rx_extended))
                     cflags |= PCRE_EXTENDED;
                 if (flags.get(rx_firstline))
@@ -225,8 +227,6 @@ namespace Unicorn {
                     cflags |= PCRE_NO_UTF8_CHECK;
                 if (flags.get(rx_prefershort))
                     cflags |= PCRE_UNGREEDY;
-                if (flags.get(rx_singleline))
-                    cflags |= PCRE_DOTALL;
                 if (flags.get(rx_ucp))
                     cflags |= PCRE_UCP;
                 int error = 0, errpos = 0;
