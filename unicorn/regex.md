@@ -61,7 +61,55 @@ used, but it will be treated as a syntax error if the value is greater than
 
 ## Unicorn::Regex vs std::regex ##
 
-[TODO]
+It would have been convenient to use standard C++11 regular expressions in
+Unicorn, in the same way as the standard string classes have been used instead
+of creating a new custom string class specific to Unicorn. Unfortunately, this
+turns out to be impractical; for several reasons, standard regular expressions
+are inadequate for use with generalized Unicode strings.
+
+The most obvious reason is that standard C++ regexes are not actually required
+to support Unicode strings at all. Unlike `std::basic_string`, for which
+specializations for 8, 16, and 32 bit characters are required to exist, only
+two specializations of `std::basic_regex` are mandated, for `char` (the
+system's native multibyte encoding, which may or may not be UTF-8, but see
+below for a caveat on this) and `wchar_t` (the system's wide character
+encoding, which can reasonably be expected to be either UTF-16 or UTF-32, but
+which one varies with the OS). In short, standard regexes can only be relied
+on to support one of the three UTF encodings, and we don't know which one.
+
+(Strictly speaking, not even that is required; the C++ standard does not
+actually require the wide character encoding to be UTF-16 or 32. It is on all
+systems I know of, though, and the Unicorn library explicitly does not support
+systems on which it is not one of those.)
+
+An implementation is allowed to instantiate `std::basic_regex` for other
+character types, but in practise most do not, and in any case even an
+implementation that supplied specializations for all four character types
+would still not be reliably usable with UTF-8 (since the plain `char` encoding
+is not guaranteed to be UTF-8).
+
+The second problem with standard regexes is that, by the rules of the C++
+standard, they _cannot_ properly support UTF-8 or 16 strings. The regex
+grammar (based on that of JavaScript/EcmaScript, with a few changes) matches
+on an element by element basis; a "character", as far as regex matching is
+concerned, is a single code unit, not a Unicode scalar value (which may be
+represented by more than one code unit in UTF-8/16). This still allows literal
+matching of multi-unit UTF-8/16 characters (the encoding will be the same in
+the regex and the subject string, so they will match unit for unit), but makes
+it impossible to match multi-unit characters to non-literal regex elements;
+for example, `std::regex(".")` will not match `u8"€"` (even if the system
+encoding is UTF-8). For the same reason, it is impossible to specify a
+character range that includes multibyte characters (e.g.
+`std::regex(u8"[À-ÿ]")` will not do what you probably expected).
+
+Finally, standard regexes don't support the `\p{...}` and `\P{...}` character
+classes, which match on Unicode properties. This may be a minor obstacle
+compared to either of the above showstoppers, but even by itself it would be a
+serious handicap in a library dedicated to Unicode support.
+
+For all of the above reasons, I felt I had no choice but to abandon standard
+C++ regexes, and base Unicorn's regular expressions on the widely used PCRE
+library instead.
 
 ## Regex options ##
 
