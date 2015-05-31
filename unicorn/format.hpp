@@ -436,12 +436,15 @@ namespace Unicorn {
         return Format<C>(Crow::cstr(fmt));
     }
 
+    // Formatter literals
+
     namespace Literals {
 
         inline auto operator"" _fmt(const char* ptr, size_t len) { return Format<char>(Crow::cstr(ptr, len)); }
         inline auto operator"" _fmt(const char16_t* ptr, size_t len) { return Format<char16_t>(Crow::cstr(ptr, len)); }
         inline auto operator"" _fmt(const char32_t* ptr, size_t len) { return Format<char32_t>(Crow::cstr(ptr, len)); }
         inline auto operator"" _fmt(const wchar_t* ptr, size_t len) { return Format<wchar_t>(Crow::cstr(ptr, len)); }
+
     }
 
 }

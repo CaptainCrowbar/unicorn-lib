@@ -30,6 +30,7 @@ for details of the regular expression syntax.</p>
 <li><a href="#regexmatchclass">Regex match class</a></li>
 <li><a href="#regexformattingclass">Regex formatting class</a></li>
 <li><a href="#regexiteratorclasses">Regex iterator classes</a></li>
+<li><a href="#regexliterals">Regex literals</a></li>
 <li><a href="#utilityfunctions">Utility functions</a></li>
 <li><a href="#versioninformation">Version information</a></li>
 </ul>
@@ -933,6 +934,43 @@ than constructed directly by the user.</p>
 <p>An iterator over the substrings between matches for a given regex. These are
 normally returned by <code>BasicRegex::split()</code> rather than constructed directly by
 the user.</p>
+
+<h2 id="regexliterals">Regex literals</h2>
+
+<ul>
+<li><code>namespace Literals</code>
+
+<ul>
+<li><code>Regex <strong>operator&quot;&quot; _re</strong>(const char* ptr, size_t len)</code></li>
+<li><code>Regex16 <strong>operator&quot;&quot; _re</strong>(const char16_t* ptr, size_t len)</code></li>
+<li><code>Regex32 <strong>operator&quot;&quot; _re</strong>(const char32_t* ptr, size_t len)</code></li>
+<li><code>WideRegex <strong>operator&quot;&quot; _re</strong>(const wchar_t* ptr, size_t len)</code></li>
+<li><code>ByteRegex <strong>operator&quot;&quot; _bre</strong>(const char* ptr, size_t len)</code></li>
+<li><code>RegexFormat <strong>operator&quot;&quot; _rf</strong>(const char* ptr, size_t len)</code></li>
+<li><code>RegexFormat16 <strong>operator&quot;&quot; _rf</strong>(const char16_t* ptr, size_t len)</code></li>
+<li><code>RegexFormat32 <strong>operator&quot;&quot; _rf</strong>(const char32_t* ptr, size_t len)</code></li>
+<li><code>WideRegexFormat <strong>operator&quot;&quot; _rf</strong>(const wchar_t* ptr, size_t len)</code></li>
+<li><code>ByteRegexFormat <strong>operator&quot;&quot; _brf</strong>(const char* ptr, size_t len)</code></li>
+</ul></li>
+</ul>
+
+<p>Custom literals for regular expressions and formatters. The string part of the
+literal is expected to be in the traditional slash delimited form, with flags
+at the end if required. Examples:</p>
+
+<pre><code>auto reg = &quot;/[a-z]+/&quot;_re;      // = Regex(&quot;[a-z]+&quot;)
+auto reg = U&quot;/[a-z]+/&quot;_re;     // = Regex32(U&quot;[a-z]+&quot;)
+auto reg = &quot;/[a-z]*/iz&quot;_re;    // = Regex(&quot;[a-z]*&quot;, rx_caseless | rx_notempty)
+auto fmt = &quot;/[a-z]+/_/&quot;_rf;    // = RegexFormat(&quot;[a-z]+&quot;, &quot;_&quot;)
+auto fmt = &quot;/[a-z]*/_/iz&quot;_rf;  // = RegexFormat(&quot;[a-z]*&quot;, &quot;_&quot;, rx_caseless | rx_notempty)
+</code></pre>
+
+<p>Any character can be used as the delimiter (the constructors simply use the
+first character in the string), but restricting it to common ASCII punctuation
+is recommended for clarity. The delimiter can be escaped using a backslash;
+the second unescaped occurrence of the character (the third for formatting
+expressions) is taken to be the closing delimiter, and everything after that
+is interpreted as flag characters.</p>
 
 <h2 id="utilityfunctions">Utility functions</h2>
 

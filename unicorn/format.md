@@ -30,6 +30,7 @@ for details.
 
 * [Basic formatting functions][]
 * [Formatter class][]
+* [Formatter literals][]
 * [Formatting for specific types][]
     * [Global flags][]
     * [Boolean formatting][]
@@ -112,6 +113,8 @@ TODO
 * `template <typename C> Format<C> format(const C* fmt)`
 
 TODO
+
+## Formatter literals ##
 
 * `namespace Literals`
     * `Format<char> operator"" _fmt(const char* ptr, size_t len)`

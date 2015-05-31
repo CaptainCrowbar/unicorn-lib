@@ -23,6 +23,7 @@ for details of the regular expression syntax.
 * [Regex match class][]
 * [Regex formatting class][]
 * [Regex iterator classes][]
+* [Regex literals][]
 * [Utility functions][]
 * [Version information][]
 
@@ -619,6 +620,37 @@ than constructed directly by the user.
 An iterator over the substrings between matches for a given regex. These are
 normally returned by `BasicRegex::split()` rather than constructed directly by
 the user.
+
+## Regex literals ##
+
+* `namespace Literals`
+    * `Regex operator"" _re(const char* ptr, size_t len)`
+    * `Regex16 operator"" _re(const char16_t* ptr, size_t len)`
+    * `Regex32 operator"" _re(const char32_t* ptr, size_t len)`
+    * `WideRegex operator"" _re(const wchar_t* ptr, size_t len)`
+    * `ByteRegex operator"" _bre(const char* ptr, size_t len)`
+    * `RegexFormat operator"" _rf(const char* ptr, size_t len)`
+    * `RegexFormat16 operator"" _rf(const char16_t* ptr, size_t len)`
+    * `RegexFormat32 operator"" _rf(const char32_t* ptr, size_t len)`
+    * `WideRegexFormat operator"" _rf(const wchar_t* ptr, size_t len)`
+    * `ByteRegexFormat operator"" _brf(const char* ptr, size_t len)`
+
+Custom literals for regular expressions and formatters. The string part of the
+literal is expected to be in the traditional slash delimited form, with flags
+at the end if required. Examples:
+
+    auto reg = "/[a-z]+/"_re;      // = Regex("[a-z]+")
+    auto reg = U"/[a-z]+/"_re;     // = Regex32(U"[a-z]+")
+    auto reg = "/[a-z]*/iz"_re;    // = Regex("[a-z]*", rx_caseless | rx_notempty)
+    auto fmt = "/[a-z]+/_/"_rf;    // = RegexFormat("[a-z]+", "_")
+    auto fmt = "/[a-z]*/_/iz"_rf;  // = RegexFormat("[a-z]*", "_", rx_caseless | rx_notempty)
+
+Any character can be used as the delimiter (the constructors simply use the
+first character in the string), but restricting it to common ASCII punctuation
+is recommended for clarity. The delimiter can be escaped using a backslash;
+the second unescaped occurrence of the character (the third for formatting
+expressions) is taken to be the closing delimiter, and everything after that
+is interpreted as flag characters.
 
 ## Utility functions ##
 
