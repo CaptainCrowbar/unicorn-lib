@@ -5,6 +5,7 @@
 #include "unicorn/regex.hpp"
 #include "unicorn/string.hpp"
 #include "unicorn/utf.hpp"
+#include "crow/meta.hpp"
 #include <chrono>
 #include <iterator>
 #include <sstream>
