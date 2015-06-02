@@ -891,27 +891,31 @@ namespace Unicorn {
     namespace UnicornDetail {
 
         template <typename C>
-        const C* find_unescaped(const C* begin, const C* end, C target) noexcept {
-            while (begin < end && *begin != target) {
-                if (*begin == C('\\') && end - begin >= 2)
-                    begin += 2;
-                else
-                    ++begin;
+        UtfIterator<C> find_unescaped(UtfIterator<C> i, UtfIterator<C> j, char32_t c) noexcept {
+            while (i != j && *i != c) {
+                if (*i == U'\\') {
+                    ++i;
+                    if (i == j)
+                        break;
+                }
+                ++i;
             }
-            return begin;
+            return i;
         }
 
         template <typename C, typename CX = C>
         BasicRegex<CX> parse_regex(const C* ptr, size_t len) {
             using string_type = std::basic_string<C>;
             using regex_type = BasicRegex<CX>;
-            if (ptr == nullptr || len == 0)
+            if (len == 0)
                 return {};
-            C delim = *ptr;
-            auto ptr2 = find_unescaped(ptr + 1, ptr + len, delim);
-            string_type pattern(ptr + 1, ptr2), flags;
-            if (ptr2 < ptr + len)
-                flags.assign(ptr2 + 1, ptr + len);
+            string_type src(ptr, len);
+            auto i = utf_begin(src), end = utf_end(src);
+            char32_t delim = *i;
+            auto j = find_unescaped(++i, end, delim);
+            string_type pattern = u_str(i, j), flags;
+            if (j != end)
+                flags = u_str(++j, end);
             return regex_type(pattern, flags);
         }
 
@@ -919,18 +923,19 @@ namespace Unicorn {
         BasicRegexFormat<CX> parse_regex_format(const C* ptr, size_t len) {
             using string_type = std::basic_string<C>;
             using format_type = BasicRegexFormat<CX>;
-            if (ptr == nullptr || len == 0)
+            if (len == 0)
                 return {};
-            C delim = *ptr;
-            auto ptr2 = find_unescaped(ptr + 1, ptr + len, delim);
-            string_type pattern(ptr + 1, ptr2), sub, flags;
-            auto ptr3 = ptr2;
-            if (ptr2 < ptr + len) {
-                ptr3 = find_unescaped(ptr2 + 1, ptr + len, delim);
-                sub.assign(ptr2 + 1, ptr3);
+            string_type src(ptr, len);
+            auto i = utf_begin(src), end = utf_end(src);
+            char32_t delim = *i;
+            auto j = find_unescaped(++i, end, delim);
+            string_type pattern = u_str(i, j), sub, flags;
+            if (j != end) {
+                auto k = find_unescaped(++j, end, delim);
+                sub = u_str(j, k);
+                if (k != end)
+                    flags = u_str(++k, end);
             }
-            if (ptr3 < ptr + len)
-                flags.assign(ptr3 + 1, ptr + len);
             return format_type(pattern, sub, flags);
         }
 
@@ -938,17 +943,27 @@ namespace Unicorn {
 
     namespace Literals {
 
-        inline auto operator"" _bre(const char* ptr, size_t len) { return UnicornDetail::parse_regex<char, ByteMode>(ptr, len); }
-        inline auto operator"" _re(const char* ptr, size_t len) { return UnicornDetail::parse_regex<char>(ptr, len); }
-        inline auto operator"" _re(const char16_t* ptr, size_t len) { return UnicornDetail::parse_regex<char16_t>(ptr, len); }
-        inline auto operator"" _re(const char32_t* ptr, size_t len) { return UnicornDetail::parse_regex<char32_t>(ptr, len); }
-        inline auto operator"" _re(const wchar_t* ptr, size_t len) { return UnicornDetail::parse_regex<wchar_t>(ptr, len); }
+        inline auto operator"" _bre(const char* ptr, size_t len)
+            { return UnicornDetail::parse_regex<char, ByteMode>(ptr, len); }
+        inline auto operator"" _re(const char* ptr, size_t len)
+            { return UnicornDetail::parse_regex<char>(ptr, len); }
+        inline auto operator"" _re(const char16_t* ptr, size_t len)
+            { return UnicornDetail::parse_regex<char16_t>(ptr, len); }
+        inline auto operator"" _re(const char32_t* ptr, size_t len)
+            { return UnicornDetail::parse_regex<char32_t>(ptr, len); }
+        inline auto operator"" _re(const wchar_t* ptr, size_t len)
+            { return UnicornDetail::parse_regex<wchar_t>(ptr, len); }
 
-        inline auto operator"" _brf(const char* ptr, size_t len) { return UnicornDetail::parse_regex_format<char, ByteMode>(ptr, len); }
-        inline auto operator"" _rf(const char* ptr, size_t len) { return UnicornDetail::parse_regex_format<char>(ptr, len); }
-        inline auto operator"" _rf(const char16_t* ptr, size_t len) { return UnicornDetail::parse_regex_format<char16_t>(ptr, len); }
-        inline auto operator"" _rf(const char32_t* ptr, size_t len) { return UnicornDetail::parse_regex_format<char32_t>(ptr, len); }
-        inline auto operator"" _rf(const wchar_t* ptr, size_t len) { return UnicornDetail::parse_regex_format<wchar_t>(ptr, len); }
+        inline auto operator"" _brf(const char* ptr, size_t len)
+            { return UnicornDetail::parse_regex_format<char, ByteMode>(ptr, len); }
+        inline auto operator"" _rf(const char* ptr, size_t len)
+            { return UnicornDetail::parse_regex_format<char>(ptr, len); }
+        inline auto operator"" _rf(const char16_t* ptr, size_t len)
+            { return UnicornDetail::parse_regex_format<char16_t>(ptr, len); }
+        inline auto operator"" _rf(const char32_t* ptr, size_t len)
+            { return UnicornDetail::parse_regex_format<char32_t>(ptr, len); }
+        inline auto operator"" _rf(const wchar_t* ptr, size_t len)
+            { return UnicornDetail::parse_regex_format<wchar_t>(ptr, len); }
 
     }
 
