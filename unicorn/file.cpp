@@ -17,6 +17,7 @@
 #endif
 
 using namespace std::literals;
+using namespace Unicorn::Literals;
 
 namespace Unicorn {
 
@@ -52,7 +53,7 @@ namespace Unicorn {
             }
 
             bool native_file_is_root(const u8string& file) {
-                static const Regex pattern(R"(/{2,}[^/]+/?|/+)"s, rx_caseless);
+                static const auto pattern = "!/{2,}[^/]+/?|/+!i"_re;
                 return pattern.match(file).matched();
             }
 
@@ -171,7 +172,7 @@ namespace Unicorn {
             // File name operations
 
             bool native_file_is_absolute(const u8string& file) {
-                static const Regex pattern(R"((\\\\\?\\)*([A-Z]:\\|\\{2,}[^?\\]))"s, rx_caseless);
+                static const auto pattern = R"(/(\\\\\?\\)*([A-Z]:\\|\\{2,}[^?\\])/i)"_re;
                 return pattern.anchor(file).matched();
             }
 
@@ -184,7 +185,7 @@ namespace Unicorn {
             }
 
             bool native_file_is_root(const u8string& file) {
-                static const Regex pattern(R"((\\\\\?\\)*([A-Z]:\\|\\{2,}[^?\\]+\\?|\\+))"s, rx_caseless);
+                static const auto pattern = R"(/(\\\\\?\\)*([A-Z]:\\|\\{2,}[^?\\]+\\?|\\+)/i)"_re;
                 return pattern.match(file).matched();
             }
 

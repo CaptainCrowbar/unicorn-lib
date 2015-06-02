@@ -134,8 +134,8 @@ namespace Unicorn {
 
     void Options::add_option(const u8string& name, const u8string& abbrev, const u8string& info, Crow::Flagset flags,
             const u8string& defval, const u8string& pattern, const u8string& group) {
-        static const Regex match_float("[+-]?(\\d+(\\.\\d*)?|\\.\\d+)(e[+-]?\\d+)?"s, rx_caseless);
-        static const Regex match_integer("[+-]?\\d+"s, rx_caseless);
+        static const auto match_float = "/[+-]?(\\d+(\\.\\d*)?|\\.\\d+)(e[+-]?\\d+)?/i"_re;
+        static const auto match_integer = "/[+-]?\\d+/"_re;
         flags.allow(opt_anon | opt_boolean | opt_float | opt_integer | opt_multiple | opt_required,
             "command line option");
         option_type opt;
