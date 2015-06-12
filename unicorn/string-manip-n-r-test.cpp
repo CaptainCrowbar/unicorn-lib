@@ -447,6 +447,98 @@ namespace {
 
     }
 
+    void check_repeat() {
+
+        u8string s8;
+        u16string s16;
+        u32string s32;
+
+        TEST_EQUAL(str_repeat("", 0), "");
+        TEST_EQUAL(str_repeat("", 1), "");
+        TEST_EQUAL(str_repeat("", 2), "");
+        TEST_EQUAL(str_repeat("@", 0), "");
+        TEST_EQUAL(str_repeat("@", 1), "@");
+        TEST_EQUAL(str_repeat("@", 2), "@@");
+        TEST_EQUAL(str_repeat("@", 3), "@@@");
+        TEST_EQUAL(str_repeat("Hello", 0), "");
+        TEST_EQUAL(str_repeat("Hello", 1), "Hello");
+        TEST_EQUAL(str_repeat("Hello", 2), "HelloHello");
+        TEST_EQUAL(str_repeat("Hello", 3), "HelloHelloHello");
+        TEST_EQUAL(str_repeat("Hello", 4), "HelloHelloHelloHello");
+        TEST_EQUAL(str_repeat("Hello", 5), "HelloHelloHelloHelloHello");
+
+        s8 = "";       TRY(str_repeat_in(s8, 0));  TEST_EQUAL(s8, "");
+        s8 = "";       TRY(str_repeat_in(s8, 1));  TEST_EQUAL(s8, "");
+        s8 = "";       TRY(str_repeat_in(s8, 2));  TEST_EQUAL(s8, "");
+        s8 = "@";      TRY(str_repeat_in(s8, 0));  TEST_EQUAL(s8, "");
+        s8 = "@";      TRY(str_repeat_in(s8, 1));  TEST_EQUAL(s8, "@");
+        s8 = "@";      TRY(str_repeat_in(s8, 2));  TEST_EQUAL(s8, "@@");
+        s8 = "@";      TRY(str_repeat_in(s8, 3));  TEST_EQUAL(s8, "@@@");
+        s8 = "Hello";  TRY(str_repeat_in(s8, 0));  TEST_EQUAL(s8, "");
+        s8 = "Hello";  TRY(str_repeat_in(s8, 1));  TEST_EQUAL(s8, "Hello");
+        s8 = "Hello";  TRY(str_repeat_in(s8, 2));  TEST_EQUAL(s8, "HelloHello");
+        s8 = "Hello";  TRY(str_repeat_in(s8, 3));  TEST_EQUAL(s8, "HelloHelloHello");
+        s8 = "Hello";  TRY(str_repeat_in(s8, 4));  TEST_EQUAL(s8, "HelloHelloHelloHello");
+        s8 = "Hello";  TRY(str_repeat_in(s8, 5));  TEST_EQUAL(s8, "HelloHelloHelloHelloHello");
+
+        TEST_EQUAL(str_repeat(u"", 0), u"");
+        TEST_EQUAL(str_repeat(u"", 1), u"");
+        TEST_EQUAL(str_repeat(u"", 2), u"");
+        TEST_EQUAL(str_repeat(u"@", 0), u"");
+        TEST_EQUAL(str_repeat(u"@", 1), u"@");
+        TEST_EQUAL(str_repeat(u"@", 2), u"@@");
+        TEST_EQUAL(str_repeat(u"@", 3), u"@@@");
+        TEST_EQUAL(str_repeat(u"Hello", 0), u"");
+        TEST_EQUAL(str_repeat(u"Hello", 1), u"Hello");
+        TEST_EQUAL(str_repeat(u"Hello", 2), u"HelloHello");
+        TEST_EQUAL(str_repeat(u"Hello", 3), u"HelloHelloHello");
+        TEST_EQUAL(str_repeat(u"Hello", 4), u"HelloHelloHelloHello");
+        TEST_EQUAL(str_repeat(u"Hello", 5), u"HelloHelloHelloHelloHello");
+
+        s16 = u"";       TRY(str_repeat_in(s16, 0));  TEST_EQUAL(s16, u"");
+        s16 = u"";       TRY(str_repeat_in(s16, 1));  TEST_EQUAL(s16, u"");
+        s16 = u"";       TRY(str_repeat_in(s16, 2));  TEST_EQUAL(s16, u"");
+        s16 = u"@";      TRY(str_repeat_in(s16, 0));  TEST_EQUAL(s16, u"");
+        s16 = u"@";      TRY(str_repeat_in(s16, 1));  TEST_EQUAL(s16, u"@");
+        s16 = u"@";      TRY(str_repeat_in(s16, 2));  TEST_EQUAL(s16, u"@@");
+        s16 = u"@";      TRY(str_repeat_in(s16, 3));  TEST_EQUAL(s16, u"@@@");
+        s16 = u"Hello";  TRY(str_repeat_in(s16, 0));  TEST_EQUAL(s16, u"");
+        s16 = u"Hello";  TRY(str_repeat_in(s16, 1));  TEST_EQUAL(s16, u"Hello");
+        s16 = u"Hello";  TRY(str_repeat_in(s16, 2));  TEST_EQUAL(s16, u"HelloHello");
+        s16 = u"Hello";  TRY(str_repeat_in(s16, 3));  TEST_EQUAL(s16, u"HelloHelloHello");
+        s16 = u"Hello";  TRY(str_repeat_in(s16, 4));  TEST_EQUAL(s16, u"HelloHelloHelloHello");
+        s16 = u"Hello";  TRY(str_repeat_in(s16, 5));  TEST_EQUAL(s16, u"HelloHelloHelloHelloHello");
+
+        TEST_EQUAL(str_repeat(U"", 0), U"");
+        TEST_EQUAL(str_repeat(U"", 1), U"");
+        TEST_EQUAL(str_repeat(U"", 2), U"");
+        TEST_EQUAL(str_repeat(U"@", 0), U"");
+        TEST_EQUAL(str_repeat(U"@", 1), U"@");
+        TEST_EQUAL(str_repeat(U"@", 2), U"@@");
+        TEST_EQUAL(str_repeat(U"@", 3), U"@@@");
+        TEST_EQUAL(str_repeat(U"Hello", 0), U"");
+        TEST_EQUAL(str_repeat(U"Hello", 1), U"Hello");
+        TEST_EQUAL(str_repeat(U"Hello", 2), U"HelloHello");
+        TEST_EQUAL(str_repeat(U"Hello", 3), U"HelloHelloHello");
+        TEST_EQUAL(str_repeat(U"Hello", 4), U"HelloHelloHelloHello");
+        TEST_EQUAL(str_repeat(U"Hello", 5), U"HelloHelloHelloHelloHello");
+
+        s32 = U"";       TRY(str_repeat_in(s32, 0));  TEST_EQUAL(s32, U"");
+        s32 = U"";       TRY(str_repeat_in(s32, 1));  TEST_EQUAL(s32, U"");
+        s32 = U"";       TRY(str_repeat_in(s32, 2));  TEST_EQUAL(s32, U"");
+        s32 = U"@";      TRY(str_repeat_in(s32, 0));  TEST_EQUAL(s32, U"");
+        s32 = U"@";      TRY(str_repeat_in(s32, 1));  TEST_EQUAL(s32, U"@");
+        s32 = U"@";      TRY(str_repeat_in(s32, 2));  TEST_EQUAL(s32, U"@@");
+        s32 = U"@";      TRY(str_repeat_in(s32, 3));  TEST_EQUAL(s32, U"@@@");
+        s32 = U"Hello";  TRY(str_repeat_in(s32, 0));  TEST_EQUAL(s32, U"");
+        s32 = U"Hello";  TRY(str_repeat_in(s32, 1));  TEST_EQUAL(s32, U"Hello");
+        s32 = U"Hello";  TRY(str_repeat_in(s32, 2));  TEST_EQUAL(s32, U"HelloHello");
+        s32 = U"Hello";  TRY(str_repeat_in(s32, 3));  TEST_EQUAL(s32, U"HelloHelloHello");
+        s32 = U"Hello";  TRY(str_repeat_in(s32, 4));  TEST_EQUAL(s32, U"HelloHelloHelloHello");
+        s32 = U"Hello";  TRY(str_repeat_in(s32, 5));  TEST_EQUAL(s32, U"HelloHelloHelloHelloHello");
+
+    }
+
     void check_replace() {
 
         u8string s8;
@@ -614,52 +706,6 @@ namespace {
         s32 = U"(∀∃∇)(∀∃∇)(∀∃∇)";  TRY(str_replace_in(s32, U"∀∃∇", U"xyz", 2));  TEST_EQUAL(s32, U"(xyz)(xyz)(∀∃∇)");
         s32 = U"(∀∃∇)(∀∃∇)(∀∃∇)";  TRY(str_replace_in(s32, U"∀∃∇", U"xyz", 3));  TEST_EQUAL(s32, U"(xyz)(xyz)(xyz)");
         s32 = U"(∀∃∇)(∀∃∇)(∀∃∇)";  TRY(str_replace_in(s32, U"∀∃∇", U"xyz", 4));  TEST_EQUAL(s32, U"(xyz)(xyz)(xyz)");
-
-    }
-
-    void check_repeat() {
-
-        TEST_EQUAL(str_repeat("", 0), "");
-        TEST_EQUAL(str_repeat("", 1), "");
-        TEST_EQUAL(str_repeat("", 2), "");
-        TEST_EQUAL(str_repeat("@", 0), "");
-        TEST_EQUAL(str_repeat("@", 1), "@");
-        TEST_EQUAL(str_repeat("@", 2), "@@");
-        TEST_EQUAL(str_repeat("@", 3), "@@@");
-        TEST_EQUAL(str_repeat("Hello", 0), "");
-        TEST_EQUAL(str_repeat("Hello", 1), "Hello");
-        TEST_EQUAL(str_repeat("Hello", 2), "HelloHello");
-        TEST_EQUAL(str_repeat("Hello", 3), "HelloHelloHello");
-        TEST_EQUAL(str_repeat("Hello", 4), "HelloHelloHelloHello");
-        TEST_EQUAL(str_repeat("Hello", 5), "HelloHelloHelloHelloHello");
-
-        TEST_EQUAL(str_repeat(u"", 0), u"");
-        TEST_EQUAL(str_repeat(u"", 1), u"");
-        TEST_EQUAL(str_repeat(u"", 2), u"");
-        TEST_EQUAL(str_repeat(u"@", 0), u"");
-        TEST_EQUAL(str_repeat(u"@", 1), u"@");
-        TEST_EQUAL(str_repeat(u"@", 2), u"@@");
-        TEST_EQUAL(str_repeat(u"@", 3), u"@@@");
-        TEST_EQUAL(str_repeat(u"Hello", 0), u"");
-        TEST_EQUAL(str_repeat(u"Hello", 1), u"Hello");
-        TEST_EQUAL(str_repeat(u"Hello", 2), u"HelloHello");
-        TEST_EQUAL(str_repeat(u"Hello", 3), u"HelloHelloHello");
-        TEST_EQUAL(str_repeat(u"Hello", 4), u"HelloHelloHelloHello");
-        TEST_EQUAL(str_repeat(u"Hello", 5), u"HelloHelloHelloHelloHello");
-
-        TEST_EQUAL(str_repeat(U"", 0), U"");
-        TEST_EQUAL(str_repeat(U"", 1), U"");
-        TEST_EQUAL(str_repeat(U"", 2), U"");
-        TEST_EQUAL(str_repeat(U"@", 0), U"");
-        TEST_EQUAL(str_repeat(U"@", 1), U"@");
-        TEST_EQUAL(str_repeat(U"@", 2), U"@@");
-        TEST_EQUAL(str_repeat(U"@", 3), U"@@@");
-        TEST_EQUAL(str_repeat(U"Hello", 0), U"");
-        TEST_EQUAL(str_repeat(U"Hello", 1), U"Hello");
-        TEST_EQUAL(str_repeat(U"Hello", 2), U"HelloHello");
-        TEST_EQUAL(str_repeat(U"Hello", 3), U"HelloHelloHello");
-        TEST_EQUAL(str_repeat(U"Hello", 4), U"HelloHelloHelloHello");
-        TEST_EQUAL(str_repeat(U"Hello", 5), U"HelloHelloHelloHelloHello");
 
     }
 

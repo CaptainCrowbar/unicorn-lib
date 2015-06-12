@@ -146,12 +146,14 @@ namespace Unicorn {
     }
 
     template <typename C>
-    UtfIterator<C> str_find_index(const Crow::Irange<UtfIterator<C>>& range, size_t pos, Crow::Flagset flags = {}) {
+    UtfIterator<C> str_find_index(const Crow::Irange<UtfIterator<C>>& range, size_t pos,
+            Crow::Flagset flags = {}) {
         return UnicornDetail::find_position(range, pos, flags).first;
     }
 
     template <typename C>
-    UtfIterator<C> str_find_index(const UtfIterator<C>& b, const UtfIterator<C>& e, size_t pos, Crow::Flagset flags = {}) {
+    UtfIterator<C> str_find_index(const UtfIterator<C>& b, const UtfIterator<C>& e, size_t pos,
+            Crow::Flagset flags = {}) {
         return str_find_index(Crow::irange(b, e), pos, flags);
     }
 
@@ -173,6 +175,8 @@ namespace Unicorn {
         using string_type = basic_string<C>;
         if (n == 0 || str.empty())
             return {};
+        if (n == 1)
+            return str;
         if (str.size() == 1)
             return string_type(n, str[0]);
         size_t size = n * str.size();
@@ -1175,6 +1179,12 @@ namespace Unicorn {
             basic_string<C>& suffix, const C* delim) {
         using string_type = basic_string<C>;
         return str_partition_by(str, prefix, suffix, delim ? string_type(delim) : string_type());
+    }
+
+    template <typename C>
+    void str_repeat_in(basic_string<C>& str, size_t n) {
+        auto dst = str_repeat(str, n);
+        str.swap(dst);
     }
 
     template <typename C>

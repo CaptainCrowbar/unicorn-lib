@@ -379,6 +379,7 @@ found.
 
 * `template <typename C> basic_string<C> str_repeat(const basic_string<C>& str, size_t n)`
 * `template <typename C> basic_string<C> str_repeat(const C* str, size_t n)`
+* `template <typename C> void str_repeat_in(basic_string<C>& str, size_t n)`
 
 Return a string formed by concatenating `n` copies of the original string.
 
