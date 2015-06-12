@@ -1,7 +1,9 @@
 #include "crow/unit-test.hpp"
 #include "unicorn/core.hpp"
 #include "unicorn/regex.hpp"
+#include "unicorn/string.hpp"
 #include <algorithm>
+#include <cmath>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -12,6 +14,16 @@ using namespace Unicorn;
 using namespace Unicorn::Literals;
 
 namespace {
+
+    bool is_prime(int n) {
+        if (n < 2)
+            return false;
+        int limit = static_cast<int>(floor(sqrt(static_cast<double>(n))));
+        for (int i = 2; i <= limit; ++i)
+            if (n % i == 0)
+                return false;
+        return true;
+    }
 
     void check_version_information() {
 
@@ -272,6 +284,14 @@ namespace {
         TRY(m = r(s));
         TEST_EQUAL(m.str(), "ello/world");
 
+        // Abigail's famous prime number regex
+        // http://neilk.net/blog/2000/06/01/abigails-regex-to-test-for-prime-numbers/
+        TRY(r = "/^.?$|^(..+?)\\1+$/"_re);
+        for (int n = 0; n <= 100; ++n) {
+            TEST_EQUAL(! r.match(u8string(n, 'x')), is_prime(n));
+            TEST_EQUAL(! r.match(str_repeat(u8"€", n)), is_prime(n));
+        }
+
     }
 
     void check_match_ranges() {
@@ -482,6 +502,12 @@ namespace {
             TRY(rf = u"/[a-z]+/§/i"_rf);
             TEST_EQUAL(rf(s), u"§ §");
 
+            TRY(r = u"/^.?$|^(..+?)\\1+$/"_re);
+            for (int n = 0; n <= 100; ++n) {
+                TEST_EQUAL(! r.match(u16string(n, u'x')), is_prime(n));
+                TEST_EQUAL(! r.match(str_repeat(u"€", n)), is_prime(n));
+            }
+
         #endif
 
     }
@@ -538,6 +564,12 @@ namespace {
             TRY(rf = U"/[a-z]+/§/i"_rf);
             TEST_EQUAL(rf(s), U"§ §");
 
+            TRY(r = U"/^.?$|^(..+?)\\1+$/"_re);
+            for (int n = 0; n <= 100; ++n) {
+                TEST_EQUAL(! r.match(u32string(n, U'x')), is_prime(n));
+                TEST_EQUAL(! r.match(str_repeat(U"€", n)), is_prime(n));
+            }
+
         #endif
 
     }
@@ -593,6 +625,12 @@ namespace {
             TEST_EQUAL(rf(s), L"H§ §");
             TRY(rf = L"/[a-z]+/§/i"_rf);
             TEST_EQUAL(rf(s), L"§ §");
+
+            TRY(r = L"/^.?$|^(..+?)\\1+$/"_re);
+            for (int n = 0; n <= 100; ++n) {
+                TEST_EQUAL(! r.match(wstring(n, L'x')), is_prime(n));
+                TEST_EQUAL(! r.match(str_repeat(L"€", n)), is_prime(n));
+            }
 
         #endif
 
@@ -690,6 +728,10 @@ namespace {
         TEST_EQUAL(rf(s1), "H* *");
         TRY(rf = "/[a-z]+/*/i"_brf);
         TEST_EQUAL(rf(s1), "* *");
+
+        TRY(r = "/^.?$|^(..+?)\\1+$/"_bre);
+        for (int n = 0; n <= 100; ++n)
+            TEST_EQUAL(! r.match(string(n, 'x')), is_prime(n));
 
     }
 
