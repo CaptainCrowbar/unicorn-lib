@@ -38,8 +38,7 @@ namespace Unicorn {
                 // GB5. ÷ (Control | CR | LF)
                 P prev(prop(buf, i - 1));
                 P next(prop(buf, i));
-                if (prev == P::CR
-                        && next == P::LF)
+                if (prev == P::CR && next == P::LF)
                     continue;
                 if (prev == P::Control || prev == P::CR || prev == P::LF
                         || next == P::Control || next == P::CR || next == P::LF)
@@ -50,25 +49,21 @@ namespace Unicorn {
                         && (next == P::L || next == P::V || next == P::LV || next == P::LVT))
                     continue;
                 // GB7. (LV | V) × (V | T)
-                if ((prev == P::LV || prev == P::V)
-                        && (next == P::V || next == P::T))
+                if ((prev == P::LV || prev == P::V) && (next == P::V || next == P::T))
                     continue;
                 // GB8. (LVT | T) × T
-                if ((prev == P::LVT || prev == P::T)
-                        && next == P::T)
+                if ((prev == P::LVT || prev == P::T) && next == P::T)
                     continue;
                 // Do not break between regional indicator symbols.
                 // GB8a. Regional_Indicator × Regional_Indicator
-                if (prev == P::Regional_Indicator
-                        && next == P::Regional_Indicator)
+                if (prev == P::Regional_Indicator && next == P::Regional_Indicator)
                     continue;
                 // Do not break before extending characters.
                 // GB9. × Extend
                 // Do not break before SpacingMarks, or after Prepend characters.
                 // GB9a. × SpacingMark
                 // GB9b. Prepend ×
-                if (prev == P::Prepend
-                        || next == P::Extend || next == P::SpacingMark)
+                if (prev == P::Prepend || next == P::Extend || next == P::SpacingMark)
                     continue;
                 // Otherwise, break everywhere.
                 // GB10. Any ÷ Any
@@ -90,8 +85,7 @@ namespace Unicorn {
                 // WB3. CR × LF
                 P prev(prop(buf, i - 1));
                 P next(prop(buf, i));
-                if (prev == P::CR
-                        && next == P::LF)
+                if (prev == P::CR && next == P::LF)
                     continue;
                 // Otherwise break before and after Newlines (including CR and LF)
                 // WB3a. (Newline | CR | LF) ÷
@@ -134,21 +128,17 @@ namespace Unicorn {
                         && (next == P::ALetter || next == P::Hebrew_Letter))
                     continue;
                 // WB7a. Hebrew_Letter × Single_Quote
-                if (prev == P::Hebrew_Letter
-                        && next == P::Single_Quote)
+                if (prev == P::Hebrew_Letter && next == P::Single_Quote)
                     continue;
                 // WB7b. Hebrew_Letter × Double_Quote Hebrew_Letter
-                if (prev == P::Hebrew_Letter
-                        && next == P::Double_Quote) {
+                if (prev == P::Hebrew_Letter && next == P::Double_Quote) {
                     if (next2 == P::EOT && ! eof)
                         return 0;
                     if (next2 == P::Hebrew_Letter)
                         continue;
                 }
                 // WB7c. Hebrew_Letter Double_Quote × Hebrew_Letter
-                if (prev2 == P::Hebrew_Letter
-                        && prev == P::Double_Quote
-                        && next == P::Hebrew_Letter)
+                if (prev2 == P::Hebrew_Letter && prev == P::Double_Quote && next == P::Hebrew_Letter)
                     continue;
                 // Do not break within sequences of digits, or digits adjacent to letters.
                 // WB8. Numeric × Numeric
@@ -157,8 +147,7 @@ namespace Unicorn {
                         && next == P::Numeric)
                     continue;
                 // WB10. Numeric × (ALetter | Hebrew_Letter)
-                if (prev == P::Numeric
-                        && (next == P::ALetter || next == P::Hebrew_Letter))
+                if (prev == P::Numeric && (next == P::ALetter || next == P::Hebrew_Letter))
                     continue;
                 // Do not break within sequences, such as “3.2” or “3,456.789”.
                 // WB11. Numeric (MidNum | MidNumLet | Single_Quote) × Numeric
@@ -176,22 +165,22 @@ namespace Unicorn {
                 }
                 // Do not break between Katakana.
                 // WB13. Katakana × Katakana
-                if (prev == P::Katakana
-                        && next == P::Katakana)
+                if (prev == P::Katakana && next == P::Katakana)
                     continue;
                 // Do not break from extenders.
                 // WB13a. (ALetter | Hebrew_Letter | Numeric | Katakana | ExtendNumLet) × ExtendNumLet
-                if ((prev == P::ALetter || prev == P::ExtendNumLet || prev == P::Hebrew_Letter || prev == P::Katakana || prev == P::Numeric)
+                if ((prev == P::ALetter || prev == P::ExtendNumLet || prev == P::Hebrew_Letter
+                            || prev == P::Katakana || prev == P::Numeric)
                         && next == P::ExtendNumLet)
                     continue;
                 // WB13b. ExtendNumLet × (ALetter | Hebrew_Letter | Numeric | Katakana)
                 if (prev == P::ExtendNumLet
-                        && (next == P::ALetter || next == P::Hebrew_Letter || next == P::Katakana || next == P::Numeric))
+                        && (next == P::ALetter || next == P::Hebrew_Letter || next == P::Katakana
+                            || next == P::Numeric))
                     continue;
                 // Do not break between regional indicator symbols.
                 // WB13c. Regional_Indicator × Regional_Indicator
-                if (prev == P::Regional_Indicator
-                        && next == P::Regional_Indicator)
+                if (prev == P::Regional_Indicator && next == P::Regional_Indicator)
                     continue;
                 // Otherwise, break everywhere (including around ideographs).
                 // WB14. Any ÷ Any
@@ -213,8 +202,7 @@ namespace Unicorn {
                 // SB3. CR × LF
                 P prev(prop(buf, i - 1));
                 P next(prop(buf, i));
-                if (prev == P::CR
-                        && next == P::LF)
+                if (prev == P::CR && next == P::LF)
                     continue;
                 // Break after paragraph separators.
                 // SB4. Sep | CR | LF ÷
@@ -238,13 +226,10 @@ namespace Unicorn {
                 // lowercase, or if they are followed by “continuation”
                 // punctuation such as comma, colon, or semicolon.
                 // SB6. ATerm × Numeric
-                if (prev == P::ATerm
-                        && next == P::Numeric)
+                if (prev == P::ATerm && next == P::Numeric)
                     continue;
-                // SB7. Upper ATerm × Upper
-                if (prev2 == P::Upper
-                        && prev == P::ATerm
-                        && next == P::Upper)
+                // SB7. (Upper | Lower) ATerm × Upper
+                if ((prev2 == P::Upper || prev2 == P::Lower) && prev == P::ATerm && next == P::Upper)
                     continue;
                 // SB8. ATerm Close* Sp* × (¬(OLetter | Upper | Lower | Sep | CR | LF | STerm | ATerm))* Lower
                 j = i;

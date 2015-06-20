@@ -26,7 +26,7 @@ namespace Unicorn {
         NA, L, LV, LVT, T, V
     };
 
-    enum class Indic_Matra_Category: uint8_t {
+    enum class Indic_Positional_Category: uint8_t {
         NA, Bottom, Bottom_And_Right, Left, Left_And_Right, Overstruck, Right,
         Top, Top_And_Bottom, Top_And_Bottom_And_Right, Top_And_Left,
         Top_And_Left_And_Right, Top_And_Right, Visual_Order_Left
@@ -35,11 +35,13 @@ namespace Unicorn {
     enum class Indic_Syllabic_Category: uint8_t {
         Other, Avagraha, Bindu, Brahmi_Joining_Number, Cantillation_Mark,
         Consonant, Consonant_Dead, Consonant_Final, Consonant_Head_Letter,
-        Consonant_Medial, Consonant_Placeholder, Consonant_Preceding_Repha,
-        Consonant_Subjoined, Consonant_Succeeding_Repha, Gemination_Mark,
+        Consonant_Killer, Consonant_Medial, Consonant_Placeholder,
+        Consonant_Preceding_Repha, Consonant_Prefixed, Consonant_Subjoined,
+        Consonant_Succeeding_Repha, Consonant_With_Stacker, Gemination_Mark,
         Invisible_Stacker, Joiner, Modifying_Letter, Non_Joiner, Nukta,
-        Number, Number_Joiner, Pure_Killer, Register_Shifter, Tone_Letter,
-        Tone_Mark, Virama, Visarga, Vowel, Vowel_Dependent, Vowel_Independent
+        Number, Number_Joiner, Pure_Killer, Register_Shifter,
+        Syllable_Modifier, Tone_Letter, Tone_Mark, Virama, Visarga, Vowel,
+        Vowel_Dependent, Vowel_Independent
     };
 
     enum class Joining_Group: uint8_t {

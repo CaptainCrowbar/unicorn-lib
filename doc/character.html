@@ -434,7 +434,7 @@ or zero if the character does not have a decomposition of the relevant type.</p>
 <ul>
 <li><code>NA, L, LV, LVT, T, V</code></li>
 </ul></li>
-<li><code>enum class <strong>Indic_Matra_Category</strong></code>
+<li><code>enum class <strong>Indic_Positional_Category</strong></code>
 
 <ul>
 <li><code>NA, Bottom, Bottom_And_Right, Left, Left_And_Right, Overstruck, Right, Top, Top_And_Bottom, Top_And_Bottom_And_Right, Top_And_Left, Top_And_Left_And_Right, Top_And_Right, Visual_Order_Left</code></li>
@@ -442,7 +442,7 @@ or zero if the character does not have a decomposition of the relevant type.</p>
 <li><code>enum class <strong>Indic_Syllabic_Category</strong></code>
 
 <ul>
-<li><code>Other, Avagraha, Bindu, Brahmi_Joining_Number, Cantillation_Mark, Consonant, Consonant_Dead, Consonant_Final, Consonant_Head_Letter, Consonant_Medial, Consonant_Placeholder, Consonant_Preceding_Repha, Consonant_Subjoined, Consonant_Succeeding_Repha, Gemination_Mark, Invisible_Stacker, Joiner, Modifying_Letter, Non_Joiner, Nukta, Number, Number_Joiner, Pure_Killer, Register_Shifter, Tone_Letter, Tone_Mark, Virama, Visarga, Vowel, Vowel_Dependent, Vowel_Independent</code></li>
+<li><code>Other, Avagraha, Bindu, Brahmi_Joining_Number, Cantillation_Mark, Consonant, Consonant_Dead, Consonant_Final, Consonant_Head_Letter, Consonant_Killer, Consonant_Medial, Consonant_Placeholder, Consonant_Preceding_Repha, Consonant_Prefixed, Consonant_Subjoined, Consonant_Succeeding_Repha, Consonant_With_Stacker, Gemination_Mark, Invisible_Stacker, Joiner, Modifying_Letter, Non_Joiner, Nukta, Number, Number_Joiner, Pure_Killer, Register_Shifter, Syllable_Modifier, Tone_Letter, Tone_Mark, Virama, Visarga, Vowel, Vowel_Dependent, Vowel_Independent</code></li>
 </ul></li>
 <li><code>enum class <strong>Joining_Group</strong></code>
 
@@ -484,7 +484,7 @@ naming conventions.</p>
 <li><code>East_Asian_Width <strong>east_asian_width</strong>(char32_t c) noexcept</code></li>
 <li><code>Grapheme_Cluster_Break <strong>grapheme_cluster_break</strong>(char32_t c) noexcept</code></li>
 <li><code>Hangul_Syllable_Type <strong>hangul_syllable_type</strong>(char32_t c) noexcept</code></li>
-<li><code>Indic_Matra_Category <strong>indic_matra_category</strong>(char32_t c) noexcept</code></li>
+<li><code>Indic_Positional_Category <strong>indic_positional_category</strong>(char32_t c) noexcept</code></li>
 <li><code>Indic_Syllabic_Category <strong>indic_syllabic_category</strong>(char32_t c) noexcept</code></li>
 <li><code>Joining_Group <strong>joining_group</strong>(char32_t c) noexcept</code></li>
 <li><code>Joining_Type <strong>joining_type</strong>(char32_t c) noexcept</code></li>
@@ -501,7 +501,7 @@ naming conventions.</p>
 <li><code>u8string <strong>property_value</strong>(East_Asian_Width val)</code></li>
 <li><code>u8string <strong>property_value</strong>(Grapheme_Cluster_Break val)</code></li>
 <li><code>u8string <strong>property_value</strong>(Hangul_Syllable_Type val)</code></li>
-<li><code>u8string <strong>property_value</strong>(Indic_Matra_Category val)</code></li>
+<li><code>u8string <strong>property_value</strong>(Indic_Positional_Category val)</code></li>
 <li><code>u8string <strong>property_value</strong>(Indic_Syllabic_Category val)</code></li>
 <li><code>u8string <strong>property_value</strong>(Joining_Group val)</code></li>
 <li><code>u8string <strong>property_value</strong>(Joining_Type val)</code></li>

@@ -206,7 +206,7 @@ namespace Unicorn {
     East_Asian_Width east_asian_width(char32_t c) noexcept;
     Grapheme_Cluster_Break grapheme_cluster_break(char32_t c) noexcept;
     Hangul_Syllable_Type hangul_syllable_type(char32_t c) noexcept;
-    Indic_Matra_Category indic_matra_category(char32_t c) noexcept;
+    Indic_Positional_Category indic_positional_category(char32_t c) noexcept;
     Indic_Syllabic_Category indic_syllabic_category(char32_t c) noexcept;
     Joining_Group joining_group(char32_t c) noexcept;
     Joining_Type joining_type(char32_t c) noexcept;
@@ -218,7 +218,7 @@ namespace Unicorn {
     u8string property_value(East_Asian_Width val);
     u8string property_value(Grapheme_Cluster_Break val);
     u8string property_value(Hangul_Syllable_Type val);
-    u8string property_value(Indic_Matra_Category val);
+    u8string property_value(Indic_Positional_Category val);
     u8string property_value(Indic_Syllabic_Category val);
     u8string property_value(Joining_Group val);
     u8string property_value(Joining_Type val);

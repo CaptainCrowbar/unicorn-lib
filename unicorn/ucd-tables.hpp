@@ -160,7 +160,7 @@ namespace Unicorn {
 
         // Indic property tables
 
-        extern const TableView<char32_t, Indic_Matra_Category> indic_matra_category_table;
+        extern const TableView<char32_t, Indic_Positional_Category> indic_positional_category_table;
         extern const TableView<char32_t, Indic_Syllabic_Category> indic_syllabic_category_table;
 
         // Numeric property tables

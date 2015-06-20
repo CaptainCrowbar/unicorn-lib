@@ -1196,20 +1196,20 @@ namespace {
         PROPTEST(Hangul_Syllable_Type, T);
         PROPTEST(Hangul_Syllable_Type, V);
 
-        PROPTEST(Indic_Matra_Category, NA);
-        PROPTEST(Indic_Matra_Category, Bottom);
-        PROPTEST(Indic_Matra_Category, Bottom_And_Right);
-        PROPTEST(Indic_Matra_Category, Left);
-        PROPTEST(Indic_Matra_Category, Left_And_Right);
-        PROPTEST(Indic_Matra_Category, Overstruck);
-        PROPTEST(Indic_Matra_Category, Right);
-        PROPTEST(Indic_Matra_Category, Top);
-        PROPTEST(Indic_Matra_Category, Top_And_Bottom);
-        PROPTEST(Indic_Matra_Category, Top_And_Bottom_And_Right);
-        PROPTEST(Indic_Matra_Category, Top_And_Left);
-        PROPTEST(Indic_Matra_Category, Top_And_Left_And_Right);
-        PROPTEST(Indic_Matra_Category, Top_And_Right);
-        PROPTEST(Indic_Matra_Category, Visual_Order_Left);
+        PROPTEST(Indic_Positional_Category, NA);
+        PROPTEST(Indic_Positional_Category, Bottom);
+        PROPTEST(Indic_Positional_Category, Bottom_And_Right);
+        PROPTEST(Indic_Positional_Category, Left);
+        PROPTEST(Indic_Positional_Category, Left_And_Right);
+        PROPTEST(Indic_Positional_Category, Overstruck);
+        PROPTEST(Indic_Positional_Category, Right);
+        PROPTEST(Indic_Positional_Category, Top);
+        PROPTEST(Indic_Positional_Category, Top_And_Bottom);
+        PROPTEST(Indic_Positional_Category, Top_And_Bottom_And_Right);
+        PROPTEST(Indic_Positional_Category, Top_And_Left);
+        PROPTEST(Indic_Positional_Category, Top_And_Left_And_Right);
+        PROPTEST(Indic_Positional_Category, Top_And_Right);
+        PROPTEST(Indic_Positional_Category, Visual_Order_Left);
 
         PROPTEST(Indic_Syllabic_Category, Other);
         PROPTEST(Indic_Syllabic_Category, Avagraha);
@@ -1354,20 +1354,20 @@ namespace {
         TEST_EQUAL(property_value(hangul_syllable_type(0x11a8)), "T");
         TEST_EQUAL(property_value(hangul_syllable_type(0x1160)), "V");
 
-        TEST_EQUAL(property_value(indic_matra_category(0)), "NA");
-        TEST_EQUAL(property_value(indic_matra_category(0x941)), "Bottom");
-        TEST_EQUAL(property_value(indic_matra_category(0x1b3b)), "Bottom_And_Right");
-        TEST_EQUAL(property_value(indic_matra_category(0x93f)), "Left");
-        TEST_EQUAL(property_value(indic_matra_category(0x9cb)), "Left_And_Right");
-        TEST_EQUAL(property_value(indic_matra_category(0x10a01)), "Overstruck");
-        TEST_EQUAL(property_value(indic_matra_category(0x93b)), "Right");
-        TEST_EQUAL(property_value(indic_matra_category(0x93a)), "Top");
-        TEST_EQUAL(property_value(indic_matra_category(0xc48)), "Top_And_Bottom");
-        TEST_EQUAL(property_value(indic_matra_category(0x1b3d)), "Top_And_Bottom_And_Right");
-        TEST_EQUAL(property_value(indic_matra_category(0xb48)), "Top_And_Left");
-        TEST_EQUAL(property_value(indic_matra_category(0xb4c)), "Top_And_Left_And_Right");
-        TEST_EQUAL(property_value(indic_matra_category(0xac9)), "Top_And_Right");
-        TEST_EQUAL(property_value(indic_matra_category(0xe40)), "Visual_Order_Left");
+        TEST_EQUAL(property_value(indic_positional_category(0)), "NA");
+        TEST_EQUAL(property_value(indic_positional_category(0x941)), "Bottom");
+        TEST_EQUAL(property_value(indic_positional_category(0x1b3b)), "Bottom_And_Right");
+        TEST_EQUAL(property_value(indic_positional_category(0x93f)), "Left");
+        TEST_EQUAL(property_value(indic_positional_category(0x9cb)), "Left_And_Right");
+        TEST_EQUAL(property_value(indic_positional_category(0x10a01)), "Overstruck");
+        TEST_EQUAL(property_value(indic_positional_category(0x93b)), "Right");
+        TEST_EQUAL(property_value(indic_positional_category(0x93a)), "Top");
+        TEST_EQUAL(property_value(indic_positional_category(0xc48)), "Top_And_Bottom");
+        TEST_EQUAL(property_value(indic_positional_category(0x1b3d)), "Top_And_Bottom_And_Right");
+        TEST_EQUAL(property_value(indic_positional_category(0xb48)), "Top_And_Left");
+        TEST_EQUAL(property_value(indic_positional_category(0xb4c)), "Top_And_Left_And_Right");
+        TEST_EQUAL(property_value(indic_positional_category(0xac9)), "Top_And_Right");
+        TEST_EQUAL(property_value(indic_positional_category(0xe40)), "Visual_Order_Left");
 
         TEST_EQUAL(property_value(indic_syllabic_category(0)), "Other");
         TEST_EQUAL(property_value(indic_syllabic_category(0x93d)), "Avagraha");
@@ -1394,7 +1394,6 @@ namespace {
         TEST_EQUAL(property_value(indic_syllabic_category(0xe3a)), "Pure_Killer");
         TEST_EQUAL(property_value(indic_syllabic_category(0x17c9)), "Register_Shifter");
         TEST_EQUAL(property_value(indic_syllabic_category(0x1970)), "Tone_Letter");
-        TEST_EQUAL(property_value(indic_syllabic_category(0x951)), "Tone_Mark");
         TEST_EQUAL(property_value(indic_syllabic_category(0x94d)), "Virama");
         TEST_EQUAL(property_value(indic_syllabic_category(0x903)), "Visarga");
         TEST_EQUAL(property_value(indic_syllabic_category(0x1963)), "Vowel");
@@ -1543,7 +1542,7 @@ namespace {
         TEST_EQUAL(to_str(char_script_list(0)), "[Zyyy]");
         TEST_EQUAL(to_str(char_script_list(0x41)), "[Latn]");
         TEST_EQUAL(to_str(char_script_list(0x10fffd)), "[Zzzz]");
-        TEST_EQUAL(to_str(char_script_list(0x1cd0)), "[Deva]");
+        TEST_EQUAL(to_str(char_script_list(0x1cd0)), "[Deva,Gran]");
         TEST_EQUAL(to_str(char_script_list(0x342)), "[Grek]");
         TEST_EQUAL(to_str(char_script_list(0x363)), "[Latn]");
         TEST_EQUAL(to_str(char_script_list(0x64b)), "[Arab,Syrc]");
@@ -1617,7 +1616,7 @@ namespace {
         CALL_ALL_THE_PROPERTIES(east_asian_width);
         CALL_ALL_THE_PROPERTIES(grapheme_cluster_break);
         CALL_ALL_THE_PROPERTIES(hangul_syllable_type);
-        CALL_ALL_THE_PROPERTIES(indic_matra_category);
+        CALL_ALL_THE_PROPERTIES(indic_positional_category);
         CALL_ALL_THE_PROPERTIES(indic_syllabic_category);
         CALL_ALL_THE_PROPERTIES(line_break);
         CALL_ALL_THE_PROPERTIES(sentence_break);

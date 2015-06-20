@@ -541,8 +541,8 @@ namespace Unicorn {
         return sparse_table_lookup(UnicornDetail::hangul_syllable_type_table, c);
     }
 
-    Indic_Matra_Category indic_matra_category(char32_t c) noexcept {
-        return sparse_table_lookup(UnicornDetail::indic_matra_category_table, c);
+    Indic_Positional_Category indic_positional_category(char32_t c) noexcept {
+        return sparse_table_lookup(UnicornDetail::indic_positional_category_table, c);
     }
 
     Indic_Syllabic_Category indic_syllabic_category(char32_t c) noexcept {
@@ -668,7 +668,7 @@ namespace Unicorn {
         }
     }
 
-    u8string property_value(Indic_Matra_Category val) {
+    u8string property_value(Indic_Positional_Category val) {
         using enum_type = decltype(val);
         auto x = static_cast<int>(val);
         switch (x) {
@@ -703,11 +703,14 @@ namespace Unicorn {
             PROPVAL(Consonant_Dead);
             PROPVAL(Consonant_Final);
             PROPVAL(Consonant_Head_Letter);
+            PROPVAL(Consonant_Killer);
             PROPVAL(Consonant_Medial);
             PROPVAL(Consonant_Placeholder);
             PROPVAL(Consonant_Preceding_Repha);
+            PROPVAL(Consonant_Prefixed);
             PROPVAL(Consonant_Subjoined);
             PROPVAL(Consonant_Succeeding_Repha);
+            PROPVAL(Consonant_With_Stacker);
             PROPVAL(Gemination_Mark);
             PROPVAL(Invisible_Stacker);
             PROPVAL(Joiner);
@@ -718,6 +721,7 @@ namespace Unicorn {
             PROPVAL(Number_Joiner);
             PROPVAL(Pure_Killer);
             PROPVAL(Register_Shifter);
+            PROPVAL(Syllable_Modifier);
             PROPVAL(Tone_Letter);
             PROPVAL(Tone_Mark);
             PROPVAL(Virama);

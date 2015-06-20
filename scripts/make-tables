@@ -168,6 +168,10 @@ class EnumUcdRecord:
 
 script_index = {
 
+    # TODO - this needs to be generated
+
+    'Ahom':                    'ahom',
+    'Anatolian_Hieroglyphs':   'hluw',
     'Arabic':                  'arab',
     'Armenian':                'armn',
     'Avestan':                 'avst',
@@ -208,6 +212,7 @@ script_index = {
     'Han':                     'hani',
     'Hangul':                  'hang',
     'Hanunoo':                 'hano',
+    'Hatran':                  'hatr',
     'Hebrew':                  'hebr',
     'Hiragana':                'hira',
     'Imperial_Aramaic':        'armi',
@@ -245,12 +250,14 @@ script_index = {
     'Modi':                    'modi',
     'Mongolian':               'mong',
     'Mro':                     'mroo',
+    'Multani':                 'mult',
     'Myanmar':                 'mymr',
     'Nabataean':               'nbat',
     'New_Tai_Lue':             'talu',
     'Nko':                     'nkoo',
     'Ogham':                   'ogam',
     'Ol_Chiki':                'olck',
+    'Old_Hungarian':           'hung',
     'Old_Italic':              'ital',
     'Old_North_Arabian':       'narb',
     'Old_Permic':              'perm',
@@ -272,6 +279,7 @@ script_index = {
     'Sharada':                 'shrd',
     'Shavian':                 'shaw',
     'Siddham':                 'sidd',
+    'SignWriting':             'sgnw',
     'Sinhala':                 'sinh',
     'Sora_Sompeng':            'sora',
     'Sundanese':               'sund',
@@ -423,28 +431,28 @@ with open('unicorn/ucd-character-names.cpp', 'w', encoding='utf-8', newline='\n'
 
 # Character property tables
 
-joining_group = {}            # ArabicShaping.txt
-joining_type = {}             # ArabicShaping.txt
-default_ignorable = set()     # DerivedCoreProperties.txt
-id_continue = set()           # DerivedCoreProperties.txt
-id_start = set()              # DerivedCoreProperties.txt
-xid_continue = set()          # DerivedCoreProperties.txt
-xid_start = set()             # DerivedCoreProperties.txt
-east_asian_width = {}         # EastAsianWidth.txt
-hangul_syllable_type = {}     # HangulSyllableType.txt
-indic_matra_category = {}     # IndicMatraCategory.txt
-indic_syllabic_category = {}  # IndicSyllabicCategory.txt
-line_break = {}               # LineBreak.txt
-other_lowercase = set()       # PropList.txt
-other_uppercase = set()       # PropList.txt
-pattern_syntax = set()        # PropList.txt
-pattern_white_space = set()   # PropList.txt
-soft_dotted = set()           # PropList.txt
-white_space = set()           # PropList.txt
-grapheme_cluster_break = {}   # auxiliary/GraphemeBreakProperty.txt
-sentence_break = {}           # auxiliary/SentenceBreakProperty.txt
-word_break = {}               # auxiliary/WordBreakProperty.txt
-numeric_type = {}             # extracted/DerivedNumericType.txt
+joining_group = {}              # ArabicShaping.txt
+joining_type = {}               # ArabicShaping.txt
+default_ignorable = set()       # DerivedCoreProperties.txt
+id_continue = set()             # DerivedCoreProperties.txt
+id_start = set()                # DerivedCoreProperties.txt
+xid_continue = set()            # DerivedCoreProperties.txt
+xid_start = set()               # DerivedCoreProperties.txt
+east_asian_width = {}           # EastAsianWidth.txt
+hangul_syllable_type = {}       # HangulSyllableType.txt
+indic_positional_category = {}  # IndicPositionalCategory.txt
+indic_syllabic_category = {}    # IndicSyllabicCategory.txt
+line_break = {}                 # LineBreak.txt
+other_lowercase = set()         # PropList.txt
+other_uppercase = set()         # PropList.txt
+pattern_syntax = set()          # PropList.txt
+pattern_white_space = set()     # PropList.txt
+soft_dotted = set()             # PropList.txt
+white_space = set()             # PropList.txt
+grapheme_cluster_break = {}     # auxiliary/GraphemeBreakProperty.txt
+sentence_break = {}             # auxiliary/SentenceBreakProperty.txt
+word_break = {}                 # auxiliary/WordBreakProperty.txt
+numeric_type = {}               # extracted/DerivedNumericType.txt
 
 process_file('ucd/DerivedCoreProperties.txt', NamedBooleanUcdRecord(default_ignorable, 'Default_Ignorable_Code_Point'), 2)
 process_file('ucd/DerivedCoreProperties.txt', NamedBooleanUcdRecord(id_continue, 'ID_Continue'), 2)
@@ -453,7 +461,7 @@ process_file('ucd/DerivedCoreProperties.txt', NamedBooleanUcdRecord(xid_continue
 process_file('ucd/DerivedCoreProperties.txt', NamedBooleanUcdRecord(xid_start, 'XID_Start'), 2)
 process_file('ucd/EastAsianWidth.txt', EnumUcdRecord(east_asian_width, 'East_Asian_Width::'), 2)
 process_file('ucd/HangulSyllableType.txt', EnumUcdRecord(hangul_syllable_type, 'Hangul_Syllable_Type::'), 2)
-process_file('ucd/IndicMatraCategory.txt', EnumUcdRecord(indic_matra_category, 'Indic_Matra_Category::'), 2)
+process_file('ucd/IndicPositionalCategory.txt', EnumUcdRecord(indic_positional_category, 'Indic_Positional_Category::'), 2)
 process_file('ucd/IndicSyllabicCategory.txt', EnumUcdRecord(indic_syllabic_category, 'Indic_Syllabic_Category::'), 2)
 process_file('ucd/LineBreak.txt', EnumUcdRecord(line_break, 'Line_Break::'), 2)
 process_file('ucd/PropList.txt', NamedBooleanUcdRecord(other_lowercase, 'Other_Lowercase'), 2)
@@ -506,7 +514,7 @@ with open('unicorn/ucd-property-tables.cpp', 'w', encoding='utf-8', newline='\n'
     write_sparse_set(cpp, 'pattern_white_space', pattern_white_space)
     write_sparse_table(cpp, 'East_Asian_Width', 'east_asian_width', east_asian_width)
     write_sparse_table(cpp, 'Hangul_Syllable_Type', 'hangul_syllable_type', hangul_syllable_type)
-    write_sparse_table(cpp, 'Indic_Matra_Category', 'indic_matra_category', indic_matra_category)
+    write_sparse_table(cpp, 'Indic_Positional_Category', 'indic_positional_category', indic_positional_category)
     write_sparse_table(cpp, 'Indic_Syllabic_Category', 'indic_syllabic_category', indic_syllabic_category)
     write_sparse_table(cpp, 'Grapheme_Cluster_Break', 'grapheme_cluster_break', grapheme_cluster_break)
     write_sparse_table(cpp, 'Line_Break', 'line_break', line_break)

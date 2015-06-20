@@ -314,10 +314,10 @@ or zero if the character does not have a decomposition of the relevant type.
     * `Other, Control, CR, EOT, Extend, L, LF, LV, LVT, Prepend, Regional_Indicator, SOT, SpacingMark, T, V`
 * `enum class Hangul_Syllable_Type`
     * `NA, L, LV, LVT, T, V`
-* `enum class Indic_Matra_Category`
+* `enum class Indic_Positional_Category`
     * `NA, Bottom, Bottom_And_Right, Left, Left_And_Right, Overstruck, Right, Top, Top_And_Bottom, Top_And_Bottom_And_Right, Top_And_Left, Top_And_Left_And_Right, Top_And_Right, Visual_Order_Left`
 * `enum class Indic_Syllabic_Category`
-    * `Other, Avagraha, Bindu, Brahmi_Joining_Number, Cantillation_Mark, Consonant, Consonant_Dead, Consonant_Final, Consonant_Head_Letter, Consonant_Medial, Consonant_Placeholder, Consonant_Preceding_Repha, Consonant_Subjoined, Consonant_Succeeding_Repha, Gemination_Mark, Invisible_Stacker, Joiner, Modifying_Letter, Non_Joiner, Nukta, Number, Number_Joiner, Pure_Killer, Register_Shifter, Tone_Letter, Tone_Mark, Virama, Visarga, Vowel, Vowel_Dependent, Vowel_Independent`
+    * `Other, Avagraha, Bindu, Brahmi_Joining_Number, Cantillation_Mark, Consonant, Consonant_Dead, Consonant_Final, Consonant_Head_Letter, Consonant_Killer, Consonant_Medial, Consonant_Placeholder, Consonant_Preceding_Repha, Consonant_Prefixed, Consonant_Subjoined, Consonant_Succeeding_Repha, Consonant_With_Stacker, Gemination_Mark, Invisible_Stacker, Joiner, Modifying_Letter, Non_Joiner, Nukta, Number, Number_Joiner, Pure_Killer, Register_Shifter, Syllable_Modifier, Tone_Letter, Tone_Mark, Virama, Visarga, Vowel, Vowel_Dependent, Vowel_Independent`
 * `enum class Joining_Group`
     * `No_Joining_Group, Ain, Alaph, Alef, Beh, Beth, Burushaski_Yeh_Barree, Dalath_Rish, Dal, E, Farsi_Yeh, Feh, Fe, Final_Semkath, Gaf, Gamal, Hah, Heh_Goal, Heh, Heth, He, Kaf, Kaph, Khaph, Knotted_Heh, Lamadh, Lam, Meem, Mim, Noon, Nun, Nya, Pe, Qaf, Qaph, Reh, Reversed_Pe, Rohingya_Yeh, Sadhe, Sad, Seen, Semkath, Shin, Swash_Kaf, Syriac_Waw, Tah, Taw, Teh_Marbuta_Goal, Teh_Marbuta, Teth, Waw, Yeh_Barree, Yeh_With_Tail, Yeh, Yudh_He, Yudh, Zain, Zhain`
 * `enum class Joining_Type`
@@ -338,7 +338,7 @@ naming conventions.
 * `East_Asian_Width east_asian_width(char32_t c) noexcept`
 * `Grapheme_Cluster_Break grapheme_cluster_break(char32_t c) noexcept`
 * `Hangul_Syllable_Type hangul_syllable_type(char32_t c) noexcept`
-* `Indic_Matra_Category indic_matra_category(char32_t c) noexcept`
+* `Indic_Positional_Category indic_positional_category(char32_t c) noexcept`
 * `Indic_Syllabic_Category indic_syllabic_category(char32_t c) noexcept`
 * `Joining_Group joining_group(char32_t c) noexcept`
 * `Joining_Type joining_type(char32_t c) noexcept`
@@ -353,7 +353,7 @@ Functions returning the properties of a character.
 * `u8string property_value(East_Asian_Width val)`
 * `u8string property_value(Grapheme_Cluster_Break val)`
 * `u8string property_value(Hangul_Syllable_Type val)`
-* `u8string property_value(Indic_Matra_Category val)`
+* `u8string property_value(Indic_Positional_Category val)`
 * `u8string property_value(Indic_Syllabic_Category val)`
 * `u8string property_value(Joining_Group val)`
 * `u8string property_value(Joining_Type val)`
