@@ -16,7 +16,7 @@ namespace {
         std::cout << "... Unicorn version: " << v1 << "\n";
         std::cout << "... Unicode version: " << v2 << "\n";
         TEST_COMPARE(v1, >=, (Version{0,1,0}));
-        TEST_COMPARE(v2, >=, (Version{7,0,0}));
+        TEST_COMPARE(v2, >=, (Version{8,0,0}));
 
     }
 

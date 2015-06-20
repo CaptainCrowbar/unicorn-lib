@@ -31,6 +31,7 @@ namespace Unicorn {
             { 0x20ba, {6,2,0} },  // Unicode 6.2 (Sep 2012): U+20BA turkish lira sign
             { 0x061c, {6,3,0} },  // Unicode 6.3 (Sep 2013): U+061C arabic letter mark
             { 0x037f, {7,0,0} },  // Unicode 7.0 (Jun 2014): U+037F greek capital letter yot
+            { 0x08b3, {8,0,0} },  // Unicode 8.0 (Jun 2015): U+08B3 arabic letter ain with three dots below
         };
 
         Crow::Version check_unicode_version() noexcept {
