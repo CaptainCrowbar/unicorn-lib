@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 
 ucdroot=http://www.unicode.org/Public/UCD/latest/ucd
-rm -rf ucd UCD.zip Unihan.zip
-mkdir ucd
+rm -rf ucd ucd-extra UCD.zip Unihan.zip
+mkdir ucd ucd-extra
 curl -O $ucdroot/UCD.zip
 curl -O $ucdroot/Unihan.zip
+curl -O http://www.unicode.org/iso15924/iso15924-codes.html
 unzip UCD.zip -d ucd
 unzip Unihan.zip -d ucd
+mv iso15924-codes.html ucd-extra
 rm -f UCD.zip Unihan.zip

@@ -1524,10 +1524,10 @@ namespace {
         TEST_EQUAL(char_script(0), "Zyyy");
         TEST_EQUAL(char_script(0x41), "Latn");
         TEST_EQUAL(char_script(0x370), "Grek");
-        TEST_EQUAL(char_script(0x400), "Cyrl");
+        TEST_EQUAL(char_script(0x400), "Cyrs");
         TEST_EQUAL(char_script(0x531), "Armn");
         TEST_EQUAL(char_script(0x591), "Hebr");
-        TEST_EQUAL(char_script(0x600), "Arab");
+        TEST_EQUAL(char_script(0x600), "Aran");
         TEST_EQUAL(char_script(0x10fffd), "Zzzz");
 
         TEST_EQUAL(script_name(char_script(0)), "Common");
@@ -1549,7 +1549,8 @@ namespace {
         TEST_EQUAL(to_str(char_script_list(0x660)), "[Arab,Thaa]");
         TEST_EQUAL(to_str(char_script_list(0x589)), "[Armn,Geor]");
         TEST_EQUAL(to_str(char_script_list(0x640)), "[Arab,Mand,Mani,Phlp,Syrc]");
-        TEST_EQUAL(to_str(char_script_list(0x964)), "[Beng,Deva,Gran,Gujr,Guru,Knda,Mahj,Mlym,Orya,Sind,Sinh,Sylo,Takr,Taml,Telu,Tirh]");
+        TEST_EQUAL(to_str(char_script_list(0x964)), "[Beng,Deva,Gran,Gujr,Guru,Knda,Mahj,Mlym,Orya,Sind,"
+                                                    "Sinh,Sylo,Takr,Taml,Telu,Tirh]");
 
     }
 

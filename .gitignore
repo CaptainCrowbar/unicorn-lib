@@ -1,5 +1,6 @@
 build
 ucd
+ucd-extra
 *.stackdump
 *.zip
 __*
