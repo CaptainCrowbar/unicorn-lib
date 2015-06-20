@@ -408,8 +408,29 @@ namespace Unicorn {
 
     // Version information
 
+    namespace {
+
+        Crow::Version check_regex_unicode_version() noexcept {
+            static const Regex unassigned("\\p{Cn}");
+            Crow::Version v {0,0,0};
+            auto& table = UnicornDetail::unicode_version_table().table;
+            for (auto& entry: table) {
+                if (unassigned.match(str_chars<char>(entry.second)))
+                    break;
+                v = entry.first;
+            }
+            return v;
+        }
+
+    }
+
     Crow::Version regex_version() noexcept {
         return {PCRE_MAJOR, PCRE_MINOR, 0};
+    }
+
+    Crow::Version regex_unicode_version() noexcept {
+        static const Crow::Version v = check_regex_unicode_version();
+        return v;
     }
 
 }

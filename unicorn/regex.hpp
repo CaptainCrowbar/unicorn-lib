@@ -1037,5 +1037,6 @@ namespace Unicorn {
     // Version information
 
     Crow::Version regex_version() noexcept;
+    Crow::Version regex_unicode_version() noexcept;
 
 }

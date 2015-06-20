@@ -667,3 +667,9 @@ original string. (You can get the same effect by enclosing the text in
 * `Crow::Version regex_version() noexcept`
 
 Returns the version of PCRE used to build this library.
+
+* `Crow::Version regex_unicode_version() noexcept`
+
+Returns the PCRE library's version of Unicode. Because the PCRE library is
+built separately, this is not guaranteed to be the same as the version used by
+the Unicorn library.

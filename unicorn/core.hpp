@@ -1,10 +1,22 @@
 #pragma once
 
 #include "crow/core.hpp" // -lcrow
+#include <map>
 #include <stdexcept>
 #include <string>
 
 namespace Unicorn {
+
+    namespace UnicornDetail {
+
+        struct UnicodeVersionTable {
+            std::map<Crow::Version, char32_t> table;
+            UnicodeVersionTable();
+        };
+
+        const UnicodeVersionTable& unicode_version_table();
+
+    }
 
     // Imports
 
