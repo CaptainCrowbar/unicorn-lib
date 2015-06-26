@@ -22,9 +22,9 @@ file renaming and deletion, directory search, and so on.</p>
 <li><a href="#introduction">Introduction</a></li>
 <li><a href="#systemdependencies">System dependencies</a></li>
 <li><a href="#exceptions">Exceptions</a></li>
-<li><a href="#filenameoperations">File name operations</a></li>
-<li><a href="#fileproperties">File properties</a></li>
-<li><a href="#filesystemoperations">File system operations</a></li>
+<li>[File name functions][]</li>
+<li><a href="#filesystemqueryfunctions">File system query functions</a></li>
+<li><a href="#filesystemmodifyingfunctions">File system modifying functions</a></li>
 <li><a href="#directoryiterators">Directory iterators</a></li>
 </ul>
 
@@ -41,14 +41,15 @@ disallowed characters), but not all of the Win32 wide character API functions
 that deal with files check for valid encoding; it&#8217;s not hard to create a file
 whose name is an arbitrary sequence of 16-bit integers. The HFS+ file system
 used by Apple on Mac OS X and iOS appears to be the only widely used file
-system that actually does enforce valid Unicode names at the file system
-level.</p>
+system that actually does enforce valid Unicode names at the file system level
+(though even on a Mac you need to be careful in the presence of remote file
+systems that may be on a different OS).</p>
 
 <p>To make it possible to deal with this situation, this module uses the
-<code>NativeString</code> type from the <a href="character.html"><code>unicorn/character</code></a> module,
-which is <code>string</code> on Unix systems and <code>wstring</code> on Windows. Like most of the
-rest of the Unicorn library, all of the functions and classes in this module
-take a character type as a template argument. Functions that match the native
+<code>NativeString</code> type from the <a href="core.html"><code>unicorn/core</code></a> module, which is
+<code>string</code> on Unix systems and <code>wstring</code> on Windows. Like most of the rest of
+the Unicorn library, all of the functions and classes in this module take a
+character type as a template argument. Functions that match the native
 filename type can operate on, and may return, file names with invalid
 encoding; the other versions of each function will convert invalid Unicode
 names using the usual character replacement rule, which may result in
@@ -66,6 +67,10 @@ other operating systems.</p>
 <p>The examples in the documentation below mostly use Unix-style file names for
 simplicity; the equivalent code on Windows will make the obvious substitutions
 of backslashes for slashes, and drive roots such as <code>&quot;C:\&quot;</code> for <code>&quot;/&quot;</code>.</p>
+
+<p>The term &#8220;leaf name&#8221; is used here to mean the name of an individual file
+within a directory, with no directory path prefix. (For example, the leaf name
+of <code>&quot;/foo/bar/hello.txt&quot;</code> is <code>&quot;hello.txt&quot;</code>.)</p>
 
 <h2 id="systemdependencies">System dependencies</h2>
 
@@ -95,7 +100,7 @@ without checking for valid Unicode.</p>
 <li><code>FileError::<strong>FileError</strong>()</code></li>
 <li><code>explicit FileError::<strong>FileError</strong>(int error)</code></li>
 <li><code>template &lt;typename... More&gt; FileError::<strong>FileError</strong>(int error, const NativeString&amp; file, const More&amp;... more)</code></li>
-<li><code>NativeString FileError::<strong>file</strong>() const</code></li>
+<li><code>NativeString FileError::<strong>file</strong>(size_t i = 0) const</code></li>
 <li><code>std::vector&lt;NativeString&gt; FileError::<strong>files</strong>() const</code></li>
 <li><code>int FileError::<strong>error</strong>() const noexcept</code></li>
 </ul></li>
@@ -104,7 +109,7 @@ without checking for valid Unicode.</p>
 <p>An exception thrown to report errors in file system operations. It can be
 constructed with the error code from the underlying native system call, and
 optionally one or more file names for reference. The <code>file()</code> method returns
-the first file in the list, or an empty string if no files were supplied.</p>
+an empty string if the index is beyond the end of the supplied file list.</p>
 
 <h2 id="filenameoperations">File name operations</h2>
 
@@ -161,17 +166,16 @@ file_path(&quot;/foo&quot;, &quot;/bar&quot;, &quot;hello.txt&quot;) == &quot;/b
 </ul>
 
 <p>These functions break down a file name into its constituent parts. The
-<code>split_path()</code> function breaks the full name into the parent (directory path)
-and leaf name (the local file name within the directory); for example, if the
-original file name is <code>&quot;/foo/bar/hello.txt&quot;</code>, the parent is <code>&quot;/foo/bar&quot;</code> and
-the leaf name is <code>&quot;hello.txt&quot;</code>. If the file name refers to the file system
-root (e.g. <code>&quot;/&quot;</code>), the parent is the full file name and the leaf name is
-empty. The delimiter between the parent and leaf names is discarded, unless
-the parent is a root name that requires the delimiter suffix for correct
-identification.</p>
+<code>split_path()</code> function breaks the full name into directory leaf names; for
+example, if the original file name is <code>&quot;/foo/bar/hello.txt&quot;</code>, the directory
+name is <code>&quot;/foo/bar&quot;</code> and the leaf name is <code>&quot;hello.txt&quot;</code>. If the file name
+refers to the file system root (e.g. <code>&quot;/&quot;</code>), the directory is the full file
+name and the leaf name is empty. The delimiter between the directory and leaf
+names is discarded, unless the directory is a root name that requires the
+delimiter suffix for correct identification.</p>
 
 <p>The <code>split_file()</code> function breaks the leaf name into a base and extension
-(discarding the directory path); for example, if the original file name is
+(discarding the directory part); for example, if the original file name is
 <code>&quot;foo/bar/hello.txt&quot;</code>, the base name is <code>&quot;hello&quot;</code> and the extension is
 <code>&quot;.txt&quot;</code>. The extension starts with the last dot in the leaf name, excluding
 its first character; if the name does not contain a dot, or if the only dot is
@@ -185,9 +189,9 @@ split_file(&quot;/foo/bar/hello.txt&quot;) == {&quot;hello&quot;, &quot;.txt&quo
 split_file(&quot;.hello&quot;) == {&quot;.hello&quot;, &quot;&quot;}
 </code></pre>
 
-<h2 id="fileproperties">File properties</h2>
+<h2 id="filesystemqueryfunctions">File system query functions</h2>
 
-<p>These functions perform operations that query the file system.</p>
+<p>These functions perform read-only operations on the file system.</p>
 
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>current_directory</strong>()</code></li>
@@ -229,9 +233,10 @@ Windows this is a metadata property.</p>
 
 <p>True if the file is a symbolic link.</p>
 
-<h2 id="filesystemoperations">File system operations</h2>
+<h2 id="filesystemmodifyingfunctions">File system modifying functions</h2>
 
-<p>These functions perform operations that modify the file system.</p>
+<p>These functions perform operations that require write access to the file
+system.</p>
 
 <ul>
 <li><code>template &lt;typename C&gt; void <strong>make_directory</strong>(const basic_string&lt;C&gt;&amp; dir, bool recurse = false)</code></li>
@@ -241,8 +246,9 @@ Windows this is a metadata property.</p>
 this will recursively create any missing parent directories (like <code>mkdir -p</code>).
 It will do nothing if the directory already exists. It will throw <code>FileError</code>
 if the named file already exists but is not a directory, if the directory path
-is illegal, if the parent directory does not exist and the <code>recurse</code> flag was
-not set, or if the caller does not have permission to create the directory.</p>
+is not a legal filename, if the parent directory does not exist and the
+<code>recurse</code> flag was not set, or if the caller does not have permission to
+create the directory.</p>
 
 <ul>
 <li><code>template &lt;typename C&gt; void <strong>remove_file</strong>(const basic_string&lt;C&gt;&amp; file, bool recurse = false)</code></li>
@@ -251,21 +257,22 @@ not set, or if the caller does not have permission to create the directory.</p>
 <p>Delete a file or directory. If the <code>recurse</code> flag is set, directories will be
 deleted recursively (like <code>rm -rf</code>; this will not follow symbolic links). This
 will do nothing if the named file does not exist to begin with. It will throw
-<code>FileError</code> if the directory path is illegal, if the name refers to a nonempty
-directory and the <code>recurse</code> flag was not set, or if the caller does not have
-permission to remove the file.</p>
+<code>FileError</code> if the directory path is not a legal filename, if the name refers
+to a nonempty directory and the <code>recurse</code> flag was not set, or if the caller
+does not have permission to delete the file.</p>
 
 <ul>
 <li><code>template &lt;typename C&gt; void <strong>rename_file</strong>(const basic_string&lt;C&gt;&amp; src, const basic_string&lt;C&gt;&amp; dst)</code></li>
 </ul>
 
-<p>Rename a file or directory. This will throw <code>FileError</code> if either path is
-illegal, or if the caller does not have permission to perform the operation.
-This function is a thin wrapper around the underlying native file renaming
-functions, and will share any system specific limitations and variations;
-behaviour when the destination file already exists is system dependent (this
-may overwrite the file or throw an exception), and on most systems the call
-will fail if the source and destination are on different file systems.</p>
+<p>Rename a file or directory. This will throw <code>FileError</code> if either argument is
+not a legal filename, if the caller does not have permission to perform the
+operation, or under other OS-specific circumstances. This function is a thin
+wrapper around the underlying native file renaming functions, and will share
+any system specific limitations and variations; behaviour when the destination
+file already exists is system dependent (this may overwrite the file or throw
+an exception), and on most systems the call will fail if the source and
+destination are on different physical file systems.</p>
 
 <h2 id="directoryiterators">Directory iterators</h2>
 
@@ -304,7 +311,7 @@ will fail if the source and destination are on different file systems.</p>
 <tr>
 	<td style="text-align:left;"><code>dir_dotdot</code></td>
 	<td style="text-align:left;"><code>d</code></td>
-	<td style="text-align:left;">Include . and .. entries</td>
+	<td style="text-align:left;">Include the . and .. entries</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>dir_fullname</code></td>
@@ -319,17 +326,18 @@ will fail if the source and destination are on different file systems.</p>
 </tbody>
 </table>
 
-<p>An iterator over the files in a directory. Normally you would call
-<code>directory()</code> to get a range rather than construct a <code>DirectoryIterator</code>
-directly. If the name passed to the constructor, or to <code>directory()</code>, refers
-to a file that does not exist or is not a directory, it will simply be treated
-as an empty directory.</p>
+<p>An iterator over the files in a directory. Normally you should call the
+<code>directory()</code> function to get an iterator range, rather than explicitly
+construct a <code>DirectoryIterator</code>.</p>
 
-<p>By default, an iterator dereferences to a file&#8217;s leaf name (its local name
-within the directory); if the <code>dir_fullname</code> option is used, the full path is
-reported instead, including the directory (this is based on the name passed to
-the constructor, and will not be a fully qualified absolute path if the
-original name was not).</p>
+<p>If the name passed to the constructor, or to the <code>directory()</code> function,
+refers to a file that does not exist or is not a directory, it will simply be
+treated as an empty directory.</p>
+
+<p>By default, an iterator dereferences to a file&#8217;s leaf name; if the
+<code>dir_fullname</code> option is used, the full path is reported instead, including
+the directory (this is based on the name passed to the constructor, and will
+not be a fully qualified absolute path if the original name was not).</p>
 
 <p>The order in which files are returned is unspecified; do not rely on them
 being returned in the same order as the <code>ls</code> or <code>dir</code> command, or on the order

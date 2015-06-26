@@ -49,7 +49,7 @@ namespace Unicorn {
             std::runtime_error(assemble(error, {})), names(), err(error) {}
         template <typename... More> FileError(int error, const NativeString& file, const More&... more):
             std::runtime_error(assemble(error, assemble_files(file, more...))), names{file, more...}, err(error) {}
-        NativeString file() const { return names.empty() ? NativeString() : names.front(); }
+        NativeString file(size_t i = 0) const { return i < names.size() ? names[i] : NativeString(); }
         std::vector<NativeString> files() const { return names; }
         int error() const noexcept { return err; }
     private:
