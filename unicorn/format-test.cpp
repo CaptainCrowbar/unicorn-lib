@@ -883,8 +883,6 @@ namespace {
 
     void check_uuid_formatting() {
 
-        // no flags
-
         Uuid u1, u2 {0x01234567, 0x89ab, 0xcdef, 0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef};
 
         TEST_EQUAL(format_as<char>(u1), "00000000-0000-0000-0000-000000000000");
@@ -909,44 +907,24 @@ namespace {
 
     void check_version_formatting() {
 
-        // z, fx_stripz  = Strip trailing zeros
+        Version v1 {1, 0, 0}, v2 {2, 3, 4};
 
-        Version v100 {1, 0, 0};
-        Version v120 {1, 2, 0};
-        Version v123 {1, 2, 3};
-
-        TEST_EQUAL(format_as<char>(v123), "1.2.3");
-        TEST_EQUAL(format_as<char>(v123, "z"), "1.2.3");
-        TEST_EQUAL(format_as<char>(v120), "1.2.0");
-        TEST_EQUAL(format_as<char>(v120, "z"), "1.2");
-        TEST_EQUAL(format_as<char>(v100), "1.0.0");
-        TEST_EQUAL(format_as<char>(v100, "z"), "1");
+        TEST_EQUAL(format_as<char>(v1), "1.0.0");
+        TEST_EQUAL(format_as<char>(v2), "2.3.4");
 
         #if defined(UNICORN_PCRE16)
-            TEST_EQUAL(format_as<char16_t>(v123), u"1.2.3");
-            TEST_EQUAL(format_as<char16_t>(v123, u"z"), u"1.2.3");
-            TEST_EQUAL(format_as<char16_t>(v120), u"1.2.0");
-            TEST_EQUAL(format_as<char16_t>(v120, u"z"), u"1.2");
-            TEST_EQUAL(format_as<char16_t>(v100), u"1.0.0");
-            TEST_EQUAL(format_as<char16_t>(v100, u"z"), u"1");
+            TEST_EQUAL(format_as<char16_t>(v1), u"1.0.0");
+            TEST_EQUAL(format_as<char16_t>(v2), u"2.3.4");
         #endif
 
         #if defined(UNICORN_PCRE32)
-            TEST_EQUAL(format_as<char32_t>(v123), U"1.2.3");
-            TEST_EQUAL(format_as<char32_t>(v123, U"z"), U"1.2.3");
-            TEST_EQUAL(format_as<char32_t>(v120), U"1.2.0");
-            TEST_EQUAL(format_as<char32_t>(v120, U"z"), U"1.2");
-            TEST_EQUAL(format_as<char32_t>(v100), U"1.0.0");
-            TEST_EQUAL(format_as<char32_t>(v100, U"z"), U"1");
+            TEST_EQUAL(format_as<char32_t>(v1), U"1.0.0");
+            TEST_EQUAL(format_as<char32_t>(v2), U"2.3.4");
         #endif
 
         #if defined(UNICORN_PCRE_WCHAR)
-            TEST_EQUAL(format_as<wchar_t>(v123), L"1.2.3");
-            TEST_EQUAL(format_as<wchar_t>(v123, L"z"), L"1.2.3");
-            TEST_EQUAL(format_as<wchar_t>(v120), L"1.2.0");
-            TEST_EQUAL(format_as<wchar_t>(v120, L"z"), L"1.2");
-            TEST_EQUAL(format_as<wchar_t>(v100), L"1.0.0");
-            TEST_EQUAL(format_as<wchar_t>(v100, L"z"), L"1");
+            TEST_EQUAL(format_as<wchar_t>(v1), L"1.0.0");
+            TEST_EQUAL(format_as<wchar_t>(v2), L"2.3.4");
         #endif
 
     }

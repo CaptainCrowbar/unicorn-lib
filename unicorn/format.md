@@ -212,8 +212,4 @@ No type-specific flags are defined.
 
 ### Version number formatting ###
 
-Bitmask      | Letter  | Description
--------      | ------  | -----------
-`fx_stripz`  | `z`     | Strip trailing zeros
-
-TODO
+No type-specific flags are defined.

@@ -194,8 +194,8 @@ namespace Unicorn {
 
         struct FormatVersion {
             u8string operator()(const Crow::Version& t, Crow::Flagset flags, int /*prec*/) const {
-                flags.allow(fx_global_flags | fx_stripz, "version formatting");
-                return t.str(flags.get(fx_stripz) ? 1 : 3);
+                flags.allow(fx_global_flags, "version formatting");
+                return t.str();
             }
         };
 
