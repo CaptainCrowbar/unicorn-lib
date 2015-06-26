@@ -5,10 +5,27 @@
 using namespace std::literals;
 using namespace Crow;
 using namespace Unicorn;
+using namespace Unicorn::Literals;
 
 TEST_MAIN;
 
 namespace {
+
+    void check_native_string() {
+
+        #if defined(_XOPEN_SOURCE)
+
+            string s = "Hello world"_nat;
+            TEST_EQUAL(s, "Hello world"s);
+
+        #else
+
+            wstring s = "Hello world"_nat;
+            TEST_EQUAL(s, L"Hello world"s);
+
+        #endif
+
+    }
 
     void check_version_information() {
 
@@ -24,6 +41,7 @@ namespace {
 
 TEST_MODULE(unicorn, core) {
 
+    check_native_string();
     check_version_information();
 
 }

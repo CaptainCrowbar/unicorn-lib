@@ -37,15 +37,12 @@ namespace Unicorn {
 
     namespace UnicornDetail {
 
-        #if defined(_XOPEN_SOURCE)
-            using EncodingTag = u8string;
-            using NativeChar = char;
-        #else
-            using EncodingTag = uint32_t;
-            using NativeChar = wchar_t;
-        #endif
-
-        using NativeString = basic_string<NativeChar>;
+        using EncodingTag =
+            #if defined(_XOPEN_SOURCE)
+                u8string;
+            #else
+                uint32_t;
+            #endif
 
         u8string guess_utf(const string& str);
         EncodingTag lookup_encoding(const u8string& name);

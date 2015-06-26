@@ -53,6 +53,11 @@ error message.
 These are the character and string types used in the operating system's native
 ABI.
 
+* `namespace Literals`
+    * `NativeString operator"" _nat(const NativeCharacter* s, size_t n)`
+
+Literal suffix for native strings.
+
 * `using WcharEquivalent = [char16_t or char32_t]`
 * `using WstringEquivalent = [u16string or u32string]`
 

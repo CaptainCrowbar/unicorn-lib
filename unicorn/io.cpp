@@ -7,6 +7,7 @@
 #include <cerrno>
 
 using namespace std::literals;
+using namespace Unicorn::Literals;
 
 namespace Unicorn {
 
@@ -42,21 +43,25 @@ namespace Unicorn {
 
         using SharedFile = std::shared_ptr<FILE>;
 
-        SharedFile shared_fopen(const NativeString& file, char mode, bool check) {
-            NativeCharacter fmode[] {NativeCharacter(mode), NativeCharacter('b'), 0};
+        void checked_fclose(FILE* f) {
+            if (f)
+                fclose(f);
+        }
+
+        SharedFile shared_fopen(const NativeString& file, const NativeString& mode, bool check) {
             FILE* f =
                 #if defined(_XOPEN_SOURCE)
-                    fopen(file.data(), fmode);
+                    fopen
                 #else
-                    _wfopen(file.data(), fmode);
+                    _wfopen
                 #endif
-            if (check && ! f) {
-                if (mode == 'r')
-                    throw ReadError(file, errno);
-                else
-                    throw WriteError(file, errno);
-            }
-            return {f, [] (FILE* f) noexcept { if (f) fclose(f); }};
+                (file.data(), mode.data());
+            if (f || ! check)
+                return {f, checked_fclose};
+            else if (mode == "rb"_nat)
+                throw ReadError(file, errno);
+            else
+                throw WriteError(file, errno);
         }
 
     }
@@ -67,14 +72,14 @@ namespace Unicorn {
 
         void native_load_file(const NativeString& file, string& dst, Crow::Flagset flags) {
             static constexpr size_t bufsize = 65536;
-            static const NativeString dashfile{NativeCharacter('-')};
+            static const auto dashfile = "-"_nat;
             dst.clear();
             flags.allow(io_stdin | io_nofail, "load file");
             SharedFile handle;
             if (flags.get(io_stdin) && (file.empty() || file == dashfile))
                 handle.reset(stdin, Crow::no_delete);
             else
-                handle = shared_fopen(file, 'r', ! flags.get(io_nofail));
+                handle = shared_fopen(file, "rb"_nat, ! flags.get(io_nofail));
             if (! handle)
                 return;
             string buf(bufsize, 0);
@@ -88,7 +93,7 @@ namespace Unicorn {
         }
 
         void native_save_file(const NativeString& file, const void* ptr, size_t n, Crow::Flagset flags) {
-            static const NativeString dashfile{NativeCharacter('-')};
+            static const auto dashfile = "-"_nat;
             flags.allow(io_append | io_stderr | io_stdout, "save file");
             flags.exclusive(io_stderr | io_stdout, "save file");
             SharedFile handle;
@@ -97,7 +102,7 @@ namespace Unicorn {
             else if (flags.get(io_stderr) && (file.empty() || file == dashfile))
                 handle.reset(stderr, Crow::no_delete);
             else
-                handle = shared_fopen(file, flags.get(io_append) ? 'a' : 'w', true);
+                handle = shared_fopen(file, flags.get(io_append) ? "ab"_nat : "wb"_nat, true);
             fwrite(ptr, 1, n, handle.get());
             auto err = errno;
             if (ferror(handle.get()))
@@ -134,7 +139,7 @@ namespace Unicorn {
     }
 
     void FileReader::init(const NativeString& file, Crow::Flagset flags, const u8string& enc, const u8string& eol) {
-        static const NativeString dashfile{NativeCharacter('-')};
+        static const auto dashfile = "-"_nat;
         flags.allow(err_replace | err_throw | io_bom | io_crlf | io_lf
             | io_nofail | io_notempty | io_stdin | io_striplf | io_striptws
             | io_stripws, "file input");
@@ -150,7 +155,7 @@ namespace Unicorn {
         if (flags.get(io_stdin) && (file.empty() || file == dashfile))
             impl->handle.reset(stdin, Crow::no_delete);
         else
-            impl->handle = shared_fopen(file, 'r', ! flags.get(io_nofail));
+            impl->handle = shared_fopen(file, "rb"_nat, ! flags.get(io_nofail));
         ++*this;
     }
 
@@ -260,7 +265,7 @@ namespace Unicorn {
         else if (flags.get(io_stderr) && (file.empty() || file == dashfile))
             impl->handle.reset(stderr, Crow::no_delete);
         else
-            impl->handle = shared_fopen(file, flags.get(io_append) ? 'a' : 'w', true);
+            impl->handle = shared_fopen(file, flags.get(io_append) ? "ab"_nat : "wb"_nat, true);
         if (flags.get(io_mutex)) {
             if (impl->handle.get() == stdout)
                 impl->mutex.reset(&stdout_mutex, Crow::no_delete);

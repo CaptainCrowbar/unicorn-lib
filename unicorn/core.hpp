@@ -83,6 +83,13 @@ namespace Unicorn {
     using NativeString = basic_string<NativeCharacter>;
     using WstringEquivalent = basic_string<WcharEquivalent>;
 
+    namespace Literals {
+
+        inline NativeString operator"" _nat(const NativeCharacter* s, size_t n)
+            { return NativeString(s, n); }
+
+    }
+
     // Version information
 
     Crow::Version unicorn_version() noexcept;
