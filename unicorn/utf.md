@@ -207,6 +207,7 @@ will contain the successfully converted part of the string before the error.
 * `template <typename C> u16string to_utf16(const basic_string<C>& src, Crow::Flagset flags = {})`
 * `template <typename C> u32string to_utf32(const basic_string<C>& src, Crow::Flagset flags = {})`
 * `template <typename C> wstring to_wstring(const basic_string<C>& src, Crow::Flagset flags = {})`
+* `template <typename C> NativeString to_native(const basic_string<C>& src, Crow::Flagset flags = {})`
 
 These are just shorthand for the corresponding invocation of `recode()`.
 

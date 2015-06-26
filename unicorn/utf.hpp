@@ -522,6 +522,11 @@ namespace Unicorn {
         return recode<wchar_t>(src, flags);
     }
 
+    template <typename C>
+    NativeString to_native(const basic_string<C>& src, Crow::Flagset flags = {}) {
+        return recode<NativeCharacter>(src, flags);
+    }
+
     // UTF validation functions
 
     template <typename C>
