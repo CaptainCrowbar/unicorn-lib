@@ -77,7 +77,7 @@ namespace Unicorn {
             flags.allow(io_stdin | io_nofail, "load file");
             SharedFile handle;
             if (flags.get(io_stdin) && (file.empty() || file == dashfile))
-                handle.reset(stdin, Crow::no_delete);
+                handle.reset(stdin, Crow::do_nothing);
             else
                 handle = shared_fopen(file, "rb"_nat, ! flags.get(io_nofail));
             if (! handle)
@@ -98,9 +98,9 @@ namespace Unicorn {
             flags.exclusive(io_stderr | io_stdout, "save file");
             SharedFile handle;
             if (flags.get(io_stdout) && (file.empty() || file == dashfile))
-                handle.reset(stdout, Crow::no_delete);
+                handle.reset(stdout, Crow::do_nothing);
             else if (flags.get(io_stderr) && (file.empty() || file == dashfile))
-                handle.reset(stderr, Crow::no_delete);
+                handle.reset(stderr, Crow::do_nothing);
             else
                 handle = shared_fopen(file, flags.get(io_append) ? "ab"_nat : "wb"_nat, true);
             fwrite(ptr, 1, n, handle.get());
@@ -153,7 +153,7 @@ namespace Unicorn {
         if (enc.empty() || enc == "0")
             impl->enc = "utf-8";
         if (flags.get(io_stdin) && (file.empty() || file == dashfile))
-            impl->handle.reset(stdin, Crow::no_delete);
+            impl->handle.reset(stdin, Crow::do_nothing);
         else
             impl->handle = shared_fopen(file, "rb"_nat, ! flags.get(io_nofail));
         ++*this;
@@ -261,16 +261,16 @@ namespace Unicorn {
         if (enc.empty() || enc == "0")
             impl->enc = "utf-8";
         if (flags.get(io_stdout) && (file.empty() || file == dashfile))
-            impl->handle.reset(stdout, Crow::no_delete);
+            impl->handle.reset(stdout, Crow::do_nothing);
         else if (flags.get(io_stderr) && (file.empty() || file == dashfile))
-            impl->handle.reset(stderr, Crow::no_delete);
+            impl->handle.reset(stderr, Crow::do_nothing);
         else
             impl->handle = shared_fopen(file, flags.get(io_append) ? "ab"_nat : "wb"_nat, true);
         if (flags.get(io_mutex)) {
             if (impl->handle.get() == stdout)
-                impl->mutex.reset(&stdout_mutex, Crow::no_delete);
+                impl->mutex.reset(&stdout_mutex, Crow::do_nothing);
             else if (impl->handle.get() == stderr)
-                impl->mutex.reset(&stderr_mutex, Crow::no_delete);
+                impl->mutex.reset(&stderr_mutex, Crow::do_nothing);
             else
                 impl->mutex = std::make_shared<Crow::Mutex>();
         }
