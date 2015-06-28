@@ -64,11 +64,12 @@ namespace Unicorn {
         return s;
     }
 
-    // Other types
+    // Basic character types
 
     #if defined(_XOPEN_SOURCE)
         using NativeCharacter = char;
     #else
+        #define UNICORN_NATIVE_WCHAR 1
         using NativeCharacter = wchar_t;
     #endif
 
@@ -85,8 +86,7 @@ namespace Unicorn {
 
     namespace Literals {
 
-        inline NativeString operator"" _nat(const NativeCharacter* s, size_t n)
-            { return NativeString(s, n); }
+        NativeString operator"" _nat(const char* s, size_t n);
 
     }
 

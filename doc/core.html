@@ -20,7 +20,7 @@
 <ul>
 <li><a href="#imports">Imports</a></li>
 <li><a href="#exceptions">Exceptions</a></li>
-<li><a href="#othertypes">Other types</a></li>
+<li><a href="#basiccharactertypes">Basic character types</a></li>
 <li><a href="#versioninformation">Version information</a></li>
 </ul>
 
@@ -60,7 +60,14 @@ string for validity. The offset of the offending data within the source string
 a hexadecimal representation of the offending data will be included in the
 error message.</p>
 
-<h2 id="othertypes">Other types</h2>
+<h2 id="basiccharactertypes">Basic character types</h2>
+
+<ul>
+<li><code>#define <strong>UNICORN_NATIVE_WCHAR</strong> 1</code></li>
+</ul>
+
+<p>Defined if the operating system&#8217;s native API uses wide character strings (this
+is currently defined only for native Windows builds).</p>
 
 <ul>
 <li><code>using <strong>NativeCharacter</strong> = [char on Unix, wchar_t on Windows]</code></li>
@@ -74,19 +81,30 @@ ABI.</p>
 <li><code>namespace Literals</code>
 
 <ul>
-<li><code>NativeString <strong>operator&quot;&quot; _nat</strong>(const NativeCharacter* s, size_t n)</code></li>
+<li><code>NativeString <strong>operator&quot;&quot; _nat</strong>(const char* s, size_t n)</code></li>
 </ul></li>
 </ul>
 
-<p>Literal suffix for native strings.</p>
+<p>Literal suffix to make it easy to define native string constants. The
+implementation on wide character systems assumes that <code>char</code> values can simply
+be directly copied into a <code>wchar_t</code>, so this should only be used with simple
+ASCII strings; text containing Unicode characters will need separate narrow
+and wide character versions.</p>
+
+<ul>
+<li><code>#define <strong>UNICORN_WCHAR_UTF16</strong> 1</code></li>
+<li><code>#define <strong>UNICORN_WCHAR_UTF32</strong> 1</code></li>
+</ul>
+
+<p>One of these is defined to indicate which UTF encoding the system&#8217;s <code>wstring</code>
+class uses.</p>
 
 <ul>
 <li><code>using <strong>WcharEquivalent</strong> = [char16_t or char32_t]</code></li>
 <li><code>using <strong>WstringEquivalent</strong> = [u16string or u32string]</code></li>
 </ul>
 
-<p>These are defined to indicate which UTF encoding the system&#8217;s <code>wstring</code> class
-corresponds to.</p>
+<p>These are defined to match the UTF encoding of the system&#8217;s <code>wstring</code> class.</p>
 
 <h2 id="versioninformation">Version information</h2>
 

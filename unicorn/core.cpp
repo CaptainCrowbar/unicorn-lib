@@ -1,5 +1,6 @@
 #include "unicorn/character.hpp"
 #include "unicorn/ucd-tables.hpp"
+#include <algorithm>
 
 using namespace std::literals;
 
@@ -65,6 +66,19 @@ namespace Unicorn {
             s += Crow::dec(offset);
         }
         return s;
+    }
+
+    // Basic character types
+
+    namespace Literals {
+
+        NativeString operator"" _nat(const char* s, size_t n) {
+            NativeString ns(n, '\0');
+            std::transform(s, s + n, ns.begin(),
+                [] (char c) { return static_cast<NativeCharacter>(static_cast<unsigned char>(c)); });
+            return ns;
+        }
+
     }
 
     // Version information
