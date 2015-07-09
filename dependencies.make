@@ -22,8 +22,8 @@ build/$(TARGET)/file.o: unicorn/file.cpp unicorn/file.hpp unicorn/core.hpp \
 build/$(TARGET)/format-test.o: unicorn/format-test.cpp $(LIBROOT)/crow-lib/crow/unit-test.hpp \
   $(LIBROOT)/crow-lib/crow/core.hpp $(LIBROOT)/crow-lib/crow/thread.hpp unicorn/core.hpp \
   unicorn/format.hpp unicorn/character.hpp unicorn/property-values.hpp \
-  unicorn/regex.hpp unicorn/string.hpp unicorn/segment.hpp unicorn/utf.hpp \
-  $(LIBROOT)/crow-lib/crow/meta.hpp
+  unicorn/regex.hpp unicorn/string.hpp unicorn/segment.hpp \
+  unicorn/utf.hpp $(LIBROOT)/crow-lib/crow/meta.hpp
 build/$(TARGET)/format.o: unicorn/format.cpp unicorn/format.hpp unicorn/core.hpp \
   $(LIBROOT)/crow-lib/crow/core.hpp unicorn/character.hpp \
   unicorn/property-values.hpp unicorn/regex.hpp unicorn/string.hpp \
@@ -31,17 +31,24 @@ build/$(TARGET)/format.o: unicorn/format.cpp unicorn/format.hpp unicorn/core.hpp
 build/$(TARGET)/io-test.o: unicorn/io-test.cpp $(LIBROOT)/crow-lib/crow/unit-test.hpp \
   $(LIBROOT)/crow-lib/crow/core.hpp $(LIBROOT)/crow-lib/crow/thread.hpp unicorn/core.hpp \
   unicorn/io.hpp unicorn/character.hpp unicorn/property-values.hpp \
-  unicorn/file.hpp unicorn/string.hpp unicorn/segment.hpp unicorn/utf.hpp
+  unicorn/file.hpp unicorn/string.hpp unicorn/segment.hpp \
+  unicorn/utf.hpp
 build/$(TARGET)/io.o: unicorn/io.cpp unicorn/io.hpp unicorn/core.hpp \
   $(LIBROOT)/crow-lib/crow/core.hpp unicorn/character.hpp \
   unicorn/property-values.hpp unicorn/file.hpp unicorn/string.hpp \
-  unicorn/segment.hpp unicorn/utf.hpp unicorn/format.hpp unicorn/regex.hpp \
-  $(LIBROOT)/crow-lib/crow/meta.hpp unicorn/mbcs.hpp $(LIBROOT)/crow-lib/crow/thread.hpp
+  unicorn/segment.hpp unicorn/utf.hpp unicorn/format.hpp \
+  unicorn/regex.hpp $(LIBROOT)/crow-lib/crow/meta.hpp unicorn/mbcs.hpp \
+  $(LIBROOT)/crow-lib/crow/thread.hpp
 build/$(TARGET)/lexer-test.o: unicorn/lexer-test.cpp $(LIBROOT)/crow-lib/crow/unit-test.hpp \
   $(LIBROOT)/crow-lib/crow/core.hpp $(LIBROOT)/crow-lib/crow/thread.hpp unicorn/core.hpp \
   unicorn/lexer.hpp unicorn/character.hpp unicorn/property-values.hpp \
-  unicorn/format.hpp unicorn/regex.hpp unicorn/string.hpp \
-  unicorn/segment.hpp unicorn/utf.hpp $(LIBROOT)/crow-lib/crow/meta.hpp
+  unicorn/regex.hpp unicorn/string.hpp unicorn/segment.hpp \
+  unicorn/utf.hpp
+build/$(TARGET)/lexer.o: unicorn/lexer.cpp unicorn/lexer.hpp unicorn/core.hpp \
+  $(LIBROOT)/crow-lib/crow/core.hpp unicorn/character.hpp \
+  unicorn/property-values.hpp unicorn/regex.hpp unicorn/string.hpp \
+  unicorn/segment.hpp unicorn/utf.hpp unicorn/format.hpp \
+  $(LIBROOT)/crow-lib/crow/meta.hpp
 build/$(TARGET)/mbcs-test.o: unicorn/mbcs-test.cpp $(LIBROOT)/crow-lib/crow/unit-test.hpp \
   $(LIBROOT)/crow-lib/crow/core.hpp $(LIBROOT)/crow-lib/crow/thread.hpp unicorn/core.hpp \
   unicorn/mbcs.hpp unicorn/character.hpp unicorn/property-values.hpp \

@@ -2,7 +2,6 @@
 
 #include "unicorn/core.hpp"
 #include "unicorn/character.hpp"
-#include "unicorn/format.hpp"
 #include "unicorn/regex.hpp"
 #include "unicorn/string.hpp"
 #include <cstring>
@@ -50,22 +49,12 @@ namespace Unicorn {
     class SyntaxError:
     public std::runtime_error {
     public:
-        SyntaxError(const u8string& text, size_t offset):
-            std::runtime_error(assemble(text, offset)), bug(text), ofs(offset) {}
+        SyntaxError(const u8string& text, size_t offset, const u8string& message = "Syntax error");
         u8string text() const { return bug; }
         size_t offset() const { return ofs; }
     private:
         u8string bug;
         size_t ofs;
-        static u8string assemble(const u8string& text, size_t offset) {
-            using namespace Unicorn::Literals;
-            auto s = "Syntax error at offset $1: Unexpected "_fmt(offset);
-            if (text.empty())
-                s += "EOF";
-            else
-                format_type(text, s, fx_ascquote);
-            return s;
-        }
     };
 
     // Token structure
