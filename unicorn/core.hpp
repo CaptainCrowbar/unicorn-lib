@@ -1,6 +1,6 @@
 #pragma once
 
-#include "crow/core.hpp" // -lcrow
+#include "crow/core.hpp"
 #include <map>
 #include <stdexcept>
 #include <string>
