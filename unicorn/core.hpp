@@ -5,6 +5,8 @@
 #include <stdexcept>
 #include <string>
 
+CROW_LDLIB(unicorn)
+
 namespace Unicorn {
 
     namespace UnicornDetail {
