@@ -88,11 +88,153 @@ namespace {
 
     void check_squeeze() {
 
+        u8string s8;
+        u16string s16;
+        u32string s32;
+
         TEST_EQUAL(str_squeeze(u8""s), u8""s);
+        TEST_EQUAL(str_squeeze(u8"\t\t\t"s), u8" "s);
         TEST_EQUAL(str_squeeze(u8"Hello world"s), u8"Hello world"s);
         TEST_EQUAL(str_squeeze(u8"\t\t\tHello\t\t\tworld\t\t\t"s), u8" Hello world "s);
         TEST_EQUAL(str_squeeze(u8"€uro ∈lement"s), u8"€uro ∈lement"s);
-        TEST_EQUAL(str_squeeze(u8"\u2028\u2028\u2028€uro\u2028\u2028\u2028∈lement\u2028\u2028\u2028"s), u8" €uro ∈lement "s);
+        TEST_EQUAL(str_squeeze(u8"\u2028\u2028€uro\u2028\u2028∈lement\u2028\u2028"s), u8" €uro ∈lement "s);
+        TEST_EQUAL(str_squeeze(u8""s, u8"+-*/"s), u8""s);
+        TEST_EQUAL(str_squeeze(u8"/*-+"s, u8"+-*/"s), u8"+"s);
+        TEST_EQUAL(str_squeeze(u8"Hello world"s, u8"+-*/"s), u8"Hello world"s);
+        TEST_EQUAL(str_squeeze(u8"/*-+Hello/*-+world/*-+"s, u8"+-*/"s), u8"+Hello+world+"s);
+        TEST_EQUAL(str_squeeze(u8"∇∃∀€uro∇∃∀∈lement∇∃∀"s, u8"∀∃∇"s), u8"∀€uro∀∈lement∀"s);
+
+        TEST_EQUAL(str_squeeze_trim(u8""s), u8""s);
+        TEST_EQUAL(str_squeeze_trim(u8"\t\t\t"s), u8""s);
+        TEST_EQUAL(str_squeeze_trim(u8"Hello world"s), u8"Hello world"s);
+        TEST_EQUAL(str_squeeze_trim(u8"\t\t\tHello\t\t\tworld\t\t\t"s), u8"Hello world"s);
+        TEST_EQUAL(str_squeeze_trim(u8"€uro ∈lement"s), u8"€uro ∈lement"s);
+        TEST_EQUAL(str_squeeze_trim(u8"\u2028\u2028€uro\u2028\u2028∈lement\u2028\u2028"s), u8"€uro ∈lement"s);
+        TEST_EQUAL(str_squeeze_trim(u8""s, u8"+-*/"s), u8""s);
+        TEST_EQUAL(str_squeeze_trim(u8"/*-+"s, u8"+-*/"s), u8""s);
+        TEST_EQUAL(str_squeeze_trim(u8"Hello world"s, u8"+-*/"s), u8"Hello world"s);
+        TEST_EQUAL(str_squeeze_trim(u8"/*-+Hello/*-+world/*-+"s, u8"+-*/"s), u8"Hello+world"s);
+        TEST_EQUAL(str_squeeze_trim(u8"∇∃∀€uro∇∃∀∈lement∇∃∀"s, u8"∀∃∇"s), u8"€uro∀∈lement"s);
+
+        s8 = u8""s;                                                 TRY(str_squeeze_in(s8));             TEST_EQUAL(s8, u8""s);
+        s8 = u8"\t\t\t"s;                                           TRY(str_squeeze_in(s8));             TEST_EQUAL(s8, u8" "s);
+        s8 = u8"Hello world"s;                                      TRY(str_squeeze_in(s8));             TEST_EQUAL(s8, u8"Hello world"s);
+        s8 = u8"\t\t\tHello\t\t\tworld\t\t\t"s;                     TRY(str_squeeze_in(s8));             TEST_EQUAL(s8, u8" Hello world "s);
+        s8 = u8"€uro ∈lement"s;                                     TRY(str_squeeze_in(s8));             TEST_EQUAL(s8, u8"€uro ∈lement"s);
+        s8 = u8"\u2028\u2028€uro\u2028\u2028∈lement\u2028\u2028"s;  TRY(str_squeeze_in(s8));             TEST_EQUAL(s8, u8" €uro ∈lement "s);
+        s8 = u8""s;                                                 TRY(str_squeeze_in(s8, u8"+-*/"s));  TEST_EQUAL(s8, u8""s);
+        s8 = u8"/*-+"s;                                             TRY(str_squeeze_in(s8, u8"+-*/"s));  TEST_EQUAL(s8, u8"+"s);
+        s8 = u8"Hello world"s;                                      TRY(str_squeeze_in(s8, u8"+-*/"s));  TEST_EQUAL(s8, u8"Hello world"s);
+        s8 = u8"/*-+Hello/*-+world/*-+"s;                           TRY(str_squeeze_in(s8, u8"+-*/"s));  TEST_EQUAL(s8, u8"+Hello+world+"s);
+        s8 = u8"∇∃∀€uro∇∃∀∈lement∇∃∀"s;                             TRY(str_squeeze_in(s8, u8"∀∃∇"s));   TEST_EQUAL(s8, u8"∀€uro∀∈lement∀"s);
+
+        s8 = u8""s;                                                 TRY(str_squeeze_trim_in(s8));             TEST_EQUAL(s8, u8""s);
+        s8 = u8"\t\t\t"s;                                           TRY(str_squeeze_trim_in(s8));             TEST_EQUAL(s8, u8""s);
+        s8 = u8"Hello world"s;                                      TRY(str_squeeze_trim_in(s8));             TEST_EQUAL(s8, u8"Hello world"s);
+        s8 = u8"\t\t\tHello\t\t\tworld\t\t\t"s;                     TRY(str_squeeze_trim_in(s8));             TEST_EQUAL(s8, u8"Hello world"s);
+        s8 = u8"€uro ∈lement"s;                                     TRY(str_squeeze_trim_in(s8));             TEST_EQUAL(s8, u8"€uro ∈lement"s);
+        s8 = u8"\u2028\u2028€uro\u2028\u2028∈lement\u2028\u2028"s;  TRY(str_squeeze_trim_in(s8));             TEST_EQUAL(s8, u8"€uro ∈lement"s);
+        s8 = u8""s;                                                 TRY(str_squeeze_trim_in(s8, u8"+-*/"s));  TEST_EQUAL(s8, u8""s);
+        s8 = u8"/*-+"s;                                             TRY(str_squeeze_trim_in(s8, u8"+-*/"s));  TEST_EQUAL(s8, u8""s);
+        s8 = u8"Hello world"s;                                      TRY(str_squeeze_trim_in(s8, u8"+-*/"s));  TEST_EQUAL(s8, u8"Hello world"s);
+        s8 = u8"/*-+Hello/*-+world/*-+"s;                           TRY(str_squeeze_trim_in(s8, u8"+-*/"s));  TEST_EQUAL(s8, u8"Hello+world"s);
+        s8 = u8"∇∃∀€uro∇∃∀∈lement∇∃∀"s;                             TRY(str_squeeze_trim_in(s8, u8"∀∃∇"s));   TEST_EQUAL(s8, u8"€uro∀∈lement"s);
+
+        TEST_EQUAL(str_squeeze(u""s), u""s);
+        TEST_EQUAL(str_squeeze(u"\t\t\t"s), u" "s);
+        TEST_EQUAL(str_squeeze(u"Hello world"s), u"Hello world"s);
+        TEST_EQUAL(str_squeeze(u"\t\t\tHello\t\t\tworld\t\t\t"s), u" Hello world "s);
+        TEST_EQUAL(str_squeeze(u"€uro ∈lement"s), u"€uro ∈lement"s);
+        TEST_EQUAL(str_squeeze(u"\u2028\u2028€uro\u2028\u2028∈lement\u2028\u2028"s), u" €uro ∈lement "s);
+        TEST_EQUAL(str_squeeze(u""s, u"+-*/"s), u""s);
+        TEST_EQUAL(str_squeeze(u"/*-+"s, u"+-*/"s), u"+"s);
+        TEST_EQUAL(str_squeeze(u"Hello world"s, u"+-*/"s), u"Hello world"s);
+        TEST_EQUAL(str_squeeze(u"/*-+Hello/*-+world/*-+"s, u"+-*/"s), u"+Hello+world+"s);
+        TEST_EQUAL(str_squeeze(u"∇∃∀€uro∇∃∀∈lement∇∃∀"s, u"∀∃∇"s), u"∀€uro∀∈lement∀"s);
+
+        TEST_EQUAL(str_squeeze_trim(u""s), u""s);
+        TEST_EQUAL(str_squeeze_trim(u"\t\t\t"s), u""s);
+        TEST_EQUAL(str_squeeze_trim(u"Hello world"s), u"Hello world"s);
+        TEST_EQUAL(str_squeeze_trim(u"\t\t\tHello\t\t\tworld\t\t\t"s), u"Hello world"s);
+        TEST_EQUAL(str_squeeze_trim(u"€uro ∈lement"s), u"€uro ∈lement"s);
+        TEST_EQUAL(str_squeeze_trim(u"\u2028\u2028€uro\u2028\u2028∈lement\u2028\u2028"s), u"€uro ∈lement"s);
+        TEST_EQUAL(str_squeeze_trim(u""s, u"+-*/"s), u""s);
+        TEST_EQUAL(str_squeeze_trim(u"/*-+"s, u"+-*/"s), u""s);
+        TEST_EQUAL(str_squeeze_trim(u"Hello world"s, u"+-*/"s), u"Hello world"s);
+        TEST_EQUAL(str_squeeze_trim(u"/*-+Hello/*-+world/*-+"s, u"+-*/"s), u"Hello+world"s);
+        TEST_EQUAL(str_squeeze_trim(u"∇∃∀€uro∇∃∀∈lement∇∃∀"s, u"∀∃∇"s), u"€uro∀∈lement"s);
+
+        s16 = u""s;                                                 TRY(str_squeeze_in(s16));            TEST_EQUAL(s16, u""s);
+        s16 = u"\t\t\t"s;                                           TRY(str_squeeze_in(s16));            TEST_EQUAL(s16, u" "s);
+        s16 = u"Hello world"s;                                      TRY(str_squeeze_in(s16));            TEST_EQUAL(s16, u"Hello world"s);
+        s16 = u"\t\t\tHello\t\t\tworld\t\t\t"s;                     TRY(str_squeeze_in(s16));            TEST_EQUAL(s16, u" Hello world "s);
+        s16 = u"€uro ∈lement"s;                                     TRY(str_squeeze_in(s16));            TEST_EQUAL(s16, u"€uro ∈lement"s);
+        s16 = u"\u2028\u2028€uro\u2028\u2028∈lement\u2028\u2028"s;  TRY(str_squeeze_in(s16));            TEST_EQUAL(s16, u" €uro ∈lement "s);
+        s16 = u""s;                                                 TRY(str_squeeze_in(s16, u"+-*/"s));  TEST_EQUAL(s16, u""s);
+        s16 = u"/*-+"s;                                             TRY(str_squeeze_in(s16, u"+-*/"s));  TEST_EQUAL(s16, u"+"s);
+        s16 = u"Hello world"s;                                      TRY(str_squeeze_in(s16, u"+-*/"s));  TEST_EQUAL(s16, u"Hello world"s);
+        s16 = u"/*-+Hello/*-+world/*-+"s;                           TRY(str_squeeze_in(s16, u"+-*/"s));  TEST_EQUAL(s16, u"+Hello+world+"s);
+        s16 = u"∇∃∀€uro∇∃∀∈lement∇∃∀"s;                             TRY(str_squeeze_in(s16, u"∀∃∇"s));   TEST_EQUAL(s16, u"∀€uro∀∈lement∀"s);
+
+        s16 = u""s;                                                 TRY(str_squeeze_trim_in(s16));            TEST_EQUAL(s16, u""s);
+        s16 = u"\t\t\t"s;                                           TRY(str_squeeze_trim_in(s16));            TEST_EQUAL(s16, u""s);
+        s16 = u"Hello world"s;                                      TRY(str_squeeze_trim_in(s16));            TEST_EQUAL(s16, u"Hello world"s);
+        s16 = u"\t\t\tHello\t\t\tworld\t\t\t"s;                     TRY(str_squeeze_trim_in(s16));            TEST_EQUAL(s16, u"Hello world"s);
+        s16 = u"€uro ∈lement"s;                                     TRY(str_squeeze_trim_in(s16));            TEST_EQUAL(s16, u"€uro ∈lement"s);
+        s16 = u"\u2028\u2028€uro\u2028\u2028∈lement\u2028\u2028"s;  TRY(str_squeeze_trim_in(s16));            TEST_EQUAL(s16, u"€uro ∈lement"s);
+        s16 = u""s;                                                 TRY(str_squeeze_trim_in(s16, u"+-*/"s));  TEST_EQUAL(s16, u""s);
+        s16 = u"/*-+"s;                                             TRY(str_squeeze_trim_in(s16, u"+-*/"s));  TEST_EQUAL(s16, u""s);
+        s16 = u"Hello world"s;                                      TRY(str_squeeze_trim_in(s16, u"+-*/"s));  TEST_EQUAL(s16, u"Hello world"s);
+        s16 = u"/*-+Hello/*-+world/*-+"s;                           TRY(str_squeeze_trim_in(s16, u"+-*/"s));  TEST_EQUAL(s16, u"Hello+world"s);
+        s16 = u"∇∃∀€uro∇∃∀∈lement∇∃∀"s;                             TRY(str_squeeze_trim_in(s16, u"∀∃∇"s));   TEST_EQUAL(s16, u"€uro∀∈lement"s);
+
+        TEST_EQUAL(str_squeeze(U""s), U""s);
+        TEST_EQUAL(str_squeeze(U"\t\t\t"s), U" "s);
+        TEST_EQUAL(str_squeeze(U"Hello world"s), U"Hello world"s);
+        TEST_EQUAL(str_squeeze(U"\t\t\tHello\t\t\tworld\t\t\t"s), U" Hello world "s);
+        TEST_EQUAL(str_squeeze(U"€uro ∈lement"s), U"€uro ∈lement"s);
+        TEST_EQUAL(str_squeeze(U"\u2028\u2028€uro\u2028\u2028∈lement\u2028\u2028"s), U" €uro ∈lement "s);
+        TEST_EQUAL(str_squeeze(U""s, U"+-*/"s), U""s);
+        TEST_EQUAL(str_squeeze(U"/*-+"s, U"+-*/"s), U"+"s);
+        TEST_EQUAL(str_squeeze(U"Hello world"s, U"+-*/"s), U"Hello world"s);
+        TEST_EQUAL(str_squeeze(U"/*-+Hello/*-+world/*-+"s, U"+-*/"s), U"+Hello+world+"s);
+        TEST_EQUAL(str_squeeze(U"∇∃∀€uro∇∃∀∈lement∇∃∀"s, U"∀∃∇"s), U"∀€uro∀∈lement∀"s);
+
+        TEST_EQUAL(str_squeeze_trim(U""s), U""s);
+        TEST_EQUAL(str_squeeze_trim(U"\t\t\t"s), U""s);
+        TEST_EQUAL(str_squeeze_trim(U"Hello world"s), U"Hello world"s);
+        TEST_EQUAL(str_squeeze_trim(U"\t\t\tHello\t\t\tworld\t\t\t"s), U"Hello world"s);
+        TEST_EQUAL(str_squeeze_trim(U"€uro ∈lement"s), U"€uro ∈lement"s);
+        TEST_EQUAL(str_squeeze_trim(U"\u2028\u2028€uro\u2028\u2028∈lement\u2028\u2028"s), U"€uro ∈lement"s);
+        TEST_EQUAL(str_squeeze_trim(U""s, U"+-*/"s), U""s);
+        TEST_EQUAL(str_squeeze_trim(U"/*-+"s, U"+-*/"s), U""s);
+        TEST_EQUAL(str_squeeze_trim(U"Hello world"s, U"+-*/"s), U"Hello world"s);
+        TEST_EQUAL(str_squeeze_trim(U"/*-+Hello/*-+world/*-+"s, U"+-*/"s), U"Hello+world"s);
+        TEST_EQUAL(str_squeeze_trim(U"∇∃∀€uro∇∃∀∈lement∇∃∀"s, U"∀∃∇"s), U"€uro∀∈lement"s);
+
+        s32 = U""s;                                                 TRY(str_squeeze_in(s32));            TEST_EQUAL(s32, U""s);
+        s32 = U"\t\t\t"s;                                           TRY(str_squeeze_in(s32));            TEST_EQUAL(s32, U" "s);
+        s32 = U"Hello world"s;                                      TRY(str_squeeze_in(s32));            TEST_EQUAL(s32, U"Hello world"s);
+        s32 = U"\t\t\tHello\t\t\tworld\t\t\t"s;                     TRY(str_squeeze_in(s32));            TEST_EQUAL(s32, U" Hello world "s);
+        s32 = U"€uro ∈lement"s;                                     TRY(str_squeeze_in(s32));            TEST_EQUAL(s32, U"€uro ∈lement"s);
+        s32 = U"\u2028\u2028€uro\u2028\u2028∈lement\u2028\u2028"s;  TRY(str_squeeze_in(s32));            TEST_EQUAL(s32, U" €uro ∈lement "s);
+        s32 = U""s;                                                 TRY(str_squeeze_in(s32, U"+-*/"s));  TEST_EQUAL(s32, U""s);
+        s32 = U"/*-+"s;                                             TRY(str_squeeze_in(s32, U"+-*/"s));  TEST_EQUAL(s32, U"+"s);
+        s32 = U"Hello world"s;                                      TRY(str_squeeze_in(s32, U"+-*/"s));  TEST_EQUAL(s32, U"Hello world"s);
+        s32 = U"/*-+Hello/*-+world/*-+"s;                           TRY(str_squeeze_in(s32, U"+-*/"s));  TEST_EQUAL(s32, U"+Hello+world+"s);
+        s32 = U"∇∃∀€uro∇∃∀∈lement∇∃∀"s;                             TRY(str_squeeze_in(s32, U"∀∃∇"s));   TEST_EQUAL(s32, U"∀€uro∀∈lement∀"s);
+
+        s32 = U""s;                                                 TRY(str_squeeze_trim_in(s32));            TEST_EQUAL(s32, U""s);
+        s32 = U"\t\t\t"s;                                           TRY(str_squeeze_trim_in(s32));            TEST_EQUAL(s32, U""s);
+        s32 = U"Hello world"s;                                      TRY(str_squeeze_trim_in(s32));            TEST_EQUAL(s32, U"Hello world"s);
+        s32 = U"\t\t\tHello\t\t\tworld\t\t\t"s;                     TRY(str_squeeze_trim_in(s32));            TEST_EQUAL(s32, U"Hello world"s);
+        s32 = U"€uro ∈lement"s;                                     TRY(str_squeeze_trim_in(s32));            TEST_EQUAL(s32, U"€uro ∈lement"s);
+        s32 = U"\u2028\u2028€uro\u2028\u2028∈lement\u2028\u2028"s;  TRY(str_squeeze_trim_in(s32));            TEST_EQUAL(s32, U"€uro ∈lement"s);
+        s32 = U""s;                                                 TRY(str_squeeze_trim_in(s32, U"+-*/"s));  TEST_EQUAL(s32, U""s);
+        s32 = U"/*-+"s;                                             TRY(str_squeeze_trim_in(s32, U"+-*/"s));  TEST_EQUAL(s32, U""s);
+        s32 = U"Hello world"s;                                      TRY(str_squeeze_trim_in(s32, U"+-*/"s));  TEST_EQUAL(s32, U"Hello world"s);
+        s32 = U"/*-+Hello/*-+world/*-+"s;                           TRY(str_squeeze_trim_in(s32, U"+-*/"s));  TEST_EQUAL(s32, U"Hello+world"s);
+        s32 = U"∇∃∀€uro∇∃∀∈lement∇∃∀"s;                             TRY(str_squeeze_trim_in(s32, U"∀∃∇"s));   TEST_EQUAL(s32, U"€uro∀∈lement"s);
 
     }
 

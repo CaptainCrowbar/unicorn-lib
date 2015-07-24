@@ -26,10 +26,6 @@ namespace Unicorn {
     constexpr auto wrap_crlf        = Crow::Flagset::value('r');  // Use CR+LF for line breaks (default LF)
     constexpr auto wrap_enforce     = Crow::Flagset::value('e');  // Enforce right margin strictly
     constexpr auto wrap_preserve    = Crow::Flagset::value('p');  // Preserve layout on already indented lines
-    constexpr auto fold_leading     = Crow::Flagset::value('l');  // Strip leading whitespace when folding
-    constexpr auto fold_trailing    = Crow::Flagset::value('t');  // Strip trailing whitespace when folding
-    constexpr auto fold_lines       = Crow::Flagset::value('n');  // Fold all whitespace including line breaks
-    constexpr auto fold_control     = Crow::Flagset::value('c');  // Include control characters as whitespace
 
     // String size functions
 
@@ -979,44 +975,6 @@ namespace Unicorn {
         }
     }
 
-    template <typename C>
-    basic_string<C> str_fold_whitespace(const basic_string<C>& str, Crow::Flagset flags = {}) {
-        static constexpr auto space = C(' ');
-        flags.allow(fold_leading | fold_trailing | fold_lines | fold_control, "Whitespace folding");
-        bool strip_leading = flags.get(fold_leading), strip_trailing = flags.get(fold_trailing),
-            strip_lines = flags.get(fold_lines), strip_control = flags.get(fold_control),
-            was_break = true;
-        auto is_space = [=] (char32_t c) {
-            return (strip_lines ? char_is_white_space(c) : char_is_inline_space(c))
-                || (strip_control && char_is_control(c));
-        };
-        auto i = utf_begin(str), j = i, e = utf_end(str);
-        basic_string<C> result;
-        while (i != e) {
-            if (is_space(*i)) {
-                j = std::find_if_not(i, e, is_space);
-                if (! (strip_leading && was_break))
-                    result += space;
-            } else {
-                if (strip_trailing && char_is_line_break(*i) && str_last_char(result) == space)
-                    result.pop_back();
-                j = std::find_if(i, e, is_space);
-                result.append(str, i.offset(), j.offset() - i.offset());
-                was_break = char_is_line_break(*std::prev(j));
-            }
-            i = j;
-        }
-        if (strip_trailing && str_last_char(result) == space)
-            result.pop_back();
-        return result;
-    }
-
-    template <typename C>
-    void str_fold_whitespace_in(basic_string<C>& str, Crow::Flagset flags = {}) {
-        auto result = str_fold_whitespace(str, flags);
-        str.swap(result);
-    }
-
     template <typename FwdRange, typename C>
     basic_string<C> str_join(const FwdRange& r, const basic_string<C>& delim) {
         using string_type = basic_string<C>;
@@ -1354,6 +1312,7 @@ namespace Unicorn {
                 dst = src;
                 return;
             }
+            auto sub = str_first_char(chars);
             auto i = utf_begin(src), end = utf_end(src);
             if (trim)
                 i = str_find_first_not_of(i, end, chars);
@@ -1364,7 +1323,7 @@ namespace Unicorn {
                     break;
                 i = str_find_first_not_of(j, end, chars);
                 if (! trim || i != end)
-                    str_append_char(dst, C(' '));
+                    str_append_char(dst, sub);
             }
         }
 
@@ -1443,14 +1402,14 @@ namespace Unicorn {
     template <typename C>
     void str_squeeze_trim_in(basic_string<C>& str, const basic_string<C>& chars) {
         basic_string<C> dst;
-        UnicornDetail::str_squeeze_helper(str, dst, false, chars);
+        UnicornDetail::str_squeeze_helper(str, dst, true, chars);
         str.swap(dst);
     }
 
     template <typename C>
     void str_squeeze_trim_in(basic_string<C>& str, const C* chars) {
         basic_string<C> dst;
-        UnicornDetail::str_squeeze_helper(str, dst, false, cstr(chars));
+        UnicornDetail::str_squeeze_helper(str, dst, true, cstr(chars));
         str.swap(dst);
     }
 

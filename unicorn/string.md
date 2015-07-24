@@ -320,25 +320,6 @@ string can't be adjusted to exactly the specified size (because one of the
 East Asian width options was selected and wide characters are present), the
 result will be one unit longer than the requested length.
 
-* `template <typename C> basic_string<C> str_fold_whitespace(const basic_string<C>& str, Crow::Flagset flags = {})`
-* `template <typename C> void str_fold_whitespace_in(basic_string<C>& str, Crow::Flagset flags = {})`
-
-Bitmask          | Letter  | Description
--------          | ------  | -----------
-`fold_leading`   | `l`     | Strip leading whitespace when folding
-`fold_trailing`  | `t`     | Strip trailing whitespace when folding
-`fold_lines`     | `n`     | Fold all whitespace including line breaks
-`fold_control`   | `c`     | Include control characters as whitespace
-
-Replace any sequence of one or more whitespace characters with a single ASCII
-space. If `fold_leading` or `fold_trailing` is passed, leading or trailing
-whitespace on each line is stripped. By default only inline whitespace is
-folded, leaving line breaks unchanged; if `fold_lines` is passed, all line
-breaks will be folded as if they were ordinary whitespace. If `fold_leading`
-or `fold_trailing` is combined with `fold_lines`, line breaks have no
-significance and only whitespace at the beginning or end of the whole string
-will be stripped.
-
 * `template <typename FwdRange> basic_string<[character type]> str_join(const FwdRange& r)`
 * `template <typename FwdRange, typename C> basic_string<C> str_join(const FwdRange& r, const basic_string<C>& delim)`
 * `template <typename FwdRange, typename C> basic_string<C> str_join(const FwdRange& r, const C* delim)`

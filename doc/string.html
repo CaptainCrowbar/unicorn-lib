@@ -404,59 +404,6 @@ East Asian width options was selected and wide characters are present), the
 result will be one unit longer than the requested length.</p>
 
 <ul>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_fold_whitespace</strong>(const basic_string&lt;C&gt;&amp; str, Crow::Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; void <strong>str_fold_whitespace_in</strong>(basic_string&lt;C&gt;&amp; str, Crow::Flagset flags = {})</code></li>
-</ul>
-
-<table>
-<colgroup>
-<col style="text-align:left;"/>
-<col style="text-align:left;"/>
-<col style="text-align:left;"/>
-</colgroup>
-
-<thead>
-<tr>
-	<th style="text-align:left;">Bitmask</th>
-	<th style="text-align:left;">Letter</th>
-	<th style="text-align:left;">Description</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-	<td style="text-align:left;"><code>fold_leading</code></td>
-	<td style="text-align:left;"><code>l</code></td>
-	<td style="text-align:left;">Strip leading whitespace when folding</td>
-</tr>
-<tr>
-	<td style="text-align:left;"><code>fold_trailing</code></td>
-	<td style="text-align:left;"><code>t</code></td>
-	<td style="text-align:left;">Strip trailing whitespace when folding</td>
-</tr>
-<tr>
-	<td style="text-align:left;"><code>fold_lines</code></td>
-	<td style="text-align:left;"><code>n</code></td>
-	<td style="text-align:left;">Fold all whitespace including line breaks</td>
-</tr>
-<tr>
-	<td style="text-align:left;"><code>fold_control</code></td>
-	<td style="text-align:left;"><code>c</code></td>
-	<td style="text-align:left;">Include control characters as whitespace</td>
-</tr>
-</tbody>
-</table>
-
-<p>Replace any sequence of one or more whitespace characters with a single ASCII
-space. If <code>fold_leading</code> or <code>fold_trailing</code> is passed, leading or trailing
-whitespace on each line is stripped. By default only inline whitespace is
-folded, leaving line breaks unchanged; if <code>fold_lines</code> is passed, all line
-breaks will be folded as if they were ordinary whitespace. If <code>fold_leading</code>
-or <code>fold_trailing</code> is combined with <code>fold_lines</code>, line breaks have no
-significance and only whitespace at the beginning or end of the whole string
-will be stripped.</p>
-
-<ul>
 <li><code>template &lt;typename FwdRange&gt; basic_string&lt;[character type]&gt; <strong>str_join</strong>(const FwdRange&amp; r)</code></li>
 <li><code>template &lt;typename FwdRange, typename C&gt; basic_string&lt;C&gt; <strong>str_join</strong>(const FwdRange&amp; r, const basic_string&lt;C&gt;&amp; delim)</code></li>
 <li><code>template &lt;typename FwdRange, typename C&gt; basic_string&lt;C&gt; <strong>str_join</strong>(const FwdRange&amp; r, const C* delim)</code></li>
