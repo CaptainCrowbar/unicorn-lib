@@ -86,6 +86,16 @@ namespace {
 
     }
 
+    void check_squeeze() {
+
+        TEST_EQUAL(str_squeeze(u8""s), u8""s);
+        TEST_EQUAL(str_squeeze(u8"Hello world"s), u8"Hello world"s);
+        TEST_EQUAL(str_squeeze(u8"\t\t\tHello\t\t\tworld\t\t\t"s), u8" Hello world "s);
+        TEST_EQUAL(str_squeeze(u8"€uro ∈lement"s), u8"€uro ∈lement"s);
+        TEST_EQUAL(str_squeeze(u8"\u2028\u2028\u2028€uro\u2028\u2028\u2028∈lement\u2028\u2028\u2028"s), u8" €uro ∈lement "s);
+
+    }
+
     void check_substring() {
 
         // UTF-32    UTF-16     UTF-8
@@ -944,6 +954,7 @@ namespace {
 TEST_MODULE(unicorn, string_manipulation_s_z) {
 
     check_split();
+    check_squeeze();
     check_substring();
     check_translate();
     check_trim();

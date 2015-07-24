@@ -543,6 +543,29 @@ empty; if the delimiter string is empty (but the source string is not), a
 single string will be written.</p>
 
 <ul>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_squeeze</strong>(const basic_string&lt;C&gt;&amp; str)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_squeeze</strong>(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; chars)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_squeeze</strong>(const basic_string&lt;C&gt;&amp; str, const C* chars)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_squeeze_trim</strong>(const basic_string&lt;C&gt;&amp; str)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_squeeze_trim</strong>(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; chars)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_squeeze_trim</strong>(const basic_string&lt;C&gt;&amp; str, const C* chars)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_squeeze_in</strong>(basic_string&lt;C&gt;&amp; str)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_squeeze_in</strong>(basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; chars)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_squeeze_in</strong>(basic_string&lt;C&gt;&amp; str, const C* chars)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_squeeze_trim_in</strong>(basic_string&lt;C&gt;&amp; str)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_squeeze_trim_in</strong>(basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; chars)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_squeeze_trim_in</strong>(basic_string&lt;C&gt;&amp; str, const C* chars)</code></li>
+</ul>
+
+<p>These replace every sequence of one or more characters from <code>chars</code> with the
+first character in <code>chars</code>. By default, if <code>chars</code> is not supplied, every
+sequence of whitespace characters will be replaced with a single space. The
+<code>str_squeeze_trim()</code> functions do the same thing, except that leading and
+trailing characters from <code>chars</code> are removed completely instead of reduced to
+one character. In all cases, the original string will be left unchanged if
+<code>chars</code> is empty.</p>
+
+<ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_substring</strong>(const basic_string&lt;C&gt;&amp; str, size_t offset, size_t count = npos)</code></li>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>utf_substring</strong>(const basic_string&lt;C&gt;&amp; str, size_t index, size_t length = npos, Crow::Flagset flags = {})</code></li>
 </ul>

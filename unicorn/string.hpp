@@ -1329,6 +1329,131 @@ namespace Unicorn {
         str_split_by(src, dst, Crow::cstr(delim));
     }
 
+    namespace UnicornDetail {
+
+        template <typename C>
+        void str_squeeze_helper(const basic_string<C>& src, basic_string<C>& dst, bool trim) {
+            auto i = utf_begin(src), end = utf_end(src);
+            if (trim)
+                i = std::find_if_not(i, end, char_is_white_space);
+            while (i != end) {
+                auto j = std::find_if(i, end, char_is_white_space);
+                str_append(dst, i, j);
+                if (j == end)
+                    break;
+                i = std::find_if_not(j, end, char_is_white_space);
+                if (! trim || i != end)
+                    str_append_char(dst, C(' '));
+            }
+        }
+
+        template <typename C>
+        void str_squeeze_helper(const basic_string<C>& src, basic_string<C>& dst, bool trim,
+                const basic_string<C>& chars) {
+            if (chars.empty()) {
+                dst = src;
+                return;
+            }
+            auto i = utf_begin(src), end = utf_end(src);
+            if (trim)
+                i = str_find_first_not_of(i, end, chars);
+            while (i != end) {
+                auto j = str_find_first_of(i, end, chars);
+                str_append(dst, i, j);
+                if (j == end)
+                    break;
+                i = str_find_first_not_of(j, end, chars);
+                if (! trim || i != end)
+                    str_append_char(dst, C(' '));
+            }
+        }
+
+    }
+
+    template <typename C>
+    basic_string<C> str_squeeze(const basic_string<C>& str) {
+        basic_string<C> dst;
+        UnicornDetail::str_squeeze_helper(str, dst, false);
+        return dst;
+    }
+
+    template <typename C>
+    basic_string<C> str_squeeze(const basic_string<C>& str, const basic_string<C>& chars) {
+        basic_string<C> dst;
+        UnicornDetail::str_squeeze_helper(str, dst, false, chars);
+        return dst;
+    }
+
+    template <typename C>
+    basic_string<C> str_squeeze(const basic_string<C>& str, const C* chars) {
+        basic_string<C> dst;
+        UnicornDetail::str_squeeze_helper(str, dst, false, cstr(chars));
+        return dst;
+    }
+
+    template <typename C>
+    basic_string<C> str_squeeze_trim(const basic_string<C>& str) {
+        basic_string<C> dst;
+        UnicornDetail::str_squeeze_helper(str, dst, true);
+        return dst;
+    }
+
+    template <typename C>
+    basic_string<C> str_squeeze_trim(const basic_string<C>& str, const basic_string<C>& chars) {
+        basic_string<C> dst;
+        UnicornDetail::str_squeeze_helper(str, dst, true, chars);
+        return dst;
+    }
+
+    template <typename C>
+    basic_string<C> str_squeeze_trim(const basic_string<C>& str, const C* chars) {
+        basic_string<C> dst;
+        UnicornDetail::str_squeeze_helper(str, dst, true, cstr(chars));
+        return dst;
+    }
+
+    template <typename C>
+    void str_squeeze_in(basic_string<C>& str) {
+        basic_string<C> dst;
+        UnicornDetail::str_squeeze_helper(str, dst, false);
+        str.swap(dst);
+    }
+
+    template <typename C>
+    void str_squeeze_in(basic_string<C>& str, const basic_string<C>& chars) {
+        basic_string<C> dst;
+        UnicornDetail::str_squeeze_helper(str, dst, false, chars);
+        str.swap(dst);
+    }
+
+    template <typename C>
+    void str_squeeze_in(basic_string<C>& str, const C* chars) {
+        basic_string<C> dst;
+        UnicornDetail::str_squeeze_helper(str, dst, false, cstr(chars));
+        str.swap(dst);
+    }
+
+    template <typename C>
+    void str_squeeze_trim_in(basic_string<C>& str) {
+        basic_string<C> dst;
+        UnicornDetail::str_squeeze_helper(str, dst, true);
+        str.swap(dst);
+    }
+
+    template <typename C>
+    void str_squeeze_trim_in(basic_string<C>& str, const basic_string<C>& chars) {
+        basic_string<C> dst;
+        UnicornDetail::str_squeeze_helper(str, dst, false, chars);
+        str.swap(dst);
+    }
+
+    template <typename C>
+    void str_squeeze_trim_in(basic_string<C>& str, const C* chars) {
+        basic_string<C> dst;
+        UnicornDetail::str_squeeze_helper(str, dst, false, cstr(chars));
+        str.swap(dst);
+    }
+
     template <typename C>
     basic_string<C> str_substring(const basic_string<C>& str, size_t offset, size_t count = npos) {
         if (offset < str.size())

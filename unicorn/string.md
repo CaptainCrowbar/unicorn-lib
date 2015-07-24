@@ -413,6 +413,27 @@ in the `delim` list. Nothing will be written if the original source string is
 empty; if the delimiter string is empty (but the source string is not), a
 single string will be written.
 
+* `template <typename C> basic_string<C> str_squeeze(const basic_string<C>& str)`
+* `template <typename C> basic_string<C> str_squeeze(const basic_string<C>& str, const basic_string<C>& chars)`
+* `template <typename C> basic_string<C> str_squeeze(const basic_string<C>& str, const C* chars)`
+* `template <typename C> basic_string<C> str_squeeze_trim(const basic_string<C>& str)`
+* `template <typename C> basic_string<C> str_squeeze_trim(const basic_string<C>& str, const basic_string<C>& chars)`
+* `template <typename C> basic_string<C> str_squeeze_trim(const basic_string<C>& str, const C* chars)`
+* `template <typename C> void str_squeeze_in(basic_string<C>& str)`
+* `template <typename C> void str_squeeze_in(basic_string<C>& str, const basic_string<C>& chars)`
+* `template <typename C> void str_squeeze_in(basic_string<C>& str, const C* chars)`
+* `template <typename C> void str_squeeze_trim_in(basic_string<C>& str)`
+* `template <typename C> void str_squeeze_trim_in(basic_string<C>& str, const basic_string<C>& chars)`
+* `template <typename C> void str_squeeze_trim_in(basic_string<C>& str, const C* chars)`
+
+These replace every sequence of one or more characters from `chars` with the
+first character in `chars`. By default, if `chars` is not supplied, every
+sequence of whitespace characters will be replaced with a single space. The
+`str_squeeze_trim()` functions do the same thing, except that leading and
+trailing characters from `chars` are removed completely instead of reduced to
+one character. In all cases, the original string will be left unchanged if
+`chars` is empty.
+
 * `template <typename C> basic_string<C> str_substring(const basic_string<C>& str, size_t offset, size_t count = npos)`
 * `template <typename C> basic_string<C> utf_substring(const basic_string<C>& str, size_t index, size_t length = npos, Crow::Flagset flags = {})`
 
