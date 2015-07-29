@@ -27,9 +27,10 @@ namespace Unicorn {
 
         u8string maybe_quote(const u8string& str) {
             static const auto is_alnum = gc_predicate("L,N");
+            static const auto quote = "${1:q}"_fmt;
             for (auto& c: utf_range(str))
                 if (! is_alnum(c))
-                    return "${1:q}"_fmt(str);
+                    return quote(str);
             return str;
         }
 
