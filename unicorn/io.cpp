@@ -120,6 +120,7 @@ namespace Unicorn {
         u8string enc;
         u8string eol;
         SharedFile handle;
+        size_t lines;
         bool is_ready() noexcept {
             return handle.get() && ! ferror(handle.get()) && ! feof(handle.get());
         }
@@ -137,6 +138,10 @@ namespace Unicorn {
         return *this;
     }
 
+    size_t FileReader::line() const noexcept {
+        return impl ? impl->lines : size_t(0);
+    }
+
     void FileReader::init(const NativeString& file, Crow::Flagset flags, const u8string& enc, const u8string& eol) {
         static const auto dashfile = "-"_nat;
         flags.allow(err_replace | err_throw | io_bom | io_crlf | io_lf
@@ -149,6 +154,7 @@ namespace Unicorn {
         impl->flags = flags;
         impl->enc = enc;
         impl->eol = eol;
+        impl->lines = 0;
         if (enc.empty() || enc == "0")
             impl->enc = "utf-8";
         if (flags.get(io_stdin) && (file.empty() || file == dashfile))
@@ -209,6 +215,7 @@ namespace Unicorn {
             encoded.resize(eolpos);
         import_string(encoded, impl->line8, impl->enc, impl->flags & (err_replace | err_throw));
         fixline();
+        ++impl->lines;
     }
 
     void FileReader::getmore(size_t n) {

@@ -134,6 +134,7 @@ namespace Unicorn {
         FileReader operator++(int) { return ++*this; }
         friend bool operator==(const FileReader& lhs, const FileReader& rhs) noexcept { return lhs.impl == rhs.impl; }
         friend bool operator!=(const FileReader& lhs, const FileReader& rhs) noexcept { return lhs.impl != rhs.impl; }
+        size_t line() const noexcept;
     private:
         struct impl_type;
         std::shared_ptr<impl_type> impl;

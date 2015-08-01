@@ -74,6 +74,7 @@ TODO
     * `template <typename C> FileReader::FileReader(const basic_string<C>& file, Crow::Flagset flags, uint32_t enc)`
     * `template <typename C1, typename C2, typename C3> FileReader::FileReader(const basic_string<C1>& file, Crow::Flagset flags, const basic_string<C2>& enc, const basic_string<C3>& eol)`
     * `template <typename C1, typename C2> FileReader::FileReader(const basic_string<C1>& file, Crow::Flagset flags, uint32_t enc, const basic_string<C2>& eol)`
+    * `size_t FileReader::line() const noexcept`
     * `[standard input iterator operations]`
 
 TODO

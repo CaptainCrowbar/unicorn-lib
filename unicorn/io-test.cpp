@@ -47,6 +47,7 @@ namespace {
     void check_file_reader() {
 
         using u8vector = std::vector<u8string>;
+        u8string s;
         u8vector vec;
         Irange<FileReader> range;
         TempFile tempfile(testfile);
@@ -263,6 +264,30 @@ namespace {
             "East West",
             "Goodbye",
         }));
+        TRY(range = read_lines(testfile));
+        s.clear();
+        for (auto fr = range.begin(); fr != range.end(); ++fr)
+            TRY(s += dec(fr.line()) + ":"+ *fr);
+        TEST_EQUAL(s,
+            "1:\n"
+            "2:Hello\n"
+            "3:    \n"
+            "4:    North South    \n"
+            "5:    East West    \n"
+            "6:    \n"
+            "7:Goodbye\n"
+            "8:\n"
+        );
+        TRY(range = read_lines(testfile, io_stripws | io_notempty));
+        s.clear();
+        for (auto fr = range.begin(); fr != range.end(); ++fr)
+            TRY(s += dec(fr.line()) + ":"+ *fr + "\n");
+        TEST_EQUAL(s,
+            "2:Hello\n"
+            "4:North South\n"
+            "5:East West\n"
+            "7:Goodbye\n"
+        );
 
         TRY(save_file(testfile, "Hello world!!Goodbye!!"));
         TRY(range = read_lines(testfile, {}, ""s, "!!"s));
