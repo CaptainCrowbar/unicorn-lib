@@ -76,7 +76,7 @@ namespace Unicorn {
 
     // Basic character types
 
-    #if defined(_XOPEN_SOURCE)
+    #if defined(CROW_TARGET_UNIX)
         using NativeCharacter = char;
     #else
         #define UNICORN_NATIVE_WCHAR 1

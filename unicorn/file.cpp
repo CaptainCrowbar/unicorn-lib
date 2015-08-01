@@ -5,15 +5,13 @@
 #include <cerrno>
 #include <cstdio>
 
-#if defined(_WIN32)
-    #include <windows.h>
-#endif
-
-#if defined(_XOPEN_SOURCE)
+#if defined(CROW_TARGET_UNIX)
     #include <dirent.h>
     #include <sys/stat.h>
     #include <sys/types.h>
     #include <unistd.h>
+#else
+    #include <windows.h>
 #endif
 
 using namespace std::literals;
@@ -37,7 +35,7 @@ namespace Unicorn {
             s += "; error ";
             s += Crow::dec(error);
             string details;
-            #if defined(_XOPEN_SOURCE)
+            #if defined(CROW_TARGET_UNIX)
                 import_string(system_message(error), details);
             #else
                 recode(windows_message(error), details);
@@ -52,7 +50,7 @@ namespace Unicorn {
 
     namespace UnicornDetail {
 
-        #if defined(_XOPEN_SOURCE)
+        #if defined(CROW_TARGET_UNIX)
 
             // File name operations
 

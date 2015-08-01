@@ -5,7 +5,7 @@
 #include <iostream>
 #include <string>
 
-#if defined(_WIN32)
+#if defined(CROW_TARGET_WINDOWS)
     #include <windows.h>
 #endif
 
@@ -67,7 +67,7 @@ namespace {
 
     void check_encoding_queries() {
 
-        #if defined(_XOPEN_SOURCE)
+        #if defined(CROW_TARGET_UNIX)
 
             TEST_EQUAL(lookup_encoding(20127), "us-ascii");
             TEST_EQUAL(lookup_encoding("ASCII"), "ascii");
@@ -160,7 +160,7 @@ namespace {
         TEST_THROW(import_string(euro_windows1252, s8, 65001, err_throw), EncodingError);
 
         // Error detection is not reliable on Windows
-        #if defined(_XOPEN_SOURCE)
+        #if defined(CROW_TARGET_UNIX)
             TEST_THROW(import_string(euro_utf8, s8, "ascii", err_throw), EncodingError);
             TEST_THROW(import_string(euro_utf8, s8, 20127, err_throw), EncodingError);
         #endif
@@ -172,7 +172,7 @@ namespace {
         TEST_THROW(import_string(euro_windows1252, s16, "utf-8", err_throw), EncodingError);
         TEST_THROW(import_string(euro_windows1252, s16, 65001, err_throw), EncodingError);
 
-        #if defined(_XOPEN_SOURCE)
+        #if defined(CROW_TARGET_UNIX)
             TEST_THROW(import_string(euro_utf8, s16, "ascii", err_throw), EncodingError);
             TEST_THROW(import_string(euro_utf8, s16, 20127, err_throw), EncodingError);
         #endif
@@ -184,7 +184,7 @@ namespace {
         TEST_THROW(import_string(euro_windows1252, s32, "utf-8", err_throw), EncodingError);
         TEST_THROW(import_string(euro_windows1252, s32, 65001, err_throw), EncodingError);
 
-        #if defined(_XOPEN_SOURCE)
+        #if defined(CROW_TARGET_UNIX)
             TEST_THROW(import_string(euro_utf8, s32, "ascii", err_throw), EncodingError);
             TEST_THROW(import_string(euro_utf8, s32, 20127, err_throw), EncodingError);
         #endif
@@ -274,7 +274,7 @@ namespace {
         TEST_THROW(export_string(euro_utf8 + '\xff', s, "utf-8", err_throw), EncodingError);
         TEST_THROW(export_string(euro_utf8 + '\xff', s, 65001, err_throw), EncodingError);
 
-        #if defined(_XOPEN_SOURCE)
+        #if defined(CROW_TARGET_UNIX)
             TEST_THROW(export_string(euro_utf8, s, "ascii", err_throw), EncodingError);
             TEST_THROW(export_string(euro_utf8, s, 20127, err_throw), EncodingError);
         #endif
@@ -286,7 +286,7 @@ namespace {
         TEST_THROW(export_string(euro_utf16 + char16_t(0xdfff), s, "utf-8", err_throw), EncodingError);
         TEST_THROW(export_string(euro_utf16 + char16_t(0xdfff), s, 65001, err_throw), EncodingError);
 
-        #if defined(_XOPEN_SOURCE)
+        #if defined(CROW_TARGET_UNIX)
             TEST_THROW(export_string(euro_utf16, s, "ascii", err_throw), EncodingError);
             TEST_THROW(export_string(euro_utf16, s, 20127, err_throw), EncodingError);
         #endif
@@ -298,7 +298,7 @@ namespace {
         TEST_THROW(export_string(euro_utf32 + char32_t(0xdfff), s, "utf-8", err_throw), EncodingError);
         TEST_THROW(export_string(euro_utf32 + char32_t(0xdfff), s, 65001, err_throw), EncodingError);
 
-        #if defined(_XOPEN_SOURCE)
+        #if defined(CROW_TARGET_UNIX)
             TEST_THROW(export_string(euro_utf32, s, "ascii", err_throw), EncodingError);
             TEST_THROW(export_string(euro_utf32, s, 20127, err_throw), EncodingError);
         #endif
@@ -335,7 +335,7 @@ namespace {
         TRY(s8 = system_message(EDOM));
         TEST(! s8.empty());
 
-        #if defined(_WIN32)
+        #if defined(CROW_TARGET_WINDOWS)
             TRY(s8 = windows_message(ERROR_INVALID_FUNCTION));
             TEST(! s8.empty());
         #endif

@@ -31,7 +31,7 @@ namespace Unicorn {
     u8string local_encoding(const u8string& default_encoding = "utf-8");
     u8string system_message(int error);
 
-    #if defined(_WIN32)
+    #if defined(CROW_TARGET_WINDOWS)
         u8string windows_message(uint32_t error);
     #endif
 
@@ -40,7 +40,7 @@ namespace Unicorn {
     namespace UnicornDetail {
 
         using EncodingTag =
-            #if defined(_XOPEN_SOURCE)
+            #if defined(CROW_TARGET_UNIX)
                 u8string;
             #else
                 uint32_t;

@@ -323,7 +323,7 @@ namespace {
         TEST_EQUAL(s, u8"Hello €urope\nGoodbye\n");
 
         // Error detection is not reliable on Windows
-        #if defined(_XOPEN_SOURCE)
+        #if defined(CROW_TARGET_UNIX)
             vec32 = {U"Hello €urope\n", U"Goodbye\n"};
             TRY(writer = FileWriter(testfile, err_throw, "ascii"s));
             TEST_THROW(std::copy(CROW_BOUNDS(vec32), writer), EncodingError);

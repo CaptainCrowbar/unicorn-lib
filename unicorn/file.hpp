@@ -16,7 +16,7 @@ namespace Unicorn {
 
     // System dependencies
 
-    #if defined(_XOPEN_SOURCE)
+    #if defined(CROW_TARGET_UNIX)
         constexpr char file_delimiter = '/';
     #else
         constexpr char file_delimiter = '\\';
@@ -84,7 +84,7 @@ namespace Unicorn {
 
         template <typename C>
         basic_string<C> normalize_file(const basic_string<C>& file) {
-            #if defined(_XOPEN_SOURCE)
+            #if defined(CROW_TARGET_UNIX)
                 return file;
             #else
                 auto nfile = file;
@@ -107,7 +107,7 @@ namespace Unicorn {
         bool native_file_is_absolute(const u8string& file);
         bool native_file_is_root(const u8string& file);
 
-        #if ! defined(_XOPEN_SOURCE)
+        #if defined(CROW_TARGET_NATIVE_WINDOWS)
             bool native_file_is_drive_absolute(const u8string& file);
             bool native_file_is_drive_relative(const u8string& file);
         #endif
@@ -121,7 +121,7 @@ namespace Unicorn {
 
     template <typename C>
     bool file_is_drive_absolute(const basic_string<C>& file) {
-        #if defined(_XOPEN_SOURCE)
+        #if defined(CROW_TARGET_UNIX)
             (void)file;
             return false;
         #else
@@ -131,7 +131,7 @@ namespace Unicorn {
 
     template <typename C>
     bool file_is_drive_relative(const basic_string<C>& file) {
-        #if defined(_XOPEN_SOURCE)
+        #if defined(CROW_TARGET_UNIX)
             (void)file;
             return false;
         #else
@@ -192,7 +192,7 @@ namespace Unicorn {
     std::pair<basic_string<C>, basic_string<C>> split_path(const basic_string<C>& file) {
         auto nfile = UnicornDetail::normalize_file(file);
         auto cut = nfile.find_last_of(static_cast<C>(file_delimiter));
-        #if ! defined(_XOPEN_SOURCE)
+        #if defined(CROW_TARGET_NATIVE_WINDOWS)
             if (cut == 2 && char_is_ascii(file[0]) && Crow::ascii_isalpha(static_cast<char>(file[0]))
                     && file[1] == C(':'))
                 return {nfile.substr(0, 3), nfile.substr(3, npos)};
@@ -212,7 +212,7 @@ namespace Unicorn {
     std::pair<basic_string<C>, basic_string<C>> split_file(const basic_string<C>& file) {
         auto nfile = UnicornDetail::normalize_file(file);
         auto cut = nfile.find_last_of(static_cast<C>(file_delimiter));
-        #if ! defined(_XOPEN_SOURCE)
+        #if defined(CROW_TARGET_NATIVE_WINDOWS)
             if (cut == npos && char_is_ascii(file[0]) && Crow::ascii_isalpha(static_cast<char>(file[0]))
                     && file[1] == C(':'))
                 cut = 1;

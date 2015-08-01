@@ -13,7 +13,7 @@ namespace {
 
     void check_native_string() {
 
-        #if defined(_XOPEN_SOURCE)
+        #if defined(CROW_TARGET_UNIX)
 
             string s = "Hello world"_nat;
             TEST_EQUAL(s, "Hello world"s);

@@ -11,7 +11,7 @@ using namespace std::literals;
 using namespace Crow;
 using namespace Unicorn;
 
-#if defined(_XOPEN_SOURCE)
+#if defined(CROW_TARGET_UNIX)
     #define SLASH "/"
 #else
     #define SLASH "\\\\"
@@ -28,7 +28,7 @@ namespace {
 
     void check_file_name_operations() {
 
-        #if defined(_XOPEN_SOURCE)
+        #if defined(CROW_TARGET_UNIX)
 
             TEST(! file_is_absolute(""s));
             TEST(file_is_absolute("/"s));
@@ -471,7 +471,7 @@ namespace {
         TRY(p32 = split_path(U".hello"s));     TEST_EQUAL(p32.first, U"");        TEST_EQUAL(p32.second, U".hello");
         TRY(p32 = split_file(U".hello"s));     TEST_EQUAL(p32.first, U".hello");  TEST_EQUAL(p32.second, U"");
 
-        #if defined(_XOPEN_SOURCE)
+        #if defined(CROW_TARGET_UNIX)
 
             TRY(p8 = split_path("/hello.txt"s));               TEST_EQUAL(p8.first, "/");            TEST_EQUAL(p8.second, "hello.txt");
             TRY(p8 = split_file("/hello.txt"s));               TEST_EQUAL(p8.first, "hello");        TEST_EQUAL(p8.second, ".txt");
@@ -706,7 +706,7 @@ namespace {
         TEST(! file_is_directory("Makefile"s));
         TEST(! file_is_directory(""s));
         TEST(! file_is_directory("no such file"s));
-        #if defined(_XOPEN_SOURCE)
+        #if defined(CROW_TARGET_UNIX)
             TEST(file_is_directory("/"s));
         #else
             TEST(file_is_directory("C:\\"s));
@@ -717,7 +717,7 @@ namespace {
         TEST(! file_is_hidden("unicorn"s));
         TEST(! file_is_hidden("Makefile"s));
         TEST(! file_is_hidden("no such file"s));
-        #if defined(_XOPEN_SOURCE)
+        #if defined(CROW_TARGET_UNIX)
             TEST(! file_is_hidden("/"s));
         #else
             TEST(! file_is_hidden("C:\\"s));
@@ -728,7 +728,7 @@ namespace {
         TEST(! file_is_symlink("unicorn"s));
         TEST(! file_is_symlink("Makefile"s));
         TEST(! file_is_symlink("no such file"s));
-        #if defined(_XOPEN_SOURCE)
+        #if defined(CROW_TARGET_UNIX)
             TEST(! file_is_symlink("/"s));
         #else
             TEST(! file_is_symlink("C:\\"s));
@@ -860,7 +860,7 @@ namespace {
         TEST(! file_is_directory(u"Makefile"s));
         TEST(! file_is_directory(u""s));
         TEST(! file_is_directory(u"no such file"s));
-        #if defined(_XOPEN_SOURCE)
+        #if defined(CROW_TARGET_UNIX)
             TEST(file_is_directory(u"/"s));
         #else
             TEST(file_is_directory(u"C:\\"s));
@@ -871,7 +871,7 @@ namespace {
         TEST(! file_is_hidden(u"unicorn"s));
         TEST(! file_is_hidden(u"Makefile"s));
         TEST(! file_is_hidden(u"no such file"s));
-        #if defined(_XOPEN_SOURCE)
+        #if defined(CROW_TARGET_UNIX)
             TEST(! file_is_hidden(u"/"s));
         #else
             TEST(! file_is_hidden(u"C:\\"s));
@@ -882,7 +882,7 @@ namespace {
         TEST(! file_is_symlink(u"unicorn"s));
         TEST(! file_is_symlink(u"Makefile"s));
         TEST(! file_is_symlink(u"no such file"s));
-        #if defined(_XOPEN_SOURCE)
+        #if defined(CROW_TARGET_UNIX)
             TEST(! file_is_symlink(u"/"s));
         #else
             TEST(! file_is_symlink(u"C:\\"s));
@@ -1014,7 +1014,7 @@ namespace {
         TEST(! file_is_directory(U"Makefile"s));
         TEST(! file_is_directory(U""s));
         TEST(! file_is_directory(U"no such file"s));
-        #if defined(_XOPEN_SOURCE)
+        #if defined(CROW_TARGET_UNIX)
             TEST(file_is_directory(U"/"s));
         #else
             TEST(file_is_directory(U"C:\\"s));
@@ -1025,7 +1025,7 @@ namespace {
         TEST(! file_is_hidden(U"unicorn"s));
         TEST(! file_is_hidden(U"Makefile"s));
         TEST(! file_is_hidden(U"no such file"s));
-        #if defined(_XOPEN_SOURCE)
+        #if defined(CROW_TARGET_UNIX)
             TEST(! file_is_hidden(U"/"s));
         #else
             TEST(! file_is_hidden(U"C:\\"s));
@@ -1036,7 +1036,7 @@ namespace {
         TEST(! file_is_symlink(U"unicorn"s));
         TEST(! file_is_symlink(U"Makefile"s));
         TEST(! file_is_symlink(U"no such file"s));
-        #if defined(_XOPEN_SOURCE)
+        #if defined(CROW_TARGET_UNIX)
             TEST(! file_is_symlink(U"/"s));
         #else
             TEST(! file_is_symlink(U"C:\\"s));

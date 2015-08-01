@@ -10,11 +10,9 @@
 #include <map>
 #include <unordered_map>
 
-#if defined(_XOPEN_SOURCE)
+#if defined(CROW_TARGET_UNIX)
     #include <iconv.h>
-#endif
-
-#if defined(_WIN32)
+#else
     #include <windows.h>
 #endif
 
@@ -27,7 +25,7 @@ namespace Unicorn {
 
         using CharsetPtr = const UnicornDetail::CharsetInfo*;
 
-        #if defined(_XOPEN_SOURCE)
+        #if defined(CROW_TARGET_UNIX)
 
             constexpr const char* utf8_tag       = "utf-8";
             constexpr const char* utf16_tag      = "utf-16";
@@ -185,7 +183,7 @@ namespace Unicorn {
             static const auto match_integer = "/\\d+/"_re;
             static const auto match_unicode =
                 "/(?:cs|x)?(?:iso10646)?((?:ucs|utf)\\d+)(be|le|internal|swapped)?/"_re;
-            #if defined(_XOPEN_SOURCE)
+            #if defined(CROW_TARGET_UNIX)
                 static const std::vector<u8string> codepage_prefixes
                     {"cp","dos","ibm","ms","windows-"};
             #endif
@@ -208,7 +206,7 @@ namespace Unicorn {
                 else if (m1 == "utf32" || m1 == "ucs4")
                     return swap ? utf32swap_tag : utf32_tag;
             }
-            #if defined(_XOPEN_SOURCE)
+            #if defined(CROW_TARGET_UNIX)
                 // Try using the name directly in iconv()
                 if (valid_iconv(name))
                     return name;
@@ -224,7 +222,7 @@ namespace Unicorn {
             if (match || match_integer.match(current)) {
                 // Name is an integer, presumably a code page
                 auto page = static_cast<uint32_t>(Crow::decnum(current));
-                #if defined(_XOPEN_SOURCE)
+                #if defined(CROW_TARGET_UNIX)
                     // Look the number up in the {codepage => charset} map
                     csp = map[page];
                     if (! csp) {
@@ -247,7 +245,7 @@ namespace Unicorn {
                 // Look the name up in the {normalized name => charset} map
                 csp = map[smash_name(current, true)];
                 if (! csp) {
-                    #if defined(_XOPEN_SOURCE)
+                    #if defined(CROW_TARGET_UNIX)
                         // If not found, try variations against iconv()
                         if (valid_iconv(current))
                             return current;
@@ -262,7 +260,7 @@ namespace Unicorn {
                 }
             }
             // If we reach here, we have identified a charset record
-            #if defined(_XOPEN_SOURCE)
+            #if defined(CROW_TARGET_UNIX)
                 // For each name in the charset's name list, try variations against iconv()
                 for (auto& nm: name_range(csp->names))
                     if (valid_iconv(nm))
@@ -286,7 +284,7 @@ namespace Unicorn {
             return EncodingTag();
         }
 
-        #if defined(_XOPEN_SOURCE)
+        #if defined(CROW_TARGET_UNIX)
 
             void native_recode(const string& src, string& dst, const u8string& from, const u8string& to,
                     const u8string& tag, Crow::Flagset flags) {
@@ -345,7 +343,7 @@ namespace Unicorn {
     // Utility functions
 
     u8string local_encoding(const u8string& default_encoding) {
-        #if defined(_XOPEN_SOURCE)
+        #if defined(CROW_TARGET_UNIX)
             static constexpr const char* locale_vars[] {"LC_ALL", "LC_CTYPE", "LANG"};
             u8string name;
             for (auto key: locale_vars) {
@@ -379,7 +377,7 @@ namespace Unicorn {
         return u;
     }
 
-    #if defined(_WIN32)
+    #if defined(CROW_TARGET_WINDOWS)
 
         namespace {
 
@@ -474,7 +472,7 @@ namespace Unicorn {
                     return it->second;
             }
             auto tag = EncodingTag();
-            #if ! defined(_XOPEN_SOURCE)
+            #if defined(CROW_TARGET_NATIVE_WINDOWS)
                 if (lcname.find_first_not_of("0123456789") == npos)
                     tag = lookup_encoding(static_cast<uint32_t>(Crow::decnum(lcname)));
             #endif
@@ -499,7 +497,7 @@ namespace Unicorn {
                     return it->second;
             }
             auto tag = EncodingTag();
-            #if defined(_XOPEN_SOURCE)
+            #if defined(CROW_TARGET_UNIX)
                 tag = lookup_encoding(Crow::dec(page));
             #else
                 if (page == utf8_tag || page == utf16_tag || page == utf16swap_tag
@@ -520,7 +518,7 @@ namespace Unicorn {
                 flags = err_replace;
         }
 
-        #if defined(_XOPEN_SOURCE)
+        #if defined(CROW_TARGET_UNIX)
 
             void native_import(const string& src, string& dst, u8string tag, Crow::Flagset flags) {
                 native_recode(src, dst, tag, "utf-8"s, tag, flags);
