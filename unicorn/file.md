@@ -95,7 +95,7 @@ optionally one or more file names for reference. The `file()` method returns
 an empty string if the index is beyond the end of the supplied file list (i.e.
 if `i>=files()`).
 
-## File name operations ##
+## File name functions ##
 
 These functions operate purely on file name strings; they do not make any
 contact with the actual file system, and will give the same results regardless
