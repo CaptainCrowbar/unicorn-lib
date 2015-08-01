@@ -137,17 +137,19 @@ Examples:
     file_path("foo", "bar", "hello.txt") == "foo/bar/hello.txt"
     file_path("/foo", "/bar", "hello.txt") == "/bar/hello.txt"
 
-* `template <typename C> std::pair<basic_string<C>, basic_string<C>> split_path(const basic_string<C>& file)`
+* `template <typename C> std::pair<basic_string<C>, basic_string<C>> split_path(const basic_string<C>& file, bool keep = false)`
 * `template <typename C> std::pair<basic_string<C>, basic_string<C>> split_file(const basic_string<C>& file)`
 
 These functions break down a file name into its constituent parts. The
-`split_path()` function breaks the full name into directory leaf names; for
-example, if the original file name is `"/foo/bar/hello.txt"`, the directory
-name is `"/foo/bar"` and the leaf name is `"hello.txt"`. If the file name
-refers to the file system root (e.g. `"/"`), the directory is the full file
-name and the leaf name is empty. The delimiter between the directory and leaf
-names is discarded, unless the directory is a root name that requires the
-delimiter suffix for correct identification.
+`split_path()` function breaks the full name into directory and leaf names;
+for example, if the original file name is `"/foo/bar/hello.txt"`, the
+directory name is `"/foo/bar"` and the leaf name is `"hello.txt"`. If the file
+name refers to the file system root (e.g. `"/"`), the directory is the full
+file name and the leaf name is empty. By default, the delimiter between the
+directory and leaf names is discarded, unless the directory is a root name
+that requires the delimiter suffix for correct identification; if the `keep`
+flag is set, the delimiter (if any) will always be kept at the end of the
+directory part.
 
 The `split_file()` function breaks the leaf name into a base and extension
 (discarding the directory part); for example, if the original file name is

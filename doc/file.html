@@ -162,18 +162,20 @@ file_path(&quot;/foo&quot;, &quot;/bar&quot;, &quot;hello.txt&quot;) == &quot;/b
 </code></pre>
 
 <ul>
-<li><code>template &lt;typename C&gt; std::pair&lt;basic_string&lt;C&gt;, basic_string&lt;C&gt;&gt; <strong>split_path</strong>(const basic_string&lt;C&gt;&amp; file)</code></li>
+<li><code>template &lt;typename C&gt; std::pair&lt;basic_string&lt;C&gt;, basic_string&lt;C&gt;&gt; <strong>split_path</strong>(const basic_string&lt;C&gt;&amp; file, bool keep = false)</code></li>
 <li><code>template &lt;typename C&gt; std::pair&lt;basic_string&lt;C&gt;, basic_string&lt;C&gt;&gt; <strong>split_file</strong>(const basic_string&lt;C&gt;&amp; file)</code></li>
 </ul>
 
 <p>These functions break down a file name into its constituent parts. The
-<code>split_path()</code> function breaks the full name into directory leaf names; for
-example, if the original file name is <code>&quot;/foo/bar/hello.txt&quot;</code>, the directory
-name is <code>&quot;/foo/bar&quot;</code> and the leaf name is <code>&quot;hello.txt&quot;</code>. If the file name
-refers to the file system root (e.g. <code>&quot;/&quot;</code>), the directory is the full file
-name and the leaf name is empty. The delimiter between the directory and leaf
-names is discarded, unless the directory is a root name that requires the
-delimiter suffix for correct identification.</p>
+<code>split_path()</code> function breaks the full name into directory and leaf names;
+for example, if the original file name is <code>&quot;/foo/bar/hello.txt&quot;</code>, the
+directory name is <code>&quot;/foo/bar&quot;</code> and the leaf name is <code>&quot;hello.txt&quot;</code>. If the file
+name refers to the file system root (e.g. <code>&quot;/&quot;</code>), the directory is the full
+file name and the leaf name is empty. By default, the delimiter between the
+directory and leaf names is discarded, unless the directory is a root name
+that requires the delimiter suffix for correct identification; if the <code>keep</code>
+flag is set, the delimiter (if any) will always be kept at the end of the
+directory part.</p>
 
 <p>The <code>split_file()</code> function breaks the leaf name into a base and extension
 (discarding the directory part); for example, if the original file name is

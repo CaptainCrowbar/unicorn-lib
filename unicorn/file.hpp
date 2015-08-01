@@ -189,15 +189,15 @@ namespace Unicorn {
     }
 
     template <typename C>
-    std::pair<basic_string<C>, basic_string<C>> split_path(const basic_string<C>& file) {
+    std::pair<basic_string<C>, basic_string<C>> split_path(const basic_string<C>& file, bool keep = false) {
         auto nfile = UnicornDetail::normalize_file(file);
         auto cut = nfile.find_last_of(static_cast<C>(file_delimiter));
         #if defined(CROW_TARGET_NATIVE_WINDOWS)
-            if (cut == 2 && char_is_ascii(file[0]) && Crow::ascii_isalpha(static_cast<char>(file[0]))
-                    && file[1] == C(':'))
+            if (cut == 2 && file[1] == C(':')
+                    && char_is_ascii(file[0]) && Crow::ascii_isalpha(static_cast<char>(file[0])))
                 return {nfile.substr(0, 3), nfile.substr(3, npos)};
-            else if (cut == npos && char_is_ascii(file[0]) && Crow::ascii_isalpha(static_cast<char>(file[0]))
-                    && file[1] == C(':'))
+            else if (cut == npos && file[1] == C(':')
+                    && char_is_ascii(file[0]) && Crow::ascii_isalpha(static_cast<char>(file[0])))
                 return {nfile.substr(0, 2), nfile.substr(2, npos)};
         #endif
         if (cut == npos)
@@ -205,7 +205,7 @@ namespace Unicorn {
         else if (cut == 0)
             return {nfile.substr(0, 1), nfile.substr(1, npos)};
         else
-            return {nfile.substr(0, cut), nfile.substr(cut + 1, npos)};
+            return {nfile.substr(0, cut + static_cast<size_t>(keep)), nfile.substr(cut + 1, npos)};
     }
 
     template <typename C>
