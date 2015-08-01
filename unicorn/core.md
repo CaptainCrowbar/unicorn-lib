@@ -31,11 +31,17 @@ Imported for convenience from the Crow library.
 
 ## Exceptions ##
 
+* `class InitializationError: public std::runtime_error`
+
+An abstract base class for internal errors that may happen while loading the
+Unicode tables used by certain functions. Functions that can throw exceptions
+derived from this are individually documented.
+
 * `class EncodingError: public std::runtime_error`
     * `EncodingError::EncodingError()`
     * `explicit EncodingError::EncodingError(const u8string& encoding, size_t offset = 0)`
     * `template <typename C> EncodingError::EncodingError(const u8string& encoding, size_t offset, const C* ptr, size_t n = 1)`
-    * `u8string EncodingError::encoding() const`
+    * `const char* EncodingError::encoding() noexcept const`
     * `size_t EncodingError::offset() const noexcept`
 
 An exception thrown to indicate a text encoding error encountered when

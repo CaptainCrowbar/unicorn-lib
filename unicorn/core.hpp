@@ -2,6 +2,7 @@
 
 #include "crow/core.hpp"
 #include <map>
+#include <memory>
 #include <stdexcept>
 #include <string>
 
@@ -33,20 +34,27 @@ namespace Unicorn {
 
     // Exceptions
 
+    class InitializationError:
+    public std::runtime_error {
+    public:
+        explicit InitializationError(const u8string& message):
+            std::runtime_error(message) {}
+    };
+
     class EncodingError:
     public std::runtime_error {
     public:
         EncodingError():
             std::runtime_error(prefix({}, 0)), enc(), ofs(0) {}
         explicit EncodingError(const u8string& encoding, size_t offset = 0):
-            std::runtime_error(prefix(encoding, offset)), enc(encoding), ofs(offset) {}
+            std::runtime_error(prefix(encoding, offset)), enc(std::make_shared<u8string>(encoding)), ofs(offset) {}
         template <typename C>
             EncodingError(const u8string& encoding, size_t offset, const C* ptr, size_t n = 1):
-            std::runtime_error(prefix(encoding, offset) + hexcode(ptr, n)), enc(encoding), ofs(offset) {}
-        u8string encoding() const { return enc; }
+            std::runtime_error(prefix(encoding, offset) + hexcode(ptr, n)), enc(std::make_shared<u8string>(encoding)), ofs(offset) {}
+        const char* encoding() const noexcept { static const char c = 0; return enc ? enc->data() : &c; }
         size_t offset() const noexcept { return ofs; }
     private:
-        u8string enc;
+        std::shared_ptr<u8string> enc;
         size_t ofs;
         static u8string prefix(const u8string& encoding, size_t offset);
         template <typename C> static u8string hexcode(const C* ptr, size_t n);

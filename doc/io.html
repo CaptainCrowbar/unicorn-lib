@@ -36,7 +36,7 @@ encodings, as well as other conveniences such as normalization of line breaks.</
 <li><code>IOError::<strong>IOError</strong>()</code></li>
 <li><code>explicit IOError::<strong>IOError</strong>(const char* msg)</code></li>
 <li><code>template &lt;typename C&gt; IOError::<strong>IOError</strong>(const char* msg, const basic_string&lt;C&gt;&amp; file, int error = 0)</code></li>
-<li><code>NativeString IOError::<strong>file</strong>() const</code></li>
+<li><code>const NativeCharacter* IOError::<strong>file</strong>() const noexcept</code></li>
 <li><code>int IOError::<strong>error</strong>() const noexcept</code></li>
 </ul></li>
 <li><code>class <strong>ReadError</strong>: public IOError</code>

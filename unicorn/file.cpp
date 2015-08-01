@@ -23,6 +23,14 @@ namespace Unicorn {
 
     // Exceptions
 
+    const NativeCharacter* FileError::file(size_t i) const noexcept {
+        static const char c = 0;
+        if (names && i < names->size())
+            return (*names)[i].data();
+        else
+            return &c;
+    }
+
     u8string FileError::assemble(int error, const u8string& files) {
         u8string s = "File system error" + files;
         if (error) {

@@ -23,7 +23,7 @@ specific byte order.
     * `UnknownEncoding::UnknownEncoding()`
     * `explicit UnknownEncoding::UnknownEncoding(const u8string& encoding, const u8string& details = {})`
     * `explicit UnknownEncoding::UnknownEncoding(uint32_t encoding, const u8string& details = {})`
-    * `u8string UnknownEncoding::encoding() const`
+    * `const char* UnknownEncoding::encoding() const noexcept`
 
 Exception thrown to report an unknown encoding name or number.
 

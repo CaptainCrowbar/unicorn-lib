@@ -6,6 +6,7 @@
 #include "unicorn/string.hpp"
 #include <cstring>
 #include <functional>
+#include <memory>
 #include <stdexcept>
 #include <string>
 #include <type_traits>
@@ -49,13 +50,32 @@ namespace Unicorn {
     class SyntaxError:
     public std::runtime_error {
     public:
-        SyntaxError(const u8string& text, size_t offset, const u8string& message = "Syntax error");
-        u8string text() const { return bug; }
-        size_t offset() const { return ofs; }
+        SyntaxError(const u8string& text, size_t offset, const u8string& message = "Syntax error"):
+            std::runtime_error(assemble(text, offset, message)),
+            bug(std::make_shared<u8string>(text)), ofs(offset) {}
+        const char* text() const noexcept { return bug->data(); }
+        size_t offset() const noexcept { return ofs; }
     private:
-        u8string bug;
+        std::shared_ptr<u8string> bug;
         size_t ofs;
+        static u8string assemble(const u8string& text, size_t offset, const u8string& message);
     };
+
+    inline u8string SyntaxError::assemble(const u8string& text, size_t offset, const u8string& message) {
+        u8string s = message;
+        s += " at offset ";
+        s += Crow::dec(offset);
+        s += ": Unexpected ";
+        if (text.empty()) {
+            s += "EOF";
+        } else {
+            // TODO - smarter quoting
+            s += '\"';
+            s += text;
+            s += '\"';
+        }
+        return s;
+    }
 
     // Token structure
 

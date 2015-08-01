@@ -85,14 +85,15 @@ without checking for valid Unicode.
     * `FileError::FileError()`
     * `explicit FileError::FileError(int error)`
     * `template <typename... More> FileError::FileError(int error, const NativeString& file, const More&... more)`
-    * `NativeString FileError::file(size_t i = 0) const`
-    * `std::vector<NativeString> FileError::files() const`
+    * `const NativeCharacter* FileError::file(size_t i = 0) const noexcept`
+    * `size_t FileError::files() const noexcept`
     * `int FileError::error() const noexcept`
 
 An exception thrown to report errors in file system operations. It can be
 constructed with the error code from the underlying native system call, and
 optionally one or more file names for reference. The `file()` method returns
-an empty string if the index is beyond the end of the supplied file list.
+an empty string if the index is beyond the end of the supplied file list (i.e.
+if `i>=files()`).
 
 ## File name operations ##
 

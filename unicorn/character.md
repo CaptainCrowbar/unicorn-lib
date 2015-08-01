@@ -283,6 +283,10 @@ any of the three options. If both `code_point_labels` and `control_char_names`
 are present, `control_char_names` takes precedence for characters that qualify
 for both.
 
+The character name table is stored in compressed form to save space. A call to
+`char_name()` may throw an exception derived from `InitializationError` if
+something goes wrong while loading the table.
+
 ## Decomposition properties ##
 
 * `int combining_class(char32_t c) noexcept`

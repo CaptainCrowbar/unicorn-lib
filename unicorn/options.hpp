@@ -9,6 +9,7 @@
 #include <cstdlib>
 #include <exception>
 #include <iterator>
+#include <memory>
 #include <string>
 #include <type_traits>
 #include <vector>
@@ -38,10 +39,10 @@ namespace Unicorn {
     class HelpRequest:
     public std::exception {
     public:
-        explicit HelpRequest(const u8string& details): std::exception(), msg(details) {}
-        virtual const char* what() const noexcept { return msg.data(); }
+        explicit HelpRequest(const u8string& details): std::exception(), msg(std::make_shared<u8string>(details)) {}
+        virtual const char* what() const noexcept { return msg->data(); }
     private:
-        u8string msg;
+        std::shared_ptr<u8string> msg;
     };
 
     // Constants

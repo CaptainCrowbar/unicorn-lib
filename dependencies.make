@@ -44,11 +44,6 @@ build/$(TARGET)/lexer-test.o: unicorn/lexer-test.cpp $(LIBROOT)/crow-lib/crow/un
   unicorn/lexer.hpp unicorn/character.hpp unicorn/property-values.hpp \
   unicorn/regex.hpp unicorn/string.hpp unicorn/segment.hpp \
   unicorn/utf.hpp
-build/$(TARGET)/lexer.o: unicorn/lexer.cpp unicorn/lexer.hpp unicorn/core.hpp \
-  $(LIBROOT)/crow-lib/crow/core.hpp unicorn/character.hpp \
-  unicorn/property-values.hpp unicorn/regex.hpp unicorn/string.hpp \
-  unicorn/segment.hpp unicorn/utf.hpp unicorn/format.hpp \
-  $(LIBROOT)/crow-lib/crow/meta.hpp
 build/$(TARGET)/mbcs-test.o: unicorn/mbcs-test.cpp $(LIBROOT)/crow-lib/crow/unit-test.hpp \
   $(LIBROOT)/crow-lib/crow/core.hpp $(LIBROOT)/crow-lib/crow/thread.hpp unicorn/core.hpp \
   unicorn/mbcs.hpp unicorn/character.hpp unicorn/property-values.hpp \

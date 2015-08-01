@@ -47,17 +47,24 @@ namespace Unicorn {
             std::runtime_error(assemble(0, {})), names(), err(0) {}
         explicit FileError(int error):
             std::runtime_error(assemble(error, {})), names(), err(error) {}
-        template <typename... More> FileError(int error, const NativeString& file, const More&... more):
-            std::runtime_error(assemble(error, assemble_files(file, more...))), names{file, more...}, err(error) {}
-        NativeString file(size_t i = 0) const { return i < names.size() ? names[i] : NativeString(); }
-        std::vector<NativeString> files() const { return names; }
+        template <typename... More> FileError(int error, const NativeString& file, const More&... more);
+        const NativeCharacter* file(size_t i = 0) const noexcept;
+        size_t files() const noexcept { return names ? names->size() : size_t(0); }
         int error() const noexcept { return err; }
     private:
-        std::vector<NativeString> names;
+        std::shared_ptr<std::vector<NativeString>> names;
         int err;
         static u8string assemble(int error, const u8string& files);
         template <typename... Names> static u8string assemble_files(const Names&... files);
     };
+
+    template <typename... More>
+    FileError::FileError(int error, const NativeString& file, const More&... more):
+    std::runtime_error(assemble(error, assemble_files(file, more...))),
+    names(std::make_shared<std::vector<NativeString>>()),
+    err(error) {
+        *names = {file, more...};
+    }
 
     template <typename... Names>
     u8string FileError::assemble_files(const Names&... files) {

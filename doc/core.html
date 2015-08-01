@@ -42,13 +42,21 @@
 <h2 id="exceptions">Exceptions</h2>
 
 <ul>
+<li><code>class <strong>InitializationError</strong>: public std::runtime_error</code></li>
+</ul>
+
+<p>An abstract base class for internal errors that may happen while loading the
+Unicode tables used by certain functions. Functions that can throw exceptions
+derived from this are individually documented.</p>
+
+<ul>
 <li><code>class <strong>EncodingError</strong>: public std::runtime_error</code>
 
 <ul>
 <li><code>EncodingError::<strong>EncodingError</strong>()</code></li>
 <li><code>explicit EncodingError::<strong>EncodingError</strong>(const u8string&amp; encoding, size_t offset = 0)</code></li>
 <li><code>template &lt;typename C&gt; EncodingError::<strong>EncodingError</strong>(const u8string&amp; encoding, size_t offset, const C* ptr, size_t n = 1)</code></li>
-<li><code>u8string EncodingError::<strong>encoding</strong>() const</code></li>
+<li><code>const char* EncodingError::<strong>encoding</strong>() noexcept const</code></li>
 <li><code>size_t EncodingError::<strong>offset</strong>() const noexcept</code></li>
 </ul></li>
 </ul>

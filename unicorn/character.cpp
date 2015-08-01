@@ -292,10 +292,10 @@ namespace Unicorn {
     namespace {
 
         class ZlibError:
-        public std::runtime_error {
+        public InitializationError {
         public:
             ZlibError(int error):
-                std::runtime_error("Zlib error: " + decode(error)) {}
+                InitializationError("Zlib error: " + decode(error)) {}
         private:
             static u8string decode(int error) {
                 switch (error) {

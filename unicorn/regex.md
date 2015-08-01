@@ -248,9 +248,9 @@ class template below).
 
 * `class RegexError: public std::runtime_error`
     * `RegexError::RegexError(const u8string& pattern, int error, const u8string& message)`
+    * `const char* RegexError::pattern() const noexcept`
     * `int RegexError::error() const noexcept`
-    * `u8string RegexError::message() const`
-    * `u8string RegexError::pattern() const`
+    * `const char* RegexError::message() const noexcept`
 
 This is thrown from a regex constructor or matching function when the
 underlying PCRE call reports an error.

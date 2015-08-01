@@ -3,6 +3,7 @@
 #include "unicorn/core.hpp"
 #include "unicorn/character.hpp"
 #include "unicorn/utf.hpp"
+#include <memory>
 #include <stdexcept>
 #include <string>
 
@@ -15,12 +16,13 @@ namespace Unicorn {
     public:
         UnknownEncoding(): std::runtime_error(assemble({}, {})), enc() {}
         explicit UnknownEncoding(const u8string& encoding, const u8string& details = {}):
-            std::runtime_error(assemble(encoding, details)), enc(encoding) {}
+            std::runtime_error(assemble(encoding, details)), enc(std::make_shared<u8string>(encoding)) {}
         explicit UnknownEncoding(uint32_t encoding, const u8string& details = {}):
-            std::runtime_error(assemble(Crow::dec(encoding), details)), enc(Crow::dec(encoding)) {}
-        u8string encoding() const { return enc; }
+            std::runtime_error(assemble(Crow::dec(encoding), details)),
+            enc(std::make_shared<u8string>(Crow::dec(encoding))) {}
+        const char* encoding() const noexcept { static const char c = 0; return enc ? enc->data() : &c; }
     private:
-        u8string enc;
+        std::shared_ptr<u8string> enc;
         static u8string assemble(const u8string& encoding, const u8string& details);
     };
 

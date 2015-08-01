@@ -100,8 +100,8 @@ without checking for valid Unicode.</p>
 <li><code>FileError::<strong>FileError</strong>()</code></li>
 <li><code>explicit FileError::<strong>FileError</strong>(int error)</code></li>
 <li><code>template &lt;typename... More&gt; FileError::<strong>FileError</strong>(int error, const NativeString&amp; file, const More&amp;... more)</code></li>
-<li><code>NativeString FileError::<strong>file</strong>(size_t i = 0) const</code></li>
-<li><code>std::vector&lt;NativeString&gt; FileError::<strong>files</strong>() const</code></li>
+<li><code>const NativeCharacter* FileError::<strong>file</strong>(size_t i = 0) const noexcept</code></li>
+<li><code>size_t FileError::<strong>files</strong>() const noexcept</code></li>
 <li><code>int FileError::<strong>error</strong>() const noexcept</code></li>
 </ul></li>
 </ul>
@@ -109,7 +109,8 @@ without checking for valid Unicode.</p>
 <p>An exception thrown to report errors in file system operations. It can be
 constructed with the error code from the underlying native system call, and
 optionally one or more file names for reference. The <code>file()</code> method returns
-an empty string if the index is beyond the end of the supplied file list.</p>
+an empty string if the index is beyond the end of the supplied file list (i.e.
+if <code>i&gt;=files()</code>).</p>
 
 <h2 id="filenameoperations">File name operations</h2>
 

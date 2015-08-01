@@ -29,8 +29,8 @@ for details.
 
 * `class SyntaxError: public std::runtime_error`
     * `SyntaxError::SyntaxError(const u8string& text, size_t offset, const u8string& message = "Syntax error")`
-    * `u8string SyntaxError::text() const`
-    * `size_t SyntaxError::offset() const`
+    * `const char* SyntaxError::text() const noexcept`
+    * `size_t SyntaxError::offset() const noxcept`
 
 TODO
 

@@ -384,6 +384,10 @@ any of the three options. If both <code>code_point_labels</code> and <code>contr
 are present, <code>control_char_names</code> takes precedence for characters that qualify
 for both.</p>
 
+<p>The character name table is stored in compressed form to save space. A call to
+<code>char_name()</code> may throw an exception derived from <code>InitializationError</code> if
+something goes wrong while loading the table.</p>
+
 <h2 id="decompositionproperties">Decomposition properties</h2>
 
 <ul>

@@ -26,7 +26,7 @@ encodings, as well as other conveniences such as normalization of line breaks.
     * `IOError::IOError()`
     * `explicit IOError::IOError(const char* msg)`
     * `template <typename C> IOError::IOError(const char* msg, const basic_string<C>& file, int error = 0)`
-    * `NativeString IOError::file() const`
+    * `const NativeCharacter* IOError::file() const noexcept`
     * `int IOError::error() const noexcept`
 * `class ReadError: public IOError`
     * `ReadError::ReadError()`

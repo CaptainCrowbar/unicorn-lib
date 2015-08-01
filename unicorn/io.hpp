@@ -20,14 +20,15 @@ namespace Unicorn {
         IOError(): std::runtime_error(assemble()), name(), err(0) {}
         explicit IOError(const char* msg):
             std::runtime_error(assemble(msg)), name(), err(0) {}
-        template <typename C>
-            IOError(const char* msg, const basic_string<C>& file, int error = 0):
-            std::runtime_error(assemble(msg, to_utf8(file), error)), name(), err(error)
-            { recode(file, name); }
-        NativeString file() const { return name; }
+        template <typename C> IOError(const char* msg, const basic_string<C>& file, int error = 0):
+            std::runtime_error(assemble(msg, to_utf8(file), error)),
+            name(std::make_shared<NativeString>()), err(error)
+            { recode(file, *name); }
+        const NativeCharacter* file() const noexcept
+            { static const NativeCharacter c = 0; return name ? name->data() : &c; }
         int error() const noexcept { return err; }
     private:
-        NativeString name;
+        std::shared_ptr<NativeString> name;
         int err;
         static u8string assemble(const char* msg = nullptr, const u8string& file = {}, int error = 0);
     };
