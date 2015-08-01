@@ -368,47 +368,6 @@ namespace Unicorn {
         return default_encoding;
     }
 
-    u8string system_message(int error) {
-        if (error == 0)
-            return {};
-        auto s = str_trim(Crow::cstr(strerror(error)));
-        u8string u;
-        import_string(s, u);
-        return u;
-    }
-
-    #if defined(CROW_TARGET_WINDOWS)
-
-        namespace {
-
-            class LocalBuffer {
-            public:
-                LocalBuffer(): p(nullptr) {}
-                ~LocalBuffer() { LocalFree(static_cast<HLOCAL>(p)); }
-                template <typename T> T* get() const { return static_cast<T*>(p); }
-                template <typename T> T* indirect() { return reinterpret_cast<T*>(&p); }
-            private:
-                void* p;
-            };
-
-        }
-
-        u8string windows_message(uint32_t error) {
-            static constexpr uint32_t flags = FORMAT_MESSAGE_ALLOCATE_BUFFER
-                | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS;
-            if (error == 0)
-                return {};
-            LocalBuffer buf;
-            auto rc = FormatMessageW(flags, nullptr, static_cast<uint32_t>(error), 0,
-                buf.indirect<wchar_t>(), 0, nullptr);
-            if (rc > 0)
-                return to_utf8(str_trim(wstring(buf.get<wchar_t>(), rc)));
-            else
-                return {};
-        }
-
-    #endif
-
     // Conversion functions
 
     namespace UnicornDetail {
@@ -540,7 +499,7 @@ namespace Unicorn {
                     if (err == ERROR_NO_UNICODE_TRANSLATION)
                         throw EncodingError(Crow::dec(tag));
                     else
-                        throw UnknownEncoding(Crow::dec(tag), to_utf8(windows_message(GetLastError())));
+                        throw UnknownEncoding(Crow::dec(tag), Crow::WindowsError::translate(GetLastError()));
                 }
                 dst.resize(rc);
                 MultiByteToWideChar(tag, wflags, src.data(), static_cast<int>(src.size()), &dst[0], static_cast<int>(rc));
@@ -566,7 +525,7 @@ namespace Unicorn {
                     if (err == ERROR_NO_UNICODE_TRANSLATION)
                         throw EncodingError(Crow::dec(tag));
                     else
-                        throw UnknownEncoding(Crow::dec(tag), to_utf8(windows_message(GetLastError())));
+                        throw UnknownEncoding(Crow::dec(tag), Crow::WindowsError::translate(GetLastError()));
                 }
                 dst.resize(rc);
                 WideCharToMultiByte(tag, wflags, &src[0], static_cast<int>(src.size()), &dst[0], rc, nullptr, nullptr);

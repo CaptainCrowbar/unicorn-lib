@@ -34,11 +34,11 @@ namespace Unicorn {
         if (error) {
             s += "; error ";
             s += Crow::dec(error);
-            string details;
+            string details =
             #if defined(CROW_TARGET_UNIX)
-                import_string(system_message(error), details);
+                Crow::CrtError::translate(error);
             #else
-                recode(windows_message(error), details);
+                Crow::WindowsError::translate(error);
             #endif
             if (! details.empty()) {
                 s += "; ";

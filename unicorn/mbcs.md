@@ -82,11 +82,3 @@ will go ahead and replace invalid data without reporting an error.
 
 Returns the encoding of the current default locale. The default value will be
 returned if no encoding information can be obtained from the operating system.
-
-* `u8string system_message(int error)`
-* `u8string windows_message(uint32_t error) [only on Windows]`
-
-Translate an error code returned by the operating system into an error
-message. These call `strerror()` and `FormatMessageW()` respectively; the
-message returned by `strerror()` is assumed to be in the default local
-encoding, and converted to UTF-8 (`FormatMessageW()` always returns UTF-16).

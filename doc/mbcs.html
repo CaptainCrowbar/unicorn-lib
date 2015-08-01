@@ -102,15 +102,5 @@ will go ahead and replace invalid data without reporting an error.</p>
 <p>Returns the encoding of the current default locale. The default value will be
 returned if no encoding information can be obtained from the operating system.</p>
 
-<ul>
-<li><code>u8string <strong>system_message</strong>(int error)</code></li>
-<li><code>u8string <strong>windows_message</strong>(uint32_t error) [only on Windows]</code></li>
-</ul>
-
-<p>Translate an error code returned by the operating system into an error
-message. These call <code>strerror()</code> and <code>FormatMessageW()</code> respectively; the
-message returned by <code>strerror()</code> is assumed to be in the default local
-encoding, and converted to UTF&#8211;8 (<code>FormatMessageW()</code> always returns UTF&#8211;16).</p>
-
 </body>
 </html>

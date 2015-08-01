@@ -29,11 +29,6 @@ namespace Unicorn {
     // Utility functions
 
     u8string local_encoding(const u8string& default_encoding = "utf-8");
-    u8string system_message(int error);
-
-    #if defined(CROW_TARGET_WINDOWS)
-        u8string windows_message(uint32_t error);
-    #endif
 
     // Conversion functions
 

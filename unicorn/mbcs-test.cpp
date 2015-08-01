@@ -328,20 +328,6 @@ namespace {
 
     }
 
-    void check_error_message_translation() {
-
-        u8string s8;
-
-        TRY(s8 = system_message(EDOM));
-        TEST(! s8.empty());
-
-        #if defined(CROW_TARGET_WINDOWS)
-            TRY(s8 = windows_message(ERROR_INVALID_FUNCTION));
-            TEST(! s8.empty());
-        #endif
-
-    }
-
 }
 
 TEST_MODULE(unicorn, mbcs) {
@@ -352,6 +338,5 @@ TEST_MODULE(unicorn, mbcs) {
     check_mbcs_to_unicode();
     check_unicode_to_mbcs();
     check_local_encoding_round_trip();
-    check_error_message_translation();
 
 }

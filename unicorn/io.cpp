@@ -27,8 +27,7 @@ namespace Unicorn {
         if (error) {
             s += "; error ";
             s += Crow::dec(error);
-            string details;
-            import_string(system_message(error), details);
+            string details = Crow::CrtError::translate(error);
             if (! details.empty()) {
                 s += "; ";
                 s += details;
