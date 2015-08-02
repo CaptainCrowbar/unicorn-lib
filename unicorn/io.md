@@ -16,7 +16,6 @@ encodings, as well as other conveniences such as normalization of line breaks.
 ## Contents ##
 
 * [Exceptions][]
-* [Simple file I/O][]
 * [File input iterator][]
 * [File output iterator][]
 
@@ -34,28 +33,6 @@ encodings, as well as other conveniences such as normalization of line breaks.
 * `class WriteError: public IOError`
     * `WriteError::WriteError()`
     * `template <typename C> explicit WriteError::WriteError(const basic_string<C>& file, int error = 0)`
-
-TODO
-
-## Simple file I/O ##
-
-* `template <typename C> void load_file(const basic_string<C>& file, string& dst, Crow::Flagset flags = {})`
-
-Bitmask      | Letter  | Description
--------      | ------  | -----------
-`io_stdin`   | `i`     | Default to stdin
-`io_nofail`  | `f`     | Treat nonexistent file as empty
-
-TODO
-
-* `template <typename C> void save_file(const basic_string<C>& file, const string& src, Crow::Flagset flags = {})`
-* `template <typename C> void save_file(const basic_string<C>& file, const void* ptr, size_t n, Crow::Flagset flags = {})`
-
-Bitmask      | Letter  | Description
--------      | ------  | -----------
-`io_stdout`  | `o`     | Default to stdout
-`io_stderr`  | `e`     | Default to stderr
-`io_append`  | `a`     | Append to file
 
 TODO
 

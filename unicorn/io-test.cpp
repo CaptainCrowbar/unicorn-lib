@@ -16,7 +16,7 @@ namespace {
     class TempFile {
     public:
         explicit TempFile(const u8string& file): f(file) {}
-        ~TempFile() { remove(f.c_str()); }
+        ~TempFile() { remove(f.data()); }
     private:
         u8string f;
         TempFile(const TempFile&) = delete;
@@ -27,22 +27,6 @@ namespace {
 
     const u8string testfile = "__test__";
     const u8string nonesuch = "__no_such_file__";
-
-    void check_simple_file_io() {
-
-        string s;
-        TempFile tempfile(testfile);
-
-        TRY(load_file("README.md"s, s));
-        TEST_EQUAL(s.substr(0, 20), "# Unicorn Library #\n");
-        TRY(save_file(testfile, "Hello world\n"s));
-        TRY(load_file(testfile, s));
-        TEST_EQUAL(s, "Hello world\n");
-        TRY(save_file(testfile, "Goodbye\n"s, io_append));
-        TRY(load_file(testfile, s));
-        TEST_EQUAL(s, "Hello world\nGoodbye\n");
-
-    }
 
     void check_file_reader() {
 
@@ -453,7 +437,6 @@ namespace {
 
 TEST_MODULE(unicorn, io) {
 
-    check_simple_file_io();
     check_file_reader();
     check_file_writer();
 

@@ -71,33 +71,6 @@ namespace Unicorn {
     constexpr auto io_autoline   = Crow::Flagset::value('A');  // Write LF if not already there      --          FileWriter
     constexpr auto io_mutex      = Crow::Flagset::value('m');  // Hold per-file mutex while writing  --          FileWriter
 
-    // Simple file I/O
-
-    namespace UnicornDetail {
-
-        void native_load_file(const NativeString& file, string& dst, Crow::Flagset flags);
-        void native_save_file(const NativeString& file, const void* ptr, size_t n, Crow::Flagset flags);
-
-    }
-
-    template <typename C>
-    void load_file(const basic_string<C>& file, string& dst, Crow::Flagset flags = {}) {
-        using namespace UnicornDetail;
-        native_load_file(native_file(file), dst, flags);
-    }
-
-    template <typename C>
-    void save_file(const basic_string<C>& file, const string& src, Crow::Flagset flags = {}) {
-        using namespace UnicornDetail;
-        native_save_file(native_file(file), src.data(), src.size(), flags);
-    }
-
-    template <typename C>
-    void save_file(const basic_string<C>& file, const void* ptr, size_t n, Crow::Flagset flags = {}) {
-        using namespace UnicornDetail;
-        native_save_file(native_file(file), ptr, n, flags);
-    }
-
     // File input iterator
 
     class FileReader {

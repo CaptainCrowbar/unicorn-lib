@@ -65,51 +65,6 @@ namespace Unicorn {
 
     }
 
-    // Simple file I/O
-
-    namespace UnicornDetail {
-
-        void native_load_file(const NativeString& file, string& dst, Crow::Flagset flags) {
-            static constexpr size_t bufsize = 65536;
-            static const auto dashfile = "-"_nat;
-            dst.clear();
-            flags.allow(io_stdin | io_nofail, "load file");
-            SharedFile handle;
-            if (flags.get(io_stdin) && (file.empty() || file == dashfile))
-                handle.reset(stdin, Crow::do_nothing);
-            else
-                handle = shared_fopen(file, "rb"_nat, ! flags.get(io_nofail));
-            if (! handle)
-                return;
-            string buf(bufsize, 0);
-            while (! feof(handle.get())) {
-                auto rc = fread(&buf[0], 1, bufsize, handle.get());
-                auto err = errno;
-                if (ferror(handle.get()))
-                    throw ReadError(file, err);
-                dst.append(buf, 0, rc);
-            }
-        }
-
-        void native_save_file(const NativeString& file, const void* ptr, size_t n, Crow::Flagset flags) {
-            static const auto dashfile = "-"_nat;
-            flags.allow(io_append | io_stderr | io_stdout, "save file");
-            flags.exclusive(io_stderr | io_stdout, "save file");
-            SharedFile handle;
-            if (flags.get(io_stdout) && (file.empty() || file == dashfile))
-                handle.reset(stdout, Crow::do_nothing);
-            else if (flags.get(io_stderr) && (file.empty() || file == dashfile))
-                handle.reset(stderr, Crow::do_nothing);
-            else
-                handle = shared_fopen(file, flags.get(io_append) ? "ab"_nat : "wb"_nat, true);
-            fwrite(ptr, 1, n, handle.get());
-            auto err = errno;
-            if (ferror(handle.get()))
-                throw WriteError(file, err);
-        }
-
-    }
-
     // Class FileReader
 
     struct FileReader::impl_type {

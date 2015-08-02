@@ -22,7 +22,6 @@ encodings, as well as other conveniences such as normalization of line breaks.</
 
 <ul>
 <li><a href="#exceptions">Exceptions</a></li>
-<li><a href="#simplefileio">Simple file I/O</a></li>
 <li><a href="#fileinputiterator">File input iterator</a></li>
 <li><a href="#fileoutputiterator">File output iterator</a></li>
 </ul>
@@ -52,84 +51,6 @@ encodings, as well as other conveniences such as normalization of line breaks.</
 <li><code>template &lt;typename C&gt; explicit WriteError::<strong>WriteError</strong>(const basic_string&lt;C&gt;&amp; file, int error = 0)</code></li>
 </ul></li>
 </ul>
-
-<p>TODO</p>
-
-<h2 id="simplefileio">Simple file I/O</h2>
-
-<ul>
-<li><code>template &lt;typename C&gt; void <strong>load_file</strong>(const basic_string&lt;C&gt;&amp; file, string&amp; dst, Crow::Flagset flags = {})</code></li>
-</ul>
-
-<table>
-<colgroup>
-<col style="text-align:left;"/>
-<col style="text-align:left;"/>
-<col style="text-align:left;"/>
-</colgroup>
-
-<thead>
-<tr>
-	<th style="text-align:left;">Bitmask</th>
-	<th style="text-align:left;">Letter</th>
-	<th style="text-align:left;">Description</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-	<td style="text-align:left;"><code>io_stdin</code></td>
-	<td style="text-align:left;"><code>i</code></td>
-	<td style="text-align:left;">Default to stdin</td>
-</tr>
-<tr>
-	<td style="text-align:left;"><code>io_nofail</code></td>
-	<td style="text-align:left;"><code>f</code></td>
-	<td style="text-align:left;">Treat nonexistent file as empty</td>
-</tr>
-</tbody>
-</table>
-
-<p>TODO</p>
-
-<ul>
-<li><code>template &lt;typename C&gt; void <strong>save_file</strong>(const basic_string&lt;C&gt;&amp; file, const string&amp; src, Crow::Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; void <strong>save_file</strong>(const basic_string&lt;C&gt;&amp; file, const void* ptr, size_t n, Crow::Flagset flags = {})</code></li>
-</ul>
-
-<table>
-<colgroup>
-<col style="text-align:left;"/>
-<col style="text-align:left;"/>
-<col style="text-align:left;"/>
-</colgroup>
-
-<thead>
-<tr>
-	<th style="text-align:left;">Bitmask</th>
-	<th style="text-align:left;">Letter</th>
-	<th style="text-align:left;">Description</th>
-</tr>
-</thead>
-
-<tbody>
-<tr>
-	<td style="text-align:left;"><code>io_stdout</code></td>
-	<td style="text-align:left;"><code>o</code></td>
-	<td style="text-align:left;">Default to stdout</td>
-</tr>
-<tr>
-	<td style="text-align:left;"><code>io_stderr</code></td>
-	<td style="text-align:left;"><code>e</code></td>
-	<td style="text-align:left;">Default to stderr</td>
-</tr>
-<tr>
-	<td style="text-align:left;"><code>io_append</code></td>
-	<td style="text-align:left;"><code>a</code></td>
-	<td style="text-align:left;">Append to file</td>
-</tr>
-</tbody>
-</table>
 
 <p>TODO</p>
 
