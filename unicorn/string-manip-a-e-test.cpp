@@ -356,7 +356,7 @@ namespace {
 
     }
 
-    void check_concat() {
+    void check_concat_1() {
 
         TEST_EQUAL(str_concat(""), "");
         TEST_EQUAL(str_concat(u""), u"");
@@ -400,6 +400,24 @@ namespace {
         TEST_EQUAL(str_concat(U"Hello"s, " world"s), U"Hello world");
         TEST_EQUAL(str_concat(U"Hello"s, u" world"s), U"Hello world");
         TEST_EQUAL(str_concat(U"Hello"s, U" world"s), U"Hello world");
+
+        TEST_EQUAL(str_concat_with("++"), "");
+        TEST_EQUAL(str_concat_with("++", "Hello"), "Hello");
+        TEST_EQUAL(str_concat_with("++", "Hello", "world"), "Hello++world");
+        TEST_EQUAL(str_concat_with("++", "Hello", "world", "goodbye"), "Hello++world++goodbye");
+        TEST_EQUAL(str_concat_with(u"++"), u"");
+        TEST_EQUAL(str_concat_with(u"++", "Hello"), u"Hello");
+        TEST_EQUAL(str_concat_with(u"++", "Hello", "world"), u"Hello++world");
+        TEST_EQUAL(str_concat_with(u"++", "Hello", "world", "goodbye"), u"Hello++world++goodbye");
+        TEST_EQUAL(str_concat_with(U"++"), U"");
+        TEST_EQUAL(str_concat_with(U"++", "Hello"), U"Hello");
+        TEST_EQUAL(str_concat_with(U"++", "Hello", "world"), U"Hello++world");
+        TEST_EQUAL(str_concat_with(U"++", "Hello", "world", "goodbye"), U"Hello++world++goodbye");
+
+    }
+
+    void check_concat_2() {
+
         TEST_EQUAL(str_concat("Hello", " world", "; goodbye"), "Hello world; goodbye");
         TEST_EQUAL(str_concat("Hello", " world", u"; goodbye"), "Hello world; goodbye");
         TEST_EQUAL(str_concat("Hello", " world", U"; goodbye"), "Hello world; goodbye");
@@ -616,19 +634,6 @@ namespace {
         TEST_EQUAL(str_concat(U"Hello"s, U" world"s, "; goodbye"s), U"Hello world; goodbye");
         TEST_EQUAL(str_concat(U"Hello"s, U" world"s, u"; goodbye"s), U"Hello world; goodbye");
         TEST_EQUAL(str_concat(U"Hello"s, U" world"s, U"; goodbye"s), U"Hello world; goodbye");
-
-        TEST_EQUAL(str_concat_with("++"), "");
-        TEST_EQUAL(str_concat_with("++", "Hello"), "Hello");
-        TEST_EQUAL(str_concat_with("++", "Hello", "world"), "Hello++world");
-        TEST_EQUAL(str_concat_with("++", "Hello", "world", "goodbye"), "Hello++world++goodbye");
-        TEST_EQUAL(str_concat_with(u"++"), u"");
-        TEST_EQUAL(str_concat_with(u"++", "Hello"), u"Hello");
-        TEST_EQUAL(str_concat_with(u"++", "Hello", "world"), u"Hello++world");
-        TEST_EQUAL(str_concat_with(u"++", "Hello", "world", "goodbye"), u"Hello++world++goodbye");
-        TEST_EQUAL(str_concat_with(U"++"), U"");
-        TEST_EQUAL(str_concat_with(U"++", "Hello"), U"Hello");
-        TEST_EQUAL(str_concat_with(U"++", "Hello", "world"), U"Hello++world");
-        TEST_EQUAL(str_concat_with(U"++", "Hello", "world", "goodbye"), U"Hello++world++goodbye");
 
     }
 
@@ -1018,7 +1023,8 @@ TEST_MODULE(unicorn, string_manipulation_a_e) {
     check_append();
     check_change();
     check_chars();
-    check_concat();
+    check_concat_1();
+    check_concat_2();
     check_drop();
     check_erase();
     check_expand();

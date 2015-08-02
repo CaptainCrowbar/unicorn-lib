@@ -11,7 +11,7 @@ using namespace Unicorn;
 
 namespace {
 
-    void check_pad() {
+    void check_pad_left() {
 
         u8string s8;
         u16string s16;
@@ -184,6 +184,14 @@ namespace {
         s32 = U"∀∃∀∃∀";  TRY(str_pad_left_in(s32, 0, U'√'));   TEST_EQUAL(s32, U"∀∃∀∃∀");
         s32 = U"∀∃∀∃∀";  TRY(str_pad_left_in(s32, 5, U'√'));   TEST_EQUAL(s32, U"∀∃∀∃∀");
         s32 = U"∀∃∀∃∀";  TRY(str_pad_left_in(s32, 10, U'√'));  TEST_EQUAL(s32, U"√√√√√∀∃∀∃∀");
+
+    }
+
+    void check_pad_right() {
+
+        u8string s8;
+        u16string s16;
+        u32string s32;
 
         TEST_EQUAL(str_pad_right(""s, 0), "");
         TEST_EQUAL(str_pad_right(""s, 1), " ");
@@ -713,7 +721,8 @@ namespace {
 
 TEST_MODULE(unicorn, string_manipulation_n_r) {
 
-    check_pad();
+    check_pad_left();
+    check_pad_right();
     check_partition();
     check_replace();
     check_repeat();

@@ -12,7 +12,7 @@ using namespace Unicorn;
 
 namespace {
 
-    void check_fix() {
+    void check_fix_left() {
 
         u8string s8;
         u16string s16;
@@ -167,6 +167,14 @@ namespace {
         s32 = U"Hello";  TRY(str_fix_left_in(s32, 5, U'§'));  TEST_EQUAL(s32, U"Hello");
         s32 = U"Hello";  TRY(str_fix_left_in(s32, 6, U'§'));  TEST_EQUAL(s32, U"Hello§");
         s32 = U"Hello";  TRY(str_fix_left_in(s32, 7, U'§'));  TEST_EQUAL(s32, U"Hello§§");
+
+    }
+
+    void check_fix_right() {
+
+        u8string s8;
+        u16string s16;
+        u32string s32;
 
         TEST_EQUAL(str_fix_right(""s, 0), "");
         TEST_EQUAL(str_fix_right(""s, 1), " ");
@@ -371,7 +379,8 @@ namespace {
 
 TEST_MODULE(unicorn, string_manipulation_f_m) {
 
-    check_fix();
+    check_fix_left();
+    check_fix_right();
     check_join();
 
 }
