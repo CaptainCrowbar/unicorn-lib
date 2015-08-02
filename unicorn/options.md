@@ -33,11 +33,6 @@ for details.
 
 TODO
 
-* `class HelpRequest: public std::exception`
-    * `explicit HelpRequest::HelpRequest(const u8string& details)`
-
-TODO
-
 ## Options parsing class ##
 
 * `class Options`
@@ -79,15 +74,18 @@ TODO
 
 TODO
 
-* `template <typename C> void Options::parse(const std::vector<basic_string<C>>& args, Crow::Flagset flags = {})`
-* `template <typename C> void Options::parse(const basic_string<C>& args, Crow::Flagset flags = {})`
-* `template <typename C> void Options::parse(int argc, C** argv, Crow::Flagset flags = {})`
+* `template <typename C> bool Options::parse(const std::vector<basic_string<C>>& args)`
+* `template <typename C1, typename C2> bool Options::parse(const std::vector<basic_string<C1>>& args, std::basic_ostream<C2>& out, Crow::Flagset flags = {})`
+* `template <typename C> bool Options::parse(const basic_string<C>& args)`
+* `template <typename C1, typename C2> bool Options::parse(const basic_string<C1>& args, std::basic_ostream<C2>& out, Crow::Flagset flags = {})`
+* `template <typename C> bool Options::parse(int argc, C** argv)`
+* `template <typename C1, typename C2> bool Options::parse(int argc, C1** argv, std::basic_ostream<C2>& out, Crow::Flagset flags = {})`
 
 TODO
 
 Bitmask         | Letter  | Description
 -------         | ------  | -----------
-`opt_locale`    | `l`     | Argument list is in local encoding
+`opt_locale`    | `l`     | Argument list is in local encoding (ignored if C[1] is not char)
 `opt_noprefix`  | `n`     | First argument is not the command name
 `opt_quoted`    | `q`     | Allow arguments to be quoted
 

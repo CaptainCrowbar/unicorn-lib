@@ -189,7 +189,7 @@ namespace Unicorn {
         return i != npos ? opts[i].values : std::vector<u8string>();
     }
 
-    void Options::parse_args(std::vector<u8string> args, Crow::Flagset flags) {
+    Options::help_mode Options::parse_args(std::vector<u8string> args, Crow::Flagset flags) {
         // Add the help and version options
         if (opt_index("--help") == npos) {
             option_type opt;
@@ -217,7 +217,7 @@ namespace Unicorn {
                 if (arg.size() >= 2 && arg.front() == '\"' && arg.back() == '\"')
                     arg = arg.substr(1, arg.size() - 1);
         if (help_auto && args.empty())
-            throw HelpRequest(help());
+            return help_mode::usage;
         // Split off any forced anonymous options
         std::vector<u8string> anon;
         auto it(std::find(CROW_BOUNDS(args), "--"));
@@ -312,9 +312,9 @@ namespace Unicorn {
             throw CommandLineError("Unexpected argument", args[0]);
         // Check for the help and version options
         if (has("help"))
-            throw HelpRequest(help());
+            return help_mode::usage;
         if (has("version"))
-            throw HelpRequest(app_info);
+            return help_mode::version;
         // Check that all required options are present, and fill in default
         // values for missing options
         for (auto& opt: opts) {
@@ -328,6 +328,7 @@ namespace Unicorn {
                     opt.values.push_back(opt.defval);
             }
         }
+        return help_mode::none;
     }
 
     u8string Options::arg_convert(const string& str, Crow::Flagset flags) {

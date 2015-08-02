@@ -36,15 +36,6 @@ namespace Unicorn {
         static u8string assemble(const u8string& details, const u8string& option);
     };
 
-    class HelpRequest:
-    public std::exception {
-    public:
-        explicit HelpRequest(const u8string& details): std::exception(), msg(std::make_shared<u8string>(details)) {}
-        virtual const char* what() const noexcept { return msg->data(); }
-    private:
-        std::shared_ptr<u8string> msg;
-    };
-
     // Constants
 
     constexpr auto opt_anon      = Crow::Flagset::value('a');  // Assign anonymous arguments to this option  add()
@@ -116,9 +107,12 @@ namespace Unicorn {
         void autohelp() noexcept { help_auto = true; }
         u8string help() const;
         u8string version() const { return app_info; }
-        template <typename C> void parse(const std::vector<basic_string<C>>& args, Crow::Flagset flags = {});
-        template <typename C> void parse(const basic_string<C>& args, Crow::Flagset flags = {});
-        template <typename C> void parse(int argc, C** argv, Crow::Flagset flags = {});
+        template <typename C1, typename C2> bool parse(const std::vector<basic_string<C1>>& args, std::basic_ostream<C2>& out, Crow::Flagset flags = {});
+        template <typename C1, typename C2> bool parse(const basic_string<C1>& args, std::basic_ostream<C2>& out, Crow::Flagset flags = {});
+        template <typename C1, typename C2> bool parse(int argc, C1** argv, std::basic_ostream<C2>& out, Crow::Flagset flags = {});
+        template <typename C> bool parse(const std::vector<basic_string<C>>& args) { return parse(args, std::cout); }
+        template <typename C> bool parse(const basic_string<C>& args) { return parse(args, std::cout); }
+        template <typename C> bool parse(int argc, C** argv) { return parse(argc, argv, std::cout); }
         template <typename C> bool has(const basic_string<C>& name) const
             { return opt_index(to_utf8(name), true) != npos; }
         template <typename C> bool has(const C* name) const
@@ -130,6 +124,7 @@ namespace Unicorn {
         template <typename T, typename C> std::vector<T> getlist(const C* name) const
             { return getlist<T>(Crow::cstr(name)); }
     private:
+        enum class help_mode { none, version, usage };
         struct option_type {
             u8string name {};
             u8string abbrev {};
@@ -152,7 +147,8 @@ namespace Unicorn {
             Crow::Flagset flags, const u8string& defval, const u8string& pattern, const u8string& group);
         size_t opt_index(const u8string& name, bool found = false) const;
         std::vector<u8string> opt_values(const u8string& name) const;
-        void parse_args(std::vector<u8string> args, Crow::Flagset flags);
+        help_mode parse_args(std::vector<u8string> args, Crow::Flagset flags);
+        template <typename C> void send_help(std::basic_ostream<C>& out, help_mode mode) const;
         template <typename C> static u8string arg_convert(const basic_string<C>& str, Crow::Flagset /*flags*/)
             { return to_utf8(str); }
         static u8string arg_convert(const string& str, Crow::Flagset flags);
@@ -178,17 +174,19 @@ namespace Unicorn {
         return tvec;
     }
 
-    template <typename C>
-    void Options::parse(const std::vector<basic_string<C>>& args, Crow::Flagset flags) {
+    template <typename C1, typename C2>
+    bool Options::parse(const std::vector<basic_string<C1>>& args, std::basic_ostream<C2>& out, Crow::Flagset flags) {
         check_flags(flags);
         std::vector<u8string> u8vec;
         std::transform(CROW_BOUNDS(args), Crow::append(u8vec),
-            [=] (const basic_string<C>& s) { return arg_convert(s, flags); });
-        parse_args(u8vec, flags);
+            [=] (const basic_string<C1>& s) { return arg_convert(s, flags); });
+        auto help_wanted = parse_args(u8vec, flags);
+        send_help(out, help_wanted);
+        return help_wanted != help_mode::none;
     }
 
-    template <typename C>
-    void Options::parse(const basic_string<C>& args, Crow::Flagset flags) {
+    template <typename C1, typename C2>
+    bool Options::parse(const basic_string<C1>& args, std::basic_ostream<C2>& out, Crow::Flagset flags) {
         check_flags(flags);
         auto u8args = arg_convert(args, flags);
         std::vector<u8string> vec;
@@ -198,17 +196,36 @@ namespace Unicorn {
         } else {
             str_split(u8args, Crow::append(vec));
         }
-        parse_args(vec, flags);
+        auto help_wanted = parse_args(vec, flags);
+        send_help(out, help_wanted);
+        return help_wanted != help_mode::none;
+    }
+
+    template <typename C1, typename C2>
+    bool Options::parse(int argc, C1** argv, std::basic_ostream<C2>& out, Crow::Flagset flags) {
+        check_flags(flags);
+        std::vector<basic_string<C1>> args(argv, argv + argc);
+        help_mode help_wanted;
+        if (flags.get(opt_quoted))
+            help_wanted = parse(str_join(args, str_chars<C1>(U' ')), flags);
+        else
+            help_wanted = parse(args, flags);
+        send_help(out, help_wanted);
+        return help_wanted != help_mode::none;
     }
 
     template <typename C>
-    void Options::parse(int argc, C** argv, Crow::Flagset flags) {
-        check_flags(flags);
-        std::vector<basic_string<C>> args(argv, argv + argc);
-        if (flags.get(opt_quoted))
-            parse(str_join(args, str_chars<C>(U' ')), flags);
-        else
-            parse(args, flags);
+    void Options::send_help(std::basic_ostream<C>& out, help_mode mode) const {
+        switch (mode) {
+            case help_mode::version:
+                out << recode<C>(app_info + '\n');
+                break;
+            case help_mode::usage:
+                out << recode<C>(help());
+                break;
+            default:
+                break;
+        }
     }
 
 }

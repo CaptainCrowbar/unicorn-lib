@@ -48,16 +48,6 @@ for details.</p>
 
 <p>TODO</p>
 
-<ul>
-<li><code>class <strong>HelpRequest</strong>: public std::exception</code>
-
-<ul>
-<li><code>explicit HelpRequest::<strong>HelpRequest</strong>(const u8string&amp; details)</code></li>
-</ul></li>
-</ul>
-
-<p>TODO</p>
-
 <h2 id="optionsparsingclass">Options parsing class</h2>
 
 <ul>
@@ -150,9 +140,12 @@ for details.</p>
 <p>TODO</p>
 
 <ul>
-<li><code>template &lt;typename C&gt; void Options::<strong>parse</strong>(const std::vector&lt;basic_string&lt;C&gt;&gt;&amp; args, Crow::Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; void Options::<strong>parse</strong>(const basic_string&lt;C&gt;&amp; args, Crow::Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; void Options::<strong>parse</strong>(int argc, C** argv, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; bool Options::<strong>parse</strong>(const std::vector&lt;basic_string&lt;C&gt;&gt;&amp; args)</code></li>
+<li><code>template &lt;typename C1, typename C2&gt; bool Options::<strong>parse</strong>(const std::vector&lt;basic_string&lt;C1&gt;&gt;&amp; args, std::basic_ostream&lt;C2&gt;&amp; out, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; bool Options::<strong>parse</strong>(const basic_string&lt;C&gt;&amp; args)</code></li>
+<li><code>template &lt;typename C1, typename C2&gt; bool Options::<strong>parse</strong>(const basic_string&lt;C1&gt;&amp; args, std::basic_ostream&lt;C2&gt;&amp; out, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; bool Options::<strong>parse</strong>(int argc, C** argv)</code></li>
+<li><code>template &lt;typename C1, typename C2&gt; bool Options::<strong>parse</strong>(int argc, C1** argv, std::basic_ostream&lt;C2&gt;&amp; out, Crow::Flagset flags = {})</code></li>
 </ul>
 
 <p>TODO</p>
@@ -176,7 +169,7 @@ for details.</p>
 <tr>
 	<td style="text-align:left;"><code>opt_locale</code></td>
 	<td style="text-align:left;"><code>l</code></td>
-	<td style="text-align:left;">Argument list is in local encoding</td>
+	<td style="text-align:left;">Argument list is in local encoding (ignored if C[1] is not char)</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>opt_noprefix</code></td>
