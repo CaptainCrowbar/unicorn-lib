@@ -22,7 +22,7 @@ namespace Unicorn {
     // Exceptions
 
     const NativeCharacter* FileError::file(size_t i) const noexcept {
-        static const char c = 0;
+        static const NativeCharacter c = 0;
         if (names && i < names->size())
             return (*names)[i].data();
         else
