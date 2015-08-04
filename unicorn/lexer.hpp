@@ -66,14 +66,10 @@ namespace Unicorn {
         s += " at offset ";
         s += Crow::dec(offset);
         s += ": Unexpected ";
-        if (text.empty()) {
+        if (text.empty())
             s += "EOF";
-        } else {
-            // TODO - smarter quoting
-            s += '\"';
-            s += text;
-            s += '\"';
-        }
+        else
+            s += Crow::quote(text, true);
         return s;
     }
 
