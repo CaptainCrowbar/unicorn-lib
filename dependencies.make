@@ -64,12 +64,12 @@ build/$(TARGET)/normal.o: unicorn/normal.cpp unicorn/normal.hpp unicorn/core.hpp
 build/$(TARGET)/options-test.o: unicorn/options-test.cpp $(LIBROOT)/crow-lib/crow/unit-test.hpp \
   $(LIBROOT)/crow-lib/crow/core.hpp $(LIBROOT)/crow-lib/crow/thread.hpp unicorn/core.hpp \
   unicorn/options.hpp unicorn/character.hpp unicorn/property-values.hpp \
-  unicorn/format.hpp unicorn/regex.hpp unicorn/string.hpp \
-  unicorn/segment.hpp unicorn/utf.hpp $(LIBROOT)/crow-lib/crow/meta.hpp
+  unicorn/regex.hpp unicorn/string.hpp unicorn/segment.hpp \
+  unicorn/utf.hpp
 build/$(TARGET)/options.o: unicorn/options.cpp unicorn/options.hpp unicorn/core.hpp \
   $(LIBROOT)/crow-lib/crow/core.hpp unicorn/character.hpp \
-  unicorn/property-values.hpp unicorn/format.hpp unicorn/regex.hpp \
-  unicorn/string.hpp unicorn/segment.hpp unicorn/utf.hpp \
+  unicorn/property-values.hpp unicorn/regex.hpp unicorn/string.hpp \
+  unicorn/segment.hpp unicorn/utf.hpp unicorn/format.hpp \
   $(LIBROOT)/crow-lib/crow/meta.hpp unicorn/mbcs.hpp
 build/$(TARGET)/regex-test.o: unicorn/regex-test.cpp $(LIBROOT)/crow-lib/crow/unit-test.hpp \
   $(LIBROOT)/crow-lib/crow/core.hpp $(LIBROOT)/crow-lib/crow/thread.hpp unicorn/core.hpp \

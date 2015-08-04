@@ -42,12 +42,12 @@ the missing regex types). Wide character (`wstring`) regexes are built if the
 corresponding UTF build of PCRE is available (16 or 32 bits, depending on the
 size of `wchar_t`).
 
-Some other modules in the Unicorn library ([`unicorn/format`](format.html),
-[`unicorn/lexer`](lexer.html), and [`unicorn/options`](options.html)) call the
-regex library to handle pattern matching in different UTF encodings, and will
-only work with encodings for which the corresponding PCRE library has been
-linked. (A few other modules also use regexes internally; these require only
-UTF-8 support, which is always available.)
+Some other modules in the Unicorn library ([`unicorn/format`](format.html) and
+[`unicorn/lexer`](lexer.html)) call the regex library to handle pattern
+matching in different UTF encodings, and will only work with encodings for
+which the corresponding PCRE library has been linked. (A few other modules
+also use regexes internally; these require only UTF-8 support, which is always
+available.)
 
 In addition to the four UTF-based regex classes, this module also supports
 byte oriented regexes, which simply treat a `std::string` as a sequence of

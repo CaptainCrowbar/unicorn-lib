@@ -19,8 +19,8 @@ namespace {
         u8string cmdline;
 
         TEST_EQUAL(opt1.version(), "App version 1.0");
-        TRY(opt1.add("alpha", 'a', "Alpha option", 0, "ABC"));
-        TRY(opt1.add("--number", 'n', "Number option", 0, "123"));
+        TRY(opt1.add("alpha", "Alpha option", opt_abbrev="a", opt_default="ABC"));
+        TRY(opt1.add("--number", "Number option", opt_abbrev="n", opt_default="123"));
 
         {
             TRY(opt2 = opt1);
@@ -42,7 +42,7 @@ namespace {
                 "Intro\n"
                 "\n"
                 "Options:\n"
-                "    --alpha, -a <arg>   = Alpha option (default ABC)\n"
+                "    --alpha, -a <arg>   = Alpha option (default \"ABC\")\n"
                 "    --number, -n <arg>  = Number option (default 123)\n"
                 "    --help, -h          = Show usage information\n"
                 "    --version, -v       = Show version information\n"
@@ -90,7 +90,7 @@ namespace {
 
         TRY(opt2 = opt1);
         cmdline = "app -a uvw xyz";
-        TEST_THROW(opt2.parse(cmdline), CommandLineError);
+        TEST_THROW_MATCH(opt2.parse(cmdline), CommandLineError, ": \"xyz\"$");
 
         TRY(opt2 = opt1);
         cmdline = "app -a xyz -n 999";
@@ -127,7 +127,7 @@ namespace {
         Options opt2 = opt1;
         u8string cmdline;
 
-        TRY(opt1.add("switch", 's', "Switch option", opt_boolean));
+        TRY(opt1.add("switch", "Switch option", opt_boolean, opt_abbrev="s"));
 
         TRY(opt2 = opt1);
         cmdline = "app";
@@ -135,6 +135,13 @@ namespace {
         TEST(! opt2.has("switch"));
         TEST(! opt2.get<bool>("switch"));
         TEST_EQUAL(opt2.get<u8string>("switch"), "");
+
+        TRY(opt2 = opt1);
+        cmdline = "app --switch";
+        TEST(! opt2.parse(cmdline, dummy));
+        TEST(opt2.has("switch"));
+        TEST(opt2.get<bool>("switch"));
+        TEST_EQUAL(opt2.get<u8string>("switch"), "1");
 
         TRY(opt2 = opt1);
         cmdline = "app -s";
@@ -151,14 +158,14 @@ namespace {
         u8string cmdline;
         std::vector<u8string> sv;
 
-        TRY(opt1.add("list", 'l', "List option", opt_multiple));
+        TRY(opt1.add("list", "List option", opt_multiple, opt_abbrev="l"));
 
         TRY(opt2 = opt1);
         cmdline = "app";
         TEST(! opt2.parse(cmdline, dummy));
         TEST(! opt2.has("list"));
         TEST_EQUAL(opt2.get<u8string>("list"), "");
-        TRY(sv = opt2.getlist<u8string>("list"));
+        TRY(sv = opt2.get_list<u8string>("list"));
         TEST(sv.empty());
 
         TRY(opt2 = opt1);
@@ -166,7 +173,7 @@ namespace {
         TEST(! opt2.parse(cmdline, dummy));
         TEST(opt2.has("list"));
         TEST_EQUAL(opt2.get<u8string>("list"), "abc");
-        TRY(sv = opt2.getlist<u8string>("list"));
+        TRY(sv = opt2.get_list<u8string>("list"));
         TEST_EQUAL(sv.size(), 1);
         TEST_EQUAL(to_str(sv), "[abc]");
 
@@ -175,7 +182,7 @@ namespace {
         TEST(! opt2.parse(cmdline, dummy));
         TEST(opt2.has("list"));
         TEST_EQUAL(opt2.get<u8string>("list"), "abc def ghi");
-        TRY(sv = opt2.getlist<u8string>("list"));
+        TRY(sv = opt2.get_list<u8string>("list"));
         TEST_EQUAL(sv.size(), 3);
         TEST_EQUAL(to_str(sv), "[abc,def,ghi]");
 
@@ -186,11 +193,11 @@ namespace {
         Options opt2 = opt1;
         u8string cmdline;
 
-        TRY(opt1.add("required", 'r', "Required option", opt_required));
+        TRY(opt1.add("required", "Required option", opt_required, opt_abbrev="r"));
 
         TRY(opt2 = opt1);
         cmdline = "app";
-        TEST_THROW(opt2.parse(cmdline), CommandLineError);
+        TEST_THROW_MATCH(opt2.parse(cmdline), CommandLineError, ": \"--required\"$");
 
         TRY(opt2 = opt1);
         cmdline = "app --required abc";
@@ -224,7 +231,7 @@ namespace {
             "Intro\n"
             "\n"
             "Options:\n"
-            "    --alpha, -a <arg>     = Alpha option (default ABC)\n"
+            "    --alpha, -a <arg>     = Alpha option (default \"ABC\")\n"
             "    --number, -n <arg>    = Number option (default 123)\n"
             "    --switch, -s          = Switch option\n"
             "    --list, -l <arg> ...  = List option\n"
@@ -244,7 +251,7 @@ namespace {
         u8string cmdline;
         std::vector<u8string> sv;
 
-        TRY(opt1.add("head", '\0', "First anonymous argument", opt_anon));
+        TRY(opt1.add("head", "First anonymous argument", opt_anon));
 
         TRY(opt2 = opt1);
         cmdline = "app --required abc";
@@ -260,9 +267,9 @@ namespace {
 
         TRY(opt2 = opt1);
         cmdline = "app --required abc def ghi";
-        TEST_THROW(opt2.parse(cmdline), CommandLineError);
+        TEST_THROW_MATCH(opt2.parse(cmdline), CommandLineError, ": \"ghi\"$");
 
-        TRY(opt1.add("tail", '\0', "Other anonymous arguments", opt_anon | opt_multiple));
+        TRY(opt1.add("tail", "Other anonymous arguments", opt_anon, opt_multiple));
 
         TRY(opt2 = opt1);
         cmdline = "app --required abc";
@@ -271,7 +278,7 @@ namespace {
         TEST_EQUAL(opt2.get<u8string>("head"), "");
         TEST(! opt2.has("tail"));
         TEST_EQUAL(opt2.get<u8string>("tail"), "");
-        TRY(sv = opt2.getlist<u8string>("tail"));
+        TRY(sv = opt2.get_list<u8string>("tail"));
         TEST(sv.empty());
 
         TRY(opt2 = opt1);
@@ -281,7 +288,7 @@ namespace {
         TEST_EQUAL(opt2.get<u8string>("head"), "def");
         TEST(! opt2.has("tail"));
         TEST_EQUAL(opt2.get<u8string>("tail"), "");
-        TRY(sv = opt2.getlist<u8string>("tail"));
+        TRY(sv = opt2.get_list<u8string>("tail"));
         TEST(sv.empty());
 
         TRY(opt2 = opt1);
@@ -291,7 +298,7 @@ namespace {
         TEST_EQUAL(opt2.get<u8string>("head"), "def");
         TEST(opt2.has("tail"));
         TEST_EQUAL(opt2.get<u8string>("tail"), "ghi");
-        TRY(sv = opt2.getlist<u8string>("tail"));
+        TRY(sv = opt2.get_list<u8string>("tail"));
         TEST_EQUAL(sv.size(), 1);
         TEST_EQUAL(to_str(sv), "[ghi]");
 
@@ -302,7 +309,7 @@ namespace {
         TEST_EQUAL(opt2.get<u8string>("head"), "def");
         TEST(opt2.has("tail"));
         TEST_EQUAL(opt2.get<u8string>("tail"), "ghi jkl");
-        TRY(sv = opt2.getlist<u8string>("tail"));
+        TRY(sv = opt2.get_list<u8string>("tail"));
         TEST_EQUAL(sv.size(), 2);
         TEST_EQUAL(to_str(sv), "[ghi,jkl]");
 
@@ -324,7 +331,7 @@ namespace {
             "Intro\n"
             "\n"
             "Options:\n"
-            "    --alpha, -a <arg>     = Alpha option (default ABC)\n"
+            "    --alpha, -a <arg>     = Alpha option (default \"ABC\")\n"
             "    --number, -n <arg>    = Number option (default 123)\n"
             "    --switch, -s          = Switch option\n"
             "    --list, -l <arg> ...  = List option\n"
@@ -343,10 +350,10 @@ namespace {
     void check_group_options() {
 
         Options opt1("App");
-        TRY(opt1.add("group1a", '\0', "Group 1 a", 0, "", "", "neddie"));
-        TRY(opt1.add("group1b", '\0', "Group 1 b", 0, "", "", "neddie"));
-        TRY(opt1.add("group2a", '\0', "Group 2 a", 0, "", "", "eccles"));
-        TRY(opt1.add("group2b", '\0', "Group 2 b", 0, "", "", "eccles"));
+        TRY(opt1.add("group1a", "Group 1 a", opt_group="neddie"));
+        TRY(opt1.add("group1b", "Group 1 b", opt_group="neddie"));
+        TRY(opt1.add("group2a", "Group 2 a", opt_group="eccles"));
+        TRY(opt1.add("group2b", "Group 2 b", opt_group="eccles"));
 
         Options opt2 = opt1;
         u8string cmdline;
@@ -358,7 +365,7 @@ namespace {
 
         TRY(opt2 = opt1);
         cmdline = "app --group1a abc --group1b def";
-        TEST_THROW(opt2.parse(cmdline), CommandLineError);
+        TEST_THROW_MATCH(opt2.parse(cmdline), CommandLineError, ": \"--group1a\", \"--group1b\"$");
 
         TRY(opt2 = opt1);
         cmdline = "app --group1a abc --group2a def";
@@ -371,9 +378,9 @@ namespace {
     void check_argument_patterns() {
 
         Options opt1("App");
-        TRY(opt1.add("alpha", 'a', "Alpha", 0, "Hello", "[[:alpha:]]+"));
-        TRY(opt1.add("number", 'n', "Number", 0, "42", "\\d+"));
-        TEST_THROW(opt1.add("word", 'w', "Word", 0, "...", "\\w+"), OptionSpecError);
+        TRY(opt1.add("alpha", "Alpha", opt_default="Hello", opt_pattern="[[:alpha:]]+"));
+        TRY(opt1.add("number", "Number", opt_default="42", opt_pattern="\\d+"));
+        TEST_THROW_MATCH(opt1.add("word", "Word", opt_default="*", opt_pattern="\\w+"), OptionSpecError, ": \"word\"$");
 
         Options opt2 = opt1;
         u8string cmdline;
@@ -386,15 +393,15 @@ namespace {
 
         TRY(opt2 = opt1);
         cmdline = "app --alpha 123";
-        TEST_THROW(opt2.parse(cmdline), CommandLineError);
+        TEST_THROW_MATCH(opt2.parse(cmdline), CommandLineError, ": \"--alpha\", \"123\"$");
 
         TRY(opt2 = opt1);
         cmdline = "app --number abc";
-        TEST_THROW(opt2.parse(cmdline), CommandLineError);
+        TEST_THROW_MATCH(opt2.parse(cmdline), CommandLineError, ": \"--number\", \"abc\"$");
 
         opt1 = Options("App");
-        TRY(opt1.add("int", 'i', "Integer", opt_integer));
-        TRY(opt1.add("float", 'f', "Float", opt_float));
+        TRY(opt1.add("int", "Integer", opt_integer, opt_abbrev="i"));
+        TRY(opt1.add("float", "Float", opt_float, opt_abbrev="f"));
 
         TRY(opt2 = opt1);
         cmdline = "app";
@@ -410,15 +417,15 @@ namespace {
 
         TRY(opt2 = opt1);
         cmdline = "app --int 1234.5";
-        TEST_THROW(opt2.parse(cmdline), CommandLineError);
+        TEST_THROW_MATCH(opt2.parse(cmdline), CommandLineError, ": \"--int\", \"1234.5\"$");
 
         TRY(opt2 = opt1);
         cmdline = "app --float 0x1234";
-        TEST_THROW(opt2.parse(cmdline), CommandLineError);
+        TEST_THROW_MATCH(opt2.parse(cmdline), CommandLineError, ": \"--float\", \"0x1234\"$");
 
         opt1 = Options("App");
-        TRY(opt1.add("int", 'i', "Integer", opt_anon | opt_required));
-        TRY(opt1.add("str", 's', "String", opt_required));
+        TRY(opt1.add("int", "Integer", opt_anon, opt_required, opt_abbrev="i"));
+        TRY(opt1.add("str", "String", opt_required, opt_abbrev="s"));
 
         TRY(opt2 = opt1);
         cmdline = "app -s hello 42";

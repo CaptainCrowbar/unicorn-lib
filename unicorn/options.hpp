@@ -2,53 +2,46 @@
 
 #include "unicorn/core.hpp"
 #include "unicorn/character.hpp"
-#include "unicorn/format.hpp"
 #include "unicorn/regex.hpp"
 #include "unicorn/string.hpp"
 #include <algorithm>
-#include <cstdlib>
-#include <exception>
-#include <iterator>
-#include <memory>
+#include <iostream>
+#include <stdexcept>
 #include <string>
 #include <type_traits>
 #include <vector>
 
 namespace Unicorn {
 
-    // Exceptions
-
     class CommandLineError:
     public std::runtime_error {
     public:
-        explicit CommandLineError(const u8string& details, const u8string& arg1 = {}, const u8string& arg2 = {}):
-            std::runtime_error(assemble(details, arg1, arg2)) {}
-    private:
-        static u8string assemble(const u8string& details, const u8string& arg1, const u8string& arg2);
+        CommandLineError(const u8string& details, const u8string& arg, const u8string& arg2 = {});
     };
 
     class OptionSpecError:
     public std::runtime_error {
     public:
-        explicit OptionSpecError(const u8string& details, const u8string& option = {}):
-            std::runtime_error(assemble(details, option)) {}
-    private:
-        static u8string assemble(const u8string& details, const u8string& option);
+        explicit OptionSpecError(const u8string& option);
+        OptionSpecError(const u8string& details, const u8string& option);
     };
 
-    // Constants
+    constexpr auto opt_locale    = Crow::Flagset::value('l');  // Argument list is in local encoding
+    constexpr auto opt_noprefix  = Crow::Flagset::value('n');  // First argument is not the command name
+    constexpr auto opt_quoted    = Crow::Flagset::value('q');  // Allow arguments to be quoted
 
-    constexpr auto opt_anon      = Crow::Flagset::value('a');  // Assign anonymous arguments to this option  add()
-    constexpr auto opt_boolean   = Crow::Flagset::value('b');  // Boolean option                             add()
-    constexpr auto opt_float     = Crow::Flagset::value('f');  // Argument must be a floating point number   add()
-    constexpr auto opt_integer   = Crow::Flagset::value('i');  // Argument must be an integer                add()
-    constexpr auto opt_multiple  = Crow::Flagset::value('m');  // Option may have multiple arguments         add()
-    constexpr auto opt_required  = Crow::Flagset::value('r');  // Option is required                         add()
-    constexpr auto opt_locale    = Crow::Flagset::value('l');  // Argument list is in local encoding         parse()
-    constexpr auto opt_noprefix  = Crow::Flagset::value('n');  // First argument is not the command name     parse()
-    constexpr auto opt_quoted    = Crow::Flagset::value('q');  // Allow arguments to be quoted               parse()
-
-    // Options parsing class
+    constexpr Crow::Kwarg<bool>
+        opt_anon,      // Assign anonymous arguments to this option
+        opt_boolean,   // Boolean option
+        opt_float,     // Argument must be a floating point number
+        opt_integer,   // Argument must be an integer
+        opt_multiple,  // Option may have multiple arguments
+        opt_required;  // Option is required
+    constexpr Crow::Kwarg<u8string>
+        opt_abbrev,    // Single letter abbreviation
+        opt_default,   // Default value if not supplied
+        opt_group,     // Mutual exclusion group name
+        opt_pattern;   // Argument must match this regular expression
 
     namespace UnicornDetail {
 
@@ -87,55 +80,44 @@ namespace Unicorn {
 
     class Options {
     public:
-        template <typename C> explicit Options(const basic_string<C>& info,
-            const basic_string<C>& head = {}, const basic_string<C>& tail = {});
-        template <typename C> explicit Options(const C* info,
-            const C* head = nullptr, const C* tail = nullptr):
-            Options(Crow::cstr(info), Crow::cstr(head), Crow::cstr(tail)) {}
-        template <typename C> void add(const basic_string<C>& name, C abbrev,
-            const basic_string<C>& info, Crow::Flagset flags = {},
-            const basic_string<C>& defval = {}, const basic_string<C>& pattern = {},
-            const basic_string<C>& group = {}) {
-                add_option(to_utf8(name), to_utf8(basic_string<C>{abbrev}), to_utf8(info), flags,
-                    to_utf8(defval), to_utf8(pattern), to_utf8(group));
-            }
-        template <typename C> void add(const C* name, C abbrev, const C* info, Crow::Flagset flags = {},
-            const C* defval = {}, const C* pattern = {}, const C* group = {}) {
-                add_option(to_utf8(Crow::cstr(name)), to_utf8(basic_string<C>{abbrev}), to_utf8(Crow::cstr(info)), flags,
-                    to_utf8(Crow::cstr(defval)), to_utf8(Crow::cstr(pattern)), to_utf8(Crow::cstr(group)));
-            }
+        explicit Options(const u8string& info, const u8string& head = {}, const u8string& tail = {}):
+            app_info(str_trim(info)), help_auto(false),
+            help_head(str_trim(head)), help_tail(str_trim(tail)), opts() {}
+        template <typename... Args> void add(const u8string& name, const u8string& info, const Args&... args);
         void autohelp() noexcept { help_auto = true; }
         u8string help() const;
         u8string version() const { return app_info; }
-        template <typename C1, typename C2> bool parse(const std::vector<basic_string<C1>>& args, std::basic_ostream<C2>& out, Crow::Flagset flags = {});
-        template <typename C1, typename C2> bool parse(const basic_string<C1>& args, std::basic_ostream<C2>& out, Crow::Flagset flags = {});
-        template <typename C1, typename C2> bool parse(int argc, C1** argv, std::basic_ostream<C2>& out, Crow::Flagset flags = {});
+        template <typename C1, typename C2>
+            bool parse(const std::vector<basic_string<C1>>& args, std::basic_ostream<C2>& out, Crow::Flagset flags = {});
+        template <typename C1, typename C2>
+            bool parse(const basic_string<C1>& args, std::basic_ostream<C2>& out, Crow::Flagset flags = {});
+        template <typename C1, typename C2>
+            bool parse(int argc, C1** argv, std::basic_ostream<C2>& out, Crow::Flagset flags = {});
         template <typename C> bool parse(const std::vector<basic_string<C>>& args) { return parse(args, std::cout); }
         template <typename C> bool parse(const basic_string<C>& args) { return parse(args, std::cout); }
         template <typename C> bool parse(int argc, C** argv) { return parse(argc, argv, std::cout); }
-        template <typename C> bool has(const basic_string<C>& name) const
-            { return opt_index(to_utf8(name), true) != npos; }
-        template <typename C> bool has(const C* name) const
-            { return opt_index(to_utf8(Crow::cstr(name)), true) != npos; }
-        template <typename T, typename C> T get(const basic_string<C>& name) const
-            { return UnicornDetail::ArgConv<T>()(str_join(opt_values(to_utf8(name)), " ")); }
-        template <typename T, typename C> T get(const C* name) const { return get<T>(Crow::cstr(name)); }
-        template <typename T, typename C> std::vector<T> getlist(const basic_string<C>& name) const;
-        template <typename T, typename C> std::vector<T> getlist(const C* name) const
-            { return getlist<T>(Crow::cstr(name)); }
+        bool has(const u8string& name) const { return find_index(name, true) != npos; }
+        template <typename T> T get(const u8string& name) const
+            { return UnicornDetail::ArgConv<T>()(str_join(find_values(name), " ")); }
+        template <typename T> std::vector<T> get_list(const u8string& name) const;
     private:
+        using string_list = std::vector<u8string>;
         enum class help_mode { none, version, usage };
         struct option_type {
-            u8string name {};
-            u8string abbrev {};
-            u8string defval {};
-            u8string info {};
-            u8string group {};
-            u8string argtype {};
-            Regex pattern {};
-            std::vector<u8string> values {};
-            Crow::Flagset flags {};
-            bool found {false};
+            string_list values;
+            u8string abbrev;
+            u8string defval;
+            u8string group;
+            u8string info;
+            u8string name;
+            Regex pattern;
+            bool found = false;
+            bool is_anon = false;
+            bool is_boolean = false;
+            bool is_float = false;
+            bool is_integer = false;
+            bool is_multiple = false;
+            bool is_required = false;
         };
         using option_list = std::vector<option_type>;
         u8string app_info;
@@ -143,32 +125,50 @@ namespace Unicorn {
         u8string help_head;
         u8string help_tail;
         option_list opts;
-        void add_option(const u8string& name, const u8string& abbrev, const u8string& info,
-            Crow::Flagset flags, const u8string& defval, const u8string& pattern, const u8string& group);
-        size_t opt_index(const u8string& name, bool found = false) const;
-        std::vector<u8string> opt_values(const u8string& name) const;
-        help_mode parse_args(std::vector<u8string> args, Crow::Flagset flags);
+        void add_option(option_type opt);
+        size_t find_index(u8string name, bool found = false) const;
+        string_list find_values(const u8string& name) const;
+        help_mode parse_args(string_list args, Crow::Flagset flags);
+        void add_help_version();
+        void clean_up_arguments(string_list& args, Crow::Flagset flags);
+        string_list parse_forced_anonymous(string_list& args);
+        void parse_attached_arguments(string_list& args);
+        void expand_abbreviations(string_list& args);
+        void extract_named_options(string_list& args);
+        void parse_remaining_anonymous(string_list& args, const string_list& anon);
+        void supply_defaults();
         template <typename C> void send_help(std::basic_ostream<C>& out, help_mode mode) const;
         template <typename C> static u8string arg_convert(const basic_string<C>& str, Crow::Flagset /*flags*/)
             { return to_utf8(str); }
         static u8string arg_convert(const string& str, Crow::Flagset flags);
         static void check_flags(Crow::Flagset flags)
             { flags.allow(opt_locale | opt_noprefix | opt_quoted, "command line option"); }
-        static void unquote(const u8string& src, std::vector<u8string>& dst);
+        static void unquote(const u8string& src, string_list& dst);
     };
 
-    template <typename C>
-    Options::Options(const basic_string<C>& info,
-            const basic_string<C>& head, const basic_string<C>& tail):
-        app_info(to_utf8(str_trim(info))),
-        help_auto(false),
-        help_head(to_utf8(str_trim(head))),
-        help_tail(to_utf8(str_trim(tail))),
-        opts() {}
+    template <typename... Args>
+    void Options::add(const u8string& name, const u8string& info, const Args&... args) {
+        option_type opt;
+        u8string pattern;
+        opt.name = name;
+        opt.info = info;
+        kwget(opt_anon, opt.is_anon, args...);
+        kwget(opt_boolean, opt.is_boolean, args...);
+        kwget(opt_float, opt.is_float, args...);
+        kwget(opt_integer, opt.is_integer, args...);
+        kwget(opt_multiple, opt.is_multiple, args...);
+        kwget(opt_required, opt.is_required, args...);
+        kwget(opt_abbrev, opt.abbrev, args...);
+        kwget(opt_default, opt.defval, args...);
+        kwget(opt_group, opt.group, args...);
+        kwget(opt_pattern, pattern, args...);
+        opt.pattern = Regex(pattern);
+        add_option(opt);
+    }
 
-    template <typename T, typename C>
-    std::vector<T> Options::getlist(const basic_string<C>& name) const {
-        std::vector<u8string> svec = opt_values(to_utf8(name));
+    template <typename T>
+    std::vector<T> Options::get_list(const u8string& name) const {
+        string_list svec = find_values(name);
         std::vector<T> tvec;
         std::transform(CROW_BOUNDS(svec), Crow::append(tvec), UnicornDetail::ArgConv<T>());
         return tvec;
@@ -177,7 +177,7 @@ namespace Unicorn {
     template <typename C1, typename C2>
     bool Options::parse(const std::vector<basic_string<C1>>& args, std::basic_ostream<C2>& out, Crow::Flagset flags) {
         check_flags(flags);
-        std::vector<u8string> u8vec;
+        string_list u8vec;
         std::transform(CROW_BOUNDS(args), Crow::append(u8vec),
             [=] (const basic_string<C1>& s) { return arg_convert(s, flags); });
         auto help_wanted = parse_args(u8vec, flags);
@@ -189,7 +189,7 @@ namespace Unicorn {
     bool Options::parse(const basic_string<C1>& args, std::basic_ostream<C2>& out, Crow::Flagset flags) {
         check_flags(flags);
         auto u8args = arg_convert(args, flags);
-        std::vector<u8string> vec;
+        string_list vec;
         if (flags.get(opt_quoted)) {
             unquote(u8args, vec);
             flags.set(opt_quoted, false);
@@ -216,16 +216,14 @@ namespace Unicorn {
 
     template <typename C>
     void Options::send_help(std::basic_ostream<C>& out, help_mode mode) const {
+        u8string message;
         switch (mode) {
-            case help_mode::version:
-                out << recode<C>(app_info + '\n');
-                break;
-            case help_mode::usage:
-                out << recode<C>(help());
-                break;
-            default:
-                break;
+            case help_mode::version:  message = app_info + '\n'; break;
+            case help_mode::usage:    message = help(); break;
+            default:                  break;
         }
+        if (! message.empty())
+            out << recode<C>(message);
     }
 
 }

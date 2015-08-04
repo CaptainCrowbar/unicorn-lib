@@ -18,62 +18,29 @@ options. It provides commonly used features such as coalescing of single
 character options (e.g. <code>-abc</code> vs <code>-a -b -c</code>), long option names (e.g.
 <code>--long-option</code>), and so on.</p>
 
-<p>This module calls the <a href="regex.html"><code>unicorn/regex</code></a> module, which in turn
-calls the PCRE library. It will only work with encodings for which the
-corresponding PCRE library has been linked; see the regex module documentation
-for details.</p>
+<p>The member functions that set up the option specifications take UTF&#8211;8 strings
+(mostly because making keyword arguments work with variable string types would
+have complicated the interface too much). The option parsing functions,
+however, will accept an argument list in any Unicode encoding.</p>
 <p class="alert">[TODO: DOCUMENTATION]</p>
 
 <h2 id="contents">Contents</h2>
 
 <ul>
 <li><a href="#exceptions">Exceptions</a></li>
-<li><a href="#optionsparsingclass">Options parsing class</a></li>
+<li><a href="#classoptions">Class Options</a></li>
 </ul>
 
 <h2 id="exceptions">Exceptions</h2>
 
 <ul>
-<li><code>class <strong>CommandLineError</strong>: public std::runtime_error</code>
-
-<ul>
-<li><code>explicit CommandLineError::<strong>CommandLineError</strong>(const u8string&amp; details, const u8string&amp; arg1 = {}, const u8string&amp; arg2 = {})</code></li>
-</ul></li>
-<li><code>class <strong>OptionSpecError</strong>: public std::runtime_error</code>
-
-<ul>
-<li><code>explicit OptionSpecError::<strong>OptionSpecError</strong>(const u8string&amp; details, const u8string&amp; option = {})</code></li>
-</ul></li>
+<li><code>class <strong>CommandLineError</strong>: public std::runtime_error</code></li>
+<li><code>class <strong>OptionSpecError</strong>: public std::runtime_error</code></li>
 </ul>
 
 <p>TODO</p>
 
-<h2 id="optionsparsingclass">Options parsing class</h2>
-
-<ul>
-<li><code>class <strong>Options</strong></code></li>
-</ul>
-
-<p>TODO</p>
-
-<ul>
-<li><code>template &lt;typename C&gt; explicit Options::<strong>Options</strong>(const basic_string&lt;C&gt;&amp; info, const basic_string&lt;C&gt;&amp; head = {}, const basic_string&lt;C&gt;&amp; tail = {})</code></li>
-<li><code>template &lt;typename C&gt; explicit Options::<strong>Options</strong>(const C* info, const C* head = nullptr, const C* tail = nullptr)</code></li>
-<li><code>Options::<strong>Options</strong>(const Options&amp; opt)</code></li>
-<li><code>Options::<strong>Options</strong>(Options&amp;&amp; opt)</code></li>
-<li><code>Options::<strong>~Options</strong>()</code></li>
-<li><code>Options&amp; Options::<strong>operator=</strong>(const Options&amp; opt)</code></li>
-<li><code>Options&amp; Options::<strong>operator=</strong>(Options&amp;&amp; opt)</code></li>
-</ul>
-
-<p>TODO</p>
-
-<ul>
-<li><code>template &lt;typename C&gt; void Options::<strong>add</strong>(const basic_string&lt;C&gt;&amp; name, C abbrev, const basic_string&lt;C&gt;&amp; info, Crow::Flagset flags = {}, const basic_string&lt;C&gt;&amp; defval = {}, const basic_string&lt;C&gt;&amp; pattern = {}, const basic_string&lt;C&gt;&amp; group = {})</code></li>
-<li><code>template &lt;typename C&gt; void Options::<strong>add</strong>(const C* name, C abbrev, const C* info, Crow::Flagset flags = {}, const C* defval = {}, const C* pattern = {}, const C* group = {})</code></li>
-</ul>
-
-<p>TODO</p>
+<h2 id="classoptions">Class Options</h2>
 
 <table>
 <colgroup>
@@ -84,8 +51,8 @@ for details.</p>
 
 <thead>
 <tr>
-	<th style="text-align:left;">Bitmask</th>
-	<th style="text-align:left;">Letter</th>
+	<th style="text-align:left;">Keyword</th>
+	<th style="text-align:left;">Type</th>
 	<th style="text-align:left;">Description</th>
 </tr>
 </thead>
@@ -93,60 +60,56 @@ for details.</p>
 <tbody>
 <tr>
 	<td style="text-align:left;"><code>opt_anon</code></td>
-	<td style="text-align:left;"><code>a</code></td>
+	<td style="text-align:left;"><code>bool</code></td>
 	<td style="text-align:left;">Assign anonymous arguments to this option</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>opt_boolean</code></td>
-	<td style="text-align:left;"><code>b</code></td>
+	<td style="text-align:left;"><code>bool</code></td>
 	<td style="text-align:left;">Boolean option</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>opt_float</code></td>
-	<td style="text-align:left;"><code>f</code></td>
+	<td style="text-align:left;"><code>bool</code></td>
 	<td style="text-align:left;">Argument must be a floating point number</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>opt_integer</code></td>
-	<td style="text-align:left;"><code>i</code></td>
+	<td style="text-align:left;"><code>bool</code></td>
 	<td style="text-align:left;">Argument must be an integer</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>opt_multiple</code></td>
-	<td style="text-align:left;"><code>m</code></td>
+	<td style="text-align:left;"><code>bool</code></td>
 	<td style="text-align:left;">Option may have multiple arguments</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>opt_required</code></td>
-	<td style="text-align:left;"><code>r</code></td>
+	<td style="text-align:left;"><code>bool</code></td>
 	<td style="text-align:left;">Option is required</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>opt_abbrev</code></td>
+	<td style="text-align:left;"><code>u8string</code></td>
+	<td style="text-align:left;">Single letter abbreviation</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>opt_default</code></td>
+	<td style="text-align:left;"><code>u8string</code></td>
+	<td style="text-align:left;">Default value if not supplied</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>opt_group</code></td>
+	<td style="text-align:left;"><code>u8string</code></td>
+	<td style="text-align:left;">Mutual exclusion group name</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>opt_pattern</code></td>
+	<td style="text-align:left;"><code>u8string</code></td>
+	<td style="text-align:left;">Argument must match this regular expression</td>
 </tr>
 </tbody>
 </table>
-
-<p>TODO</p>
-
-<ul>
-<li><code>void Options::<strong>autohelp</strong>() noexcept</code></li>
-</ul>
-
-<p>TODO</p>
-
-<ul>
-<li><code>u8string Options::<strong>help</strong>() const</code></li>
-<li><code>u8string Options::<strong>version</strong>() const</code></li>
-</ul>
-
-<p>TODO</p>
-
-<ul>
-<li><code>template &lt;typename C&gt; bool Options::<strong>parse</strong>(const std::vector&lt;basic_string&lt;C&gt;&gt;&amp; args)</code></li>
-<li><code>template &lt;typename C1, typename C2&gt; bool Options::<strong>parse</strong>(const std::vector&lt;basic_string&lt;C1&gt;&gt;&amp; args, std::basic_ostream&lt;C2&gt;&amp; out, Crow::Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; bool Options::<strong>parse</strong>(const basic_string&lt;C&gt;&amp; args)</code></li>
-<li><code>template &lt;typename C1, typename C2&gt; bool Options::<strong>parse</strong>(const basic_string&lt;C1&gt;&amp; args, std::basic_ostream&lt;C2&gt;&amp; out, Crow::Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; bool Options::<strong>parse</strong>(int argc, C** argv)</code></li>
-<li><code>template &lt;typename C1, typename C2&gt; bool Options::<strong>parse</strong>(int argc, C1** argv, std::basic_ostream&lt;C2&gt;&amp; out, Crow::Flagset flags = {})</code></li>
-</ul>
 
 <p>TODO</p>
 
@@ -187,22 +150,65 @@ for details.</p>
 <p>TODO</p>
 
 <ul>
-<li><code>template &lt;typename C&gt; bool Options::<strong>has</strong>(const basic_string&lt;C&gt;&amp; name) const</code></li>
-<li><code>template &lt;typename C&gt; bool Options::<strong>has</strong>(const C* name) const</code></li>
+<li><code>explicit Options::<strong>Options</strong>(const u8string&amp; info, const u8string&amp; head = {}, const u8string&amp; tail = {})</code></li>
 </ul>
 
 <p>TODO</p>
 
 <ul>
-<li><code>template &lt;typename T, typename C&gt; T Options::<strong>get</strong>(const basic_string&lt;C&gt;&amp; name) const</code></li>
-<li><code>template &lt;typename T, typename C&gt; T Options::<strong>get</strong>(const C* name) const</code></li>
+<li><code>Options::<strong>Options</strong>(const Options&amp; opt)</code></li>
+<li><code>Options::<strong>Options</strong>(Options&amp;&amp; opt) noexcept</code></li>
+<li><code>Options::<strong>~Options</strong>() noexcept</code></li>
+<li><code>Options&amp; Options::<strong>operator=</strong>(const Options&amp; opt)</code></li>
+<li><code>Options&amp; Options::<strong>operator=</strong>(Options&amp;&amp; opt) noexcept</code></li>
+</ul>
+
+<p>Other life cycle functions.</p>
+
+<ul>
+<li><code>template &lt;typename... Args&gt; void Options::<strong>add</strong>(const u8string&amp; name, const u8string&amp; info, const Args&amp;... args)</code></li>
 </ul>
 
 <p>TODO</p>
 
 <ul>
-<li><code>template &lt;typename T, typename C&gt; std::vector&lt;T&gt; Options::<strong>getlist</strong>(const basic_string&lt;C&gt;&amp; name) const</code></li>
-<li><code>template &lt;typename T, typename C&gt; std::vector&lt;T&gt; Options::<strong>getlist</strong>(const C* name) const</code></li>
+<li><code>void Options::<strong>autohelp</strong>() noexcept</code></li>
+</ul>
+
+<p>TODO</p>
+
+<ul>
+<li><code>u8string Options::<strong>help</strong>() const</code></li>
+<li><code>u8string Options::<strong>version</strong>() const</code></li>
+</ul>
+
+<p>TODO</p>
+
+<ul>
+<li><code>template &lt;typename C1, typename C2&gt; bool Options::<strong>parse</strong>(const std::vector&lt;basic_string&lt;C1&gt;&gt;&amp; args, std::basic_ostream&lt;C2&gt;&amp; out, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C1, typename C2&gt; bool Options::<strong>parse</strong>(const basic_string&lt;C1&gt;&amp; args, std::basic_ostream&lt;C2&gt;&amp; out, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C1, typename C2&gt; bool Options::<strong>parse</strong>(int argc, C1** argv, std::basic_ostream&lt;C2&gt;&amp; out, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; bool Options::<strong>parse</strong>(const std::vector&lt;basic_string&lt;C&gt;&gt;&amp; args)</code></li>
+<li><code>template &lt;typename C&gt; bool Options::<strong>parse</strong>(const basic_string&lt;C&gt;&amp; args)</code></li>
+<li><code>template &lt;typename C&gt; bool Options::<strong>parse</strong>(int argc, C** argv)</code></li>
+</ul>
+
+<p>TODO</p>
+
+<ul>
+<li><code>bool Options::<strong>has</strong>(const u8string&amp; name) const</code></li>
+</ul>
+
+<p>TODO</p>
+
+<ul>
+<li><code>template &lt;typename T&gt; T Options::<strong>get</strong>(const u8string&amp; name) const</code></li>
+</ul>
+
+<p>TODO</p>
+
+<ul>
+<li><code>template &lt;typename T&gt; std::vector&lt;T&gt; Options::<strong>get_list</strong>(const u8string&amp; name) const</code></li>
 </ul>
 
 <p>TODO</p>
