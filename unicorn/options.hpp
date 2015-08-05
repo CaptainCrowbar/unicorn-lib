@@ -87,19 +87,19 @@ namespace Unicorn {
         void autohelp() noexcept { help_auto = true; }
         u8string help() const;
         u8string version() const { return app_info; }
-        template <typename C1, typename C2>
-            bool parse(const std::vector<basic_string<C1>>& args, std::basic_ostream<C2>& out, Crow::Flagset flags = {});
-        template <typename C1, typename C2>
-            bool parse(const basic_string<C1>& args, std::basic_ostream<C2>& out, Crow::Flagset flags = {});
-        template <typename C1, typename C2>
-            bool parse(int argc, C1** argv, std::basic_ostream<C2>& out, Crow::Flagset flags = {});
+        template <typename C, typename C2>
+            bool parse(const std::vector<basic_string<C>>& args, std::basic_ostream<C2>& out, Crow::Flagset flags = {});
+        template <typename C, typename C2>
+            bool parse(const basic_string<C>& args, std::basic_ostream<C2>& out, Crow::Flagset flags = {});
+        template <typename C, typename C2>
+            bool parse(int argc, C** argv, std::basic_ostream<C2>& out, Crow::Flagset flags = {});
         template <typename C> bool parse(const std::vector<basic_string<C>>& args) { return parse(args, std::cout); }
         template <typename C> bool parse(const basic_string<C>& args) { return parse(args, std::cout); }
         template <typename C> bool parse(int argc, C** argv) { return parse(argc, argv, std::cout); }
-        bool has(const u8string& name) const { return find_index(name, true) != npos; }
         template <typename T> T get(const u8string& name) const
             { return UnicornDetail::ArgConv<T>()(str_join(find_values(name), " ")); }
         template <typename T> std::vector<T> get_list(const u8string& name) const;
+        bool has(const u8string& name) const { return find_index(name, true) != npos; }
     private:
         using string_list = std::vector<u8string>;
         enum class help_mode { none, version, usage };
@@ -174,19 +174,19 @@ namespace Unicorn {
         return tvec;
     }
 
-    template <typename C1, typename C2>
-    bool Options::parse(const std::vector<basic_string<C1>>& args, std::basic_ostream<C2>& out, Crow::Flagset flags) {
+    template <typename C, typename C2>
+    bool Options::parse(const std::vector<basic_string<C>>& args, std::basic_ostream<C2>& out, Crow::Flagset flags) {
         check_flags(flags);
         string_list u8vec;
         std::transform(CROW_BOUNDS(args), Crow::append(u8vec),
-            [=] (const basic_string<C1>& s) { return arg_convert(s, flags); });
+            [=] (const basic_string<C>& s) { return arg_convert(s, flags); });
         auto help_wanted = parse_args(u8vec, flags);
         send_help(out, help_wanted);
         return help_wanted != help_mode::none;
     }
 
-    template <typename C1, typename C2>
-    bool Options::parse(const basic_string<C1>& args, std::basic_ostream<C2>& out, Crow::Flagset flags) {
+    template <typename C, typename C2>
+    bool Options::parse(const basic_string<C>& args, std::basic_ostream<C2>& out, Crow::Flagset flags) {
         check_flags(flags);
         auto u8args = arg_convert(args, flags);
         string_list vec;
@@ -201,13 +201,13 @@ namespace Unicorn {
         return help_wanted != help_mode::none;
     }
 
-    template <typename C1, typename C2>
-    bool Options::parse(int argc, C1** argv, std::basic_ostream<C2>& out, Crow::Flagset flags) {
+    template <typename C, typename C2>
+    bool Options::parse(int argc, C** argv, std::basic_ostream<C2>& out, Crow::Flagset flags) {
         check_flags(flags);
-        std::vector<basic_string<C1>> args(argv, argv + argc);
+        std::vector<basic_string<C>> args(argv, argv + argc);
         help_mode help_wanted;
         if (flags.get(opt_quoted))
-            help_wanted = parse(str_join(args, str_chars<C1>(U' ')), flags);
+            help_wanted = parse(str_join(args, str_chars<C>(U' ')), flags);
         else
             help_wanted = parse(args, flags);
         send_help(out, help_wanted);

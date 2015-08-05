@@ -8,16 +8,49 @@ CSS: style.css
 #### `#include "unicorn/options.hpp"` ####
 
 The `Options` class defined in this module handles parsing of command line
-options. It provides commonly used features such as coalescing of single
-character options (e.g. `-abc` vs `-a -b -c`), long option names (e.g.
-`--long-option`), and so on.
+options, and automatic generation of help messages for the user. It provides
+some commonly expected command line features:
+
+* Long option names prefixed with two hyphens, e.g. `"--long-option"`.
+* Single letter abbreviations, e.g. `"-x"`.
+* Combinations of abbreviated options, e.g. `"-abc" = "-a -b -c"`.
+* Options can be followed by arguments, delimited by a space or an equals sign, e.g. `"--name value"` or `"--name=avalue"`.
+* Options can have default arguments.
+* Options may take multiple arguments, e.g. `"--option arg1 arg2 arg3"`.
+* A option's arguments can be checked against a regular expression.
+* Unattached arguments can be implicitly assigned to options.
+* Sets of mutually exclusive options can be specified.
+* An argument consisting only of two hyphens (`"--"`) marks the end of explicitly named options;
+    any text following it is read as unattached arguments, even if it looks like an option.
 
 The member functions that set up the option specifications take UTF-8 strings
 (mostly because making keyword arguments work with variable string types would
 have complicated the interface too much). The option parsing functions,
 however, will accept an argument list in any Unicode encoding.
 
-<p class="alert">[TODO: DOCUMENTATION]</p>
+Example:
+
+    int main(int argc, char** argv) {
+        Options opt("My Program 1.0");
+        opt.add("--alpha", "The most important option", opt_abbrev="-a");
+        opt.add("--omega", "The least important option");
+        opt.add("--number", "How many roads to walk down", apt_abbrev="-n", opt_default="42", opt_integer);
+        if (opt.parse(argc, argv))
+            return 0;
+        // ... main program code goes here ...
+    }
+
+If this program is invoked with the `"--help"` option, it will display the
+following information on the standard output:
+
+    My Program 1.0
+
+    Options:
+        --alpha, -a <arg>   = The most important option
+        --omega <arg>       = The least important option
+        --number, -n <num>  = How many roads to walk down (default 42)
+        --help, -h          = Show usage information
+        --version, -v       = Show version information
 
 ## Contents ##
 
@@ -27,38 +60,26 @@ however, will accept an argument list in any Unicode encoding.
 ## Exceptions ##
 
 * `class CommandLineError: public std::runtime_error`
+
+Thrown by `Options::parse()` during argument parsing, to report that the
+command line arguments supplied by the user were not consistent with the
+option specification.
+
 * `class OptionSpecError: public std::runtime_error`
 
-TODO
+Thrown by `Options::add()` during the creation of an option specification, to
+report an invalid combination of properties.
 
 ## Class Options ##
 
-Keyword         | Type        | Description
--------         | ----        | -----------
-`opt_anon`      | `bool`      | Assign anonymous arguments to this option
-`opt_boolean`   | `bool`      | Boolean option
-`opt_float`     | `bool`      | Argument must be a floating point number
-`opt_integer`   | `bool`      | Argument must be an integer
-`opt_multiple`  | `bool`      | Option may have multiple arguments
-`opt_required`  | `bool`      | Option is required
-`opt_abbrev`    | `u8string`  | Single letter abbreviation
-`opt_default`   | `u8string`  | Default value if not supplied
-`opt_group`     | `u8string`  | Mutual exclusion group name
-`opt_pattern`   | `u8string`  | Argument must match this regular expression
-
-TODO
-
-Bitmask         | Letter  | Description
--------         | ------  | -----------
-`opt_locale`    | `l`     | Argument list is in local encoding (ignored if C[1] is not char)
-`opt_noprefix`  | `n`     | First argument is not the command name
-`opt_quoted`    | `q`     | Allow arguments to be quoted
-
-TODO
-
 * `explicit Options::Options(const u8string& info, const u8string& head = {}, const u8string& tail = {})`
 
-TODO
+Constructor to initialize an option specification. The `info` argument is a
+string containing the basic description of the program, typically something
+like `"Foobar 1.0 - Does the stuff with the thing"`; this will be returned if
+the user calls it with the `"--version"` option. The optional `head` and
+`tail` arguments are extra text that will be printed before and after the
+option list when the full `"--help"` option is invoked.
 
 * `Options::Options(const Options& opt)`
 * `Options::Options(Options&& opt) noexcept`
@@ -70,34 +91,123 @@ Other life cycle functions.
 
 * `template <typename... Args> void Options::add(const u8string& name, const u8string& info, const Args&... args)`
 
-TODO
+Adds an option to the parser. The `name` argument is the full name of the
+option, which users can invoke with `"--name"` (the `name` string can be
+supplied to the `add()` function with or without the leading hyphens). The
+`info` string is the description of the option that will be presented to the
+user when help is requested.
+
+These may be followed by optional keyword arguments:
+
+* `opt_abbrev=<string>` -- A single letter abbreviation for the option (e.g. `"-x"`; the hyphen is optional).
+* `opt_anon` -- Anonymous arguments (not claimed by any other option) will be assigned to this option.
+* `opt_boolean` -- This option is a boolean switch and does not take arguments.
+* `opt_default=<string>` -- Use this default value if the option is not supplied by the user.
+* `opt_float` -- The argument value must be a floating point number.
+* `opt_group=<string>` -- Assign the option to a mutual exclusion group; at most one option from a group is allowed.
+* `opt_integer` -- The argument value must be an integer.
+* `opt_multiple` -- This option may be followed by multiple arguments.
+* `opt_pattern=<string>` -- The argument value must match this regular expression.
+* `opt_required` -- This option is mandatory.
+
+The `add()` function will throw `OptionSpecError` if any of the following is
+true:
+
+* The option name has less than two characters (not counting any leading hyphens).
+* The info string is empty.
+* An abbreviation is supplied that is longer than one character (not counting a leading hyphen), or is not alphanumeric.
+* `opt_boolean` is combined with `opt_anon`, `opt_default`, `opt_multiple`, `opt_pattern`, or `opt_required`.
+* `opt_required` is combined with `opt_default` or `opt_group`.
+* More than one of `opt_float`, `opt_integer`, and `opt_pattern` is supplied.
+* `opt_default` and `opt_pattern` are both present, but the default does not match the pattern.
+* The name or abbreviation has already been used by an earlier entry.
+
+Do not explicitly add the standard `"--help"` and `"--version"` boolean
+options; these will be added automatically. They will be given the
+abbreviations `"-h"` and `"-v"` if these have not been claimed by other
+options.
+
+A program will normally construct an `Options` object and use multiple calls
+to `add()` to construct the option specification before calling `parse()` to
+parse the actual command line arguments. Once the arguments have been parsed,
+the `get()`, `get_list()`, and `has()` functions can be used to query them.
 
 * `void Options::autohelp() noexcept`
 
-TODO
+If this is set, calling the program with no arguments will be interpreted as a
+request for help (i.e. an empty argument list is equivalent to `"--help"`).
 
 * `u8string Options::help() const`
 * `u8string Options::version() const`
 
-TODO
+These are the same texts that will be presented to the user by the `"--help"`
+and `"--version"` options. The `help()` text is constructed automatically by
+the `Options` object; the `version()` text is simply the original `info`
+string that was supplied to the `Options` constructor.
 
-* `template <typename C1, typename C2> bool Options::parse(const std::vector<basic_string<C1>>& args, std::basic_ostream<C2>& out, Crow::Flagset flags = {})`
-* `template <typename C1, typename C2> bool Options::parse(const basic_string<C1>& args, std::basic_ostream<C2>& out, Crow::Flagset flags = {})`
-* `template <typename C1, typename C2> bool Options::parse(int argc, C1** argv, std::basic_ostream<C2>& out, Crow::Flagset flags = {})`
 * `template <typename C> bool Options::parse(const std::vector<basic_string<C>>& args)`
 * `template <typename C> bool Options::parse(const basic_string<C>& args)`
 * `template <typename C> bool Options::parse(int argc, C** argv)`
+* `template <typename C, typename C2> bool Options::parse(const std::vector<basic_string<C>>& args, std::basic_ostream<C2>& out, Crow::Flagset flags = {})`
+* `template <typename C, typename C2> bool Options::parse(const basic_string<C>& args, std::basic_ostream<C2>& out, Crow::Flagset flags = {})`
+* `template <typename C, typename C2> bool Options::parse(int argc, C** argv, std::basic_ostream<C2>& out, Crow::Flagset flags = {})`
 
-TODO
+After the option specification has been constructed, call one of the `parse()`
+functions to parse the actual command line arguments. The arguments can be
+supplied as a vector of strings, as a single combined string that will be
+split apart during parsing, or as the standard `(argc,argv)` arguments from
+`main()` (or a similar source such as the UTF-16 `_wmain()` often used on
+Windows). Normally the supplied argument list is assumed to start with the
+command name (which will be discarded); use the `opt_noprefix` flag to
+override this.
 
-* `bool Options::has(const u8string& name) const`
+If help or version information is requested, it will be written to the given
+output stream (`std::cout` by default). The `parse()` function will return
+true if all requested processing has already been handled (i.e. if help or
+version information has been presented to the user); the caller should check
+the return value from `parse()` and end the program if it is true.
 
-TODO
+The `flags` argument can be any combination of these:
+
+Bitmask         | Letter  | Description
+-------         | ------  | -----------
+`opt_locale`    | `l`     | The argument list is in the local encoding
+`opt_noprefix`  | `n`     | The first argument is not the command name
+`opt_quoted`    | `q`     | Allow arguments to be quoted
+
+The `opt_locale` flag is only relevant to 8 bit strings, which are assumed to
+be UTF-8 by default; the flag is ignored if the `C` type is not `char`, since
+16 or 32 bit strings are always assumed to be UTF-16/32.
+
+The `parse()` functions will throw `CommandLineError` if any of the following
+is true:
+
+* A full or abbreviated option is supplied that is not in the spec.
+* The same option appears multiple times.
+* Multiple options from the same mutual exclusion group are supplied.
+* The argument supplied for an option does not match the pattern given in the spec.
+* A required option is missing.
+* There are unattached arguments left over after all options have been satisfied.
+
+Behaviour is unspecified if `parse()` is called more than once on the same
+`Options` object.
 
 * `template <typename T> T Options::get(const u8string& name) const`
-
-TODO
-
 * `template <typename T> std::vector<T> Options::get_list(const u8string& name) const`
+* `bool Options::has(const u8string& name) const`
 
-TODO
+These return information about the options and arguments found in the command line.
+The option name can be supplied with or without leading hyphens. Only the full name is
+recognized here, not an abbreviation.
+
+The `get()` function returns the argument attached to an option, converted to
+the given type (which must be a string type or an arithmetic type; when
+converting to a number, characters after a valid number are ignored). If
+multiple arguments were supplied for the option, they are concatenated into a
+space delimited list first.
+
+The `get_list()` function returns multiple arguments as a vector. Its
+behaviour is otherwise the same as `get()`.
+
+The `has()` function simply indicates whether an option was present on the
+command line. This should be used to query boolean options.
