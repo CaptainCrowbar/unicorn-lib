@@ -205,13 +205,10 @@ namespace Unicorn {
     bool Options::parse(int argc, C** argv, std::basic_ostream<C2>& out, Crow::Flagset flags) {
         check_flags(flags);
         std::vector<basic_string<C>> args(argv, argv + argc);
-        help_mode help_wanted;
         if (flags.get(opt_quoted))
-            help_wanted = parse(str_join(args, str_chars<C>(U' ')), flags);
+            return parse(str_join(args, str_chars<C>(U' ')), out, flags);
         else
-            help_wanted = parse(args, flags);
-        send_help(out, help_wanted);
-        return help_wanted != help_mode::none;
+            return parse(args, out, flags);
     }
 
     template <typename C>
