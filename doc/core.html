@@ -78,12 +78,38 @@ error message.</p>
 is currently defined only for native Windows builds).</p>
 
 <ul>
+<li><code>#define <strong>UNICORN_WCHAR_UTF16</strong> 1</code></li>
+<li><code>#define <strong>UNICORN_WCHAR_UTF32</strong> 1</code></li>
+</ul>
+
+<p>One of these is defined to indicate which UTF encoding the system&#8217;s <code>wstring</code>
+class uses.</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; struct <strong>IsCharacterType</strong></code>
+
+<ul>
+<li><code>static constexpr bool IsCharacterType::<strong>value</strong></code></li>
+</ul></li>
+</ul>
+
+<p>The <code>value</code> flag is true if <code>C</code> is one of the character types recognized by
+the Unicorn library (<code>char</code>, <code>char16_t</code>, <code>char32_t</code>, or <code>wchar_t</code>).</p>
+
+<ul>
 <li><code>using <strong>NativeCharacter</strong> = [char on Unix, wchar_t on Windows]</code></li>
 <li><code>using <strong>NativeString</strong> = [string on Unix, wstring on Windows]</code></li>
 </ul>
 
 <p>These are the character and string types used in the operating system&#8217;s native
 ABI.</p>
+
+<ul>
+<li><code>using <strong>WcharEquivalent</strong> = [char16_t or char32_t]</code></li>
+<li><code>using <strong>WstringEquivalent</strong> = [u16string or u32string]</code></li>
+</ul>
+
+<p>These are defined to match the UTF encoding of the system&#8217;s <code>wstring</code> class.</p>
 
 <ul>
 <li><code>namespace Literals</code>
@@ -98,21 +124,6 @@ implementation on wide character systems assumes that <code>char</code> values c
 be directly copied into a <code>wchar_t</code>, so this should only be used with simple
 ASCII strings; text containing Unicode characters will need separate narrow
 and wide character versions.</p>
-
-<ul>
-<li><code>#define <strong>UNICORN_WCHAR_UTF16</strong> 1</code></li>
-<li><code>#define <strong>UNICORN_WCHAR_UTF32</strong> 1</code></li>
-</ul>
-
-<p>One of these is defined to indicate which UTF encoding the system&#8217;s <code>wstring</code>
-class uses.</p>
-
-<ul>
-<li><code>using <strong>WcharEquivalent</strong> = [char16_t or char32_t]</code></li>
-<li><code>using <strong>WstringEquivalent</strong> = [u16string or u32string]</code></li>
-</ul>
-
-<p>These are defined to match the UTF encoding of the system&#8217;s <code>wstring</code> class.</p>
 
 <h2 id="versioninformation">Version information</h2>
 

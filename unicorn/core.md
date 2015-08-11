@@ -58,11 +58,28 @@ error message.
 Defined if the operating system's native API uses wide character strings (this
 is currently defined only for native Windows builds).
 
+* `#define UNICORN_WCHAR_UTF16 1`
+* `#define UNICORN_WCHAR_UTF32 1`
+
+One of these is defined to indicate which UTF encoding the system's `wstring`
+class uses.
+
+* `template <typename C> struct IsCharacterType`
+    * `static constexpr bool IsCharacterType::value`
+
+The `value` flag is true if `C` is one of the character types recognized by
+the Unicorn library (`char`, `char16_t`, `char32_t`, or `wchar_t`).
+
 * `using NativeCharacter = [char on Unix, wchar_t on Windows]`
 * `using NativeString = [string on Unix, wstring on Windows]`
 
 These are the character and string types used in the operating system's native
 ABI.
+
+* `using WcharEquivalent = [char16_t or char32_t]`
+* `using WstringEquivalent = [u16string or u32string]`
+
+These are defined to match the UTF encoding of the system's `wstring` class.
 
 * `namespace Literals`
     * `NativeString operator"" _nat(const char* s, size_t n)`
@@ -72,17 +89,6 @@ implementation on wide character systems assumes that `char` values can simply
 be directly copied into a `wchar_t`, so this should only be used with simple
 ASCII strings; text containing Unicode characters will need separate narrow
 and wide character versions.
-
-* `#define UNICORN_WCHAR_UTF16 1`
-* `#define UNICORN_WCHAR_UTF32 1`
-
-One of these is defined to indicate which UTF encoding the system's `wstring`
-class uses.
-
-* `using WcharEquivalent = [char16_t or char32_t]`
-* `using WstringEquivalent = [u16string or u32string]`
-
-These are defined to match the UTF encoding of the system's `wstring` class.
 
 ## Version information ##
 

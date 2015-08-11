@@ -11,6 +11,20 @@ TEST_MAIN;
 
 namespace {
 
+    void check_character_types() {
+
+        TEST(IsCharacterType<char>::value);
+        TEST(IsCharacterType<char16_t>::value);
+        TEST(IsCharacterType<char32_t>::value);
+        TEST(IsCharacterType<wchar_t>::value);
+        TEST(! IsCharacterType<signed char>::value);
+        TEST(! IsCharacterType<unsigned char>::value);
+        TEST(! IsCharacterType<void>::value);
+        TEST(! IsCharacterType<int>::value);
+        TEST(! IsCharacterType<string>::value);
+
+    }
+
     void check_native_string() {
 
         #if defined(CROW_TARGET_UNIX)
@@ -41,6 +55,7 @@ namespace {
 
 TEST_MODULE(unicorn, core) {
 
+    check_character_types();
     check_native_string();
     check_version_information();
 

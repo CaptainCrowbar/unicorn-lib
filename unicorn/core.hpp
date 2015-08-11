@@ -76,6 +76,12 @@ namespace Unicorn {
 
     // Basic character types
 
+    template <typename C> struct IsCharacterType { static constexpr bool value = false; };
+    template <> struct IsCharacterType<char> { static constexpr bool value = true; };
+    template <> struct IsCharacterType<char16_t> { static constexpr bool value = true; };
+    template <> struct IsCharacterType<char32_t> { static constexpr bool value = true; };
+    template <> struct IsCharacterType<wchar_t> { static constexpr bool value = true; };
+
     #if defined(CROW_TARGET_UNIX)
         using NativeCharacter = char;
     #else
