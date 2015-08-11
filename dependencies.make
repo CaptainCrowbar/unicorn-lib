@@ -39,6 +39,13 @@ build/$(TARGET)/io.o: unicorn/io.cpp unicorn/io.hpp unicorn/core.hpp \
   unicorn/segment.hpp unicorn/utf.hpp unicorn/format.hpp \
   unicorn/regex.hpp $(LIBROOT)/crow-lib/crow/meta.hpp unicorn/mbcs.hpp \
   $(LIBROOT)/crow-lib/crow/thread.hpp
+build/$(TARGET)/json-test.o: unicorn/json-test.cpp $(LIBROOT)/crow-lib/crow/unit-test.hpp \
+  $(LIBROOT)/crow-lib/crow/core.hpp $(LIBROOT)/crow-lib/crow/thread.hpp unicorn/core.hpp \
+  unicorn/json.hpp
+build/$(TARGET)/json.o: unicorn/json.cpp unicorn/json.hpp $(LIBROOT)/crow-lib/crow/core.hpp \
+  unicorn/core.hpp unicorn/format.hpp unicorn/character.hpp \
+  unicorn/property-values.hpp unicorn/regex.hpp unicorn/string.hpp \
+  unicorn/segment.hpp unicorn/utf.hpp $(LIBROOT)/crow-lib/crow/meta.hpp
 build/$(TARGET)/lexer-test.o: unicorn/lexer-test.cpp $(LIBROOT)/crow-lib/crow/unit-test.hpp \
   $(LIBROOT)/crow-lib/crow/core.hpp $(LIBROOT)/crow-lib/crow/thread.hpp unicorn/core.hpp \
   unicorn/lexer.hpp unicorn/character.hpp unicorn/property-values.hpp \
