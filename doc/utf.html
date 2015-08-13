@@ -121,6 +121,7 @@ UTF encoding implied by the character type <code>C</code>.</p>
 <li><code>const string_type&amp; UtfIterator::<strong>source</strong>() const noexcept</code></li>
 <li><code>size_t UtfIterator::<strong>offset</strong>() const noexcept</code></li>
 <li><code>size_t UtfIterator::<strong>count</strong>() const noexcept</code></li>
+<li><code>string_type <strong>str</strong>() const</code></li>
 <li><code>bool UtfIterator::<strong>valid</strong>() const noexcept</code></li>
 <li><code>[standard iterator operations]</code></li>
 </ul></li>
@@ -149,9 +150,16 @@ or 32 are always one-for-one.</p>
 state. The <code>source()</code> function returns a reference to the underlying encoded
 string. The <code>offset()</code> and <code>count()</code> functions return the position and length
 (in code units) of the current encoded character (or the group of code units
-currently being interpreted as an invalid character). The <code>valid()</code> function
-indicates whether the current character is valid; it will always be true if
-<code>err_ignore</code> was set, and its value is unspecified on a past-the-end iterator.</p>
+currently being interpreted as an invalid character).</p>
+
+<p>The <code>str()</code> function returns a copy of the code units making up the current
+character. This will be empty if the iterator is default constructed or past
+the end, but behaviour is undefined if this is called on any other kind of
+invalid iterator.</p>
+
+<p>The <code>valid()</code> function indicates whether the current character is valid; it
+will always be true if <code>err_ignore</code> was set, and its value is unspecified on a
+past-the-end iterator.</p>
 
 <p>If the underlying string is UTF&#8211;32, this is just a simple pass-through
 iterator, but if one of the non-default error handling options is selected, it

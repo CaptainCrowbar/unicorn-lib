@@ -154,53 +154,54 @@ namespace Unicorn {
         using pointer = const char32_t*;
         using reference = const char32_t&;
         using value_type = char32_t;
-        UtfIterator() noexcept { static const string_type dummy; str = &dummy; }
-        explicit UtfIterator(const string_type& src): str(&src)
+        UtfIterator() noexcept { static const string_type dummy; sptr = &dummy; }
+        explicit UtfIterator(const string_type& src): sptr(&src)
             { UnicornDetail::utf_flags(fset); ++*this; }
         UtfIterator(const string_type& src, size_t offset, Crow::Flagset flags = {}):
-            str(&src), ofs(std::min(offset, src.size())), fset(flags)
+            sptr(&src), ofs(std::min(offset, src.size())), fset(flags)
             { UnicornDetail::utf_flags(fset); ++*this; }
         const char32_t& operator*() const noexcept { return u; }
         UtfIterator& operator++();
         UtfIterator operator++(int) { auto i = *this; ++*this; return i; }
         UtfIterator& operator--();
         UtfIterator operator--(int) { auto i = *this; --*this; return i; }
-        const string_type& source() const noexcept { return *str; }
+        const string_type& source() const noexcept { return *sptr; }
         size_t offset() const noexcept { return ofs; }
         size_t count() const noexcept { return units; }
+        string_type str() const { return sptr ? sptr->substr(ofs, units) : string_type(); }
         bool valid() const noexcept { return ok; }
         friend bool operator==(const UtfIterator& lhs, const UtfIterator& rhs) noexcept
             { return lhs.ofs == rhs.ofs; }
         friend bool operator!=(const UtfIterator& lhs, const UtfIterator& rhs) noexcept
             { return ! (lhs == rhs); }
     private:
-        const string_type* str = nullptr;  // Source string
-        size_t ofs = 0;                    // Offset of current character in source
-        size_t units = 0;                  // Code units in current character
-        char32_t u = 0;                    // Current decoded character
-        Crow::Flagset fset = err_ignore;   // Error handling flag
-        bool ok = false;                   // Current character is valid
+        const string_type* sptr = nullptr;  // Source string
+        size_t ofs = 0;                     // Offset of current character in source
+        size_t units = 0;                   // Code units in current character
+        char32_t u = 0;                     // Current decoded character
+        Crow::Flagset fset = err_ignore;    // Error handling flag
+        bool ok = false;                    // Current character is valid
     };
 
     template <typename C>
     UtfIterator<C>& UtfIterator<C>::operator++() {
         using namespace UnicornDetail;
-        ofs = std::min(ofs + units, str->size());
+        ofs = std::min(ofs + units, sptr->size());
         units = 0;
         u = 0;
         ok = false;
-        if (ofs == str->size())
+        if (ofs == sptr->size())
             return *this;
         if (fset.get(err_ignore)) {
-            units = UtfEncoding<C>::decode_fast(str->data() + ofs, str->size() - ofs, u);
+            units = UtfEncoding<C>::decode_fast(sptr->data() + ofs, sptr->size() - ofs, u);
             ok = true;
         } else {
-            units = UtfEncoding<C>::decode(str->data() + ofs, str->size() - ofs, u);
+            units = UtfEncoding<C>::decode(sptr->data() + ofs, sptr->size() - ofs, u);
             ok = char_is_unicode(u);
             if (! ok) {
                 u = replacement_char;
                 if (fset.get(err_throw))
-                    throw EncodingError(UtfEncoding<C>::name(), ofs, str->data() + ofs, units);
+                    throw EncodingError(UtfEncoding<C>::name(), ofs, sptr->data() + ofs, units);
             }
         }
         return *this;
@@ -214,13 +215,13 @@ namespace Unicorn {
         ok = false;
         if (ofs == 0)
             return *this;
-        units = UtfEncoding<C>::decode_prev(str->data(), ofs, u);
+        units = UtfEncoding<C>::decode_prev(sptr->data(), ofs, u);
         ofs -= units;
         ok = fset.get(err_ignore) || char_is_unicode(u);
         if (! ok) {
             u = replacement_char;
             if (fset.get(err_throw))
-                throw EncodingError(UtfEncoding<C>::name(), ofs, str->data() + ofs, units);
+                throw EncodingError(UtfEncoding<C>::name(), ofs, sptr->data() + ofs, units);
         }
         return *this;
     }
@@ -278,20 +279,20 @@ namespace Unicorn {
         using value_type = char32_t;
         UtfWriter() noexcept {}
         explicit UtfWriter(string_type& dst) noexcept:
-            str(&dst) { UnicornDetail::utf_flags(fset); }
+            sptr(&dst) { UnicornDetail::utf_flags(fset); }
         UtfWriter(string_type& dst, Crow::Flagset flags) noexcept:
-            str(&dst), fset(flags) { UnicornDetail::utf_flags(fset); }
+            sptr(&dst), fset(flags) { UnicornDetail::utf_flags(fset); }
         UtfWriter& operator=(char32_t u);
         UtfWriter& operator*() noexcept { return *this; }
         UtfWriter& operator++() noexcept { return *this; }
         UtfWriter& operator++(int) noexcept { return *this; }
         bool valid() const noexcept { return ok; }
         friend bool operator==(const UtfWriter& lhs, const UtfWriter& rhs) noexcept
-            { return lhs.str == rhs.str; }
+            { return lhs.sptr == rhs.sptr; }
         friend bool operator!=(const UtfWriter& lhs, const UtfWriter& rhs) noexcept
             { return ! (lhs == rhs); }
     private:
-        string_type* str = nullptr;       // Destination string
+        string_type* sptr = nullptr;      // Destination string
         Crow::Flagset fset = err_ignore;  // Error handling flag
         bool ok = false;                  // Most recent character is valid
     };
@@ -299,15 +300,15 @@ namespace Unicorn {
     template <typename C>
     UtfWriter<C>& UtfWriter<C>::operator=(char32_t u) {
         using namespace UnicornDetail;
-        if (! str)
+        if (! sptr)
             return *this;
         bool fast = fset.get(err_ignore);
-        auto pos = str->size();
-        str->resize(pos + UtfEncoding<C>::max_units);
+        auto pos = sptr->size();
+        sptr->resize(pos + UtfEncoding<C>::max_units);
         size_t rc = 0;
         if (fast || char_is_unicode(u))
-            rc = UtfEncoding<C>::encode(u, &(*str)[pos]);
-        str->resize(pos + rc);
+            rc = UtfEncoding<C>::encode(u, &(*sptr)[pos]);
+        sptr->resize(pos + rc);
         if (fast) {
             ok = true;
         } else {
@@ -316,7 +317,7 @@ namespace Unicorn {
                 if (fset.get(err_throw))
                     throw EncodingError(UtfEncoding<C>::name(), pos, &u);
                 else
-                    append_error(*str);
+                    append_error(*sptr);
             }
         }
         return *this;

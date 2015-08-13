@@ -80,6 +80,7 @@ UTF encoding implied by the character type `C`.
     * `const string_type& UtfIterator::source() const noexcept`
     * `size_t UtfIterator::offset() const noexcept`
     * `size_t UtfIterator::count() const noexcept`
+    * `string_type str() const`
     * `bool UtfIterator::valid() const noexcept`
     * `[standard iterator operations]`
 
@@ -106,9 +107,16 @@ Besides the normal operations that can be applied to an iterator,
 state. The `source()` function returns a reference to the underlying encoded
 string. The `offset()` and `count()` functions return the position and length
 (in code units) of the current encoded character (or the group of code units
-currently being interpreted as an invalid character). The `valid()` function
-indicates whether the current character is valid; it will always be true if
-`err_ignore` was set, and its value is unspecified on a past-the-end iterator.
+currently being interpreted as an invalid character).
+
+The `str()` function returns a copy of the code units making up the current
+character. This will be empty if the iterator is default constructed or past
+the end, but behaviour is undefined if this is called on any other kind of
+invalid iterator.
+
+The `valid()` function indicates whether the current character is valid; it
+will always be true if `err_ignore` was set, and its value is unspecified on a
+past-the-end iterator.
 
 If the underlying string is UTF-32, this is just a simple pass-through
 iterator, but if one of the non-default error handling options is selected, it
