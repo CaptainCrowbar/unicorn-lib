@@ -50,7 +50,18 @@ namespace Unicorn {
     OptionSpecError::OptionSpecError(const u8string& details, const u8string& option):
     std::runtime_error("$1: $2q"_fmt(details, option)) {}
 
-    // Options parsing class
+    // Options class
+
+    constexpr Crow::Kwarg<bool> Options::anon;
+    constexpr Crow::Kwarg<bool> Options::boolean;
+    constexpr Crow::Kwarg<bool> Options::floating;
+    constexpr Crow::Kwarg<bool> Options::integer;
+    constexpr Crow::Kwarg<bool> Options::multiple;
+    constexpr Crow::Kwarg<bool> Options::required;
+    constexpr Crow::Kwarg<u8string> Options::abbrev;
+    constexpr Crow::Kwarg<u8string> Options::defval;
+    constexpr Crow::Kwarg<u8string> Options::group;
+    constexpr Crow::Kwarg<u8string> Options::pattern;
 
     u8string Options::help() const {
         u8string text = "\n$1\n\n"_fmt(app_info);

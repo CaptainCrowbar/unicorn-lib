@@ -30,19 +30,6 @@ namespace Unicorn {
     constexpr auto opt_noprefix  = Crow::Flagset::value('n');  // First argument is not the command name
     constexpr auto opt_quoted    = Crow::Flagset::value('q');  // Allow arguments to be quoted
 
-    constexpr Crow::Kwarg<bool>
-        opt_anon,      // Assign anonymous arguments to this option
-        opt_boolean,   // Boolean option
-        opt_float,     // Argument must be a floating point number
-        opt_integer,   // Argument must be an integer
-        opt_multiple,  // Option may have multiple arguments
-        opt_required;  // Option is required
-    constexpr Crow::Kwarg<u8string>
-        opt_abbrev,    // Single letter abbreviation
-        opt_default,   // Default value if not supplied
-        opt_group,     // Mutual exclusion group name
-        opt_pattern;   // Argument must match this regular expression
-
     namespace UnicornDetail {
 
         template <typename T, bool FP = std::is_floating_point<T>::value>
@@ -80,6 +67,18 @@ namespace Unicorn {
 
     class Options {
     public:
+        static constexpr Crow::Kwarg<bool>
+            anon = {},      // Assign anonymous arguments to this option
+            boolean = {},   // Boolean option
+            floating = {},     // Argument must be a floating point number
+            integer = {},   // Argument must be an integer
+            multiple = {},  // Option may have multiple arguments
+            required = {};  // Option is required
+        static constexpr Crow::Kwarg<u8string>
+            abbrev = {},    // Single letter abbreviation
+            defval = {},    // Default value if not supplied
+            group = {},     // Mutual exclusion group name
+            pattern = {};   // Argument must match this regular expression
         explicit Options(const u8string& info, const u8string& head = {}, const u8string& tail = {}):
             app_info(str_trim(info)), help_auto(false),
             help_head(str_trim(head)), help_tail(str_trim(tail)), opts() {}
@@ -149,20 +148,20 @@ namespace Unicorn {
     template <typename... Args>
     void Options::add(const u8string& name, const u8string& info, const Args&... args) {
         option_type opt;
-        u8string pattern;
+        u8string pat;
         opt.name = name;
         opt.info = info;
-        kwget(opt_anon, opt.is_anon, args...);
-        kwget(opt_boolean, opt.is_boolean, args...);
-        kwget(opt_float, opt.is_float, args...);
-        kwget(opt_integer, opt.is_integer, args...);
-        kwget(opt_multiple, opt.is_multiple, args...);
-        kwget(opt_required, opt.is_required, args...);
-        kwget(opt_abbrev, opt.abbrev, args...);
-        kwget(opt_default, opt.defval, args...);
-        kwget(opt_group, opt.group, args...);
-        kwget(opt_pattern, pattern, args...);
-        opt.pattern = Regex(pattern);
+        kwget(anon, opt.is_anon, args...);
+        kwget(boolean, opt.is_boolean, args...);
+        kwget(floating, opt.is_float, args...);
+        kwget(integer, opt.is_integer, args...);
+        kwget(multiple, opt.is_multiple, args...);
+        kwget(required, opt.is_required, args...);
+        kwget(abbrev, opt.abbrev, args...);
+        kwget(defval, opt.defval, args...);
+        kwget(group, opt.group, args...);
+        kwget(pattern, pat, args...);
+        opt.pattern = Regex(pat);
         add_option(opt);
     }
 

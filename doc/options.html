@@ -21,7 +21,7 @@ some commonly expected command line features:</p>
 <li>Long option names prefixed with two hyphens, e.g. <code>&quot;--long-option&quot;</code>.</li>
 <li>Single letter abbreviations, e.g. <code>&quot;-x&quot;</code>.</li>
 <li>Combinations of abbreviated options, e.g. <code>&quot;-abc&quot; = &quot;-a -b -c&quot;</code>.</li>
-<li>Options can be followed by arguments, delimited by a space or an equals sign, e.g. <code>&quot;--name value&quot;</code> or <code>&quot;--name=avalue&quot;</code>.</li>
+<li>Options can be followed by arguments, delimited by a space or an equals sign, e.g. <code>&quot;--name value&quot;</code> or <code>&quot;--name=value&quot;</code>.</li>
 <li>Options can have default arguments.</li>
 <li>Options may take multiple arguments, e.g. <code>&quot;--option arg1 arg2 arg3&quot;</code>.</li>
 <li>A option&#8217;s arguments can be checked against a regular expression.</li>
@@ -40,9 +40,9 @@ however, will accept an argument list in any Unicode encoding.</p>
 
 <pre><code>int main(int argc, char** argv) {
     Options opt(&quot;My Program 1.0&quot;);
-    opt.add(&quot;--alpha&quot;, &quot;The most important option&quot;, opt_abbrev=&quot;-a&quot;);
+    opt.add(&quot;--alpha&quot;, &quot;The most important option&quot;, Options::abbrev=&quot;-a&quot;);
     opt.add(&quot;--omega&quot;, &quot;The least important option&quot;);
-    opt.add(&quot;--number&quot;, &quot;How many roads to walk down&quot;, apt_abbrev=&quot;-n&quot;, opt_default=&quot;42&quot;, opt_integer);
+    opt.add(&quot;--number&quot;, &quot;How many roads to walk down&quot;, Options::abbrev=&quot;-n&quot;, Options::defval=&quot;42&quot;, Options::integer);
     if (opt.parse(argc, argv))
         return 0;
     // ... main program code goes here ...
@@ -88,6 +88,77 @@ report an invalid combination of properties.</p>
 
 <h2 id="classoptions">Class Options</h2>
 
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Keyword</th>
+	<th style="text-align:left;">Type</th>
+	<th style="text-align:left;">Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><code>Options::abbrev</code></td>
+	<td style="text-align:left;"><code>u8string</code></td>
+	<td style="text-align:left;">A single letter abbreviation for the option (e.g. <code>&quot;-x&quot;</code>; the hyphen is optional).</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>Options::anon</code></td>
+	<td style="text-align:left;"><code>bool</code></td>
+	<td style="text-align:left;">Anonymous arguments (not claimed by any other option) will be assigned to this option.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>Options::boolean</code></td>
+	<td style="text-align:left;"><code>bool</code></td>
+	<td style="text-align:left;">This option is a boolean switch and does not take arguments.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>Options::defval</code></td>
+	<td style="text-align:left;"><code>u8string</code></td>
+	<td style="text-align:left;">Use this default value if the option is not supplied by the user.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>Options::floating</code></td>
+	<td style="text-align:left;"><code>bool</code></td>
+	<td style="text-align:left;">The argument value must be a floating point number.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>Options::group</code></td>
+	<td style="text-align:left;"><code>u8string</code></td>
+	<td style="text-align:left;">Assign the option to a mutual exclusion group; at most one option from a group is allowed.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>Options::integer</code></td>
+	<td style="text-align:left;"><code>bool</code></td>
+	<td style="text-align:left;">The argument value must be an integer.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>Options::multiple</code></td>
+	<td style="text-align:left;"><code>bool</code></td>
+	<td style="text-align:left;">This option may be followed by multiple arguments.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>Options::pattern</code></td>
+	<td style="text-align:left;"><code>u8string</code></td>
+	<td style="text-align:left;">The argument value must match this regular expression.</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>Options::required</code></td>
+	<td style="text-align:left;"><code>bool</code></td>
+	<td style="text-align:left;">This option is mandatory.</td>
+</tr>
+</tbody>
+</table>
+
+<p>Keyword arguments for the <code>add()</code> function, described below.</p>
+
 <ul>
 <li><code>explicit Options::<strong>Options</strong>(const u8string&amp; info, const u8string&amp; head = {}, const u8string&amp; tail = {})</code></li>
 </ul>
@@ -114,25 +185,11 @@ option list when the full <code>&quot;--help&quot;</code> option is invoked.</p>
 </ul>
 
 <p>Adds an option to the parser. The <code>name</code> argument is the full name of the
-option, which users can invoke with <code>&quot;--name&quot;</code> (the <code>name</code> string can be
+option, which users can invoke with <code>&quot;--name&quot;</code> (the option name can be
 supplied to the <code>add()</code> function with or without the leading hyphens). The
 <code>info</code> string is the description of the option that will be presented to the
-user when help is requested.</p>
-
-<p>These may be followed by optional keyword arguments:</p>
-
-<ul>
-<li><code>opt_abbrev=&lt;string&gt;</code> &#8211; A single letter abbreviation for the option (e.g. <code>&quot;-x&quot;</code>; the hyphen is optional).</li>
-<li><code>opt_anon</code> &#8211; Anonymous arguments (not claimed by any other option) will be assigned to this option.</li>
-<li><code>opt_boolean</code> &#8211; This option is a boolean switch and does not take arguments.</li>
-<li><code>opt_default=&lt;string&gt;</code> &#8211; Use this default value if the option is not supplied by the user.</li>
-<li><code>opt_float</code> &#8211; The argument value must be a floating point number.</li>
-<li><code>opt_group=&lt;string&gt;</code> &#8211; Assign the option to a mutual exclusion group; at most one option from a group is allowed.</li>
-<li><code>opt_integer</code> &#8211; The argument value must be an integer.</li>
-<li><code>opt_multiple</code> &#8211; This option may be followed by multiple arguments.</li>
-<li><code>opt_pattern=&lt;string&gt;</code> &#8211; The argument value must match this regular expression.</li>
-<li><code>opt_required</code> &#8211; This option is mandatory.</li>
-</ul>
+user when help is requested. These may be followed by optional keyword
+arguments, as listed above.</p>
 
 <p>The <code>add()</code> function will throw <code>OptionSpecError</code> if any of the following is
 true:</p>
@@ -141,10 +198,10 @@ true:</p>
 <li>The option name has less than two characters (not counting any leading hyphens).</li>
 <li>The info string is empty.</li>
 <li>An abbreviation is supplied that is longer than one character (not counting a leading hyphen), or is not alphanumeric.</li>
-<li><code>opt_boolean</code> is combined with <code>opt_anon</code>, <code>opt_default</code>, <code>opt_multiple</code>, <code>opt_pattern</code>, or <code>opt_required</code>.</li>
-<li><code>opt_required</code> is combined with <code>opt_default</code> or <code>opt_group</code>.</li>
-<li>More than one of <code>opt_float</code>, <code>opt_integer</code>, and <code>opt_pattern</code> is supplied.</li>
-<li><code>opt_default</code> and <code>opt_pattern</code> are both present, but the default does not match the pattern.</li>
+<li>The <code>boolean</code> tag is combined with <code>anon</code>, <code>defval</code>, <code>multiple</code>, <code>pattern</code>, or <code>required</code>.</li>
+<li>The <code>required</code> tag is combined with <code>defval</code> or <code>group</code>.</li>
+<li>More than one of <code>float</code>, <code>integer</code>, and <code>pattern</code> is supplied.</li>
+<li>The <code>defval</code> and <code>pattern</code> tags are both present, but the default value does not match the pattern.</li>
 <li>The name or abbreviation has already been used by an earlier entry.</li>
 </ul>
 

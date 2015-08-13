@@ -14,7 +14,7 @@ some commonly expected command line features:
 * Long option names prefixed with two hyphens, e.g. `"--long-option"`.
 * Single letter abbreviations, e.g. `"-x"`.
 * Combinations of abbreviated options, e.g. `"-abc" = "-a -b -c"`.
-* Options can be followed by arguments, delimited by a space or an equals sign, e.g. `"--name value"` or `"--name=avalue"`.
+* Options can be followed by arguments, delimited by a space or an equals sign, e.g. `"--name value"` or `"--name=value"`.
 * Options can have default arguments.
 * Options may take multiple arguments, e.g. `"--option arg1 arg2 arg3"`.
 * A option's arguments can be checked against a regular expression.
@@ -32,9 +32,9 @@ Example:
 
     int main(int argc, char** argv) {
         Options opt("My Program 1.0");
-        opt.add("--alpha", "The most important option", opt_abbrev="-a");
+        opt.add("--alpha", "The most important option", Options::abbrev="-a");
         opt.add("--omega", "The least important option");
-        opt.add("--number", "How many roads to walk down", apt_abbrev="-n", opt_default="42", opt_integer);
+        opt.add("--number", "How many roads to walk down", Options::abbrev="-n", Options::defval="42", Options::integer);
         if (opt.parse(argc, argv))
             return 0;
         // ... main program code goes here ...
@@ -72,6 +72,21 @@ report an invalid combination of properties.
 
 ## Class Options ##
 
+Keyword              | Type        | Description
+-------              | ----        | -----------
+`Options::abbrev`    | `u8string`  | A single letter abbreviation for the option (e.g. `"-x"`; the hyphen is optional).
+`Options::anon`      | `bool`      | Anonymous arguments (not claimed by any other option) will be assigned to this option.
+`Options::boolean`   | `bool`      | This option is a boolean switch and does not take arguments.
+`Options::defval`    | `u8string`  | Use this default value if the option is not supplied by the user.
+`Options::floating`  | `bool`      | The argument value must be a floating point number.
+`Options::group`     | `u8string`  | Assign the option to a mutual exclusion group; at most one option from a group is allowed.
+`Options::integer`   | `bool`      | The argument value must be an integer.
+`Options::multiple`  | `bool`      | This option may be followed by multiple arguments.
+`Options::pattern`   | `u8string`  | The argument value must match this regular expression.
+`Options::required`  | `bool`      | This option is mandatory.
+
+Keyword arguments for the `add()` function, described below.
+
 * `explicit Options::Options(const u8string& info, const u8string& head = {}, const u8string& tail = {})`
 
 Constructor to initialize an option specification. The `info` argument is a
@@ -92,23 +107,11 @@ Other life cycle functions.
 * `template <typename... Args> void Options::add(const u8string& name, const u8string& info, const Args&... args)`
 
 Adds an option to the parser. The `name` argument is the full name of the
-option, which users can invoke with `"--name"` (the `name` string can be
+option, which users can invoke with `"--name"` (the option name can be
 supplied to the `add()` function with or without the leading hyphens). The
 `info` string is the description of the option that will be presented to the
-user when help is requested.
-
-These may be followed by optional keyword arguments:
-
-* `opt_abbrev=<string>` -- A single letter abbreviation for the option (e.g. `"-x"`; the hyphen is optional).
-* `opt_anon` -- Anonymous arguments (not claimed by any other option) will be assigned to this option.
-* `opt_boolean` -- This option is a boolean switch and does not take arguments.
-* `opt_default=<string>` -- Use this default value if the option is not supplied by the user.
-* `opt_float` -- The argument value must be a floating point number.
-* `opt_group=<string>` -- Assign the option to a mutual exclusion group; at most one option from a group is allowed.
-* `opt_integer` -- The argument value must be an integer.
-* `opt_multiple` -- This option may be followed by multiple arguments.
-* `opt_pattern=<string>` -- The argument value must match this regular expression.
-* `opt_required` -- This option is mandatory.
+user when help is requested. These may be followed by optional keyword
+arguments, as listed above.
 
 The `add()` function will throw `OptionSpecError` if any of the following is
 true:
@@ -116,10 +119,10 @@ true:
 * The option name has less than two characters (not counting any leading hyphens).
 * The info string is empty.
 * An abbreviation is supplied that is longer than one character (not counting a leading hyphen), or is not alphanumeric.
-* `opt_boolean` is combined with `opt_anon`, `opt_default`, `opt_multiple`, `opt_pattern`, or `opt_required`.
-* `opt_required` is combined with `opt_default` or `opt_group`.
-* More than one of `opt_float`, `opt_integer`, and `opt_pattern` is supplied.
-* `opt_default` and `opt_pattern` are both present, but the default does not match the pattern.
+* The `boolean` tag is combined with `anon`, `defval`, `multiple`, `pattern`, or `required`.
+* The `required` tag is combined with `defval` or `group`.
+* More than one of `float`, `integer`, and `pattern` is supplied.
+* The `defval` and `pattern` tags are both present, but the default value does not match the pattern.
 * The name or abbreviation has already been used by an earlier entry.
 
 Do not explicitly add the standard `"--help"` and `"--version"` boolean
