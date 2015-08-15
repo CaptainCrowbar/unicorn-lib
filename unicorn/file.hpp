@@ -327,6 +327,7 @@ namespace Unicorn {
     constexpr auto dir_dotdot    = Crow::Flagset::value('d');  // Include . and ..
     constexpr auto dir_fullname  = Crow::Flagset::value('f');  // Full file names
     constexpr auto dir_hidden    = Crow::Flagset::value('h');  // Include hidden files
+    constexpr auto dir_unicode   = Crow::Flagset::value('u');  // Valid Unicode names only
 
     template <typename C>
     class DirectoryIterator {
@@ -379,15 +380,17 @@ namespace Unicorn {
             if (impl.done())
                 break;
             recode_filename(impl.file(), current);
-            if (fset.get(dir_dotdot) || (current != link1 && current != link2)) {
-                if (fset.get(dir_fullname) || ! fset.get(dir_hidden))
-                    path = prefix + current;
-                if (fset.get(dir_hidden) || ! file_is_hidden(path)) {
-                    if (fset.get(dir_fullname))
-                        current = std::move(path);
-                    break;
-                }
-            }
+            if (! fset.get(dir_dotdot) && (current == link1 || current == link2))
+                continue;
+            if (fset.get(dir_unicode) && ! valid_string(current))
+                continue;
+            if (fset.get(dir_fullname) || ! fset.get(dir_hidden))
+                path = prefix + current;
+            if (! fset.get(dir_hidden) && file_is_hidden(path))
+                continue;
+            if (fset.get(dir_fullname))
+                current = std::move(path);
+            break;
         }
         return *this;
     }

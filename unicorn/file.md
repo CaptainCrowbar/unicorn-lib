@@ -61,8 +61,8 @@ simplicity; the equivalent code on Windows will make the obvious substitutions
 of backslashes for slashes, and drive roots such as `"C:\"` for `"/"`.
 
 The term "leaf name" is used here to mean the name of an individual file
-within a directory, with no directory path prefix. (For example, the leaf name
-of `"/foo/bar/hello.txt"` is `"hello.txt"`.)
+within a directory, with no directory path prefix (for example, the leaf name
+of `"/foo/bar/hello.txt"` is `"hello.txt"`).
 
 ## System dependencies ##
 
@@ -252,6 +252,7 @@ Bitmask         | Letter  | Description
 `dir_dotdot`    | `d`     | Include the . and .. entries
 `dir_fullname`  | `f`     | Return full file names instead of leaf names
 `dir_hidden`    | `h`     | Include hidden files
+`dir_unicode`   | `u`     | Skip files with non-Unicode names
 
 An iterator over the files in a directory. Normally you should call the
 `directory()` function to get an iterator range, rather than explicitly
@@ -266,9 +267,13 @@ By default, an iterator dereferences to a file's leaf name; if the
 the directory (this is based on the name passed to the constructor, and will
 not be a fully qualified absolute path if the original name was not).
 
+The `dir_unicode` flag checks only the file's leaf name. If it is combined
+with the `dir_fullname` flag, the returned paths can still contain invalid
+Unicode if the directory path was invalid to begin with.
+
 The order in which files are returned is unspecified; do not rely on them
 being returned in the same order as the `ls` or `dir` command, or on the order
 remaining the same on separate iterations over the same directory. Behaviour
-is also unspecified if a file is created or deleted while a
-`DirectoryIterator` is scanning its parent directory; the change may or may
-not be visible to the caller.
+is also unspecified if a directory's contents change while a
+`DirectoryIterator` is scanning it; the change may or may not be visible to
+the caller.

@@ -69,8 +69,8 @@ simplicity; the equivalent code on Windows will make the obvious substitutions
 of backslashes for slashes, and drive roots such as <code>&quot;C:\&quot;</code> for <code>&quot;/&quot;</code>.</p>
 
 <p>The term &#8220;leaf name&#8221; is used here to mean the name of an individual file
-within a directory, with no directory path prefix. (For example, the leaf name
-of <code>&quot;/foo/bar/hello.txt&quot;</code> is <code>&quot;hello.txt&quot;</code>.)</p>
+within a directory, with no directory path prefix (for example, the leaf name
+of <code>&quot;/foo/bar/hello.txt&quot;</code> is <code>&quot;hello.txt&quot;</code>).</p>
 
 <h2 id="systemdependencies">System dependencies</h2>
 
@@ -326,6 +326,11 @@ destination are on different physical file systems.</p>
 	<td style="text-align:left;"><code>h</code></td>
 	<td style="text-align:left;">Include hidden files</td>
 </tr>
+<tr>
+	<td style="text-align:left;"><code>dir_unicode</code></td>
+	<td style="text-align:left;"><code>u</code></td>
+	<td style="text-align:left;">Skip files with non-Unicode names</td>
+</tr>
 </tbody>
 </table>
 
@@ -342,12 +347,16 @@ treated as an empty directory.</p>
 the directory (this is based on the name passed to the constructor, and will
 not be a fully qualified absolute path if the original name was not).</p>
 
+<p>The <code>dir_unicode</code> flag checks only the file&#8217;s leaf name. If it is combined
+with the <code>dir_fullname</code> flag, the returned paths can still contain invalid
+Unicode if the directory path was invalid to begin with.</p>
+
 <p>The order in which files are returned is unspecified; do not rely on them
 being returned in the same order as the <code>ls</code> or <code>dir</code> command, or on the order
 remaining the same on separate iterations over the same directory. Behaviour
-is also unspecified if a file is created or deleted while a
-<code>DirectoryIterator</code> is scanning its parent directory; the change may or may
-not be visible to the caller.</p>
+is also unspecified if a directory&#8217;s contents change while a
+<code>DirectoryIterator</code> is scanning it; the change may or may not be visible to
+the caller.</p>
 
 </body>
 </html>

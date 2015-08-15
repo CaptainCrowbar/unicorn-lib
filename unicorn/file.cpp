@@ -304,9 +304,9 @@ namespace Unicorn {
 
             // On Windows we need to check first that the supplied file name
             // refers to a directory, because FindFirstFile() gives a false
-            // positive for 'file\*' when the file is not a directory. There's
-            // a race condition here but there doesn't seem to be anything we
-            // can do about it.
+            // positive for "file\*" when "file" exists but is not a
+            // directory. There's a race condition here but there doesn't seem
+            // to be anything we can do about it.
 
             struct DirectoryHelper::impl_type {
                 wstring name;

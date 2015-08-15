@@ -121,10 +121,10 @@ for details.</p>
 <li><code>Format::<strong>Format</strong>()</code></li>
 <li><code>explicit Format::<strong>Format</strong>(const string_type&amp; format)</code></li>
 <li><code>Format::<strong>Format</strong>(const Format&amp; f)</code></li>
-<li><code>Format::<strong>Format</strong>(Format&amp;&amp; f)</code></li>
-<li><code>Format::<strong>~Format</strong>()</code></li>
+<li><code>Format::<strong>Format</strong>(Format&amp;&amp; f) noexcept</code></li>
+<li><code>Format::<strong>~Format</strong>() noexcept</code></li>
 <li><code>Format&amp; Format::<strong>operator=</strong>(const Format&amp; f)</code></li>
-<li><code>Format&amp; Format::<strong>operator=</strong>(Format&amp;&amp; f)</code></li>
+<li><code>Format&amp; Format::<strong>operator=</strong>(Format&amp;&amp; f) noexcept</code></li>
 <li><code>template &lt;typename... Args&gt; Format::string_type Format::<strong>operator()</strong>(const Args&amp;... args) const</code></li>
 <li><code>size_t Format::<strong>fields</strong>() const</code></li>
 <li><code>Format::string_type Format::<strong>format</strong>() const</code></li>

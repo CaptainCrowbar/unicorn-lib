@@ -521,10 +521,10 @@ of UTF&#8211;8 mode.</p>
 <li><code>BasicRegex::<strong>BasicRegex</strong>()</code></li>
 <li><code>explicit BasicRegex::<strong>BasicRegex</strong>(const string_type&amp; pattern, Crow::Flagset flags = {})</code></li>
 <li><code>BasicRegex::<strong>BasicRegex</strong>(const BasicRegex&amp; r)</code></li>
-<li><code>BasicRegex::<strong>BasicRegex</strong>(BasicRegex&amp;&amp; r)</code></li>
-<li><code>BasicRegex::<strong>~BasicRegex</strong>()</code></li>
+<li><code>BasicRegex::<strong>BasicRegex</strong>(BasicRegex&amp;&amp; r) noexcept</code></li>
+<li><code>BasicRegex::<strong>~BasicRegex</strong>() noexcept</code></li>
 <li><code>BasicRegex&amp; BasicRegex::<strong>operator=</strong>(const BasicRegex&amp; r)</code></li>
-<li><code>BasicRegex&amp; BasicRegex::<strong>operator=</strong>(BasicRegex&amp;&amp; r)</code></li>
+<li><code>BasicRegex&amp; BasicRegex::<strong>operator=</strong>(BasicRegex&amp;&amp; r) noexcept</code></li>
 </ul>
 
 <p>Life cycle functions. The default constructor is equivalent to construction
@@ -687,10 +687,10 @@ result of the matching attempt.</p>
 <ul>
 <li><code>BasicMatch::<strong>BasicMatch</strong>()</code></li>
 <li><code>BasicMatch::<strong>BasicMatch</strong>(const BasicMatch&amp; m)</code></li>
-<li><code>BasicMatch::<strong>BasicMatch</strong>(BasicMatch&amp;&amp; m)</code></li>
-<li><code>BasicMatch::<strong>~BasicMatch</strong>()</code></li>
+<li><code>BasicMatch::<strong>BasicMatch</strong>(BasicMatch&amp;&amp; m) noexcept</code></li>
+<li><code>BasicMatch::<strong>~BasicMatch</strong>() noexcept</code></li>
 <li><code>BasicMatch&amp; BasicMatch::<strong>operator=</strong>(const BasicMatch&amp; m)</code></li>
-<li><code>BasicMatch&amp; BasicMatch::<strong>operator=</strong>(BasicMatch&amp;&amp; m)</code></li>
+<li><code>BasicMatch&amp; BasicMatch::<strong>operator=</strong>(BasicMatch&amp;&amp; m) noexcept</code></li>
 </ul>
 
 <p>Life cycle functions. Normally a match object will be returned by a regex
@@ -815,10 +815,10 @@ efficient if the same formatting operation is going to be applied many times.</p
 <li><code>BasicRegexFormat::<strong>BasicRegexFormat</strong>(const regex_type&amp; pattern, const string_type&amp; format)</code></li>
 <li><code>BasicRegexFormat::<strong>BasicRegexFormat</strong>(const string_type&amp; pattern, const string_type&amp; format, Crow::Flagset flags = {})</code></li>
 <li><code>BasicRegexFormat::<strong>BasicRegexFormat</strong>(const BasicRegexFormat&amp; f)</code></li>
-<li><code>BasicRegexFormat::<strong>BasicRegexFormat</strong>(BasicRegexFormat&amp;&amp; f)</code></li>
-<li><code>BasicRegexFormat::<strong>~BasicRegexFormat</strong>()</code></li>
+<li><code>BasicRegexFormat::<strong>BasicRegexFormat</strong>(BasicRegexFormat&amp;&amp; f) noexcept</code></li>
+<li><code>BasicRegexFormat::<strong>~BasicRegexFormat</strong>() noexcept</code></li>
 <li><code>BasicRegexFormat&amp; BasicRegexFormat::<strong>operator=</strong>(const BasicRegexFormat&amp; f)</code></li>
-<li><code>BasicRegexFormat&amp; BasicRegexFormat::<strong>operator=</strong>(BasicRegexFormat&amp;&amp; f)</code></li>
+<li><code>BasicRegexFormat&amp; BasicRegexFormat::<strong>operator=</strong>(BasicRegexFormat&amp;&amp; f) noexcept</code></li>
 </ul>
 
 <p>Life cycle functions. The object is constructed from a regex (supplied either
