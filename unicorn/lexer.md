@@ -94,10 +94,10 @@ TODO
 
 * `BasicLexer::BasicLexer()`
 * `BasicLexer::BasicLexer(const BasicLexer& lex)`
-* `BasicLexer::BasicLexer(BasicLexer&& lex)`
-* `BasicLexer::~BasicLexer()`
+* `BasicLexer::BasicLexer(BasicLexer&& lex) noexcept`
+* `BasicLexer::~BasicLexer() noexcept`
 * `BasicLexer& BasicLexer::operator=(const BasicLexer& lex)`
-* `BasicLexer& BasicLexer::operator=(BasicLexer&& lex)`
+* `BasicLexer& BasicLexer::operator=(BasicLexer&& lex) noexcept`
 
 TODO
 

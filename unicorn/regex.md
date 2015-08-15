@@ -282,10 +282,10 @@ Member types.
 * `BasicRegex::BasicRegex()`
 * `explicit BasicRegex::BasicRegex(const string_type& pattern, Crow::Flagset flags = {})`
 * `BasicRegex::BasicRegex(const BasicRegex& r)`
-* `BasicRegex::BasicRegex(BasicRegex&& r)`
-* `BasicRegex::~BasicRegex()`
+* `BasicRegex::BasicRegex(BasicRegex&& r) noexcept`
+* `BasicRegex::~BasicRegex() noexcept`
 * `BasicRegex& BasicRegex::operator=(const BasicRegex& r)`
-* `BasicRegex& BasicRegex::operator=(BasicRegex&& r)`
+* `BasicRegex& BasicRegex::operator=(BasicRegex&& r) noexcept`
 
 Life cycle functions. The default constructor is equivalent to construction
 from an empty pattern. The second constructor will throw `FlagError` if an
@@ -418,10 +418,10 @@ Member types.
 
 * `BasicMatch::BasicMatch()`
 * `BasicMatch::BasicMatch(const BasicMatch& m)`
-* `BasicMatch::BasicMatch(BasicMatch&& m)`
-* `BasicMatch::~BasicMatch()`
+* `BasicMatch::BasicMatch(BasicMatch&& m) noexcept`
+* `BasicMatch::~BasicMatch() noexcept`
 * `BasicMatch& BasicMatch::operator=(const BasicMatch& m)`
-* `BasicMatch& BasicMatch::operator=(BasicMatch&& m)`
+* `BasicMatch& BasicMatch::operator=(BasicMatch&& m) noexcept`
 
 Life cycle functions. Normally a match object will be returned by a regex
 matching function rather than directly constructed by the user.
@@ -522,10 +522,10 @@ Member types.
 * `BasicRegexFormat::BasicRegexFormat(const regex_type& pattern, const string_type& format)`
 * `BasicRegexFormat::BasicRegexFormat(const string_type& pattern, const string_type& format, Crow::Flagset flags = {})`
 * `BasicRegexFormat::BasicRegexFormat(const BasicRegexFormat& f)`
-* `BasicRegexFormat::BasicRegexFormat(BasicRegexFormat&& f)`
-* `BasicRegexFormat::~BasicRegexFormat()`
+* `BasicRegexFormat::BasicRegexFormat(BasicRegexFormat&& f) noexcept`
+* `BasicRegexFormat::~BasicRegexFormat() noexcept`
 * `BasicRegexFormat& BasicRegexFormat::operator=(const BasicRegexFormat& f)`
-* `BasicRegexFormat& BasicRegexFormat::operator=(BasicRegexFormat&& f)`
+* `BasicRegexFormat& BasicRegexFormat::operator=(BasicRegexFormat&& f) noexcept`
 
 Life cycle functions. The object is constructed from a regex (supplied either
 as a precompiled regex or a pattern and flag set) and a format string. The

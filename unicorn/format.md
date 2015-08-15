@@ -99,10 +99,10 @@ TODO
     * `Format::Format()`
     * `explicit Format::Format(const string_type& format)`
     * `Format::Format(const Format& f)`
-    * `Format::Format(Format&& f)`
-    * `Format::~Format()`
+    * `Format::Format(Format&& f) noexcept`
+    * `Format::~Format() noexcept`
     * `Format& Format::operator=(const Format& f)`
-    * `Format& Format::operator=(Format&& f)`
+    * `Format& Format::operator=(Format&& f) noexcept`
     * `template <typename... Args> Format::string_type Format::operator()(const Args&... args) const`
     * `size_t Format::fields() const`
     * `Format::string_type Format::format() const`
