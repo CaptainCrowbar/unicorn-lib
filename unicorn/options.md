@@ -186,7 +186,7 @@ The `parse()` functions will throw `CommandLineError` if any of the following
 is true:
 
 * A full or abbreviated option is supplied that is not in the spec.
-* The same option appears multiple times.
+* The same option appears more than once, but does not have the `multiple` flag.
 * Multiple options from the same mutual exclusion group are supplied.
 * The argument supplied for an option does not match the pattern given in the spec.
 * A required option is missing.

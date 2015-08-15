@@ -135,6 +135,7 @@ namespace Unicorn {
         void expand_abbreviations(string_list& args);
         void extract_named_options(string_list& args);
         void parse_remaining_anonymous(string_list& args, const string_list& anon);
+        void check_required();
         void supply_defaults();
         template <typename C> void send_help(std::basic_ostream<C>& out, help_mode mode) const;
         template <typename C> static u8string arg_convert(const basic_string<C>& str, Crow::Flagset /*flags*/)

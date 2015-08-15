@@ -184,6 +184,7 @@ namespace Unicorn {
             return help_mode::usage;
         if (has("version"))
             return help_mode::version;
+        check_required();
         supply_defaults();
         return help_mode::none;
     }
@@ -233,7 +234,7 @@ namespace Unicorn {
         while (i < args.size()) {
             if (arg_type(args[i]) != is_argument) {
                 u8string key, value;
-                bool paired(str_partition_at(args[i], key, value, "="));
+                bool paired = str_partition_at(args[i], key, value, "=");
                 if (paired) {
                     args[i] = key;
                     args.insert(std::begin(args) + i + 1, value);
@@ -282,17 +283,14 @@ namespace Unicorn {
                     if (&opt2 != &opt && opt2.group == opt.group && opt2.found)
                         throw CommandLineError("Incompatible options", "--" + opt2.name, args[i]);
             opt.found = true;
-            size_t n, max_n;
-            if (opt.is_boolean)
-                max_n = 1;
-            else if (opt.is_multiple)
+            size_t n = 1, max_n = 1;
+            if (opt.is_multiple)
                 max_n = args.size() - i;
-            else
+            else if (! opt.is_boolean)
                 max_n = std::min(size_t(2), args.size() - i);
-            bool check_regex = ! opt.pattern.empty();
-            for (n = 1; n < max_n && arg_type(args[i + n]) == is_argument; ++n) {
+            for (; n < max_n && arg_type(args[i + n]) == is_argument; ++n) {
                 auto& arg(args[i + n]);
-                if (check_regex && (opt.is_required || ! arg.empty()) && ! opt.pattern.match(arg))
+                if (! opt.pattern.empty() && (opt.is_required || ! arg.empty()) && ! opt.pattern.match(arg))
                     throw CommandLineError("Invalid argument to option", args[i], arg);
                 opt.values.push_back(arg);
             }
@@ -320,17 +318,18 @@ namespace Unicorn {
             throw CommandLineError("Unexpected argument", args[0]);
     }
 
+    void Options::check_required() {
+        for (auto& opt: opts)
+            if (opt.is_required && ! opt.found)
+                throw CommandLineError("Required option is missing", "--" + opt.name);
+    }
+
     void Options::supply_defaults() {
         for (auto& opt: opts) {
-            if (opt.found) {
-                if (opt.is_boolean)
-                    opt.values.push_back("1");
-            } else {
-                if (opt.is_required)
-                    throw CommandLineError("Required option is missing", "--" + opt.name);
-                if (! opt.defval.empty())
-                    opt.values.push_back(opt.defval);
-            }
+            if (opt.found && opt.is_boolean)
+                opt.values.push_back("1");
+            if (opt.values.empty() && ! opt.defval.empty())
+                opt.values.push_back(opt.defval);
         }
     }
 

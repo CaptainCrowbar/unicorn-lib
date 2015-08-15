@@ -84,9 +84,9 @@ namespace {
         cmdline = "app --alpha -n";
         TEST(! opt2.parse(cmdline, dummy));
         TEST(opt2.has("alpha"));
-        TEST_EQUAL(opt2.get<u8string>("alpha"), "");
+        TEST_EQUAL(opt2.get<u8string>("alpha"), "ABC");
         TEST(opt2.has("number"));
-        TEST_EQUAL(opt2.get<int>("number"), 0);
+        TEST_EQUAL(opt2.get<int>("number"), 123);
 
         TRY(opt2 = opt1);
         cmdline = "app -a uvw xyz";
