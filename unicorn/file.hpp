@@ -379,10 +379,10 @@ namespace Unicorn {
             impl.next();
             if (impl.done())
                 break;
+            if (fset.get(dir_unicode) && ! valid_string(impl.file()))
+                continue;
             recode_filename(impl.file(), current);
             if (! fset.get(dir_dotdot) && (current == link1 || current == link2))
-                continue;
-            if (fset.get(dir_unicode) && ! valid_string(current))
                 continue;
             if (fset.get(dir_fullname) || ! fset.get(dir_hidden))
                 path = prefix + current;
