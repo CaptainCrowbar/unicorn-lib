@@ -22,7 +22,6 @@ namespace Unicorn {
 
     // Class forward declarations and aliases
 
-    class ByteMode;
     template <typename CX> class BasicMatch;
     template <typename CX> class BasicMatchIterator;
     template <typename CX> class BasicRegex;
@@ -34,11 +33,11 @@ namespace Unicorn {
     using Regex = BasicRegex<char>;
     using RegexFormat = BasicRegexFormat<char>;
     using SplitIterator = BasicSplitIterator<char>;
-    using ByteMatch = BasicMatch<ByteMode>;
-    using ByteMatchIterator = BasicMatchIterator<ByteMode>;
-    using ByteRegex = BasicRegex<ByteMode>;
-    using ByteRegexFormat = BasicRegexFormat<ByteMode>;
-    using ByteSplitIterator = BasicSplitIterator<ByteMode>;
+    using ByteMatch = BasicMatch<void>;
+    using ByteMatchIterator = BasicMatchIterator<void>;
+    using ByteRegex = BasicRegex<void>;
+    using ByteRegexFormat = BasicRegexFormat<void>;
+    using ByteSplitIterator = BasicSplitIterator<void>;
 
     #if defined(UNICORN_PCRE16)
         using Match16 = BasicMatch<char16_t>;
@@ -168,7 +167,7 @@ namespace Unicorn {
         };
 
         template <>
-        struct SubjectIterator<ByteMode> {
+        struct SubjectIterator<void> {
             using iterator = typename string::const_iterator;
             static iterator make_iterator(const string& text, size_t offset) noexcept
                 { return text.begin() + offset; }
@@ -218,7 +217,7 @@ namespace Unicorn {
         };
 
         template <>
-        struct CharType<ByteMode> {
+        struct CharType<void> {
             using type = char;
             static constexpr bool is_utf = false;
             static constexpr auto make_lower = &Crow::ascii_lowercase;
@@ -235,7 +234,7 @@ namespace Unicorn {
         };
 
         template <>
-        struct MakeUtf8<ByteMode> {
+        struct MakeUtf8<void> {
             using string_type = string;
             u8string operator()(const string& pattern) const {
                 u32string p32;
@@ -285,7 +284,7 @@ namespace Unicorn {
         };
 
         template <typename Regex, typename Match>
-        struct RegexHelper<Regex, Match, ByteMode> {
+        struct RegexHelper<Regex, Match, void> {
             Match anchor(const string& text, size_t offset = 0) const
                 { return static_cast<const Regex*>(this)->exec(text, offset, 1); }
             Match match(const string& text, size_t offset = 0) const
@@ -946,7 +945,7 @@ namespace Unicorn {
     namespace Literals {
 
         inline auto operator"" _bre(const char* ptr, size_t len)
-            { return UnicornDetail::parse_regex<char, ByteMode>(ptr, len); }
+            { return UnicornDetail::parse_regex<char, void>(ptr, len); }
         inline auto operator"" _re(const char* ptr, size_t len)
             { return UnicornDetail::parse_regex<char>(ptr, len); }
         inline auto operator"" _re(const char16_t* ptr, size_t len)
@@ -957,7 +956,7 @@ namespace Unicorn {
             { return UnicornDetail::parse_regex<wchar_t>(ptr, len); }
 
         inline auto operator"" _brf(const char* ptr, size_t len)
-            { return UnicornDetail::parse_regex_format<char, ByteMode>(ptr, len); }
+            { return UnicornDetail::parse_regex_format<char, void>(ptr, len); }
         inline auto operator"" _rf(const char* ptr, size_t len)
             { return UnicornDetail::parse_regex_format<char>(ptr, len); }
         inline auto operator"" _rf(const char16_t* ptr, size_t len)

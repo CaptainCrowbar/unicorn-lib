@@ -54,7 +54,7 @@ TODO
 ## Token iterator ##
 
 * `template <typename CX> class BasicTokenIterator`
-    * `using BasicTokenIterator::char_type = [char if CX is ByteMode, otherwise CX]`
+    * `using BasicTokenIterator::char_type = [char if CX is void, otherwise CX]`
     * `using BasicTokenIterator::string_type = basic_string<char_type>`
     * `using BasicTokenIterator::difference_type = ptrdiff_t`
     * `using BasicTokenIterator::iterator_category = std::forward_iterator_tag`
@@ -67,7 +67,7 @@ TODO
 * `using TokenIterator16 = BasicTokenIterator<char16_t>`
 * `using TokenIterator32 = BasicTokenIterator<char32_t>`
 * `using WideTokenIterator = BasicTokenIterator<wchar_t>`
-* `using ByteTokenIterator = BasicTokenIterator<ByteMode>`
+* `using ByteTokenIterator = BasicTokenIterator<void>`
 
 TODO
 
@@ -78,11 +78,11 @@ TODO
 * `using Lexer16 = BasicLexer<char16_t>`
 * `using Lexer32 = BasicLexer<char32_t>`
 * `using WideLexer = BasicLexer<wchar_t>`
-* `using ByteLexer = BasicLexer<ByteMode>`
+* `using ByteLexer = BasicLexer<void>`
 
 TODO
 
-* `using BasicLexer::char_type = [char if CX is ByteMode, otherwise CX]`
+* `using BasicLexer::char_type = [char if CX is void, otherwise CX]`
 * `using BasicLexer::string_type = basic_string<char_type>`
 * `using BasicLexer::regex_type = BasicRegex<CX>`
 * `using BasicLexer::token_type = BasicToken<char_type>`

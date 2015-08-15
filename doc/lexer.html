@@ -74,7 +74,7 @@ for details.</p>
 <li><code>template &lt;typename CX&gt; class <strong>BasicTokenIterator</strong></code>
 
 <ul>
-<li><code>using BasicTokenIterator::<strong>char_type</strong> = [char if CX is ByteMode, otherwise CX]</code></li>
+<li><code>using BasicTokenIterator::<strong>char_type</strong> = [char if CX is void, otherwise CX]</code></li>
 <li><code>using BasicTokenIterator::<strong>string_type</strong> = basic_string&lt;char_type&gt;</code></li>
 <li><code>using BasicTokenIterator::<strong>difference_type</strong> = ptrdiff_t</code></li>
 <li><code>using BasicTokenIterator::<strong>iterator_category</strong> = std::forward_iterator_tag</code></li>
@@ -88,7 +88,7 @@ for details.</p>
 <li><code>using <strong>TokenIterator16</strong> = BasicTokenIterator&lt;char16_t&gt;</code></li>
 <li><code>using <strong>TokenIterator32</strong> = BasicTokenIterator&lt;char32_t&gt;</code></li>
 <li><code>using <strong>WideTokenIterator</strong> = BasicTokenIterator&lt;wchar_t&gt;</code></li>
-<li><code>using <strong>ByteTokenIterator</strong> = BasicTokenIterator&lt;ByteMode&gt;</code></li>
+<li><code>using <strong>ByteTokenIterator</strong> = BasicTokenIterator&lt;void&gt;</code></li>
 </ul>
 
 <p>TODO</p>
@@ -101,13 +101,13 @@ for details.</p>
 <li><code>using <strong>Lexer16</strong> = BasicLexer&lt;char16_t&gt;</code></li>
 <li><code>using <strong>Lexer32</strong> = BasicLexer&lt;char32_t&gt;</code></li>
 <li><code>using <strong>WideLexer</strong> = BasicLexer&lt;wchar_t&gt;</code></li>
-<li><code>using <strong>ByteLexer</strong> = BasicLexer&lt;ByteMode&gt;</code></li>
+<li><code>using <strong>ByteLexer</strong> = BasicLexer&lt;void&gt;</code></li>
 </ul>
 
 <p>TODO</p>
 
 <ul>
-<li><code>using BasicLexer::<strong>char_type</strong> = [char if CX is ByteMode, otherwise CX]</code></li>
+<li><code>using BasicLexer::<strong>char_type</strong> = [char if CX is void, otherwise CX]</code></li>
 <li><code>using BasicLexer::<strong>string_type</strong> = basic_string&lt;char_type&gt;</code></li>
 <li><code>using BasicLexer::<strong>regex_type</strong> = BasicRegex&lt;CX&gt;</code></li>
 <li><code>using BasicLexer::<strong>token_type</strong> = BasicToken&lt;char_type&gt;</code></li>

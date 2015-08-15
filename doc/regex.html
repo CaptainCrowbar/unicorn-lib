@@ -471,13 +471,6 @@ unspecified if the hexadecimal value is greater than <code>0xff</code>.</p>
 <h2 id="supportingtypes">Supporting types</h2>
 
 <ul>
-<li><code>class <strong>ByteMode</strong></code></li>
-</ul>
-
-<p>An incomplete type used only as a template argument (see the <code>BasicRegex</code>
-class template below).</p>
-
-<ul>
 <li><code>class <strong>RegexError</strong>: public std::runtime_error</code>
 
 <ul>
@@ -499,19 +492,19 @@ underlying PCRE call reports an error.</p>
 <li><code>using <strong>Regex16</strong> = BasicRegex&lt;char16_t&gt;</code></li>
 <li><code>using <strong>Regex32</strong> = BasicRegex&lt;char32_t&gt;</code></li>
 <li><code>using <strong>WideRegex</strong> = BasicRegex&lt;wchar_t&gt;</code></li>
-<li><code>using <strong>ByteRegex</strong> = BasicRegex&lt;ByteMode&gt;</code></li>
+<li><code>using <strong>ByteRegex</strong> = BasicRegex&lt;void&gt;</code></li>
 </ul>
 
 <p>The generic regular expression class, and aliases for each of the possible
 instantiations. In this and all other templates in this module, the template
-argument <code>CX</code> can be any of the four standard character types, or <code>ByteMode</code>.
-When <code>ByteMode</code> is used, the resulting regex works on single byte strings (i.e
-the character and string types are <code>char</code> and <code>std::string</code>, the same as if
-the template argument had been <code>char</code>), but matches using PCRE&#8217;s byte mode
-instead of UTF&#8211;8 mode.</p>
+argument <code>CX</code> can be any of the four standard character types, or <code>void</code>. When
+<code>void</code> is used, the resulting regex works on single byte strings (i.e the
+character and string types are <code>char</code> and <code>std::string</code>, the same as if the
+template argument had been <code>char</code>), but matches using PCRE&#8217;s byte mode instead
+of UTF&#8211;8 mode.</p>
 
 <ul>
-<li><code>using BasicRegex::<strong>char_type</strong> = [char if CX is ByteMode, otherwise CX]</code></li>
+<li><code>using BasicRegex::<strong>char_type</strong> = [char if CX is void, otherwise CX]</code></li>
 <li><code>using BasicRegex::<strong>cx_type</strong> = CX</code></li>
 <li><code>using BasicRegex::<strong>string_type</strong> = basic_string&lt;char_type&gt;</code></li>
 <li><code>using BasicRegex::<strong>match_type</strong> = BasicMatch&lt;CX&gt;</code></li>
@@ -519,7 +512,7 @@ instead of UTF&#8211;8 mode.</p>
 <li><code>using BasicRegex::<strong>match_range</strong> = Crow::Irange&lt;match_iterator&gt;</code></li>
 <li><code>using BasicRegex::<strong>split_iterator</strong> = BasicSplitIterator&lt;CX&gt;</code></li>
 <li><code>using BasicRegex::<strong>split_range</strong> = Crow::Irange&lt;split_iterator&gt;</code></li>
-<li><code>using BasicRegex::<strong>utf_iterator</strong> = UtfIterator&lt;CX&gt; [not defined if CX is ByteMode]</code></li>
+<li><code>using BasicRegex::<strong>utf_iterator</strong> = UtfIterator&lt;CX&gt; [not defined if CX is void]</code></li>
 </ul>
 
 <p>Member types.</p>
@@ -541,13 +534,13 @@ invalid. See above for full details of how the flags are interpreted.</p>
 
 <ul>
 <li><code>BasicRegex::match_type BasicRegex::<strong>anchor</strong>(const string_type&amp; text, size_t offset = 0) const</code></li>
-<li><code>BasicRegex::match_type BasicRegex::<strong>anchor</strong>(const utf_iterator&amp; start) const [not defined if CX is ByteMode]</code></li>
+<li><code>BasicRegex::match_type BasicRegex::<strong>anchor</strong>(const utf_iterator&amp; start) const [not defined if CX is void]</code></li>
 <li><code>BasicRegex::match_type BasicRegex::<strong>match</strong>(const string_type&amp; text, size_t offset = 0) const</code></li>
-<li><code>BasicRegex::match_type BasicRegex::<strong>match</strong>(const utf_iterator&amp; start) const [not defined if CX is ByteMode]</code></li>
+<li><code>BasicRegex::match_type BasicRegex::<strong>match</strong>(const utf_iterator&amp; start) const [not defined if CX is void]</code></li>
 <li><code>BasicRegex::match_type BasicRegex::<strong>search</strong>(const string_type&amp; text, size_t offset = 0) const</code></li>
-<li><code>BasicRegex::match_type BasicRegex::<strong>search</strong>(const utf_iterator&amp; start) const [not defined if CX is ByteMode]</code></li>
+<li><code>BasicRegex::match_type BasicRegex::<strong>search</strong>(const utf_iterator&amp; start) const [not defined if CX is void]</code></li>
 <li><code>BasicRegex::match_type BasicRegex::<strong>operator()</strong>(const string_type&amp; text, size_t offset = 0) const</code></li>
-<li><code>BasicRegex::match_type BasicRegex::<strong>operator()</strong>(const utf_iterator&amp; start) const [not defined if CX is ByteMode]</code></li>
+<li><code>BasicRegex::match_type BasicRegex::<strong>operator()</strong>(const utf_iterator&amp; start) const [not defined if CX is void]</code></li>
 </ul>
 
 <p>These are the regex matching functions. The <code>search()</code> functions return a
@@ -670,23 +663,23 @@ unspecified whether or not they will compare equal.</p>
 <li><code>using <strong>Match16</strong> = BasicMatch&lt;char16_t&gt;</code></li>
 <li><code>using <strong>Match32</strong> = BasicMatch&lt;char32_t&gt;</code></li>
 <li><code>using <strong>WideMatch</strong> = BasicMatch&lt;wchar_t&gt;</code></li>
-<li><code>using <strong>ByteMatch</strong> = BasicMatch&lt;ByteMode&gt;</code></li>
+<li><code>using <strong>ByteMatch</strong> = BasicMatch&lt;void&gt;</code></li>
 </ul>
 
 <p>This template class is returned by regex matching functions, reporting the
 result of the matching attempt.</p>
 
 <ul>
-<li><code>using BasicMatch::<strong>char_type</strong> = [char if CX is ByteMode, otherwise CX]</code></li>
+<li><code>using BasicMatch::<strong>char_type</strong> = [char if CX is void, otherwise CX]</code></li>
 <li><code>using BasicMatch::<strong>cx_type</strong> = CX</code></li>
 <li><code>using BasicMatch::<strong>string_type</strong> = basic_string&lt;char_type&gt;</code></li>
 <li><code>using BasicMatch::<strong>regex_type</strong> = BasicRegex&lt;CX&gt;</code></li>
 <li><code>using BasicMatch::<strong>const_iterator</strong> = const char_type*</code></li>
 <li><code>using BasicMatch::<strong>const_reference</strong> = const char_type&amp;</code></li>
 <li><code>using BasicMatch::<strong>difference_type</strong> = ptrdiff_t</code></li>
-<li><code>using BasicMatch::<strong>iterator</strong> = [string::const_iterator if CX is ByteMode, otherwise UtfIterator&lt;CX&gt;]</code></li>
+<li><code>using BasicMatch::<strong>iterator</strong> = [string::const_iterator if CX is void, otherwise UtfIterator&lt;CX&gt;]</code></li>
 <li><code>using BasicMatch::<strong>reference</strong> = const value_type&amp;</code></li>
-<li><code>using BasicMatch::<strong>value_type</strong> = [char if CX is ByteMode, otherwise char32_t]</code></li>
+<li><code>using BasicMatch::<strong>value_type</strong> = [char if CX is void, otherwise char32_t]</code></li>
 </ul>
 
 <p>Member types.</p>
@@ -799,7 +792,7 @@ match.</p>
 <li><code>using <strong>RegexFormat16</strong> = BasicRegexFormat&lt;char16_t&gt;</code></li>
 <li><code>using <strong>RegexFormat32</strong> = BasicRegexFormat&lt;char32_t&gt;</code></li>
 <li><code>using <strong>WideRegexFormat</strong> = BasicRegexFormat&lt;wchar_t&gt;</code></li>
-<li><code>using <strong>ByteRegexFormat</strong> = BasicRegexFormat&lt;ByteMode&gt;</code></li>
+<li><code>using <strong>ByteRegexFormat</strong> = BasicRegexFormat&lt;void&gt;</code></li>
 </ul>
 
 <p>The regex format class contains both a regex and a format string. It provides
@@ -808,7 +801,7 @@ the format string only once by constructing a regex format object will be more
 efficient if the same formatting operation is going to be applied many times.</p>
 
 <ul>
-<li><code>using BasicRegexFormat::<strong>char_type</strong> = [char if CX is ByteMode, otherwise CX]</code></li>
+<li><code>using BasicRegexFormat::<strong>char_type</strong> = [char if CX is void, otherwise CX]</code></li>
 <li><code>using BasicRegexFormat::<strong>cx_type</strong> = CX</code></li>
 <li><code>using BasicRegexFormat::<strong>string_type</strong> = basic_string&lt;char_type&gt;</code></li>
 <li><code>using BasicRegexFormat::<strong>regex_type</strong> = BasicRegex&lt;CX&gt;</code></li>
@@ -880,7 +873,7 @@ first <code>n</code> matches, discarding the unmatched text between them.
 <li><code>template &lt;typename CX&gt; class <strong>BasicMatchIterator</strong></code>
 
 <ul>
-<li><code>using BasicMatchIterator::<strong>char_type</strong> = [char if CX is ByteMode, otherwise CX]</code></li>
+<li><code>using BasicMatchIterator::<strong>char_type</strong> = [char if CX is void, otherwise CX]</code></li>
 <li><code>using BasicMatchIterator::<strong>cx_type</strong> = CX</code></li>
 <li><code>using BasicMatchIterator::<strong>string_type</strong> = basic_string&lt;char_type&gt;</code></li>
 <li><code>using BasicMatchIterator::<strong>regex_type</strong> = BasicRegex&lt;CX&gt;</code></li>
@@ -898,7 +891,7 @@ first <code>n</code> matches, discarding the unmatched text between them.
 <li><code>using <strong>MatchIterator16</strong> = BasicMatchIterator&lt;char16_t&gt;</code></li>
 <li><code>using <strong>MatchIterator32</strong> = BasicMatchIterator&lt;char32_t&gt;</code></li>
 <li><code>using <strong>WideMatchIterator</strong> = BasicMatchIterator&lt;wchar_t&gt;</code></li>
-<li><code>using <strong>ByteMatchIterator</strong> = BasicMatchIterator&lt;ByteMode&gt;</code></li>
+<li><code>using <strong>ByteMatchIterator</strong> = BasicMatchIterator&lt;void&gt;</code></li>
 </ul>
 
 <p>An iterator over the (non-overlapping) matches found within a subject string
@@ -909,7 +902,7 @@ than constructed directly by the user.</p>
 <li><code>template &lt;typename CX&gt; class <strong>BasicSplitIterator</strong></code>
 
 <ul>
-<li><code>using BasicSplitIterator::<strong>char_type</strong> = [char if CX is ByteMode, otherwise CX]</code></li>
+<li><code>using BasicSplitIterator::<strong>char_type</strong> = [char if CX is void, otherwise CX]</code></li>
 <li><code>using BasicSplitIterator::<strong>cx_type</strong> = CX</code></li>
 <li><code>using BasicSplitIterator::<strong>string_type</strong> = basic_string&lt;char_type&gt;</code></li>
 <li><code>using BasicSplitIterator::<strong>regex_type</strong> = BasicRegex&lt;CX&gt;</code></li>
@@ -928,7 +921,7 @@ than constructed directly by the user.</p>
 <li><code>using <strong>SplitIterator16</strong> = BasicSplitIterator&lt;char16_t&gt;</code></li>
 <li><code>using <strong>SplitIterator32</strong> = BasicSplitIterator&lt;char32_t&gt;</code></li>
 <li><code>using <strong>WideSplitIterator</strong> = BasicSplitIterator&lt;wchar_t&gt;</code></li>
-<li><code>using <strong>ByteSplitIterator</strong> = BasicSplitIterator&lt;ByteMode&gt;</code></li>
+<li><code>using <strong>ByteSplitIterator</strong> = BasicSplitIterator&lt;void&gt;</code></li>
 </ul>
 
 <p>An iterator over the substrings between matches for a given regex. These are

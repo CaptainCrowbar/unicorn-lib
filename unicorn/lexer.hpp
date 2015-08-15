@@ -24,8 +24,8 @@ namespace Unicorn {
     using Lexer = BasicLexer<char>;
     using Token = BasicToken<char>;
     using TokenIterator = BasicTokenIterator<char>;
-    using ByteLexer = BasicLexer<ByteMode>;
-    using ByteTokenIterator = BasicTokenIterator<ByteMode>;
+    using ByteLexer = BasicLexer<void>;
+    using ByteTokenIterator = BasicTokenIterator<void>;
 
     #if defined(UNICORN_PCRE16)
         using Lexer16 = BasicLexer<char16_t>;
@@ -165,7 +165,7 @@ namespace Unicorn {
             { add_match(tag, regex_type(pattern, flags)); }
     private:
         friend class BasicTokenIterator<CX>;
-        static constexpr size_t prefix_count = std::is_same<CX, ByteMode>::value ? 256 : 128;
+        static constexpr size_t prefix_count = std::is_same<CX, void>::value ? 256 : 128;
         struct element {
             int tag;
             callback_type call;

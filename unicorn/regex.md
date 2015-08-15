@@ -241,11 +241,6 @@ unspecified if the hexadecimal value is greater than `0xff`.
 
 ## Supporting types ##
 
-* `class ByteMode`
-
-An incomplete type used only as a template argument (see the `BasicRegex`
-class template below).
-
 * `class RegexError: public std::runtime_error`
     * `RegexError::RegexError(const u8string& pattern, int error, const u8string& message)`
     * `const char* RegexError::pattern() const noexcept`
@@ -262,17 +257,17 @@ underlying PCRE call reports an error.
 * `using Regex16 = BasicRegex<char16_t>`
 * `using Regex32 = BasicRegex<char32_t>`
 * `using WideRegex = BasicRegex<wchar_t>`
-* `using ByteRegex = BasicRegex<ByteMode>`
+* `using ByteRegex = BasicRegex<void>`
 
 The generic regular expression class, and aliases for each of the possible
 instantiations. In this and all other templates in this module, the template
-argument `CX` can be any of the four standard character types, or `ByteMode`.
-When `ByteMode` is used, the resulting regex works on single byte strings (i.e
-the character and string types are `char` and `std::string`, the same as if
-the template argument had been `char`), but matches using PCRE's byte mode
-instead of UTF-8 mode.
+argument `CX` can be any of the four standard character types, or `void`. When
+`void` is used, the resulting regex works on single byte strings (i.e the
+character and string types are `char` and `std::string`, the same as if the
+template argument had been `char`), but matches using PCRE's byte mode instead
+of UTF-8 mode.
 
-* `using BasicRegex::char_type = [char if CX is ByteMode, otherwise CX]`
+* `using BasicRegex::char_type = [char if CX is void, otherwise CX]`
 * `using BasicRegex::cx_type = CX`
 * `using BasicRegex::string_type = basic_string<char_type>`
 * `using BasicRegex::match_type = BasicMatch<CX>`
@@ -280,7 +275,7 @@ instead of UTF-8 mode.
 * `using BasicRegex::match_range = Crow::Irange<match_iterator>`
 * `using BasicRegex::split_iterator = BasicSplitIterator<CX>`
 * `using BasicRegex::split_range = Crow::Irange<split_iterator>`
-* `using BasicRegex::utf_iterator = UtfIterator<CX> [not defined if CX is ByteMode]`
+* `using BasicRegex::utf_iterator = UtfIterator<CX> [not defined if CX is void]`
 
 Member types.
 
@@ -298,13 +293,13 @@ invalid combination of flags is passed, or `RegexError` if the pattern is
 invalid. See above for full details of how the flags are interpreted.
 
 * `BasicRegex::match_type BasicRegex::anchor(const string_type& text, size_t offset = 0) const`
-* `BasicRegex::match_type BasicRegex::anchor(const utf_iterator& start) const [not defined if CX is ByteMode]`
+* `BasicRegex::match_type BasicRegex::anchor(const utf_iterator& start) const [not defined if CX is void]`
 * `BasicRegex::match_type BasicRegex::match(const string_type& text, size_t offset = 0) const`
-* `BasicRegex::match_type BasicRegex::match(const utf_iterator& start) const [not defined if CX is ByteMode]`
+* `BasicRegex::match_type BasicRegex::match(const utf_iterator& start) const [not defined if CX is void]`
 * `BasicRegex::match_type BasicRegex::search(const string_type& text, size_t offset = 0) const`
-* `BasicRegex::match_type BasicRegex::search(const utf_iterator& start) const [not defined if CX is ByteMode]`
+* `BasicRegex::match_type BasicRegex::search(const utf_iterator& start) const [not defined if CX is void]`
 * `BasicRegex::match_type BasicRegex::operator()(const string_type& text, size_t offset = 0) const`
-* `BasicRegex::match_type BasicRegex::operator()(const utf_iterator& start) const [not defined if CX is ByteMode]`
+* `BasicRegex::match_type BasicRegex::operator()(const utf_iterator& start) const [not defined if CX is void]`
 
 These are the regex matching functions. The `search()` functions return a
 successful match if the pattern matches anywhere in the subject string;
@@ -403,21 +398,21 @@ Convenience functions to easily construct a regex object.
 * `using Match16 = BasicMatch<char16_t>`
 * `using Match32 = BasicMatch<char32_t>`
 * `using WideMatch = BasicMatch<wchar_t>`
-* `using ByteMatch = BasicMatch<ByteMode>`
+* `using ByteMatch = BasicMatch<void>`
 
 This template class is returned by regex matching functions, reporting the
 result of the matching attempt.
 
-* `using BasicMatch::char_type = [char if CX is ByteMode, otherwise CX]`
+* `using BasicMatch::char_type = [char if CX is void, otherwise CX]`
 * `using BasicMatch::cx_type = CX`
 * `using BasicMatch::string_type = basic_string<char_type>`
 * `using BasicMatch::regex_type = BasicRegex<CX>`
 * `using BasicMatch::const_iterator = const char_type*`
 * `using BasicMatch::const_reference = const char_type&`
 * `using BasicMatch::difference_type = ptrdiff_t`
-* `using BasicMatch::iterator = [string::const_iterator if CX is ByteMode, otherwise UtfIterator<CX>]`
+* `using BasicMatch::iterator = [string::const_iterator if CX is void, otherwise UtfIterator<CX>]`
 * `using BasicMatch::reference = const value_type&`
-* `using BasicMatch::value_type = [char if CX is ByteMode, otherwise char32_t]`
+* `using BasicMatch::value_type = [char if CX is void, otherwise char32_t]`
 
 Member types.
 
@@ -508,14 +503,14 @@ Swap two match objects.
 * `using RegexFormat16 = BasicRegexFormat<char16_t>`
 * `using RegexFormat32 = BasicRegexFormat<char32_t>`
 * `using WideRegexFormat = BasicRegexFormat<wchar_t>`
-* `using ByteRegexFormat = BasicRegexFormat<ByteMode>`
+* `using ByteRegexFormat = BasicRegexFormat<void>`
 
 The regex format class contains both a regex and a format string. It provides
 operations equivalent to the `BasicRegex::format()` function, but compiling
 the format string only once by constructing a regex format object will be more
 efficient if the same formatting operation is going to be applied many times.
 
-* `using BasicRegexFormat::char_type = [char if CX is ByteMode, otherwise CX]`
+* `using BasicRegexFormat::char_type = [char if CX is void, otherwise CX]`
 * `using BasicRegexFormat::cx_type = CX`
 * `using BasicRegexFormat::string_type = basic_string<char_type>`
 * `using BasicRegexFormat::regex_type = BasicRegex<CX>`
@@ -573,7 +568,7 @@ Convenience functions for constructing a regex format object.
 ## Regex iterator classes ##
 
 * `template <typename CX> class BasicMatchIterator`
-    * `using BasicMatchIterator::char_type = [char if CX is ByteMode, otherwise CX]`
+    * `using BasicMatchIterator::char_type = [char if CX is void, otherwise CX]`
     * `using BasicMatchIterator::cx_type = CX`
     * `using BasicMatchIterator::string_type = basic_string<char_type>`
     * `using BasicMatchIterator::regex_type = BasicRegex<CX>`
@@ -590,14 +585,14 @@ Convenience functions for constructing a regex format object.
 * `using MatchIterator16 = BasicMatchIterator<char16_t>`
 * `using MatchIterator32 = BasicMatchIterator<char32_t>`
 * `using WideMatchIterator = BasicMatchIterator<wchar_t>`
-* `using ByteMatchIterator = BasicMatchIterator<ByteMode>`
+* `using ByteMatchIterator = BasicMatchIterator<void>`
 
 An iterator over the (non-overlapping) matches found within a subject string
 for a given regex. These are normally returned by `BasicRegex::grep()` rather
 than constructed directly by the user.
 
 * `template <typename CX> class BasicSplitIterator`
-    * `using BasicSplitIterator::char_type = [char if CX is ByteMode, otherwise CX]`
+    * `using BasicSplitIterator::char_type = [char if CX is void, otherwise CX]`
     * `using BasicSplitIterator::cx_type = CX`
     * `using BasicSplitIterator::string_type = basic_string<char_type>`
     * `using BasicSplitIterator::regex_type = BasicRegex<CX>`
@@ -615,7 +610,7 @@ than constructed directly by the user.
 * `using SplitIterator16 = BasicSplitIterator<char16_t>`
 * `using SplitIterator32 = BasicSplitIterator<char32_t>`
 * `using WideSplitIterator = BasicSplitIterator<wchar_t>`
-* `using ByteSplitIterator = BasicSplitIterator<ByteMode>`
+* `using ByteSplitIterator = BasicSplitIterator<void>`
 
 An iterator over the substrings between matches for a given regex. These are
 normally returned by `BasicRegex::split()` rather than constructed directly by
