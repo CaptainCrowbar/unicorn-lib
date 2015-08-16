@@ -35,11 +35,6 @@
 <ul>
 <li><code>explicit BadJson::<strong>BadJson</strong>(size_t pos)</code></li>
 </ul></li>
-<li><code>class <strong>BadTopLevel</strong>: public Exception</code>
-
-<ul>
-<li><code>explicit BadTopLevel::<strong>BadTopLevel</strong>(size_t pos)</code></li>
-</ul></li>
 <li><code>class <strong>EndOfFile</strong>: public Exception</code>
 
 <ul>
@@ -128,10 +123,10 @@
 <p>TODO</p>
 
 <ul>
+<li><code>void Element::<strong>layout</strong>(std::ostream&amp; out, size_t max_array = 0) const</code></li>
 <li><code>u8string Element::<strong>str</strong>() const</code></li>
 <li><code>void Element::<strong>write</strong>(u8string&amp; dst) const</code></li>
 <li><code>std::ostream&amp; <strong>operator&lt;&lt;</strong>(std::ostream&amp; out, const Element&amp; e)</code></li>
-<li><code>void <strong>pretty_print</strong>(const Element&amp; e, std::ostream&amp; out, size_t max_array = 0)</code></li>
 </ul>
 
 <p>TODO</p>
@@ -144,7 +139,7 @@
 
 <ul>
 <li><code>static Element Element::<strong>read</strong>(const u8string&amp; src)</code></li>
-<li><code>static Element Element::<strong>read</strong>(const u8string&amp; src, size_t&amp; pos, bool top = false)</code></li>
+<li><code>static Element Element::<strong>read</strong>(const u8string&amp; src, size_t&amp; pos)</code></li>
 </ul>
 
 <p>TODO</p>
@@ -152,12 +147,6 @@
 <ul>
 <li><code>bool <strong>operator==</strong>(const Element&amp; lhs, const Element&amp; rhs) noexcept</code></li>
 <li><code>bool <strong>operator!=</strong>(const Element&amp; lhs, const Element&amp; rhs) noexcept</code></li>
-</ul>
-
-<p>TODO</p>
-
-<ul>
-<li><code>void <strong>swap</strong>(Element&amp; e1, Element&amp; e2) noexcept</code></li>
 </ul>
 
 <p>TODO</p>

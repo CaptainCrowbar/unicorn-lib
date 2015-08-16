@@ -26,7 +26,6 @@ namespace Unicorn {
         };
 
         class BadJson: public Exception { public: explicit BadJson(size_t pos); };
-        class BadTopLevel: public Exception { public: explicit BadTopLevel(size_t pos); };
         class EndOfFile: public Exception { public: explicit EndOfFile(size_t pos); };
         class WrongType: public Exception { public: WrongType(); };
 
@@ -81,14 +80,14 @@ namespace Unicorn {
             const Array& array() const { check_type(Json::array); return *rep.array; }
             Object& object() { check_type(Json::object); return *rep.object; }
             const Object& object() const { check_type(Json::object); return *rep.object; }
+            void layout(std::ostream& out, size_t max_array = 0) const;
             u8string str() const { u8string s; write(s); return s; }
             ElementType type() const noexcept { return etype; }
             void write(u8string& dst) const;
             static Element read(const u8string& src);
-            static Element read(const u8string& src, size_t& pos, bool top = false);
+            static Element read(const u8string& src, size_t& pos);
             friend bool operator==(const Element& lhs, const Element& rhs) noexcept;
             friend bool operator!=(const Element& lhs, const Element& rhs) noexcept { return ! (lhs == rhs); }
-            friend void swap(Element& e1, Element& e2) noexcept;
         private:
             using rep_type = union {
                 bool boolean;
@@ -121,8 +120,6 @@ namespace Unicorn {
             e.write(s);
             return out << s;
         }
-
-        void pretty_print(const Element& e, std::ostream& out, size_t max_array = 0);
 
     }
 

@@ -21,8 +21,6 @@ CSS: style.css
     * `size_t Exception::pos() const noexcept`
 * `class BadJson: public Exception`
     * `explicit BadJson::BadJson(size_t pos)`
-* `class BadTopLevel: public Exception`
-    * `explicit BadTopLevel::BadTopLevel(size_t pos)`
 * `class EndOfFile: public Exception`
     * `explicit EndOfFile::EndOfFile(size_t pos)`
 * `class WrongType: public Exception`
@@ -88,10 +86,10 @@ TODO
 
 TODO
 
+* `void Element::layout(std::ostream& out, size_t max_array = 0) const`
 * `u8string Element::str() const`
 * `void Element::write(u8string& dst) const`
 * `std::ostream& operator<<(std::ostream& out, const Element& e)`
-* `void pretty_print(const Element& e, std::ostream& out, size_t max_array = 0)`
 
 TODO
 
@@ -100,15 +98,11 @@ TODO
 TODO
 
 * `static Element Element::read(const u8string& src)`
-* `static Element Element::read(const u8string& src, size_t& pos, bool top = false)`
+* `static Element Element::read(const u8string& src, size_t& pos)`
 
 TODO
 
 * `bool operator==(const Element& lhs, const Element& rhs) noexcept`
 * `bool operator!=(const Element& lhs, const Element& rhs) noexcept`
-
-TODO
-
-* `void swap(Element& e1, Element& e2) noexcept`
 
 TODO

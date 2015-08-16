@@ -132,7 +132,7 @@ namespace Unicorn {
                         == array.end();
             }
 
-            void pretty_print_helper(const Element& e, std::ostream& out, size_t max_array,
+            void layout_helper(const Element& e, std::ostream& out, size_t max_array,
                     size_t depth, bool indent, const char* suffix) {
                 u8string dent(4 * depth, ' ');
                 if (indent)
@@ -143,14 +143,14 @@ namespace Unicorn {
                         if (array_is_short(e.array(), max_array)) {
                             auto i = e.array().begin(), j = std::prev(e.array().end());
                             for (; i != j; ++i)
-                                pretty_print_helper(*i, out, max_array, depth + 1, false, ",");
-                            pretty_print_helper(*j, out, max_array, depth + 1, false, "");
+                                layout_helper(*i, out, max_array, depth + 1, false, ",");
+                            layout_helper(*j, out, max_array, depth + 1, false, "");
                         } else {
                             out << "\n";
                             auto i = e.array().begin(), j = std::prev(e.array().end());
                             for (; i != j; ++i)
-                                pretty_print_helper(*i, out, max_array, depth + 1, true, ",\n");
-                            pretty_print_helper(*j, out, max_array, depth + 1, true, "\n");
+                                layout_helper(*i, out, max_array, depth + 1, true, ",\n");
+                            layout_helper(*j, out, max_array, depth + 1, true, "\n");
                             out << dent;
                         }
                     }
@@ -161,11 +161,11 @@ namespace Unicorn {
                         out << "\n";
                         auto i = e.object().begin(), j = std::prev(e.object().end());
                         for (; i != j; ++i) {
-                            pretty_print_helper(i->first, out, max_array, depth + 1, true, ": ");
-                            pretty_print_helper(i->second, out, max_array, depth + 1, false, ",\n");
+                            layout_helper(i->first, out, max_array, depth + 1, true, ": ");
+                            layout_helper(i->second, out, max_array, depth + 1, false, ",\n");
                         }
-                        pretty_print_helper(j->first, out, max_array, depth + 1, true, ": ");
-                        pretty_print_helper(j->second, out, max_array, depth + 1, false, "\n");
+                        layout_helper(j->first, out, max_array, depth + 1, true, ": ");
+                        layout_helper(j->second, out, max_array, depth + 1, false, "\n");
                         out << dent;
                     }
                     out << "}";
@@ -187,7 +187,6 @@ namespace Unicorn {
         }
 
         BadJson::BadJson(size_t pos): Exception("Invalid JSON", pos) {}
-        BadTopLevel::BadTopLevel(size_t pos): Exception("Invalid top level JSON", pos) {}
         EndOfFile::EndOfFile(size_t pos): Exception("Unexpected end of text", pos) {}
         WrongType::WrongType(): Exception("Wrong JSON type") {}
 
@@ -254,6 +253,10 @@ namespace Unicorn {
                 return it->second;
         }
 
+        void Element::layout(std::ostream& out, size_t max_array) const {
+            layout_helper(*this, out, max_array, 0, true, "\n");
+        }
+
         void Element::write(u8string& dst) const {
             switch (etype) {
                 case Json::boolean:  write_boolean(dst); break;
@@ -267,24 +270,18 @@ namespace Unicorn {
 
         Element Element::read(const u8string& src) {
             size_t pos = 0;
-            Element e = read(src, pos, true);
+            Element e = read(src, pos);
             expect_ws(src, pos, false);
             if (pos < src.size())
                 throw BadJson(pos);
             return e;
         }
 
-        Element Element::read(const u8string& src, size_t& pos, bool top) {
+        Element Element::read(const u8string& src, size_t& pos) {
             size_t p = pos;
             expect_ws(src, p, true);
             Element e;
-            if (src[p] == '[')
-                e.read_array(src, p);
-            else if (src[p] == '{')
-                e.read_object(src, p);
-            else if (top)
-                throw BadTopLevel(p);
-            else if (src[p] == 'n')
+            if (src[p] == 'n')
                 e.read_null(src, p);
             else if (src[p] == 't' || src[p] == 'f')
                 e.read_boolean(src, p);
@@ -292,6 +289,10 @@ namespace Unicorn {
                 e.read_number(src, p);
             else if (src[p] == '\"')
                 e.read_string(src, p);
+            else if (src[p] == '[')
+                e.read_array(src, p);
+            else if (src[p] == '{')
+                e.read_object(src, p);
             else
                 throw BadJson(p);
             pos = p;
@@ -309,14 +310,6 @@ namespace Unicorn {
                 case Json::object:   return *lhs.rep.object == *rhs.rep.object;
                 default:             return true;
             }
-        }
-
-        void swap(Element& e1, Element& e2) noexcept {
-            char buf[Element::rep_size];
-            std::swap(e1.etype, e2.etype);
-            memcpy(buf, &e1.rep, Element::rep_size);
-            memcpy(&e1.rep, &e2.rep, Element::rep_size);
-            memcpy(&e2.rep, buf, Element::rep_size);
         }
 
         void Element::make_null() noexcept {
@@ -461,10 +454,6 @@ namespace Unicorn {
                 dst += ',';
             }
             dst.back() = '}';
-        }
-
-        void pretty_print(const Element& e, std::ostream& out, size_t max_array) {
-            pretty_print_helper(e, out, max_array, 0, true, "\n");
         }
 
     }

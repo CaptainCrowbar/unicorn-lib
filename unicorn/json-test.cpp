@@ -93,42 +93,28 @@ namespace {
         TRY(e = Json::Element::read(s, pos));
         TEST_EQUAL(e, Json::Element{true});
         TEST_EQUAL(pos, 4);
-        pos = 0;
-        TEST_THROW(Json::Element::read(s, pos, true), Json::BadTopLevel);
 
         s = "42;";
         pos = 0;
         TRY(e = Json::Element::read(s, pos));
         TEST_EQUAL(e, Json::Element{42});
         TEST_EQUAL(pos, 2);
-        pos = 0;
-        TEST_THROW(Json::Element::read(s, pos, true), Json::BadTopLevel);
 
         s = "\"Hello world\";";
         pos = 0;
         TRY(e = Json::Element::read(s, pos));
         TEST_EQUAL(e, Json::Element{"Hello world"});
         TEST_EQUAL(pos, 13);
-        pos = 0;
-        TEST_THROW(Json::Element::read(s, pos, true), Json::BadTopLevel);
 
         s = "[];";
         pos = 0;
         TRY(e = Json::Element::read(s, pos));
         TEST_EQUAL(e, Json::Element{Json::Array{}});
         TEST_EQUAL(pos, 2);
-        pos = 0;
-        TRY(e = Json::Element::read(s, pos, true));
-        TEST_EQUAL(e, Json::Element{Json::Array{}});
-        TEST_EQUAL(pos, 2);
 
         s = "{};";
         pos = 0;
         TRY(e = Json::Element::read(s, pos));
-        TEST_EQUAL(e, Json::Element{Json::Object{}});
-        TEST_EQUAL(pos, 2);
-        pos = 0;
-        TRY(e = Json::Element::read(s, pos, true));
         TEST_EQUAL(e, Json::Element{Json::Object{}});
         TEST_EQUAL(pos, 2);
 
@@ -252,62 +238,62 @@ namespace {
 
     }
 
-    u8string pretty_print_str(const Json::Element& e, size_t max_array = 0) {
+    u8string layout_str(const Json::Element& e, size_t max_array = 0) {
         std::ostringstream out;
-        TRY(pretty_print(e, out, max_array));
+        TRY(e.layout(out, max_array));
         return out.str();
     }
 
-    void check_json_prettyprint() {
+    void check_json_layout() {
 
         Json::Element e;
 
-        TEST_EQUAL(pretty_print_str(e),
+        TEST_EQUAL(layout_str(e),
             "null\n");
 
         TRY(e = true);
-        TEST_EQUAL(pretty_print_str(e),
+        TEST_EQUAL(layout_str(e),
             "true\n");
 
         TRY(e = 1234.5678);
-        TEST_EQUAL(pretty_print_str(e),
+        TEST_EQUAL(layout_str(e),
             "1234.5678\n");
 
         TRY(e = "Hello world");
-        TEST_EQUAL(pretty_print_str(e),
+        TEST_EQUAL(layout_str(e),
             "\"Hello world\"\n");
 
         TRY(e = Json::Array{});
-        TEST_EQUAL(pretty_print_str(e),
+        TEST_EQUAL(layout_str(e),
             "[]\n");
 
         TRY((e = {10, "Alpha"}));
-        TEST_EQUAL(pretty_print_str(e),
+        TEST_EQUAL(layout_str(e),
             "[\n"
             "    10,\n"
             "    \"Alpha\"\n"
             "]\n");
-        TEST_EQUAL(pretty_print_str(e, 10),
+        TEST_EQUAL(layout_str(e, 10),
             "[10,\"Alpha\"]\n");
 
         TRY(e = Json::Object{});
-        TEST_EQUAL(pretty_print_str(e),
+        TEST_EQUAL(layout_str(e),
             "{}\n");
 
         TRY((e = Json::Object{{"Alpha", 42}, {"Bravo", "Don't panic!"}}));
-        TEST_EQUAL(pretty_print_str(e),
+        TEST_EQUAL(layout_str(e),
             "{\n"
             "    \"Alpha\": 42,\n"
             "    \"Bravo\": \"Don't panic!\"\n"
             "}\n");
-        TEST_EQUAL(pretty_print_str(e, 10),
+        TEST_EQUAL(layout_str(e, 10),
             "{\n"
             "    \"Alpha\": 42,\n"
             "    \"Bravo\": \"Don't panic!\"\n"
             "}\n");
 
         TRY((e = {true, 42, "Hello", Json::Object{{"A", 1}, {"B", 2}, {"C", 3}, {"Z", {4, 5, 6}}}, -1234.5}));
-        TEST_EQUAL(pretty_print_str(e),
+        TEST_EQUAL(layout_str(e),
             "[\n"
             "    true,\n"
             "    42,\n"
@@ -324,7 +310,7 @@ namespace {
             "    },\n"
             "    -1234.5\n"
             "]\n");
-        TEST_EQUAL(pretty_print_str(e, 10),
+        TEST_EQUAL(layout_str(e, 10),
             "[\n"
             "    true,\n"
             "    42,\n"
@@ -348,6 +334,6 @@ TEST_MODULE(unicorn, json) {
     check_json_parsing();
     check_json_strings();
     check_json_indexing();
-    check_json_prettyprint();
+    check_json_layout();
 
 }
