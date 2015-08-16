@@ -1,5 +1,6 @@
 #include "unicorn/json.hpp"
 #include "unicorn/format.hpp"
+#include "unicorn/regex.hpp"
 #include "unicorn/string.hpp"
 #include <algorithm>
 #include <cstdlib>
@@ -287,7 +288,7 @@ namespace Unicorn {
                 e.read_null(src, p);
             else if (src[p] == 't' || src[p] == 'f')
                 e.read_boolean(src, p);
-            else if (src[p] == '+' || src[p] == '-' || Crow::ascii_isdigit(src[p]))
+            else if (src[p] == '-' || (src[p] >= '0' && src[p] <= '9'))
                 e.read_number(src, p);
             else if (src[p] == '\"')
                 e.read_string(src, p);
@@ -343,14 +344,13 @@ namespace Unicorn {
         }
 
         void Element::read_number(const u8string& src, size_t& pos) {
-            const char* p1 = src.data() + pos;
-            char* p2 = nullptr;
-            double x = strtod(p1, &p2);
-            if (p2 == p1)
+            static const Regex match_number("-?(0|[1-9]\\d*)(\\.\\d+)?([Ee][+-]?\\d+)?");
+            auto match = match_number.anchor(src, pos);
+            if (! match)
                 throw BadJson(pos);
             etype = Json::number;
-            rep.number = x;
-            pos = p2 - src.data();
+            rep.number = Crow::fpnum(match.str());
+            pos += match.count();
         }
 
         void Element::read_string(const u8string& src, size_t& pos) {
