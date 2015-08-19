@@ -110,10 +110,26 @@ namespace Unicorn {
         // Formatting for specific types
 
         u8string format_boolean(bool t, Crow::Flagset flags);
-        u8string format_integer(unsigned long long t, Crow::Flagset flags, int prec);
+        u8string format_integer(Crow::uint128_t t, Crow::Flagset flags, int prec);
+        u8string format_integer_roman(uint32_t n);
         u8string format_floating(long double t, Crow::Flagset flags, int prec);
         u8string format_string(const u8string& t, Crow::Flagset flags, int prec);
         u8string format_timepoint(std::chrono::system_clock::time_point t, Crow::Flagset flags, int prec);
+
+        template <typename T>
+        u8string format_integer_radix(T t, int base, int prec) {
+            // Argument will never be negative
+            u8string s;
+            auto b = static_cast<T>(base);
+            prec = std::max(prec, 1);
+            while (t > 0 || static_cast<int>(s.size()) < prec) {
+                auto d = t % b;
+                s += static_cast<char>(d + (d <= 9 ? '0' : 'a' - 10));
+                t /= b;
+            }
+            std::reverse(CROW_BOUNDS(s));
+            return s;
+        }
 
         struct FormatBoolean {
             u8string operator()(bool t, Crow::Flagset flags, int /*prec*/) const {
@@ -124,22 +140,32 @@ namespace Unicorn {
         template <typename T>
         struct FormatInteger {
             u8string operator()(T t, Crow::Flagset flags, int prec) const {
-                unsigned long long n = 0;
+                flags.allow(fx_global_flags | fx_binary | fx_decimal | fx_hex | fx_roman | fx_sign | fx_signz,
+                    "integer formatting");
+                flags.exclusive(fx_binary | fx_decimal | fx_hex | fx_roman, "integer formatting");
+                flags.exclusive(fx_sign | fx_signz, "integer formatting");
                 char sign = 0;
                 if (t > static_cast<T>(0)) {
-                    n = static_cast<unsigned long long>(t);
                     if (flags.get(fx_sign | fx_signz))
                         sign = '+';
                 } else if (t == static_cast<T>(0)) {
                     if (flags.get(fx_sign))
                         sign = '+';
                 } else {
-                    n = static_cast<unsigned long long>(- t);
+                    t = - t;
                     sign = '-';
                 }
-                auto s = format_integer(n, flags, prec);
+                u8string s;
+                if (flags.get(fx_binary))
+                    s = format_integer_radix(t, 2, prec);
+                else if (flags.get(fx_roman))
+                    s = format_integer_roman(static_cast<uint32_t>(t));
+                else if (flags.get(fx_hex))
+                    s = format_integer_radix(t, 16, prec);
+                else
+                    s = format_integer_radix(t, 10, prec);
                 if (sign)
-                    s.insert(std::begin(s), sign);
+                    s.insert(s.begin(), sign);
                 return s;
             }
         };
@@ -257,6 +283,8 @@ namespace Unicorn {
     template <> class FormatType<unsigned long>: public UnicornDetail::FormatInteger<unsigned long> {};
     template <> class FormatType<long long>: public UnicornDetail::FormatInteger<long long> {};
     template <> class FormatType<unsigned long long>: public UnicornDetail::FormatInteger<unsigned long long> {};
+    template <> class FormatType<Crow::int128_t>: public UnicornDetail::FormatInteger<Crow::int128_t> {};
+    template <> class FormatType<Crow::uint128_t>: public UnicornDetail::FormatInteger<Crow::uint128_t> {};
     template <> class FormatType<float>: public UnicornDetail::FormatFloatingPoint<float> {};
     template <> class FormatType<double>: public UnicornDetail::FormatFloatingPoint<double> {};
     template <> class FormatType<long double>: public UnicornDetail::FormatFloatingPoint<long double> {};

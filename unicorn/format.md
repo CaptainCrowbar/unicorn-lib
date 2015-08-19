@@ -59,6 +59,8 @@ TODO
 * `template <> class FormatType<unsigned long>`
 * `template <> class FormatType<long long>`
 * `template <> class FormatType<unsigned long long>`
+* `template <> class FormatType<int128_t>`
+* `template <> class FormatType<uint128_t>`
 * `template <> class FormatType<float>`
 * `template <> class FormatType<double>`
 * `template <> class FormatType<long double>`

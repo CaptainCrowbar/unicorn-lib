@@ -48,44 +48,6 @@ namespace Unicorn {
 
         namespace {
 
-            // Integer formatting helper functions
-
-            template <typename C>
-            basic_string<C> int_radix(unsigned long long n, int base, int prec) {
-                using string_type = basic_string<C>;
-                if (prec < 1)
-                    prec = 1;
-                string_type s;
-                auto b = static_cast<unsigned long long>(base);
-                while (n > 0 || s.size() < size_t(prec)) {
-                    auto d = n % b;
-                    s += static_cast<C>(d + (d <= 9 ? '0' : 'a' - 10));
-                    n /= b;
-                }
-                std::reverse(CROW_BOUNDS(s));
-                return s;
-            }
-
-            u8string int_roman(unsigned long long n) {
-                struct entry { const char* str; unsigned num; };
-                static const entry table[] {
-                    { "M", 1000 },
-                    { "CM", 900 }, { "D", 500 }, { "CD", 400 }, { "C", 100 },
-                    { "XC", 90 }, { "L", 50 }, { "XL", 40 }, { "X", 10 },
-                    { "IX", 9 }, { "V", 5 }, { "IV", 4 }, { "I", 1 },
-                };
-                if (n == 0)
-                    return "0";
-                u8string s;
-                for (auto& t: table) {
-                    auto q = n / t.num;
-                    n %= t.num;
-                    for (unsigned long long i = 0; i < q; ++i)
-                        s += t.str;
-                }
-                return s;
-            }
-
             // Floating point formatting helper functions
             // (These will always be called with x>=0 and prec>=0)
 
@@ -218,10 +180,10 @@ namespace Unicorn {
                                 result.append(s, i.offset(), i.count());
                             } else if (*i <= 0xff) {
                                 result += "\\x";
-                                result += int_radix<char>(*i, 16, 2);
+                                result += format_integer_radix(*i, 16, 2);
                             } else {
                                 result += "\\x{";
-                                result += int_radix<char>(*i, 16, 1);
+                                result += format_integer_radix(*i, 16, 1);
                                 result += '}';
                             }
                             break;
@@ -238,7 +200,7 @@ namespace Unicorn {
                     prec = defprec;
                 u8string result;
                 for (auto c: s) {
-                    result += int_radix<char>(as_uchar(c), base, prec);
+                    result += format_integer_radix(as_uchar(c), base, prec);
                     result += ' ';
                 }
                 if (! result.empty())
@@ -261,19 +223,24 @@ namespace Unicorn {
                 return t ? "true" : "false";
         }
 
-        u8string format_integer(unsigned long long t, Crow::Flagset flags, int prec) {
-            flags.allow(fx_global_flags | fx_binary | fx_decimal | fx_hex | fx_roman | fx_sign | fx_signz,
-                "integer formatting");
-            flags.exclusive(fx_binary | fx_decimal | fx_hex | fx_roman, "integer formatting");
-            flags.exclusive(fx_sign | fx_signz, "integer formatting");
-            if (flags.get(fx_binary))
-                return int_radix<char>(t, 2, prec);
-            else if (flags.get(fx_roman))
-                return int_roman(t);
-            else if (flags.get(fx_hex))
-                return int_radix<char>(t, 16, prec);
-            else
-                return int_radix<char>(t, 10, prec);
+        u8string format_integer_roman(uint32_t n) {
+            struct entry { const char* str; unsigned num; };
+            static const entry table[] {
+                { "M", 1000 },
+                { "CM", 900 }, { "D", 500 }, { "CD", 400 }, { "C", 100 },
+                { "XC", 90 }, { "L", 50 }, { "XL", 40 }, { "X", 10 },
+                { "IX", 9 }, { "V", 5 }, { "IV", 4 }, { "I", 1 },
+            };
+            if (n == 0)
+                return "0";
+            u8string s;
+            for (auto& t: table) {
+                auto q = n / t.num;
+                n %= t.num;
+                for (unsigned long long i = 0; i < q; ++i)
+                    s += t.str;
+            }
+            return s;
         }
 
         u8string format_floating(long double t, Crow::Flagset flags, int prec) {
