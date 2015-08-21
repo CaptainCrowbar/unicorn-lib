@@ -95,34 +95,39 @@ TODO
 
 ## Formatter class ##
 
-* `template <typename C> class Format`
-    * `using Format::char_type = C`
-    * `using Format::string_type = basic_string<C>`
-    * `Format::Format()`
-    * `explicit Format::Format(const string_type& format)`
-    * `Format::Format(const Format& f)`
-    * `Format::Format(Format&& f) noexcept`
-    * `Format::~Format() noexcept`
-    * `Format& Format::operator=(const Format& f)`
-    * `Format& Format::operator=(Format&& f) noexcept`
-    * `template <typename... Args> Format::string_type Format::operator()(const Args&... args) const`
-    * `size_t Format::fields() const`
-    * `Format::string_type Format::format() const`
+* `template <typename C> class BasicFormat`
+    * `using BasicFormat::char_type = C`
+    * `using BasicFormat::string_type = basic_string<C>`
+    * `BasicFormat::BasicFormat()`
+    * `explicit BasicFormat::BasicFormat(const string_type& format)`
+    * `BasicFormat::BasicFormat(const BasicFormat& f)`
+    * `BasicFormat::BasicFormat(BasicFormat&& f) noexcept`
+    * `BasicFormat::~BasicFormat() noexcept`
+    * `BasicFormat& BasicFormat::operator=(const BasicFormat& f)`
+    * `BasicFormat& BasicFormat::operator=(BasicFormat&& f) noexcept`
+    * `template <typename... Args> BasicFormat::string_type BasicFormat::operator()(const Args&... args) const`
+    * `bool BasicFormat::empty() const noexcept`
+    * `size_t BasicFormat::fields() const`
+    * `BasicFormat::string_type BasicFormat::format() const`
+* `using Format = BasicFormat<char>`
+* `using Format16 = BasicFormat<char16_t>`
+* `using Format32 = BasicFormat<char32_t>`
+* `using WideFormat = BasicFormat<wchar_t>`
 
 TODO
 
-* `template <typename C> Format<C> format(const basic_string<C>& fmt)`
-* `template <typename C> Format<C> format(const C* fmt)`
+* `template <typename C> BasicFormat<C> format(const basic_string<C>& fmt)`
+* `template <typename C> BasicFormat<C> format(const C* fmt)`
 
 TODO
 
 ## Formatter literals ##
 
 * `namespace Literals`
-    * `Format<char> operator"" _fmt(const char* ptr, size_t len)`
-    * `Format<char16_t> operator"" _fmt(const char16_t* ptr, size_t len)`
-    * `Format<char32_t> operator"" _fmt(const char32_t* ptr, size_t len)`
-    * `Format<wchar_t> operator"" _fmt(const wchar_t* ptr, size_t len)`
+    * `Format operator"" _fmt(const char* ptr, size_t len)`
+    * `Format16 operator"" _fmt(const char16_t* ptr, size_t len)`
+    * `Format32 operator"" _fmt(const char32_t* ptr, size_t len)`
+    * `WideFormat operator"" _fmt(const wchar_t* ptr, size_t len)`
 
 TODO
 

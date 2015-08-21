@@ -357,13 +357,14 @@ namespace Unicorn {
     // Formatter class
 
     template <typename C>
-    class Format {
+    class BasicFormat {
     public:
         using char_type = C;
         using string_type = basic_string<C>;
-        Format() = default;
-        explicit Format(const string_type& format);
+        BasicFormat() = default;
+        explicit BasicFormat(const string_type& format);
         template <typename... Args> string_type operator()(const Args&... args) const;
+        bool empty() const noexcept { return fmt.empty(); }
         size_t fields() const { return num; }
         string_type format() const { return fmt; }
     private:
@@ -388,7 +389,7 @@ namespace Unicorn {
     };
 
     template <typename C>
-    Format<C>::Format(const string_type& format):
+    BasicFormat<C>::BasicFormat(const string_type& format):
     fmt(format), seq() {
         using regex_type = BasicRegex<C>;
         static const u8string pattern_ascii =
@@ -417,7 +418,7 @@ namespace Unicorn {
 
     template <typename C>
     template <typename... Args>
-    basic_string<C> Format<C>::operator()(const Args&... args) const {
+    basic_string<C> BasicFormat<C>::operator()(const Args&... args) const {
         string_list list(seq.size());
         for (size_t i = 0; i < seq.size(); ++i)
             if (seq[i].index == 0)
@@ -427,7 +428,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    void Format<C>::add_index(unsigned index, const string_type& flags) {
+    void BasicFormat<C>::add_index(unsigned index, const string_type& flags) {
         element elem;
         elem.index = index;
         UnicornDetail::translate_flags(to_utf8(flags), elem.flags, elem.prec, elem.width, elem.pad);
@@ -437,7 +438,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    void Format<C>::add_literal(const string_type& text) {
+    void BasicFormat<C>::add_literal(const string_type& text) {
         if (! text.empty()) {
             if (seq.empty() || seq.back().index != 0)
                 seq.push_back({0, text, {}, 0, 0, 0});
@@ -448,31 +449,29 @@ namespace Unicorn {
 
     template <typename C>
     template <typename T, typename... Args>
-    void Format<C>::apply(string_list& list, int index, const T& t, const Args&... args) const {
+    void BasicFormat<C>::apply(string_list& list, int index, const T& t, const Args&... args) const {
         for (size_t i = 0; i < seq.size(); ++i)
             if (seq[i].index == index)
                 format_type(t, list[i], seq[i].flags, seq[i].prec, seq[i].width, seq[i].pad);
         apply(list, index + 1, args...);
     }
 
-    template <typename C>
-    Format<C> format(const basic_string<C>& fmt) {
-        return Format<C>(fmt);
-    }
+    using Format = BasicFormat<char>;
+    using Format16 = BasicFormat<char16_t>;
+    using Format32 = BasicFormat<char32_t>;
+    using WideFormat = BasicFormat<wchar_t>;
 
-    template <typename C>
-    Format<C> format(const C* fmt) {
-        return Format<C>(Crow::cstr(fmt));
-    }
+    template <typename C> BasicFormat<C> format(const basic_string<C>& fmt) { return BasicFormat<C>(fmt); }
+    template <typename C> BasicFormat<C> format(const C* fmt) { return BasicFormat<C>(Crow::cstr(fmt)); }
 
     // Formatter literals
 
     namespace Literals {
 
-        inline auto operator"" _fmt(const char* ptr, size_t len) { return Format<char>(Crow::cstr(ptr, len)); }
-        inline auto operator"" _fmt(const char16_t* ptr, size_t len) { return Format<char16_t>(Crow::cstr(ptr, len)); }
-        inline auto operator"" _fmt(const char32_t* ptr, size_t len) { return Format<char32_t>(Crow::cstr(ptr, len)); }
-        inline auto operator"" _fmt(const wchar_t* ptr, size_t len) { return Format<wchar_t>(Crow::cstr(ptr, len)); }
+        inline auto operator"" _fmt(const char* ptr, size_t len) { return Format(Crow::cstr(ptr, len)); }
+        inline auto operator"" _fmt(const char16_t* ptr, size_t len) { return Format16(Crow::cstr(ptr, len)); }
+        inline auto operator"" _fmt(const char32_t* ptr, size_t len) { return Format32(Crow::cstr(ptr, len)); }
+        inline auto operator"" _fmt(const wchar_t* ptr, size_t len) { return WideFormat(Crow::cstr(ptr, len)); }
 
     }
 

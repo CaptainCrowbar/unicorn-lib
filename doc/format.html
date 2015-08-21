@@ -115,29 +115,34 @@ for details.</p>
 <h2 id="formatterclass">Formatter class</h2>
 
 <ul>
-<li><code>template &lt;typename C&gt; class <strong>Format</strong></code>
+<li><code>template &lt;typename C&gt; class <strong>BasicFormat</strong></code>
 
 <ul>
-<li><code>using Format::<strong>char_type</strong> = C</code></li>
-<li><code>using Format::<strong>string_type</strong> = basic_string&lt;C&gt;</code></li>
-<li><code>Format::<strong>Format</strong>()</code></li>
-<li><code>explicit Format::<strong>Format</strong>(const string_type&amp; format)</code></li>
-<li><code>Format::<strong>Format</strong>(const Format&amp; f)</code></li>
-<li><code>Format::<strong>Format</strong>(Format&amp;&amp; f) noexcept</code></li>
-<li><code>Format::<strong>~Format</strong>() noexcept</code></li>
-<li><code>Format&amp; Format::<strong>operator=</strong>(const Format&amp; f)</code></li>
-<li><code>Format&amp; Format::<strong>operator=</strong>(Format&amp;&amp; f) noexcept</code></li>
-<li><code>template &lt;typename... Args&gt; Format::string_type Format::<strong>operator()</strong>(const Args&amp;... args) const</code></li>
-<li><code>size_t Format::<strong>fields</strong>() const</code></li>
-<li><code>Format::string_type Format::<strong>format</strong>() const</code></li>
+<li><code>using BasicFormat::<strong>char_type</strong> = C</code></li>
+<li><code>using BasicFormat::<strong>string_type</strong> = basic_string&lt;C&gt;</code></li>
+<li><code>BasicFormat::<strong>BasicFormat</strong>()</code></li>
+<li><code>explicit BasicFormat::<strong>BasicFormat</strong>(const string_type&amp; format)</code></li>
+<li><code>BasicFormat::<strong>BasicFormat</strong>(const BasicFormat&amp; f)</code></li>
+<li><code>BasicFormat::<strong>BasicFormat</strong>(BasicFormat&amp;&amp; f) noexcept</code></li>
+<li><code>BasicFormat::<strong>~BasicFormat</strong>() noexcept</code></li>
+<li><code>BasicFormat&amp; BasicFormat::<strong>operator=</strong>(const BasicFormat&amp; f)</code></li>
+<li><code>BasicFormat&amp; BasicFormat::<strong>operator=</strong>(BasicFormat&amp;&amp; f) noexcept</code></li>
+<li><code>template &lt;typename... Args&gt; BasicFormat::string_type BasicFormat::<strong>operator()</strong>(const Args&amp;... args) const</code></li>
+<li><code>bool BasicFormat::<strong>empty</strong>() const noexcept</code></li>
+<li><code>size_t BasicFormat::<strong>fields</strong>() const</code></li>
+<li><code>BasicFormat::string_type BasicFormat::<strong>format</strong>() const</code></li>
 </ul></li>
+<li><code>using <strong>Format</strong> = BasicFormat&lt;char&gt;</code></li>
+<li><code>using <strong>Format16</strong> = BasicFormat&lt;char16_t&gt;</code></li>
+<li><code>using <strong>Format32</strong> = BasicFormat&lt;char32_t&gt;</code></li>
+<li><code>using <strong>WideFormat</strong> = BasicFormat&lt;wchar_t&gt;</code></li>
 </ul>
 
 <p>TODO</p>
 
 <ul>
-<li><code>template &lt;typename C&gt; Format&lt;C&gt; <strong>format</strong>(const basic_string&lt;C&gt;&amp; fmt)</code></li>
-<li><code>template &lt;typename C&gt; Format&lt;C&gt; <strong>format</strong>(const C* fmt)</code></li>
+<li><code>template &lt;typename C&gt; BasicFormat&lt;C&gt; <strong>format</strong>(const basic_string&lt;C&gt;&amp; fmt)</code></li>
+<li><code>template &lt;typename C&gt; BasicFormat&lt;C&gt; <strong>format</strong>(const C* fmt)</code></li>
 </ul>
 
 <p>TODO</p>
@@ -148,10 +153,10 @@ for details.</p>
 <li><code>namespace Literals</code>
 
 <ul>
-<li><code>Format&lt;char&gt; <strong>operator&quot;&quot; _fmt</strong>(const char* ptr, size_t len)</code></li>
-<li><code>Format&lt;char16_t&gt; <strong>operator&quot;&quot; _fmt</strong>(const char16_t* ptr, size_t len)</code></li>
-<li><code>Format&lt;char32_t&gt; <strong>operator&quot;&quot; _fmt</strong>(const char32_t* ptr, size_t len)</code></li>
-<li><code>Format&lt;wchar_t&gt; <strong>operator&quot;&quot; _fmt</strong>(const wchar_t* ptr, size_t len)</code></li>
+<li><code>Format <strong>operator&quot;&quot; _fmt</strong>(const char* ptr, size_t len)</code></li>
+<li><code>Format16 <strong>operator&quot;&quot; _fmt</strong>(const char16_t* ptr, size_t len)</code></li>
+<li><code>Format32 <strong>operator&quot;&quot; _fmt</strong>(const char32_t* ptr, size_t len)</code></li>
+<li><code>WideFormat <strong>operator&quot;&quot; _fmt</strong>(const wchar_t* ptr, size_t len)</code></li>
 </ul></li>
 </ul>
 
