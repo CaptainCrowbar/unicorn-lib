@@ -330,32 +330,24 @@ namespace Unicorn {
     constexpr auto dir_unicode   = Crow::Flagset::value('u');  // Valid Unicode names only
 
     template <typename C>
-    class DirectoryIterator {
+    class DirectoryIterator:
+    public Crow::InputIterator<DirectoryIterator<C>, const basic_string<C>> {
     public:
-        using difference_type = ptrdiff_t;
-        using iterator_category = std::input_iterator_tag;
-        using value_type = basic_string<C>;
-        using pointer = const value_type*;
-        using reference = const value_type&;
         DirectoryIterator() = default;
-        explicit DirectoryIterator(const value_type& dir, Crow::Flagset flags = {});
-        const value_type& operator*() const noexcept { return current; }
-        const value_type* operator->() const noexcept { return &**this; }
+        explicit DirectoryIterator(const basic_string<C>& dir, Crow::Flagset flags = {});
+        const basic_string<C>& operator*() const noexcept { return current; }
         DirectoryIterator& operator++();
-        DirectoryIterator operator++(int) { auto i = *this; ++*this; return i; }
         friend bool operator==(const DirectoryIterator& lhs, const DirectoryIterator& rhs) noexcept
             { return lhs.impl.equal(rhs.impl); }
-        friend bool operator!=(const DirectoryIterator& lhs, const DirectoryIterator& rhs) noexcept
-            { return ! (lhs == rhs); }
     private:
         UnicornDetail::DirectoryHelper impl;
-        value_type prefix;
-        value_type current;
+        basic_string<C> prefix;
+        basic_string<C> current;
         Crow::Flagset fset;
     };
 
     template <typename C>
-    DirectoryIterator<C>::DirectoryIterator(const value_type& dir, Crow::Flagset flags) {
+    DirectoryIterator<C>::DirectoryIterator(const basic_string<C>& dir, Crow::Flagset flags) {
         auto normdir = UnicornDetail::normalize_file(dir);
         NativeString natdir;
         recode_filename(normdir, natdir);
@@ -371,10 +363,10 @@ namespace Unicorn {
 
     template <typename C>
     DirectoryIterator<C>& DirectoryIterator<C>::operator++() {
-        static const value_type link1(1, C('.'));
-        static const value_type link2(2, C('.'));
+        static const basic_string<C> link1(1, C('.'));
+        static const basic_string<C> link2(2, C('.'));
         current.clear();
-        value_type path;
+        basic_string<C> path;
         for (;;) {
             impl.next();
             if (impl.done())

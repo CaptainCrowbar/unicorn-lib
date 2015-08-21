@@ -35,23 +35,6 @@ namespace Unicorn {
 
     }
 
-    namespace {
-
-        static constexpr Crow::Version current_version {0,1,0};
-
-        Crow::Version check_unicode_version() noexcept {
-            Crow::Version v {0,0,0};
-            auto& table = UnicornDetail::unicode_version_table().table;
-            for (auto& entry: table) {
-                if (sparse_table_lookup(UnicornDetail::general_category_table, entry.second) == 0x436e) // Cn
-                    break;
-                v = entry.first;
-            }
-            return v;
-        }
-
-    }
-
     // Exceptions
 
     u8string EncodingError::prefix(const u8string& encoding, size_t offset) {
@@ -83,8 +66,23 @@ namespace Unicorn {
 
     // Version information
 
+    namespace {
+
+        Crow::Version check_unicode_version() noexcept {
+            Crow::Version v {0,0,0};
+            auto& table = UnicornDetail::unicode_version_table().table;
+            for (auto& entry: table) {
+                if (sparse_table_lookup(UnicornDetail::general_category_table, entry.second) == 0x436e) // Cn
+                    break;
+                v = entry.first;
+            }
+            return v;
+        }
+
+    }
+
     Crow::Version unicorn_version() noexcept {
-        return current_version;
+        return {0,1,0};
     }
 
     Crow::Version unicode_version() noexcept {

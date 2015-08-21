@@ -73,13 +73,9 @@ namespace Unicorn {
 
     // File input iterator
 
-    class FileReader {
+    class FileReader:
+    public Crow::InputIterator<FileReader, u8string> {
     public:
-        using difference_type = ptrdiff_t;
-        using iterator_category = std::input_iterator_tag;
-        using pointer = const u8string*;
-        using reference = const u8string&;
-        using value_type = u8string;
         FileReader() {}
         template <typename C>
             explicit FileReader(const basic_string<C>& file)
@@ -102,11 +98,8 @@ namespace Unicorn {
                 const basic_string<C2>& eol)
             { init(recode_filename<NativeCharacter>(file), flags, Crow::dec(enc), to_utf8(eol)); }
         const u8string& operator*() const noexcept;
-        const u8string* operator->() const noexcept { return &**this; }
         FileReader& operator++();
-        FileReader operator++(int) { return ++*this; }
         friend bool operator==(const FileReader& lhs, const FileReader& rhs) noexcept { return lhs.impl == rhs.impl; }
-        friend bool operator!=(const FileReader& lhs, const FileReader& rhs) noexcept { return lhs.impl != rhs.impl; }
         size_t line() const noexcept;
     private:
         struct impl_type;
@@ -137,13 +130,9 @@ namespace Unicorn {
 
     // File output iterator
 
-    class FileWriter {
+    class FileWriter:
+    public Crow::OutputIterator<FileWriter> {
     public:
-        using difference_type = void;
-        using iterator_category = std::output_iterator_tag;
-        using pointer = void;
-        using reference = void;
-        using value_type = void;
         FileWriter() {}
         template <typename C>
             explicit FileWriter(const basic_string<C>& file)
@@ -161,11 +150,6 @@ namespace Unicorn {
             { write(to_utf8(str)); return *this; }
         template <typename C> FileWriter& operator=(const C* str)
             { write(to_utf8(Crow::cstr(str))); return *this; }
-        FileWriter& operator*() noexcept { return *this; }
-        FileWriter& operator++() noexcept { return *this; }
-        FileWriter& operator++(int) noexcept { return *this; }
-        friend bool operator==(const FileWriter& lhs, const FileWriter& rhs) noexcept { return lhs.impl == rhs.impl; }
-        friend bool operator!=(const FileWriter& lhs, const FileWriter& rhs) noexcept { return lhs.impl != rhs.impl; }
         void flush();
     private:
         struct impl_type;

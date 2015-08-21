@@ -90,20 +90,13 @@ namespace Unicorn {
             return Crow::ascii_lowercase(result);
         }
 
-        class NameIterator {
+        class NameIterator:
+        public Crow::ForwardIterator<NameIterator, const u8string> {
         public:
-            using difference_type = ptrdiff_t;
-            using iterator_category = std::forward_iterator_tag;
-            using pointer = const u8string*;
-            using reference = const u8string&;
-            using value_type = u8string;
             explicit NameIterator(const char* ptr = nullptr): s(), p(ptr), q(ptr) { ++*this; }
             const u8string& operator*() const noexcept { return s; }
-            const u8string* operator->() const noexcept { return &s; }
             NameIterator& operator++();
-            NameIterator operator++(int) { auto i = *this; ++*this; return i; }
             bool operator==(const NameIterator& rhs) const noexcept { return p == rhs.p; }
-            bool operator!=(const NameIterator& rhs) const noexcept { return p != rhs.p; }
         private:
             u8string s;
             const char* p;

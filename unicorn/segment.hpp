@@ -36,32 +36,25 @@ namespace Unicorn {
 
     template <typename C, typename Property, UnicornDetail::PropertyQuery<Property> PQ,
         UnicornDetail::SegmentFunction<Property> SF>
-    class BasicSegmentIterator {
+    class BasicSegmentIterator:
+    public Crow::ForwardIterator<BasicSegmentIterator<C, Property, PQ, SF>, const Crow::Irange<UtfIterator<C>>> {
     public:
         using utf_iterator = UtfIterator<C>;
-        using difference_type = ptrdiff_t;
-        using iterator_category = std::forward_iterator_tag;
-        using value_type = Crow::Irange<utf_iterator>;
-        using pointer = const value_type*;
-        using reference = const value_type&;
         BasicSegmentIterator() noexcept {}
         BasicSegmentIterator(const utf_iterator& i, const utf_iterator& j, Crow::Flagset flags):
             seg{i, i}, ends(j), next(i), bufsize(initsize), mode(flags) { ++*this; }
-        const value_type& operator*() const noexcept { return seg; }
-        const value_type* operator->() const noexcept { return &seg; }
+        const Crow::Irange<utf_iterator>& operator*() const noexcept { return seg; }
         BasicSegmentIterator& operator++() noexcept;
-        BasicSegmentIterator operator++(int) noexcept { auto i = *this; ++*this; return i; }
         bool operator==(const BasicSegmentIterator& rhs) const noexcept { return std::begin(seg) == std::begin(rhs.seg); }
-        bool operator!=(const BasicSegmentIterator& rhs) const noexcept { return ! (*this == rhs); }
     private:
         static constexpr size_t initsize = 16;
-        value_type seg {{}, {}};      // Iterator pair marking current segment
-        size_t len {0};               // Length of segment
-        utf_iterator ends {};         // End of source string
-        utf_iterator next {};         // End of buffer contents
-        std::deque<Property> buf {};  // Property lookahead buffer
-        size_t bufsize {0};           // Current lookahead limit
-        Crow::Flagset mode {};        // Mode flags
+        Crow::Irange<utf_iterator> seg {{}, {}};  // Iterator pair marking current segment
+        size_t len {0};                           // Length of segment
+        utf_iterator ends {};                     // End of source string
+        utf_iterator next {};                     // End of buffer contents
+        std::deque<Property> buf {};              // Property lookahead buffer
+        size_t bufsize {0};                       // Current lookahead limit
+        Crow::Flagset mode {};                    // Mode flags
         bool select_segment() const noexcept;
     };
 
@@ -245,31 +238,24 @@ namespace Unicorn {
     }
 
     template <typename C>
-    class BlockSegmentIterator {
+    class BlockSegmentIterator:
+    public Crow::ForwardIterator<BlockSegmentIterator<C>, const Crow::Irange<UtfIterator<C>>> {
     private:
         using find_block = UnicornDetail::FindBlockFunction<C>;
     public:
         using utf_iterator = UtfIterator<C>;
-        using difference_type = ptrdiff_t;
-        using iterator_category = std::forward_iterator_tag;
-        using value_type = Crow::Irange<utf_iterator>;
-        using pointer = const value_type*;
-        using reference = const value_type&;
         BlockSegmentIterator() = default;
         BlockSegmentIterator(const utf_iterator& i, const utf_iterator& j, Crow::Flagset flags, find_block f) noexcept:
             next(i), ends(j), mode(flags), find(f) { ++*this; }
-        const value_type& operator*() const noexcept { return seg; }
-        const value_type* operator->() const noexcept { return &seg; }
+        const Crow::Irange<utf_iterator>& operator*() const noexcept { return seg; }
         BlockSegmentIterator& operator++() noexcept;
-        BlockSegmentIterator operator++(int) noexcept { auto i = *this; ++*this; return i; }
         bool operator==(const BlockSegmentIterator& rhs) const noexcept { return std::begin(seg) == std::begin(rhs.seg); }
-        bool operator!=(const BlockSegmentIterator& rhs) const noexcept { return ! (*this == rhs); }
     private:
-        value_type seg {{}, {}};    // Iterator pair marking current block
-        utf_iterator next {};       // Start of next block
-        utf_iterator ends {};       // End of source string
-        Crow::Flagset mode {};      // Mode flags
-        find_block find {nullptr};  // Find end of block
+        Crow::Irange<utf_iterator> seg {{}, {}};  // Iterator pair marking current block
+        utf_iterator next {};                     // Start of next block
+        utf_iterator ends {};                     // End of source string
+        Crow::Flagset mode {};                    // Mode flags
+        find_block find {nullptr};                // Find end of block
     };
 
     template <typename C>

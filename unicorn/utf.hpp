@@ -145,15 +145,11 @@ namespace Unicorn {
     // UTF decoding iterator
 
     template <typename C>
-    class UtfIterator {
+    class UtfIterator:
+    public Crow::BidirectionalIterator<UtfIterator<C>, const char32_t> {
     public:
         using code_unit = C;
         using string_type = basic_string<C>;
-        using difference_type = ptrdiff_t;
-        using iterator_category = std::bidirectional_iterator_tag;
-        using pointer = const char32_t*;
-        using reference = const char32_t&;
-        using value_type = char32_t;
         UtfIterator() noexcept { static const string_type dummy; sptr = &dummy; }
         explicit UtfIterator(const string_type& src): sptr(&src)
             { UnicornDetail::utf_flags(fset); ++*this; }
@@ -162,9 +158,7 @@ namespace Unicorn {
             { UnicornDetail::utf_flags(fset); ++*this; }
         const char32_t& operator*() const noexcept { return u; }
         UtfIterator& operator++();
-        UtfIterator operator++(int) { auto i = *this; ++*this; return i; }
         UtfIterator& operator--();
-        UtfIterator operator--(int) { auto i = *this; --*this; return i; }
         const string_type& source() const noexcept { return *sptr; }
         size_t offset() const noexcept { return ofs; }
         size_t count() const noexcept { return units; }
@@ -172,8 +166,6 @@ namespace Unicorn {
         bool valid() const noexcept { return ok; }
         friend bool operator==(const UtfIterator& lhs, const UtfIterator& rhs) noexcept
             { return lhs.ofs == rhs.ofs; }
-        friend bool operator!=(const UtfIterator& lhs, const UtfIterator& rhs) noexcept
-            { return ! (lhs == rhs); }
     private:
         const string_type* sptr = nullptr;  // Source string
         size_t ofs = 0;                     // Offset of current character in source
@@ -268,29 +260,18 @@ namespace Unicorn {
     // UTF encoding iterator
 
     template <typename C>
-    class UtfWriter {
+    class UtfWriter:
+    public Crow::OutputIterator<UtfWriter<C>> {
     public:
         using code_unit = C;
         using string_type = basic_string<C>;
-        using difference_type = void;
-        using iterator_category = std::output_iterator_tag;
-        using pointer = void;
-        using reference = void;
-        using value_type = char32_t;
         UtfWriter() noexcept {}
         explicit UtfWriter(string_type& dst) noexcept:
             sptr(&dst) { UnicornDetail::utf_flags(fset); }
         UtfWriter(string_type& dst, Crow::Flagset flags) noexcept:
             sptr(&dst), fset(flags) { UnicornDetail::utf_flags(fset); }
         UtfWriter& operator=(char32_t u);
-        UtfWriter& operator*() noexcept { return *this; }
-        UtfWriter& operator++() noexcept { return *this; }
-        UtfWriter& operator++(int) noexcept { return *this; }
         bool valid() const noexcept { return ok; }
-        friend bool operator==(const UtfWriter& lhs, const UtfWriter& rhs) noexcept
-            { return lhs.sptr == rhs.sptr; }
-        friend bool operator!=(const UtfWriter& lhs, const UtfWriter& rhs) noexcept
-            { return ! (lhs == rhs); }
     private:
         string_type* sptr = nullptr;      // Destination string
         Crow::Flagset fset = err_ignore;  // Error handling flag

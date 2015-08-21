@@ -445,6 +445,7 @@ namespace Unicorn {
     template <typename CX>
     class BasicRegex:
     public UnicornDetail::RegexHelper<BasicRegex<CX>, BasicMatch<CX>, CX>,
+    public Crow::LessThanComparable<BasicRegex<CX>>,
     private UnicornDetail::RegexInfo<typename UnicornDetail::CharType<CX>::type> {
     private:
         using subject_iterator = UnicornDetail::SubjectIterator<CX>;
@@ -478,16 +479,8 @@ namespace Unicorn {
         void swap(BasicRegex& r) noexcept { swap_info(r); }
         friend bool operator==(const BasicRegex& lhs, const BasicRegex& rhs) noexcept
             { return lhs.pat == rhs.pat && lhs.fset == rhs.fset; }
-        friend bool operator!=(const BasicRegex& lhs, const BasicRegex& rhs) noexcept
-            { return ! (lhs == rhs); }
         friend bool operator<(const BasicRegex& lhs, const BasicRegex& rhs) noexcept
             { return lhs.pat == rhs.pat ? lhs.fset < rhs.fset : lhs.pat < rhs.pat; }
-        friend bool operator>(const BasicRegex& lhs, const BasicRegex& rhs) noexcept
-            { return rhs < lhs; }
-        friend bool operator<=(const BasicRegex& lhs, const BasicRegex& rhs) noexcept
-            { return ! (rhs < lhs); }
-        friend bool operator>=(const BasicRegex& lhs, const BasicRegex& rhs) noexcept
-            { return ! (lhs < rhs); }
     private:
         friend class BasicMatchIterator<CX>;
         friend class BasicMatch<CX>;
@@ -800,29 +793,21 @@ namespace Unicorn {
     // Iterator over regex matches
 
     template <typename CX>
-    class BasicMatchIterator {
+    class BasicMatchIterator:
+    public Crow::ForwardIterator<BasicMatchIterator<CX>, const BasicMatch<CX>> {
     public:
         using char_type = typename UnicornDetail::CharType<CX>::type;
         using cx_type = CX;
         using string_type = basic_string<char_type>;
         using regex_type = BasicRegex<CX>;
         using match_type = BasicMatch<CX>;
-        using difference_type = ptrdiff_t;
-        using iterator_category = std::forward_iterator_tag;
-        using pointer = const match_type*;
-        using reference = const match_type&;
-        using value_type = match_type;
         BasicMatchIterator() = default;
         BasicMatchIterator(const regex_type& re, const string_type& text):
             mat(re.search(text)), pat(re.utf8_pattern()) {}
         const match_type& operator*() const noexcept { return mat; }
-        const match_type* operator->() const noexcept { return &**this; }
         BasicMatchIterator& operator++();
-        BasicMatchIterator operator++(int) { auto i = *this; ++*this; return i; }
         friend bool operator==(const BasicMatchIterator& lhs, const BasicMatchIterator& rhs) noexcept
             { return bool(lhs.mat) == bool(rhs.mat) && (! lhs.mat || lhs.mat.offset() == rhs.mat.offset()); }
-        friend bool operator!=(const BasicMatchIterator& lhs, const BasicMatchIterator& rhs) noexcept
-            { return ! (lhs == rhs); }
     private:
         match_type mat;
         string pat;
@@ -838,7 +823,8 @@ namespace Unicorn {
     // Iterator over substrings between matches
 
     template <typename CX>
-    class BasicSplitIterator {
+    class BasicSplitIterator:
+    public Crow::ForwardIterator<BasicSplitIterator<CX>, const basic_string<typename UnicornDetail::CharType<CX>::type>> {
     public:
         using char_type = typename UnicornDetail::CharType<CX>::type;
         using cx_type = CX;
@@ -846,22 +832,13 @@ namespace Unicorn {
         using regex_type = BasicRegex<CX>;
         using match_type = BasicMatch<CX>;
         using match_iterator = BasicMatchIterator<CX>;
-        using difference_type = ptrdiff_t;
-        using iterator_category = std::forward_iterator_tag;
-        using pointer = const string_type*;
-        using reference = const string_type&;
-        using value_type = string_type;
         BasicSplitIterator() = default;
         BasicSplitIterator(const regex_type& re, const string_type& text):
             iter(re, text), start(0), value() { update(); }
         const string_type& operator*() const noexcept { return value; }
-        const string_type* operator->() const noexcept { return &**this; }
         BasicSplitIterator& operator++();
-        BasicSplitIterator operator++(int) { auto i = *this; ++*this; return i; }
         friend bool operator==(const BasicSplitIterator& lhs, const BasicSplitIterator& rhs) noexcept
             { return lhs.iter == rhs.iter && lhs.start == rhs.start; }
-        friend bool operator!=(const BasicSplitIterator& lhs, const BasicSplitIterator& rhs) noexcept
-            { return ! (lhs == rhs); }
     private:
         match_iterator iter {};
         size_t start {npos};

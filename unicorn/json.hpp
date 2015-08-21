@@ -42,7 +42,8 @@ namespace Unicorn {
         using Array = std::vector<Element>;
         using Object = std::map<u8string, Element>;
 
-        class Element {
+        class Element:
+        public Crow::EqualityComparable<Element> {
         public:
             Element() noexcept: etype(Json::null) {}
             Element(std::nullptr_t) noexcept: etype(Json::null) {}
@@ -87,7 +88,6 @@ namespace Unicorn {
             static Element read(const u8string& src);
             static Element read(const u8string& src, size_t& pos);
             friend bool operator==(const Element& lhs, const Element& rhs) noexcept;
-            friend bool operator!=(const Element& lhs, const Element& rhs) noexcept { return ! (lhs == rhs); }
         private:
             using rep_type = union {
                 bool boolean;

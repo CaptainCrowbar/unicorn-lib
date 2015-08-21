@@ -89,26 +89,19 @@ namespace Unicorn {
     // Token iterator
 
     template <typename CX>
-    class BasicTokenIterator {
+    class BasicTokenIterator:
+    public Crow::ForwardIterator<BasicTokenIterator<CX>, const BasicToken<typename UnicornDetail::CharType<CX>::type>> {
     public:
         using char_type = typename UnicornDetail::CharType<CX>::type;
         using string_type = basic_string<char_type>;
-        using difference_type = ptrdiff_t;
-        using iterator_category = std::forward_iterator_tag;
-        using pointer = const BasicToken<char_type>*;
-        using reference = const BasicToken<char_type>&;
-        using value_type = BasicToken<char_type>;
-        const value_type& operator*() noexcept { return token; }
-        const value_type* operator->() noexcept { return &**this; }
+        const BasicToken<char_type>& operator*() const noexcept { return token; }
         BasicTokenIterator& operator++();
-        BasicTokenIterator operator++(int) { auto i = *this; ++*this; return i; }
         bool operator==(const BasicTokenIterator& rhs) const noexcept
             { return token.offset == rhs.token.offset; }
-        bool operator!=(const BasicTokenIterator& rhs) const noexcept { return ! (*this == rhs); }
     private:
         friend class BasicLexer<CX>;
         const BasicLexer<CX>* lex = nullptr;
-        value_type token {nullptr, 0, 0, 0};
+        BasicToken<char_type> token {nullptr, 0, 0, 0};
     };
 
     template <typename CX>
