@@ -138,6 +138,15 @@ build/$(TARGET)/string-size-test.o: unicorn/string-size-test.cpp \
   $(LIBROOT)/crow-lib/crow/thread.hpp unicorn/core.hpp unicorn/character.hpp \
   unicorn/property-values.hpp unicorn/string.hpp unicorn/segment.hpp \
   unicorn/utf.hpp
+build/$(TARGET)/table-test.o: unicorn/table-test.cpp $(LIBROOT)/crow-lib/crow/unit-test.hpp \
+  $(LIBROOT)/crow-lib/crow/core.hpp $(LIBROOT)/crow-lib/crow/thread.hpp unicorn/core.hpp \
+  unicorn/table.hpp unicorn/format.hpp unicorn/character.hpp \
+  unicorn/property-values.hpp unicorn/regex.hpp unicorn/string.hpp \
+  unicorn/segment.hpp unicorn/utf.hpp $(LIBROOT)/crow-lib/crow/meta.hpp
+build/$(TARGET)/table.o: unicorn/table.cpp unicorn/table.hpp unicorn/core.hpp \
+  $(LIBROOT)/crow-lib/crow/core.hpp unicorn/format.hpp unicorn/character.hpp \
+  unicorn/property-values.hpp unicorn/regex.hpp unicorn/string.hpp \
+  unicorn/segment.hpp unicorn/utf.hpp $(LIBROOT)/crow-lib/crow/meta.hpp
 build/$(TARGET)/ucd-bidi-tables.o: unicorn/ucd-bidi-tables.cpp unicorn/ucd-tables.hpp \
   unicorn/core.hpp $(LIBROOT)/crow-lib/crow/core.hpp unicorn/character.hpp \
   unicorn/property-values.hpp

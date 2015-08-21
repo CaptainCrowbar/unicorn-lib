@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8"/>
+	<title>Unicorn Library: Table Layout</title>
+	<link type="text/css" rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<h1 id="unicornlibrary:tablelayout"><a href="index.html">Unicorn Library</a>: Table Layout</h1>
+
+<h4 id="unicodelibraryforcbyrosssmith">Unicode library for C++ by Ross Smith</h4>
+
+<h4 id="includeunicorntable.hpp"><code>#include &quot;unicorn/table.hpp&quot;</code></h4>
+
+<p><code>Unicorn::Table</code> is a utility class for simple table layout in fixed width
+text, a task often useful in formatting the output from command line programs
+and similar utilities. Tables are compiled in UTF&#8211;8 but can be written to
+strings or output streams of any UTF encoding.</p>
+
+<p>Example:</p>
+
+<pre><code>Table tab;
+tab &lt;&lt; &quot;Name&quot; &lt;&lt; &quot;Number&quot; &lt;&lt; &quot;Hex&quot; &lt;&lt; &quot;Float&quot; &lt;&lt; Table::endl;
+tab.div();
+tab.format(&quot;&quot;, &quot;&quot;, &quot;0x$1x4&quot;, &quot;$1fs4&quot;);
+tab &lt;&lt; &quot;Patrick McGoohan&quot; &lt;&lt; 6 &lt;&lt; 6 &lt;&lt; 6.0 &lt;&lt; Table::endl;
+tab &lt;&lt; &quot;James Bond&quot; &lt;&lt; 007 &lt;&lt; 007 &lt;&lt; 007.0 &lt;&lt; Table::endl;
+tab &lt;&lt; &quot;Douglas Adams&quot; &lt;&lt; 42 &lt;&lt; 42 &lt;&lt; 42.0 &lt;&lt; Table::endl;
+tab &lt;&lt; &quot;Maxwell Smart&quot; &lt;&lt; 86 &lt;&lt; 86 &lt;&lt; 86.0 &lt;&lt; Table::endl;
+std::cout &lt;&lt; tab;
+</code></pre>
+
+<p>Output:</p>
+
+<pre><code>Name              Number  Hex     Float
+----------------  ------  ------  --------
+Patrick McGoohan  6       0x0006  +6.0000
+James Bond        7       0x0007  +7.0000
+Douglas Adams     42      0x002a  +42.0000
+Maxwell Smart     86      0x0056  +86.0000
+</code></pre>
+
+<h2 id="tableclass">Table class</h2>
+
+<ul>
+<li><code>static constexpr [private type] Table::<strong>endl</strong></code></li>
+</ul>
+
+<p>This is passed to a table through <code>operator&lt;&lt;</code> to mark the end of a row.</p>
+
+<ul>
+<li><code>Table::<strong>Table</strong>()</code></li>
+<li><code>Table::<strong>Table</strong>(const Table&amp; t)</code></li>
+<li><code>Table::<strong>Table</strong>(Table&amp;&amp; t) noexcept</code></li>
+<li><code>Table::<strong>~Table</strong>() noexcept</code></li>
+<li><code>Table&amp; Table::<strong>operator=</strong>(const Table&amp; t)</code></li>
+<li><code>Table&amp; Table::<strong>operator=</strong>(Table&amp;&amp; t) noexcept</code></li>
+</ul>
+
+<p>Life cycle functions.</p>
+
+<ul>
+<li><code>void Table::<strong>clear_all</strong>() noexcept</code></li>
+<li><code>void Table::<strong>clear_data</strong>() noexcept</code></li>
+<li><code>void Table::<strong>clear_formats</strong>() noexcept</code></li>
+</ul>
+
+<p>Clear the cell data, formatting settings, or both.</p>
+
+<ul>
+<li><code>template &lt;typename... FS&gt; void Table::<strong>format</strong>(const u8string&amp; f, const FS&amp;... fs)</code></li>
+</ul>
+
+<p>This sets up formatting for the table&#8217;s columns, using the formatting codes
+defined in <code>[unicorn/format](format.html)</code>. Each formatting element should be
+of the form <code>&quot;${1...}&quot;</code>, with flags appropriate to the type of data expected
+in that column. Columns for which no format has been set, or whose format is
+an empty string, will be written using <code>Crow::to_str()</code>.</p>
+
+<ul>
+<li><code>template &lt;typename T&gt; Table&amp; Table::<strong>operator&lt;&lt;</strong>(const T&amp; t)</code></li>
+</ul>
+
+<p>Adds a data cell to the table. The cell will be formatted according to the
+current column&#8217;s formatting code, if one has been set.</p>
+
+<ul>
+<li><code>void Table::<strong>div</strong>(char c = '-')</code></li>
+</ul>
+
+<p>Writes a horizontal rule across the table.</p>
+
+<ul>
+<li><code>template &lt;typename C, typename... Args&gt; std::basic_string&lt;C&gt; Table::<strong>as_string</strong>(const Args&amp;... args) const</code></li>
+<li><code>template &lt;typename... Args&gt; u8string Table::<strong>str</strong>(const Args&amp;... args) const</code></li>
+<li><code>template &lt;typename C, typename... Args&gt; void Table::<strong>write</strong>(std::basic_ostream&lt;C&gt;&amp; out, const Args&amp;... args) const</code></li>
+</ul>
+
+<p>These format the table, to a string or an output stream, in the chosen UTF
+encoding. The <code>str()</code> function is shorthand for <code>as_string&lt;char&gt;()</code>.</p>
+
+<p>By default, string lengths are measured in grapheme units (user perceived
+characters) in calculating fixed width table layout. Other measurement flags
+(from <code>[unicorn/string](string.html)</code>) can be passed if required.</p>
+
+<p>If the <code>unfill</code> flag is passed, cells that are identical to the one
+immediately above them will be written using a ditto mark (two apostrophes by
+default) instead of repeating their contents.</p>
+
+<p>The following keyword arguments are recognised:</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Keyword</th>
+	<th style="text-align:left;">Argument type</th>
+	<th style="text-align:left;">Default</th>
+	<th style="text-align:left;">Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><code>Table::flags</code></td>
+	<td style="text-align:left;"><code>Crow::Flagset</code></td>
+	<td style="text-align:left;"><code>grapheme_units</code></td>
+	<td style="text-align:left;">How string lengths are measured</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>Table::margin</code></td>
+	<td style="text-align:left;"><code>size_t</code></td>
+	<td style="text-align:left;"><code>0</code></td>
+	<td style="text-align:left;">Number of spaces in the left margin</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>Table::spacing</code></td>
+	<td style="text-align:left;"><code>size_t</code></td>
+	<td style="text-align:left;"><code>4</code></td>
+	<td style="text-align:left;">Number of spaces between columns</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>Table::unfill</code></td>
+	<td style="text-align:left;"><code>bool</code></td>
+	<td style="text-align:left;"><code>false</code></td>
+	<td style="text-align:left;">Show repeated cells with a ditto mark</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>Table::ditto</code></td>
+	<td style="text-align:left;"><code>u8string</code></td>
+	<td style="text-align:left;"><code>&quot;''&quot;</code></td>
+	<td style="text-align:left;">Symbol used for repeated cells in unfill mode</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>Table::empty</code></td>
+	<td style="text-align:left;"><code>u8string</code></td>
+	<td style="text-align:left;"><code>&quot;--&quot;</code></td>
+	<td style="text-align:left;">Symbol used for empty cells</td>
+</tr>
+</tbody>
+</table>
+
+</body>
+</html>
