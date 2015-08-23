@@ -289,10 +289,10 @@ destination are on different physical file systems.</p>
 <li><code>using DirectoryIterator::<strong>pointer</strong> = const value_type*</code></li>
 <li><code>using DirectoryIterator::<strong>reference</strong> = const value_type&amp;</code></li>
 <li><code>DirectoryIterator::<strong>DirectoryIterator</strong>()</code></li>
-<li><code>explicit DirectoryIterator::<strong>DirectoryIterator</strong>(const value_type&amp; dir, Crow::Flagset flags = {})</code></li>
+<li><code>explicit DirectoryIterator::<strong>DirectoryIterator</strong>(const value_type&amp; dir, Flagset flags = {})</code></li>
 <li><code>[standard iterator operations]</code></li>
 </ul></li>
-<li><code>template &lt;typename C&gt; Crow::Irange&lt;DirectoryIterator&lt;C&gt;&gt; <strong>directory</strong>(const basic_string&lt;C&gt;&amp; dir, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;DirectoryIterator&lt;C&gt;&gt; <strong>directory</strong>(const basic_string&lt;C&gt;&amp; dir, Flagset flags = {})</code></li>
 </ul>
 
 <table>

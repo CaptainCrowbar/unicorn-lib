@@ -60,7 +60,8 @@ This sets up formatting for the table's columns, using the formatting codes
 defined in `[unicorn/format](format.html)`. Each formatting element should be
 of the form `"${1...}"`, with flags appropriate to the type of data expected
 in that column. Columns for which no format has been set, or whose format is
-an empty string, will be written using `Crow::to_str()`.
+an empty string, will be written using `to_str()` (from Prion, but called
+without namespace qualification, so user defined overloads will be found).
 
 * `template <typename T> Table& Table::operator<<(const T& t)`
 
@@ -88,11 +89,11 @@ default) instead of repeating their contents.
 
 The following keyword arguments are recognised:
 
-Keyword           | Argument type    | Default           | Description
--------           | -------------    | -------           | -----------
-`Table::flags`    | `Crow::Flagset`  | `grapheme_units`  | How string lengths are measured
-`Table::margin`   | `size_t`         | `0`               | Number of spaces in the left margin
-`Table::spacing`  | `size_t`         | `4`               | Number of spaces between columns
-`Table::unfill`   | `bool`           | `false`           | Show repeated cells with a ditto mark
-`Table::ditto`    | `u8string`       | `"''"`            | Symbol used for repeated cells in unfill mode
-`Table::empty`    | `u8string`       | `"--"`            | Symbol used for empty cells
+Keyword           | Argument type  | Default           | Description
+-------           | -------------  | -------           | -----------
+`Table::flags`    | `Flagset`      | `grapheme_units`  | How string lengths are measured
+`Table::margin`   | `size_t`       | `0`               | Number of spaces in the left margin
+`Table::spacing`  | `size_t`       | `4`               | Number of spaces between columns
+`Table::unfill`   | `bool`         | `false`           | Show repeated cells with a ditto mark
+`Table::ditto`    | `u8string`     | `"''"`            | Symbol used for repeated cells in unfill mode
+`Table::empty`    | `u8string`     | `"--"`            | Symbol used for empty cells

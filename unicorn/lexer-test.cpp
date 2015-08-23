@@ -1,13 +1,12 @@
-#include "crow/unit-test.hpp"
 #include "unicorn/core.hpp"
 #include "unicorn/lexer.hpp"
+#include "prion/unit-test.hpp"
 #include <algorithm>
 #include <iterator>
 #include <vector>
 #include <string>
 
 using namespace std::literals;
-using namespace Crow;
 using namespace Unicorn;
 
 namespace {
@@ -45,8 +44,8 @@ namespace {
 
         s = "Hello world\n";
         TRY(range = lex(s));
-        TEST_EQUAL(std::distance(CROW_BOUNDS(range)), 2);
-        TRY(std::copy(CROW_BOUNDS(range), overwrite(v)));
+        TEST_EQUAL(std::distance(PRI_BOUNDS(range)), 2);
+        TRY(std::copy(PRI_BOUNDS(range), overwrite(v)));
         TEST_EQUAL(Test::format_range(v), "[Hello,world]");
         TRY(it = std::begin(range));
         REQUIRE(it != std::end(range));
@@ -83,8 +82,8 @@ namespace {
             "1: Goodbye\n"
         );
 
-        TEST_EQUAL(std::distance(CROW_BOUNDS(range)), 9);
-        TRY(std::copy(CROW_BOUNDS(range), overwrite(v)));
+        TEST_EQUAL(std::distance(PRI_BOUNDS(range)), 9);
+        TRY(std::copy(PRI_BOUNDS(range), overwrite(v)));
         TEST_EQUAL(Test::format_range(v), "[Hello,world,2,+,2,=,4,<magic>,Goodbye]");
 
         TRY(lex.call(5, [] (const u8string& str, size_t pos) -> size_t {
@@ -106,8 +105,8 @@ namespace {
             "(a b c (d e f) g h i)"
             "Goodbye";
         TRY(range = lex(s));
-        TEST_EQUAL(std::distance(CROW_BOUNDS(range)), 4);
-        TRY(std::copy(CROW_BOUNDS(range), overwrite(v)));
+        TEST_EQUAL(std::distance(PRI_BOUNDS(range)), 4);
+        TRY(std::copy(PRI_BOUNDS(range), overwrite(v)));
         TEST_EQUAL(Test::format_range(v), "[Hello,(a b c),(a b c (d e f) g h i),Goodbye]");
 
         s = "Hello@world";
@@ -140,8 +139,8 @@ namespace {
                 u"<magic>\n"
                 u"Goodbye\n";
             TRY(range = lex(s));
-            TEST_EQUAL(std::distance(CROW_BOUNDS(range)), 9);
-            TRY(std::copy(CROW_BOUNDS(range), overwrite(v)));
+            TEST_EQUAL(std::distance(PRI_BOUNDS(range)), 9);
+            TRY(std::copy(PRI_BOUNDS(range), overwrite(v)));
             TEST_EQUAL(Test::format_range(v), "[Hello,world,2,+,2,=,4,<magic>,Goodbye]");
 
             TRY(lex.call(5, [] (const u16string& str, size_t pos) -> size_t {
@@ -163,8 +162,8 @@ namespace {
                 u"(a b c (d e f) g h i)"
                 u"Goodbye";
             TRY(range = lex(s));
-            TEST_EQUAL(std::distance(CROW_BOUNDS(range)), 4);
-            TRY(std::copy(CROW_BOUNDS(range), overwrite(v)));
+            TEST_EQUAL(std::distance(PRI_BOUNDS(range)), 4);
+            TRY(std::copy(PRI_BOUNDS(range), overwrite(v)));
             TEST_EQUAL(Test::format_range(v), "[Hello,(a b c),(a b c (d e f) g h i),Goodbye]");
 
             s = u"Hello@world";
@@ -199,8 +198,8 @@ namespace {
                 U"<magic>\n"
                 U"Goodbye\n";
             TRY(range = lex(s));
-            TEST_EQUAL(std::distance(CROW_BOUNDS(range)), 9);
-            TRY(std::copy(CROW_BOUNDS(range), overwrite(v)));
+            TEST_EQUAL(std::distance(PRI_BOUNDS(range)), 9);
+            TRY(std::copy(PRI_BOUNDS(range), overwrite(v)));
             TEST_EQUAL(Test::format_range(v), "[Hello,world,2,+,2,=,4,<magic>,Goodbye]");
 
             TRY(lex.call(5, [] (const u32string& str, size_t pos) -> size_t {
@@ -222,8 +221,8 @@ namespace {
                 U"(a b c (d e f) g h i)"
                 U"Goodbye";
             TRY(range = lex(s));
-            TEST_EQUAL(std::distance(CROW_BOUNDS(range)), 4);
-            TRY(std::copy(CROW_BOUNDS(range), overwrite(v)));
+            TEST_EQUAL(std::distance(PRI_BOUNDS(range)), 4);
+            TRY(std::copy(PRI_BOUNDS(range), overwrite(v)));
             TEST_EQUAL(Test::format_range(v), "[Hello,(a b c),(a b c (d e f) g h i),Goodbye]");
 
             s = U"Hello@world";
@@ -258,8 +257,8 @@ namespace {
                 L"<magic>\n"
                 L"Goodbye\n";
             TRY(range = lex(s));
-            TEST_EQUAL(std::distance(CROW_BOUNDS(range)), 9);
-            TRY(std::copy(CROW_BOUNDS(range), overwrite(v)));
+            TEST_EQUAL(std::distance(PRI_BOUNDS(range)), 9);
+            TRY(std::copy(PRI_BOUNDS(range), overwrite(v)));
             TEST_EQUAL(Test::format_range(v), "[Hello,world,2,+,2,=,4,<magic>,Goodbye]");
 
             TRY(lex.call(5, [] (const wstring& str, size_t pos) -> size_t {
@@ -281,8 +280,8 @@ namespace {
                 L"(a b c (d e f) g h i)"
                 L"Goodbye";
             TRY(range = lex(s));
-            TEST_EQUAL(std::distance(CROW_BOUNDS(range)), 4);
-            TRY(std::copy(CROW_BOUNDS(range), overwrite(v)));
+            TEST_EQUAL(std::distance(PRI_BOUNDS(range)), 4);
+            TRY(std::copy(PRI_BOUNDS(range), overwrite(v)));
             TEST_EQUAL(Test::format_range(v), "[Hello,(a b c),(a b c (d e f) g h i),Goodbye]");
 
             s = L"Hello@world";
@@ -315,8 +314,8 @@ namespace {
             "<magic>\n"
             "Goodbye\n";
         TRY(range = lex(s));
-        TEST_EQUAL(std::distance(CROW_BOUNDS(range)), 9);
-        TRY(std::copy(CROW_BOUNDS(range), overwrite(v)));
+        TEST_EQUAL(std::distance(PRI_BOUNDS(range)), 9);
+        TRY(std::copy(PRI_BOUNDS(range), overwrite(v)));
         TEST_EQUAL(Test::format_range(v), "[Hello,world,2,+,2,=,4,<magic>,Goodbye]");
 
         TRY(lex.call(5, [] (const string& str, size_t pos) -> size_t {
@@ -338,8 +337,8 @@ namespace {
             "(a b c (d e f) g h i)"
             "Goodbye";
         TRY(range = lex(s));
-        TEST_EQUAL(std::distance(CROW_BOUNDS(range)), 4);
-        TRY(std::copy(CROW_BOUNDS(range), overwrite(v)));
+        TEST_EQUAL(std::distance(PRI_BOUNDS(range)), 4);
+        TRY(std::copy(PRI_BOUNDS(range), overwrite(v)));
         TEST_EQUAL(Test::format_range(v), "[Hello,(a b c),(a b c (d e f) g h i),Goodbye]");
 
         s = "Hello@world";

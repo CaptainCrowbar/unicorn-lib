@@ -113,7 +113,7 @@ for details.</p>
 <li><code>using BasicLexer::<strong>token_type</strong> = BasicToken&lt;char_type&gt;</code></li>
 <li><code>using BasicLexer::<strong>callback_type</strong> = std::function&lt;size_t(const string_type&amp;, size_t)&gt;</code></li>
 <li><code>using BasicLexer::<strong>token_iterator</strong> = BasicTokenIterator&lt;CX&gt;</code></li>
-<li><code>using BasicLexer::<strong>token_range</strong> = Crow::Irange&lt;token_iterator&gt;</code></li>
+<li><code>using BasicLexer::<strong>token_range</strong> = Irange&lt;token_iterator&gt;</code></li>
 </ul>
 
 <p>TODO</p>
@@ -141,8 +141,8 @@ for details.</p>
 <li><code>void BasicLexer::<strong>exact</strong>(int tag, const string_type&amp; pattern)</code></li>
 <li><code>void BasicLexer::<strong>exact</strong>(int tag, const char_type* pattern)</code></li>
 <li><code>void BasicLexer::<strong>match</strong>(int tag, const regex_type&amp; pattern)</code></li>
-<li><code>void BasicLexer::<strong>match</strong>(int tag, const string_type&amp; pattern, Crow::Flagset flags = {})</code></li>
-<li><code>void BasicLexer::<strong>match</strong>(int tag, const char_type* pattern, Crow::Flagset flags = {})</code></li>
+<li><code>void BasicLexer::<strong>match</strong>(int tag, const string_type&amp; pattern, Flagset flags = {})</code></li>
+<li><code>void BasicLexer::<strong>match</strong>(int tag, const char_type* pattern, Flagset flags = {})</code></li>
 </ul>
 
 <p>TODO</p>

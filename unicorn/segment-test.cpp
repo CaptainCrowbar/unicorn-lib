@@ -1,16 +1,15 @@
-#include "crow/unit-test.hpp"
 #include "unicorn/core.hpp"
 #include "unicorn/segment.hpp"
 #include "unicorn/character.hpp"
 #include "unicorn/string.hpp"
 #include "unicorn/ucd-tables.hpp"
 #include "unicorn/utf.hpp"
+#include "prion/unit-test.hpp"
 #include <cstdlib>
 #include <string>
 #include <vector>
 
 using namespace std::literals;
-using namespace Crow;
 using namespace Unicorn;
 
 namespace {
@@ -19,7 +18,7 @@ namespace {
         std::vector<u8string> hexcodes;
         str_split_by(code, append(hexcodes), " /");
         u32string str;
-        std::transform(CROW_BOUNDS(hexcodes), append(str), hexnum);
+        std::transform(PRI_BOUNDS(hexcodes), append(str), hexnum);
         return str;
     }
 
@@ -63,7 +62,7 @@ namespace {
             std::vector<u8string> breakdown;
             str_split_by(line, append(breakdown), "/");
             std::vector<u32string> expect32;
-            std::transform(CROW_BOUNDS(breakdown), append(expect32), decode_hex);
+            std::transform(PRI_BOUNDS(breakdown), append(expect32), decode_hex);
             std::vector<u8string> expect8(expect32.size());
             std::vector<u16string> expect16(expect32.size());
             std::vector<wstring> wexpect(expect32.size());

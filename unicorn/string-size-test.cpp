@@ -1,12 +1,11 @@
-#include "crow/unit-test.hpp"
 #include "unicorn/core.hpp"
 #include "unicorn/character.hpp"
 #include "unicorn/string.hpp"
 #include "unicorn/utf.hpp"
+#include "prion/unit-test.hpp"
 #include <string>
 
 using namespace std::literals;
-using namespace Crow;
 using namespace Unicorn;
 
 namespace {
@@ -23,9 +22,9 @@ namespace {
     const u32string utf32_example {0x430,0x4e8c,0x10302,0x10fffd};
 
     #if defined(UNICORN_WCHAR_UTF16)
-        const wstring wide_example(CROW_BOUNDS(utf16_example));
+        const wstring wide_example(PRI_BOUNDS(utf16_example));
     #else
-        const wstring wide_example(CROW_BOUNDS(utf32_example));
+        const wstring wide_example(PRI_BOUNDS(utf32_example));
     #endif
 
     void check_length() {

@@ -6,10 +6,10 @@ using namespace std::literals;
 namespace Unicorn {
 
     constexpr Table::endl_type Table::endl;
-    constexpr Crow::Kwarg<Crow::Flagset> Table::flags;
-    constexpr Crow::Kwarg<u8string> Table::ditto, Table::empty;
-    constexpr Crow::Kwarg<size_t> Table::margin, Table::spacing;
-    constexpr Crow::Kwarg<bool> Table::unfill;
+    constexpr Kwarg<Flagset> Table::flags;
+    constexpr Kwarg<u8string> Table::ditto, Table::empty;
+    constexpr Kwarg<size_t> Table::margin, Table::spacing;
+    constexpr Kwarg<bool> Table::unfill;
 
     Table& Table::operator<<(endl_type) {
         cells.push_back({});

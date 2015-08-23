@@ -42,15 +42,15 @@ substring if this is needed.</p>
 <li><code>using GraphemeIterator::<strong>utf_iterator</strong> = UtfIterator&lt;C&gt;</code></li>
 <li><code>using GraphemeIterator::<strong>difference_type</strong> = ptrdiff_t</code></li>
 <li><code>using GraphemeIterator::<strong>iterator_category</strong> = std::forward_iterator_tag</code></li>
-<li><code>using GraphemeIterator::<strong>value_type</strong> = Crow::Irange&lt;utf_iterator&gt;</code></li>
+<li><code>using GraphemeIterator::<strong>value_type</strong> = Irange&lt;utf_iterator&gt;</code></li>
 <li><code>using GraphemeIterator::<strong>pointer</strong> = const value_type*</code></li>
 <li><code>using GraphemeIterator::<strong>reference</strong> = const value_type&amp;</code></li>
 <li><code>GraphemeIterator::<strong>GraphemeIterator</strong>()</code></li>
 <li><code>[standard iterator operations]</code></li>
 </ul></li>
-<li><code>template &lt;typename C&gt; Crow::Irange&lt;GraphemeIterator&lt;C&gt;&gt; <strong>grapheme_range</strong>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j)</code></li>
-<li><code>template &lt;typename C&gt; Crow::Irange&lt;GraphemeIterator&lt;C&gt;&gt; <strong>grapheme_range</strong>(const Crow::Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; source)</code></li>
-<li><code>template &lt;typename C&gt; Crow::Irange&lt;GraphemeIterator&lt;C&gt;&gt; <strong>grapheme_range</strong>(const basic_string&lt;C&gt;&amp; source)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;GraphemeIterator&lt;C&gt;&gt; <strong>grapheme_range</strong>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;GraphemeIterator&lt;C&gt;&gt; <strong>grapheme_range</strong>(const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; source)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;GraphemeIterator&lt;C&gt;&gt; <strong>grapheme_range</strong>(const basic_string&lt;C&gt;&amp; source)</code></li>
 </ul>
 
 <p>A forward iterator over the grapheme clusters (user-perceived characters) in a
@@ -65,15 +65,15 @@ Unicode string.</p>
 <li><code>using WordIterator::<strong>utf_iterator</strong> = UtfIterator&lt;C&gt;</code></li>
 <li><code>using WordIterator::<strong>difference_type</strong> = ptrdiff_t</code></li>
 <li><code>using WordIterator::<strong>iterator_category</strong> = std::forward_iterator_tag</code></li>
-<li><code>using WordIterator::<strong>value_type</strong> = Crow::Irange&lt;utf_iterator&gt;</code></li>
+<li><code>using WordIterator::<strong>value_type</strong> = Irange&lt;utf_iterator&gt;</code></li>
 <li><code>using WordIterator::<strong>pointer</strong> = const value_type*</code></li>
 <li><code>using WordIterator::<strong>reference</strong> = const value_type&amp;</code></li>
 <li><code>WordIterator::<strong>WordIterator</strong>()</code></li>
 <li><code>[standard iterator operations]</code></li>
 </ul></li>
-<li><code>template &lt;typename C&gt; Crow::Irange&lt;WordIterator&lt;C&gt;&gt; <strong>word_range</strong>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j, Crow::Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; Crow::Irange&lt;WordIterator&lt;C&gt;&gt; <strong>word_range</strong>(const Crow::Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; source, Crow::Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; Crow::Irange&lt;WordIterator&lt;C&gt;&gt; <strong>word_range</strong>(const basic_string&lt;C&gt;&amp; source, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;WordIterator&lt;C&gt;&gt; <strong>word_range</strong>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;WordIterator&lt;C&gt;&gt; <strong>word_range</strong>(const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; source, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;WordIterator&lt;C&gt;&gt; <strong>word_range</strong>(const basic_string&lt;C&gt;&amp; source, Flagset flags = {})</code></li>
 </ul>
 
 <p>A forward iterator over the words in a Unicode string. By default, all
@@ -125,15 +125,15 @@ words containing at least one alphanumeric character.</p>
 <li><code>using SentenceIterator::<strong>utf_iterator</strong> = UtfIterator&lt;C&gt;</code></li>
 <li><code>using SentenceIterator::<strong>difference_type</strong> = ptrdiff_t</code></li>
 <li><code>using SentenceIterator::<strong>iterator_category</strong> = std::forward_iterator_tag</code></li>
-<li><code>using SentenceIterator::<strong>value_type</strong> = Crow::Irange&lt;utf_iterator&gt;</code></li>
+<li><code>using SentenceIterator::<strong>value_type</strong> = Irange&lt;utf_iterator&gt;</code></li>
 <li><code>using SentenceIterator::<strong>pointer</strong> = const value_type*</code></li>
 <li><code>using SentenceIterator::<strong>reference</strong> = const value_type&amp;</code></li>
 <li><code>SentenceIterator::<strong>SentenceIterator</strong>()</code></li>
 <li><code>[standard iterator operations]</code></li>
 </ul></li>
-<li><code>template &lt;typename C&gt; Crow::Irange&lt;SentenceIterator&lt;C&gt;&gt; <strong>sentence_range</strong>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j)</code></li>
-<li><code>template &lt;typename C&gt; Crow::Irange&lt;SentenceIterator&lt;C&gt;&gt; <strong>sentence_range</strong>(const Crow::Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; source)</code></li>
-<li><code>template &lt;typename C&gt; Crow::Irange&lt;SentenceIterator&lt;C&gt;&gt; <strong>sentence_range</strong>(const basic_string&lt;C&gt;&amp; source)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;SentenceIterator&lt;C&gt;&gt; <strong>sentence_range</strong>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;SentenceIterator&lt;C&gt;&gt; <strong>sentence_range</strong>(const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; source)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;SentenceIterator&lt;C&gt;&gt; <strong>sentence_range</strong>(const basic_string&lt;C&gt;&amp; source)</code></li>
 </ul>
 
 <p>A forward iterator over the sentences in a Unicode string (as defined by
@@ -148,15 +148,15 @@ UAX29).</p>
 <li><code>using LineIterator::<strong>utf_iterator</strong> = UtfIterator&lt;C&gt;</code></li>
 <li><code>using LineIterator::<strong>difference_type</strong> = ptrdiff_t</code></li>
 <li><code>using LineIterator::<strong>iterator_category</strong> = std::forward_iterator_tag</code></li>
-<li><code>using LineIterator::<strong>value_type</strong> = Crow::Irange&lt;utf_iterator&gt;</code></li>
+<li><code>using LineIterator::<strong>value_type</strong> = Irange&lt;utf_iterator&gt;</code></li>
 <li><code>using LineIterator::<strong>pointer</strong> = const value_type*</code></li>
 <li><code>using LineIterator::<strong>reference</strong> = const value_type&amp;</code></li>
 <li><code>LineIterator::<strong>LineIterator</strong>()</code></li>
 <li><code>[standard iterator operations]</code></li>
 </ul></li>
-<li><code>template &lt;typename C&gt; Crow::Irange&lt;LineIterator&lt;C&gt;&gt; <strong>line_range</strong>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j, Crow::Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; Crow::Irange&lt;LineIterator&lt;C&gt;&gt; <strong>line_range</strong>(const Crow::Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; source, Crow::Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; Crow::Irange&lt;LineIterator&lt;C&gt;&gt; <strong>line_range</strong>(const basic_string&lt;C&gt;&amp; source, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;LineIterator&lt;C&gt;&gt; <strong>line_range</strong>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;LineIterator&lt;C&gt;&gt; <strong>line_range</strong>(const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; source, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;LineIterator&lt;C&gt;&gt; <strong>line_range</strong>(const basic_string&lt;C&gt;&amp; source, Flagset flags = {})</code></li>
 </ul>
 
 <p>A forward iterator over the lines in a Unicode string. Lines are ended by any
@@ -204,15 +204,15 @@ set, the line break is excluded from the segment.</p>
 <li><code>using ParagraphIterator::<strong>utf_iterator</strong> = UtfIterator&lt;C&gt;</code></li>
 <li><code>using ParagraphIterator::<strong>difference_type</strong> = ptrdiff_t</code></li>
 <li><code>using ParagraphIterator::<strong>iterator_category</strong> = std::forward_iterator_tag</code></li>
-<li><code>using ParagraphIterator::<strong>value_type</strong> = Crow::Irange&lt;utf_iterator&gt;</code></li>
+<li><code>using ParagraphIterator::<strong>value_type</strong> = Irange&lt;utf_iterator&gt;</code></li>
 <li><code>using ParagraphIterator::<strong>pointer</strong> = const value_type*</code></li>
 <li><code>using ParagraphIterator::<strong>reference</strong> = const value_type&amp;</code></li>
 <li><code>ParagraphIterator::<strong>ParagraphIterator</strong>()</code></li>
 <li><code>[standard iterator operations]</code></li>
 </ul></li>
-<li><code>template &lt;typename C&gt; Crow::Irange&lt;ParagraphIterator&lt;C&gt;&gt; <strong>paragraph_range</strong>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j, Crow::Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; Crow::Irange&lt;ParagraphIterator&lt;C&gt;&gt; <strong>paragraph_range</strong>(const Crow::Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; source, Crow::Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; Crow::Irange&lt;ParagraphIterator&lt;C&gt;&gt; <strong>paragraph_range</strong>(const basic_string&lt;C&gt;&amp; source, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;ParagraphIterator&lt;C&gt;&gt; <strong>paragraph_range</strong>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;ParagraphIterator&lt;C&gt;&gt; <strong>paragraph_range</strong>(const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; source, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;ParagraphIterator&lt;C&gt;&gt; <strong>paragraph_range</strong>(const basic_string&lt;C&gt;&amp; source, Flagset flags = {})</code></li>
 </ul>
 
 <p>A forward iterator over the paragraphs in a Unicode string. The flags passed

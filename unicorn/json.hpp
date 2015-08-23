@@ -1,6 +1,5 @@
 #pragma once
 
-#include "crow/core.hpp"
 #include "unicorn/core.hpp"
 #include <cstddef>
 #include <map>
@@ -43,7 +42,7 @@ namespace Unicorn {
         using Object = std::map<u8string, Element>;
 
         class Element:
-        public Crow::EqualityComparable<Element> {
+        public EqualityComparable<Element> {
         public:
             Element() noexcept: etype(Json::null) {}
             Element(std::nullptr_t) noexcept: etype(Json::null) {}

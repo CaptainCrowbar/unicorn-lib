@@ -88,7 +88,7 @@ TODO
 * `using BasicLexer::token_type = BasicToken<char_type>`
 * `using BasicLexer::callback_type = std::function<size_t(const string_type&, size_t)>`
 * `using BasicLexer::token_iterator = BasicTokenIterator<CX>`
-* `using BasicLexer::token_range = Crow::Irange<token_iterator>`
+* `using BasicLexer::token_range = Irange<token_iterator>`
 
 TODO
 
@@ -110,7 +110,7 @@ TODO
 * `void BasicLexer::exact(int tag, const string_type& pattern)`
 * `void BasicLexer::exact(int tag, const char_type* pattern)`
 * `void BasicLexer::match(int tag, const regex_type& pattern)`
-* `void BasicLexer::match(int tag, const string_type& pattern, Crow::Flagset flags = {})`
-* `void BasicLexer::match(int tag, const char_type* pattern, Crow::Flagset flags = {})`
+* `void BasicLexer::match(int tag, const string_type& pattern, Flagset flags = {})`
+* `void BasicLexer::match(int tag, const char_type* pattern, Flagset flags = {})`
 
 TODO

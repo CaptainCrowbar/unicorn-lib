@@ -46,7 +46,7 @@ namespace Unicorn {
         }
         if (offset > 0) {
             s += "; offset ";
-            s += Crow::dec(offset);
+            s += dec(offset);
         }
         return s;
     }
@@ -68,8 +68,8 @@ namespace Unicorn {
 
     namespace {
 
-        Crow::Version check_unicode_version() noexcept {
-            Crow::Version v {0,0,0};
+        Version check_unicode_version() noexcept {
+            Version v {0,0,0};
             auto& table = UnicornDetail::unicode_version_table().table;
             for (auto& entry: table) {
                 if (sparse_table_lookup(UnicornDetail::general_category_table, entry.second) == 0x436e) // Cn
@@ -81,12 +81,12 @@ namespace Unicorn {
 
     }
 
-    Crow::Version unicorn_version() noexcept {
+    Version unicorn_version() noexcept {
         return {0,1,0};
     }
 
-    Crow::Version unicode_version() noexcept {
-        static const Crow::Version v = check_unicode_version();
+    Version unicode_version() noexcept {
+        static const Version v = check_unicode_version();
         return v;
     }
 

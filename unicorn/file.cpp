@@ -5,7 +5,7 @@
 #include <cerrno>
 #include <cstdio>
 
-#if defined(CROW_TARGET_UNIX)
+#if defined(PRI_TARGET_UNIX)
     #include <dirent.h>
     #include <sys/stat.h>
     #include <sys/types.h>
@@ -33,12 +33,12 @@ namespace Unicorn {
         u8string s = "File system error" + files;
         if (error) {
             s += "; error ";
-            s += Crow::dec(error);
+            s += dec(error);
             string details =
-            #if defined(CROW_TARGET_UNIX)
-                Crow::CrtError::translate(error);
+            #if defined(PRI_TARGET_UNIX)
+                CrtError::translate(error);
             #else
-                Crow::WindowsError::translate(error);
+                WindowsError::translate(error);
             #endif
             if (! details.empty()) {
                 s += "; ";
@@ -50,7 +50,7 @@ namespace Unicorn {
 
     namespace UnicornDetail {
 
-        #if defined(CROW_TARGET_UNIX)
+        #if defined(PRI_TARGET_UNIX)
 
             // File name operations
 
@@ -187,7 +187,7 @@ namespace Unicorn {
             }
 
             bool native_file_is_drive_relative(const u8string& file) {
-                return file.size() >= 2 && Crow::ascii_isalpha(file[0]) && file[1] == ':' && file[2] != '\\';
+                return file.size() >= 2 && ascii_isalpha(file[0]) && file[1] == ':' && file[2] != '\\';
             }
 
             bool native_file_is_root(const u8string& file) {

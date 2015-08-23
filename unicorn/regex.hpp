@@ -113,7 +113,7 @@ namespace Unicorn {
             using string_type = basic_string<C>;
             using pcre_ref = PcreRef<C>;
             string_type pat {};
-            Crow::Flagset fset {};
+            Flagset fset {};
             pcre_ref ref {};
         };
 
@@ -129,7 +129,7 @@ namespace Unicorn {
             using string_type = basic_string<C>;
             using pcre_ref = PcreRef<C>;
             std::vector<int> ofs {};
-            Crow::Flagset fset {};
+            Flagset fset {};
             pcre_ref ref {};
             int status {-1};
             const string_type* text = nullptr;
@@ -177,14 +177,14 @@ namespace Unicorn {
 
         size_t count_groups(const PcreRef<char>& p) noexcept;
         size_t named_group(const PcreRef<char>& p, const string& name) noexcept;
-        void init_regex(RegexInfo<char>& r, const string& pattern, Crow::Flagset flags, bool unicode);
+        void init_regex(RegexInfo<char>& r, const string& pattern, Flagset flags, bool unicode);
         void init_match(MatchInfo<char>& m, const RegexInfo<char>& r, const string& text);
         void next_match(MatchInfo<char>& m, const string& pattern, size_t start, int anchors);
 
         #if defined(UNICORN_PCRE16)
             size_t count_groups(const PcreRef<char16_t>& p) noexcept;
             size_t named_group(const PcreRef<char16_t>& p, const u16string& name) noexcept;
-            void init_regex(RegexInfo<char16_t>& r, const u16string& pattern, Crow::Flagset flags, bool unicode);
+            void init_regex(RegexInfo<char16_t>& r, const u16string& pattern, Flagset flags, bool unicode);
             void init_match(MatchInfo<char16_t>& m, const RegexInfo<char16_t>& r, const u16string& text);
             void next_match(MatchInfo<char16_t>& m, const string& pattern, size_t start, int anchors);
         #endif
@@ -192,7 +192,7 @@ namespace Unicorn {
         #if defined(UNICORN_PCRE32)
             size_t count_groups(const PcreRef<char32_t>& p) noexcept;
             size_t named_group(const PcreRef<char32_t>& p, const u32string& name) noexcept;
-            void init_regex(RegexInfo<char32_t>& r, const u32string& pattern, Crow::Flagset flags, bool unicode);
+            void init_regex(RegexInfo<char32_t>& r, const u32string& pattern, Flagset flags, bool unicode);
             void init_match(MatchInfo<char32_t>& m, const RegexInfo<char32_t>& r, const u32string& text);
             void next_match(MatchInfo<char32_t>& m, const string& pattern, size_t start, int anchors);
         #endif
@@ -200,7 +200,7 @@ namespace Unicorn {
         #if defined(UNICORN_PCRE_WCHAR)
             size_t count_groups(const PcreRef<wchar_t>& p) noexcept;
             size_t named_group(const PcreRef<wchar_t>& p, const wstring& name) noexcept;
-            void init_regex(RegexInfo<wchar_t>& r, const wstring& pattern, Crow::Flagset flags, bool unicode);
+            void init_regex(RegexInfo<wchar_t>& r, const wstring& pattern, Flagset flags, bool unicode);
             void init_match(MatchInfo<wchar_t>& m, const RegexInfo<wchar_t>& r, const wstring& text);
             void next_match(MatchInfo<wchar_t>& m, const string& pattern, size_t start, int anchors);
         #endif
@@ -220,9 +220,9 @@ namespace Unicorn {
         struct CharType<void> {
             using type = char;
             static constexpr bool is_utf = false;
-            static constexpr auto make_lower = &Crow::ascii_lowercase;
-            static constexpr auto make_title = &Crow::ascii_titlecase;
-            static constexpr auto make_upper = &Crow::ascii_uppercase;
+            static constexpr auto make_lower = &ascii_lowercase;
+            static constexpr auto make_title = &ascii_titlecase;
+            static constexpr auto make_upper = &ascii_uppercase;
         };
 
         template <typename CX>
@@ -238,7 +238,7 @@ namespace Unicorn {
             using string_type = string;
             u8string operator()(const string& pattern) const {
                 u32string p32;
-                std::transform(CROW_BOUNDS(pattern), Crow::append(p32),
+                std::transform(PRI_BOUNDS(pattern), append(p32),
                     [] (char c) { return static_cast<uint8_t>(c); });
                 return to_utf8(p32);
             }
@@ -299,29 +299,29 @@ namespace Unicorn {
 
     // Regex options
 
-    constexpr auto rx_caseless         = Crow::Flagset::value('i');  // Case insensitive matching                        PCRE_CASELESS
-    constexpr auto rx_dfa              = Crow::Flagset::value('D');  // Use the alternative DFA algorithm                pcre_dfa_exec()
-    constexpr auto rx_dollarnewline    = Crow::Flagset::value('d');  // $ may match line break at end                    ~PCRE_DOLLAR_ENDONLY
-    constexpr auto rx_dotinline        = Crow::Flagset::value('l');  // . does not match newlines                        ~PCRE_DOTALL
-    constexpr auto rx_extended         = Crow::Flagset::value('x');  // Free-form mode (ignore whitespace and comments)  PCRE_EXTENDED
-    constexpr auto rx_firstline        = Crow::Flagset::value('f');  // Must match in first line                         PCRE_FIRSTLINE
-    constexpr auto rx_multiline        = Crow::Flagset::value('m');  // Multiline mode (^ and $ match BOL/EOL)           PCRE_MULTILINE
-    constexpr auto rx_newlineanycrlf   = Crow::Flagset::value('A');  // Line break is any of CR, LF, CRLF                PCRE_NEWLINE_ANYCRLF
-    constexpr auto rx_newlinecr        = Crow::Flagset::value('C');  // Line break is CR only                            PCRE_NEWLINE_CR
-    constexpr auto rx_newlinecrlf      = Crow::Flagset::value('R');  // Line break is CRLF only                          PCRE_NEWLINE_CRLF
-    constexpr auto rx_newlinelf        = Crow::Flagset::value('L');  // Line break is LF only                            PCRE_NEWLINE_LF
-    constexpr auto rx_noautocapture    = Crow::Flagset::value('c');  // No automatic captures                            PCRE_NO_AUTO_CAPTURE
-    constexpr auto rx_nostartoptimize  = Crow::Flagset::value('O');  // No startup optimization                          PCRE_NO_START_OPTIMIZE
-    constexpr auto rx_notbol           = Crow::Flagset::value('B');  // Start of text is not a line break                PCRE_NOTBOL
-    constexpr auto rx_notempty         = Crow::Flagset::value('z');  // Do not match an empty string                     PCRE_NOTEMPTY
-    constexpr auto rx_notemptyatstart  = Crow::Flagset::value('Z');  // Match an empty string only at the start          PCRE_NOTEMPTY_ATSTART
-    constexpr auto rx_noteol           = Crow::Flagset::value('E');  // End of text is not a line break                  PCRE_NOTEOL
-    constexpr auto rx_noutfcheck       = Crow::Flagset::value('U');  // Skip UTF validity checks                         PCRE_NO_UTF{8,16,32}_CHECK
-    constexpr auto rx_optimize         = Crow::Flagset::value('o');  // Take extra effort to optimize the regex          PCRE_STUDY_JIT_COMPILE
-    constexpr auto rx_partialhard      = Crow::Flagset::value('P');  // Hard partial matching (prefer over full match)   PCRE_PARTIAL_HARD
-    constexpr auto rx_partialsoft      = Crow::Flagset::value('p');  // Soft partial matching (only if no full match)    PCRE_PARTIAL_SOFT
-    constexpr auto rx_prefershort      = Crow::Flagset::value('S');  // Non-greedy quantifiers, or shorter DFA matches   PCRE_UNGREEDY,PCRE_DFA_SHORTEST
-    constexpr auto rx_ucp              = Crow::Flagset::value('u');  // Use Unicode properties in escape charsets        PCRE_UCP
+    constexpr auto rx_caseless         = Flagset::value('i');  // Case insensitive matching                        PCRE_CASELESS
+    constexpr auto rx_dfa              = Flagset::value('D');  // Use the alternative DFA algorithm                pcre_dfa_exec()
+    constexpr auto rx_dollarnewline    = Flagset::value('d');  // $ may match line break at end                    ~PCRE_DOLLAR_ENDONLY
+    constexpr auto rx_dotinline        = Flagset::value('l');  // . does not match newlines                        ~PCRE_DOTALL
+    constexpr auto rx_extended         = Flagset::value('x');  // Free-form mode (ignore whitespace and comments)  PCRE_EXTENDED
+    constexpr auto rx_firstline        = Flagset::value('f');  // Must match in first line                         PCRE_FIRSTLINE
+    constexpr auto rx_multiline        = Flagset::value('m');  // Multiline mode (^ and $ match BOL/EOL)           PCRE_MULTILINE
+    constexpr auto rx_newlineanycrlf   = Flagset::value('A');  // Line break is any of CR, LF, CRLF                PCRE_NEWLINE_ANYCRLF
+    constexpr auto rx_newlinecr        = Flagset::value('C');  // Line break is CR only                            PCRE_NEWLINE_CR
+    constexpr auto rx_newlinecrlf      = Flagset::value('R');  // Line break is CRLF only                          PCRE_NEWLINE_CRLF
+    constexpr auto rx_newlinelf        = Flagset::value('L');  // Line break is LF only                            PCRE_NEWLINE_LF
+    constexpr auto rx_noautocapture    = Flagset::value('c');  // No automatic captures                            PCRE_NO_AUTO_CAPTURE
+    constexpr auto rx_nostartoptimize  = Flagset::value('O');  // No startup optimization                          PCRE_NO_START_OPTIMIZE
+    constexpr auto rx_notbol           = Flagset::value('B');  // Start of text is not a line break                PCRE_NOTBOL
+    constexpr auto rx_notempty         = Flagset::value('z');  // Do not match an empty string                     PCRE_NOTEMPTY
+    constexpr auto rx_notemptyatstart  = Flagset::value('Z');  // Match an empty string only at the start          PCRE_NOTEMPTY_ATSTART
+    constexpr auto rx_noteol           = Flagset::value('E');  // End of text is not a line break                  PCRE_NOTEOL
+    constexpr auto rx_noutfcheck       = Flagset::value('U');  // Skip UTF validity checks                         PCRE_NO_UTF{8,16,32}_CHECK
+    constexpr auto rx_optimize         = Flagset::value('o');  // Take extra effort to optimize the regex          PCRE_STUDY_JIT_COMPILE
+    constexpr auto rx_partialhard      = Flagset::value('P');  // Hard partial matching (prefer over full match)   PCRE_PARTIAL_HARD
+    constexpr auto rx_partialsoft      = Flagset::value('p');  // Soft partial matching (only if no full match)    PCRE_PARTIAL_SOFT
+    constexpr auto rx_prefershort      = Flagset::value('S');  // Non-greedy quantifiers, or shorter DFA matches   PCRE_UNGREEDY,PCRE_DFA_SHORTEST
+    constexpr auto rx_ucp              = Flagset::value('u');  // Use Unicode properties in escape charsets        PCRE_UCP
 
     // Exceptions
 
@@ -445,7 +445,7 @@ namespace Unicorn {
     template <typename CX>
     class BasicRegex:
     public UnicornDetail::RegexHelper<BasicRegex<CX>, BasicMatch<CX>, CX>,
-    public Crow::LessThanComparable<BasicRegex<CX>>,
+    public LessThanComparable<BasicRegex<CX>>,
     private UnicornDetail::RegexInfo<typename UnicornDetail::CharType<CX>::type> {
     private:
         using subject_iterator = UnicornDetail::SubjectIterator<CX>;
@@ -455,11 +455,11 @@ namespace Unicorn {
         using string_type = basic_string<char_type>;
         using match_type = BasicMatch<CX>;
         using match_iterator = BasicMatchIterator<CX>;
-        using match_range = Crow::Irange<match_iterator>;
+        using match_range = Irange<match_iterator>;
         using split_iterator = BasicSplitIterator<CX>;
-        using split_range = Crow::Irange<split_iterator>;
+        using split_range = Irange<split_iterator>;
         BasicRegex() { init_regex(*this, {}, {}, is_utf); }
-        explicit BasicRegex(const string_type& pattern, Crow::Flagset flags = {})
+        explicit BasicRegex(const string_type& pattern, Flagset flags = {})
             { init_regex(*this, pattern, flags, is_utf); }
         size_t count(const string_type& text) const;
         bool empty() const noexcept { return this->pat.empty(); }
@@ -473,7 +473,7 @@ namespace Unicorn {
         size_t named(const string_type& name) const noexcept
             { return UnicornDetail::named_group(this->ref, name); }
         string_type pattern() const { return this->pat; }
-        Crow::Flagset flags() const noexcept { return this->fset; }
+        Flagset flags() const noexcept { return this->fset; }
         split_range split(const string_type& text) const
             { return {{*this, text}, {}}; }
         void swap(BasicRegex& r) noexcept { swap_info(r); }
@@ -514,13 +514,13 @@ namespace Unicorn {
     }
 
     template <typename C>
-    BasicRegex<C> regex(const basic_string<C>& pattern, Crow::Flagset flags = {}) {
+    BasicRegex<C> regex(const basic_string<C>& pattern, Flagset flags = {}) {
         return BasicRegex<C>(pattern, flags);
     }
 
     template <typename C>
-    BasicRegex<C> regex(const C* pattern, Crow::Flagset flags = {}) {
-        return BasicRegex<C>(Crow::cstr(pattern), flags);
+    BasicRegex<C> regex(const C* pattern, Flagset flags = {}) {
+        return BasicRegex<C>(cstr(pattern), flags);
     }
 
     template <typename CX>
@@ -541,10 +541,10 @@ namespace Unicorn {
         BasicRegexFormat() = default;
         BasicRegexFormat(const regex_type& pattern, const string_type& format):
             fmt(format), reg(pattern), seq() { parse(); }
-        BasicRegexFormat(const string_type& pattern, const string_type& format, Crow::Flagset flags = {}):
+        BasicRegexFormat(const string_type& pattern, const string_type& format, Flagset flags = {}):
             BasicRegexFormat(regex_type(pattern, flags), format) {}
         string_type operator()(const string_type& text, size_t n = npos) const { return format(text, n); }
-        Crow::Flagset flags() const noexcept { return reg.flags(); }
+        Flagset flags() const noexcept { return reg.flags(); }
         string_type extract(const string_type& text, size_t n = npos) const { return apply(text, n, false); }
         string_type format() const { return fmt; }
         string_type format(const string_type& text, size_t n = npos) const { return apply(text, n, true); }
@@ -687,7 +687,7 @@ namespace Unicorn {
                             : char_to_full_uppercase(*it, buf));
                         str_append(*current, buf, nbuf);
                     } else {
-                        *current += char_flag == lower1 ? Crow::ascii_tolower(*it) : Crow::ascii_toupper(*it);
+                        *current += char_flag == lower1 ? ascii_tolower(*it) : ascii_toupper(*it);
                     }
                     ++it;
                     current->append(fragment, it.offset(), npos);
@@ -735,11 +735,11 @@ namespace Unicorn {
             if (match.count(1))
                 add_tag(0);
             else if (match.count(2))
-                add_tag(Crow::decnum(to_utf8(match[2])));
+                add_tag(decnum(to_utf8(match[2])));
             else if (match.count(3))
-                add_tag(Crow::decnum(to_utf8(match[3])));
+                add_tag(decnum(to_utf8(match[3])));
             else if (match.count(4))
-                add_tag(Crow::decnum(to_utf8(match[4])));
+                add_tag(decnum(to_utf8(match[4])));
             else if (match.count(5))
                 add_named(match[5]);
             else if (match.count(6))
@@ -747,9 +747,9 @@ namespace Unicorn {
             else if (match.count(7))
                 add_tag(- static_cast<int>(match[7][0]));
             else if (match.count(8))
-                add_literal(Crow::hexnum(to_utf8(match[8])));
+                add_literal(hexnum(to_utf8(match[8])));
             else if (match.count(9))
-                add_literal(Crow::hexnum(to_utf8(match[9])));
+                add_literal(hexnum(to_utf8(match[9])));
             else if (match.count(10))
                 add_literal(decode_escape(match[10][0]));
             else if (match.count(11))
@@ -764,25 +764,25 @@ namespace Unicorn {
 
     template <typename C>
     BasicRegexFormat<C> regex_format(const basic_string<C>& pattern,
-            const basic_string<C>& format, Crow::Flagset flags = {}) {
+            const basic_string<C>& format, Flagset flags = {}) {
         return {pattern, format, flags};
     }
 
     template <typename C>
     BasicRegexFormat<C> regex_format(const basic_string<C>& pattern,
-            const C* format, Crow::Flagset flags = {}) {
-        return {pattern, Crow::cstr(format), flags};
+            const C* format, Flagset flags = {}) {
+        return {pattern, cstr(format), flags};
     }
 
     template <typename C>
     BasicRegexFormat<C> regex_format(const C* pattern, const basic_string<C>& format,
-            Crow::Flagset flags = {}) {
-        return {Crow::cstr(pattern), format, flags};
+            Flagset flags = {}) {
+        return {cstr(pattern), format, flags};
     }
 
     template <typename C>
-    BasicRegexFormat<C> regex_format(const C* pattern, const C* format, Crow::Flagset flags = {}) {
-        return {Crow::cstr(pattern), Crow::cstr(format), flags};
+    BasicRegexFormat<C> regex_format(const C* pattern, const C* format, Flagset flags = {}) {
+        return {cstr(pattern), cstr(format), flags};
     }
 
     template <typename CX>
@@ -794,7 +794,7 @@ namespace Unicorn {
 
     template <typename CX>
     class BasicMatchIterator:
-    public Crow::ForwardIterator<BasicMatchIterator<CX>, const BasicMatch<CX>> {
+    public ForwardIterator<BasicMatchIterator<CX>, const BasicMatch<CX>> {
     public:
         using char_type = typename UnicornDetail::CharType<CX>::type;
         using cx_type = CX;
@@ -824,7 +824,7 @@ namespace Unicorn {
 
     template <typename CX>
     class BasicSplitIterator:
-    public Crow::ForwardIterator<BasicSplitIterator<CX>, const basic_string<typename UnicornDetail::CharType<CX>::type>> {
+    public ForwardIterator<BasicSplitIterator<CX>, const basic_string<typename UnicornDetail::CharType<CX>::type>> {
     public:
         using char_type = typename UnicornDetail::CharType<CX>::type;
         using cx_type = CX;
@@ -1014,7 +1014,7 @@ namespace Unicorn {
 
     // Version information
 
-    Crow::Version regex_version() noexcept;
-    Crow::Version regex_unicode_version() noexcept;
+    Version regex_version() noexcept;
+    Version regex_unicode_version() noexcept;
 
 }

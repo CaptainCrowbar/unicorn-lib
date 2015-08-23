@@ -1,36 +1,26 @@
 #pragma once
 
-#include "crow/core.hpp"
+#include "prion/core.hpp"
 #include <map>
 #include <memory>
 #include <stdexcept>
 #include <string>
 
-CROW_LDLIB(unicorn)
-
 namespace Unicorn {
+
+    using namespace Prion;
+    namespace Literals { using namespace Prion::Literals; }
 
     namespace UnicornDetail {
 
         struct UnicodeVersionTable {
-            std::map<Crow::Version, char32_t> table;
+            std::map<Version, char32_t> table;
             UnicodeVersionTable();
         };
 
         const UnicodeVersionTable& unicode_version_table();
 
     }
-
-    // Imports
-
-    using Crow::basic_string;      // std::basic_string
-    using Crow::string;            // std::string
-    using Crow::u8string;          // std::string
-    using Crow::u16string;         // std::u16string
-    using Crow::u32string;         // std::u32string
-    using Crow::wstring;           // std::wstring
-    using Crow::ascii_whitespace;  // "\t\n\v\f\r "
-    using Crow::npos;              // std::string::npos
 
     // Exceptions
 
@@ -69,7 +59,7 @@ namespace Unicorn {
         auto uptr = reinterpret_cast<const utype*>(ptr);
         for (size_t i = 0; i < n; ++i) {
             s += ' ';
-            s += Crow::hex(uptr[i]);
+            s += hex(uptr[i]);
         }
         return s;
     }
@@ -82,7 +72,7 @@ namespace Unicorn {
     template <> struct IsCharacterType<char32_t> { static constexpr bool value = true; };
     template <> struct IsCharacterType<wchar_t> { static constexpr bool value = true; };
 
-    #if defined(CROW_TARGET_UNIX)
+    #if defined(PRI_TARGET_UNIX)
         using NativeCharacter = char;
     #else
         #define UNICORN_NATIVE_WCHAR 1
@@ -108,7 +98,7 @@ namespace Unicorn {
 
     // Version information
 
-    Crow::Version unicorn_version() noexcept;
-    Crow::Version unicode_version() noexcept;
+    Version unicorn_version() noexcept;
+    Version unicode_version() noexcept;
 
 }

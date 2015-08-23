@@ -1,17 +1,16 @@
-#include "crow/unit-test.hpp"
 #include "unicorn/core.hpp"
 #include "unicorn/file.hpp"
 #include "unicorn/utf.hpp"
+#include "prion/unit-test.hpp"
 #include <algorithm>
 #include <fstream>
 #include <string>
 #include <utility>
 
 using namespace std::literals;
-using namespace Crow;
 using namespace Unicorn;
 
-#if defined(CROW_TARGET_UNIX)
+#if defined(PRI_TARGET_UNIX)
     #define SLASH "/"
 #else
     #define SLASH "\\\\"
@@ -28,7 +27,7 @@ namespace {
 
     void check_file_name_operations() {
 
-        #if defined(CROW_TARGET_UNIX)
+        #if defined(PRI_TARGET_UNIX)
 
             TEST(! file_is_absolute(""s));
             TEST(file_is_absolute("/"s));
@@ -471,7 +470,7 @@ namespace {
         TRY(p32 = split_path(U".hello"s));     TEST_EQUAL(p32.first, U"");        TEST_EQUAL(p32.second, U".hello");
         TRY(p32 = split_file(U".hello"s));     TEST_EQUAL(p32.first, U".hello");  TEST_EQUAL(p32.second, U"");
 
-        #if defined(CROW_TARGET_UNIX)
+        #if defined(PRI_TARGET_UNIX)
 
             TRY(p8 = split_path("/hello.txt"s));                     TEST_EQUAL(p8.first, "/");            TEST_EQUAL(p8.second, "hello.txt");
             TRY(p8 = split_path("/hello.txt"s, true));               TEST_EQUAL(p8.first, "/");            TEST_EQUAL(p8.second, "hello.txt");
@@ -745,7 +744,7 @@ namespace {
         TEST(! file_is_directory("Makefile"s));
         TEST(! file_is_directory(""s));
         TEST(! file_is_directory("no such file"s));
-        #if defined(CROW_TARGET_UNIX)
+        #if defined(PRI_TARGET_UNIX)
             TEST(file_is_directory("/"s));
         #else
             TEST(file_is_directory("C:\\"s));
@@ -756,7 +755,7 @@ namespace {
         TEST(! file_is_hidden("unicorn"s));
         TEST(! file_is_hidden("Makefile"s));
         TEST(! file_is_hidden("no such file"s));
-        #if defined(CROW_TARGET_UNIX)
+        #if defined(PRI_TARGET_UNIX)
             TEST(! file_is_hidden("/"s));
         #else
             TEST(! file_is_hidden("C:\\"s));
@@ -767,7 +766,7 @@ namespace {
         TEST(! file_is_symlink("unicorn"s));
         TEST(! file_is_symlink("Makefile"s));
         TEST(! file_is_symlink("no such file"s));
-        #if defined(CROW_TARGET_UNIX)
+        #if defined(PRI_TARGET_UNIX)
             TEST(! file_is_symlink("/"s));
         #else
             TEST(! file_is_symlink("C:\\"s));
@@ -837,14 +836,14 @@ namespace {
         auto dir = directory(d1);
         f1 = file_path(d1, "hello");
         f2 = file_path(d1, "world");
-        TRY(std::copy(CROW_BOUNDS(dir), overwrite(vec)));
+        TRY(std::copy(PRI_BOUNDS(dir), overwrite(vec)));
         TEST_EQUAL(vec.size(), 0);
         TEST_EQUAL(Test::format_range(vec), "[]");
         TRY(make_directory(d1));
         TEST(file_exists(d1));
         TEST(file_is_directory(d1));
         TRY(dir = directory(d1));
-        TRY(std::copy(CROW_BOUNDS(dir), overwrite(vec)));
+        TRY(std::copy(PRI_BOUNDS(dir), overwrite(vec)));
         TEST_EQUAL(vec.size(), 0);
         TEST_EQUAL(Test::format_range(vec), "[]");
         TRY(touch(f1));
@@ -853,17 +852,17 @@ namespace {
         TEST(file_exists(f2));
         TEST_THROW(make_directory(f1), FileError);
         TRY(dir = directory(d1));
-        TRY(std::copy(CROW_BOUNDS(dir), overwrite(vec)));
+        TRY(std::copy(PRI_BOUNDS(dir), overwrite(vec)));
         TEST_EQUAL(vec.size(), 2);
         std::sort(vec.begin(), vec.end());
         TEST_EQUAL(Test::format_range(vec), normalize_file("[hello,world]"s));
         TRY(dir = directory(d1, dir_dotdot));
-        TRY(std::copy(CROW_BOUNDS(dir), overwrite(vec)));
+        TRY(std::copy(PRI_BOUNDS(dir), overwrite(vec)));
         TEST_EQUAL(vec.size(), 4);
         std::sort(vec.begin(), vec.end());
         TEST_EQUAL(Test::format_range(vec), normalize_file("[.,..,hello,world]"s));
         TRY(dir = directory(d1, dir_fullname));
-        TRY(std::copy(CROW_BOUNDS(dir), overwrite(vec)));
+        TRY(std::copy(PRI_BOUNDS(dir), overwrite(vec)));
         TEST_EQUAL(vec.size(), 2);
         std::sort(vec.begin(), vec.end());
         TEST_EQUAL(Test::format_range(vec), normalize_file("[__test_dir_1" SLASH "hello,__test_dir_1" SLASH "world]"s));
@@ -876,7 +875,7 @@ namespace {
         TEST(! file_exists(f1));
         TEST(! file_exists(f2));
         TRY(dir = directory(d1));
-        TRY(std::copy(CROW_BOUNDS(dir), overwrite(vec)));
+        TRY(std::copy(PRI_BOUNDS(dir), overwrite(vec)));
         TEST_EQUAL(vec.size(), 0);
         TEST_EQUAL(Test::format_range(vec), "[]");
 
@@ -899,7 +898,7 @@ namespace {
         TEST(! file_is_directory(u"Makefile"s));
         TEST(! file_is_directory(u""s));
         TEST(! file_is_directory(u"no such file"s));
-        #if defined(CROW_TARGET_UNIX)
+        #if defined(PRI_TARGET_UNIX)
             TEST(file_is_directory(u"/"s));
         #else
             TEST(file_is_directory(u"C:\\"s));
@@ -910,7 +909,7 @@ namespace {
         TEST(! file_is_hidden(u"unicorn"s));
         TEST(! file_is_hidden(u"Makefile"s));
         TEST(! file_is_hidden(u"no such file"s));
-        #if defined(CROW_TARGET_UNIX)
+        #if defined(PRI_TARGET_UNIX)
             TEST(! file_is_hidden(u"/"s));
         #else
             TEST(! file_is_hidden(u"C:\\"s));
@@ -921,7 +920,7 @@ namespace {
         TEST(! file_is_symlink(u"unicorn"s));
         TEST(! file_is_symlink(u"Makefile"s));
         TEST(! file_is_symlink(u"no such file"s));
-        #if defined(CROW_TARGET_UNIX)
+        #if defined(PRI_TARGET_UNIX)
             TEST(! file_is_symlink(u"/"s));
         #else
             TEST(! file_is_symlink(u"C:\\"s));
@@ -991,14 +990,14 @@ namespace {
         auto dir = directory(d1);
         f1 = file_path(d1, u"hello");
         f2 = file_path(d1, u"world");
-        TRY(std::copy(CROW_BOUNDS(dir), overwrite(vec)));
+        TRY(std::copy(PRI_BOUNDS(dir), overwrite(vec)));
         TEST_EQUAL(vec.size(), 0);
         TEST_EQUAL(Test::format_range(vec), "[]");
         TRY(make_directory(d1));
         TEST(file_exists(d1));
         TEST(file_is_directory(d1));
         TRY(dir = directory(d1));
-        TRY(std::copy(CROW_BOUNDS(dir), overwrite(vec)));
+        TRY(std::copy(PRI_BOUNDS(dir), overwrite(vec)));
         TEST_EQUAL(vec.size(), 0);
         TEST_EQUAL(Test::format_range(vec), "[]");
         TRY(touch(f1));
@@ -1007,17 +1006,17 @@ namespace {
         TEST(file_exists(f2));
         TEST_THROW(make_directory(f1), FileError);
         TRY(dir = directory(d1));
-        TRY(std::copy(CROW_BOUNDS(dir), overwrite(vec)));
+        TRY(std::copy(PRI_BOUNDS(dir), overwrite(vec)));
         TEST_EQUAL(vec.size(), 2);
         std::sort(vec.begin(), vec.end());
         TEST_EQUAL(Test::format_range(vec), normalize_file("[hello,world]"s));
         TRY(dir = directory(d1, dir_dotdot));
-        TRY(std::copy(CROW_BOUNDS(dir), overwrite(vec)));
+        TRY(std::copy(PRI_BOUNDS(dir), overwrite(vec)));
         TEST_EQUAL(vec.size(), 4);
         std::sort(vec.begin(), vec.end());
         TEST_EQUAL(Test::format_range(vec), normalize_file("[.,..,hello,world]"s));
         TRY(dir = directory(d1, dir_fullname));
-        TRY(std::copy(CROW_BOUNDS(dir), overwrite(vec)));
+        TRY(std::copy(PRI_BOUNDS(dir), overwrite(vec)));
         TEST_EQUAL(vec.size(), 2);
         std::sort(vec.begin(), vec.end());
         TEST_EQUAL(Test::format_range(vec), normalize_file("[__test_dir_1" SLASH "hello,__test_dir_1" SLASH "world]"s));
@@ -1030,7 +1029,7 @@ namespace {
         TEST(! file_exists(f1));
         TEST(! file_exists(f2));
         TRY(dir = directory(d1));
-        TRY(std::copy(CROW_BOUNDS(dir), overwrite(vec)));
+        TRY(std::copy(PRI_BOUNDS(dir), overwrite(vec)));
         TEST_EQUAL(vec.size(), 0);
         TEST_EQUAL(Test::format_range(vec), "[]");
 
@@ -1053,7 +1052,7 @@ namespace {
         TEST(! file_is_directory(U"Makefile"s));
         TEST(! file_is_directory(U""s));
         TEST(! file_is_directory(U"no such file"s));
-        #if defined(CROW_TARGET_UNIX)
+        #if defined(PRI_TARGET_UNIX)
             TEST(file_is_directory(U"/"s));
         #else
             TEST(file_is_directory(U"C:\\"s));
@@ -1064,7 +1063,7 @@ namespace {
         TEST(! file_is_hidden(U"unicorn"s));
         TEST(! file_is_hidden(U"Makefile"s));
         TEST(! file_is_hidden(U"no such file"s));
-        #if defined(CROW_TARGET_UNIX)
+        #if defined(PRI_TARGET_UNIX)
             TEST(! file_is_hidden(U"/"s));
         #else
             TEST(! file_is_hidden(U"C:\\"s));
@@ -1075,7 +1074,7 @@ namespace {
         TEST(! file_is_symlink(U"unicorn"s));
         TEST(! file_is_symlink(U"Makefile"s));
         TEST(! file_is_symlink(U"no such file"s));
-        #if defined(CROW_TARGET_UNIX)
+        #if defined(PRI_TARGET_UNIX)
             TEST(! file_is_symlink(U"/"s));
         #else
             TEST(! file_is_symlink(U"C:\\"s));
@@ -1145,14 +1144,14 @@ namespace {
         auto dir = directory(d1);
         f1 = file_path(d1, U"hello");
         f2 = file_path(d1, U"world");
-        TRY(std::copy(CROW_BOUNDS(dir), overwrite(vec)));
+        TRY(std::copy(PRI_BOUNDS(dir), overwrite(vec)));
         TEST_EQUAL(vec.size(), 0);
         TEST_EQUAL(Test::format_range(vec), "[]");
         TRY(make_directory(d1));
         TEST(file_exists(d1));
         TEST(file_is_directory(d1));
         TRY(dir = directory(d1));
-        TRY(std::copy(CROW_BOUNDS(dir), overwrite(vec)));
+        TRY(std::copy(PRI_BOUNDS(dir), overwrite(vec)));
         TEST_EQUAL(vec.size(), 0);
         TEST_EQUAL(Test::format_range(vec), "[]");
         TRY(touch(f1));
@@ -1161,17 +1160,17 @@ namespace {
         TEST(file_exists(f2));
         TEST_THROW(make_directory(f1), FileError);
         TRY(dir = directory(d1));
-        TRY(std::copy(CROW_BOUNDS(dir), overwrite(vec)));
+        TRY(std::copy(PRI_BOUNDS(dir), overwrite(vec)));
         TEST_EQUAL(vec.size(), 2);
         std::sort(vec.begin(), vec.end());
         TEST_EQUAL(Test::format_range(vec), normalize_file("[hello,world]"s));
         TRY(dir = directory(d1, dir_dotdot));
-        TRY(std::copy(CROW_BOUNDS(dir), overwrite(vec)));
+        TRY(std::copy(PRI_BOUNDS(dir), overwrite(vec)));
         TEST_EQUAL(vec.size(), 4);
         std::sort(vec.begin(), vec.end());
         TEST_EQUAL(Test::format_range(vec), normalize_file("[.,..,hello,world]"s));
         TRY(dir = directory(d1, dir_fullname));
-        TRY(std::copy(CROW_BOUNDS(dir), overwrite(vec)));
+        TRY(std::copy(PRI_BOUNDS(dir), overwrite(vec)));
         TEST_EQUAL(vec.size(), 2);
         std::sort(vec.begin(), vec.end());
         TEST_EQUAL(Test::format_range(vec), normalize_file("[__test_dir_1" SLASH "hello,__test_dir_1" SLASH "world]"s));
@@ -1184,7 +1183,7 @@ namespace {
         TEST(! file_exists(f1));
         TEST(! file_exists(f2));
         TRY(dir = directory(d1));
-        TRY(std::copy(CROW_BOUNDS(dir), overwrite(vec)));
+        TRY(std::copy(PRI_BOUNDS(dir), overwrite(vec)));
         TEST_EQUAL(vec.size(), 0);
         TEST_EQUAL(Test::format_range(vec), "[]");
 

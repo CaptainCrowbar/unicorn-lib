@@ -116,7 +116,7 @@ namespace Unicorn {
         template <typename P, typename T>
         typename P::ccptr_type make_ccptr(const T* t) {
             auto p = reinterpret_cast<typename P::ccptr_type>(t);
-            CROW_STATIC_ASSERT(sizeof(*p) == sizeof(T));
+            PRI_STATIC_ASSERT(sizeof(*p) == sizeof(T));
             return p;
         }
 
@@ -173,7 +173,7 @@ namespace Unicorn {
 
             template <typename C>
             void init_regex_impl(RegexInfo<C>& r, const typename PcreTraits<C>::string_type& pattern,
-                    Crow::Flagset flags, bool unicode) {
+                    Flagset flags, bool unicode) {
                 using pcre_traits = PcreTraits<C>;
                 flags.allow(rx_caseless | rx_dfa | rx_dollarnewline | rx_dotinline | rx_extended
                     | rx_firstline | rx_multiline | rx_newlineanycrlf | rx_newlinecr | rx_newlinecrlf
@@ -184,7 +184,7 @@ namespace Unicorn {
                 flags.exclusive(rx_notempty | rx_notemptyatstart, "regex");
                 flags.exclusive(rx_partialhard | rx_partialsoft, "regex");
                 if (! unicode && flags.get(rx_noutfcheck | rx_ucp))
-                    throw Crow::FlagError(flags, "byte regex");
+                    throw FlagError(flags, "byte regex");
                 r.pat = pattern;
                 r.fset = flags;
                 int cflags = PCRE_EXTRA, sflags = 0;
@@ -237,7 +237,7 @@ namespace Unicorn {
                     if (error == 21)
                         throw std::bad_alloc();
                     else if (unicode)
-                        throw RegexError(to_utf8(pattern), error, Crow::cstr(errptr));
+                        throw RegexError(to_utf8(pattern), error, cstr(errptr));
                 }
                 auto ex = pcre_traits::study(pc, sflags, &errptr);
                 r.ref = {pc, ex};
@@ -253,7 +253,7 @@ namespace Unicorn {
                 m.text = &text;
             }
 
-            int match_flags(Crow::Flagset fset) {
+            int match_flags(Flagset fset) {
                 int mask = 0;
                 if (fset.get(rx_partialhard))
                     mask |= PCRE_PARTIAL_HARD;
@@ -323,7 +323,7 @@ namespace Unicorn {
             { return count_groups_impl<char>(p.pcre()); }
         size_t named_group(const PcreRef<char>& p, const string& name) noexcept
             { return named_group_impl(p.pcre(), name); }
-        void init_regex(RegexInfo<char>& r, const string& pattern, Crow::Flagset flags, bool unicode)
+        void init_regex(RegexInfo<char>& r, const string& pattern, Flagset flags, bool unicode)
             { init_regex_impl(r, pattern, flags, unicode); }
         void init_match(MatchInfo<char>& m, const RegexInfo<char>& r, const string& text)
             { init_match_impl(m, r, text); }
@@ -337,7 +337,7 @@ namespace Unicorn {
                 { return count_groups_impl<char16_t>(p.pcre()); }
             size_t named_group(const PcreRef<char16_t>& p, const u16string& name) noexcept
                 { return named_group_impl(p.pcre(), name); }
-            void init_regex(RegexInfo<char16_t>& r, const u16string& pattern, Crow::Flagset flags, bool unicode)
+            void init_regex(RegexInfo<char16_t>& r, const u16string& pattern, Flagset flags, bool unicode)
                 { init_regex_impl(r, pattern, flags, unicode); }
             void init_match(MatchInfo<char16_t>& m, const RegexInfo<char16_t>& r, const u16string& text)
                 { init_match_impl(m, r, text); }
@@ -352,7 +352,7 @@ namespace Unicorn {
                 { return count_groups_impl<char32_t>(p.pcre()); }
             size_t named_group(const PcreRef<char32_t>& p, const u32string& name) noexcept
                 { return named_group_impl(p.pcre(), name); }
-            void init_regex(RegexInfo<char32_t>& r, const u32string& pattern, Crow::Flagset flags, bool unicode)
+            void init_regex(RegexInfo<char32_t>& r, const u32string& pattern, Flagset flags, bool unicode)
                 { init_regex_impl(r, pattern, flags, unicode); }
             void init_match(MatchInfo<char32_t>& m, const RegexInfo<char32_t>& r, const u32string& text)
                 { init_match_impl(m, r, text); }
@@ -367,7 +367,7 @@ namespace Unicorn {
                 { return count_groups_impl<wchar_t>(p.pcre()); }
             size_t named_group(const PcreRef<wchar_t>& p, const wstring& name) noexcept
                 { return named_group_impl(p.pcre(), name); }
-            void init_regex(RegexInfo<wchar_t>& r, const wstring& pattern, Crow::Flagset flags, bool unicode)
+            void init_regex(RegexInfo<wchar_t>& r, const wstring& pattern, Flagset flags, bool unicode)
                 { init_regex_impl(r, pattern, flags, unicode); }
             void init_match(MatchInfo<wchar_t>& m, const RegexInfo<wchar_t>& r, const wstring& text)
                 { init_match_impl(m, r, text); }
@@ -381,7 +381,7 @@ namespace Unicorn {
 
     u8string RegexError::assemble(const u8string& pattern, int error, u8string message) {
         u8string s = "Regex error ";
-        s += Crow::dec(error);
+        s += dec(error);
         if (message.empty())
             message = translate(error);
         if (! message.empty()) {
@@ -400,7 +400,7 @@ namespace Unicorn {
         if (error >= 0)
             return {};
         int index = - error - 1;
-        if (index < static_cast<int>(Crow::range_count(error_table)))
+        if (index < static_cast<int>(range_count(error_table)))
             return error_table[index];
         else
             return {};
@@ -410,9 +410,9 @@ namespace Unicorn {
 
     namespace {
 
-        Crow::Version check_regex_unicode_version() noexcept {
+        Version check_regex_unicode_version() noexcept {
             static const Regex unassigned("\\p{Cn}");
-            Crow::Version v {0,0,0};
+            Version v {0,0,0};
             auto& table = UnicornDetail::unicode_version_table().table;
             for (auto& entry: table) {
                 if (unassigned.match(str_chars<char>(entry.second)))
@@ -424,12 +424,12 @@ namespace Unicorn {
 
     }
 
-    Crow::Version regex_version() noexcept {
+    Version regex_version() noexcept {
         return {PCRE_MAJOR, PCRE_MINOR, 0};
     }
 
-    Crow::Version regex_unicode_version() noexcept {
-        static const Crow::Version v = check_regex_unicode_version();
+    Version regex_unicode_version() noexcept {
+        static const Version v = check_regex_unicode_version();
         return v;
     }
 

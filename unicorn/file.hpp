@@ -16,7 +16,7 @@ namespace Unicorn {
 
     // System dependencies
 
-    #if defined(CROW_TARGET_UNIX)
+    #if defined(PRI_TARGET_UNIX)
         constexpr char file_delimiter = '/';
     #else
         constexpr char file_delimiter = '\\';
@@ -84,11 +84,11 @@ namespace Unicorn {
 
         template <typename C>
         basic_string<C> normalize_file(const basic_string<C>& file) {
-            #if defined(CROW_TARGET_UNIX)
+            #if defined(PRI_TARGET_UNIX)
                 return file;
             #else
                 auto nfile = file;
-                std::replace(CROW_BOUNDS(nfile), C('/'), C('\\'));
+                std::replace(PRI_BOUNDS(nfile), C('/'), C('\\'));
                 return nfile;
             #endif
         }
@@ -107,7 +107,7 @@ namespace Unicorn {
         bool native_file_is_absolute(const u8string& file);
         bool native_file_is_root(const u8string& file);
 
-        #if defined(CROW_TARGET_NATIVE_WINDOWS)
+        #if defined(PRI_TARGET_NATIVE_WINDOWS)
             bool native_file_is_drive_absolute(const u8string& file);
             bool native_file_is_drive_relative(const u8string& file);
         #endif
@@ -121,7 +121,7 @@ namespace Unicorn {
 
     template <typename C>
     bool file_is_drive_absolute(const basic_string<C>& file) {
-        #if defined(CROW_TARGET_UNIX)
+        #if defined(PRI_TARGET_UNIX)
             (void)file;
             return false;
         #else
@@ -131,7 +131,7 @@ namespace Unicorn {
 
     template <typename C>
     bool file_is_drive_relative(const basic_string<C>& file) {
-        #if defined(CROW_TARGET_UNIX)
+        #if defined(PRI_TARGET_UNIX)
             (void)file;
             return false;
         #else
@@ -156,7 +156,7 @@ namespace Unicorn {
 
     template <typename C>
     basic_string<C> file_path(const C* file) {
-        return UnicornDetail::normalize_file(Crow::cstr(file));
+        return UnicornDetail::normalize_file(cstr(file));
     }
 
     template <typename C, typename... Args>
@@ -175,29 +175,29 @@ namespace Unicorn {
 
     template <typename C, typename... Args>
     basic_string<C> file_path(const basic_string<C>& file1, const C* file2, Args... args) {
-        return file_path(file1, Crow::cstr(file2), args...);
+        return file_path(file1, cstr(file2), args...);
     }
 
     template <typename C, typename... Args>
     basic_string<C> file_path(const C* file1, const basic_string<C>& file2, Args... args) {
-        return file_path(Crow::cstr(file1), file2, args...);
+        return file_path(cstr(file1), file2, args...);
     }
 
     template <typename C, typename... Args>
     basic_string<C> file_path(const C* file1, const C* file2, Args... args) {
-        return file_path(Crow::cstr(file1), Crow::cstr(file2), args...);
+        return file_path(cstr(file1), cstr(file2), args...);
     }
 
     template <typename C>
     std::pair<basic_string<C>, basic_string<C>> split_path(const basic_string<C>& file, bool keep = false) {
         auto nfile = UnicornDetail::normalize_file(file);
         auto cut = nfile.find_last_of(static_cast<C>(file_delimiter));
-        #if defined(CROW_TARGET_NATIVE_WINDOWS)
+        #if defined(PRI_TARGET_NATIVE_WINDOWS)
             if (cut == 2 && file[1] == C(':')
-                    && char_is_ascii(file[0]) && Crow::ascii_isalpha(static_cast<char>(file[0])))
+                    && char_is_ascii(file[0]) && ascii_isalpha(static_cast<char>(file[0])))
                 return {nfile.substr(0, 3), nfile.substr(3, npos)};
             else if (cut == npos && file[1] == C(':')
-                    && char_is_ascii(file[0]) && Crow::ascii_isalpha(static_cast<char>(file[0])))
+                    && char_is_ascii(file[0]) && ascii_isalpha(static_cast<char>(file[0])))
                 return {nfile.substr(0, 2), nfile.substr(2, npos)};
         #endif
         if (cut == npos)
@@ -212,8 +212,8 @@ namespace Unicorn {
     std::pair<basic_string<C>, basic_string<C>> split_file(const basic_string<C>& file) {
         auto nfile = UnicornDetail::normalize_file(file);
         auto cut = nfile.find_last_of(static_cast<C>(file_delimiter));
-        #if defined(CROW_TARGET_NATIVE_WINDOWS)
-            if (cut == npos && char_is_ascii(file[0]) && Crow::ascii_isalpha(static_cast<char>(file[0]))
+        #if defined(PRI_TARGET_NATIVE_WINDOWS)
+            if (cut == npos && char_is_ascii(file[0]) && ascii_isalpha(static_cast<char>(file[0]))
                     && file[1] == C(':'))
                 cut = 1;
         #endif
@@ -324,17 +324,17 @@ namespace Unicorn {
 
     }
 
-    constexpr auto dir_dotdot    = Crow::Flagset::value('d');  // Include . and ..
-    constexpr auto dir_fullname  = Crow::Flagset::value('f');  // Full file names
-    constexpr auto dir_hidden    = Crow::Flagset::value('h');  // Include hidden files
-    constexpr auto dir_unicode   = Crow::Flagset::value('u');  // Valid Unicode names only
+    constexpr auto dir_dotdot    = Flagset::value('d');  // Include . and ..
+    constexpr auto dir_fullname  = Flagset::value('f');  // Full file names
+    constexpr auto dir_hidden    = Flagset::value('h');  // Include hidden files
+    constexpr auto dir_unicode   = Flagset::value('u');  // Valid Unicode names only
 
     template <typename C>
     class DirectoryIterator:
-    public Crow::InputIterator<DirectoryIterator<C>, const basic_string<C>> {
+    public InputIterator<DirectoryIterator<C>, const basic_string<C>> {
     public:
         DirectoryIterator() = default;
-        explicit DirectoryIterator(const basic_string<C>& dir, Crow::Flagset flags = {});
+        explicit DirectoryIterator(const basic_string<C>& dir, Flagset flags = {});
         const basic_string<C>& operator*() const noexcept { return current; }
         DirectoryIterator& operator++();
         friend bool operator==(const DirectoryIterator& lhs, const DirectoryIterator& rhs) noexcept
@@ -343,11 +343,11 @@ namespace Unicorn {
         UnicornDetail::DirectoryHelper impl;
         basic_string<C> prefix;
         basic_string<C> current;
-        Crow::Flagset fset;
+        Flagset fset;
     };
 
     template <typename C>
-    DirectoryIterator<C>::DirectoryIterator(const basic_string<C>& dir, Crow::Flagset flags) {
+    DirectoryIterator<C>::DirectoryIterator(const basic_string<C>& dir, Flagset flags) {
         auto normdir = UnicornDetail::normalize_file(dir);
         NativeString natdir;
         recode_filename(normdir, natdir);
@@ -388,7 +388,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    Crow::Irange<DirectoryIterator<C>> directory(const basic_string<C>& dir, Crow::Flagset flags = {}) {
+    Irange<DirectoryIterator<C>> directory(const basic_string<C>& dir, Flagset flags = {}) {
         return {DirectoryIterator<C>(dir, flags), DirectoryIterator<C>()};
     }
 

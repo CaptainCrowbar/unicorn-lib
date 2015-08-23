@@ -67,11 +67,11 @@ encodings, as well as other conveniences such as normalization of line breaks.</
 <li><code>using FileReader::<strong>value_type</strong> = u8string</code></li>
 <li><code>FileReader::<strong>FileReader</strong>()</code></li>
 <li><code>template &lt;typename C&gt; explicit FileReader::<strong>FileReader</strong>(const basic_string&lt;C&gt;&amp; file)</code></li>
-<li><code>template &lt;typename C&gt; FileReader::<strong>FileReader</strong>(const basic_string&lt;C&gt;&amp; file, Crow::Flagset flags)</code></li>
-<li><code>template &lt;typename C1, typename C2&gt; FileReader::<strong>FileReader</strong>(const basic_string&lt;C1&gt;&amp; file, Crow::Flagset flags, const basic_string&lt;C2&gt;&amp; enc)</code></li>
-<li><code>template &lt;typename C&gt; FileReader::<strong>FileReader</strong>(const basic_string&lt;C&gt;&amp; file, Crow::Flagset flags, uint32_t enc)</code></li>
-<li><code>template &lt;typename C1, typename C2, typename C3&gt; FileReader::<strong>FileReader</strong>(const basic_string&lt;C1&gt;&amp; file, Crow::Flagset flags, const basic_string&lt;C2&gt;&amp; enc, const basic_string&lt;C3&gt;&amp; eol)</code></li>
-<li><code>template &lt;typename C1, typename C2&gt; FileReader::<strong>FileReader</strong>(const basic_string&lt;C1&gt;&amp; file, Crow::Flagset flags, uint32_t enc, const basic_string&lt;C2&gt;&amp; eol)</code></li>
+<li><code>template &lt;typename C&gt; FileReader::<strong>FileReader</strong>(const basic_string&lt;C&gt;&amp; file, Flagset flags)</code></li>
+<li><code>template &lt;typename C1, typename C2&gt; FileReader::<strong>FileReader</strong>(const basic_string&lt;C1&gt;&amp; file, Flagset flags, const basic_string&lt;C2&gt;&amp; enc)</code></li>
+<li><code>template &lt;typename C&gt; FileReader::<strong>FileReader</strong>(const basic_string&lt;C&gt;&amp; file, Flagset flags, uint32_t enc)</code></li>
+<li><code>template &lt;typename C1, typename C2, typename C3&gt; FileReader::<strong>FileReader</strong>(const basic_string&lt;C1&gt;&amp; file, Flagset flags, const basic_string&lt;C2&gt;&amp; enc, const basic_string&lt;C3&gt;&amp; eol)</code></li>
+<li><code>template &lt;typename C1, typename C2&gt; FileReader::<strong>FileReader</strong>(const basic_string&lt;C1&gt;&amp; file, Flagset flags, uint32_t enc, const basic_string&lt;C2&gt;&amp; eol)</code></li>
 <li><code>size_t FileReader::<strong>line</strong>() const noexcept</code></li>
 <li><code>[standard input iterator operations]</code></li>
 </ul></li>
@@ -148,11 +148,11 @@ encodings, as well as other conveniences such as normalization of line breaks.</
 <p>TODO</p>
 
 <ul>
-<li><code>template &lt;typename C&gt; Crow::Irange&lt;FileReader&gt; <strong>read_lines</strong>(const basic_string&lt;C&gt;&amp; file, Crow::Flagset flags = {})</code></li>
-<li><code>template &lt;typename C1, typename C2&gt; Crow::Irange&lt;FileReader&gt; <strong>read_lines</strong>(const basic_string&lt;C1&gt;&amp; file, Crow::Flagset flags, const basic_string&lt;C2&gt;&amp; enc)</code></li>
-<li><code>template &lt;typename C&gt; Crow::Irange&lt;FileReader&gt; <strong>read_lines</strong>(const basic_string&lt;C&gt;&amp; file, Crow::Flagset flags, uint32_t enc)</code></li>
-<li><code>template &lt;typename C1, typename C2, typename C3&gt; Crow::Irange&lt;FileReader&gt; <strong>read_lines</strong>(const basic_string&lt;C1&gt;&amp; file, Crow::Flagset flags, const basic_string&lt;C2&gt;&amp; enc, const basic_string&lt;C3&gt;&amp; eol)</code></li>
-<li><code>template &lt;typename C1, typename C2&gt; Crow::Irange&lt;FileReader&gt; <strong>read_lines</strong>(const basic_string&lt;C1&gt;&amp; file, Crow::Flagset flags, uint32_t enc, const basic_string&lt;C2&gt;&amp; eol)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;FileReader&gt; <strong>read_lines</strong>(const basic_string&lt;C&gt;&amp; file, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C1, typename C2&gt; Irange&lt;FileReader&gt; <strong>read_lines</strong>(const basic_string&lt;C1&gt;&amp; file, Flagset flags, const basic_string&lt;C2&gt;&amp; enc)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;FileReader&gt; <strong>read_lines</strong>(const basic_string&lt;C&gt;&amp; file, Flagset flags, uint32_t enc)</code></li>
+<li><code>template &lt;typename C1, typename C2, typename C3&gt; Irange&lt;FileReader&gt; <strong>read_lines</strong>(const basic_string&lt;C1&gt;&amp; file, Flagset flags, const basic_string&lt;C2&gt;&amp; enc, const basic_string&lt;C3&gt;&amp; eol)</code></li>
+<li><code>template &lt;typename C1, typename C2&gt; Irange&lt;FileReader&gt; <strong>read_lines</strong>(const basic_string&lt;C1&gt;&amp; file, Flagset flags, uint32_t enc, const basic_string&lt;C2&gt;&amp; eol)</code></li>
 </ul>
 
 <p>TODO</p>
@@ -170,9 +170,9 @@ encodings, as well as other conveniences such as normalization of line breaks.</
 <li><code>using FileWriter::<strong>value_type</strong> = void</code></li>
 <li><code>FileWriter::<strong>FileWriter</strong>()</code></li>
 <li><code>template &lt;typename C&gt; explicit FileWriter::<strong>FileWriter</strong>(const basic_string&lt;C&gt;&amp; file)</code></li>
-<li><code>template &lt;typename C&gt; FileWriter::<strong>FileWriter</strong>(const basic_string&lt;C&gt;&amp; file, Crow::Flagset flags)</code></li>
-<li><code>template &lt;typename C1, typename C2&gt; FileWriter::<strong>FileWriter</strong>(const basic_string&lt;C1&gt;&amp; file, Crow::Flagset flags, const basic_string&lt;C2&gt;&amp; enc)</code></li>
-<li><code>template &lt;typename C&gt; FileWriter::<strong>FileWriter</strong>(const basic_string&lt;C&gt;&amp; file, Crow::Flagset flags, uint32_t enc)</code></li>
+<li><code>template &lt;typename C&gt; FileWriter::<strong>FileWriter</strong>(const basic_string&lt;C&gt;&amp; file, Flagset flags)</code></li>
+<li><code>template &lt;typename C1, typename C2&gt; FileWriter::<strong>FileWriter</strong>(const basic_string&lt;C1&gt;&amp; file, Flagset flags, const basic_string&lt;C2&gt;&amp; enc)</code></li>
+<li><code>template &lt;typename C&gt; FileWriter::<strong>FileWriter</strong>(const basic_string&lt;C&gt;&amp; file, Flagset flags, uint32_t enc)</code></li>
 <li><code>void FileWriter::<strong>flush</strong>()</code></li>
 <li><code>[standard output iterator operations]</code></li>
 </ul></li>

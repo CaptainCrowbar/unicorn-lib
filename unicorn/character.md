@@ -268,7 +268,7 @@ library).
 
 ## Character names ##
 
-* `u8string char_name(char32_t c, Crow::Flagset flags = {})`
+* `u8string char_name(char32_t c, Flagset flags = {})`
 
 Bitmask               | Letter  | Description
 -------               | ------  | -----------

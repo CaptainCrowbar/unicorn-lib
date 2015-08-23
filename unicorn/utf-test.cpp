@@ -1,11 +1,10 @@
-#include "crow/unit-test.hpp"
 #include "unicorn/core.hpp"
 #include "unicorn/character.hpp"
 #include "unicorn/utf.hpp"
+#include "prion/unit-test.hpp"
 #include <string>
 
 using namespace std::literals;
-using namespace Crow;
 using namespace Unicorn;
 
 namespace {
@@ -33,13 +32,13 @@ namespace {
     const wstring zw {0, 0, 0};
 
     #if defined(UNICORN_WCHAR_UTF16)
-        const wstring cw(CROW_BOUNDS(c16));
-        const wstring xw(CROW_BOUNDS(x16));
-        const wstring yw(CROW_BOUNDS(y16));
+        const wstring cw(PRI_BOUNDS(c16));
+        const wstring xw(PRI_BOUNDS(x16));
+        const wstring yw(PRI_BOUNDS(y16));
     #else
-        const wstring cw(CROW_BOUNDS(c32));
-        const wstring xw(CROW_BOUNDS(x32));
-        const wstring yw(CROW_BOUNDS(y32));
+        const wstring cw(PRI_BOUNDS(c32));
+        const wstring xw(PRI_BOUNDS(x32));
+        const wstring yw(PRI_BOUNDS(y32));
     #endif
 
     void check_basic_conversions() {
@@ -224,21 +223,21 @@ namespace {
         Utf32Range r32;
         WcharRange rw;
 
-        TRY(r8 = utf_range(a8));    TRY(std::copy(CROW_BOUNDS(r8), overwrite(s32)));   TEST_EQUAL(s32, U"");
-        TRY(r8 = utf_range(b8));    TRY(std::copy(CROW_BOUNDS(r8), overwrite(s32)));   TEST_EQUAL(s32, U"Hello");
-        TRY(r8 = utf_range(c8));    TRY(std::copy(CROW_BOUNDS(r8), overwrite(s32)));   TEST_EQUAL(s32, c32);
-        TRY(r8 = utf_range(z8));    TRY(std::copy(CROW_BOUNDS(r8), overwrite(s32)));   TEST_EQUAL(s32, z32);
-        TRY(r16 = utf_range(a16));  TRY(std::copy(CROW_BOUNDS(r16), overwrite(s32)));  TEST_EQUAL(s32, U"");
-        TRY(r16 = utf_range(b16));  TRY(std::copy(CROW_BOUNDS(r16), overwrite(s32)));  TEST_EQUAL(s32, U"Hello");
-        TRY(r16 = utf_range(c16));  TRY(std::copy(CROW_BOUNDS(r16), overwrite(s32)));  TEST_EQUAL(s32, c32);
-        TRY(r16 = utf_range(z16));  TRY(std::copy(CROW_BOUNDS(r16), overwrite(s32)));  TEST_EQUAL(s32, z32);
-        TRY(r32 = utf_range(a32));  TRY(std::copy(CROW_BOUNDS(r32), overwrite(s32)));  TEST_EQUAL(s32, U"");
-        TRY(r32 = utf_range(b32));  TRY(std::copy(CROW_BOUNDS(r32), overwrite(s32)));  TEST_EQUAL(s32, U"Hello");
-        TRY(r32 = utf_range(c32));  TRY(std::copy(CROW_BOUNDS(r32), overwrite(s32)));  TEST_EQUAL(s32, c32);
-        TRY(r32 = utf_range(z32));  TRY(std::copy(CROW_BOUNDS(r32), overwrite(s32)));  TEST_EQUAL(s32, z32);
-        TRY(rw = utf_range(aw));    TRY(std::copy(CROW_BOUNDS(rw), overwrite(s32)));   TEST_EQUAL(s32, U"");
-        TRY(rw = utf_range(bw));    TRY(std::copy(CROW_BOUNDS(rw), overwrite(s32)));   TEST_EQUAL(s32, U"Hello");
-        TRY(rw = utf_range(cw));    TRY(std::copy(CROW_BOUNDS(rw), overwrite(s32)));   TEST_EQUAL(s32, c32);
+        TRY(r8 = utf_range(a8));    TRY(std::copy(PRI_BOUNDS(r8), overwrite(s32)));   TEST_EQUAL(s32, U"");
+        TRY(r8 = utf_range(b8));    TRY(std::copy(PRI_BOUNDS(r8), overwrite(s32)));   TEST_EQUAL(s32, U"Hello");
+        TRY(r8 = utf_range(c8));    TRY(std::copy(PRI_BOUNDS(r8), overwrite(s32)));   TEST_EQUAL(s32, c32);
+        TRY(r8 = utf_range(z8));    TRY(std::copy(PRI_BOUNDS(r8), overwrite(s32)));   TEST_EQUAL(s32, z32);
+        TRY(r16 = utf_range(a16));  TRY(std::copy(PRI_BOUNDS(r16), overwrite(s32)));  TEST_EQUAL(s32, U"");
+        TRY(r16 = utf_range(b16));  TRY(std::copy(PRI_BOUNDS(r16), overwrite(s32)));  TEST_EQUAL(s32, U"Hello");
+        TRY(r16 = utf_range(c16));  TRY(std::copy(PRI_BOUNDS(r16), overwrite(s32)));  TEST_EQUAL(s32, c32);
+        TRY(r16 = utf_range(z16));  TRY(std::copy(PRI_BOUNDS(r16), overwrite(s32)));  TEST_EQUAL(s32, z32);
+        TRY(r32 = utf_range(a32));  TRY(std::copy(PRI_BOUNDS(r32), overwrite(s32)));  TEST_EQUAL(s32, U"");
+        TRY(r32 = utf_range(b32));  TRY(std::copy(PRI_BOUNDS(r32), overwrite(s32)));  TEST_EQUAL(s32, U"Hello");
+        TRY(r32 = utf_range(c32));  TRY(std::copy(PRI_BOUNDS(r32), overwrite(s32)));  TEST_EQUAL(s32, c32);
+        TRY(r32 = utf_range(z32));  TRY(std::copy(PRI_BOUNDS(r32), overwrite(s32)));  TEST_EQUAL(s32, z32);
+        TRY(rw = utf_range(aw));    TRY(std::copy(PRI_BOUNDS(rw), overwrite(s32)));   TEST_EQUAL(s32, U"");
+        TRY(rw = utf_range(bw));    TRY(std::copy(PRI_BOUNDS(rw), overwrite(s32)));   TEST_EQUAL(s32, U"Hello");
+        TRY(rw = utf_range(cw));    TRY(std::copy(PRI_BOUNDS(rw), overwrite(s32)));   TEST_EQUAL(s32, c32);
 
         TRY(std::copy(utf_begin(a8), utf_end(a8), overwrite(s32)));    TEST_EQUAL(s32, U"");
         TRY(std::copy(utf_begin(b8), utf_end(b8), overwrite(s32)));    TEST_EQUAL(s32, U"Hello");
@@ -284,21 +283,21 @@ namespace {
         TRY(std::copy(utf_iterator(c32, 3), utf_iterator(c32, 5), overwrite(s32)));  TEST_EQUAL(s32, (u32string{0x10302,0x10fffd}));
         TRY(std::copy(utf_iterator(c32, 4), utf_iterator(c32, 5), overwrite(s32)));  TEST_EQUAL(s32, (u32string{0x10fffd}));
 
-        s8.clear();   TRY(std::copy(CROW_BOUNDS(a32), utf_writer(s8)));   TEST_EQUAL(s8, "");
-        s8.clear();   TRY(std::copy(CROW_BOUNDS(b32), utf_writer(s8)));   TEST_EQUAL(s8, "Hello");
-        s8.clear();   TRY(std::copy(CROW_BOUNDS(c32), utf_writer(s8)));   TEST_EQUAL(s8, c8);
-        s8.clear();   TRY(std::copy(CROW_BOUNDS(z32), utf_writer(s8)));   TEST_EQUAL(s8, z8);
-        s16.clear();  TRY(std::copy(CROW_BOUNDS(a32), utf_writer(s16)));  TEST_EQUAL(s16, u"");
-        s16.clear();  TRY(std::copy(CROW_BOUNDS(b32), utf_writer(s16)));  TEST_EQUAL(s16, u"Hello");
-        s16.clear();  TRY(std::copy(CROW_BOUNDS(c32), utf_writer(s16)));  TEST_EQUAL(s16, c16);
-        s16.clear();  TRY(std::copy(CROW_BOUNDS(z32), utf_writer(s16)));  TEST_EQUAL(s16, z16);
-        s32.clear();  TRY(std::copy(CROW_BOUNDS(a32), utf_writer(s32)));  TEST_EQUAL(s32, U"");
-        s32.clear();  TRY(std::copy(CROW_BOUNDS(b32), utf_writer(s32)));  TEST_EQUAL(s32, U"Hello");
-        s32.clear();  TRY(std::copy(CROW_BOUNDS(c32), utf_writer(s32)));  TEST_EQUAL(s32, c32);
-        s32.clear();  TRY(std::copy(CROW_BOUNDS(z32), utf_writer(s32)));  TEST_EQUAL(s32, z32);
-        sw.clear();   TRY(std::copy(CROW_BOUNDS(a32), utf_writer(sw)));   TEST_EQUAL(sw, L"");
-        sw.clear();   TRY(std::copy(CROW_BOUNDS(b32), utf_writer(sw)));   TEST_EQUAL(sw, L"Hello");
-        sw.clear();   TRY(std::copy(CROW_BOUNDS(c32), utf_writer(sw)));   TEST_EQUAL(sw, cw);
+        s8.clear();   TRY(std::copy(PRI_BOUNDS(a32), utf_writer(s8)));   TEST_EQUAL(s8, "");
+        s8.clear();   TRY(std::copy(PRI_BOUNDS(b32), utf_writer(s8)));   TEST_EQUAL(s8, "Hello");
+        s8.clear();   TRY(std::copy(PRI_BOUNDS(c32), utf_writer(s8)));   TEST_EQUAL(s8, c8);
+        s8.clear();   TRY(std::copy(PRI_BOUNDS(z32), utf_writer(s8)));   TEST_EQUAL(s8, z8);
+        s16.clear();  TRY(std::copy(PRI_BOUNDS(a32), utf_writer(s16)));  TEST_EQUAL(s16, u"");
+        s16.clear();  TRY(std::copy(PRI_BOUNDS(b32), utf_writer(s16)));  TEST_EQUAL(s16, u"Hello");
+        s16.clear();  TRY(std::copy(PRI_BOUNDS(c32), utf_writer(s16)));  TEST_EQUAL(s16, c16);
+        s16.clear();  TRY(std::copy(PRI_BOUNDS(z32), utf_writer(s16)));  TEST_EQUAL(s16, z16);
+        s32.clear();  TRY(std::copy(PRI_BOUNDS(a32), utf_writer(s32)));  TEST_EQUAL(s32, U"");
+        s32.clear();  TRY(std::copy(PRI_BOUNDS(b32), utf_writer(s32)));  TEST_EQUAL(s32, U"Hello");
+        s32.clear();  TRY(std::copy(PRI_BOUNDS(c32), utf_writer(s32)));  TEST_EQUAL(s32, c32);
+        s32.clear();  TRY(std::copy(PRI_BOUNDS(z32), utf_writer(s32)));  TEST_EQUAL(s32, z32);
+        sw.clear();   TRY(std::copy(PRI_BOUNDS(a32), utf_writer(sw)));   TEST_EQUAL(sw, L"");
+        sw.clear();   TRY(std::copy(PRI_BOUNDS(b32), utf_writer(sw)));   TEST_EQUAL(sw, L"Hello");
+        sw.clear();   TRY(std::copy(PRI_BOUNDS(c32), utf_writer(sw)));   TEST_EQUAL(sw, cw);
 
     }
 
@@ -596,15 +595,15 @@ namespace {
         Utf32Range r32;
         WcharRange rw;
 
-        TRY(r8 = utf_range(x8, err_replace));    TRY(std::copy(CROW_BOUNDS(r8), overwrite(s32)));   TEST_EQUAL(s32, y32);
-        TRY(r16 = utf_range(x16, err_replace));  TRY(std::copy(CROW_BOUNDS(r16), overwrite(s32)));  TEST_EQUAL(s32, y32);
-        TRY(r32 = utf_range(x32, err_replace));  TRY(std::copy(CROW_BOUNDS(r32), overwrite(s32)));  TEST_EQUAL(s32, y32);
-        TRY(rw = utf_range(xw, err_replace));    TRY(std::copy(CROW_BOUNDS(rw), overwrite(s32)));   TEST_EQUAL(s32, y32);
+        TRY(r8 = utf_range(x8, err_replace));    TRY(std::copy(PRI_BOUNDS(r8), overwrite(s32)));   TEST_EQUAL(s32, y32);
+        TRY(r16 = utf_range(x16, err_replace));  TRY(std::copy(PRI_BOUNDS(r16), overwrite(s32)));  TEST_EQUAL(s32, y32);
+        TRY(r32 = utf_range(x32, err_replace));  TRY(std::copy(PRI_BOUNDS(r32), overwrite(s32)));  TEST_EQUAL(s32, y32);
+        TRY(rw = utf_range(xw, err_replace));    TRY(std::copy(PRI_BOUNDS(rw), overwrite(s32)));   TEST_EQUAL(s32, y32);
 
-        s8.clear();   TRY(std::copy(CROW_BOUNDS(x32), utf_writer(s8, err_replace)));   TEST_EQUAL(s8, y8);
-        s16.clear();  TRY(std::copy(CROW_BOUNDS(x32), utf_writer(s16, err_replace)));  TEST_EQUAL(s16, y16);
-        s32.clear();  TRY(std::copy(CROW_BOUNDS(x32), utf_writer(s32, err_replace)));  TEST_EQUAL(s32, y32);
-        sw.clear();   TRY(std::copy(CROW_BOUNDS(x32), utf_writer(sw, err_replace)));   TEST_EQUAL(sw, yw);
+        s8.clear();   TRY(std::copy(PRI_BOUNDS(x32), utf_writer(s8, err_replace)));   TEST_EQUAL(s8, y8);
+        s16.clear();  TRY(std::copy(PRI_BOUNDS(x32), utf_writer(s16, err_replace)));  TEST_EQUAL(s16, y16);
+        s32.clear();  TRY(std::copy(PRI_BOUNDS(x32), utf_writer(s32, err_replace)));  TEST_EQUAL(s32, y32);
+        sw.clear();   TRY(std::copy(PRI_BOUNDS(x32), utf_writer(sw, err_replace)));   TEST_EQUAL(sw, yw);
 
         TRY(i8 = utf_begin(x8, err_throw));
         TRY(std::advance(i8, 4));
@@ -623,13 +622,13 @@ namespace {
         TEST_THROW_EQUAL(i32 = utf_iterator(x32, 5, err_throw), EncodingError, "Encoding error (UTF-32); offset 5; hex 0000d800");
 
         s8.clear();
-        TEST_THROW_EQUAL(std::copy(CROW_BOUNDS(x32), utf_writer(s8, err_throw)),
+        TEST_THROW_EQUAL(std::copy(PRI_BOUNDS(x32), utf_writer(s8, err_throw)),
             EncodingError, "Encoding error (UTF-8); offset 5; hex 0000d800");
         s16.clear();
-        TEST_THROW_EQUAL(std::copy(CROW_BOUNDS(x32), utf_writer(s16, err_throw)),
+        TEST_THROW_EQUAL(std::copy(PRI_BOUNDS(x32), utf_writer(s16, err_throw)),
             EncodingError, "Encoding error (UTF-16); offset 5; hex 0000d800");
         s32.clear();
-        TEST_THROW_EQUAL(std::copy(CROW_BOUNDS(x32), utf_writer(s32, err_throw)),
+        TEST_THROW_EQUAL(std::copy(PRI_BOUNDS(x32), utf_writer(s32, err_throw)),
             EncodingError, "Encoding error (UTF-32); offset 5; hex 0000d800");
 
         // Check that error handling for UTF-8 matches the Unicode recommendation

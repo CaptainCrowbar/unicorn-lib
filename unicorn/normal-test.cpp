@@ -1,17 +1,19 @@
-#include "crow/unit-test.hpp"
 #include "unicorn/core.hpp"
 #include "unicorn/character.hpp"
 #include "unicorn/normal.hpp"
 #include "unicorn/string.hpp"
 #include "unicorn/ucd-tables.hpp"
+#include "crow/thread.hpp"
+#include "prion/unit-test.hpp"
 #include <algorithm>
 #include <cstdlib>
 #include <memory>
 #include <string>
 #include <utility>
 
+PRI_LDLIB(crow)
+
 using namespace std::literals;
-using namespace Crow;
 using namespace Unicorn;
 
 #define NORM_TEST(type, mode, index, expect) \
@@ -112,7 +114,7 @@ TEST_MODULE(unicorn, normal) {
         for (char32_t u = row.key; u <= row.value; ++u)
             identity_chars.push_back(u);
 
-    #if defined(CROW_TARGET_CYGWIN)
+    #if defined(PRI_TARGET_CYGWIN)
 
         // Multithreaded version seems to have problems on Cygwin
         do_main_tests(0, norm_tests);
@@ -120,17 +122,17 @@ TEST_MODULE(unicorn, normal) {
 
     #else
 
-        auto thread_count = cpu_threads();
+        auto thread_count = Crow::cpu_threads();
         auto per_thread = norm_tests / thread_count + 1;
-        std::vector<Thread> threads;
+        std::vector<Crow::Thread> threads;
         for (size_t base = 0; base < norm_tests; base += per_thread)
-            threads.push_back(Thread([=] { do_main_tests(base, base + per_thread); }));
+            threads.push_back(Crow::Thread([=] { do_main_tests(base, base + per_thread); }));
         for (auto& t: threads)
             t.wait();
         threads.clear();
         per_thread = identity_chars.size() / thread_count + 1;
         for (size_t base = 0; base < identity_chars.size(); base += per_thread)
-            threads.push_back(Thread([=] { do_identity_tests(identity_chars, base, base + per_thread); }));
+            threads.push_back(Crow::Thread([=] { do_identity_tests(identity_chars, base, base + per_thread); }));
         for (auto& t: threads)
             t.wait();
 

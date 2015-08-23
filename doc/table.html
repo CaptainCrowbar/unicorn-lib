@@ -76,7 +76,8 @@ Maxwell Smart     86      0x0056  +86.0000
 defined in <code>[unicorn/format](format.html)</code>. Each formatting element should be
 of the form <code>&quot;${1...}&quot;</code>, with flags appropriate to the type of data expected
 in that column. Columns for which no format has been set, or whose format is
-an empty string, will be written using <code>Crow::to_str()</code>.</p>
+an empty string, will be written using <code>to_str()</code> (from Prion, but called
+without namespace qualification, so user defined overloads will be found).</p>
 
 <ul>
 <li><code>template &lt;typename T&gt; Table&amp; Table::<strong>operator&lt;&lt;</strong>(const T&amp; t)</code></li>
@@ -130,7 +131,7 @@ default) instead of repeating their contents.</p>
 <tbody>
 <tr>
 	<td style="text-align:left;"><code>Table::flags</code></td>
-	<td style="text-align:left;"><code>Crow::Flagset</code></td>
+	<td style="text-align:left;"><code>Flagset</code></td>
 	<td style="text-align:left;"><code>grapheme_units</code></td>
 	<td style="text-align:left;">How string lengths are measured</td>
 </tr>

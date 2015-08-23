@@ -31,14 +31,14 @@ substring if this is needed.
     * `using GraphemeIterator::utf_iterator = UtfIterator<C>`
     * `using GraphemeIterator::difference_type = ptrdiff_t`
     * `using GraphemeIterator::iterator_category = std::forward_iterator_tag`
-    * `using GraphemeIterator::value_type = Crow::Irange<utf_iterator>`
+    * `using GraphemeIterator::value_type = Irange<utf_iterator>`
     * `using GraphemeIterator::pointer = const value_type*`
     * `using GraphemeIterator::reference = const value_type&`
     * `GraphemeIterator::GraphemeIterator()`
     * `[standard iterator operations]`
-* `template <typename C> Crow::Irange<GraphemeIterator<C>> grapheme_range(const UtfIterator<C>& i, const UtfIterator<C>& j)`
-* `template <typename C> Crow::Irange<GraphemeIterator<C>> grapheme_range(const Crow::Irange<UtfIterator<C>>& source)`
-* `template <typename C> Crow::Irange<GraphemeIterator<C>> grapheme_range(const basic_string<C>& source)`
+* `template <typename C> Irange<GraphemeIterator<C>> grapheme_range(const UtfIterator<C>& i, const UtfIterator<C>& j)`
+* `template <typename C> Irange<GraphemeIterator<C>> grapheme_range(const Irange<UtfIterator<C>>& source)`
+* `template <typename C> Irange<GraphemeIterator<C>> grapheme_range(const basic_string<C>& source)`
 
 A forward iterator over the grapheme clusters (user-perceived characters) in a
 Unicode string.
@@ -49,14 +49,14 @@ Unicode string.
     * `using WordIterator::utf_iterator = UtfIterator<C>`
     * `using WordIterator::difference_type = ptrdiff_t`
     * `using WordIterator::iterator_category = std::forward_iterator_tag`
-    * `using WordIterator::value_type = Crow::Irange<utf_iterator>`
+    * `using WordIterator::value_type = Irange<utf_iterator>`
     * `using WordIterator::pointer = const value_type*`
     * `using WordIterator::reference = const value_type&`
     * `WordIterator::WordIterator()`
     * `[standard iterator operations]`
-* `template <typename C> Crow::Irange<WordIterator<C>> word_range(const UtfIterator<C>& i, const UtfIterator<C>& j, Crow::Flagset flags = {})`
-* `template <typename C> Crow::Irange<WordIterator<C>> word_range(const Crow::Irange<UtfIterator<C>>& source, Crow::Flagset flags = {})`
-* `template <typename C> Crow::Irange<WordIterator<C>> word_range(const basic_string<C>& source, Crow::Flagset flags = {})`
+* `template <typename C> Irange<WordIterator<C>> word_range(const UtfIterator<C>& i, const UtfIterator<C>& j, Flagset flags = {})`
+* `template <typename C> Irange<WordIterator<C>> word_range(const Irange<UtfIterator<C>>& source, Flagset flags = {})`
+* `template <typename C> Irange<WordIterator<C>> word_range(const basic_string<C>& source, Flagset flags = {})`
 
 A forward iterator over the words in a Unicode string. By default, all
 segments identified as "words" by the UAX29 algorithm are returned; this will
@@ -76,14 +76,14 @@ Bitmask          | Letter  | Description
     * `using SentenceIterator::utf_iterator = UtfIterator<C>`
     * `using SentenceIterator::difference_type = ptrdiff_t`
     * `using SentenceIterator::iterator_category = std::forward_iterator_tag`
-    * `using SentenceIterator::value_type = Crow::Irange<utf_iterator>`
+    * `using SentenceIterator::value_type = Irange<utf_iterator>`
     * `using SentenceIterator::pointer = const value_type*`
     * `using SentenceIterator::reference = const value_type&`
     * `SentenceIterator::SentenceIterator()`
     * `[standard iterator operations]`
-* `template <typename C> Crow::Irange<SentenceIterator<C>> sentence_range(const UtfIterator<C>& i, const UtfIterator<C>& j)`
-* `template <typename C> Crow::Irange<SentenceIterator<C>> sentence_range(const Crow::Irange<UtfIterator<C>>& source)`
-* `template <typename C> Crow::Irange<SentenceIterator<C>> sentence_range(const basic_string<C>& source)`
+* `template <typename C> Irange<SentenceIterator<C>> sentence_range(const UtfIterator<C>& i, const UtfIterator<C>& j)`
+* `template <typename C> Irange<SentenceIterator<C>> sentence_range(const Irange<UtfIterator<C>>& source)`
+* `template <typename C> Irange<SentenceIterator<C>> sentence_range(const basic_string<C>& source)`
 
 A forward iterator over the sentences in a Unicode string (as defined by
 UAX29).
@@ -94,14 +94,14 @@ UAX29).
     * `using LineIterator::utf_iterator = UtfIterator<C>`
     * `using LineIterator::difference_type = ptrdiff_t`
     * `using LineIterator::iterator_category = std::forward_iterator_tag`
-    * `using LineIterator::value_type = Crow::Irange<utf_iterator>`
+    * `using LineIterator::value_type = Irange<utf_iterator>`
     * `using LineIterator::pointer = const value_type*`
     * `using LineIterator::reference = const value_type&`
     * `LineIterator::LineIterator()`
     * `[standard iterator operations]`
-* `template <typename C> Crow::Irange<LineIterator<C>> line_range(const UtfIterator<C>& i, const UtfIterator<C>& j, Crow::Flagset flags = {})`
-* `template <typename C> Crow::Irange<LineIterator<C>> line_range(const Crow::Irange<UtfIterator<C>>& source, Crow::Flagset flags = {})`
-* `template <typename C> Crow::Irange<LineIterator<C>> line_range(const basic_string<C>& source, Crow::Flagset flags = {})`
+* `template <typename C> Irange<LineIterator<C>> line_range(const UtfIterator<C>& i, const UtfIterator<C>& j, Flagset flags = {})`
+* `template <typename C> Irange<LineIterator<C>> line_range(const Irange<UtfIterator<C>>& source, Flagset flags = {})`
+* `template <typename C> Irange<LineIterator<C>> line_range(const basic_string<C>& source, Flagset flags = {})`
 
 A forward iterator over the lines in a Unicode string. Lines are ended by any
 character with the line break property. Multiple consecutive line break
@@ -121,14 +121,14 @@ Bitmask         | Letter  | Description
     * `using ParagraphIterator::utf_iterator = UtfIterator<C>`
     * `using ParagraphIterator::difference_type = ptrdiff_t`
     * `using ParagraphIterator::iterator_category = std::forward_iterator_tag`
-    * `using ParagraphIterator::value_type = Crow::Irange<utf_iterator>`
+    * `using ParagraphIterator::value_type = Irange<utf_iterator>`
     * `using ParagraphIterator::pointer = const value_type*`
     * `using ParagraphIterator::reference = const value_type&`
     * `ParagraphIterator::ParagraphIterator()`
     * `[standard iterator operations]`
-* `template <typename C> Crow::Irange<ParagraphIterator<C>> paragraph_range(const UtfIterator<C>& i, const UtfIterator<C>& j, Crow::Flagset flags = {})`
-* `template <typename C> Crow::Irange<ParagraphIterator<C>> paragraph_range(const Crow::Irange<UtfIterator<C>>& source, Crow::Flagset flags = {})`
-* `template <typename C> Crow::Irange<ParagraphIterator<C>> paragraph_range(const basic_string<C>& source, Crow::Flagset flags = {})`
+* `template <typename C> Irange<ParagraphIterator<C>> paragraph_range(const UtfIterator<C>& i, const UtfIterator<C>& j, Flagset flags = {})`
+* `template <typename C> Irange<ParagraphIterator<C>> paragraph_range(const Irange<UtfIterator<C>>& source, Flagset flags = {})`
+* `template <typename C> Irange<ParagraphIterator<C>> paragraph_range(const basic_string<C>& source, Flagset flags = {})`
 
 A forward iterator over the paragraphs in a Unicode string. The flags passed
 to the constructor determine how paragraphs are identified. By default, any

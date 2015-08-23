@@ -272,15 +272,15 @@ of UTF-8 mode.
 * `using BasicRegex::string_type = basic_string<char_type>`
 * `using BasicRegex::match_type = BasicMatch<CX>`
 * `using BasicRegex::match_iterator = BasicMatchIterator<CX>`
-* `using BasicRegex::match_range = Crow::Irange<match_iterator>`
+* `using BasicRegex::match_range = Irange<match_iterator>`
 * `using BasicRegex::split_iterator = BasicSplitIterator<CX>`
-* `using BasicRegex::split_range = Crow::Irange<split_iterator>`
+* `using BasicRegex::split_range = Irange<split_iterator>`
 * `using BasicRegex::utf_iterator = UtfIterator<CX> [not defined if CX is void]`
 
 Member types.
 
 * `BasicRegex::BasicRegex()`
-* `explicit BasicRegex::BasicRegex(const string_type& pattern, Crow::Flagset flags = {})`
+* `explicit BasicRegex::BasicRegex(const string_type& pattern, Flagset flags = {})`
 * `BasicRegex::BasicRegex(const BasicRegex& r)`
 * `BasicRegex::BasicRegex(BasicRegex&& r) noexcept`
 * `BasicRegex::~BasicRegex() noexcept`
@@ -357,7 +357,7 @@ If the regex includes any named captures, this returns the group index
 capture by that name (or if the regex does not use named captures).
 
 * `BasicRegex::string_type BasicRegex::pattern() const`
-* `Crow::Flagset BasicRegex::flags() const noexcept`
+* `Flagset BasicRegex::flags() const noexcept`
 
 These return the construction arguments.
 
@@ -386,8 +386,8 @@ account. If two regexes are semantically the same (i.e. always match or fail
 to match the same text) despite differing slightly in spelling, it is
 unspecified whether or not they will compare equal.
 
-* `template <typename C> BasicRegex<C> regex(const basic_string<C>& pattern, Crow::Flagset flags = {})`
-* `template <typename C> BasicRegex<C> regex(const C* pattern, Crow::Flagset flags = {})`
+* `template <typename C> BasicRegex<C> regex(const basic_string<C>& pattern, Flagset flags = {})`
+* `template <typename C> BasicRegex<C> regex(const C* pattern, Flagset flags = {})`
 
 Convenience functions to easily construct a regex object.
 
@@ -520,7 +520,7 @@ Member types.
 
 * `BasicRegexFormat::BasicRegexFormat()`
 * `BasicRegexFormat::BasicRegexFormat(const regex_type& pattern, const string_type& format)`
-* `BasicRegexFormat::BasicRegexFormat(const string_type& pattern, const string_type& format, Crow::Flagset flags = {})`
+* `BasicRegexFormat::BasicRegexFormat(const string_type& pattern, const string_type& format, Flagset flags = {})`
 * `BasicRegexFormat::BasicRegexFormat(const BasicRegexFormat& f)`
 * `BasicRegexFormat::BasicRegexFormat(BasicRegexFormat&& f) noexcept`
 * `BasicRegexFormat::~BasicRegexFormat() noexcept`
@@ -547,7 +547,7 @@ first `n` matches, discarding the unmatched text between them.
 * `BasicRegexFormat::regex_type BasicRegexFormat::regex() const`
 * `BasicRegexFormat::string_type BasicRegexFormat::format() const`
 * `BasicRegexFormat::string_type BasicRegexFormat::pattern() const`
-* `Crow::Flagset BasicRegexFormat::flags() const noexcept`
+* `Flagset BasicRegexFormat::flags() const noexcept`
 
 These functions query the construction parameters. The `pattern()` and
 `flags()` functions are equivalent to `regex().pattern()` and
@@ -558,10 +558,10 @@ These functions query the construction parameters. The `pattern()` and
 
 Swap two objects.
 
-* `template <typename C> BasicRegexFormat<C> regex_format(const basic_string<C>& pattern, const basic_string<C>& format, Crow::Flagset flags = {})`
-* `template <typename C> BasicRegexFormat<C> regex_format(const basic_string<C>& pattern, const C* format, Crow::Flagset flags = {})`
-* `template <typename C> BasicRegexFormat<C> regex_format(const C* pattern, const basic_string<C>& format, Crow::Flagset flags = {})`
-* `template <typename C> BasicRegexFormat<C> regex_format(const C* pattern, const C* format, Crow::Flagset flags = {})`
+* `template <typename C> BasicRegexFormat<C> regex_format(const basic_string<C>& pattern, const basic_string<C>& format, Flagset flags = {})`
+* `template <typename C> BasicRegexFormat<C> regex_format(const basic_string<C>& pattern, const C* format, Flagset flags = {})`
+* `template <typename C> BasicRegexFormat<C> regex_format(const C* pattern, const basic_string<C>& format, Flagset flags = {})`
+* `template <typename C> BasicRegexFormat<C> regex_format(const C* pattern, const C* format, Flagset flags = {})`
 
 Convenience functions for constructing a regex format object.
 
@@ -659,11 +659,11 @@ original string. (You can get the same effect by enclosing the text in
 
 ## Version information ##
 
-* `Crow::Version regex_version() noexcept`
+* `Version regex_version() noexcept`
 
 Returns the version of PCRE used to build this library.
 
-* `Crow::Version regex_unicode_version() noexcept`
+* `Version regex_unicode_version() noexcept`
 
 Returns the PCRE library's version of Unicode. Because the PCRE library is
 built separately, this is not guaranteed to be the same as the version used by

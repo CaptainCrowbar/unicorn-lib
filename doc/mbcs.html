@@ -44,13 +44,13 @@ specific byte order.</p>
 
 <ul>
 <li><code>template &lt;typename C&gt; void <strong>import_string</strong>(const string&amp; src, basic_string&lt;C&gt;&amp; dst)</code></li>
-<li><code>template &lt;typename C, typename C2&gt; void <strong>import_string</strong>(const string&amp; src, basic_string&lt;C&gt;&amp; dst, const basic_string&lt;C2&gt;&amp; enc, Crow::Flagset flags = {})</code></li>
-<li><code>template &lt;typename C, typename C2&gt; void <strong>import_string</strong>(const string&amp; src, basic_string&lt;C&gt;&amp; dst, const C2* enc, Crow::Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; void <strong>import_string</strong>(const string&amp; src, basic_string&lt;C&gt;&amp; dst, uint32_t enc, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C, typename C2&gt; void <strong>import_string</strong>(const string&amp; src, basic_string&lt;C&gt;&amp; dst, const basic_string&lt;C2&gt;&amp; enc, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C, typename C2&gt; void <strong>import_string</strong>(const string&amp; src, basic_string&lt;C&gt;&amp; dst, const C2* enc, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; void <strong>import_string</strong>(const string&amp; src, basic_string&lt;C&gt;&amp; dst, uint32_t enc, Flagset flags = {})</code></li>
 <li><code>template &lt;typename C&gt; void <strong>export_string</strong>(const basic_string&lt;C&gt;&amp; src, string&amp; dst)</code></li>
-<li><code>template &lt;typename C, typename C2&gt; void <strong>export_string</strong>(const basic_string&lt;C&gt;&amp; src, string&amp; dst, const basic_string&lt;C2&gt;&amp; enc, Crow::Flagset flags = {})</code></li>
-<li><code>template &lt;typename C, typename C2&gt; void <strong>export_string</strong>(const basic_string&lt;C&gt;&amp; src, string&amp; dst, const C2* enc, Crow::Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; void <strong>export_string</strong>(const basic_string&lt;C&gt;&amp; src, string&amp; dst, uint32_t enc, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C, typename C2&gt; void <strong>export_string</strong>(const basic_string&lt;C&gt;&amp; src, string&amp; dst, const basic_string&lt;C2&gt;&amp; enc, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C, typename C2&gt; void <strong>export_string</strong>(const basic_string&lt;C&gt;&amp; src, string&amp; dst, const C2* enc, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; void <strong>export_string</strong>(const basic_string&lt;C&gt;&amp; src, string&amp; dst, uint32_t enc, Flagset flags = {})</code></li>
 </ul>
 
 <p>These functions convert from an external multibyte encoding to Unicode

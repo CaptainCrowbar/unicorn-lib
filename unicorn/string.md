@@ -89,16 +89,16 @@ units). The `grapheme_units` flag can be combined with either of the East
 Asian width options, giving a size based on the width of the base character of
 each grapheme cluster.
 
-* `template <typename C> size_t str_length(const basic_string<C>& str, Crow::Flagset flags = {})`
-* `template <typename C> size_t str_length(const Crow::Irange<UtfIterator<C>>& range, Crow::Flagset flags = {})`
-* `template <typename C> size_t str_length(const UtfIterator<C>& begin, const UtfIterator<C>& end, Crow::Flagset flags = {})`
+* `template <typename C> size_t str_length(const basic_string<C>& str, Flagset flags = {})`
+* `template <typename C> size_t str_length(const Irange<UtfIterator<C>>& range, Flagset flags = {})`
+* `template <typename C> size_t str_length(const UtfIterator<C>& begin, const UtfIterator<C>& end, Flagset flags = {})`
 
 Return the length of the string, measured according to the flags supplied.
 
-* `template <typename C> UtfIterator<C> str_find_index(const basic_string<C>& str, size_t pos, Crow::Flagset flags = {})`
-* `template <typename C> UtfIterator<C> str_find_index(const Crow::Irange<UtfIterator<C>>& range, size_t pos, Crow::Flagset flags = {})`
-* `template <typename C> UtfIterator<C> str_find_index(const UtfIterator<C>& begin, const UtfIterator<C>& end, size_t pos, Crow::Flagset flags = {})`
-* `template <typename C> size_t str_find_offset(basic_string<C>& str, size_t pos, Crow::Flagset flags = {})`
+* `template <typename C> UtfIterator<C> str_find_index(const basic_string<C>& str, size_t pos, Flagset flags = {})`
+* `template <typename C> UtfIterator<C> str_find_index(const Irange<UtfIterator<C>>& range, size_t pos, Flagset flags = {})`
+* `template <typename C> UtfIterator<C> str_find_index(const UtfIterator<C>& begin, const UtfIterator<C>& end, size_t pos, Flagset flags = {})`
+* `template <typename C> size_t str_find_offset(basic_string<C>& str, size_t pos, Flagset flags = {})`
 
 These return an iterator, or an offset in code units, pointing to the
 character at a given position, measured according to the flags supplied. If
@@ -156,10 +156,10 @@ empty.
 
 * `template <typename C> UtfIterator<C> str_find_char(const basic_string<C>& str, char32_t c)`
 * `template <typename C> UtfIterator<C> str_find_char(const UtfIterator<C>& begin, const UtfIterator<C>& end, char32_t c)`
-* `template <typename C> UtfIterator<C> str_find_char(const Crow::Irange<UtfIterator<C>>& range, char32_t c)`
+* `template <typename C> UtfIterator<C> str_find_char(const Irange<UtfIterator<C>>& range, char32_t c)`
 * `template <typename C> UtfIterator<C> str_find_last_char(const basic_string<C>& str, char32_t c)`
 * `template <typename C> UtfIterator<C> str_find_last_char(const UtfIterator<C>& begin, const UtfIterator<C>& end, char32_t c)`
-* `template <typename C> UtfIterator<C> str_find_last_char(const Crow::Irange<UtfIterator<C>>& range, char32_t c)`
+* `template <typename C> UtfIterator<C> str_find_last_char(const Irange<UtfIterator<C>>& range, char32_t c)`
 
 These return an iterator pointing to the first or last occurrence of the
 specified character, or an end iterator if it is not found.
@@ -168,26 +168,26 @@ specified character, or an end iterator if it is not found.
 * `template <typename C> UtfIterator<C> str_find_first_of(const basic_string<C>& str, const C* target)`
 * `template <typename C> UtfIterator<C> str_find_first_of(const UtfIterator<C>& begin, const UtfIterator<C>& end, const basic_string<C>& target)`
 * `template <typename C> UtfIterator<C> str_find_first_of(const UtfIterator<C>& begin, const UtfIterator<C>& end, const C* target)`
-* `template <typename C> UtfIterator<C> str_find_first_of(const Crow::Irange<UtfIterator<C>>& range, const basic_string<C>& target)`
-* `template <typename C> UtfIterator<C> str_find_first_of(const Crow::Irange<UtfIterator<C>>& range, const C* target)`
+* `template <typename C> UtfIterator<C> str_find_first_of(const Irange<UtfIterator<C>>& range, const basic_string<C>& target)`
+* `template <typename C> UtfIterator<C> str_find_first_of(const Irange<UtfIterator<C>>& range, const C* target)`
 * `template <typename C> UtfIterator<C> str_find_first_not_of(const basic_string<C>& str, const basic_string<C>& target)`
 * `template <typename C> UtfIterator<C> str_find_first_not_of(const basic_string<C>& str, const C* target)`
 * `template <typename C> UtfIterator<C> str_find_first_not_of(const UtfIterator<C>& begin, const UtfIterator<C>& end, const basic_string<C>& target)`
 * `template <typename C> UtfIterator<C> str_find_first_not_of(const UtfIterator<C>& begin, const UtfIterator<C>& end, const C* target)`
-* `template <typename C> UtfIterator<C> str_find_first_not_of(const Crow::Irange<UtfIterator<C>>& range, const basic_string<C>& target)`
-* `template <typename C> UtfIterator<C> str_find_first_not_of(const Crow::Irange<UtfIterator<C>>& range, const C* target)`
+* `template <typename C> UtfIterator<C> str_find_first_not_of(const Irange<UtfIterator<C>>& range, const basic_string<C>& target)`
+* `template <typename C> UtfIterator<C> str_find_first_not_of(const Irange<UtfIterator<C>>& range, const C* target)`
 * `template <typename C> UtfIterator<C> str_find_last_of(const basic_string<C>& str, const basic_string<C>& target)`
 * `template <typename C> UtfIterator<C> str_find_last_of(const basic_string<C>& str, const C* target)`
 * `template <typename C> UtfIterator<C> str_find_last_of(const UtfIterator<C>& begin, const UtfIterator<C>& end, const basic_string<C>& target)`
 * `template <typename C> UtfIterator<C> str_find_last_of(const UtfIterator<C>& begin, const UtfIterator<C>& end, const C* target)`
-* `template <typename C> UtfIterator<C> str_find_last_of(const Crow::Irange<UtfIterator<C>>& range, const basic_string<C>& target)`
-* `template <typename C> UtfIterator<C> str_find_last_of(const Crow::Irange<UtfIterator<C>>& range, const C* target)`
+* `template <typename C> UtfIterator<C> str_find_last_of(const Irange<UtfIterator<C>>& range, const basic_string<C>& target)`
+* `template <typename C> UtfIterator<C> str_find_last_of(const Irange<UtfIterator<C>>& range, const C* target)`
 * `template <typename C> UtfIterator<C> str_find_last_not_of(const basic_string<C>& str, const basic_string<C>& target)`
 * `template <typename C> UtfIterator<C> str_find_last_not_of(const basic_string<C>& str, const C* target)`
 * `template <typename C> UtfIterator<C> str_find_last_not_of(const UtfIterator<C>& begin, const UtfIterator<C>& end, const basic_string<C>& target)`
 * `template <typename C> UtfIterator<C> str_find_last_not_of(const UtfIterator<C>& begin, const UtfIterator<C>& end, const C* target)`
-* `template <typename C> UtfIterator<C> str_find_last_not_of(const Crow::Irange<UtfIterator<C>>& range, const basic_string<C>& target)`
-* `template <typename C> UtfIterator<C> str_find_last_not_of(const Crow::Irange<UtfIterator<C>>& range, const C* target)`
+* `template <typename C> UtfIterator<C> str_find_last_not_of(const Irange<UtfIterator<C>>& range, const basic_string<C>& target)`
+* `template <typename C> UtfIterator<C> str_find_last_not_of(const Irange<UtfIterator<C>>& range, const C* target)`
 
 These find the first or last character in their subject range that is in, or
 not in, the target list of characters. They return an end iterator if no
@@ -199,8 +199,8 @@ characters instead of code units.)
 * `template <typename C> UtfIterator<C> str_search(const basic_string<C>& str, const C* target)`
 * `template <typename C> UtfIterator<C> str_search(const UtfIterator<C>& begin, const UtfIterator<C>& end, const basic_string<C>& target)`
 * `template <typename C> UtfIterator<C> str_search(const UtfIterator<C>& begin, const UtfIterator<C>& end, const C* target)`
-* `template <typename C> UtfIterator<C> str_search(const Crow::Irange<UtfIterator<C>>& range, const basic_string<C>& target)`
-* `template <typename C> UtfIterator<C> str_search(const Crow::Irange<UtfIterator<C>>& range, const C* target)`
+* `template <typename C> UtfIterator<C> str_search(const Irange<UtfIterator<C>>& range, const basic_string<C>& target)`
+* `template <typename C> UtfIterator<C> str_search(const Irange<UtfIterator<C>>& range, const C* target)`
 
 Find the first occurrence of the target substring in the subject range,
 returning an iterator pointing to the beginning of the located substring, or
@@ -217,7 +217,7 @@ characters skipped.
 ## String manipulation functions ##
 
 * `template <typename C, typename C2> void str_append(basic_string<C>& str, const basic_string<C2>& suffix)`
-* `template <typename C, typename C2> void str_append(basic_string<C>& str, const Crow::Irange<UtfIterator<C2>>& suffix)`
+* `template <typename C, typename C2> void str_append(basic_string<C>& str, const Irange<UtfIterator<C2>>& suffix)`
 * `template <typename C, typename C2> void str_append(basic_string<C>& str, const UtfIterator<C2>& suffix_begin, const UtfIterator<C2>& suffix_end)`
 * `template <typename C, typename C2> void str_append(basic_string<C>& str, const C2* suffix)`
 * `template <typename C, typename C2> void str_append(basic_string<C>& dst, const C2* ptr, size_t n)`
@@ -227,14 +227,14 @@ characters skipped.
 These append one or more characters to a Unicode string, performing any
 necessary encoding conversions.
 
-* `template <typename C> basic_string<C> str_change(const Crow::Irange<UtfIterator<C>>& dst, const basic_string<C>& src)`
-* `template <typename C> basic_string<C> str_change(const Crow::Irange<UtfIterator<C>>& dst, const Crow::Irange<UtfIterator<C>>& src)`
+* `template <typename C> basic_string<C> str_change(const Irange<UtfIterator<C>>& dst, const basic_string<C>& src)`
+* `template <typename C> basic_string<C> str_change(const Irange<UtfIterator<C>>& dst, const Irange<UtfIterator<C>>& src)`
 * `template <typename C> basic_string<C> str_change(const UtfIterator<C>& dst_begin, const UtfIterator<C>& dst_end, const basic_string<C>& src)`
 * `template <typename C> basic_string<C> str_change(const UtfIterator<C>& dst_begin, const UtfIterator<C>& dst_end, const UtfIterator<C>& src_begin, const UtfIterator<C>& src_end)`
-* `template <typename C> Crow::Irange<UtfIterator<C>> str_change_in(basic_string<C>& dst, const Crow::Irange<UtfIterator<C>>& range, const basic_string<C>& src)`
-* `template <typename C> Crow::Irange<UtfIterator<C>> str_change_in(basic_string<C>& dst, const Crow::Irange<UtfIterator<C>>& range, const Crow::Irange<UtfIterator<C>>& src)`
-* `template <typename C> Crow::Irange<UtfIterator<C>> str_change_in(basic_string<C>& dst, const UtfIterator<C>& range_begin, const UtfIterator<C>& range_end, const basic_string<C>& src)`
-* `template <typename C> Crow::Irange<UtfIterator<C>> str_change_in(basic_string<C>& dst, const UtfIterator<C>& range_begin, const UtfIterator<C>& range_end, const UtfIterator<C>& src_begin, const UtfIterator<C>& src_end)`
+* `template <typename C> Irange<UtfIterator<C>> str_change_in(basic_string<C>& dst, const Irange<UtfIterator<C>>& range, const basic_string<C>& src)`
+* `template <typename C> Irange<UtfIterator<C>> str_change_in(basic_string<C>& dst, const Irange<UtfIterator<C>>& range, const Irange<UtfIterator<C>>& src)`
+* `template <typename C> Irange<UtfIterator<C>> str_change_in(basic_string<C>& dst, const UtfIterator<C>& range_begin, const UtfIterator<C>& range_end, const basic_string<C>& src)`
+* `template <typename C> Irange<UtfIterator<C>> str_change_in(basic_string<C>& dst, const UtfIterator<C>& range_begin, const UtfIterator<C>& range_end, const UtfIterator<C>& src_begin, const UtfIterator<C>& src_end)`
 
 These replace the destination substring with a copy of the source string. The
 effect is the same as the `basic_string::replace()` methods, except that
@@ -285,11 +285,11 @@ the string. These will return an empty string if `length` is greater than the
 number of characters in `str`.
 
 * `template <typename C> basic_string<C> str_expand_tabs(const basic_string<C>& str)`
-* `template <typename C, typename IntList> basic_string<C> str_expand_tabs(const basic_string<C>& str, const IntList& tabs, Crow::Flagset flags = {})`
-* `template <typename C, typename IntType> basic_string<C> str_expand_tabs(const basic_string<C>& str, initializer_list<IntType> tabs, Crow::Flagset flags = {})`
+* `template <typename C, typename IntList> basic_string<C> str_expand_tabs(const basic_string<C>& str, const IntList& tabs, Flagset flags = {})`
+* `template <typename C, typename IntType> basic_string<C> str_expand_tabs(const basic_string<C>& str, initializer_list<IntType> tabs, Flagset flags = {})`
 * `template <typename C> void str_expand_tabs_in(basic_string<C>& str)`
-* `template <typename C, typename IntList> void str_expand_tabs_in(basic_string<C>& str, const IntList& tabs, Crow::Flagset flags = {})`
-* `template <typename C, typename IntType> void str_expand_tabs_in(basic_string<C>& str, initializer_list<IntType> tabs, Crow::Flagset flags = {})`
+* `template <typename C, typename IntList> void str_expand_tabs_in(basic_string<C>& str, const IntList& tabs, Flagset flags = {})`
+* `template <typename C, typename IntType> void str_expand_tabs_in(basic_string<C>& str, initializer_list<IntType> tabs, Flagset flags = {})`
 
 Expand tab characters to spaces. If the input string contains multiple lines
 (delimited by any of the standard Unicode line break characters), each line
@@ -305,10 +305,10 @@ stops is used to increment the last one (e.g. `{5,10,20}` will be expanded to
 `{5,10,20,30,40,...}`). An implicit tab stop at position zero is always
 assumed.
 
-* `template <typename C> basic_string<C> str_fix_left(const basic_string<C>& str, size_t length, char32_t c = U' ', Crow::Flagset flags = {})`
-* `template <typename C> void str_fix_left_in(basic_string<C>& str, size_t length, char32_t c = U' ', Crow::Flagset flags = {})`
-* `template <typename C> basic_string<C> str_fix_right(const basic_string<C>& str, size_t length, char32_t c = U' ', Crow::Flagset flags = {})`
-* `template <typename C> void str_fix_right_in(basic_string<C>& str, size_t length, char32_t c = U' ', Crow::Flagset flags = {})`
+* `template <typename C> basic_string<C> str_fix_left(const basic_string<C>& str, size_t length, char32_t c = U' ', Flagset flags = {})`
+* `template <typename C> void str_fix_left_in(basic_string<C>& str, size_t length, char32_t c = U' ', Flagset flags = {})`
+* `template <typename C> basic_string<C> str_fix_right(const basic_string<C>& str, size_t length, char32_t c = U' ', Flagset flags = {})`
+* `template <typename C> void str_fix_right_in(basic_string<C>& str, size_t length, char32_t c = U' ', Flagset flags = {})`
 
 Pad or truncate a string to a specific length; the character argument `c` is
 used for padding (converted to the appropriate encoding). The `str_fix_left()`
@@ -328,10 +328,10 @@ These concatenate a list of strings, optionally inserting a delimiter between
 each pair of strings. The character types of the string list and the delimiter
 must match.
 
-* `template <typename C> basic_string<C> str_pad_left(const basic_string<C>& str, size_t length, char32_t c = U' ', Crow::Flagset flags = {})`
-* `template <typename C> void str_pad_left_in(basic_string<C>& str, size_t length, char32_t c = U' ', Crow::Flagset flags = {})`
-* `template <typename C> basic_string<C> str_pad_right(const basic_string<C>& str, size_t length, char32_t c = U' ', Crow::Flagset flags = {})`
-* `template <typename C> void str_pad_right_in(basic_string<C>& str, size_t length, char32_t c = U' ', Crow::Flagset flags = {})`
+* `template <typename C> basic_string<C> str_pad_left(const basic_string<C>& str, size_t length, char32_t c = U' ', Flagset flags = {})`
+* `template <typename C> void str_pad_left_in(basic_string<C>& str, size_t length, char32_t c = U' ', Flagset flags = {})`
+* `template <typename C> basic_string<C> str_pad_right(const basic_string<C>& str, size_t length, char32_t c = U' ', Flagset flags = {})`
+* `template <typename C> void str_pad_right_in(basic_string<C>& str, size_t length, char32_t c = U' ', Flagset flags = {})`
 
 Pad a string on the left or right to a specified length; the character
 argument `c` is used for padding (converted to the appropriate encoding). The
@@ -416,7 +416,7 @@ one character. In all cases, the original string will be left unchanged if
 `chars` is empty.
 
 * `template <typename C> basic_string<C> str_substring(const basic_string<C>& str, size_t offset, size_t count = npos)`
-* `template <typename C> basic_string<C> utf_substring(const basic_string<C>& str, size_t index, size_t length = npos, Crow::Flagset flags = {})`
+* `template <typename C> basic_string<C> utf_substring(const basic_string<C>& str, size_t index, size_t length = npos, Flagset flags = {})`
 
 These return a substring of the original string. The `str_substring()` function
 returns the same string as `basic_string::substr()`, except that an offset out
@@ -496,8 +496,8 @@ These convert all line breaks to the same form, a single `LF` by default. Any
 Unicode line or paragraph breaking character is recognised and replaced; the
 `CR+LF` sequence is also treated as a single line break.
 
-* `template <typename C> basic_string<C> str_wrap(const basic_string<C>& str, Crow::Flagset flags = {}, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos)`
-* `template <typename C> void str_wrap_in(basic_string<C>& str, Crow::Flagset flags = {}, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos)`
+* `template <typename C> basic_string<C> str_wrap(const basic_string<C>& str, Flagset flags = {}, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos)`
+* `template <typename C> void str_wrap_in(basic_string<C>& str, Flagset flags = {}, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos)`
 
 Bitmask          | Letter  | Description
 -------          | ------  | -----------

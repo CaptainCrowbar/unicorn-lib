@@ -480,7 +480,7 @@ const KeyValue<char32_t, int> combining_class_array[] {
 {0x1e8d7,0},
 };
 
-const TableView<char32_t, int> combining_class_table {CROW_BOUNDS(combining_class_array)};
+const TableView<char32_t, int> combining_class_table {PRI_BOUNDS(combining_class_array)};
 
 const KeyValue<char32_t, std::array<char32_t, 2>> canonical_array[] {
 {0xc0,{{0x41,0x300}}},
@@ -2545,7 +2545,7 @@ const KeyValue<char32_t, std::array<char32_t, 2>> canonical_array[] {
 {0x2fa1d,{{0x2a600,0x0}}},
 };
 
-const TableView<char32_t, std::array<char32_t, 2>> canonical_table {CROW_BOUNDS(canonical_array)};
+const TableView<char32_t, std::array<char32_t, 2>> canonical_table {PRI_BOUNDS(canonical_array)};
 
 const KeyValue<char32_t, std::array<char32_t, 3>> short_compatibility_array[] {
 {0xa0,{{0x20,0x0,0x0}}},
@@ -6122,7 +6122,7 @@ const KeyValue<char32_t, std::array<char32_t, 3>> short_compatibility_array[] {
 {0x1f251,{{0x53ef,0x0,0x0}}},
 };
 
-const TableView<char32_t, std::array<char32_t, 3>> short_compatibility_table {CROW_BOUNDS(short_compatibility_array)};
+const TableView<char32_t, std::array<char32_t, 3>> short_compatibility_table {PRI_BOUNDS(short_compatibility_array)};
 
 const KeyValue<char32_t, std::array<char32_t, 18>> long_compatibility_array[] {
 {0x2057,{{0x2032,0x2032,0x2032,0x2032,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0}}},
@@ -6216,7 +6216,7 @@ const KeyValue<char32_t, std::array<char32_t, 18>> long_compatibility_array[] {
 {0xfdfc,{{0x631,0x6cc,0x627,0x644,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0}}},
 };
 
-const TableView<char32_t, std::array<char32_t, 18>> long_compatibility_table {CROW_BOUNDS(long_compatibility_array)};
+const TableView<char32_t, std::array<char32_t, 18>> long_compatibility_table {PRI_BOUNDS(long_compatibility_array)};
 
 const KeyValue<std::array<char32_t, 2>, char32_t> composition_array[] {
 {{{0x3c,0x338}},0x226e},
@@ -7161,7 +7161,7 @@ const KeyValue<std::array<char32_t, 2>, char32_t> composition_array[] {
 {{{0x115b9,0x115af}},0x115bb},
 };
 
-const TableView<std::array<char32_t, 2>, char32_t> composition_table {CROW_BOUNDS(composition_array)};
+const TableView<std::array<char32_t, 2>, char32_t> composition_table {PRI_BOUNDS(composition_array)};
 
 }
 }

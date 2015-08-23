@@ -17,8 +17,8 @@
 Unicode strings, in a manner similar to <code>printf()</code> in C, <code>str.format()</code> in
 Python, etc. Formatters are supplied for commonly used standard types
 (booleans, integers, floating point, characters, strings, and time points and
-durations), as well as for the Crow library&#8217;s <code>Uuid</code> and <code>Version</code> types; user
-defined formatters for other types can also be supplied.</p>
+durations), as well as for the <code>Uuid</code> and <code>Version</code> types from the Prion
+library; user defined formatters for other types can also be supplied.</p>
 
 <p>Basic formatting for range types (containers and arrays) is provided; these
 will be written in comma delimited form. Pairs will be written in
@@ -57,7 +57,7 @@ for details.</p>
 <li><code>template &lt;typename T&gt; class <strong>FormatType</strong></code>
 
 <ul>
-<li><code>[string type] <strong>operator()</strong>(T t, Crow::Flagset flags, int prec) const</code></li>
+<li><code>[string type] <strong>operator()</strong>(T t, Flagset flags, int prec) const</code></li>
 </ul></li>
 </ul>
 
@@ -95,17 +95,17 @@ for details.</p>
 <li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;wchar_t&gt;</code></li>
 <li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;std::chrono::system_clock::time_point&gt;</code></li>
 <li><code>template &lt;typename R, typename P&gt; class <strong>FormatType</strong>&lt;std::chrono::duration&lt;R, P&gt;&gt;</code></li>
-<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;Crow::Uuid&gt;</code></li>
-<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;Crow::Version&gt;</code></li>
+<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;Uuid&gt;</code></li>
+<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;Version&gt;</code></li>
 </ul>
 
 <p>TODO</p>
 
 <ul>
-<li><code>template &lt;typename T, typename C&gt; void <strong>format_type</strong>(const T&amp; t, basic_string&lt;C&gt;&amp; dst, Crow::Flagset flags = {}, int prec = -1, size_t width = 0, char32_t pad = U' ')</code></li>
+<li><code>template &lt;typename T, typename C&gt; void <strong>format_type</strong>(const T&amp; t, basic_string&lt;C&gt;&amp; dst, Flagset flags = {}, int prec = -1, size_t width = 0, char32_t pad = U' ')</code></li>
 <li><code>template &lt;typename T, typename C&gt; void <strong>format_type</strong>(const T&amp; t, basic_string&lt;C&gt;&amp; dst, const basic_string&lt;C&gt;&amp; flags)</code></li>
 <li><code>template &lt;typename T, typename C&gt; void <strong>format_type</strong>(const T&amp; t, basic_string&lt;C&gt;&amp; dst, const C* flags)</code></li>
-<li><code>template &lt;typename C, typename T&gt; basic_string&lt;C&gt; <strong>format_as</strong>(const T&amp; t, Crow::Flagset flags = {}, int prec = -1, size_t width = 0, char32_t pad = U' ')</code></li>
+<li><code>template &lt;typename C, typename T&gt; basic_string&lt;C&gt; <strong>format_as</strong>(const T&amp; t, Flagset flags = {}, int prec = -1, size_t width = 0, char32_t pad = U' ')</code></li>
 <li><code>template &lt;typename C, typename T&gt; basic_string&lt;C&gt; <strong>format_as</strong>(const T&amp; t, const basic_string&lt;C&gt;&amp; flags)</code></li>
 <li><code>template &lt;typename C, typename T&gt; basic_string&lt;C&gt; <strong>format_as</strong>(const T&amp; t, const C* flags)</code></li>
 </ul>

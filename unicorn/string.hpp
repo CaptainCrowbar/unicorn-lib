@@ -19,13 +19,13 @@ namespace Unicorn {
 
     // Constants
 
-    constexpr auto character_units  = Crow::Flagset::value('C');  // Measure string in characters (default)
-    constexpr auto grapheme_units   = Crow::Flagset::value('G');  // Measure string in grapheme clusters
-    constexpr auto narrow_context   = Crow::Flagset::value('N');  // East Asian width, defaulting to narrow
-    constexpr auto wide_context     = Crow::Flagset::value('W');  // East Asian width, defaulting to wide
-    constexpr auto wrap_crlf        = Crow::Flagset::value('r');  // Use CR+LF for line breaks (default LF)
-    constexpr auto wrap_enforce     = Crow::Flagset::value('e');  // Enforce right margin strictly
-    constexpr auto wrap_preserve    = Crow::Flagset::value('p');  // Preserve layout on already indented lines
+    constexpr auto character_units  = Flagset::value('C');  // Measure string in characters (default)
+    constexpr auto grapheme_units   = Flagset::value('G');  // Measure string in grapheme clusters
+    constexpr auto narrow_context   = Flagset::value('N');  // East Asian width, defaulting to narrow
+    constexpr auto wide_context     = Flagset::value('W');  // East Asian width, defaulting to wide
+    constexpr auto wrap_crlf        = Flagset::value('r');  // Use CR+LF for line breaks (default LF)
+    constexpr auto wrap_enforce     = Flagset::value('e');  // Enforce right margin strictly
+    constexpr auto wrap_preserve    = Flagset::value('p');  // Preserve layout on already indented lines
 
     // String size functions
 
@@ -34,7 +34,7 @@ namespace Unicorn {
         constexpr auto east_asian_flags = narrow_context | wide_context;
         constexpr auto all_length_flags = character_units | grapheme_units | east_asian_flags;
 
-        inline void check_length_flags(Crow::Flagset& flags) {
+        inline void check_length_flags(Flagset& flags) {
             flags.allow(all_length_flags, "string length");
             flags.exclusive(character_units | grapheme_units, "string length");
             flags.exclusive(character_units | east_asian_flags, "string length");
@@ -44,7 +44,7 @@ namespace Unicorn {
 
         class EastAsianCount {
         public:
-            explicit EastAsianCount(Crow::Flagset flags) noexcept: count(), fset(flags) {
+            explicit EastAsianCount(Flagset flags) noexcept: count(), fset(flags) {
                 memset(count, 0, sizeof(count));
             }
             void add(char32_t c) noexcept {
@@ -63,12 +63,12 @@ namespace Unicorn {
             static constexpr auto narr = static_cast<int>(East_Asian_Width::Na);
             static constexpr auto wide = static_cast<int>(East_Asian_Width::W);
             size_t count[6];
-            Crow::Flagset fset;
+            Flagset fset;
         };
 
         template <typename C>
-        std::pair<UtfIterator<C>, bool> find_position(const Crow::Irange<UtfIterator<C>>& range,
-                size_t pos, Crow::Flagset flags = {}) {
+        std::pair<UtfIterator<C>, bool> find_position(const Irange<UtfIterator<C>>& range,
+                size_t pos, Flagset flags = {}) {
             check_length_flags(flags);
             if (flags.get(character_units)) {
                 auto i = std::begin(range);
@@ -111,11 +111,11 @@ namespace Unicorn {
     }
 
     template <typename C>
-    size_t str_length(const Crow::Irange<UtfIterator<C>>& range, Crow::Flagset flags = {}) {
+    size_t str_length(const Irange<UtfIterator<C>>& range, Flagset flags = {}) {
         using namespace UnicornDetail;
         check_length_flags(flags);
         if (flags.get(character_units)) {
-            return Crow::range_count(range);
+            return range_count(range);
         } else if (flags.get(east_asian_flags)) {
             EastAsianCount eac(flags);
             if (flags.get(grapheme_units)) {
@@ -127,39 +127,39 @@ namespace Unicorn {
             }
             return eac.get();
         } else {
-            return Crow::range_count(grapheme_range(range));
+            return range_count(grapheme_range(range));
         }
     }
 
     template <typename C>
-    size_t str_length(const UtfIterator<C>& b, const UtfIterator<C>& e, Crow::Flagset flags = {}) {
-        return str_length(Crow::irange(b, e), flags);
+    size_t str_length(const UtfIterator<C>& b, const UtfIterator<C>& e, Flagset flags = {}) {
+        return str_length(irange(b, e), flags);
     }
 
     template <typename C>
-    size_t str_length(const basic_string<C>& str, Crow::Flagset flags = {}) {
+    size_t str_length(const basic_string<C>& str, Flagset flags = {}) {
         return str_length(utf_range(str), flags);
     }
 
     template <typename C>
-    UtfIterator<C> str_find_index(const Crow::Irange<UtfIterator<C>>& range, size_t pos,
-            Crow::Flagset flags = {}) {
+    UtfIterator<C> str_find_index(const Irange<UtfIterator<C>>& range, size_t pos,
+            Flagset flags = {}) {
         return UnicornDetail::find_position(range, pos, flags).first;
     }
 
     template <typename C>
     UtfIterator<C> str_find_index(const UtfIterator<C>& b, const UtfIterator<C>& e, size_t pos,
-            Crow::Flagset flags = {}) {
-        return str_find_index(Crow::irange(b, e), pos, flags);
+            Flagset flags = {}) {
+        return str_find_index(irange(b, e), pos, flags);
     }
 
     template <typename C>
-    UtfIterator<C> str_find_index(const basic_string<C>& str, size_t pos, Crow::Flagset flags = {}) {
+    UtfIterator<C> str_find_index(const basic_string<C>& str, size_t pos, Flagset flags = {}) {
         return str_find_index(utf_range(str), pos, flags);
     }
 
     template <typename C>
-    size_t str_find_offset(const basic_string<C>& str, size_t pos, Crow::Flagset flags = {}) {
+    size_t str_find_offset(const basic_string<C>& str, size_t pos, Flagset flags = {}) {
         auto rc = UnicornDetail::find_position(utf_range(str), pos, flags);
         return rc.second ? rc.first.offset() : npos;
     }
@@ -186,7 +186,7 @@ namespace Unicorn {
 
     template <typename C>
     basic_string<C> str_repeat(const C* str, size_t n) {
-        return str_repeat(Crow::cstr(str), n);
+        return str_repeat(cstr(str), n);
     }
 
     template <typename C>
@@ -242,7 +242,7 @@ namespace Unicorn {
     bool str_starts_with(const basic_string<C>& str, const C* prefix) noexcept {
         if (! prefix)
             return true;
-        auto count = Crow::cstr_size(prefix);
+        auto count = cstr_size(prefix);
         return str.size() >= count && memcmp(str.data(), prefix, sizeof(C) * count) == 0;
     }
 
@@ -256,7 +256,7 @@ namespace Unicorn {
     bool str_ends_with(const basic_string<C>& str, const C* suffix) noexcept {
         if (! suffix)
             return true;
-        auto count = Crow::cstr_size(suffix);
+        auto count = cstr_size(suffix);
         return str.size() >= count && memcmp(str.data() + str.size() - count, suffix, sizeof(C) * count) == 0;
     }
 
@@ -277,7 +277,7 @@ namespace Unicorn {
             using string_type = basic_string<C>;
             static bool less(const string_type& lhs, const string_type& rhs) noexcept {
                 auto a = utf_range(lhs), b = utf_range(rhs);
-                return std::lexicographical_compare(CROW_BOUNDS(a), CROW_BOUNDS(b));
+                return std::lexicographical_compare(PRI_BOUNDS(a), PRI_BOUNDS(b));
             }
         };
 
@@ -314,8 +314,8 @@ namespace Unicorn {
     }
 
     template <typename C>
-    UtfIterator<C> str_find_char(const Crow::Irange<UtfIterator<C>>& range, char32_t c) {
-        return std::find(CROW_BOUNDS(range), c);
+    UtfIterator<C> str_find_char(const Irange<UtfIterator<C>>& range, char32_t c) {
+        return std::find(PRI_BOUNDS(range), c);
     }
 
     template <typename C>
@@ -335,8 +335,8 @@ namespace Unicorn {
     }
 
     template <typename C>
-    UtfIterator<C> str_find_last_char(const Crow::Irange<UtfIterator<C>>& range, char32_t c) {
-        return str_find_last_char(CROW_BOUNDS(range), c);
+    UtfIterator<C> str_find_last_char(const Irange<UtfIterator<C>>& range, char32_t c) {
+        return str_find_last_char(PRI_BOUNDS(range), c);
     }
 
     template <typename C>
@@ -353,8 +353,8 @@ namespace Unicorn {
     }
 
     template <typename C>
-    UtfIterator<C> str_find_first_of(const Crow::Irange<UtfIterator<C>>& range, const basic_string<C>& target) {
-        return str_find_first_of(CROW_BOUNDS(range), target);
+    UtfIterator<C> str_find_first_of(const Irange<UtfIterator<C>>& range, const basic_string<C>& target) {
+        return str_find_first_of(PRI_BOUNDS(range), target);
     }
 
     template <typename C>
@@ -364,17 +364,17 @@ namespace Unicorn {
 
     template <typename C>
     UtfIterator<C> str_find_first_of(const UtfIterator<C>& b, const UtfIterator<C>& e, const C* target) {
-        return str_find_first_of(b, e, Crow::cstr(target));
+        return str_find_first_of(b, e, cstr(target));
     }
 
     template <typename C>
-    UtfIterator<C> str_find_first_of(const Crow::Irange<UtfIterator<C>>& range, const C* target) {
-        return str_find_first_of(CROW_BOUNDS(range), target);
+    UtfIterator<C> str_find_first_of(const Irange<UtfIterator<C>>& range, const C* target) {
+        return str_find_first_of(PRI_BOUNDS(range), target);
     }
 
     template <typename C>
     UtfIterator<C> str_find_first_of(const basic_string<C>& str, const C* target) {
-        return str_find_first_of(utf_begin(str), utf_end(str), Crow::cstr(target));
+        return str_find_first_of(utf_begin(str), utf_end(str), cstr(target));
     }
 
     template <typename C>
@@ -386,9 +386,9 @@ namespace Unicorn {
     }
 
     template <typename C>
-    UtfIterator<C> str_find_first_not_of(const Crow::Irange<UtfIterator<C>>& range,
+    UtfIterator<C> str_find_first_not_of(const Irange<UtfIterator<C>>& range,
             const basic_string<C>& target) {
-        return str_find_first_not_of(CROW_BOUNDS(range), target);
+        return str_find_first_not_of(PRI_BOUNDS(range), target);
     }
 
     template <typename C>
@@ -400,17 +400,17 @@ namespace Unicorn {
     template <typename C>
     UtfIterator<C> str_find_first_not_of(const UtfIterator<C>& b, const UtfIterator<C>& e,
             const C* target) {
-        return str_find_first_not_of(b, e, Crow::cstr(target));
+        return str_find_first_not_of(b, e, cstr(target));
     }
 
     template <typename C>
-    UtfIterator<C> str_find_first_not_of(const Crow::Irange<UtfIterator<C>>& range, const C* target) {
-        return str_find_first_not_of(CROW_BOUNDS(range), target);
+    UtfIterator<C> str_find_first_not_of(const Irange<UtfIterator<C>>& range, const C* target) {
+        return str_find_first_not_of(PRI_BOUNDS(range), target);
     }
 
     template <typename C>
     UtfIterator<C> str_find_first_not_of(const basic_string<C>& str, const C* target) {
-        return str_find_first_not_of(utf_begin(str), utf_end(str), Crow::cstr(target));
+        return str_find_first_not_of(utf_begin(str), utf_end(str), cstr(target));
     }
 
     template <typename C>
@@ -427,8 +427,8 @@ namespace Unicorn {
     }
 
     template <typename C>
-    UtfIterator<C> str_find_last_of(const Crow::Irange<UtfIterator<C>>& range, const basic_string<C>& target) {
-        return str_find_last_of(CROW_BOUNDS(range), target);
+    UtfIterator<C> str_find_last_of(const Irange<UtfIterator<C>>& range, const basic_string<C>& target) {
+        return str_find_last_of(PRI_BOUNDS(range), target);
     }
 
     template <typename C>
@@ -438,17 +438,17 @@ namespace Unicorn {
 
     template <typename C>
     UtfIterator<C> str_find_last_of(const UtfIterator<C>& b, const UtfIterator<C>& e, const C* target) {
-        return str_find_last_of(b, e, Crow::cstr(target));
+        return str_find_last_of(b, e, cstr(target));
     }
 
     template <typename C>
-    UtfIterator<C> str_find_last_of(const Crow::Irange<UtfIterator<C>>& range, const C* target) {
-        return str_find_last_of(CROW_BOUNDS(range), target);
+    UtfIterator<C> str_find_last_of(const Irange<UtfIterator<C>>& range, const C* target) {
+        return str_find_last_of(PRI_BOUNDS(range), target);
     }
 
     template <typename C>
     UtfIterator<C> str_find_last_of(const basic_string<C>& str, const C* target) {
-        return str_find_last_of(utf_begin(str), utf_end(str), Crow::cstr(target));
+        return str_find_last_of(utf_begin(str), utf_end(str), cstr(target));
     }
 
     template <typename C>
@@ -465,9 +465,9 @@ namespace Unicorn {
     }
 
     template <typename C>
-    UtfIterator<C> str_find_last_not_of(const Crow::Irange<UtfIterator<C>>& range,
+    UtfIterator<C> str_find_last_not_of(const Irange<UtfIterator<C>>& range,
             const basic_string<C>& target) {
-        return str_find_last_not_of(CROW_BOUNDS(range), target);
+        return str_find_last_not_of(PRI_BOUNDS(range), target);
     }
 
     template <typename C>
@@ -479,29 +479,29 @@ namespace Unicorn {
     template <typename C>
     UtfIterator<C> str_find_last_not_of(const UtfIterator<C>& b, const UtfIterator<C>& e,
             const C* target) {
-        return str_find_last_not_of(b, e, Crow::cstr(target));
+        return str_find_last_not_of(b, e, cstr(target));
     }
 
     template <typename C>
-    UtfIterator<C> str_find_last_not_of(const Crow::Irange<UtfIterator<C>>& range, const C* target) {
-        return str_find_last_not_of(CROW_BOUNDS(range), target);
+    UtfIterator<C> str_find_last_not_of(const Irange<UtfIterator<C>>& range, const C* target) {
+        return str_find_last_not_of(PRI_BOUNDS(range), target);
     }
 
     template <typename C>
     UtfIterator<C> str_find_last_not_of(const basic_string<C>& str, const C* target) {
-        return str_find_last_not_of(utf_begin(str), utf_end(str), Crow::cstr(target));
+        return str_find_last_not_of(utf_begin(str), utf_end(str), cstr(target));
     }
 
     template <typename C>
     UtfIterator<C> str_search(const UtfIterator<C>& b, const UtfIterator<C>& e,
             const basic_string<C>& target) {
         auto u_target = to_utf32(target);
-        return std::search(b, e, CROW_BOUNDS(u_target));
+        return std::search(b, e, PRI_BOUNDS(u_target));
     }
 
     template <typename C>
-    UtfIterator<C> str_search(const Crow::Irange<UtfIterator<C>>& range, const basic_string<C>& target) {
-        return str_search(CROW_BOUNDS(range), target);
+    UtfIterator<C> str_search(const Irange<UtfIterator<C>>& range, const basic_string<C>& target) {
+        return str_search(PRI_BOUNDS(range), target);
     }
 
     template <typename C>
@@ -511,17 +511,17 @@ namespace Unicorn {
 
     template <typename C>
     UtfIterator<C> str_search(const UtfIterator<C>& b, const UtfIterator<C>& e, const C* target) {
-        return str_search(b, e, Crow::cstr(target));
+        return str_search(b, e, cstr(target));
     }
 
     template <typename C>
-    UtfIterator<C> str_search(const Crow::Irange<UtfIterator<C>>& range, const C* target) {
-        return str_search(CROW_BOUNDS(range), Crow::cstr(target));
+    UtfIterator<C> str_search(const Irange<UtfIterator<C>>& range, const C* target) {
+        return str_search(PRI_BOUNDS(range), cstr(target));
     }
 
     template <typename C>
     UtfIterator<C> str_search(const basic_string<C>& str, const C* target) {
-        return str_search(utf_begin(str), utf_end(str), Crow::cstr(target));
+        return str_search(utf_begin(str), utf_end(str), cstr(target));
     }
 
     template <typename C>
@@ -544,7 +544,7 @@ namespace Unicorn {
     }
 
     template <typename C, typename C2>
-    void str_append(basic_string<C>& str, const Crow::Irange<UtfIterator<C2>>& suffix) {
+    void str_append(basic_string<C>& str, const Irange<UtfIterator<C2>>& suffix) {
         std::copy(std::begin(suffix), std::end(suffix), utf_writer(str));
     }
 
@@ -555,7 +555,7 @@ namespace Unicorn {
 
     template <typename C, typename C2>
     void str_append(basic_string<C>& str, const C2* suffix) {
-        str_append(str, Crow::cstr(suffix));
+        str_append(str, cstr(suffix));
     }
 
     template <typename C, typename C2>
@@ -596,8 +596,8 @@ namespace Unicorn {
     }
 
     template <typename C>
-    basic_string<C> str_change(const Crow::Irange<UtfIterator<C>>& dst, const Crow::Irange<UtfIterator<C>>& src) {
-        return str_change(CROW_BOUNDS(dst), CROW_BOUNDS(src));
+    basic_string<C> str_change(const Irange<UtfIterator<C>>& dst, const Irange<UtfIterator<C>>& src) {
+        return str_change(PRI_BOUNDS(dst), PRI_BOUNDS(src));
     }
 
     template <typename C>
@@ -610,12 +610,12 @@ namespace Unicorn {
     }
 
     template <typename C>
-    basic_string<C> str_change(const Crow::Irange<UtfIterator<C>>& dst, const basic_string<C>& src) {
-        return str_change(CROW_BOUNDS(dst), utf_begin(src), utf_end(src));
+    basic_string<C> str_change(const Irange<UtfIterator<C>>& dst, const basic_string<C>& src) {
+        return str_change(PRI_BOUNDS(dst), utf_begin(src), utf_end(src));
     }
 
     template <typename C>
-    Crow::Irange<UtfIterator<C>> str_change_in(basic_string<C>& dst,
+    Irange<UtfIterator<C>> str_change_in(basic_string<C>& dst,
             const UtfIterator<C>& range_begin, const UtfIterator<C>& range_end,
             const UtfIterator<C>& src_begin, const UtfIterator<C>& src_end) {
         size_t pos1 = range_begin.offset(), n1 = range_end.offset() - pos1,
@@ -625,13 +625,13 @@ namespace Unicorn {
     }
 
     template <typename C>
-    Crow::Irange<UtfIterator<C>> str_change_in(basic_string<C>& dst, const Crow::Irange<UtfIterator<C>>& range,
-            const Crow::Irange<UtfIterator<C>>& src) {
-        return str_change_in(dst, CROW_BOUNDS(range), CROW_BOUNDS(src));
+    Irange<UtfIterator<C>> str_change_in(basic_string<C>& dst, const Irange<UtfIterator<C>>& range,
+            const Irange<UtfIterator<C>>& src) {
+        return str_change_in(dst, PRI_BOUNDS(range), PRI_BOUNDS(src));
     }
 
     template <typename C>
-    Crow::Irange<UtfIterator<C>> str_change_in(basic_string<C>& dst,
+    Irange<UtfIterator<C>> str_change_in(basic_string<C>& dst,
             const UtfIterator<C>& range_begin, const UtfIterator<C>& range_end,
             const basic_string<C>& src) {
         size_t pos1 = range_begin.offset(), n1 = range_end.offset() - pos1;
@@ -640,9 +640,9 @@ namespace Unicorn {
     }
 
     template <typename C>
-    Crow::Irange<UtfIterator<C>> str_change_in(basic_string<C>& dst, const Crow::Irange<UtfIterator<C>>& range,
+    Irange<UtfIterator<C>> str_change_in(basic_string<C>& dst, const Irange<UtfIterator<C>>& range,
             const basic_string<C>& src) {
-        return str_change_in(dst, CROW_BOUNDS(range), utf_begin(src), utf_end(src));
+        return str_change_in(dst, PRI_BOUNDS(range), utf_begin(src), utf_end(src));
     }
 
     namespace UnicornDetail {
@@ -668,7 +668,7 @@ namespace Unicorn {
 
     template <typename C, typename... Strings>
     basic_string<C> str_concat(const C* s, const Strings&... ss) {
-        auto result = Crow::cstr(s);
+        auto result = cstr(s);
         UnicornDetail::concat_helper(result, basic_string<C>(), ss...);
         return result;
     }
@@ -704,15 +704,15 @@ namespace Unicorn {
     basic_string<C1> str_concat_with(const C1* delim, const basic_string<C2>& s, const Strings&... ss) {
         basic_string<C1> result;
         recode(s, result);
-        UnicornDetail::concat_helper(result, Crow::cstr(delim), ss...);
+        UnicornDetail::concat_helper(result, cstr(delim), ss...);
         return result;
     }
 
     template <typename C1, typename C2, typename... Strings>
     basic_string<C1> str_concat_with(const C1* delim, const C2* s, const Strings&... ss) {
         basic_string<C1> result;
-        recode(Crow::cstr(s), result);
-        UnicornDetail::concat_helper(result, Crow::cstr(delim), ss...);
+        recode(cstr(s), result);
+        UnicornDetail::concat_helper(result, cstr(delim), ss...);
         return result;
     }
 
@@ -723,7 +723,7 @@ namespace Unicorn {
 
     template <typename C>
     basic_string<C> str_drop_prefix(const basic_string<C>& str, const C* prefix) {
-        return str_starts_with(str, prefix) ? str.substr(Crow::cstr_size(prefix)) : str;
+        return str_starts_with(str, prefix) ? str.substr(cstr_size(prefix)) : str;
     }
 
     template <typename C>
@@ -735,7 +735,7 @@ namespace Unicorn {
     template <typename C>
     void str_drop_prefix_in(basic_string<C>& str, const C* prefix) noexcept {
         if (str_starts_with(str, prefix))
-            str.erase(0, Crow::cstr_size(prefix));
+            str.erase(0, cstr_size(prefix));
     }
 
     template <typename C>
@@ -745,7 +745,7 @@ namespace Unicorn {
 
     template <typename C>
     basic_string<C> str_drop_suffix(const basic_string<C>& str, const C* suffix) {
-        return str_ends_with(str, suffix) ? str.substr(0, str.size() - Crow::cstr_size(suffix)) : str;
+        return str_ends_with(str, suffix) ? str.substr(0, str.size() - cstr_size(suffix)) : str;
     }
 
     template <typename C>
@@ -757,7 +757,7 @@ namespace Unicorn {
     template <typename C>
     void str_drop_suffix_in(basic_string<C>& str, const C* suffix) noexcept {
         if (str_ends_with(str, suffix))
-            str.resize(str.size() - Crow::cstr_size(suffix));
+            str.resize(str.size() - cstr_size(suffix));
     }
 
     template <typename C>
@@ -815,7 +815,7 @@ namespace Unicorn {
     namespace UnicornDetail {
 
         template <typename C>
-        basic_string<C> expand_tabs(const basic_string<C>& str, const std::vector<size_t>& tabs, Crow::Flagset flags) {
+        basic_string<C> expand_tabs(const basic_string<C>& str, const std::vector<size_t>& tabs, Flagset flags) {
             std::vector<size_t> fixtabs = {0};
             for (auto t: tabs)
                 if (t > fixtabs.back())
@@ -861,15 +861,15 @@ namespace Unicorn {
 
     template <typename C, typename IntList>
     basic_string<C> str_expand_tabs(const basic_string<C>& str, const IntList& tabs,
-            Crow::Flagset flags = {}) {
-        std::vector<size_t> tv(CROW_BOUNDS(tabs));
+            Flagset flags = {}) {
+        std::vector<size_t> tv(PRI_BOUNDS(tabs));
         return UnicornDetail::expand_tabs(str, tv, flags);
     }
 
     template <typename C, typename IntType>
     basic_string<C> str_expand_tabs(const basic_string<C>& str, std::initializer_list<IntType> tabs,
-            Crow::Flagset flags = {}) {
-        std::vector<size_t> tv(CROW_BOUNDS(tabs));
+            Flagset flags = {}) {
+        std::vector<size_t> tv(PRI_BOUNDS(tabs));
         return UnicornDetail::expand_tabs(str, tv, flags);
     }
 
@@ -880,14 +880,14 @@ namespace Unicorn {
 
     template <typename C, typename IntList>
     void str_expand_tabs_in(basic_string<C>& str, const IntList& tabs,
-            Crow::Flagset flags = {}) {
+            Flagset flags = {}) {
         auto result = str_expand_tabs(str, tabs, flags);
         str.swap(result);
     }
 
     template <typename C, typename IntType>
     void str_expand_tabs_in(basic_string<C>& str, std::initializer_list<IntType> tabs,
-            Crow::Flagset flags = {}) {
+            Flagset flags = {}) {
         auto result = str_expand_tabs(str, tabs, flags);
         str.swap(result);
     }
@@ -902,7 +902,7 @@ namespace Unicorn {
 
         template <typename C>
         void insert_padding(basic_string<C>& str, size_t old_length, size_t new_length,
-                char32_t c, Crow::Flagset flags, char side) {
+                char32_t c, Flagset flags, char side) {
             size_t pad_chars = new_length - old_length;
             if (flags.get(east_asian_flags)) {
                 auto eaw = east_asian_width(c);
@@ -928,7 +928,7 @@ namespace Unicorn {
 
     template <typename C>
     basic_string<C> str_fix_left(const basic_string<C>& str, size_t length,
-            char32_t c = U' ', Crow::Flagset flags = {}) {
+            char32_t c = U' ', Flagset flags = {}) {
         size_t offset = str_find_offset(str, length, flags);
         if (offset == npos) {
             auto result = str;
@@ -941,7 +941,7 @@ namespace Unicorn {
 
     template <typename C>
     void str_fix_left_in(basic_string<C>& str, size_t length,
-            char32_t c = U' ', Crow::Flagset flags = {}) {
+            char32_t c = U' ', Flagset flags = {}) {
         size_t offset = str_find_offset(str, length, flags);
         if (offset == npos)
             UnicornDetail::insert_padding(str, str_length(str, flags), length, c, flags, 'R');
@@ -951,7 +951,7 @@ namespace Unicorn {
 
     template <typename C>
     basic_string<C> str_fix_right(const basic_string<C>& str, size_t length,
-            char32_t c = U' ', Crow::Flagset flags = {}) {
+            char32_t c = U' ', Flagset flags = {}) {
         size_t old_length = str_length(str, flags);
         if (old_length < length) {
             auto result = str;
@@ -965,7 +965,7 @@ namespace Unicorn {
 
     template <typename C>
     void str_fix_right_in(basic_string<C>& str, size_t length,
-            char32_t c = U' ', Crow::Flagset flags = {}) {
+            char32_t c = U' ', Flagset flags = {}) {
         size_t old_length = str_length(str, flags);
         if (old_length < length) {
             UnicornDetail::insert_padding(str, old_length, length, c, flags, 'L');
@@ -979,7 +979,7 @@ namespace Unicorn {
     basic_string<C> str_join(const FwdRange& r, const basic_string<C>& delim) {
         using string_type = basic_string<C>;
         using range_char = std::decay_t<decltype((*std::begin(r))[0])>;
-        CROW_STATIC_ASSERT((std::is_same<C, range_char>::value));
+        PRI_STATIC_ASSERT((std::is_same<C, range_char>::value));
         string_type s;
         auto i = std::begin(r), e = std::end(r);
         if (i != e) {
@@ -996,7 +996,7 @@ namespace Unicorn {
 
     template <typename FwdRange, typename C>
     basic_string<C> str_join(const FwdRange& r, const C* delim) {
-        return str_join(r, Crow::cstr(delim));
+        return str_join(r, cstr(delim));
     }
 
     template <typename FwdRange>
@@ -1009,7 +1009,7 @@ namespace Unicorn {
 
     template <typename C>
     basic_string<C> str_pad_left(const basic_string<C>& str, size_t length,
-            char32_t c = U' ', Crow::Flagset flags = {}) {
+            char32_t c = U' ', Flagset flags = {}) {
         size_t old_length = str_length(str, flags);
         if (length > old_length) {
             auto result = str;
@@ -1022,7 +1022,7 @@ namespace Unicorn {
 
     template <typename C>
     void str_pad_left_in(basic_string<C>& str, size_t length,
-            char32_t c = U' ', Crow::Flagset flags = {}) {
+            char32_t c = U' ', Flagset flags = {}) {
         size_t old_length = str_length(str, flags);
         if (length > old_length)
             UnicornDetail::insert_padding(str, old_length, length, c, flags, 'L');
@@ -1030,7 +1030,7 @@ namespace Unicorn {
 
     template <typename C>
     basic_string<C> str_pad_right(const basic_string<C>& str, size_t length,
-            char32_t c = U' ', Crow::Flagset flags = {}) {
+            char32_t c = U' ', Flagset flags = {}) {
         size_t old_length = str_length(str, flags);
         if (length > old_length) {
             auto result = str;
@@ -1043,7 +1043,7 @@ namespace Unicorn {
 
     template <typename C>
     void str_pad_right_in(basic_string<C>& str, size_t length,
-            char32_t c = U' ', Crow::Flagset flags = {}) {
+            char32_t c = U' ', Flagset flags = {}) {
         size_t old_length = str_length(str, flags);
         if (length > old_length)
             UnicornDetail::insert_padding(str, old_length, length, c, flags, 'R');
@@ -1058,7 +1058,7 @@ namespace Unicorn {
             return false;
         }
         auto range = utf_range(str);
-        auto i = std::find_if(CROW_BOUNDS(range), char_is_white_space);
+        auto i = std::find_if(PRI_BOUNDS(range), char_is_white_space);
         if (i == std::end(range)) {
             prefix = str;
             suffix.clear();
@@ -1111,7 +1111,7 @@ namespace Unicorn {
         } else {
             auto match = [&] (char32_t c) { return u_delim.find(c) != npos; };
             auto range = utf_range(str);
-            auto p = std::find_if(CROW_BOUNDS(range), match);
+            auto p = std::find_if(PRI_BOUNDS(range), match);
             i = p.offset();
             if (p != std::end(range)) {
                 auto q = std::find_if_not(p, std::end(range), match);
@@ -1172,19 +1172,19 @@ namespace Unicorn {
     template <typename C>
     basic_string<C> str_replace(const basic_string<C>& str, const C* target,
             const basic_string<C>& sub, size_t n = npos) {
-        return str_replace(str, Crow::cstr(target), sub, n);
+        return str_replace(str, cstr(target), sub, n);
     }
 
     template <typename C>
     basic_string<C> str_replace(const basic_string<C>& str, const basic_string<C>& target,
             const C* sub, size_t n = npos) {
-        return str_replace(str, target, Crow::cstr(sub), n);
+        return str_replace(str, target, cstr(sub), n);
     }
 
     template <typename C>
     basic_string<C> str_replace(const basic_string<C>& str, const C* target,
             const C* sub, size_t n = npos) {
-        return str_replace(str, Crow::cstr(target), Crow::cstr(sub), n);
+        return str_replace(str, cstr(target), cstr(sub), n);
     }
 
     template <typename C>
@@ -1197,19 +1197,19 @@ namespace Unicorn {
     template <typename C>
     void str_replace_in(basic_string<C>& str, const C* target,
             const basic_string<C>& sub, size_t n = npos) {
-        str_replace_in(str, Crow::cstr(target), sub, n);
+        str_replace_in(str, cstr(target), sub, n);
     }
 
     template <typename C>
     void str_replace_in(basic_string<C>& str, const basic_string<C>& target,
             const C* sub, size_t n = npos) {
-        str_replace_in(str, target, Crow::cstr(sub), n);
+        str_replace_in(str, target, cstr(sub), n);
     }
 
     template <typename C>
     void str_replace_in(basic_string<C>& str, const C* target,
             const C* sub, size_t n = npos) {
-        str_replace_in(str, Crow::cstr(target), Crow::cstr(sub), n);
+        str_replace_in(str, cstr(target), cstr(sub), n);
     }
 
     template <typename C, typename OutIter>
@@ -1246,7 +1246,7 @@ namespace Unicorn {
 
     template <typename C, typename OutIter>
     void str_split_at(const basic_string<C>& src, OutIter dst, const C* delim) {
-        str_split_at(src, dst, Crow::cstr(delim));
+        str_split_at(src, dst, cstr(delim));
     }
 
     template <typename C, typename OutIter>
@@ -1284,7 +1284,7 @@ namespace Unicorn {
 
     template <typename C, typename OutIter>
     void str_split_by(const basic_string<C>& src, OutIter dst, const C* delim) {
-        str_split_by(src, dst, Crow::cstr(delim));
+        str_split_by(src, dst, cstr(delim));
     }
 
     namespace UnicornDetail {
@@ -1423,7 +1423,7 @@ namespace Unicorn {
 
     template <typename C>
     basic_string<C> utf_substring(const basic_string<C>& str, size_t index,
-            size_t length = npos, Crow::Flagset flags = {}) {
+            size_t length = npos, Flagset flags = {}) {
         UnicornDetail::check_length_flags(flags);
         auto b = utf_begin(str), e = utf_end(str);
         auto i = str_find_index(b, e, index, flags);
@@ -1454,19 +1454,19 @@ namespace Unicorn {
     template <typename C>
     basic_string<C> str_translate(const basic_string<C>& str, const C* target,
             const basic_string<C>& sub) {
-        return str_translate(str, Crow::cstr(target), sub);
+        return str_translate(str, cstr(target), sub);
     }
 
     template <typename C>
     basic_string<C> str_translate(const basic_string<C>& str, const basic_string<C>& target,
             const C* sub) {
-        return str_translate(str, target, Crow::cstr(sub));
+        return str_translate(str, target, cstr(sub));
     }
 
     template <typename C>
     basic_string<C> str_translate(const basic_string<C>& str, const C* target,
             const C* sub) {
-        return str_translate(str, Crow::cstr(target), Crow::cstr(sub));
+        return str_translate(str, cstr(target), cstr(sub));
     }
 
     template <typename C>
@@ -1479,19 +1479,19 @@ namespace Unicorn {
     template <typename C>
     void str_translate_in(basic_string<C>& str, const C* target,
             const basic_string<C>& sub) {
-        str_translate_in(str, Crow::cstr(target), sub);
+        str_translate_in(str, cstr(target), sub);
     }
 
     template <typename C>
     void str_translate_in(basic_string<C>& str, const basic_string<C>& target,
             const C* sub) {
-        str_translate_in(str, target, Crow::cstr(sub));
+        str_translate_in(str, target, cstr(sub));
     }
 
     template <typename C>
     void str_translate_in(basic_string<C>& str, const C* target,
             const C* sub) {
-        str_translate_in(str, Crow::cstr(target), Crow::cstr(sub));
+        str_translate_in(str, cstr(target), cstr(sub));
     }
 
     namespace UnicornDetail {
@@ -1594,7 +1594,7 @@ namespace Unicorn {
 
     template <typename C>
     basic_string<C> str_trim(const basic_string<C>& str, const C* chars) {
-        return str_trim_if(str, UnicornDetail::CharIn(to_utf32(Crow::cstr(chars))));
+        return str_trim_if(str, UnicornDetail::CharIn(to_utf32(cstr(chars))));
     }
 
     template <typename C>
@@ -1609,7 +1609,7 @@ namespace Unicorn {
 
     template <typename C>
     basic_string<C> str_trim_left(const basic_string<C>& str, const C* chars) {
-        return str_trim_left_if(str, UnicornDetail::CharIn(to_utf32(Crow::cstr(chars))));
+        return str_trim_left_if(str, UnicornDetail::CharIn(to_utf32(cstr(chars))));
     }
 
     template <typename C>
@@ -1624,7 +1624,7 @@ namespace Unicorn {
 
     template <typename C>
     basic_string<C> str_trim_right(const basic_string<C>& str, const C* chars) {
-        return str_trim_right_if(str, UnicornDetail::CharIn(to_utf32(Crow::cstr(chars))));
+        return str_trim_right_if(str, UnicornDetail::CharIn(to_utf32(cstr(chars))));
     }
 
     template <typename C>
@@ -1675,7 +1675,7 @@ namespace Unicorn {
 
     template <typename C>
     void str_trim_in(basic_string<C>& str, const C* chars) {
-        str_trim_in_if(str, UnicornDetail::CharIn(to_utf32(Crow::cstr(chars))));
+        str_trim_in_if(str, UnicornDetail::CharIn(to_utf32(cstr(chars))));
     }
 
     template <typename C>
@@ -1690,7 +1690,7 @@ namespace Unicorn {
 
     template <typename C>
     void str_trim_left_in(basic_string<C>& str, const C* chars) {
-        str_trim_left_in_if(str, UnicornDetail::CharIn(to_utf32(Crow::cstr(chars))));
+        str_trim_left_in_if(str, UnicornDetail::CharIn(to_utf32(cstr(chars))));
     }
 
     template <typename C>
@@ -1705,7 +1705,7 @@ namespace Unicorn {
 
     template <typename C>
     void str_trim_right_in(basic_string<C>& str, const C* chars) {
-        str_trim_right_in_if(str, UnicornDetail::CharIn(to_utf32(Crow::cstr(chars))));
+        str_trim_right_in_if(str, UnicornDetail::CharIn(to_utf32(cstr(chars))));
     }
 
     template <typename C>
@@ -1735,7 +1735,7 @@ namespace Unicorn {
 
     template <typename C>
     basic_string<C> str_unify_lines(const basic_string<C>& str, const C* newline) {
-        return str_unify_lines(str, Crow::cstr(newline));
+        return str_unify_lines(str, cstr(newline));
     }
 
     template <typename C>
@@ -1756,7 +1756,7 @@ namespace Unicorn {
 
     template <typename C>
     void str_unify_lines_in(basic_string<C>& str, const C* newline) {
-        str_unify_lines_in(str, Crow::cstr(newline));
+        str_unify_lines_in(str, cstr(newline));
     }
 
     template <typename C>
@@ -1793,13 +1793,13 @@ namespace Unicorn {
     }
 
     template <typename C>
-    basic_string<C> str_wrap(const basic_string<C>& str, Crow::Flagset flags = {},
+    basic_string<C> str_wrap(const basic_string<C>& str, Flagset flags = {},
             size_t width = 0, size_t margin1 = 0, size_t margin2 = npos) {
         using namespace UnicornDetail;
         using string_type = basic_string<C>;
         flags.allow(wrap_crlf | wrap_enforce | wrap_preserve | all_length_flags, "word wrapping");
         if (width == 0 || width == npos) {
-            auto columns = Crow::decnum(Crow::cstr(getenv("COLUMNS")));
+            auto columns = decnum(cstr(getenv("COLUMNS")));
             if (columns < 3)
                 columns = 80;
             width = size_t(columns) - 2;
@@ -1871,7 +1871,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    void str_wrap_in(basic_string<C>& str, Crow::Flagset flags = {},
+    void str_wrap_in(basic_string<C>& str, Flagset flags = {},
             size_t width = 0, size_t margin1 = 0, size_t margin2 = npos) {
         auto result = str_wrap(str, flags, width, margin1, margin2);
         str.swap(result);
@@ -2063,7 +2063,7 @@ namespace Unicorn {
 
         template <typename T, typename C>
         size_t string_to_integer(T& t, const basic_string<C>& str, size_t offset, int base) {
-            CROW_STATIC_ASSERT(std::is_integral<T>::value);
+            PRI_STATIC_ASSERT(std::is_integral<T>::value);
             static const auto dec_chars = recode<C>(u8string("+-0123456789"));
             static const auto hex_chars = recode<C>(u8string("+-0123456789ABCDEFabcdef"));
             t = static_cast<T>(0);
@@ -2080,11 +2080,11 @@ namespace Unicorn {
             char* endptr = nullptr;
             if (std::is_signed<T>::value) {
                 auto value = strtoll(fragment.data(), &endptr, base);
-                value = Crow::clamp(value, std::numeric_limits<T>::min(), std::numeric_limits<T>::max());
+                value = clamp(value, std::numeric_limits<T>::min(), std::numeric_limits<T>::max());
                 t = static_cast<T>(value);
             } else {
                 auto value = strtoull(fragment.data(), &endptr, base);
-                value = Crow::clamp(value, 0, std::numeric_limits<T>::max());
+                value = clamp(value, 0, std::numeric_limits<T>::max());
                 t = static_cast<T>(value);
             }
             return endptr - fragment.data();
@@ -2118,7 +2118,7 @@ namespace Unicorn {
 
     template <typename T, typename C>
     size_t str_to_real(T& t, const basic_string<C>& str, size_t offset = 0) {
-        CROW_STATIC_ASSERT(std::is_floating_point<T>::value);
+        PRI_STATIC_ASSERT(std::is_floating_point<T>::value);
         static const auto float_chars = recode<C>(u8string("+-.0123456789Ee"));
         t = static_cast<T>(0);
         if (offset > str.size())
@@ -2133,7 +2133,7 @@ namespace Unicorn {
             [] (C c) { return static_cast<char>(c); });
         char* endptr = nullptr;
         auto value = strtold(fragment.data(), &endptr);
-        value = Crow::clamp(value, - std::numeric_limits<T>::max(), std::numeric_limits<T>::max());
+        value = clamp(value, - std::numeric_limits<T>::max(), std::numeric_limits<T>::max());
         t = static_cast<T>(value);
         return endptr - fragment.data();
     }

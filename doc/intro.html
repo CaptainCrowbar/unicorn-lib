@@ -134,13 +134,12 @@ above.</p>
 <p>The abbreviations <code>src</code> and <code>dst</code> are frequently used for source and
 destination objects (i.e. input and output parameters).</p>
 
-<p>When a function&#8217;s behaviour can be controlled by a selection of boolean flags,
-the <code>Crow::Flagset</code> class defined in the <a href="https://github.com/CaptainCrowbar/crow-lib">Crow
-library</a> is usually used. This
-allows a set of flags to be passed either in a long form, as a list of named
-flags combined using bitwise <em>or</em>, or in a short form, as a string containing
-characters representing the flags. Refer to the <code>Crow::Flagset</code> documentation
-for details of how this works.</p>
+<p>When a function&#8217;s behaviour is controlled by boolean flags, a <code>Flagset</code> (from
+the <a href="https://github.com/CaptainCrowbar/prion-lib">Prion library</a>) is usually
+used. This allows a set of flags to be passed either in a long form, as a list
+of named flags combined using bitwise <em>or</em>, or in a short form, as a string
+containing characters representing the flags. Refer to the <code>Flagset</code>
+documentation for details of how this works.</p>
 
 <h2 id="exceptionsafety">Exception safety</h2>
 
@@ -154,9 +153,9 @@ function not marked <code>noexcept</code> may throw a <code>std::bad_alloc</code
 this is so ubiquitous it is not usually mentioned in the documentation for
 individual functions.</p>
 
-<p>Functions that take a <code>Crow::Flagset</code> argument will throw <code>Crow::FlagError</code> if
-an invalid combination of flags is passed. Functions that take a callback
-function as an argument will propagate any exceptions thrown by that function.</p>
+<p>Functions that take a <code>Flagset</code> argument will throw <code>FlagError</code> if an invalid
+combination of flags is passed. Functions that take a callback function as an
+argument will propagate any exceptions thrown by that function.</p>
 
 <p>Functions that accept UTF iterator arguments (see the
 <a href="utf.html"><code>unicorn/utf</code></a> module) can throw <code>EncodingError</code> if invalid Unicode
@@ -166,8 +165,8 @@ iterators were created.</p>
 <p>Any other exceptions that a function might throw are described in that
 function&#8217;s description. If a function is not marked <code>noexcept</code>, but its
 documentation does not explicitly mention any exceptions, then it may throw
-<code>std::bad_alloc</code>, and possibly <code>Crow::FlagError</code> or <code>Unicorn::EncodingError</code>
-where appropriate, but will not throw anything else.</p>
+<code>std::bad_alloc</code>, and possibly <code>FlagError</code> or <code>Unicorn::EncodingError</code> where
+appropriate, but will not throw anything else.</p>
 
 <h2 id="buildingunicorn">Building Unicorn</h2>
 
@@ -213,12 +212,15 @@ automatically. Note that the 8-bit PCRE library is always required.</p>
 <h2 id="usingunicorn">Using Unicorn</h2>
 
 <p>You can import the whole library using <code>#include &quot;unicorn/library.hpp&quot;</code>, or
-include the individual modules that you need. Link with <code>-lunicorn -lcrow</code>,
-and with the other required libraries described above.</p>
+include the individual modules that you need. Link with <code>-lunicorn</code>, and with
+the other required libraries described above.</p>
 
 <p>Everything in the Unicorn library is in <code>namespace Unicorn</code> (or a subordinate
 namespace inside <code>Unicorn</code>). You can either qualify all calls with the
 <code>Unicorn::</code> prefix, or use <code>using namespace Unicorn</code>.</p>
+
+<p>Unicorn uses my minimal, header-only Prion utility library. Everything in
+<code>namespace Prion</code> is imported into <code>namespace Unicorn</code>.</p>
 
 </body>
 </html>

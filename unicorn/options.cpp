@@ -17,7 +17,7 @@ namespace Unicorn {
         };
 
         ArgType arg_type(const u8string& arg) {
-            if (arg.size() < 2 || arg[0] != '-' || Crow::ascii_isdigit(arg[1]))
+            if (arg.size() < 2 || arg[0] != '-' || ascii_isdigit(arg[1]))
                 return is_argument;
             else if (arg[1] != '-' && arg[1] != '=')
                 return is_short_option;
@@ -52,16 +52,16 @@ namespace Unicorn {
 
     // Options class
 
-    constexpr Crow::Kwarg<bool> Options::anon;
-    constexpr Crow::Kwarg<bool> Options::boolean;
-    constexpr Crow::Kwarg<bool> Options::floating;
-    constexpr Crow::Kwarg<bool> Options::integer;
-    constexpr Crow::Kwarg<bool> Options::multiple;
-    constexpr Crow::Kwarg<bool> Options::required;
-    constexpr Crow::Kwarg<u8string> Options::abbrev;
-    constexpr Crow::Kwarg<u8string> Options::defval;
-    constexpr Crow::Kwarg<u8string> Options::group;
-    constexpr Crow::Kwarg<u8string> Options::pattern;
+    constexpr Kwarg<bool> Options::anon;
+    constexpr Kwarg<bool> Options::boolean;
+    constexpr Kwarg<bool> Options::floating;
+    constexpr Kwarg<bool> Options::integer;
+    constexpr Kwarg<bool> Options::multiple;
+    constexpr Kwarg<bool> Options::required;
+    constexpr Kwarg<u8string> Options::abbrev;
+    constexpr Kwarg<u8string> Options::defval;
+    constexpr Kwarg<u8string> Options::group;
+    constexpr Kwarg<u8string> Options::pattern;
 
     u8string Options::help() const {
         u8string text = "\n$1\n\n"_fmt(app_info);
@@ -114,7 +114,7 @@ namespace Unicorn {
         }
         size_t maxlen = 0;
         if (! opts.empty())
-            maxlen = *std::max_element(CROW_BOUNDS(lengths));
+            maxlen = *std::max_element(PRI_BOUNDS(lengths));
         for (size_t i = 0; i < opts.size(); ++i)
             text += "    $1  = $2\n"_fmt(str_pad_right(prefixes[i], maxlen, U' ', grapheme_units), suffixes[i]);
         if (opts.empty())
@@ -157,7 +157,7 @@ namespace Unicorn {
         str_trim_in(name, "-");
         if (name.empty())
             return npos;
-        auto i = std::find_if(CROW_BOUNDS(opts),
+        auto i = std::find_if(PRI_BOUNDS(opts),
             [=] (const auto& o) { return o.name == name || o.abbrev == name; });
         if (i == opts.end() || (found && ! i->found))
             return npos;
@@ -170,7 +170,7 @@ namespace Unicorn {
         return i != npos ? opts[i].values : string_list();
     }
 
-    Options::help_mode Options::parse_args(string_list args, Crow::Flagset flags) {
+    Options::help_mode Options::parse_args(string_list args, Flagset flags) {
         add_help_version();
         clean_up_arguments(args, flags);
         if (help_auto && args.empty())
@@ -210,7 +210,7 @@ namespace Unicorn {
         }
     }
 
-    void Options::clean_up_arguments(string_list& args, Crow::Flagset flags) {
+    void Options::clean_up_arguments(string_list& args, Flagset flags) {
         if (! flags.get(opt_noprefix) && ! args.empty())
             args.erase(std::begin(args));
         if (flags.get(opt_quoted))
@@ -221,7 +221,7 @@ namespace Unicorn {
 
     Options::string_list Options::parse_forced_anonymous(string_list& args) {
         string_list anon;
-        auto i = std::find(CROW_BOUNDS(args), "--");
+        auto i = std::find(PRI_BOUNDS(args), "--");
         if (i != std::end(args)) {
             anon.assign(i + 1, std::end(args));
             args.erase(i, std::end(args));
@@ -299,14 +299,14 @@ namespace Unicorn {
     }
 
     void Options::parse_remaining_anonymous(string_list& args, const string_list& anon) {
-        args.insert(std::end(args), CROW_BOUNDS(anon));
+        args.insert(std::end(args), PRI_BOUNDS(anon));
         for (auto& opt: opts) {
             if (args.empty())
                 break;
             if (opt.is_anon) {
                 opt.found = true;
                 if (opt.is_multiple) {
-                    opt.values.insert(std::end(opt.values), CROW_BOUNDS(args));
+                    opt.values.insert(std::end(opt.values), PRI_BOUNDS(args));
                     args.clear();
                 } else {
                     opt.values.push_back(args[0]);
@@ -333,7 +333,7 @@ namespace Unicorn {
         }
     }
 
-    u8string Options::arg_convert(const string& str, Crow::Flagset flags) {
+    u8string Options::arg_convert(const string& str, Flagset flags) {
         if (! flags.get(opt_locale))
             return str;
         u8string utf8;

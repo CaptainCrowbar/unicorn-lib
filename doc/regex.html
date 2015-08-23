@@ -509,9 +509,9 @@ of UTF&#8211;8 mode.</p>
 <li><code>using BasicRegex::<strong>string_type</strong> = basic_string&lt;char_type&gt;</code></li>
 <li><code>using BasicRegex::<strong>match_type</strong> = BasicMatch&lt;CX&gt;</code></li>
 <li><code>using BasicRegex::<strong>match_iterator</strong> = BasicMatchIterator&lt;CX&gt;</code></li>
-<li><code>using BasicRegex::<strong>match_range</strong> = Crow::Irange&lt;match_iterator&gt;</code></li>
+<li><code>using BasicRegex::<strong>match_range</strong> = Irange&lt;match_iterator&gt;</code></li>
 <li><code>using BasicRegex::<strong>split_iterator</strong> = BasicSplitIterator&lt;CX&gt;</code></li>
-<li><code>using BasicRegex::<strong>split_range</strong> = Crow::Irange&lt;split_iterator&gt;</code></li>
+<li><code>using BasicRegex::<strong>split_range</strong> = Irange&lt;split_iterator&gt;</code></li>
 <li><code>using BasicRegex::<strong>utf_iterator</strong> = UtfIterator&lt;CX&gt; [not defined if CX is void]</code></li>
 </ul>
 
@@ -519,7 +519,7 @@ of UTF&#8211;8 mode.</p>
 
 <ul>
 <li><code>BasicRegex::<strong>BasicRegex</strong>()</code></li>
-<li><code>explicit BasicRegex::<strong>BasicRegex</strong>(const string_type&amp; pattern, Crow::Flagset flags = {})</code></li>
+<li><code>explicit BasicRegex::<strong>BasicRegex</strong>(const string_type&amp; pattern, Flagset flags = {})</code></li>
 <li><code>BasicRegex::<strong>BasicRegex</strong>(const BasicRegex&amp; r)</code></li>
 <li><code>BasicRegex::<strong>BasicRegex</strong>(BasicRegex&amp;&amp; r) noexcept</code></li>
 <li><code>BasicRegex::<strong>~BasicRegex</strong>() noexcept</code></li>
@@ -612,7 +612,7 @@ capture by that name (or if the regex does not use named captures).</p>
 
 <ul>
 <li><code>BasicRegex::string_type BasicRegex::<strong>pattern</strong>() const</code></li>
-<li><code>Crow::Flagset BasicRegex::<strong>flags</strong>() const noexcept</code></li>
+<li><code>Flagset BasicRegex::<strong>flags</strong>() const noexcept</code></li>
 </ul>
 
 <p>These return the construction arguments.</p>
@@ -649,8 +649,8 @@ to match the same text) despite differing slightly in spelling, it is
 unspecified whether or not they will compare equal.</p>
 
 <ul>
-<li><code>template &lt;typename C&gt; BasicRegex&lt;C&gt; <strong>regex</strong>(const basic_string&lt;C&gt;&amp; pattern, Crow::Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; BasicRegex&lt;C&gt; <strong>regex</strong>(const C* pattern, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; BasicRegex&lt;C&gt; <strong>regex</strong>(const basic_string&lt;C&gt;&amp; pattern, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; BasicRegex&lt;C&gt; <strong>regex</strong>(const C* pattern, Flagset flags = {})</code></li>
 </ul>
 
 <p>Convenience functions to easily construct a regex object.</p>
@@ -813,7 +813,7 @@ efficient if the same formatting operation is going to be applied many times.</p
 <ul>
 <li><code>BasicRegexFormat::<strong>BasicRegexFormat</strong>()</code></li>
 <li><code>BasicRegexFormat::<strong>BasicRegexFormat</strong>(const regex_type&amp; pattern, const string_type&amp; format)</code></li>
-<li><code>BasicRegexFormat::<strong>BasicRegexFormat</strong>(const string_type&amp; pattern, const string_type&amp; format, Crow::Flagset flags = {})</code></li>
+<li><code>BasicRegexFormat::<strong>BasicRegexFormat</strong>(const string_type&amp; pattern, const string_type&amp; format, Flagset flags = {})</code></li>
 <li><code>BasicRegexFormat::<strong>BasicRegexFormat</strong>(const BasicRegexFormat&amp; f)</code></li>
 <li><code>BasicRegexFormat::<strong>BasicRegexFormat</strong>(BasicRegexFormat&amp;&amp; f) noexcept</code></li>
 <li><code>BasicRegexFormat::<strong>~BasicRegexFormat</strong>() noexcept</code></li>
@@ -844,7 +844,7 @@ first <code>n</code> matches, discarding the unmatched text between them.
 <li><code>BasicRegexFormat::regex_type BasicRegexFormat::<strong>regex</strong>() const</code></li>
 <li><code>BasicRegexFormat::string_type BasicRegexFormat::<strong>format</strong>() const</code></li>
 <li><code>BasicRegexFormat::string_type BasicRegexFormat::<strong>pattern</strong>() const</code></li>
-<li><code>Crow::Flagset BasicRegexFormat::<strong>flags</strong>() const noexcept</code></li>
+<li><code>Flagset BasicRegexFormat::<strong>flags</strong>() const noexcept</code></li>
 </ul>
 
 <p>These functions query the construction parameters. The <code>pattern()</code> and
@@ -859,10 +859,10 @@ first <code>n</code> matches, discarding the unmatched text between them.
 <p>Swap two objects.</p>
 
 <ul>
-<li><code>template &lt;typename C&gt; BasicRegexFormat&lt;C&gt; <strong>regex_format</strong>(const basic_string&lt;C&gt;&amp; pattern, const basic_string&lt;C&gt;&amp; format, Crow::Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; BasicRegexFormat&lt;C&gt; <strong>regex_format</strong>(const basic_string&lt;C&gt;&amp; pattern, const C* format, Crow::Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; BasicRegexFormat&lt;C&gt; <strong>regex_format</strong>(const C* pattern, const basic_string&lt;C&gt;&amp; format, Crow::Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; BasicRegexFormat&lt;C&gt; <strong>regex_format</strong>(const C* pattern, const C* format, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; BasicRegexFormat&lt;C&gt; <strong>regex_format</strong>(const basic_string&lt;C&gt;&amp; pattern, const basic_string&lt;C&gt;&amp; format, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; BasicRegexFormat&lt;C&gt; <strong>regex_format</strong>(const basic_string&lt;C&gt;&amp; pattern, const C* format, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; BasicRegexFormat&lt;C&gt; <strong>regex_format</strong>(const C* pattern, const basic_string&lt;C&gt;&amp; format, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; BasicRegexFormat&lt;C&gt; <strong>regex_format</strong>(const C* pattern, const C* format, Flagset flags = {})</code></li>
 </ul>
 
 <p>Convenience functions for constructing a regex format object.</p>
@@ -980,13 +980,13 @@ original string. (You can get the same effect by enclosing the text in
 <h2 id="versioninformation">Version information</h2>
 
 <ul>
-<li><code>Crow::Version <strong>regex_version</strong>() noexcept</code></li>
+<li><code>Version <strong>regex_version</strong>() noexcept</code></li>
 </ul>
 
 <p>Returns the version of PCRE used to build this library.</p>
 
 <ul>
-<li><code>Crow::Version <strong>regex_unicode_version</strong>() noexcept</code></li>
+<li><code>Version <strong>regex_unicode_version</strong>() noexcept</code></li>
 </ul>
 
 <p>Returns the PCRE library&#8217;s version of Unicode. Because the PCRE library is

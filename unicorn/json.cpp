@@ -40,9 +40,9 @@ namespace Unicorn {
                 if (src.size() - pos < 6 || src[pos] != '\\' || src[pos + 1] != 'u')
                     throw BadJson(pos);
                 for (size_t i = 2; i < 6; ++i)
-                    if (! Crow::ascii_isxdigit(src[pos + i]))
+                    if (! ascii_isxdigit(src[pos + i]))
                         throw BadJson(pos);
-                return static_cast<char16_t>(Crow::hexnum(src.substr(pos + 2, 4)));
+                return static_cast<char16_t>(hexnum(src.substr(pos + 2, 4)));
             }
 
             void read_utf16_char(const u8string& src, size_t& pos, u8string& dst) {
@@ -97,7 +97,7 @@ namespace Unicorn {
 
             void write_utf8_string(const u8string& src, u8string& dst) {
                 size_t dsize = dst.size();
-                Crow::ScopeFailure rewind([&dst,dsize] { dst.resize(dsize); });
+                ScopeFailure rewind([&dst,dsize] { dst.resize(dsize); });
                 dst += '\"';
                 size_t i = 0, size = src.size();
                 while (i < size) {
@@ -117,7 +117,7 @@ namespace Unicorn {
                         case '\\':  dst += "\\\\"; break;
                         default:
                             dst += "\\u00";
-                            dst += Crow::hex(static_cast<uint8_t>(src[j]), 2);
+                            dst += hex(static_cast<uint8_t>(src[j]), 2);
                             break;
                     }
                     i = j + 1;
@@ -127,7 +127,7 @@ namespace Unicorn {
 
             bool array_is_short(const Array& array, size_t max_array) noexcept {
                 return array.size() <= max_array
-                    && std::find_if(CROW_BOUNDS(array),
+                    && std::find_if(PRI_BOUNDS(array),
                         [] (auto& e) { return e.type() >= Json::array; })
                         == array.end();
             }
@@ -182,7 +182,7 @@ namespace Unicorn {
         u8string Exception::assemble(const u8string& message, size_t pos) {
             u8string s = message;
             if (pos != npos)
-                s += " at offset " + Crow::dec(pos);
+                s += " at offset " + dec(pos);
             return s;
         }
 
@@ -342,7 +342,7 @@ namespace Unicorn {
             if (! match)
                 throw BadJson(pos);
             etype = Json::number;
-            rep.number = Crow::fpnum(match.str());
+            rep.number = fpnum(match.str());
             pos += match.count();
         }
 
@@ -424,7 +424,7 @@ namespace Unicorn {
 
         void Element::write_array(u8string& dst) const {
             size_t dsize = dst.size();
-            Crow::ScopeFailure rewind([&dst,dsize] { dst.resize(dsize); });
+            ScopeFailure rewind([&dst,dsize] { dst.resize(dsize); });
             const Array& src(*rep.array);
             if (src.empty()) {
                 dst += "[]";
@@ -440,7 +440,7 @@ namespace Unicorn {
 
         void Element::write_object(u8string& dst) const {
             size_t dsize = dst.size();
-            Crow::ScopeFailure rewind([&dst,dsize] { dst.resize(dsize); });
+            ScopeFailure rewind([&dst,dsize] { dst.resize(dsize); });
             const Object& src(*rep.object);
             if (src.empty()) {
                 dst += "{}";

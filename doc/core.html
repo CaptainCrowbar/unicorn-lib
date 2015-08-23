@@ -27,17 +27,15 @@
 <h2 id="imports">Imports</h2>
 
 <ul>
-<li><code>using Crow::<strong>basic_string</strong>      [= std::basic_string]</code></li>
-<li><code>using Crow::<strong>string</strong>            [= std::string]</code></li>
-<li><code>using Crow::<strong>u8string</strong>          [= std::string]</code></li>
-<li><code>using Crow::<strong>u16string</strong>         [= std::u16string]</code></li>
-<li><code>using Crow::<strong>u32string</strong>         [= std::u32string]</code></li>
-<li><code>using Crow::<strong>wstring</strong>           [= std::wstring]</code></li>
-<li><code>using Crow::<strong>ascii_whitespace</strong>  [= &quot;\t\n\v\f\r &quot;]</code></li>
-<li><code>using Crow::<strong>npos</strong>              [= std::string::npos]</code></li>
+<li><code>using namespace <strong>Prion</strong></code></li>
+<li><code>namespace Unicorn::Literals</code>
+
+<ul>
+<li><code>using namespace Prion::<strong>Literals</strong></code></li>
+</ul></li>
 </ul>
 
-<p>Imported for convenience from the Crow library.</p>
+<p>Everything in the Prion library is imported.</p>
 
 <h2 id="exceptions">Exceptions</h2>
 
@@ -128,8 +126,8 @@ and wide character versions.</p>
 <h2 id="versioninformation">Version information</h2>
 
 <ul>
-<li><code>Crow::Version <strong>unicorn_version</strong>() noexcept</code></li>
-<li><code>Crow::Version <strong>unicode_version</strong>() noexcept</code></li>
+<li><code>Version <strong>unicorn_version</strong>() noexcept</code></li>
+<li><code>Version <strong>unicode_version</strong>() noexcept</code></li>
 </ul>
 
 <p>These return the version of the Unicorn library and the supported version of

@@ -1440,7 +1440,7 @@ const KeyValue<char32_t, uint32_t> scripts_array[] {
 {0xe01f0,2054847098},
 };
 
-const TableView<char32_t, uint32_t> scripts_table {CROW_BOUNDS(scripts_array)};
+const TableView<char32_t, uint32_t> scripts_table {PRI_BOUNDS(scripts_array)};
 
 const KeyValue<char32_t, char const*> script_extensions_array[] {
 {0x0,static_cast<char const*>(0)},
@@ -1601,7 +1601,7 @@ const KeyValue<char32_t, char const*> script_extensions_array[] {
 {0x1d372,static_cast<char const*>(0)},
 };
 
-const TableView<char32_t, char const*> script_extensions_table {CROW_BOUNDS(script_extensions_array)};
+const TableView<char32_t, char const*> script_extensions_table {PRI_BOUNDS(script_extensions_array)};
 
 }
 }

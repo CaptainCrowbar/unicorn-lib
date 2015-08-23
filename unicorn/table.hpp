@@ -14,10 +14,10 @@ namespace Unicorn {
         class endl_type {};
     public:
         static constexpr endl_type endl = {};
-        static constexpr Crow::Kwarg<Crow::Flagset> flags = {};
-        static constexpr Crow::Kwarg<u8string> ditto = {}, empty = {};
-        static constexpr Crow::Kwarg<size_t> margin = {}, spacing = {};
-        static constexpr Crow::Kwarg<bool> unfill = {};
+        static constexpr Kwarg<Flagset> flags = {};
+        static constexpr Kwarg<u8string> ditto = {}, empty = {};
+        static constexpr Kwarg<size_t> margin = {}, spacing = {};
+        static constexpr Kwarg<bool> unfill = {};
         Table(): formats(), cells(1) {}
         void clear_all() noexcept { clear_data(); clear_formats(); }
         void clear_data() noexcept { cells.clear(); cells.resize(1); }
@@ -33,7 +33,7 @@ namespace Unicorn {
         template <typename C, typename... Args> void write(std::basic_ostream<C>& out, const Args&... args) const;
     private:
         struct layout_spec {
-            Crow::Flagset flags = grapheme_units;
+            Flagset flags = grapheme_units;
             u8string ditto = "''", empty = "--";
             size_t margin = 0, spacing = 2;
             bool unfill = false;
@@ -51,7 +51,7 @@ namespace Unicorn {
         if (index < formats.size() && ! formats[index].format().empty())
             cell = formats[index](t);
         else
-            cell = Crow::to_str(t);
+            cell = to_str(t);
         cells.back().push_back(str_trim(cell));
         return *this;
     }

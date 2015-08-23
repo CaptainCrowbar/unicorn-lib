@@ -46,11 +46,11 @@ TODO
     * `using FileReader::value_type = u8string`
     * `FileReader::FileReader()`
     * `template <typename C> explicit FileReader::FileReader(const basic_string<C>& file)`
-    * `template <typename C> FileReader::FileReader(const basic_string<C>& file, Crow::Flagset flags)`
-    * `template <typename C1, typename C2> FileReader::FileReader(const basic_string<C1>& file, Crow::Flagset flags, const basic_string<C2>& enc)`
-    * `template <typename C> FileReader::FileReader(const basic_string<C>& file, Crow::Flagset flags, uint32_t enc)`
-    * `template <typename C1, typename C2, typename C3> FileReader::FileReader(const basic_string<C1>& file, Crow::Flagset flags, const basic_string<C2>& enc, const basic_string<C3>& eol)`
-    * `template <typename C1, typename C2> FileReader::FileReader(const basic_string<C1>& file, Crow::Flagset flags, uint32_t enc, const basic_string<C2>& eol)`
+    * `template <typename C> FileReader::FileReader(const basic_string<C>& file, Flagset flags)`
+    * `template <typename C1, typename C2> FileReader::FileReader(const basic_string<C1>& file, Flagset flags, const basic_string<C2>& enc)`
+    * `template <typename C> FileReader::FileReader(const basic_string<C>& file, Flagset flags, uint32_t enc)`
+    * `template <typename C1, typename C2, typename C3> FileReader::FileReader(const basic_string<C1>& file, Flagset flags, const basic_string<C2>& enc, const basic_string<C3>& eol)`
+    * `template <typename C1, typename C2> FileReader::FileReader(const basic_string<C1>& file, Flagset flags, uint32_t enc, const basic_string<C2>& eol)`
     * `size_t FileReader::line() const noexcept`
     * `[standard input iterator operations]`
 
@@ -72,11 +72,11 @@ Bitmask        | Letter  | Description
 
 TODO
 
-* `template <typename C> Crow::Irange<FileReader> read_lines(const basic_string<C>& file, Crow::Flagset flags = {})`
-* `template <typename C1, typename C2> Crow::Irange<FileReader> read_lines(const basic_string<C1>& file, Crow::Flagset flags, const basic_string<C2>& enc)`
-* `template <typename C> Crow::Irange<FileReader> read_lines(const basic_string<C>& file, Crow::Flagset flags, uint32_t enc)`
-* `template <typename C1, typename C2, typename C3> Crow::Irange<FileReader> read_lines(const basic_string<C1>& file, Crow::Flagset flags, const basic_string<C2>& enc, const basic_string<C3>& eol)`
-* `template <typename C1, typename C2> Crow::Irange<FileReader> read_lines(const basic_string<C1>& file, Crow::Flagset flags, uint32_t enc, const basic_string<C2>& eol)`
+* `template <typename C> Irange<FileReader> read_lines(const basic_string<C>& file, Flagset flags = {})`
+* `template <typename C1, typename C2> Irange<FileReader> read_lines(const basic_string<C1>& file, Flagset flags, const basic_string<C2>& enc)`
+* `template <typename C> Irange<FileReader> read_lines(const basic_string<C>& file, Flagset flags, uint32_t enc)`
+* `template <typename C1, typename C2, typename C3> Irange<FileReader> read_lines(const basic_string<C1>& file, Flagset flags, const basic_string<C2>& enc, const basic_string<C3>& eol)`
+* `template <typename C1, typename C2> Irange<FileReader> read_lines(const basic_string<C1>& file, Flagset flags, uint32_t enc, const basic_string<C2>& eol)`
 
 TODO
 
@@ -90,9 +90,9 @@ TODO
     * `using FileWriter::value_type = void`
     * `FileWriter::FileWriter()`
     * `template <typename C> explicit FileWriter::FileWriter(const basic_string<C>& file)`
-    * `template <typename C> FileWriter::FileWriter(const basic_string<C>& file, Crow::Flagset flags)`
-    * `template <typename C1, typename C2> FileWriter::FileWriter(const basic_string<C1>& file, Crow::Flagset flags, const basic_string<C2>& enc)`
-    * `template <typename C> FileWriter::FileWriter(const basic_string<C>& file, Crow::Flagset flags, uint32_t enc)`
+    * `template <typename C> FileWriter::FileWriter(const basic_string<C>& file, Flagset flags)`
+    * `template <typename C1, typename C2> FileWriter::FileWriter(const basic_string<C1>& file, Flagset flags, const basic_string<C2>& enc)`
+    * `template <typename C> FileWriter::FileWriter(const basic_string<C>& file, Flagset flags, uint32_t enc)`
     * `void FileWriter::flush()`
     * `[standard output iterator operations]`
 

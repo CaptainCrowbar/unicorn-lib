@@ -18,8 +18,8 @@ namespace Unicorn {
         explicit UnknownEncoding(const u8string& encoding, const u8string& details = {}):
             std::runtime_error(assemble(encoding, details)), enc(std::make_shared<u8string>(encoding)) {}
         explicit UnknownEncoding(uint32_t encoding, const u8string& details = {}):
-            std::runtime_error(assemble(Crow::dec(encoding), details)),
-            enc(std::make_shared<u8string>(Crow::dec(encoding))) {}
+            std::runtime_error(assemble(dec(encoding), details)),
+            enc(std::make_shared<u8string>(dec(encoding))) {}
         const char* encoding() const noexcept { static const char c = 0; return enc ? enc->data() : &c; }
     private:
         std::shared_ptr<u8string> enc;
@@ -35,7 +35,7 @@ namespace Unicorn {
     namespace UnicornDetail {
 
         using EncodingTag =
-            #if defined(CROW_TARGET_UNIX)
+            #if defined(PRI_TARGET_UNIX)
                 u8string;
             #else
                 uint32_t;
@@ -44,14 +44,14 @@ namespace Unicorn {
         u8string guess_utf(const string& str);
         EncodingTag lookup_encoding(const u8string& name);
         EncodingTag lookup_encoding(uint32_t page);
-        void mbcs_flags(Crow::Flagset& flags);
-        void native_import(const string& src, NativeString& dst, EncodingTag tag, Crow::Flagset flags);
-        void native_export(const NativeString& src, string& dst, EncodingTag tag, Crow::Flagset flags);
-        bool utf_import(const string& src, NativeString& dst, EncodingTag tag, Crow::Flagset flags);
-        bool utf_export(const NativeString& src, string& dst, EncodingTag tag, Crow::Flagset flags);
+        void mbcs_flags(Flagset& flags);
+        void native_import(const string& src, NativeString& dst, EncodingTag tag, Flagset flags);
+        void native_export(const NativeString& src, string& dst, EncodingTag tag, Flagset flags);
+        bool utf_import(const string& src, NativeString& dst, EncodingTag tag, Flagset flags);
+        bool utf_export(const NativeString& src, string& dst, EncodingTag tag, Flagset flags);
 
         template <typename C, typename E>
-        void import_string_helper(const string& src, basic_string<C>& dst, E enc, Crow::Flagset flags) {
+        void import_string_helper(const string& src, basic_string<C>& dst, E enc, Flagset flags) {
             mbcs_flags(flags);
             auto tag = lookup_encoding(enc);
             if (src.empty()) {
@@ -69,7 +69,7 @@ namespace Unicorn {
         }
 
         template <typename C, typename E>
-        void export_string_helper(const basic_string<C>& src, string& dst, E enc, Crow::Flagset flags) {
+        void export_string_helper(const basic_string<C>& src, string& dst, E enc, Flagset flags) {
             mbcs_flags(flags);
             auto tag = lookup_encoding(enc);
             if (src.empty()) {
@@ -91,17 +91,17 @@ namespace Unicorn {
 
     template <typename C, typename C2>
     void import_string(const string& src, basic_string<C>& dst, const basic_string<C2>& enc,
-            Crow::Flagset flags = {}) {
+            Flagset flags = {}) {
         UnicornDetail::import_string_helper(src, dst, to_utf8(enc), flags);
     }
 
     template <typename C, typename C2>
-    void import_string(const string& src, basic_string<C>& dst, const C2* enc, Crow::Flagset flags = {}) {
-        UnicornDetail::import_string_helper(src, dst, to_utf8(Crow::cstr(enc)), flags);
+    void import_string(const string& src, basic_string<C>& dst, const C2* enc, Flagset flags = {}) {
+        UnicornDetail::import_string_helper(src, dst, to_utf8(cstr(enc)), flags);
     }
 
     template <typename C>
-    void import_string(const string& src, basic_string<C>& dst, uint32_t enc, Crow::Flagset flags = {}) {
+    void import_string(const string& src, basic_string<C>& dst, uint32_t enc, Flagset flags = {}) {
         UnicornDetail::import_string_helper(src, dst, enc, flags);
     }
 
@@ -112,17 +112,17 @@ namespace Unicorn {
 
     template <typename C, typename C2>
     void export_string(const basic_string<C>& src, string& dst, const basic_string<C2>& enc,
-            Crow::Flagset flags = {}) {
+            Flagset flags = {}) {
         UnicornDetail::export_string_helper(src, dst, to_utf8(enc), flags);
     }
 
     template <typename C, typename C2>
-    void export_string(const basic_string<C>& src, string& dst, const C2* enc, Crow::Flagset flags = {}) {
-        UnicornDetail::export_string_helper(src, dst, to_utf8(Crow::cstr(enc)), flags);
+    void export_string(const basic_string<C>& src, string& dst, const C2* enc, Flagset flags = {}) {
+        UnicornDetail::export_string_helper(src, dst, to_utf8(cstr(enc)), flags);
     }
 
     template <typename C>
-    void export_string(const basic_string<C>& src, string& dst, uint32_t enc, Crow::Flagset flags = {}) {
+    void export_string(const basic_string<C>& src, string& dst, uint32_t enc, Flagset flags = {}) {
         UnicornDetail::export_string_helper(src, dst, enc, flags);
     }
 

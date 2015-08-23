@@ -21,7 +21,7 @@ namespace inside `Unicorn`). You can either qualify all calls with the
 `Unicorn::` prefix, or use `using namespace Unicorn`.
 
 The Unicorn library depends on the utilities and unit testing framework in my
-[Crow library](https://github.com/CaptainCrowbar/crow-lib).
+[Prion library](https://github.com/CaptainCrowbar/prion-lib).
 
 * **Documentation**
     * [Introduction to the Unicorn Library](intro.html)

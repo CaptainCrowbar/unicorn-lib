@@ -6,6 +6,8 @@
 #include <algorithm>
 #include <cerrno>
 
+PRI_LDLIB(crow)
+
 using namespace std::literals;
 using namespace Unicorn::Literals;
 
@@ -14,7 +16,7 @@ namespace Unicorn {
     // Exceptions
 
     u8string IOError::assemble(const char* msg, const u8string& file, int error) {
-        auto s = Crow::cstr(msg);
+        auto s = cstr(msg);
         if (s.empty())
             s = "I/O error";
         if (! file.empty()) {
@@ -26,8 +28,8 @@ namespace Unicorn {
         }
         if (error) {
             s += "; error ";
-            s += Crow::dec(error);
-            string details = Crow::CrtError::translate(error);
+            s += dec(error);
+            string details = CrtError::translate(error);
             if (! details.empty()) {
                 s += "; ";
                 s += details;
@@ -49,7 +51,7 @@ namespace Unicorn {
 
         SharedFile shared_fopen(const NativeString& file, const NativeString& mode, bool check) {
             FILE* f =
-                #if defined(CROW_TARGET_UNIX)
+                #if defined(PRI_TARGET_UNIX)
                     fopen
                 #else
                     _wfopen
@@ -71,7 +73,7 @@ namespace Unicorn {
         u8string line8;
         string rdbuf;
         NativeString name;
-        Crow::Flagset flags;
+        Flagset flags;
         u8string enc;
         u8string eol;
         SharedFile handle;
@@ -97,7 +99,7 @@ namespace Unicorn {
         return impl ? impl->lines : size_t(0);
     }
 
-    void FileReader::init(const NativeString& file, Crow::Flagset flags, const u8string& enc, const u8string& eol) {
+    void FileReader::init(const NativeString& file, Flagset flags, const u8string& enc, const u8string& eol) {
         static const auto dashfile = "-"_nat;
         flags.allow(err_replace | err_throw | io_bom | io_crlf | io_lf
             | io_nofail | io_notempty | io_stdin | io_striplf | io_striptws
@@ -113,7 +115,7 @@ namespace Unicorn {
         if (enc.empty() || enc == "0")
             impl->enc = "utf-8";
         if (flags.get(io_stdin) && (file.empty() || file == dashfile))
-            impl->handle.reset(stdin, Crow::do_nothing);
+            impl->handle.reset(stdin, do_nothing);
         else
             impl->handle = shared_fopen(file, "rb"_nat, ! flags.get(io_nofail));
         ++*this;
@@ -190,7 +192,7 @@ namespace Unicorn {
     struct FileWriter::impl_type {
         u8string wrbuf;
         NativeString name;
-        Crow::Flagset flags;
+        Flagset flags;
         u8string enc;
         SharedFile handle;
         std::shared_ptr<Crow::Mutex> mutex;
@@ -203,7 +205,7 @@ namespace Unicorn {
             throw WriteError(impl->name, errno);
     }
 
-    void FileWriter::init(const NativeString& file, Crow::Flagset flags, const u8string& enc) {
+    void FileWriter::init(const NativeString& file, Flagset flags, const u8string& enc) {
         static const NativeString dashfile{NativeCharacter('-')};
         static Crow::Mutex stdout_mutex;
         static Crow::Mutex stderr_mutex;
@@ -222,16 +224,16 @@ namespace Unicorn {
         if (enc.empty() || enc == "0")
             impl->enc = "utf-8";
         if (flags.get(io_stdout) && (file.empty() || file == dashfile))
-            impl->handle.reset(stdout, Crow::do_nothing);
+            impl->handle.reset(stdout, do_nothing);
         else if (flags.get(io_stderr) && (file.empty() || file == dashfile))
-            impl->handle.reset(stderr, Crow::do_nothing);
+            impl->handle.reset(stderr, do_nothing);
         else
             impl->handle = shared_fopen(file, flags.get(io_append) ? "ab"_nat : "wb"_nat, true);
         if (flags.get(io_mutex)) {
             if (impl->handle.get() == stdout)
-                impl->mutex.reset(&stdout_mutex, Crow::do_nothing);
+                impl->mutex.reset(&stdout_mutex, do_nothing);
             else if (impl->handle.get() == stderr)
-                impl->mutex.reset(&stderr_mutex, Crow::do_nothing);
+                impl->mutex.reset(&stderr_mutex, do_nothing);
             else
                 impl->mutex = std::make_shared<Crow::Mutex>();
         }

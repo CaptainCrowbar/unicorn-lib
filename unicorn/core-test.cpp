@@ -1,9 +1,8 @@
-#include "crow/unit-test.hpp"
 #include "unicorn/core.hpp"
+#include "prion/unit-test.hpp"
 #include <string>
 
 using namespace std::literals;
-using namespace Crow;
 using namespace Unicorn;
 using namespace Unicorn::Literals;
 
@@ -27,7 +26,7 @@ namespace {
 
     void check_native_string() {
 
-        #if defined(CROW_TARGET_UNIX)
+        #if defined(PRI_TARGET_UNIX)
 
             string s = "Hello world"_nat;
             TEST_EQUAL(s, "Hello world"s);

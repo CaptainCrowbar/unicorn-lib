@@ -18,16 +18,11 @@ This module provides some common definitions used throughout the library.
 
 ## Imports ##
 
-* `using Crow::basic_string      [= std::basic_string]`
-* `using Crow::string            [= std::string]`
-* `using Crow::u8string          [= std::string]`
-* `using Crow::u16string         [= std::u16string]`
-* `using Crow::u32string         [= std::u32string]`
-* `using Crow::wstring           [= std::wstring]`
-* `using Crow::ascii_whitespace  [= "\t\n\v\f\r "]`
-* `using Crow::npos              [= std::string::npos]`
+* `using namespace Prion`
+* `namespace Unicorn::Literals`
+    * `using namespace Prion::Literals`
 
-Imported for convenience from the Crow library.
+Everything in the Prion library is imported.
 
 ## Exceptions ##
 
@@ -92,8 +87,8 @@ and wide character versions.
 
 ## Version information ##
 
-* `Crow::Version unicorn_version() noexcept`
-* `Crow::Version unicode_version() noexcept`
+* `Version unicorn_version() noexcept`
+* `Version unicode_version() noexcept`
 
 These return the version of the Unicorn library and the supported version of
 the Unicode standard.

@@ -117,7 +117,7 @@ UTF encoding implied by the character type <code>C</code>.</p>
 <li><code>using UtfIterator::<strong>value_type</strong> = char32_t</code></li>
 <li><code>UtfIterator::<strong>UtfIterator</strong>() noexcept</code></li>
 <li><code>explicit UtfIterator::<strong>UtfIterator</strong>(const string_type&amp; src)</code></li>
-<li><code>UtfIterator::<strong>UtfIterator</strong>(const string_type&amp; src, size_t offset, Crow::Flagset flags = {})</code></li>
+<li><code>UtfIterator::<strong>UtfIterator</strong>(const string_type&amp; src, size_t offset, Flagset flags = {})</code></li>
 <li><code>const string_type&amp; UtfIterator::<strong>source</strong>() const noexcept</code></li>
 <li><code>size_t UtfIterator::<strong>offset</strong>() const noexcept</code></li>
 <li><code>size_t UtfIterator::<strong>count</strong>() const noexcept</code></li>
@@ -171,24 +171,24 @@ errors.</p>
 <li><code>using <strong>Utf16Iterator</strong> = UtfIterator&lt;char16_t&gt;</code></li>
 <li><code>using <strong>Utf32Iterator</strong> = UtfIterator&lt;char32_t&gt;</code></li>
 <li><code>using <strong>WcharIterator</strong> = UtfIterator&lt;wchar_t&gt;</code></li>
-<li><code>using <strong>Utf8Range</strong> = Crow::Irange&lt;Utf8Iterator&gt;</code></li>
-<li><code>using <strong>Utf16Range</strong> = Crow::Irange&lt;Utf16Iterator&gt;</code></li>
-<li><code>using <strong>Utf32Range</strong> = Crow::Irange&lt;Utf32Iterator&gt;</code></li>
-<li><code>using <strong>WcharRange</strong> = Crow::Irange&lt;WcharIterator&gt;</code></li>
+<li><code>using <strong>Utf8Range</strong> = Irange&lt;Utf8Iterator&gt;</code></li>
+<li><code>using <strong>Utf16Range</strong> = Irange&lt;Utf16Iterator&gt;</code></li>
+<li><code>using <strong>Utf32Range</strong> = Irange&lt;Utf32Iterator&gt;</code></li>
+<li><code>using <strong>WcharRange</strong> = Irange&lt;WcharIterator&gt;</code></li>
 </ul>
 
 <p>Convenience aliases for specific iterators and ranges.</p>
 
 <ul>
-<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>utf_begin</strong>(const basic_string&lt;C&gt;&amp; src, Crow::Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>utf_end</strong>(const basic_string&lt;C&gt;&amp; src, Crow::Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; Crow::Irange&lt;UtfIterator&lt;C&gt;&gt; <strong>utf_range</strong>(const basic_string&lt;C&gt;&amp; src, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>utf_begin</strong>(const basic_string&lt;C&gt;&amp; src, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>utf_end</strong>(const basic_string&lt;C&gt;&amp; src, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;UtfIterator&lt;C&gt;&gt; <strong>utf_range</strong>(const basic_string&lt;C&gt;&amp; src, Flagset flags = {})</code></li>
 </ul>
 
 <p>These return iterators over an encoded string.</p>
 
 <ul>
-<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>utf_iterator</strong>(const basic_string&lt;C&gt;&amp; src, size_t offset, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>utf_iterator</strong>(const basic_string&lt;C&gt;&amp; src, size_t offset, Flagset flags = {})</code></li>
 </ul>
 
 <p>Returns an iterator pointing to a specific offset in a string. If the offset
@@ -197,7 +197,7 @@ character.</p>
 
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>u_str</strong>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j)</code></li>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>u_str</strong>(const Crow::Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; range)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>u_str</strong>(const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; range)</code></li>
 </ul>
 
 <p>These return a copy of the substring between two iterators.</p>
@@ -244,7 +244,7 @@ same way as for <code>UtfIterator</code>.</p>
 <p>Convenience aliases for specific iterators.</p>
 
 <ul>
-<li><code>template &lt;typename C&gt; UtfWriter&lt;C&gt; <strong>utf_writer</strong>(basic_string&lt;C&gt;&amp; dst, Crow::Flagset flags = {}) noexcept</code></li>
+<li><code>template &lt;typename C&gt; UtfWriter&lt;C&gt; <strong>utf_writer</strong>(basic_string&lt;C&gt;&amp; dst, Flagset flags = {}) noexcept</code></li>
 </ul>
 
 <p>Returns an encoding iterator writing to the given destination string.</p>
@@ -252,10 +252,10 @@ same way as for <code>UtfIterator</code>.</p>
 <h2 id="utfconversionfunctions">UTF conversion functions</h2>
 
 <ul>
-<li><code>template &lt;typename C1, typename C2&gt; void <strong>recode</strong>(const basic_string&lt;C1&gt;&amp; src, basic_string&lt;C2&gt;&amp; dst, Crow::Flagset flags = {})</code></li>
-<li><code>template &lt;typename C1, typename C2&gt; void <strong>recode</strong>(const basic_string&lt;C1&gt;&amp; src, size_t offset, basic_string&lt;C2&gt;&amp; dst, Crow::Flagset flags = {})</code></li>
-<li><code>template &lt;typename C1, typename C2&gt; void <strong>recode</strong>(const C1* src, size_t count, basic_string&lt;C2&gt;&amp; dst, Crow::Flagset flags = {})</code></li>
-<li><code>template &lt;typename C2, typename C1&gt; basic_string&lt;C2&gt; <strong>recode</strong>(const basic_string&lt;C1&gt;&amp; src, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C1, typename C2&gt; void <strong>recode</strong>(const basic_string&lt;C1&gt;&amp; src, basic_string&lt;C2&gt;&amp; dst, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C1, typename C2&gt; void <strong>recode</strong>(const basic_string&lt;C1&gt;&amp; src, size_t offset, basic_string&lt;C2&gt;&amp; dst, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C1, typename C2&gt; void <strong>recode</strong>(const C1* src, size_t count, basic_string&lt;C2&gt;&amp; dst, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C2, typename C1&gt; basic_string&lt;C2&gt; <strong>recode</strong>(const basic_string&lt;C1&gt;&amp; src, Flagset flags = {})</code></li>
 <li><code>template &lt;typename C2, typename C1&gt; basic_string&lt;C2&gt; <strong>recode</strong>(const basic_string&lt;C1&gt;&amp; src, size_t offset, int on_error)</code></li>
 </ul>
 
@@ -274,11 +274,11 @@ supplied by reference, after an exception is thrown the destination string
 will contain the successfully converted part of the string before the error.</p>
 
 <ul>
-<li><code>template &lt;typename C&gt; u8string <strong>to_utf8</strong>(const basic_string&lt;C&gt;&amp; src, Crow::Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; u16string <strong>to_utf16</strong>(const basic_string&lt;C&gt;&amp; src, Crow::Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; u32string <strong>to_utf32</strong>(const basic_string&lt;C&gt;&amp; src, Crow::Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; wstring <strong>to_wstring</strong>(const basic_string&lt;C&gt;&amp; src, Crow::Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; NativeString <strong>to_native</strong>(const basic_string&lt;C&gt;&amp; src, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; u8string <strong>to_utf8</strong>(const basic_string&lt;C&gt;&amp; src, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; u16string <strong>to_utf16</strong>(const basic_string&lt;C&gt;&amp; src, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; u32string <strong>to_utf32</strong>(const basic_string&lt;C&gt;&amp; src, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; wstring <strong>to_wstring</strong>(const basic_string&lt;C&gt;&amp; src, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; NativeString <strong>to_native</strong>(const basic_string&lt;C&gt;&amp; src, Flagset flags = {})</code></li>
 </ul>
 
 <p>These are just shorthand for the corresponding invocation of <code>recode()</code>.</p>

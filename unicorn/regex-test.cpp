@@ -1,7 +1,7 @@
-#include "crow/unit-test.hpp"
 #include "unicorn/core.hpp"
 #include "unicorn/regex.hpp"
 #include "unicorn/string.hpp"
+#include "prion/unit-test.hpp"
 #include <algorithm>
 #include <cmath>
 #include <iostream>
@@ -9,7 +9,6 @@
 #include <vector>
 
 using namespace std::literals;
-using namespace Crow;
 using namespace Unicorn;
 using namespace Unicorn::Literals;
 
@@ -49,7 +48,7 @@ namespace {
         TEST_EQUAL(r.flags(), 0);
 
         TEST(! m.matched());
-        TEST_EQUAL(u_str(CROW_BOUNDS(m)), "");
+        TEST_EQUAL(u_str(PRI_BOUNDS(m)), "");
 
         TRY(r = Regex("[a-z]+"));
         TEST(! r.empty());
@@ -69,7 +68,7 @@ namespace {
         TEST_EQUAL(m.str(), "ello");
         TEST_EQUAL(m.str(0), "ello");
         TEST_EQUAL(m.str(1), "");
-        TEST_EQUAL(u_str(CROW_BOUNDS(m)), "ello");
+        TEST_EQUAL(u_str(PRI_BOUNDS(m)), "ello");
         TEST_EQUAL(u_str(m.begin(0), m.end(0)), "ello");
         TEST_EQUAL(u_str(m.begin(1), m.end(1)), "");
         s = "42";
@@ -83,7 +82,7 @@ namespace {
         TEST_EQUAL(m.endpos(), npos);
         TEST_EQUAL(m.count(), 0);
         TEST_EQUAL(m.str(), "");
-        TEST_EQUAL(u_str(CROW_BOUNDS(m)), "");
+        TEST_EQUAL(u_str(PRI_BOUNDS(m)), "");
 
         TRY(r = Regex("[a-z]+", rx_dfa));
         TEST_EQUAL(r.groups(), 1);
@@ -196,7 +195,7 @@ namespace {
         TEST_EQUAL(m.str(), "Hello world");
         TEST_EQUAL(m.str(0), "Hello world");
         TEST_EQUAL(m[0], "Hello world");
-        TEST_EQUAL(u_str(CROW_BOUNDS(m)), "Hello world");
+        TEST_EQUAL(u_str(PRI_BOUNDS(m)), "Hello world");
         TEST_EQUAL(u_str(m.begin(0), m.end(0)), "Hello world");
         TEST_EQUAL(m.offset(1), 0);
         TEST_EQUAL(m.endpos(1), 5);
@@ -308,10 +307,10 @@ namespace {
 
         s = "";               TRY(mr = r.grep(s));  TEST_EQUAL(range_count(mr), 0);
         s = "42";             TRY(mr = r.grep(s));  TEST_EQUAL(range_count(mr), 0);
-        s = "Hello";          TRY(mr = r.grep(s));  TEST_EQUAL(range_count(mr), 1);  TRY(std::copy(CROW_BOUNDS(mr), overwrite(v)));  TEST_EQUAL(Test::format_range(v), "[Hello]");
-        s = "(Hello)";        TRY(mr = r.grep(s));  TEST_EQUAL(range_count(mr), 1);  TRY(std::copy(CROW_BOUNDS(mr), overwrite(v)));  TEST_EQUAL(Test::format_range(v), "[Hello]");
-        s = "Hello world";    TRY(mr = r.grep(s));  TEST_EQUAL(range_count(mr), 2);  TRY(std::copy(CROW_BOUNDS(mr), overwrite(v)));  TEST_EQUAL(Test::format_range(v), "[Hello,world]");
-        s = "(Hello world)";  TRY(mr = r.grep(s));  TEST_EQUAL(range_count(mr), 2);  TRY(std::copy(CROW_BOUNDS(mr), overwrite(v)));  TEST_EQUAL(Test::format_range(v), "[Hello,world]");
+        s = "Hello";          TRY(mr = r.grep(s));  TEST_EQUAL(range_count(mr), 1);  TRY(std::copy(PRI_BOUNDS(mr), overwrite(v)));  TEST_EQUAL(Test::format_range(v), "[Hello]");
+        s = "(Hello)";        TRY(mr = r.grep(s));  TEST_EQUAL(range_count(mr), 1);  TRY(std::copy(PRI_BOUNDS(mr), overwrite(v)));  TEST_EQUAL(Test::format_range(v), "[Hello]");
+        s = "Hello world";    TRY(mr = r.grep(s));  TEST_EQUAL(range_count(mr), 2);  TRY(std::copy(PRI_BOUNDS(mr), overwrite(v)));  TEST_EQUAL(Test::format_range(v), "[Hello,world]");
+        s = "(Hello world)";  TRY(mr = r.grep(s));  TEST_EQUAL(range_count(mr), 2);  TRY(std::copy(PRI_BOUNDS(mr), overwrite(v)));  TEST_EQUAL(Test::format_range(v), "[Hello,world]");
 
     }
 
@@ -472,7 +471,7 @@ namespace {
             TRY(r = Regex16(u"\\w+"));
             TRY(mr = r.grep(s));
             TEST_EQUAL(range_count(mr), 2);
-            TRY(std::copy(CROW_BOUNDS(mr), overwrite(v)));
+            TRY(std::copy(PRI_BOUNDS(mr), overwrite(v)));
             TEST_EQUAL(Test::format_range(v), "[Hello,world]");
 
             Irange<SplitIterator16> sr;
@@ -480,7 +479,7 @@ namespace {
             TRY(r = Regex16(u"[ ()]+"));
             TRY(sr = r.split(s));
             TEST_EQUAL(range_count(sr), 4);
-            TRY(std::copy(CROW_BOUNDS(sr), overwrite(v)));
+            TRY(std::copy(PRI_BOUNDS(sr), overwrite(v)));
             TEST_EQUAL(Test::format_range(v), "[,Hello,world,]");
 
             RegexFormat16 rf;
@@ -534,7 +533,7 @@ namespace {
             TRY(r = Regex32(U"\\w+"));
             TRY(mr = r.grep(s));
             TEST_EQUAL(range_count(mr), 2);
-            TRY(std::copy(CROW_BOUNDS(mr), overwrite(v)));
+            TRY(std::copy(PRI_BOUNDS(mr), overwrite(v)));
             TEST_EQUAL(Test::format_range(v), "[Hello,world]");
 
             Irange<SplitIterator32> sr;
@@ -542,7 +541,7 @@ namespace {
             TRY(r = Regex32(U"[ ()]+"));
             TRY(sr = r.split(s));
             TEST_EQUAL(range_count(sr), 4);
-            TRY(std::copy(CROW_BOUNDS(sr), overwrite(v)));
+            TRY(std::copy(PRI_BOUNDS(sr), overwrite(v)));
             TEST_EQUAL(Test::format_range(v), "[,Hello,world,]");
 
             RegexFormat32 rf;
@@ -596,7 +595,7 @@ namespace {
             TRY(r = WideRegex(L"\\w+"));
             TRY(mr = r.grep(s));
             TEST_EQUAL(range_count(mr), 2);
-            TRY(std::copy(CROW_BOUNDS(mr), overwrite(v)));
+            TRY(std::copy(PRI_BOUNDS(mr), overwrite(v)));
             TEST_EQUAL(Test::format_range(v), "[Hello,world]");
 
             Irange<WideSplitIterator> sr;
@@ -604,7 +603,7 @@ namespace {
             TRY(r = WideRegex(L"[ ()]+"));
             TRY(sr = r.split(s));
             TEST_EQUAL(range_count(sr), 4);
-            TRY(std::copy(CROW_BOUNDS(sr), overwrite(v)));
+            TRY(std::copy(PRI_BOUNDS(sr), overwrite(v)));
             TEST_EQUAL(Test::format_range(v), "[,Hello,world,]");
 
             WideRegexFormat rf;
@@ -675,7 +674,7 @@ namespace {
         TRY(r = ByteRegex("\\w+"));
         TRY(mr = r.grep(s1));
         TEST_EQUAL(range_count(mr), 2);
-        TRY(std::copy(CROW_BOUNDS(mr), overwrite(v)));
+        TRY(std::copy(PRI_BOUNDS(mr), overwrite(v)));
         TEST_EQUAL(Test::format_range(v), "[Hello,world]");
 
         Irange<ByteSplitIterator> sr;
@@ -683,7 +682,7 @@ namespace {
         TRY(r = ByteRegex("[ ()]+"));
         TRY(sr = r.split(s1));
         TEST_EQUAL(range_count(sr), 4);
-        TRY(std::copy(CROW_BOUNDS(sr), overwrite(v)));
+        TRY(std::copy(PRI_BOUNDS(sr), overwrite(v)));
         TEST_EQUAL(Test::format_range(v), "[,Hello,world,]");
 
         ByteRegexFormat rf;

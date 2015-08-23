@@ -44,7 +44,7 @@ namespace Unicorn {
     // Basic character functions
 
     template <typename C> constexpr char32_t as_uchar(C c) noexcept { return std::make_unsigned_t<C>(c); }
-    inline u8string char_as_hex(char32_t c) { return "U+" + Crow::ascii_uppercase(Crow::hex(c, 4)); }
+    inline u8string char_as_hex(char32_t c) { return "U+" + ascii_uppercase(hex(c, 4)); }
     constexpr bool char_is_ascii(char32_t c) noexcept { return c <= last_ascii_char; }
     constexpr bool char_is_latin1(char32_t c) noexcept { return c <= last_latin1_char; }
     constexpr bool char_is_surrogate(char32_t c) noexcept
@@ -188,11 +188,11 @@ namespace Unicorn {
 
     // Character names
 
-    constexpr auto code_point_labels   = Crow::Flagset::value('l');
-    constexpr auto control_char_names  = Crow::Flagset::value('c');
-    constexpr auto updated_char_names  = Crow::Flagset::value('u');
+    constexpr auto code_point_labels   = Flagset::value('l');
+    constexpr auto control_char_names  = Flagset::value('c');
+    constexpr auto updated_char_names  = Flagset::value('u');
 
-    u8string char_name(char32_t c, Crow::Flagset flags = {});
+    u8string char_name(char32_t c, Flagset flags = {});
 
     // Decomposition properties
 

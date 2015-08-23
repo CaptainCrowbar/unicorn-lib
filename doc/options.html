@@ -236,9 +236,9 @@ string that was supplied to the <code>Options</code> constructor.</p>
 <li><code>template &lt;typename C&gt; bool Options::<strong>parse</strong>(const std::vector&lt;basic_string&lt;C&gt;&gt;&amp; args)</code></li>
 <li><code>template &lt;typename C&gt; bool Options::<strong>parse</strong>(const basic_string&lt;C&gt;&amp; args)</code></li>
 <li><code>template &lt;typename C&gt; bool Options::<strong>parse</strong>(int argc, C** argv)</code></li>
-<li><code>template &lt;typename C, typename C2&gt; bool Options::<strong>parse</strong>(const std::vector&lt;basic_string&lt;C&gt;&gt;&amp; args, std::basic_ostream&lt;C2&gt;&amp; out, Crow::Flagset flags = {})</code></li>
-<li><code>template &lt;typename C, typename C2&gt; bool Options::<strong>parse</strong>(const basic_string&lt;C&gt;&amp; args, std::basic_ostream&lt;C2&gt;&amp; out, Crow::Flagset flags = {})</code></li>
-<li><code>template &lt;typename C, typename C2&gt; bool Options::<strong>parse</strong>(int argc, C** argv, std::basic_ostream&lt;C2&gt;&amp; out, Crow::Flagset flags = {})</code></li>
+<li><code>template &lt;typename C, typename C2&gt; bool Options::<strong>parse</strong>(const std::vector&lt;basic_string&lt;C&gt;&gt;&amp; args, std::basic_ostream&lt;C2&gt;&amp; out, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C, typename C2&gt; bool Options::<strong>parse</strong>(const basic_string&lt;C&gt;&amp; args, std::basic_ostream&lt;C2&gt;&amp; out, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C, typename C2&gt; bool Options::<strong>parse</strong>(int argc, C** argv, std::basic_ostream&lt;C2&gt;&amp; out, Flagset flags = {})</code></li>
 </ul>
 
 <p>After the option specification has been constructed, call one of the <code>parse()</code>

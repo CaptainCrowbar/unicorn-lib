@@ -86,15 +86,15 @@ namespace Unicorn {
             uint16_t prefix = 0;
             for (size_t i = 0; i < n; ++i) {
                 char c = cat[i];
-                if (Crow::ascii_isalpha(c)) {
+                if (ascii_isalpha(c)) {
                     if (prefix == 0) {
-                        prefix = encode_gc(Crow::ascii_toupper(c), 0);
+                        prefix = encode_gc(ascii_toupper(c), 0);
                     } else if ((c == 'C' || c == 'c') && prefix == L0) {
                         table.push_back({GC::Ll, GC::Ll});
                         table.push_back({GC::Lt, GC::Lu});
                         entries += 2;
                     } else {
-                        uint16_t code = prefix + static_cast<uint8_t>(Crow::ascii_tolower(c));
+                        uint16_t code = prefix + static_cast<uint8_t>(ascii_tolower(c));
                         table.push_back({code, code});
                         ++entries;
                     }
@@ -180,7 +180,7 @@ namespace Unicorn {
     }
 
     bool char_is_bidi_mirrored(char32_t c) noexcept {
-        return std::binary_search(CROW_BOUNDS(UnicornDetail::bidi_mirrored_table), c);
+        return std::binary_search(PRI_BOUNDS(UnicornDetail::bidi_mirrored_table), c);
     }
 
     char32_t bidi_mirroring_glyph(char32_t c) noexcept {
@@ -215,7 +215,7 @@ namespace Unicorn {
     }
 
     u8string char_block(char32_t c) {
-        return Crow::cstr(sparse_table_lookup(UnicornDetail::blocks_table, c));
+        return cstr(sparse_table_lookup(UnicornDetail::blocks_table, c));
     }
 
     const std::vector<BlockInfo>& unicode_block_list() {
@@ -305,7 +305,7 @@ namespace Unicorn {
                     case Z_MEM_ERROR:      return "Z_MEM_ERROR";
                     case Z_BUF_ERROR:      return "Z_BUF_ERROR";
                     case Z_VERSION_ERROR:  return "Z_VERSION_ERROR";
-                    default:               return Crow::dec(error);
+                    default:               return dec(error);
                 }
             }
         };
@@ -450,7 +450,7 @@ namespace Unicorn {
 
     }
 
-    u8string char_name(char32_t c, Crow::Flagset flags) {
+    u8string char_name(char32_t c, Flagset flags) {
         using namespace UnicornDetail;
         if (flags.get(control_char_names)) {
             auto name_ptr = control_character_name(c);
@@ -468,9 +468,9 @@ namespace Unicorn {
             return name;
         if ((c >= 0x3400 && c <= 0x4dbf) || (c >= 0x4e00 && c <= 0x9fff)
                 || (c >= 0x20000 && c <= 0x2a6df) || (c >= 0x2a700 && c <= 0x2b81f))
-            return "CJK UNIFIED IDEOGRAPH-" + Crow::ascii_uppercase(Crow::hex(c, 4));
+            return "CJK UNIFIED IDEOGRAPH-" + ascii_uppercase(hex(c, 4));
         if ((c >= 0xf900 && c <= 0xfaff) || (c >= 0x2f800 && c <= 0x2fa1f))
-            return "CJK COMPATIBILITY IDEOGRAPH-" + Crow::ascii_uppercase(Crow::hex(c, 4));
+            return "CJK COMPATIBILITY IDEOGRAPH-" + ascii_uppercase(hex(c, 4));
         name = hangul_name(c);
         if (! name.empty())
             return name;
@@ -486,7 +486,7 @@ namespace Unicorn {
                 name = "<noncharacter-";
             else
                 name = "<reserved-";
-            name += Crow::ascii_uppercase(Crow::hex(c, 4));
+            name += ascii_uppercase(hex(c, 4));
             name += '>';
             return name;
         }
@@ -613,7 +613,7 @@ namespace Unicorn {
             PROPVAL(RLO);
             PROPVAL(S);
             PROPVAL(WS);
-            default: return Crow::dec(x);
+            default: return dec(x);
         }
     }
 
@@ -627,7 +627,7 @@ namespace Unicorn {
             PROPVAL(H);
             PROPVAL(Na);
             PROPVAL(W);
-            default: return Crow::dec(x);
+            default: return dec(x);
         }
     }
 
@@ -650,7 +650,7 @@ namespace Unicorn {
             PROPVAL(SpacingMark);
             PROPVAL(T);
             PROPVAL(V);
-            default: return Crow::dec(x);
+            default: return dec(x);
         }
     }
 
@@ -664,7 +664,7 @@ namespace Unicorn {
             PROPVAL(LVT);
             PROPVAL(T);
             PROPVAL(V);
-            default: return Crow::dec(x);
+            default: return dec(x);
         }
     }
 
@@ -686,7 +686,7 @@ namespace Unicorn {
             PROPVAL(Top_And_Left_And_Right);
             PROPVAL(Top_And_Right);
             PROPVAL(Visual_Order_Left);
-            default: return Crow::dec(x);
+            default: return dec(x);
         }
     }
 
@@ -729,7 +729,7 @@ namespace Unicorn {
             PROPVAL(Vowel);
             PROPVAL(Vowel_Dependent);
             PROPVAL(Vowel_Independent);
-            default: return Crow::dec(x);
+            default: return dec(x);
         }
     }
 
@@ -823,7 +823,7 @@ namespace Unicorn {
             PROPVAL(Yudh_He);
             PROPVAL(Zain);
             PROPVAL(Zhain);
-            default: return Crow::dec(x);
+            default: return dec(x);
         }
     }
 
@@ -837,7 +837,7 @@ namespace Unicorn {
             PROPVAL(Non_Joining);
             PROPVAL(Right_Joining);
             PROPVAL(Transparent);
-            default: return Crow::dec(x);
+            default: return dec(x);
         }
     }
 
@@ -885,7 +885,7 @@ namespace Unicorn {
             PROPVAL(SY);
             PROPVAL(WJ);
             PROPVAL(ZW);
-            default: return Crow::dec(x);
+            default: return dec(x);
         }
     }
 
@@ -897,7 +897,7 @@ namespace Unicorn {
             PROPVAL(Decimal);
             PROPVAL(Digit);
             PROPVAL(Numeric);
-            default: return Crow::dec(x);
+            default: return dec(x);
         }
     }
 
@@ -922,7 +922,7 @@ namespace Unicorn {
             PROPVAL(Sp);
             PROPVAL(STerm);
             PROPVAL(Upper);
-            default: return Crow::dec(x);
+            default: return dec(x);
         }
     }
 
@@ -949,7 +949,7 @@ namespace Unicorn {
             PROPVAL(Regional_Indicator);
             PROPVAL(Single_Quote);
             PROPVAL(SOT);
-            default: return Crow::dec(x);
+            default: return dec(x);
         }
     }
 
@@ -968,7 +968,7 @@ namespace Unicorn {
             u8string s;
             for (int n = 24; n >= 0; n -= 8)
                 s += static_cast<char>((code >> n) & 0xff);
-            s[0] = Crow::ascii_toupper(s[0]);
+            s[0] = ascii_toupper(s[0]);
             return s;
         }
 
@@ -976,7 +976,7 @@ namespace Unicorn {
             abbr.resize(4, 0);
             uint32_t code = 0;
             for (char c: abbr)
-                code = (code << 8) | static_cast<uint8_t>(Crow::ascii_tolower(c));
+                code = (code << 8) | static_cast<uint8_t>(ascii_tolower(c));
             return code;
         }
 

@@ -151,9 +151,9 @@ string that was supplied to the `Options` constructor.
 * `template <typename C> bool Options::parse(const std::vector<basic_string<C>>& args)`
 * `template <typename C> bool Options::parse(const basic_string<C>& args)`
 * `template <typename C> bool Options::parse(int argc, C** argv)`
-* `template <typename C, typename C2> bool Options::parse(const std::vector<basic_string<C>>& args, std::basic_ostream<C2>& out, Crow::Flagset flags = {})`
-* `template <typename C, typename C2> bool Options::parse(const basic_string<C>& args, std::basic_ostream<C2>& out, Crow::Flagset flags = {})`
-* `template <typename C, typename C2> bool Options::parse(int argc, C** argv, std::basic_ostream<C2>& out, Crow::Flagset flags = {})`
+* `template <typename C, typename C2> bool Options::parse(const std::vector<basic_string<C>>& args, std::basic_ostream<C2>& out, Flagset flags = {})`
+* `template <typename C, typename C2> bool Options::parse(const basic_string<C>& args, std::basic_ostream<C2>& out, Flagset flags = {})`
+* `template <typename C, typename C2> bool Options::parse(int argc, C** argv, std::basic_ostream<C2>& out, Flagset flags = {})`
 
 After the option specification has been constructed, call one of the `parse()`
 functions to parse the actual command line arguments. The arguments can be
