@@ -4,6 +4,11 @@
 
 #include "unicorn/core.hpp"
 
+// Windows brain damage
+#if defined(IN)
+    #undef IN
+#endif
+
 namespace Unicorn {
 
     // The default value is always listed first
