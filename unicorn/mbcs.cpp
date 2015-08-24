@@ -2,7 +2,6 @@
 #include "unicorn/iana-character-sets.hpp"
 #include "unicorn/regex.hpp"
 #include "unicorn/string.hpp"
-#include "crow/thread.hpp"
 #include <algorithm>
 #include <cerrno>
 #include <cstdlib>
@@ -15,8 +14,6 @@
 #else
     #include <windows.h>
 #endif
-
-PRI_LDLIB(crow)
 
 using namespace std::literals;
 using namespace Unicorn::Literals;
@@ -409,7 +406,7 @@ namespace Unicorn {
 
         EncodingTag lookup_encoding(const u8string& name) {
             static std::map<u8string, EncodingTag> cache;
-            static Crow::Mutex mtx;
+            static Mutex mtx;
             auto lcname = ascii_lowercase(name);
             if (lcname.empty())
                 throw UnknownEncoding();
@@ -420,7 +417,7 @@ namespace Unicorn {
             else if (lcname == "utf")
                 return EncodingTag();
             {
-                Crow::MutexLock lock(mtx);
+                MutexLock lock(mtx);
                 auto it = cache.find(lcname);
                 if (it != std::end(cache))
                     return it->second;
@@ -434,18 +431,18 @@ namespace Unicorn {
                 tag = find_encoding(lcname);
             if (tag == EncodingTag())
                 throw UnknownEncoding(name);
-            Crow::MutexLock lock(mtx);
+            MutexLock lock(mtx);
             cache[lcname] = tag;
             return tag;
         }
 
         EncodingTag lookup_encoding(uint32_t page) {
             static std::map<uint32_t, EncodingTag> cache;
-            static Crow::Mutex mtx;
+            static Mutex mtx;
             if (page == 0)
                 throw UnknownEncoding();
             {
-                Crow::MutexLock lock(mtx);
+                MutexLock lock(mtx);
                 auto it = cache.find(page);
                 if (it != std::end(cache))
                     return it->second;
@@ -460,7 +457,7 @@ namespace Unicorn {
             #endif
             if (tag == EncodingTag())
                 throw UnknownEncoding(page);
-            Crow::MutexLock lock(mtx);
+            MutexLock lock(mtx);
             cache[page] = tag;
             return tag;
         }

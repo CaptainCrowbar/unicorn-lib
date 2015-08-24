@@ -2,11 +2,8 @@
 #include "unicorn/format.hpp"
 #include "unicorn/mbcs.hpp"
 #include "unicorn/string.hpp"
-#include "crow/thread.hpp"
 #include <algorithm>
 #include <cerrno>
-
-PRI_LDLIB(crow)
 
 using namespace std::literals;
 using namespace Unicorn::Literals;
@@ -195,7 +192,7 @@ namespace Unicorn {
         Flagset flags;
         u8string enc;
         SharedFile handle;
-        std::shared_ptr<Crow::Mutex> mutex;
+        std::shared_ptr<Mutex> mutex;
     };
 
     void FileWriter::flush() {
@@ -207,8 +204,8 @@ namespace Unicorn {
 
     void FileWriter::init(const NativeString& file, Flagset flags, const u8string& enc) {
         static const NativeString dashfile{NativeCharacter('-')};
-        static Crow::Mutex stdout_mutex;
-        static Crow::Mutex stderr_mutex;
+        static Mutex stdout_mutex;
+        static Mutex stderr_mutex;
         flags.allow(err_replace | err_throw | io_append | io_autoline | io_bom
             | io_crlf | io_lf | io_linebuf | io_mutex | io_stderr
             | io_stdout | io_unbuf | io_writeline, "file output");
@@ -235,7 +232,7 @@ namespace Unicorn {
             else if (impl->handle.get() == stderr)
                 impl->mutex.reset(&stderr_mutex, do_nothing);
             else
-                impl->mutex = std::make_shared<Crow::Mutex>();
+                impl->mutex = std::make_shared<Mutex>();
         }
     }
 
@@ -288,7 +285,7 @@ namespace Unicorn {
             string encoded;
             export_string(str, encoded, impl->enc, impl->flags & (err_replace | err_throw));
             if (impl->mutex) {
-                Crow::MutexLock lock(*impl->mutex);
+                MutexLock lock(*impl->mutex);
                 writembcs(encoded);
             } else {
                 writembcs(encoded);

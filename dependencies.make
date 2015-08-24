@@ -34,7 +34,7 @@ build/$(TARGET)/io.o: unicorn/io.cpp unicorn/io.hpp unicorn/core.hpp \
   $(LIBROOT)/prion-lib/prion/core.hpp unicorn/character.hpp \
   unicorn/property-values.hpp unicorn/file.hpp unicorn/string.hpp \
   unicorn/segment.hpp unicorn/utf.hpp unicorn/format.hpp \
-  unicorn/regex.hpp unicorn/mbcs.hpp $(LIBROOT)/crow-lib/crow/thread.hpp
+  unicorn/regex.hpp unicorn/mbcs.hpp
 build/$(TARGET)/json-test.o: unicorn/json-test.cpp unicorn/core.hpp \
   $(LIBROOT)/prion-lib/prion/core.hpp unicorn/json.hpp \
   $(LIBROOT)/prion-lib/prion/unit-test.hpp
@@ -54,12 +54,12 @@ build/$(TARGET)/mbcs.o: unicorn/mbcs.cpp unicorn/mbcs.hpp unicorn/core.hpp \
   $(LIBROOT)/prion-lib/prion/core.hpp unicorn/character.hpp \
   unicorn/property-values.hpp unicorn/utf.hpp \
   unicorn/iana-character-sets.hpp unicorn/regex.hpp unicorn/string.hpp \
-  unicorn/segment.hpp $(LIBROOT)/crow-lib/crow/thread.hpp
+  unicorn/segment.hpp
 build/$(TARGET)/normal-test.o: unicorn/normal-test.cpp unicorn/core.hpp \
   $(LIBROOT)/prion-lib/prion/core.hpp unicorn/character.hpp \
   unicorn/property-values.hpp unicorn/normal.hpp unicorn/utf.hpp \
   unicorn/string.hpp unicorn/segment.hpp unicorn/ucd-tables.hpp \
-  $(LIBROOT)/crow-lib/crow/thread.hpp $(LIBROOT)/prion-lib/prion/unit-test.hpp
+  $(LIBROOT)/prion-lib/prion/unit-test.hpp
 build/$(TARGET)/normal.o: unicorn/normal.cpp unicorn/normal.hpp unicorn/core.hpp \
   $(LIBROOT)/prion-lib/prion/core.hpp unicorn/character.hpp \
   unicorn/property-values.hpp unicorn/utf.hpp

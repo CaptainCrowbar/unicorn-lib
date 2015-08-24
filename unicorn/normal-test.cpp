@@ -3,15 +3,12 @@
 #include "unicorn/normal.hpp"
 #include "unicorn/string.hpp"
 #include "unicorn/ucd-tables.hpp"
-#include "crow/thread.hpp"
 #include "prion/unit-test.hpp"
 #include <algorithm>
 #include <cstdlib>
 #include <memory>
 #include <string>
 #include <utility>
-
-PRI_LDLIB(crow)
 
 using namespace std::literals;
 using namespace Unicorn;
@@ -122,19 +119,19 @@ TEST_MODULE(unicorn, normal) {
 
     #else
 
-        auto thread_count = Crow::cpu_threads();
+        auto thread_count = Thread::cpu_threads();
         auto per_thread = norm_tests / thread_count + 1;
-        std::vector<Crow::Thread> threads;
+        std::vector<std::shared_ptr<Thread>> threads;
         for (size_t base = 0; base < norm_tests; base += per_thread)
-            threads.push_back(Crow::Thread([=] { do_main_tests(base, base + per_thread); }));
+            threads.push_back(std::make_shared<Thread>([=] { do_main_tests(base, base + per_thread); }));
         for (auto& t: threads)
-            t.wait();
+            t->wait();
         threads.clear();
         per_thread = identity_chars.size() / thread_count + 1;
         for (size_t base = 0; base < identity_chars.size(); base += per_thread)
-            threads.push_back(Crow::Thread([=] { do_identity_tests(identity_chars, base, base + per_thread); }));
+            threads.push_back(std::make_shared<Thread>([=] { do_identity_tests(identity_chars, base, base + per_thread); }));
         for (auto& t: threads)
-            t.wait();
+            t->wait();
 
     #endif
 
