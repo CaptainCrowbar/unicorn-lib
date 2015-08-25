@@ -10,24 +10,21 @@
 namespace Unicorn {
 
     class Table {
-    private:
-        class endl_type {};
     public:
-        static constexpr endl_type endl = {};
         static constexpr Kwarg<Flagset> flags = {};
         static constexpr Kwarg<u8string> ditto = {}, empty = {};
         static constexpr Kwarg<size_t> margin = {}, spacing = {};
         static constexpr Kwarg<bool> unfill = {};
         Table(): formats(), cells(1) {}
-        void clear_all() noexcept { clear_data(); clear_formats(); }
-        void clear_data() noexcept { cells.clear(); cells.resize(1); }
-        void clear_formats() noexcept { formats.clear(); }
+        template <typename T> Table& operator<<(const T& t);
+        Table& operator<<(char c) { return *this << as_uchar(c); }
+        Table& operator<<(char16_t c) { return *this << as_uchar(c); }
+        Table& operator<<(char32_t c);
+        Table& operator<<(wchar_t c) { return *this << as_uchar(c); }
+        void clear() noexcept { cells.clear(); cells.resize(1); formats.clear(); }
         template <typename... FS> void format(const u8string& f, const FS&... fs)
             { format(f); format(fs...); }
         void format(const u8string& f) { formats.push_back(Unicorn::format(f)); }
-        template <typename T> Table& operator<<(const T& t);
-        Table& operator<<(endl_type);
-        void div(char c = '-');
         template <typename C, typename... Args> std::basic_string<C> as_string(const Args&... args) const;
         template <typename... Args> u8string str(const Args&... args) const { return as_string<char>(args...); }
         template <typename C, typename... Args> void write(std::basic_ostream<C>& out, const Args&... args) const;
@@ -40,6 +37,7 @@ namespace Unicorn {
         };
         std::vector<Format> formats;
         std::vector<std::vector<u8string>> cells;
+        void force_break();
         template <typename... Args> static layout_spec parse_args(const Args&... args);
         void write_table(const layout_spec& spec, std::vector<u8string>& lines) const;
     };

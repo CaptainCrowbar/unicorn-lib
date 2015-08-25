@@ -21,33 +21,27 @@ strings or output streams of any UTF encoding.</p>
 <p>Example:</p>
 
 <pre><code>Table tab;
-tab &lt;&lt; &quot;Name&quot; &lt;&lt; &quot;Number&quot; &lt;&lt; &quot;Hex&quot; &lt;&lt; &quot;Float&quot; &lt;&lt; Table::endl;
-tab.div();
-tab.format(&quot;&quot;, &quot;&quot;, &quot;0x$1x4&quot;, &quot;$1fs4&quot;);
-tab &lt;&lt; &quot;Patrick McGoohan&quot; &lt;&lt; 6 &lt;&lt; 6 &lt;&lt; 6.0 &lt;&lt; Table::endl;
-tab &lt;&lt; &quot;James Bond&quot; &lt;&lt; 007 &lt;&lt; 007 &lt;&lt; 007.0 &lt;&lt; Table::endl;
-tab &lt;&lt; &quot;Douglas Adams&quot; &lt;&lt; 42 &lt;&lt; 42 &lt;&lt; 42.0 &lt;&lt; Table::endl;
-tab &lt;&lt; &quot;Maxwell Smart&quot; &lt;&lt; 86 &lt;&lt; 86 &lt;&lt; 86.0 &lt;&lt; Table::endl;
+tab &lt;&lt; &quot;Name&quot; &lt;&lt; &quot;Number&quot; &lt;&lt; &quot;Hex&quot; &lt;&lt; &quot;Float&quot; &lt;&lt; '\n'
+    &lt;&lt; '=';
+tab.format(&quot;&quot;, &quot;&quot;, &quot;0x$1x3&quot;, &quot;$1fs2&quot;);
+tab &lt;&lt; &quot;Patrick McGoohan&quot; &lt;&lt; 6 &lt;&lt; 6 &lt;&lt; 6 &lt;&lt; '\n'
+    &lt;&lt; &quot;James Bond&quot; &lt;&lt; 007 &lt;&lt; 007 &lt;&lt; 007 &lt;&lt; '\n'
+    &lt;&lt; &quot;Douglas Adams&quot; &lt;&lt; 42 &lt;&lt; 42 &lt;&lt; 42 &lt;&lt; '\n'
+    &lt;&lt; &quot;Maxwell Smart&quot; &lt;&lt; 86 &lt;&lt; 86 &lt;&lt; 86 &lt;&lt; '\n';
 std::cout &lt;&lt; tab;
 </code></pre>
 
 <p>Output:</p>
 
-<pre><code>Name              Number  Hex     Float
-----------------  ------  ------  --------
-Patrick McGoohan  6       0x0006  +6.0000
-James Bond        7       0x0007  +7.0000
-Douglas Adams     42      0x002a  +42.0000
-Maxwell Smart     86      0x0056  +86.0000
+<pre><code>Name              Number  Hex    Float
+================  ======  =====  ======
+Patrick McGoohan  6       0x006  +6.00
+James Bond        7       0x007  +7.00
+Douglas Adams     42      0x02a  +42.00
+Maxwell Smart     86      0x056  +86.00
 </code></pre>
 
 <h2 id="tableclass">Table class</h2>
-
-<ul>
-<li><code>static constexpr [private type] Table::<strong>endl</strong></code></li>
-</ul>
-
-<p>This is passed to a table through <code>operator&lt;&lt;</code> to mark the end of a row.</p>
 
 <ul>
 <li><code>Table::<strong>Table</strong>()</code></li>
@@ -61,12 +55,11 @@ Maxwell Smart     86      0x0056  +86.0000
 <p>Life cycle functions.</p>
 
 <ul>
-<li><code>void Table::<strong>clear_all</strong>() noexcept</code></li>
-<li><code>void Table::<strong>clear_data</strong>() noexcept</code></li>
-<li><code>void Table::<strong>clear_formats</strong>() noexcept</code></li>
+<li><code>void Table::<strong>clear</strong>() noexcept</code></li>
 </ul>
 
-<p>Clear the cell data, formatting settings, or both.</p>
+<p>Clears all cell data and formatting settings from the table (i.e. resets the
+table to its default constructed state).</p>
 
 <ul>
 <li><code>template &lt;typename... FS&gt; void Table::<strong>format</strong>(const u8string&amp; f, const FS&amp;... fs)</code></li>
@@ -77,7 +70,9 @@ defined in <code>[unicorn/format](format.html)</code>. Each formatting element s
 of the form <code>&quot;${1...}&quot;</code>, with flags appropriate to the type of data expected
 in that column. Columns for which no format has been set, or whose format is
 an empty string, will be written using <code>to_str()</code> (from Prion, but called
-without namespace qualification, so user defined overloads will be found).</p>
+without namespace qualification, so user defined overloads will be found).
+Formatting is applied to cell data entered after a call to <code>format()</code>;
+existing cells already in the table will not be reformatted.</p>
 
 <ul>
 <li><code>template &lt;typename T&gt; Table&amp; Table::<strong>operator&lt;&lt;</strong>(const T&amp; t)</code></li>
@@ -87,10 +82,55 @@ without namespace qualification, so user defined overloads will be found).</p>
 current column&#8217;s formatting code, if one has been set.</p>
 
 <ul>
-<li><code>void Table::<strong>div</strong>(char c = '-')</code></li>
+<li><code>Table&amp; Table::<strong>operator&lt;&lt;</strong>([character type] c)</code></li>
 </ul>
 
-<p>Writes a horizontal rule across the table.</p>
+<p>Single character insertion is used to request various miscellaneous control operations, as
+described in the table below.</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Character</th>
+	<th style="text-align:left;">Effect</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><code>\f</code></td>
+	<td style="text-align:left;">Clear all formatting codes</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>\n</code></td>
+	<td style="text-align:left;">Start a new row</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>\t</code></td>
+	<td style="text-align:left;">Copy the cell to the left</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>\v</code></td>
+	<td style="text-align:left;">Copy the cell above</td>
+</tr>
+</tbody>
+</table>
+
+<p>The <code>&quot;\t&quot;</code> and <code>&quot;\v&quot;</code> controls simply copy the existing cell&#8217;s string content
+literally; they will not reformat the original data value if the new cell has
+a different formatting code. They will produce a blank cell if this is the
+first column or row.</p>
+
+<p>If the character is a control character (not listed above), whitespace, or an
+unassigned code point, the insertion operator will throw
+<code>std::invalid_argument</code>. Otherwise, the character is used to write a
+horizontal rule across the table, by repeating the character to match the
+width of each column.</p>
 
 <ul>
 <li><code>template &lt;typename C, typename... Args&gt; std::basic_string&lt;C&gt; Table::<strong>as_string</strong>(const Args&amp;... args) const</code></li>

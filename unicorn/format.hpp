@@ -36,26 +36,26 @@ namespace Unicorn {
 
     // Formatting behaviour flags
 
-    constexpr auto fx_left      = Flagset::value('<');  // Left align                      all  --    --   --     --    --  --
-    constexpr auto fx_centre    = Flagset::value('=');  // Centre align                    all  --    --   --     --    --  --
-    constexpr auto fx_right     = Flagset::value('>');  // Right align                     all  --    --   --     --    --  --
-    constexpr auto fx_upper     = Flagset::value('U');  // Convert to upper case           all  --    --   --     --    --  --
-    constexpr auto fx_lower     = Flagset::value('L');  // Convert to lower case           all  --    --   --     --    --  --
-    constexpr auto fx_title     = Flagset::value('T');  // Convert to title case           all  --    --   --     --    --  --
-    constexpr auto fx_tf        = Flagset::value('t');  // Write as true/false             --   bool  --   --     --    --  --
-    constexpr auto fx_yesno     = Flagset::value('y');  // Write as yes/no                 --   bool  --   --     --    --  --
-    constexpr auto fx_binary    = Flagset::value('b');  // Binary number                   --   bool  int  --     --    --  --
+    constexpr auto fx_left      = Flagset::value('<');  // Left align                      all  --    --   --     --    --      --
+    constexpr auto fx_centre    = Flagset::value('=');  // Centre align                    all  --    --   --     --    --      --
+    constexpr auto fx_right     = Flagset::value('>');  // Right align                     all  --    --   --     --    --      --
+    constexpr auto fx_upper     = Flagset::value('U');  // Convert to upper case           all  --    --   --     --    --      --
+    constexpr auto fx_lower     = Flagset::value('L');  // Convert to lower case           all  --    --   --     --    --      --
+    constexpr auto fx_title     = Flagset::value('T');  // Convert to title case           all  --    --   --     --    --      --
+    constexpr auto fx_tf        = Flagset::value('t');  // Write as true/false             --   bool  --   --     --    --      --
+    constexpr auto fx_yesno     = Flagset::value('y');  // Write as yes/no                 --   bool  --   --     --    --      --
+    constexpr auto fx_binary    = Flagset::value('b');  // Binary number                   --   bool  int  --     --    --      --
     constexpr auto fx_decimal   = Flagset::value('n');  // Decimal number                  --   --    int  --     char  string  --
     constexpr auto fx_hex       = Flagset::value('x');  // Hexadecimal number              --   --    int  --     char  string  --
-    constexpr auto fx_roman     = Flagset::value('r');  // Roman numerals                  --   --    int  --     --    --  --
-    constexpr auto fx_sign      = Flagset::value('s');  // Always show a sign              --   --    int  float  --    --  --
-    constexpr auto fx_signz     = Flagset::value('i');  // Always show a sign unless zero  --   --    int  float  --    --  --
-    constexpr auto fx_digits    = Flagset::value('d');  // Fixed significant figures       --   --    --   float  --    --  --
-    constexpr auto fx_exp       = Flagset::value('e');  // Scientific notation             --   --    --   float  --    --  --
-    constexpr auto fx_fixed     = Flagset::value('f');  // Fixed point notation            --   --    --   float  --    --  --
-    constexpr auto fx_general   = Flagset::value('g');  // Use the shorter of d or e       --   --    --   float  --    --  --
-    constexpr auto fx_prob      = Flagset::value('p');  // Probability format              --   --    --   float  --    --  --
-    constexpr auto fx_stripz    = Flagset::value('z');  // Strip trailing zeros            --   --    --   float  --    --  --
+    constexpr auto fx_roman     = Flagset::value('r');  // Roman numerals                  --   --    int  --     --    --      --
+    constexpr auto fx_sign      = Flagset::value('s');  // Always show a sign              --   --    int  float  --    --      --
+    constexpr auto fx_signz     = Flagset::value('i');  // Always show a sign unless zero  --   --    int  float  --    --      --
+    constexpr auto fx_digits    = Flagset::value('d');  // Fixed significant figures       --   --    --   float  --    --      --
+    constexpr auto fx_exp       = Flagset::value('e');  // Scientific notation             --   --    --   float  --    --      --
+    constexpr auto fx_fixed     = Flagset::value('f');  // Fixed point notation            --   --    --   float  --    --      --
+    constexpr auto fx_general   = Flagset::value('g');  // Use the shorter of d or e       --   --    --   float  --    --      --
+    constexpr auto fx_prob      = Flagset::value('p');  // Probability format              --   --    --   float  --    --      --
+    constexpr auto fx_stripz    = Flagset::value('z');  // Strip trailing zeros            --   --    --   float  --    --      --
     constexpr auto fx_ascii     = Flagset::value('a');  // Escape if not printable ASCII   --   --    --   --     char  string  --
     constexpr auto fx_escape    = Flagset::value('c');  // Escape if C0/C1 control         --   --    --   --     char  string  --
     constexpr auto fx_quote     = Flagset::value('q');  // Quote string, escape C0/C1      --   --    --   --     char  string  --
@@ -139,6 +139,9 @@ namespace Unicorn {
         template <typename T>
         struct FormatInteger {
             u8string operator()(T t, Flagset flags, int prec) const {
+                if (flags.get(fx_digits | fx_exp | fx_fixed | fx_general | fx_prob | fx_stripz)
+                        && ! flags.get(fx_binary | fx_decimal | fx_hex | fx_roman))
+                    return format_floating(t, flags, prec);
                 flags.allow(fx_global_flags | fx_binary | fx_decimal | fx_hex | fx_roman | fx_sign | fx_signz,
                     "integer formatting");
                 flags.exclusive(fx_binary | fx_decimal | fx_hex | fx_roman, "integer formatting");

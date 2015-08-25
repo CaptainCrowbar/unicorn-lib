@@ -15,29 +15,25 @@ strings or output streams of any UTF encoding.
 Example:
 
     Table tab;
-    tab << "Name" << "Number" << "Hex" << "Float" << Table::endl;
-    tab.div();
-    tab.format("", "", "0x$1x4", "$1fs4");
-    tab << "Patrick McGoohan" << 6 << 6 << 6.0 << Table::endl;
-    tab << "James Bond" << 007 << 007 << 007.0 << Table::endl;
-    tab << "Douglas Adams" << 42 << 42 << 42.0 << Table::endl;
-    tab << "Maxwell Smart" << 86 << 86 << 86.0 << Table::endl;
+    tab << "Name" << "Number" << "Hex" << "Float" << '\n'
+        << '=';
+    tab.format("", "", "0x$1x3", "$1fs2");
+    tab << "Patrick McGoohan" << 6 << 6 << 6 << '\n'
+        << "James Bond" << 007 << 007 << 007 << '\n'
+        << "Douglas Adams" << 42 << 42 << 42 << '\n'
+        << "Maxwell Smart" << 86 << 86 << 86 << '\n';
     std::cout << tab;
 
 Output:
 
-    Name              Number  Hex     Float
-    ----------------  ------  ------  --------
-    Patrick McGoohan  6       0x0006  +6.0000
-    James Bond        7       0x0007  +7.0000
-    Douglas Adams     42      0x002a  +42.0000
-    Maxwell Smart     86      0x0056  +86.0000
+    Name              Number  Hex    Float
+    ================  ======  =====  ======
+    Patrick McGoohan  6       0x006  +6.00
+    James Bond        7       0x007  +7.00
+    Douglas Adams     42      0x02a  +42.00
+    Maxwell Smart     86      0x056  +86.00
 
 ## Table class ##
-
-* `static constexpr [private type] Table::endl`
-
-This is passed to a table through `operator<<` to mark the end of a row.
 
 * `Table::Table()`
 * `Table::Table(const Table& t)`
@@ -48,11 +44,10 @@ This is passed to a table through `operator<<` to mark the end of a row.
 
 Life cycle functions.
 
-* `void Table::clear_all() noexcept`
-* `void Table::clear_data() noexcept`
-* `void Table::clear_formats() noexcept`
+* `void Table::clear() noexcept`
 
-Clear the cell data, formatting settings, or both.
+Clears all cell data and formatting settings from the table (i.e. resets the
+table to its default constructed state).
 
 * `template <typename... FS> void Table::format(const u8string& f, const FS&... fs)`
 
@@ -62,15 +57,36 @@ of the form `"${1...}"`, with flags appropriate to the type of data expected
 in that column. Columns for which no format has been set, or whose format is
 an empty string, will be written using `to_str()` (from Prion, but called
 without namespace qualification, so user defined overloads will be found).
+Formatting is applied to cell data entered after a call to `format()`;
+existing cells already in the table will not be reformatted.
 
 * `template <typename T> Table& Table::operator<<(const T& t)`
 
 Adds a data cell to the table. The cell will be formatted according to the
 current column's formatting code, if one has been set.
 
-* `void Table::div(char c = '-')`
+* `Table& Table::operator<<([character type] c)`
 
-Writes a horizontal rule across the table.
+Single character insertion is used to request various miscellaneous control operations, as
+described in the table below.
+
+Character  | Effect
+---------  | ------
+`\f`       | Clear all formatting codes
+`\n`       | Start a new row
+`\t`       | Copy the cell to the left
+`\v`       | Copy the cell above
+
+The `"\t"` and `"\v"` controls simply copy the existing cell's string content
+literally; they will not reformat the original data value if the new cell has
+a different formatting code. They will produce a blank cell if this is the
+first column or row.
+
+If the character is a control character (not listed above), whitespace, or an
+unassigned code point, the insertion operator will throw
+`std::invalid_argument`. Otherwise, the character is used to write a
+horizontal rule across the table, by repeating the character to match the
+width of each column.
 
 * `template <typename C, typename... Args> std::basic_string<C> Table::as_string(const Args&... args) const`
 * `template <typename... Args> u8string Table::str(const Args&... args) const`
