@@ -109,7 +109,7 @@ Keyword           | Argument type  | Default           | Description
 -------           | -------------  | -------           | -----------
 `Table::flags`    | `Flagset`      | `grapheme_units`  | How string lengths are measured
 `Table::margin`   | `size_t`       | `0`               | Number of spaces in the left margin
-`Table::spacing`  | `size_t`       | `4`               | Number of spaces between columns
+`Table::spacing`  | `size_t`       | `2`               | Number of spaces between columns
 `Table::unfill`   | `bool`         | `false`           | Show repeated cells with a ditto mark
 `Table::ditto`    | `u8string`     | `"''"`            | Symbol used for repeated cells in unfill mode
 `Table::empty`    | `u8string`     | `"--"`            | Symbol used for empty cells
