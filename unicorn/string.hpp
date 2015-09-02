@@ -816,43 +816,42 @@ namespace Unicorn {
 
         template <typename C>
         basic_string<C> expand_tabs(const basic_string<C>& str, const std::vector<size_t>& tabs, Flagset flags) {
-            std::vector<size_t> fixtabs = {0};
+            std::vector<size_t> xtabs = {0};
             for (auto t: tabs)
-                if (t > fixtabs.back())
-                    fixtabs.push_back(t);
+                if (t > xtabs.back())
+                    xtabs.push_back(t);
             size_t delta = 8;
-            if (fixtabs.size() > 1)
-                delta = fixtabs.end()[-1] - fixtabs.end()[-2];
-            auto t = fixtabs.begin(), t_end = fixtabs.end();
-            auto u = utf_begin(str), u_end = utf_end(str);
+            if (xtabs.size() > 1)
+                delta = xtabs.end()[-1] - xtabs.end()[-2];
             basic_string<C> result;
-            size_t col = 0;
-            while (u != u_end) {
-                auto start = u;
-                while (u != u_end && *u != U'\t' && ! char_is_line_break(*u))
-                    ++u;
-                size_t nextcol = 0;
-                if (col > 0) {
+            auto line_begin = utf_begin(str), str_end = utf_end(str);
+            while (line_begin != str_end) {
+                auto t = xtabs.begin(), t_end = xtabs.end();
+                auto line_end = std::find_if(line_begin, str_end, char_is_line_break);
+                auto u1 = line_begin;
+                size_t col = 0;
+                while (u1 != line_end) {
+                    auto cut = std::find(str.begin() + u1.offset(), str.begin() + line_end.offset(), C('\t'));
+                    auto u2 = utf_iterator(str, cut - str.begin());
+                    str_append(result, u1, u2);
+                    col += str_length(u1, u2, flags);
+                    if (u2 == line_end)
+                        break;
                     while (t != t_end && *t <= col)
                         ++t;
+                    size_t tab_col;
                     if (t == t_end)
-                        nextcol = fixtabs.back() + delta * ((col - fixtabs.back()) / delta + 1);
+                        tab_col = xtabs.back() + delta * ((col - xtabs.back()) / delta + 1);
                     else
-                        nextcol = *t;
-                    result.append(nextcol - col, C(' '));
+                        tab_col = *t;
+                    result.append(tab_col - col, C(' '));
+                    col = tab_col;
+                    u1 = std::next(u2);
                 }
-                str_append(result, start, u);
-                col = nextcol + str_length(start, u, flags);
-                if (u == u_end)
+                if (line_end == str_end)
                     break;
-                if (char_is_line_break(*u)) {
-                    size_t last = result.find_last_not_of(C(' '));
-                    if (last != npos)
-                        result.resize(last + 1);
-                    result += *u;
-                    col = 0;
-                }
-                ++u;
+                str_append_char(result, *line_end);
+                line_begin = std::next(line_end);
             }
             return result;
         }
