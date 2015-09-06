@@ -60,12 +60,15 @@ following information on the standard output:
 ## Exceptions ##
 
 * `class CommandLineError: public std::runtime_error`
+    * `CommandLineError::CommandLineError(const u8string& details, const u8string& arg, const u8string& arg2 = {})`
 
 Thrown by `Options::parse()` during argument parsing, to report that the
 command line arguments supplied by the user were not consistent with the
 option specification.
 
 * `class OptionSpecError: public std::runtime_error`
+    * `explicit OptionSpecError::OptionSpecError(const u8string& option)`
+    * `OptionSpecError::OptionSpecError(const u8string& details, const u8string& option)`
 
 Thrown by `Options::add()` during the creation of an option specification, to
 report an invalid combination of properties.

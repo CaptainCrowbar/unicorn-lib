@@ -72,7 +72,11 @@ Options:
 <h2 id="exceptions">Exceptions</h2>
 
 <ul>
-<li><code>class <strong>CommandLineError</strong>: public std::runtime_error</code></li>
+<li><code>class <strong>CommandLineError</strong>: public std::runtime_error</code>
+
+<ul>
+<li><code>CommandLineError::<strong>CommandLineError</strong>(const u8string&amp; details, const u8string&amp; arg, const u8string&amp; arg2 = {})</code></li>
+</ul></li>
 </ul>
 
 <p>Thrown by <code>Options::parse()</code> during argument parsing, to report that the
@@ -80,7 +84,12 @@ command line arguments supplied by the user were not consistent with the
 option specification.</p>
 
 <ul>
-<li><code>class <strong>OptionSpecError</strong>: public std::runtime_error</code></li>
+<li><code>class <strong>OptionSpecError</strong>: public std::runtime_error</code>
+
+<ul>
+<li><code>explicit OptionSpecError::<strong>OptionSpecError</strong>(const u8string&amp; option)</code></li>
+<li><code>OptionSpecError::<strong>OptionSpecError</strong>(const u8string&amp; details, const u8string&amp; option)</code></li>
+</ul></li>
 </ul>
 
 <p>Thrown by <code>Options::add()</code> during the creation of an option specification, to
