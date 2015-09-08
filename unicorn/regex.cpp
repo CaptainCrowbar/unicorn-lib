@@ -289,9 +289,9 @@ namespace Unicorn {
                     if (m.ofs.size() < 40)
                         m.ofs.resize(40); // ovector + workspace
                     for (;;) {
-                        auto half = static_cast<int>(m.ofs.size() / 2);
+                        auto half = int(m.ofs.size() / 2);
                         m.status = pcre_traits::dfa_exec(pc, ex, make_ccptr<pcre_traits>(m.text->data()),
-                            static_cast<int>(m.text->size()), static_cast<int>(start), match_flags(m.fset) | xflags,
+                            int(m.text->size()), int(start), match_flags(m.fset) | xflags,
                             m.ofs.data(), half, m.ofs.data() + half, half);
                         if (m.status != 0 && m.status != PCRE_ERROR_DFA_WSSIZE)
                             break;
@@ -302,8 +302,8 @@ namespace Unicorn {
                     if (m.ofs.size() < minsize)
                         m.ofs.resize(minsize);
                     m.status = pcre_traits::exec(pc, ex, make_ccptr<pcre_traits>(m.text->data()),
-                        static_cast<int>(m.text->size()), static_cast<int>(start), match_flags(m.fset) | xflags,
-                        m.ofs.data(), static_cast<int>(m.ofs.size()));
+                        int(m.text->size()), int(start), match_flags(m.fset) | xflags,
+                        m.ofs.data(), int(m.ofs.size()));
                 }
                 if (m.status >= 0 && anchors == 2 && match_size(m, 0) < m.text->size() - start)
                     m.status = PCRE_ERROR_NOMATCH;
@@ -400,7 +400,7 @@ namespace Unicorn {
         if (error >= 0)
             return {};
         int index = - error - 1;
-        if (index < static_cast<int>(range_count(error_table)))
+        if (index < int(range_count(error_table)))
             return error_table[index];
         else
             return {};

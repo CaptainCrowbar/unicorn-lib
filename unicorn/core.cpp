@@ -57,8 +57,7 @@ namespace Unicorn {
 
         NativeString operator"" _nat(const char* s, size_t n) {
             NativeString ns(n, '\0');
-            std::transform(s, s + n, ns.begin(),
-                [] (char c) { return static_cast<NativeCharacter>(static_cast<unsigned char>(c)); });
+            std::transform(s, s + n, ns.begin(), [] (char c) { return NativeCharacter(uint8_t(c)); });
             return ns;
         }
 

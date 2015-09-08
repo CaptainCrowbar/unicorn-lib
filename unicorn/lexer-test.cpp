@@ -92,8 +92,8 @@ namespace {
             int depth = 1;
             auto i = pos;
             for (++i; i < str.size() && depth > 0; ++i) {
-                depth += static_cast<int>(str[i] == '(');
-                depth -= static_cast<int>(str[i] == ')');
+                depth += int(str[i] == '(');
+                depth -= int(str[i] == ')');
             }
             if (depth == 0)
                 return i - pos;
@@ -149,8 +149,8 @@ namespace {
                 int depth = 1;
                 auto i = pos;
                 for (++i; i < str.size() && depth > 0; ++i) {
-                    depth += static_cast<int>(str[i] == u'(');
-                    depth -= static_cast<int>(str[i] == u')');
+                    depth += int(str[i] == u'(');
+                    depth -= int(str[i] == u')');
                 }
                 if (depth == 0)
                     return i - pos;
@@ -208,8 +208,8 @@ namespace {
                 int depth = 1;
                 auto i = pos;
                 for (++i; i < str.size() && depth > 0; ++i) {
-                    depth += static_cast<int>(str[i] == u'(');
-                    depth -= static_cast<int>(str[i] == u')');
+                    depth += int(str[i] == u'(');
+                    depth -= int(str[i] == u')');
                 }
                 if (depth == 0)
                     return i - pos;
@@ -267,8 +267,8 @@ namespace {
                 int depth = 1;
                 auto i = pos;
                 for (++i; i < str.size() && depth > 0; ++i) {
-                    depth += static_cast<int>(str[i] == L'(');
-                    depth -= static_cast<int>(str[i] == L')');
+                    depth += int(str[i] == L'(');
+                    depth -= int(str[i] == L')');
                 }
                 if (depth == 0)
                     return i - pos;
@@ -324,8 +324,8 @@ namespace {
             int depth = 1;
             auto i = pos;
             for (++i; i < str.size() && depth > 0; ++i) {
-                depth += static_cast<int>(str[i] == '(');
-                depth -= static_cast<int>(str[i] == ')');
+                depth += int(str[i] == '(');
+                depth -= int(str[i] == ')');
             }
             if (depth == 0)
                 return i - pos;

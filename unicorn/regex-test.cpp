@@ -17,7 +17,7 @@ namespace {
     bool is_prime(int n) {
         if (n < 2)
             return false;
-        int limit = static_cast<int>(floor(sqrt(static_cast<double>(n))));
+        int limit = int(floor(sqrt(double(n))));
         for (int i = 2; i <= limit; ++i)
             if (n % i == 0)
                 return false;

@@ -47,15 +47,12 @@ namespace Unicorn {
     inline u8string char_as_hex(char32_t c) { return "U+" + ascii_uppercase(hex(c, 4)); }
     constexpr bool char_is_ascii(char32_t c) noexcept { return c <= last_ascii_char; }
     constexpr bool char_is_latin1(char32_t c) noexcept { return c <= last_latin1_char; }
-    constexpr bool char_is_surrogate(char32_t c) noexcept
-        { return c >= first_surrogate_char && c <= last_surrogate_char; }
+    constexpr bool char_is_surrogate(char32_t c) noexcept { return c >= first_surrogate_char && c <= last_surrogate_char; }
     constexpr bool char_is_bmp(char32_t c) noexcept { return c <= last_bmp_char && ! char_is_surrogate(c); }
     constexpr bool char_is_astral(char32_t c) noexcept { return c > last_bmp_char && c <= last_unicode_char; }
     constexpr bool char_is_unicode(char32_t c) noexcept { return c <= last_unicode_char && ! char_is_surrogate(c); }
-    constexpr bool char_is_high_surrogate(char32_t c) noexcept
-        { return c >= first_high_surrogate_char && c <= last_high_surrogate_char; }
-    constexpr bool char_is_low_surrogate(char32_t c) noexcept
-        { return c >= first_low_surrogate_char && c <= last_low_surrogate_char; }
+    constexpr bool char_is_high_surrogate(char32_t c) noexcept { return c >= first_high_surrogate_char && c <= last_high_surrogate_char; }
+    constexpr bool char_is_low_surrogate(char32_t c) noexcept { return c >= first_low_surrogate_char && c <= last_low_surrogate_char; }
     constexpr bool char_is_noncharacter(char32_t c) noexcept
         { return (c >= first_noncharacter && c <= last_noncharacter)
             || (c >= first_surrogate_char && c <= last_surrogate_char)
@@ -67,14 +64,10 @@ namespace Unicorn {
 
     // General category
 
-    inline u8string decode_gc(uint16_t cat)
-        { return {static_cast<char>((cat >> 8) & 0xff), static_cast<char>(cat & 0xff)}; }
-    constexpr uint16_t encode_gc(char c1, char c2) noexcept
-        { return uint16_t((uint16_t(static_cast<uint8_t>(c1)) << 8) + static_cast<uint8_t>(c2)); }
-    constexpr uint16_t encode_gc(const char* cat) noexcept
-        { return cat && *cat ? encode_gc(cat[0], cat[1]) : 0; }
-    inline uint16_t encode_gc(const u8string& cat) noexcept
-        { return encode_gc(cat.data()); }
+    inline u8string decode_gc(uint16_t cat) { return {char((cat >> 8) & 0xff), char(cat & 0xff)}; }
+    constexpr uint16_t encode_gc(char c1, char c2) noexcept { return uint16_t((uint16_t(uint8_t(c1)) << 8) + uint8_t(c2)); }
+    constexpr uint16_t encode_gc(const char* cat) noexcept { return cat && *cat ? encode_gc(cat[0], cat[1]) : 0; }
+    inline uint16_t encode_gc(const u8string& cat) noexcept { return encode_gc(cat.data()); }
 
     namespace GC {
 
@@ -112,10 +105,8 @@ namespace Unicorn {
     }
 
     uint16_t char_general_category(char32_t c) noexcept;
-    inline char char_primary_category(char32_t c) noexcept
-        { return static_cast<char>(char_general_category(c) >> 8); }
-    inline bool char_is_alphanumeric(char32_t c) noexcept
-        { auto g = char_primary_category(c); return g == 'L' || g == 'N'; }
+    inline char char_primary_category(char32_t c) noexcept { return char(char_general_category(c) >> 8); }
+    inline bool char_is_alphanumeric(char32_t c) noexcept { auto g = char_primary_category(c); return g == 'L' || g == 'N'; }
     inline bool char_is_control(char32_t c) noexcept { return char_general_category(c) == GC::Cc; }
     inline bool char_is_format(char32_t c) noexcept { return char_general_category(c) == GC::Cf; }
     inline bool char_is_letter(char32_t c) noexcept { return char_primary_category(c) == 'L'; }
@@ -136,16 +127,13 @@ namespace Unicorn {
     bool char_is_white_space(char32_t c) noexcept;
     inline bool char_is_line_break(char32_t c) noexcept { return c == '\n' || c == '\v' || c == '\f' || c == '\r'
         || c == 0x85 || c == line_separator_char || c == paragraph_separator_char; }
-    inline bool char_is_inline_space(char32_t c) noexcept
-        { return char_is_white_space(c) && ! char_is_line_break(c); }
+    inline bool char_is_inline_space(char32_t c) noexcept { return char_is_white_space(c) && ! char_is_line_break(c); }
     bool char_is_id_start(char32_t c) noexcept;
     bool char_is_id_nonstart(char32_t c) noexcept;
-    inline bool char_is_id_continue(char32_t c) noexcept
-        { return char_is_id_start(c) || char_is_id_nonstart(c); }
+    inline bool char_is_id_continue(char32_t c) noexcept { return char_is_id_start(c) || char_is_id_nonstart(c); }
     bool char_is_xid_start(char32_t c) noexcept;
     bool char_is_xid_nonstart(char32_t c) noexcept;
-    inline bool char_is_xid_continue(char32_t c) noexcept
-        { return char_is_xid_start(c) || char_is_xid_nonstart(c); }
+    inline bool char_is_xid_continue(char32_t c) noexcept { return char_is_xid_start(c) || char_is_xid_nonstart(c); }
     bool char_is_pattern_syntax(char32_t c) noexcept;
     bool char_is_pattern_white_space(char32_t c) noexcept;
     bool char_is_default_ignorable(char32_t c) noexcept;

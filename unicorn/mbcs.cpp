@@ -213,7 +213,7 @@ namespace Unicorn {
             CharsetPtr csp = nullptr;
             if (match || match_integer.match(current)) {
                 // Name is an integer, presumably a code page
-                auto page = static_cast<uint32_t>(decnum(current));
+                auto page = uint32_t(decnum(current));
                 #if defined(PRI_TARGET_UNIX)
                     // Look the number up in the {codepage => charset} map
                     csp = map[page];
@@ -347,7 +347,7 @@ namespace Unicorn {
                     if (cut != npos)
                         value.resize(cut);
                     auto cut2 = std::find_if(PRI_BOUNDS(value),
-                        [] (char c) { return static_cast<uint8_t>(c) > 127; });
+                        [] (char c) { return uint8_t(c) > 127; });
                     value.erase(cut2, std::end(value));
                     return value;
                 }
@@ -425,7 +425,7 @@ namespace Unicorn {
             auto tag = EncodingTag();
             #if defined(PRI_TARGET_NATIVE_WINDOWS)
                 if (lcname.find_first_not_of("0123456789") == npos)
-                    tag = lookup_encoding(static_cast<uint32_t>(decnum(lcname)));
+                    tag = lookup_encoding(uint32_t(decnum(lcname)));
             #endif
             if (tag == EncodingTag())
                 tag = find_encoding(lcname);
@@ -485,7 +485,7 @@ namespace Unicorn {
                 uint32_t wflags = 0;
                 if (flags.get(err_throw))
                     wflags |= MB_ERR_INVALID_CHARS;
-                auto rc = MultiByteToWideChar(tag, wflags, src.data(), static_cast<int>(src.size()), nullptr, 0);
+                auto rc = MultiByteToWideChar(tag, wflags, src.data(), int(src.size()), nullptr, 0);
                 if (rc == 0) {
                     auto err = GetLastError();
                     if (err == ERROR_NO_UNICODE_TRANSLATION)
@@ -494,7 +494,7 @@ namespace Unicorn {
                         throw UnknownEncoding(dec(tag), WindowsError::translate(GetLastError()));
                 }
                 dst.resize(rc);
-                MultiByteToWideChar(tag, wflags, src.data(), static_cast<int>(src.size()), &dst[0], static_cast<int>(rc));
+                MultiByteToWideChar(tag, wflags, src.data(), int(src.size()), &dst[0], int(rc));
             }
 
             void native_export(const wstring& src, string& dst, uint32_t tag, Flagset flags) {
@@ -507,7 +507,7 @@ namespace Unicorn {
                 uint32_t err = 0, wflags = 0;
                 for (auto f: tryflags) {
                     wflags = f;
-                    rc = WideCharToMultiByte(tag, wflags, &src[0], static_cast<int>(src.size()),
+                    rc = WideCharToMultiByte(tag, wflags, &src[0], int(src.size()),
                         nullptr, 0, nullptr, nullptr);
                     err = GetLastError();
                     if (rc > 0 || err != ERROR_INVALID_FLAGS)
@@ -520,7 +520,7 @@ namespace Unicorn {
                         throw UnknownEncoding(dec(tag), WindowsError::translate(GetLastError()));
                 }
                 dst.resize(rc);
-                WideCharToMultiByte(tag, wflags, &src[0], static_cast<int>(src.size()), &dst[0], rc, nullptr, nullptr);
+                WideCharToMultiByte(tag, wflags, &src[0], int(src.size()), &dst[0], rc, nullptr, nullptr);
             }
 
         #endif

@@ -42,7 +42,7 @@ namespace Unicorn {
                 for (size_t i = 2; i < 6; ++i)
                     if (! ascii_isxdigit(src[pos + i]))
                         throw BadJson(pos);
-                return static_cast<char16_t>(hexnum(src.substr(pos + 2, 4)));
+                return char16_t(hexnum(src.substr(pos + 2, 4)));
             }
 
             void read_utf16_char(const u8string& src, size_t& pos, u8string& dst) {
@@ -102,7 +102,7 @@ namespace Unicorn {
                 size_t i = 0, size = src.size();
                 while (i < size) {
                     size_t j = i;
-                    while (j < size && static_cast<uint8_t>(src[j]) >= 32 && src[j] != '\"' && src[j] != '\\')
+                    while (j < size && uint8_t(src[j]) >= 32 && src[j] != '\"' && src[j] != '\\')
                         ++j;
                     dst.append(src, i, j - i);
                     if (j == size)
@@ -117,7 +117,7 @@ namespace Unicorn {
                         case '\\':  dst += "\\\\"; break;
                         default:
                             dst += "\\u00";
-                            dst += hex(static_cast<uint8_t>(src[j]), 2);
+                            dst += hex(uint8_t(src[j]), 2);
                             break;
                     }
                     i = j + 1;

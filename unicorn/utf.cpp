@@ -43,25 +43,25 @@ namespace Unicorn {
                 default:    if (code[1] < 0x80 || code[1] > 0xbf) return 1; break;
             }
             if (code[0] <= 0xdf) {
-                dst = (static_cast<char32_t>(code[0] & 0x1f) << 6)
-                    | static_cast<char32_t>(code[1] & 0x3f);
+                dst = (char32_t(code[0] & 0x1f) << 6)
+                    | char32_t(code[1] & 0x3f);
                 return 2;
             } else if (code[0] <= 0xef) {
                 if (n < 3 || code[2] < 0x80 || code[2] > 0xbf)
                     return 2;
-                dst = (static_cast<char32_t>(code[0] & 0x0f) << 12)
-                    | (static_cast<char32_t>(code[1] & 0x3f) << 6)
-                    | static_cast<char32_t>(code[2] & 0x3f);
+                dst = (char32_t(code[0] & 0x0f) << 12)
+                    | (char32_t(code[1] & 0x3f) << 6)
+                    | char32_t(code[2] & 0x3f);
                 return 3;
             } else {
                 if (n < 3 || code[2] < 0x80 || code[2] > 0xbf)
                     return 2;
                 else if (n < 4 || code[3] < 0x80 || code[3] > 0xbf)
                     return 3;
-                dst = (static_cast<char32_t>(code[0] & 0x07) << 18)
-                    | (static_cast<char32_t>(code[1] & 0x3f) << 12)
-                    | (static_cast<char32_t>(code[2] & 0x3f) << 6)
-                    | static_cast<char32_t>(code[3] & 0x3f);
+                dst = (char32_t(code[0] & 0x07) << 18)
+                    | (char32_t(code[1] & 0x3f) << 12)
+                    | (char32_t(code[2] & 0x3f) << 6)
+                    | char32_t(code[3] & 0x3f);
                 return 4;
             }
         }
@@ -82,22 +82,22 @@ namespace Unicorn {
         size_t UtfEncoding<char>::encode(char32_t src, char* dst) noexcept {
             auto code = reinterpret_cast<uint8_t*>(dst);
             if (src <= 0x7f) {
-                code[0] = static_cast<uint8_t>(src);
+                code[0] = uint8_t(src);
                 return 1;
             } else if (src <= 0x7ff) {
-                code[0] = 0xc0 | static_cast<uint8_t>(src >> 6);
-                code[1] = 0x80 | static_cast<uint8_t>(src & 0x3f);
+                code[0] = 0xc0 | uint8_t(src >> 6);
+                code[1] = 0x80 | uint8_t(src & 0x3f);
                 return 2;
             } else if (src <= 0xffff) {
-                code[0] = 0xe0 | static_cast<uint8_t>(src >> 12);
-                code[1] = 0x80 | static_cast<uint8_t>((src >> 6) & 0x3f);
-                code[2] = 0x80 | static_cast<uint8_t>(src & 0x3f);
+                code[0] = 0xe0 | uint8_t(src >> 12);
+                code[1] = 0x80 | uint8_t((src >> 6) & 0x3f);
+                code[2] = 0x80 | uint8_t(src & 0x3f);
                 return 3;
             } else {
-                code[0] = 0xf0 | static_cast<uint8_t>(src >> 18);
-                code[1] = 0x80 | static_cast<uint8_t>((src >> 12) & 0x3f);
-                code[2] = 0x80 | static_cast<uint8_t>((src >> 6) & 0x3f);
-                code[3] = 0x80 | static_cast<uint8_t>(src & 0x3f);
+                code[0] = 0xf0 | uint8_t(src >> 18);
+                code[1] = 0x80 | uint8_t((src >> 12) & 0x3f);
+                code[2] = 0x80 | uint8_t((src >> 6) & 0x3f);
+                code[3] = 0x80 | uint8_t(src & 0x3f);
                 return 4;
             }
         }
@@ -107,8 +107,8 @@ namespace Unicorn {
                 dst = src[0];
                 return 1;
             } else if (n >= 2 && char_is_high_surrogate(src[0]) && char_is_low_surrogate(src[1])) {
-                dst = 0x10000 + ((static_cast<char32_t>(src[0]) & 0x3ff) << 10)
-                    + (static_cast<char32_t>(src[1]) & 0x3ff);
+                dst = 0x10000 + ((char32_t(src[0]) & 0x3ff) << 10)
+                    + (char32_t(src[1]) & 0x3ff);
                 return 2;
             } else {
                 dst = not_unicode;
@@ -121,8 +121,8 @@ namespace Unicorn {
                 dst = src[pos - 1];
                 return 1;
             } else if (pos >= 2 && char_is_high_surrogate(src[pos - 2]) && char_is_low_surrogate(src[pos - 1])) {
-                dst = 0x10000 + ((static_cast<char32_t>(src[pos - 2]) & 0x3ff) << 10)
-                    + (static_cast<char32_t>(src[pos - 1]) & 0x3ff);
+                dst = 0x10000 + ((char32_t(src[pos - 2]) & 0x3ff) << 10)
+                    + (char32_t(src[pos - 1]) & 0x3ff);
                 return 2;
             } else {
                 dst = not_unicode;
@@ -132,11 +132,11 @@ namespace Unicorn {
 
         size_t UtfEncoding<char16_t>::encode(char32_t src, char16_t* dst) noexcept {
             if (char_is_bmp(src)) {
-                dst[0] = static_cast<char16_t>(src);
+                dst[0] = char16_t(src);
                 return 1;
             } else {
-                dst[0] = first_high_surrogate_char + static_cast<char16_t>((src >> 10) - 0x40);
-                dst[1] = first_low_surrogate_char + static_cast<char16_t>(src & 0x3ff);
+                dst[0] = first_high_surrogate_char + char16_t((src >> 10) - 0x40);
+                dst[1] = first_low_surrogate_char + char16_t(src & 0x3ff);
                 return 2;
             }
         }

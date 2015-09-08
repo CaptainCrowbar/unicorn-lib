@@ -121,9 +121,9 @@ namespace Unicorn {
             u8string s;
             auto b = static_cast<T>(base);
             prec = std::max(prec, 1);
-            while (t > 0 || static_cast<int>(s.size()) < prec) {
+            while (t > 0 || int(s.size()) < prec) {
                 auto d = t % b;
-                s += static_cast<char>(d + (d <= 9 ? '0' : 'a' - 10));
+                s += char(d + (d <= 9 ? '0' : 'a' - 10));
                 t /= b;
             }
             std::reverse(PRI_BOUNDS(s));
@@ -161,7 +161,7 @@ namespace Unicorn {
                 if (flags.get(fx_binary))
                     s = format_integer_radix(t, 2, prec);
                 else if (flags.get(fx_roman))
-                    s = format_integer_roman(static_cast<uint32_t>(t));
+                    s = format_integer_roman(uint32_t(t));
                 else if (flags.get(fx_hex))
                     s = format_integer_radix(t, 16, prec);
                 else

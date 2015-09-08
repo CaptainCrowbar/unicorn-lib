@@ -162,15 +162,13 @@ namespace Unicorn {
         template <typename CX>
         struct SubjectIterator {
             using iterator = UtfIterator<CX>;
-            static iterator make_iterator(const basic_string<CX>& text, size_t offset) noexcept
-                { return utf_iterator(text, offset); }
+            static iterator make_iterator(const basic_string<CX>& text, size_t offset) noexcept { return utf_iterator(text, offset); }
         };
 
         template <>
         struct SubjectIterator<void> {
             using iterator = typename string::const_iterator;
-            static iterator make_iterator(const string& text, size_t offset) noexcept
-                { return text.begin() + offset; }
+            static iterator make_iterator(const string& text, size_t offset) noexcept { return text.begin() + offset; }
         };
 
         // Type-specific implementation wrapper functions
@@ -228,9 +226,7 @@ namespace Unicorn {
         template <typename CX>
         struct MakeUtf8 {
             using string_type = basic_string<CX>;
-            u8string operator()(const string_type& pattern) const {
-                return to_utf8(pattern);
-            }
+            u8string operator()(const string_type& pattern) const { return to_utf8(pattern); }
         };
 
         template <>
@@ -238,8 +234,7 @@ namespace Unicorn {
             using string_type = string;
             u8string operator()(const string& pattern) const {
                 u32string p32;
-                std::transform(PRI_BOUNDS(pattern), append(p32),
-                    [] (char c) { return static_cast<uint8_t>(c); });
+                std::transform(PRI_BOUNDS(pattern), append(p32), [] (char c) { return uint8_t(c); });
                 return to_utf8(p32);
             }
         };
@@ -329,9 +324,8 @@ namespace Unicorn {
     public std::runtime_error {
     public:
         RegexError(const u8string& pattern, int error, const u8string& message):
-            std::runtime_error(assemble(pattern, error, message)),
-            pat(std::make_shared<u8string>(pattern)), err(error),
-            msg(std::make_shared<u8string>(message)) {}
+            std::runtime_error(assemble(pattern, error, message)), pat(std::make_shared<u8string>(pattern)),
+            err(error), msg(std::make_shared<u8string>(message)) {}
         const char* pattern() const noexcept { return pat->data(); }
         int error() const noexcept { return err; }
         const char* message() const noexcept { return msg->data(); }
@@ -367,18 +361,14 @@ namespace Unicorn {
         size_t count(size_t i = 0) const noexcept { return match_size(*this, i); }
         bool empty() const noexcept { return ! *this || this->ofs[0] == this->ofs[1]; }
         iterator end(size_t i = 0) const noexcept;
-        size_t endpos(size_t i = 0) const noexcept
-            { return is_group(*this, i) ? this->ofs[2 * i + 1] : npos; }
+        size_t endpos(size_t i = 0) const noexcept { return is_group(*this, i) ? this->ofs[2 * i + 1] : npos; }
         string_type first() const;
         bool full_or_partial() const noexcept { return matched() || partial(); }
         size_t groups() const noexcept { return count_groups(*this); }
         string_type last() const;
-        bool matched(size_t i = 0) const noexcept
-            { return this->status >= 0 && (i == 0 || is_group(*this, i)); }
-        string_type named(const string_type& name) const
-            { return this->ref ? str(named_group(this->ref, name)) : string_type(); }
-        size_t offset(size_t i = 0) const noexcept
-            { return is_group(*this, i) ? this->ofs[2 * i] : npos; }
+        bool matched(size_t i = 0) const noexcept { return this->status >= 0 && (i == 0 || is_group(*this, i)); }
+        string_type named(const string_type& name) const { return this->ref ? str(named_group(this->ref, name)) : string_type(); }
+        size_t offset(size_t i = 0) const noexcept { return is_group(*this, i) ? this->ofs[2 * i] : npos; }
         bool partial() const noexcept { return this->status == -12; } // PCRE_ERROR_PARTIAL
         string_type str(size_t i = 0) const;
         void swap(BasicMatch& m) noexcept { swap_info(m); }
@@ -459,23 +449,19 @@ namespace Unicorn {
         using split_iterator = BasicSplitIterator<CX>;
         using split_range = Irange<split_iterator>;
         BasicRegex() { init_regex(*this, {}, {}, is_utf); }
-        explicit BasicRegex(const string_type& pattern, Flagset flags = {})
-            { init_regex(*this, pattern, flags, is_utf); }
+        explicit BasicRegex(const string_type& pattern, Flagset flags = {}) { init_regex(*this, pattern, flags, is_utf); }
         size_t count(const string_type& text) const;
         bool empty() const noexcept { return this->pat.empty(); }
         string_type extract(const string_type& fmt, const string_type& text, size_t n = npos) const
             { return BasicRegexFormat<CX>(*this, fmt).extract(text, n); }
         string_type format(const string_type& fmt, const string_type& text, size_t n = npos) const
             { return BasicRegexFormat<CX>(*this, fmt).format(text, n); }
-        match_range grep(const string_type& text) const
-            { return {{*this, text}, {}}; }
+        match_range grep(const string_type& text) const { return {{*this, text}, {}}; }
         size_t groups() const noexcept { return UnicornDetail::count_groups(this->ref); }
-        size_t named(const string_type& name) const noexcept
-            { return UnicornDetail::named_group(this->ref, name); }
+        size_t named(const string_type& name) const noexcept { return UnicornDetail::named_group(this->ref, name); }
         string_type pattern() const { return this->pat; }
         Flagset flags() const noexcept { return this->fset; }
-        split_range split(const string_type& text) const
-            { return {{*this, text}, {}}; }
+        split_range split(const string_type& text) const { return {{*this, text}, {}}; }
         void swap(BasicRegex& r) noexcept { swap_info(r); }
         friend bool operator==(const BasicRegex& lhs, const BasicRegex& rhs) noexcept
             { return lhs.pat == rhs.pat && lhs.fset == rhs.fset; }
@@ -539,8 +525,7 @@ namespace Unicorn {
         using regex_type = BasicRegex<CX>;
         using match_type = BasicMatch<CX>;
         BasicRegexFormat() = default;
-        BasicRegexFormat(const regex_type& pattern, const string_type& format):
-            fmt(format), reg(pattern), seq() { parse(); }
+        BasicRegexFormat(const regex_type& pattern, const string_type& format): fmt(format), reg(pattern), seq() { parse(); }
         BasicRegexFormat(const string_type& pattern, const string_type& format, Flagset flags = {}):
             BasicRegexFormat(regex_type(pattern, flags), format) {}
         string_type operator()(const string_type& text, size_t n = npos) const { return format(text, n); }
@@ -608,8 +593,7 @@ namespace Unicorn {
     }
 
     template <typename CX>
-    void BasicRegexFormat<CX>::add_literal(const string_type& text,
-            size_t offset, size_t count) {
+    void BasicRegexFormat<CX>::add_literal(const string_type& text, size_t offset, size_t count) {
         if (offset < text.size() && count > 0)
             add_literal(text.substr(offset, count));
     }
@@ -683,8 +667,7 @@ namespace Unicorn {
                     auto it = utf_begin(fragment);
                     char32_t buf[max_case_decomposition];
                     if (is_utf) {
-                        size_t nbuf(char_flag == lower1 ? char_to_full_lowercase(*it, buf)
-                            : char_to_full_uppercase(*it, buf));
+                        size_t nbuf(char_flag == lower1 ? char_to_full_lowercase(*it, buf) : char_to_full_uppercase(*it, buf));
                         str_append(*current, buf, nbuf);
                     } else {
                         *current += char_flag == lower1 ? ascii_tolower(*it) : ascii_toupper(*it);
@@ -745,7 +728,7 @@ namespace Unicorn {
             else if (match.count(6))
                 add_named(match[6]);
             else if (match.count(7))
-                add_tag(- static_cast<int>(match[7][0]));
+                add_tag(- int(match[7][0]));
             else if (match.count(8))
                 add_literal(hexnum(to_utf8(match[8])));
             else if (match.count(9))
@@ -753,7 +736,7 @@ namespace Unicorn {
             else if (match.count(10))
                 add_literal(decode_escape(match[10][0]));
             else if (match.count(11))
-                add_tag(- static_cast<int>(match[11][0]));
+                add_tag(- int(match[11][0]));
             else if (match.count(12))
                 add_literal(match[12]);
             else
@@ -763,20 +746,17 @@ namespace Unicorn {
     }
 
     template <typename C>
-    BasicRegexFormat<C> regex_format(const basic_string<C>& pattern,
-            const basic_string<C>& format, Flagset flags = {}) {
+    BasicRegexFormat<C> regex_format(const basic_string<C>& pattern, const basic_string<C>& format, Flagset flags = {}) {
         return {pattern, format, flags};
     }
 
     template <typename C>
-    BasicRegexFormat<C> regex_format(const basic_string<C>& pattern,
-            const C* format, Flagset flags = {}) {
+    BasicRegexFormat<C> regex_format(const basic_string<C>& pattern, const C* format, Flagset flags = {}) {
         return {pattern, cstr(format), flags};
     }
 
     template <typename C>
-    BasicRegexFormat<C> regex_format(const C* pattern, const basic_string<C>& format,
-            Flagset flags = {}) {
+    BasicRegexFormat<C> regex_format(const C* pattern, const basic_string<C>& format, Flagset flags = {}) {
         return {cstr(pattern), format, flags};
     }
 
@@ -802,8 +782,7 @@ namespace Unicorn {
         using regex_type = BasicRegex<CX>;
         using match_type = BasicMatch<CX>;
         BasicMatchIterator() = default;
-        BasicMatchIterator(const regex_type& re, const string_type& text):
-            mat(re.search(text)), pat(re.utf8_pattern()) {}
+        BasicMatchIterator(const regex_type& re, const string_type& text): mat(re.search(text)), pat(re.utf8_pattern()) {}
         const match_type& operator*() const noexcept { return mat; }
         BasicMatchIterator& operator++();
         friend bool operator==(const BasicMatchIterator& lhs, const BasicMatchIterator& rhs) noexcept
@@ -833,8 +812,7 @@ namespace Unicorn {
         using match_type = BasicMatch<CX>;
         using match_iterator = BasicMatchIterator<CX>;
         BasicSplitIterator() = default;
-        BasicSplitIterator(const regex_type& re, const string_type& text):
-            iter(re, text), start(0), value() { update(); }
+        BasicSplitIterator(const regex_type& re, const string_type& text): iter(re, text), start(0), value() { update(); }
         const string_type& operator*() const noexcept { return value; }
         BasicSplitIterator& operator++();
         friend bool operator==(const BasicSplitIterator& lhs, const BasicSplitIterator& rhs) noexcept
@@ -921,27 +899,16 @@ namespace Unicorn {
 
     namespace Literals {
 
-        inline auto operator"" _bre(const char* ptr, size_t len)
-            { return UnicornDetail::parse_regex<char, void>(ptr, len); }
-        inline auto operator"" _re(const char* ptr, size_t len)
-            { return UnicornDetail::parse_regex<char>(ptr, len); }
-        inline auto operator"" _re(const char16_t* ptr, size_t len)
-            { return UnicornDetail::parse_regex<char16_t>(ptr, len); }
-        inline auto operator"" _re(const char32_t* ptr, size_t len)
-            { return UnicornDetail::parse_regex<char32_t>(ptr, len); }
-        inline auto operator"" _re(const wchar_t* ptr, size_t len)
-            { return UnicornDetail::parse_regex<wchar_t>(ptr, len); }
-
-        inline auto operator"" _brf(const char* ptr, size_t len)
-            { return UnicornDetail::parse_regex_format<char, void>(ptr, len); }
-        inline auto operator"" _rf(const char* ptr, size_t len)
-            { return UnicornDetail::parse_regex_format<char>(ptr, len); }
-        inline auto operator"" _rf(const char16_t* ptr, size_t len)
-            { return UnicornDetail::parse_regex_format<char16_t>(ptr, len); }
-        inline auto operator"" _rf(const char32_t* ptr, size_t len)
-            { return UnicornDetail::parse_regex_format<char32_t>(ptr, len); }
-        inline auto operator"" _rf(const wchar_t* ptr, size_t len)
-            { return UnicornDetail::parse_regex_format<wchar_t>(ptr, len); }
+        inline auto operator"" _bre(const char* ptr, size_t len) { return UnicornDetail::parse_regex<char, void>(ptr, len); }
+        inline auto operator"" _re(const char* ptr, size_t len) { return UnicornDetail::parse_regex<char>(ptr, len); }
+        inline auto operator"" _re(const char16_t* ptr, size_t len) { return UnicornDetail::parse_regex<char16_t>(ptr, len); }
+        inline auto operator"" _re(const char32_t* ptr, size_t len) { return UnicornDetail::parse_regex<char32_t>(ptr, len); }
+        inline auto operator"" _re(const wchar_t* ptr, size_t len) { return UnicornDetail::parse_regex<wchar_t>(ptr, len); }
+        inline auto operator"" _brf(const char* ptr, size_t len) { return UnicornDetail::parse_regex_format<char, void>(ptr, len); }
+        inline auto operator"" _rf(const char* ptr, size_t len) { return UnicornDetail::parse_regex_format<char>(ptr, len); }
+        inline auto operator"" _rf(const char16_t* ptr, size_t len) { return UnicornDetail::parse_regex_format<char16_t>(ptr, len); }
+        inline auto operator"" _rf(const char32_t* ptr, size_t len) { return UnicornDetail::parse_regex_format<char32_t>(ptr, len); }
+        inline auto operator"" _rf(const wchar_t* ptr, size_t len) { return UnicornDetail::parse_regex_format<wchar_t>(ptr, len); }
 
     }
 

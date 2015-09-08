@@ -44,24 +44,20 @@ namespace Unicorn {
 
         class EastAsianCount {
         public:
-            explicit EastAsianCount(Flagset flags) noexcept: count(), fset(flags) {
-                memset(count, 0, sizeof(count));
-            }
-            void add(char32_t c) noexcept {
-                ++count[static_cast<unsigned>(east_asian_width(c))];
-            }
+            explicit EastAsianCount(Flagset flags) noexcept: count(), fset(flags) { memset(count, 0, sizeof(count)); }
+            void add(char32_t c) noexcept { ++count[unsigned(east_asian_width(c))]; }
             size_t get() const noexcept {
                 size_t default_width = fset.get(wide_context) ? 2 : 1;
                 return count[neut] + count[half] + count[narr] + 2 * count[full] + 2 * count[wide]
                     + default_width * count[ambi];
             }
         private:
-            static constexpr auto neut = static_cast<int>(East_Asian_Width::N);
-            static constexpr auto ambi = static_cast<int>(East_Asian_Width::A);
-            static constexpr auto full = static_cast<int>(East_Asian_Width::F);
-            static constexpr auto half = static_cast<int>(East_Asian_Width::H);
-            static constexpr auto narr = static_cast<int>(East_Asian_Width::Na);
-            static constexpr auto wide = static_cast<int>(East_Asian_Width::W);
+            static constexpr auto neut = int(East_Asian_Width::N);
+            static constexpr auto ambi = int(East_Asian_Width::A);
+            static constexpr auto full = int(East_Asian_Width::F);
+            static constexpr auto half = int(East_Asian_Width::H);
+            static constexpr auto narr = int(East_Asian_Width::Na);
+            static constexpr auto wide = int(East_Asian_Width::W);
             size_t count[6];
             Flagset fset;
         };
@@ -2075,7 +2071,7 @@ namespace Unicorn {
                 endpos = str.size();
             u8string fragment(endpos - offset, 0);
             std::transform(std::begin(str) + offset, std::begin(str) + endpos, std::begin(fragment),
-                [] (C c) { return static_cast<char>(c); });
+                [] (C c) { return char(c); });
             char* endptr = nullptr;
             if (std::is_signed<T>::value) {
                 auto value = strtoll(fragment.data(), &endptr, base);
@@ -2129,7 +2125,7 @@ namespace Unicorn {
             endpos = str.size();
         u8string fragment(endpos - offset, 0);
         std::transform(std::begin(str) + offset, std::begin(str) + endpos, std::begin(fragment),
-            [] (C c) { return static_cast<char>(c); });
+            [] (C c) { return char(c); });
         char* endptr = nullptr;
         auto value = strtold(fragment.data(), &endptr);
         value = clamp(value, - std::numeric_limits<T>::max(), std::numeric_limits<T>::max());

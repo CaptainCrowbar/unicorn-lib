@@ -94,7 +94,7 @@ namespace Unicorn {
                         table.push_back({GC::Lt, GC::Lu});
                         entries += 2;
                     } else {
-                        uint16_t code = prefix + static_cast<uint8_t>(ascii_tolower(c));
+                        uint16_t code = prefix + uint8_t(ascii_tolower(c));
                         table.push_back({code, code});
                         ++entries;
                     }
@@ -192,7 +192,7 @@ namespace Unicorn {
     }
 
     char bidi_paired_bracket_type(char32_t c) noexcept {
-        return static_cast<char>(table_lookup(UnicornDetail::bidi_paired_bracket_type_table, c, 'n'));
+        return char(table_lookup(UnicornDetail::bidi_paired_bracket_type_table, c, 'n'));
     }
 
     // Block properties
@@ -584,11 +584,11 @@ namespace Unicorn {
     // bug in Clang's unreachable code warning
     // (http://llvm.org/bugs/show_bug.cgi?id=10444)
 
-    #define PROPVAL(val) case static_cast<int>(enum_type::val): return # val
+    #define PROPVAL(val) case int(enum_type::val): return # val
 
     u8string property_value(Bidi_Class val) {
         using enum_type = decltype(val);
-        auto x = static_cast<int>(val);
+        auto x = int(val);
         switch (x) {
             PROPVAL(AL);
             PROPVAL(AN);
@@ -619,7 +619,7 @@ namespace Unicorn {
 
     u8string property_value(East_Asian_Width val) {
         using enum_type = decltype(val);
-        auto x = static_cast<int>(val);
+        auto x = int(val);
         switch (x) {
             PROPVAL(N);
             PROPVAL(A);
@@ -633,7 +633,7 @@ namespace Unicorn {
 
     u8string property_value(Grapheme_Cluster_Break val) {
         using enum_type = decltype(val);
-        auto x = static_cast<int>(val);
+        auto x = int(val);
         switch (x) {
             PROPVAL(Other);
             PROPVAL(Control);
@@ -656,7 +656,7 @@ namespace Unicorn {
 
     u8string property_value(Hangul_Syllable_Type val) {
         using enum_type = decltype(val);
-        auto x = static_cast<int>(val);
+        auto x = int(val);
         switch (x) {
             PROPVAL(NA);
             PROPVAL(L);
@@ -670,7 +670,7 @@ namespace Unicorn {
 
     u8string property_value(Indic_Positional_Category val) {
         using enum_type = decltype(val);
-        auto x = static_cast<int>(val);
+        auto x = int(val);
         switch (x) {
             PROPVAL(NA);
             PROPVAL(Bottom);
@@ -692,7 +692,7 @@ namespace Unicorn {
 
     u8string property_value(Indic_Syllabic_Category val) {
         using enum_type = decltype(val);
-        auto x = static_cast<int>(val);
+        auto x = int(val);
         switch (x) {
             PROPVAL(Other);
             PROPVAL(Avagraha);
@@ -735,7 +735,7 @@ namespace Unicorn {
 
     u8string property_value(Joining_Group val) {
         using enum_type = decltype(val);
-        auto x = static_cast<int>(val);
+        auto x = int(val);
         switch (x) {
             PROPVAL(No_Joining_Group);
             PROPVAL(Ain);
@@ -829,7 +829,7 @@ namespace Unicorn {
 
     u8string property_value(Joining_Type val) {
         using enum_type = decltype(val);
-        auto x = static_cast<int>(val);
+        auto x = int(val);
         switch (x) {
             PROPVAL(Dual_Joining);
             PROPVAL(Join_Causing);
@@ -843,7 +843,7 @@ namespace Unicorn {
 
     u8string property_value(Line_Break val) {
         using enum_type = decltype(val);
-        auto x = static_cast<int>(val);
+        auto x = int(val);
         switch (x) {
             PROPVAL(XX);
             PROPVAL(AI);
@@ -891,7 +891,7 @@ namespace Unicorn {
 
     u8string property_value(Numeric_Type val) {
         using enum_type = decltype(val);
-        auto x = static_cast<int>(val);
+        auto x = int(val);
         switch (x) {
             PROPVAL(None);
             PROPVAL(Decimal);
@@ -903,7 +903,7 @@ namespace Unicorn {
 
     u8string property_value(Sentence_Break val) {
         using enum_type = decltype(val);
-        auto x = static_cast<int>(val);
+        auto x = int(val);
         switch (x) {
             PROPVAL(Other);
             PROPVAL(ATerm);
@@ -928,7 +928,7 @@ namespace Unicorn {
 
     u8string property_value(Word_Break val) {
         using enum_type = decltype(val);
-        auto x = static_cast<int>(val);
+        auto x = int(val);
         switch (x) {
             PROPVAL(Other);
             PROPVAL(ALetter);
@@ -967,7 +967,7 @@ namespace Unicorn {
         u8string decode_script(uint32_t code) {
             u8string s;
             for (int n = 24; n >= 0; n -= 8)
-                s += static_cast<char>((code >> n) & 0xff);
+                s += char((code >> n) & 0xff);
             s[0] = ascii_toupper(s[0]);
             return s;
         }
@@ -976,7 +976,7 @@ namespace Unicorn {
             abbr.resize(4, 0);
             uint32_t code = 0;
             for (char c: abbr)
-                code = (code << 8) | static_cast<uint8_t>(ascii_tolower(c));
+                code = (code << 8) | uint8_t(ascii_tolower(c));
             return code;
         }
 

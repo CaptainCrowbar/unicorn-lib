@@ -27,7 +27,7 @@ namespace Unicorn {
             auto i = utf_begin(str), e = utf_end(str);
             while (i != e) {
                 if (*i == U'<' || *i == U'=' || *i == U'>') {
-                    flagstr += static_cast<char>(*i++);
+                    flagstr += char(*i++);
                     if (i != e && ! char_is_digit(*i))
                         pad = *i++;
                     if (i != e && char_is_digit(*i)) {
@@ -39,7 +39,7 @@ namespace Unicorn {
                     i = std::find_if_not(i, e, char_is_digit);
                 } else {
                     if (char_is_ascii(*i))
-                        flagstr += static_cast<char>(*i);
+                        flagstr += char(*i);
                     ++i;
                 }
             }
@@ -54,7 +54,7 @@ namespace Unicorn {
             u8string float_print(const char* format, long double x, int prec) {
                 std::vector<char> buf(32);
                 for (;;) {
-                    if (snprintf(buf.data(), buf.size(), format, prec, x) < static_cast<int>(buf.size()))
+                    if (snprintf(buf.data(), buf.size(), format, prec, x) < int(buf.size()))
                         return buf.data();
                     buf.resize(2 * buf.size());
                 }
@@ -125,7 +125,7 @@ namespace Unicorn {
                 using std::log10;
                 if (x == 0)
                     return float_digits(x, prec);
-                auto exp = static_cast<int>(floor(log10(x)));
+                auto exp = int(floor(log10(x)));
                 auto d_estimate = exp < 0 ? prec + 1 - exp : exp < prec - 1 ? prec + 1 : exp + 1;
                 auto e_estimate = exp < 0 ? prec + 4 : prec + 3;
                 auto e_vs_d = e_estimate - d_estimate;
@@ -175,7 +175,7 @@ namespace Unicorn {
                             break;
                         default:
                             if (*i >= 32 && *i <= 126) {
-                                result += static_cast<char>(*i);
+                                result += char(*i);
                             } else if (*i >= 0xa0 && ! mode.get(fx_ascii)) {
                                 result.append(s, i.offset(), i.count());
                             } else if (*i <= 0xff) {
