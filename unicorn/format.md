@@ -169,7 +169,7 @@ Bitmask       | Letter  | Description
 `fx_hex`      | `x`     | Hexadecimal number
 `fx_roman`    | `r`     | Roman numerals
 `fx_sign`     | `s`     | Always show a sign
-`fx_signz`    | `i`     | Always show a sign unless zero
+`fx_signz`    | `S`     | Always show a sign unless zero
 
 TODO
 
@@ -183,7 +183,7 @@ Bitmask       | Letter  | Description
 `fx_general`  | `g`     | Use the shorter of d or e (default)
 `fx_prob`     | `p`     | Probability format
 `fx_sign`     | `s`     | Always show a sign
-`fx_signz`    | `i`     | Always show a sign unless zero
+`fx_signz`    | `S`     | Always show a sign unless zero
 `fx_stripz`   | `z`     | Strip trailing zeros
 
 TODO

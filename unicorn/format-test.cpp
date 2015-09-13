@@ -71,7 +71,7 @@ namespace {
         // x, fx_hex      = Hexadecimal number
         // r, fx_roman    = Roman numerals
         // s, fx_sign     = Always show a sign
-        // i, fx_signz    = Always show a sign unless zero
+        // S, fx_signz    = Always show a sign unless zero
 
         TEST_EQUAL(format_as<char>(0), "0");
         TEST_EQUAL(format_as<char>(42), "42");
@@ -90,22 +90,22 @@ namespace {
         TEST_EQUAL(format_as<char>(0, "s"), "+0");
         TEST_EQUAL(format_as<char>(42, "s"), "+42");
         TEST_EQUAL(format_as<char>(-42, "s"), "-42");
-        TEST_EQUAL(format_as<char>(0, "bs"), "+0");
-        TEST_EQUAL(format_as<char>(42, "bs"), "+101010");
-        TEST_EQUAL(format_as<char>(-42, "bs"), "-101010");
-        TEST_EQUAL(format_as<char>(0, "xs"), "+0");
-        TEST_EQUAL(format_as<char>(42, "xs"), "+2a");
-        TEST_EQUAL(format_as<char>(-42, "xs"), "-2a");
+        TEST_EQUAL(format_as<char>(0, "sb"), "+0");
+        TEST_EQUAL(format_as<char>(42, "sb"), "+101010");
+        TEST_EQUAL(format_as<char>(-42, "sb"), "-101010");
+        TEST_EQUAL(format_as<char>(0, "sx"), "+0");
+        TEST_EQUAL(format_as<char>(42, "sx"), "+2a");
+        TEST_EQUAL(format_as<char>(-42, "sx"), "-2a");
 
-        TEST_EQUAL(format_as<char>(0, "i"), "0");
-        TEST_EQUAL(format_as<char>(42, "i"), "+42");
-        TEST_EQUAL(format_as<char>(-42, "i"), "-42");
-        TEST_EQUAL(format_as<char>(0, "bi"), "0");
-        TEST_EQUAL(format_as<char>(42, "bi"), "+101010");
-        TEST_EQUAL(format_as<char>(-42, "bi"), "-101010");
-        TEST_EQUAL(format_as<char>(0, "xi"), "0");
-        TEST_EQUAL(format_as<char>(42, "xi"), "+2a");
-        TEST_EQUAL(format_as<char>(-42, "xi"), "-2a");
+        TEST_EQUAL(format_as<char>(0, "S"), "0");
+        TEST_EQUAL(format_as<char>(42, "S"), "+42");
+        TEST_EQUAL(format_as<char>(-42, "S"), "-42");
+        TEST_EQUAL(format_as<char>(0, "Sb"), "0");
+        TEST_EQUAL(format_as<char>(42, "Sb"), "+101010");
+        TEST_EQUAL(format_as<char>(-42, "Sb"), "-101010");
+        TEST_EQUAL(format_as<char>(0, "Sx"), "0");
+        TEST_EQUAL(format_as<char>(42, "Sx"), "+2a");
+        TEST_EQUAL(format_as<char>(-42, "Sx"), "-2a");
 
         TEST_EQUAL(format_as<char>(0, "8"), "00000000");
         TEST_EQUAL(format_as<char>(42, "8"), "00000042");
@@ -369,36 +369,36 @@ namespace {
         TEST_EQUAL(format_as<char>(0.9987654, "p3"), "0.99877");
         TEST_EQUAL(format_as<char>(0.99987654, "p3"), "0.999877");
         TEST_EQUAL(format_as<char>(0.999987654, "p3"), "0.9999877");
-        TEST_EQUAL(format_as<char>(0.0, "ds3"), "+0.00");
-        TEST_EQUAL(format_as<char>(42.0, "ds3"), "+42.0");
-        TEST_EQUAL(format_as<char>(-42.0, "ds3"), "-42.0");
-        TEST_EQUAL(format_as<char>(0.0, "di3"), "0.00");
-        TEST_EQUAL(format_as<char>(42.0, "di3"), "+42.0");
-        TEST_EQUAL(format_as<char>(-42.0, "di3"), "-42.0");
-        TEST_EQUAL(format_as<char>(0.0, "es3"), "+0.00e0");
-        TEST_EQUAL(format_as<char>(42.0, "es3"), "+4.20e1");
-        TEST_EQUAL(format_as<char>(-42.0, "es3"), "-4.20e1");
-        TEST_EQUAL(format_as<char>(0.0, "ei3"), "0.00e0");
-        TEST_EQUAL(format_as<char>(42.0, "ei3"), "+4.20e1");
-        TEST_EQUAL(format_as<char>(-42.0, "ei3"), "-4.20e1");
-        TEST_EQUAL(format_as<char>(0.0, "fs3"), "+0.000");
-        TEST_EQUAL(format_as<char>(42.0, "fs3"), "+42.000");
-        TEST_EQUAL(format_as<char>(-42.0, "fs3"), "-42.000");
-        TEST_EQUAL(format_as<char>(0.0, "fi3"), "0.000");
-        TEST_EQUAL(format_as<char>(42.0, "fi3"), "+42.000");
-        TEST_EQUAL(format_as<char>(-42.0, "fi3"), "-42.000");
-        TEST_EQUAL(format_as<char>(0.0, "gs3"), "+0.00");
-        TEST_EQUAL(format_as<char>(42.0, "gs3"), "+42.0");
-        TEST_EQUAL(format_as<char>(-42.0, "gs3"), "-42.0");
-        TEST_EQUAL(format_as<char>(0.0, "gi3"), "0.00");
-        TEST_EQUAL(format_as<char>(42.0, "gi3"), "+42.0");
-        TEST_EQUAL(format_as<char>(-42.0, "gi3"), "-42.0");
-        TEST_EQUAL(format_as<char>(0.0, "ps3"), "+0");
-        TEST_EQUAL(format_as<char>(0.42, "ps3"), "+0.420");
-        TEST_EQUAL(format_as<char>(-0.42, "ps3"), "+0");
-        TEST_EQUAL(format_as<char>(0.0, "pi3"), "0");
-        TEST_EQUAL(format_as<char>(0.42, "pi3"), "+0.420");
-        TEST_EQUAL(format_as<char>(-0.42, "pi3"), "0");
+        TEST_EQUAL(format_as<char>(0.0, "sd3"), "+0.00");
+        TEST_EQUAL(format_as<char>(42.0, "sd3"), "+42.0");
+        TEST_EQUAL(format_as<char>(-42.0, "sd3"), "-42.0");
+        TEST_EQUAL(format_as<char>(0.0, "Sd3"), "0.00");
+        TEST_EQUAL(format_as<char>(42.0, "Sd3"), "+42.0");
+        TEST_EQUAL(format_as<char>(-42.0, "Sd3"), "-42.0");
+        TEST_EQUAL(format_as<char>(0.0, "se3"), "+0.00e0");
+        TEST_EQUAL(format_as<char>(42.0, "se3"), "+4.20e1");
+        TEST_EQUAL(format_as<char>(-42.0, "se3"), "-4.20e1");
+        TEST_EQUAL(format_as<char>(0.0, "Se3"), "0.00e0");
+        TEST_EQUAL(format_as<char>(42.0, "Se3"), "+4.20e1");
+        TEST_EQUAL(format_as<char>(-42.0, "Se3"), "-4.20e1");
+        TEST_EQUAL(format_as<char>(0.0, "sf3"), "+0.000");
+        TEST_EQUAL(format_as<char>(42.0, "sf3"), "+42.000");
+        TEST_EQUAL(format_as<char>(-42.0, "sf3"), "-42.000");
+        TEST_EQUAL(format_as<char>(0.0, "Sf3"), "0.000");
+        TEST_EQUAL(format_as<char>(42.0, "Sf3"), "+42.000");
+        TEST_EQUAL(format_as<char>(-42.0, "Sf3"), "-42.000");
+        TEST_EQUAL(format_as<char>(0.0, "sg3"), "+0.00");
+        TEST_EQUAL(format_as<char>(42.0, "sg3"), "+42.0");
+        TEST_EQUAL(format_as<char>(-42.0, "sg3"), "-42.0");
+        TEST_EQUAL(format_as<char>(0.0, "Sg3"), "0.00");
+        TEST_EQUAL(format_as<char>(42.0, "Sg3"), "+42.0");
+        TEST_EQUAL(format_as<char>(-42.0, "Sg3"), "-42.0");
+        TEST_EQUAL(format_as<char>(0.0, "sp3"), "+0");
+        TEST_EQUAL(format_as<char>(0.42, "sp3"), "+0.420");
+        TEST_EQUAL(format_as<char>(-0.42, "sp3"), "+0");
+        TEST_EQUAL(format_as<char>(0.0, "Sp3"), "0");
+        TEST_EQUAL(format_as<char>(0.42, "Sp3"), "+0.420");
+        TEST_EQUAL(format_as<char>(-0.42, "Sp3"), "0");
 
         #if defined(UNICORN_PCRE16)
             TEST_EQUAL(format_as<char16_t>(0.0, u"d3"), u"0.00");

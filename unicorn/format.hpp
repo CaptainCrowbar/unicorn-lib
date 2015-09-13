@@ -49,7 +49,7 @@ namespace Unicorn {
     constexpr auto fx_hex       = Flagset::value('x');  // Hexadecimal number              --   --    int  --     char  string  --
     constexpr auto fx_roman     = Flagset::value('r');  // Roman numerals                  --   --    int  --     --    --      --
     constexpr auto fx_sign      = Flagset::value('s');  // Always show a sign              --   --    int  float  --    --      --
-    constexpr auto fx_signz     = Flagset::value('i');  // Always show a sign unless zero  --   --    int  float  --    --      --
+    constexpr auto fx_signz     = Flagset::value('S');  // Always show a sign unless zero  --   --    int  float  --    --      --
     constexpr auto fx_digits    = Flagset::value('d');  // Fixed significant figures       --   --    --   float  --    --      --
     constexpr auto fx_exp       = Flagset::value('e');  // Scientific notation             --   --    --   float  --    --      --
     constexpr auto fx_fixed     = Flagset::value('f');  // Fixed point notation            --   --    --   float  --    --      --
