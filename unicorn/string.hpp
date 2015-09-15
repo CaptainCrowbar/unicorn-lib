@@ -1135,6 +1135,72 @@ namespace Unicorn {
     }
 
     template <typename C>
+    basic_string<C> str_remove(const basic_string<C>& str, char32_t c) {
+        basic_string<C> dst;
+        std::copy_if(utf_begin(str), utf_end(str), utf_writer(dst), [c] (char32_t x) { return x != c; });
+        return dst;
+    }
+
+    template <typename C>
+    basic_string<C> str_remove(const basic_string<C>& str, const basic_string<C>& chars) {
+        basic_string<C> dst;
+        std::copy_if(utf_begin(str), utf_end(str), utf_writer(dst), [&chars] (char32_t x) { return chars.find(x) == npos; });
+        return dst;
+    }
+
+    template <typename C>
+    basic_string<C> str_remove(const basic_string<C>& str, const C* chars) {
+        return str_remove(str, cstr(chars));
+    }
+
+    template <typename C, typename Pred>
+    basic_string<C> str_remove_if(const basic_string<C>& str, Pred p) {
+        basic_string<C> dst;
+        std::copy_if(utf_begin(str), utf_end(str), utf_writer(dst), [p] (char32_t x) { return ! p(x); });
+        return dst;
+    }
+
+    template <typename C, typename Pred>
+    basic_string<C> str_remove_if_not(const basic_string<C>& str, Pred p) {
+        basic_string<C> dst;
+        std::copy_if(utf_begin(str), utf_end(str), utf_writer(dst), p);
+        return dst;
+    }
+
+    template <typename C>
+    void str_remove_in(basic_string<C>& str, char32_t c) {
+        basic_string<C> dst;
+        std::copy_if(utf_begin(str), utf_end(str), utf_writer(dst), [c] (char32_t x) { return x != c; });
+        str.swap(dst);
+    }
+
+    template <typename C>
+    void str_remove_in(basic_string<C>& str, const basic_string<C>& chars) {
+        basic_string<C> dst;
+        std::copy_if(utf_begin(str), utf_end(str), utf_writer(dst), [&chars] (char32_t x) { return chars.find(x) == npos; });
+        str.swap(dst);
+    }
+
+    template <typename C>
+    void str_remove_in(basic_string<C>& str, const C* chars) {
+        str_remove_in(str, cstr(chars));
+    }
+
+    template <typename C, typename Pred>
+    void str_remove_in_if(basic_string<C>& str, Pred p) {
+        basic_string<C> dst;
+        std::copy_if(utf_begin(str), utf_end(str), utf_writer(dst), [p] (char32_t x) { return ! p(x); });
+        str.swap(dst);
+    }
+
+    template <typename C, typename Pred>
+    void str_remove_in_if_not(basic_string<C>& str, Pred p) {
+        basic_string<C> dst;
+        std::copy_if(utf_begin(str), utf_end(str), utf_writer(dst), p);
+        str.swap(dst);
+    }
+
+    template <typename C>
     void str_repeat_in(basic_string<C>& str, size_t n) {
         auto dst = str_repeat(str, n);
         str.swap(dst);

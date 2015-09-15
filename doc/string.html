@@ -61,6 +61,11 @@ take iterators, behaviour is undefined if a pair of iterators that are
 expected to mark the beginning and end of a substring do not point to the same
 string or are in the wrong order.)</p>
 
+<p>Any in-place function that might modify its subject string invalidates any
+iterators (plain or UTF) passed to it that were pointing into that string.
+Note that the iterators should still be considered to be invalidated even if
+the string turns out not to be actually modified in a particular case.</p>
+
 <p>Any function that implicitly compares strings uses a simple literal
 comparison, making no attempt to handle Unicode&#8217;s concepts of canonical or
 compatibility equivalence; if your code needs to be aware of such things, you
@@ -446,6 +451,22 @@ and <code>str_partition_by()</code> splits it at the first contiguous sequence o
 characters that are in the <code>delim</code> list. In <code>str_partition_at()</code> and
 <code>str_partition_by()</code>, an empty delimiter string will be treated as never being
 found.</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_remove</strong>(const basic_string&lt;C&gt;&amp; str, char32_t c)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_remove</strong>(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; chars)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_remove</strong>(const basic_string&lt;C&gt;&amp; str, const C* chars)</code></li>
+<li><code>template &lt;typename C, typename Pred&gt; basic_string&lt;C&gt; <strong>str_remove_if</strong>(const basic_string&lt;C&gt;&amp; str, Pred p)</code></li>
+<li><code>template &lt;typename C, typename Pred&gt; basic_string&lt;C&gt; <strong>str_remove_if_not</strong>(const basic_string&lt;C&gt;&amp; str, Pred p)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_remove_in</strong>(basic_string&lt;C&gt;&amp; str, char32_t c)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_remove_in</strong>(basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; chars)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_remove_in</strong>(basic_string&lt;C&gt;&amp; str, const C* chars)</code></li>
+<li><code>template &lt;typename C, typename Pred&gt; void <strong>str_remove_in_if</strong>(basic_string&lt;C&gt;&amp; str, Pred p)</code></li>
+<li><code>template &lt;typename C, typename Pred&gt; void <strong>str_remove_in_if_not</strong>(basic_string&lt;C&gt;&amp; str, Pred p)</code></li>
+</ul>
+
+<p>These remove a specific character, all characters in a set, or characters
+matching (or not matching) a condition from the string.</p>
 
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_repeat</strong>(const basic_string&lt;C&gt;&amp; str, size_t n)</code></li>

@@ -53,6 +53,11 @@ take iterators, behaviour is undefined if a pair of iterators that are
 expected to mark the beginning and end of a substring do not point to the same
 string or are in the wrong order.)
 
+Any in-place function that might modify its subject string invalidates any
+iterators (plain or UTF) passed to it that were pointing into that string.
+Note that the iterators should still be considered to be invalidated even if
+the string turns out not to be actually modified in a particular case.
+
 Any function that implicitly compares strings uses a simple literal
 comparison, making no attempt to handle Unicode's concepts of canonical or
 compatibility equivalence; if your code needs to be aware of such things, you
@@ -357,6 +362,20 @@ and `str_partition_by()` splits it at the first contiguous sequence of
 characters that are in the `delim` list. In `str_partition_at()` and
 `str_partition_by()`, an empty delimiter string will be treated as never being
 found.
+
+* `template <typename C> basic_string<C> str_remove(const basic_string<C>& str, char32_t c)`
+* `template <typename C> basic_string<C> str_remove(const basic_string<C>& str, const basic_string<C>& chars)`
+* `template <typename C> basic_string<C> str_remove(const basic_string<C>& str, const C* chars)`
+* `template <typename C, typename Pred> basic_string<C> str_remove_if(const basic_string<C>& str, Pred p)`
+* `template <typename C, typename Pred> basic_string<C> str_remove_if_not(const basic_string<C>& str, Pred p)`
+* `template <typename C> void str_remove_in(basic_string<C>& str, char32_t c)`
+* `template <typename C> void str_remove_in(basic_string<C>& str, const basic_string<C>& chars)`
+* `template <typename C> void str_remove_in(basic_string<C>& str, const C* chars)`
+* `template <typename C, typename Pred> void str_remove_in_if(basic_string<C>& str, Pred p)`
+* `template <typename C, typename Pred> void str_remove_in_if_not(basic_string<C>& str, Pred p)`
+
+These remove a specific character, all characters in a set, or characters
+matching (or not matching) a condition from the string.
 
 * `template <typename C> basic_string<C> str_repeat(const basic_string<C>& str, size_t n)`
 * `template <typename C> basic_string<C> str_repeat(const C* str, size_t n)`

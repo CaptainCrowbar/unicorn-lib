@@ -454,6 +454,32 @@ namespace {
 
     }
 
+    void check_remove() {
+
+        u8string s8, t8;
+        u16string s16, t16;
+        u32string s32, t32;
+
+        s8 = u8"";             TRY(t8 = str_remove(s8, U'o'));                                         TEST_EQUAL(t8, u8"");
+        s8 = u8"";             TRY(t8 = str_remove(s8, u8"aeiou"));                                    TEST_EQUAL(t8, u8"");
+        s8 = u8"Hello world";  TRY(t8 = str_remove(s8, U'o'));                                         TEST_EQUAL(t8, u8"Hell wrld");
+        s8 = u8"Hello world";  TRY(t8 = str_remove(s8, u8"aeiou"));                                    TEST_EQUAL(t8, u8"Hll wrld");
+        s8 = u8"";             TRY(t8 = str_remove_if(s8, [] (char32_t c) { return c < U'a'; }));      TEST_EQUAL(t8, u8"");
+        s8 = u8"Hello world";  TRY(t8 = str_remove_if(s8, [] (char32_t c) { return c < U'a'; }));      TEST_EQUAL(t8, u8"elloworld");
+        s8 = u8"";             TRY(t8 = str_remove_if_not(s8, [] (char32_t c) { return c < U'a'; }));  TEST_EQUAL(t8, u8"");
+        s8 = u8"Hello world";  TRY(t8 = str_remove_if_not(s8, [] (char32_t c) { return c < U'a'; }));  TEST_EQUAL(t8, u8"H ");
+
+        s8 = u8"";             TRY(str_remove_in(s8, U'o'));                                         TEST_EQUAL(s8, u8"");
+        s8 = u8"";             TRY(str_remove_in(s8, u8"aeiou"));                                    TEST_EQUAL(s8, u8"");
+        s8 = u8"Hello world";  TRY(str_remove_in(s8, U'o'));                                         TEST_EQUAL(s8, u8"Hell wrld");
+        s8 = u8"Hello world";  TRY(str_remove_in(s8, u8"aeiou"));                                    TEST_EQUAL(s8, u8"Hll wrld");
+        s8 = u8"";             TRY(str_remove_in_if(s8, [] (char32_t c) { return c < U'a'; }));      TEST_EQUAL(s8, u8"");
+        s8 = u8"Hello world";  TRY(str_remove_in_if(s8, [] (char32_t c) { return c < U'a'; }));      TEST_EQUAL(s8, u8"elloworld");
+        s8 = u8"";             TRY(str_remove_in_if_not(s8, [] (char32_t c) { return c < U'a'; }));  TEST_EQUAL(s8, u8"");
+        s8 = u8"Hello world";  TRY(str_remove_in_if_not(s8, [] (char32_t c) { return c < U'a'; }));  TEST_EQUAL(s8, u8"H ");
+
+    }
+
     void check_repeat() {
 
         u8string s8;
@@ -723,6 +749,7 @@ TEST_MODULE(unicorn, string_manipulation_n_r) {
     check_pad_left();
     check_pad_right();
     check_partition();
+    check_remove();
     check_replace();
     check_repeat();
 
