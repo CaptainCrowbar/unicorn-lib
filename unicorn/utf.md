@@ -93,6 +93,13 @@ reference to the underlying string; UTF iterators are invalidated by any of
 the same operations on the underlying string that would invalidate an ordinary
 string iterator.
 
+The constructor can optionally take an offset into the subject string; if the
+offset points to the beginning of an encoded character, the iterator will
+start at that character. If the offset does not point to a character boundary,
+it will be treated as an invalid character; such an iterator can be
+incremented to the next character boundary in the normal way, but decrementing
+past that point has unspecified behaviour.
+
 The `flags` argument determines the behaviour when invalid encoded data is
 found, as described above. If an `EncodingError` exception is caught and
 handled, the iterator is still in a valid state, and can be dereferenced
@@ -142,9 +149,7 @@ These return iterators over an encoded string.
 
 * `template <typename C> UtfIterator<C> utf_iterator(const basic_string<C>& src, size_t offset, Flagset flags = {})`
 
-Returns an iterator pointing to a specific offset in a string. If the offset
-does not point to a character boundary, it will be treated as an invalid
-character.
+Returns an iterator pointing to a specific offset in a string.
 
 * `template <typename C> basic_string<C> u_str(const UtfIterator<C>& i, const UtfIterator<C>& j)`
 * `template <typename C> basic_string<C> u_str(const Irange<UtfIterator<C>>& range)`
