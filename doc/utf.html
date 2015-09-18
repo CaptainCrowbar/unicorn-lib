@@ -102,6 +102,17 @@ not accept the <code>err_ignore</code> option.</p>
 <p>Returns the number of code units in the encoding of the character <code>c</code>, in the
 UTF encoding implied by the character type <code>C</code>.</p>
 
+<ul>
+<li><code>template &lt;typename C&gt; bool <strong>is_single_unit</strong>(C c)</code> <em>&#8211; This code unit represents a character by itself</em></li>
+<li><code>template &lt;typename C&gt; bool <strong>is_start_unit</strong>(C c)</code> <em>&#8211; This is the first code unit of a multi-unit character</em></li>
+<li><code>template &lt;typename C&gt; bool <strong>is_following_unit</strong>(C c)</code> <em>&#8211; This is the second or subsequent code unit of a multi-unit character</em></li>
+<li><code>template &lt;typename C&gt; bool <strong>is_invalid_unit</strong>(C c)</code> <em>&#8211; This value is not a legal code unit</em></li>
+<li><code>template &lt;typename C&gt; bool <strong>is_initial_unit</strong>(C c)</code> <em>&#8211; Either a single unit or a start unit</em></li>
+</ul>
+
+<p>These give the properties of individual code units. Exactly one of the first
+four functions will be true for any value of <code>C</code>.</p>
+
 <h2 id="utfdecodingiterator">UTF decoding iterator</h2>
 
 <ul>

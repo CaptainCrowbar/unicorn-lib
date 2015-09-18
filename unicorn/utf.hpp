@@ -142,6 +142,34 @@ namespace Unicorn {
         }
     }
 
+    template <typename C>
+    bool is_single_unit(C c) {
+        return sizeof(C) == 1 ? uint8_t(c) <= 0x7f : char_is_unicode(c);
+    }
+
+    template <typename C>
+    bool is_start_unit(C c) {
+        return (sizeof(C) == 1 && uint8_t(c) >= 0xc2 && uint8_t(c) <= 0xf4)
+            || (sizeof(C) == 2 && char_is_high_surrogate(c));
+    }
+
+    template <typename C>
+    bool is_following_unit(C c) {
+        return (sizeof(C) == 1 && uint8_t(c) >= 0x80 && uint8_t(c) <= 0xbf)
+            || (sizeof(C) == 2 && char_is_low_surrogate(c));
+    }
+
+    template <typename C>
+    bool is_invalid_unit(C c) {
+        return (sizeof(C) == 1 && ((uint8_t(c) >= 0xc0 && uint8_t(c) <= 0xc1) || uint8_t(c) >= 0xf5))
+            || (sizeof(C) == 4 && ! char_is_unicode(c));
+    }
+
+    template <typename C>
+    bool is_initial_unit(C c) {
+        return is_single_unit(c) || is_start_unit(c);
+    }
+
     // UTF decoding iterator
 
     template <typename C>

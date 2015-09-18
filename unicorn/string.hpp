@@ -258,36 +258,55 @@ namespace Unicorn {
 
     // String algorithms
 
-    namespace UnicornDetail {
+    template <typename C>
+    size_t str_common(const basic_string<C>& s1, const basic_string<C>& s2, size_t start = 0) noexcept {
+        if (start >= s1.size() || start >= s2.size())
+            return 0;
+        auto p = s1.data() + start;
+        for (auto q = s2.data() + start, endp = p + std::min(s1.size(), s2.size()); p != endp && *p == *q; ++p, ++q) {}
+        return p - s1.data() - start;
+    }
 
-        template <typename C, size_t N = sizeof(C)>
-        struct StringCompareHelper {
-            using string_type = basic_string<C>;
-            static bool less(const string_type& lhs, const string_type& rhs) noexcept {
-                return lhs < rhs;
-            }
-        };
-
-        template <typename C>
-        struct StringCompareHelper<C, 2> {
-            using string_type = basic_string<C>;
-            static bool less(const string_type& lhs, const string_type& rhs) noexcept {
-                auto a = utf_range(lhs), b = utf_range(rhs);
-                return std::lexicographical_compare(PRI_BOUNDS(a), PRI_BOUNDS(b));
-            }
-        };
-
+    template <typename C>
+    size_t str_common_utf(const basic_string<C>& s1, const basic_string<C>& s2, size_t start = 0) noexcept {
+        size_t n = str_common(s1, s2, start);
+        if (n == 0 || sizeof(C) == 4)
+            return n;
+        size_t pos = start + n;
+        if (! is_following_unit(s1[pos]) && ! is_following_unit(s2[pos]))
+            return n;
+        --pos;
+        while (pos > start && is_following_unit(s1[pos]))
+            --pos;
+        return pos - start;
     }
 
     struct StringCompare {
         template <typename C>
-        bool operator()(const basic_string<C>& lhs,
-                const basic_string<C>& rhs) const noexcept {
-            return UnicornDetail::StringCompareHelper<C>::less(lhs, rhs);
+        bool operator()(const basic_string<C>& lhs, const basic_string<C>& rhs) const noexcept {
+            if (sizeof(C) == 2) {
+                auto ur1 = utf_range(lhs), ur2 = utf_range(rhs);
+                return std::lexicographical_compare(PRI_BOUNDS(ur1), PRI_BOUNDS(ur2));
+            } else {
+                return lhs < rhs;
+            }
         }
     };
 
     constexpr StringCompare str_compare {};
+
+    template <typename C>
+    int str_compare_3way(const basic_string<C>& lhs, const basic_string<C>& rhs) {
+        size_t common = str_common_utf(lhs, rhs);
+        if (common == lhs.size() && common == rhs.size())
+            return 0;
+        else if (common == rhs.size())
+            return 1;
+        else if (common == lhs.size())
+            return -1;
+        char32_t u1 = *utf_iterator(lhs, common), u2 = *utf_iterator(rhs, common);
+        return u1 > u2 ? 1 : -1;
+    }
 
     template <typename C>
     bool str_expect(UtfIterator<C>& i, const UtfIterator<C>& end, const basic_string<C>& prefix) {

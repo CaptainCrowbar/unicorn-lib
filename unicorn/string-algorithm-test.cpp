@@ -12,6 +12,52 @@ using namespace Unicorn;
 
 namespace {
 
+    void check_common() {
+
+        u8string a8, b8 = "Hello", c8 = "Hello world", d8 = "Hellfire", e8 = "Goodbye";
+        size_t n = 0;
+
+        TRY(n = str_common(a8, b8));      TEST_EQUAL(n, 0);
+        TRY(n = str_common(b8, c8));      TEST_EQUAL(n, 5);
+        TRY(n = str_common(b8, d8));      TEST_EQUAL(n, 4);
+        TRY(n = str_common(b8, e8));      TEST_EQUAL(n, 0);
+        TRY(n = str_common(b8, d8, 3));   TEST_EQUAL(n, 1);
+        TRY(n = str_common(b8, d8, 4));   TEST_EQUAL(n, 0);
+        TRY(n = str_common(b8, d8, 5));   TEST_EQUAL(n, 0);
+        TRY(n = str_common(b8, d8, 42));  TEST_EQUAL(n, 0);
+
+        u16string a16, b16 = u"Hello", c16 = u"Hello world", d16 = u"Hellfire", e16 = u"Goodbye";
+
+        TRY(n = str_common(a16, b16));      TEST_EQUAL(n, 0);
+        TRY(n = str_common(b16, c16));      TEST_EQUAL(n, 5);
+        TRY(n = str_common(b16, d16));      TEST_EQUAL(n, 4);
+        TRY(n = str_common(b16, e16));      TEST_EQUAL(n, 0);
+        TRY(n = str_common(b16, d16, 3));   TEST_EQUAL(n, 1);
+        TRY(n = str_common(b16, d16, 4));   TEST_EQUAL(n, 0);
+        TRY(n = str_common(b16, d16, 5));   TEST_EQUAL(n, 0);
+        TRY(n = str_common(b16, d16, 42));  TEST_EQUAL(n, 0);
+
+        u32string a32, b32 = U"Hello", c32 = U"Hello world", d32 = U"Hellfire", e32 = U"Goodbye";
+
+        TRY(n = str_common(a32, b32));      TEST_EQUAL(n, 0);
+        TRY(n = str_common(b32, c32));      TEST_EQUAL(n, 5);
+        TRY(n = str_common(b32, d32));      TEST_EQUAL(n, 4);
+        TRY(n = str_common(b32, e32));      TEST_EQUAL(n, 0);
+        TRY(n = str_common(b32, d32, 3));   TEST_EQUAL(n, 1);
+        TRY(n = str_common(b32, d32, 4));   TEST_EQUAL(n, 0);
+        TRY(n = str_common(b32, d32, 5));   TEST_EQUAL(n, 0);
+        TRY(n = str_common(b32, d32, 42));  TEST_EQUAL(n, 0);
+
+        // "αβγδ" = Unicode 3b1 3b1 3b1 3c4 = UTF-8 ce b1 ce b2 ce b3 ce b4
+        // "αβδε" = Unicode 3b1 3b1 3c4 3c5 = UTF-8 ce b1 ce b2 ce b4 ce b5
+
+        u8string x8 = u8"αβγδ", y8 = u8"αβδε";
+
+        TRY(n = str_common(x8, y8));      TEST_EQUAL(n, 5);
+        TRY(n = str_common_utf(x8, y8));  TEST_EQUAL(n, 4);
+
+    }
+
     void check_compare() {
 
         TEST(! str_compare(u""s, u""s));
@@ -45,6 +91,38 @@ namespace {
             TEST_EQUAL(str_compare(u16a, u16b), str_compare(u32a, u32b));
             TEST_EQUAL(str_compare(u8a, u8b), str_compare(u32a, u32b));
         }
+
+        int rc;
+
+        TRY(rc = str_compare_3way(""s, ""s));                TEST_EQUAL(rc, 0);
+        TRY(rc = str_compare_3way("Hello"s, ""s));           TEST_EQUAL(rc, 1);
+        TRY(rc = str_compare_3way(""s, "Hello"s));           TEST_EQUAL(rc, -1);
+        TRY(rc = str_compare_3way("Hello"s, "Hello"s));      TEST_EQUAL(rc, 0);
+        TRY(rc = str_compare_3way("Hello"s, "Hellfire"s));   TEST_EQUAL(rc, 1);
+        TRY(rc = str_compare_3way("Hellfire"s, "Hello"s));   TEST_EQUAL(rc, -1);
+        TRY(rc = str_compare_3way(u8"αβγδε"s, u8"αβγδε"s));  TEST_EQUAL(rc, 0);
+        TRY(rc = str_compare_3way(u8"αβδε"s, u8"αβγδ"s));    TEST_EQUAL(rc, 1);
+        TRY(rc = str_compare_3way(u8"αβγδ"s, u8"αβδε"s));    TEST_EQUAL(rc, -1);
+
+        TRY(rc = str_compare_3way(u""s, u""s));               TEST_EQUAL(rc, 0);
+        TRY(rc = str_compare_3way(u"Hello"s, u""s));          TEST_EQUAL(rc, 1);
+        TRY(rc = str_compare_3way(u""s, u"Hello"s));          TEST_EQUAL(rc, -1);
+        TRY(rc = str_compare_3way(u"Hello"s, u"Hello"s));     TEST_EQUAL(rc, 0);
+        TRY(rc = str_compare_3way(u"Hello"s, u"Hellfire"s));  TEST_EQUAL(rc, 1);
+        TRY(rc = str_compare_3way(u"Hellfire"s, u"Hello"s));  TEST_EQUAL(rc, -1);
+        TRY(rc = str_compare_3way(u"αβγδε"s, u"αβγδε"s));     TEST_EQUAL(rc, 0);
+        TRY(rc = str_compare_3way(u"αβδε"s, u"αβγδ"s));       TEST_EQUAL(rc, 1);
+        TRY(rc = str_compare_3way(u"αβγδ"s, u"αβδε"s));       TEST_EQUAL(rc, -1);
+
+        TRY(rc = str_compare_3way(U""s, U""s));               TEST_EQUAL(rc, 0);
+        TRY(rc = str_compare_3way(U"Hello"s, U""s));          TEST_EQUAL(rc, 1);
+        TRY(rc = str_compare_3way(U""s, U"Hello"s));          TEST_EQUAL(rc, -1);
+        TRY(rc = str_compare_3way(U"Hello"s, U"Hello"s));     TEST_EQUAL(rc, 0);
+        TRY(rc = str_compare_3way(U"Hello"s, U"Hellfire"s));  TEST_EQUAL(rc, 1);
+        TRY(rc = str_compare_3way(U"Hellfire"s, U"Hello"s));  TEST_EQUAL(rc, -1);
+        TRY(rc = str_compare_3way(U"αβγδε"s, U"αβγδε"s));     TEST_EQUAL(rc, 0);
+        TRY(rc = str_compare_3way(U"αβδε"s, U"αβγδ"s));       TEST_EQUAL(rc, 1);
+        TRY(rc = str_compare_3way(U"αβγδ"s, U"αβδε"s));       TEST_EQUAL(rc, -1);
 
     }
 
@@ -341,6 +419,7 @@ namespace {
 
 TEST_MODULE(unicorn, string_algorithm) {
 
+    check_common();
     check_compare();
     check_expect();
     check_find_char();

@@ -192,6 +192,21 @@ empty.</p>
 <h2 id="stringalgorithms">String algorithms</h2>
 
 <ul>
+<li><code>template &lt;typename C&gt; size_t <strong>str_common</strong>(const basic_string&lt;C&gt;&amp; s1, const basic_string&lt;C&gt;&amp; s2, size_t start = 0) noexcept</code></li>
+<li><code>template &lt;typename C&gt; size_t <strong>str_common_utf</strong>(const basic_string&lt;C&gt;&amp; s1, const basic_string&lt;C&gt;&amp; s2, size_t start = 0) noexcept</code></li>
+</ul>
+
+<p>These return the count of code units in the longest common prefix of two
+strings, optionally starting at a given offset (or, equivalently, the offset,
+relative to <code>start</code>, of the first difference between the strings). The
+<code>str_common()</code> function simply finds the longest common prefix of code units
+without regard to encoding, while <code>str_common_utf()</code> finds the longest common
+prefix of whole encoded characters (the returned count is still in code
+units); this means it will return a smaller value than <code>str_common()</code> if the
+offset found by <code>str_common()</code> is partway through an encoded character. Both
+functions will return zero if <code>start</code> is past the end of either string.</p>
+
+<ul>
 <li><code>struct <strong>StringCompare</strong></code>
 
 <ul>
@@ -206,6 +221,14 @@ regardless of encoding. For UTF&#8211;8 and UTF&#8211;32 this is just a trivial 
 <code>basic_string</code>&#8217;s less-than operator, but for UTF&#8211;16 it needs to be slightly
 more complicated to preserve the expected order (in UTF&#8211;16, unlike UTF&#8211;8 and
 32, code unit order is not the same as code point order).</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; int <strong>str_compare_3way</strong>(const basic_string&lt;C&gt;&amp; lhs, const basic_string&lt;C&gt;&amp; rhs)</code></li>
+</ul>
+
+<p>This compares strings in the same way as <code>string_compare()</code> above, but returns
+1, 0, or &#8211;1 to indicate that the first string is greater than, equal to, or
+less than the second one, respectively.</p>
 
 <ul>
 <li><code>template &lt;typename C&gt; bool <strong>str_expect</strong>(UtfIterator&lt;C&gt;&amp; i, const basic_string&lt;C&gt;&amp; prefix)</code></li>

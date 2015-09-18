@@ -64,6 +64,15 @@ not accept the `err_ignore` option.
 Returns the number of code units in the encoding of the character `c`, in the
 UTF encoding implied by the character type `C`.
 
+* `template <typename C> bool is_single_unit(C c)` _-- This code unit represents a character by itself_
+* `template <typename C> bool is_start_unit(C c)` _-- This is the first code unit of a multi-unit character_
+* `template <typename C> bool is_following_unit(C c)` _-- This is the second or subsequent code unit of a multi-unit character_
+* `template <typename C> bool is_invalid_unit(C c)` _-- This value is not a legal code unit_
+* `template <typename C> bool is_initial_unit(C c)` _-- Either a single unit or a start unit_
+
+These give the properties of individual code units. Exactly one of the first
+four functions will be true for any value of `C`.
+
 ## UTF decoding iterator ##
 
 * `template <typename C> class UtfIterator`

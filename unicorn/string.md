@@ -139,6 +139,19 @@ These return true if the string starts or ends with the specified substring.
 
 ## String algorithms ##
 
+* `template <typename C> size_t str_common(const basic_string<C>& s1, const basic_string<C>& s2, size_t start = 0) noexcept`
+* `template <typename C> size_t str_common_utf(const basic_string<C>& s1, const basic_string<C>& s2, size_t start = 0) noexcept`
+
+These return the count of code units in the longest common prefix of two
+strings, optionally starting at a given offset (or, equivalently, the offset,
+relative to `start`, of the first difference between the strings). The
+`str_common()` function simply finds the longest common prefix of code units
+without regard to encoding, while `str_common_utf()` finds the longest common
+prefix of whole encoded characters (the returned count is still in code
+units); this means it will return a smaller value than `str_common()` if the
+offset found by `str_common()` is partway through an encoded character. Both
+functions will return zero if `start` is past the end of either string.
+
 * `struct StringCompare`
     * `template <typename C> bool StringCompare::operator()(const basic_string<C>& lhs, const basic_string<C>& rhs) const noexcept`
 * `constexpr StringCompare str_compare`
@@ -149,6 +162,13 @@ regardless of encoding. For UTF-8 and UTF-32 this is just a trivial call to
 `basic_string`'s less-than operator, but for UTF-16 it needs to be slightly
 more complicated to preserve the expected order (in UTF-16, unlike UTF-8 and
 32, code unit order is not the same as code point order).
+
+* `template <typename C> int str_compare_3way(const basic_string<C>& lhs, const basic_string<C>& rhs)`
+
+This compares strings in the same way as `string_compare()` above, but returns
+1, 0, or -1 to indicate that the first string is greater than, equal to, or
+less than the second one, respectively.
+
 
 * `template <typename C> bool str_expect(UtfIterator<C>& i, const basic_string<C>& prefix)`
 * `template <typename C> bool str_expect(UtfIterator<C>& i, const UtfIterator<C>& end, const basic_string<C>& prefix)`
