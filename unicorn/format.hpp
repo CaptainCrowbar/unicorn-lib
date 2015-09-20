@@ -430,7 +430,7 @@ namespace Unicorn {
     void BasicFormat<C>::add_literal(const string_type& text) {
         if (! text.empty()) {
             if (seq.empty() || seq.back().index != 0)
-                seq.push_back({0, text, {}, 0, 0, 0});
+                seq.push_back({0, text, 0, 0, 0, 0});
             else
                 seq.back().text += text;
         }
