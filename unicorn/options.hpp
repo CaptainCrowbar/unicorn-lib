@@ -26,9 +26,9 @@ namespace Unicorn {
         OptionSpecError(const u8string& details, const u8string& option);
     };
 
-    constexpr auto opt_locale    = Flagset::value('l');  // Argument list is in local encoding
-    constexpr auto opt_noprefix  = Flagset::value('n');  // First argument is not the command name
-    constexpr auto opt_quoted    = Flagset::value('q');  // Allow arguments to be quoted
+    UNICORN_DEFINE_FLAG(command line parsing, opt_locale, 0);    // Argument list is in local encoding
+    UNICORN_DEFINE_FLAG(command line parsing, opt_noprefix, 1);  // First argument is not the command name
+    UNICORN_DEFINE_FLAG(command line parsing, opt_quoted, 2);    // Allow arguments to be quoted
 
     namespace UnicornDetail {
 
@@ -87,11 +87,11 @@ namespace Unicorn {
         u8string help() const;
         u8string version() const { return app_info; }
         template <typename C, typename C2>
-            bool parse(const std::vector<basic_string<C>>& args, std::basic_ostream<C2>& out, Flagset flags = {});
+            bool parse(const std::vector<basic_string<C>>& args, std::basic_ostream<C2>& out, uint32_t flags = 0);
         template <typename C, typename C2>
-            bool parse(const basic_string<C>& args, std::basic_ostream<C2>& out, Flagset flags = {});
+            bool parse(const basic_string<C>& args, std::basic_ostream<C2>& out, uint32_t flags = 0);
         template <typename C, typename C2>
-            bool parse(int argc, C** argv, std::basic_ostream<C2>& out, Flagset flags = {});
+            bool parse(int argc, C** argv, std::basic_ostream<C2>& out, uint32_t flags = 0);
         template <typename C> bool parse(const std::vector<basic_string<C>>& args) { return parse(args, std::cout); }
         template <typename C> bool parse(const basic_string<C>& args) { return parse(args, std::cout); }
         template <typename C> bool parse(int argc, C** argv) { return parse(argc, argv, std::cout); }
@@ -127,9 +127,9 @@ namespace Unicorn {
         void add_option(option_type opt);
         size_t find_index(u8string name, bool found = false) const;
         string_list find_values(const u8string& name) const;
-        help_mode parse_args(string_list args, Flagset flags);
+        help_mode parse_args(string_list args, uint32_t flags);
         void add_help_version();
-        void clean_up_arguments(string_list& args, Flagset flags);
+        void clean_up_arguments(string_list& args, uint32_t flags);
         string_list parse_forced_anonymous(string_list& args);
         void parse_attached_arguments(string_list& args);
         void expand_abbreviations(string_list& args);
@@ -138,11 +138,11 @@ namespace Unicorn {
         void check_required();
         void supply_defaults();
         template <typename C> void send_help(std::basic_ostream<C>& out, help_mode mode) const;
-        template <typename C> static u8string arg_convert(const basic_string<C>& str, Flagset /*flags*/)
+        template <typename C> static u8string arg_convert(const basic_string<C>& str, uint32_t /*flags*/)
             { return to_utf8(str); }
-        static u8string arg_convert(const string& str, Flagset flags);
-        static void check_flags(Flagset flags)
-            { flags.allow(opt_locale | opt_noprefix | opt_quoted, "command line option"); }
+        static u8string arg_convert(const string& str, uint32_t flags);
+        static void check_flags(uint32_t flags)
+            { UnicornDetail::allow_flags(flags, opt_locale | opt_noprefix | opt_quoted, "command line parsing"); }
         static void unquote(const u8string& src, string_list& dst);
     };
 
@@ -175,7 +175,7 @@ namespace Unicorn {
     }
 
     template <typename C, typename C2>
-    bool Options::parse(const std::vector<basic_string<C>>& args, std::basic_ostream<C2>& out, Flagset flags) {
+    bool Options::parse(const std::vector<basic_string<C>>& args, std::basic_ostream<C2>& out, uint32_t flags) {
         check_flags(flags);
         string_list u8vec;
         std::transform(PRI_BOUNDS(args), append(u8vec),
@@ -186,13 +186,13 @@ namespace Unicorn {
     }
 
     template <typename C, typename C2>
-    bool Options::parse(const basic_string<C>& args, std::basic_ostream<C2>& out, Flagset flags) {
+    bool Options::parse(const basic_string<C>& args, std::basic_ostream<C2>& out, uint32_t flags) {
         check_flags(flags);
         auto u8args = arg_convert(args, flags);
         string_list vec;
-        if (flags.get(opt_quoted)) {
+        if (flags & opt_quoted) {
             unquote(u8args, vec);
-            flags.set(opt_quoted, false);
+            flags &= ~ opt_quoted;
         } else {
             str_split(u8args, append(vec));
         }
@@ -202,10 +202,10 @@ namespace Unicorn {
     }
 
     template <typename C, typename C2>
-    bool Options::parse(int argc, C** argv, std::basic_ostream<C2>& out, Flagset flags) {
+    bool Options::parse(int argc, C** argv, std::basic_ostream<C2>& out, uint32_t flags) {
         check_flags(flags);
         std::vector<basic_string<C>> args(argv, argv + argc);
-        if (flags.get(opt_quoted))
+        if (flags & opt_quoted)
             return parse(str_join(args, str_chars<C>(U' ')), out, flags);
         else
             return parse(args, out, flags);

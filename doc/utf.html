@@ -37,13 +37,11 @@ UTF&#8211;32; <code>wstring</code> may hold either UTF&#8211;16 or UTF&#8211;32,
 <colgroup>
 <col style="text-align:left;"/>
 <col style="text-align:left;"/>
-<col style="text-align:left;"/>
 </colgroup>
 
 <thead>
 <tr>
-	<th style="text-align:left;">Bitmask</th>
-	<th style="text-align:left;">Letter</th>
+	<th style="text-align:left;">Flag</th>
 	<th style="text-align:left;">Description</th>
 </tr>
 </thead>
@@ -51,24 +49,22 @@ UTF&#8211;32; <code>wstring</code> may hold either UTF&#8211;16 or UTF&#8211;32,
 <tbody>
 <tr>
 	<td style="text-align:left;"><code>err_ignore</code></td>
-	<td style="text-align:left;"><code>I</code></td>
 	<td style="text-align:left;">Assume valid UTF input</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>err_replace</code></td>
-	<td style="text-align:left;"><code>R</code></td>
 	<td style="text-align:left;">Replace invalid UTF with <code>U+FFFD</code></td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>err_throw</code></td>
-	<td style="text-align:left;"><code>T</code></td>
 	<td style="text-align:left;">Throw <code>EncodingError</code> on invalid UTF</td>
 </tr>
 </tbody>
 </table>
 
-<p>These flags are used in most encoding conversion functions, and some related
-functions, to indicate how to handle encoding errors in the input data.</p>
+<p>These bitmask flags are used in most encoding conversion functions, and some
+related functions, to indicate how to handle encoding errors in the input
+data.</p>
 
 <p>The <code>err_ignore</code> option is the default for the UTF conversion functions. This
 tells the function to assume that the input is already known to be a valid UTF
@@ -83,6 +79,8 @@ UTF&#8211;8 subsequences follows the Unicode recommended behaviour (Unicode Stan
 
 <p>The <code>err_throw</code> option causes any input encoding error to throw an
 <code>EncodingError</code> exception.</p>
+
+<p>Behaviour is unspecified if more than one of these flags is combined.</p>
 
 <p>If ignoring errors sounds like an unsafe choice for the default action,
 remember that the Unicorn library is designed with the intention that text
@@ -128,7 +126,7 @@ four functions will be true for any value of <code>C</code>.</p>
 <li><code>using UtfIterator::<strong>value_type</strong> = char32_t</code></li>
 <li><code>UtfIterator::<strong>UtfIterator</strong>() noexcept</code></li>
 <li><code>explicit UtfIterator::<strong>UtfIterator</strong>(const string_type&amp; src)</code></li>
-<li><code>UtfIterator::<strong>UtfIterator</strong>(const string_type&amp; src, size_t offset, Flagset flags = {})</code></li>
+<li><code>UtfIterator::<strong>UtfIterator</strong>(const string_type&amp; src, size_t offset, uint32_t flags = 0)</code></li>
 <li><code>const string_type&amp; UtfIterator::<strong>source</strong>() const noexcept</code></li>
 <li><code>size_t UtfIterator::<strong>offset</strong>() const noexcept</code></li>
 <li><code>size_t UtfIterator::<strong>count</strong>() const noexcept</code></li>
@@ -198,15 +196,15 @@ errors.</p>
 <p>Convenience aliases for specific iterators and ranges.</p>
 
 <ul>
-<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>utf_begin</strong>(const basic_string&lt;C&gt;&amp; src, Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>utf_end</strong>(const basic_string&lt;C&gt;&amp; src, Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; Irange&lt;UtfIterator&lt;C&gt;&gt; <strong>utf_range</strong>(const basic_string&lt;C&gt;&amp; src, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>utf_begin</strong>(const basic_string&lt;C&gt;&amp; src, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>utf_end</strong>(const basic_string&lt;C&gt;&amp; src, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;UtfIterator&lt;C&gt;&gt; <strong>utf_range</strong>(const basic_string&lt;C&gt;&amp; src, uint32_t flags = 0)</code></li>
 </ul>
 
 <p>These return iterators over an encoded string.</p>
 
 <ul>
-<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>utf_iterator</strong>(const basic_string&lt;C&gt;&amp; src, size_t offset, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>utf_iterator</strong>(const basic_string&lt;C&gt;&amp; src, size_t offset, uint32_t flags = 0)</code></li>
 </ul>
 
 <p>Returns an iterator pointing to a specific offset in a string.</p>
@@ -260,7 +258,7 @@ same way as for <code>UtfIterator</code>.</p>
 <p>Convenience aliases for specific iterators.</p>
 
 <ul>
-<li><code>template &lt;typename C&gt; UtfWriter&lt;C&gt; <strong>utf_writer</strong>(basic_string&lt;C&gt;&amp; dst, Flagset flags = {}) noexcept</code></li>
+<li><code>template &lt;typename C&gt; UtfWriter&lt;C&gt; <strong>utf_writer</strong>(basic_string&lt;C&gt;&amp; dst, uint32_t flags = 0) noexcept</code></li>
 </ul>
 
 <p>Returns an encoding iterator writing to the given destination string.</p>
@@ -268,10 +266,10 @@ same way as for <code>UtfIterator</code>.</p>
 <h2 id="utfconversionfunctions">UTF conversion functions</h2>
 
 <ul>
-<li><code>template &lt;typename C1, typename C2&gt; void <strong>recode</strong>(const basic_string&lt;C1&gt;&amp; src, basic_string&lt;C2&gt;&amp; dst, Flagset flags = {})</code></li>
-<li><code>template &lt;typename C1, typename C2&gt; void <strong>recode</strong>(const basic_string&lt;C1&gt;&amp; src, size_t offset, basic_string&lt;C2&gt;&amp; dst, Flagset flags = {})</code></li>
-<li><code>template &lt;typename C1, typename C2&gt; void <strong>recode</strong>(const C1* src, size_t count, basic_string&lt;C2&gt;&amp; dst, Flagset flags = {})</code></li>
-<li><code>template &lt;typename C2, typename C1&gt; basic_string&lt;C2&gt; <strong>recode</strong>(const basic_string&lt;C1&gt;&amp; src, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C1, typename C2&gt; void <strong>recode</strong>(const basic_string&lt;C1&gt;&amp; src, basic_string&lt;C2&gt;&amp; dst, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C1, typename C2&gt; void <strong>recode</strong>(const basic_string&lt;C1&gt;&amp; src, size_t offset, basic_string&lt;C2&gt;&amp; dst, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C1, typename C2&gt; void <strong>recode</strong>(const C1* src, size_t count, basic_string&lt;C2&gt;&amp; dst, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C2, typename C1&gt; basic_string&lt;C2&gt; <strong>recode</strong>(const basic_string&lt;C1&gt;&amp; src, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename C2, typename C1&gt; basic_string&lt;C2&gt; <strong>recode</strong>(const basic_string&lt;C1&gt;&amp; src, size_t offset, int on_error)</code></li>
 </ul>
 
@@ -290,11 +288,11 @@ supplied by reference, after an exception is thrown the destination string
 will contain the successfully converted part of the string before the error.</p>
 
 <ul>
-<li><code>template &lt;typename C&gt; u8string <strong>to_utf8</strong>(const basic_string&lt;C&gt;&amp; src, Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; u16string <strong>to_utf16</strong>(const basic_string&lt;C&gt;&amp; src, Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; u32string <strong>to_utf32</strong>(const basic_string&lt;C&gt;&amp; src, Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; wstring <strong>to_wstring</strong>(const basic_string&lt;C&gt;&amp; src, Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; NativeString <strong>to_native</strong>(const basic_string&lt;C&gt;&amp; src, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; u8string <strong>to_utf8</strong>(const basic_string&lt;C&gt;&amp; src, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; u16string <strong>to_utf16</strong>(const basic_string&lt;C&gt;&amp; src, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; u32string <strong>to_utf32</strong>(const basic_string&lt;C&gt;&amp; src, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; wstring <strong>to_wstring</strong>(const basic_string&lt;C&gt;&amp; src, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; NativeString <strong>to_native</strong>(const basic_string&lt;C&gt;&amp; src, uint32_t flags = 0)</code></li>
 </ul>
 
 <p>These are just shorthand for the corresponding invocation of <code>recode()</code>.</p>

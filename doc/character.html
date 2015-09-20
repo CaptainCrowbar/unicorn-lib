@@ -340,38 +340,33 @@ library).</p>
 <h2 id="characternames">Character names</h2>
 
 <ul>
-<li><code>u8string <strong>char_name</strong>(char32_t c, Flagset flags = {})</code></li>
+<li><code>u8string <strong>char_name</strong>(char32_t c, uint32_t flags = 0)</code></li>
 </ul>
 
 <table>
 <colgroup>
 <col style="text-align:left;"/>
 <col style="text-align:left;"/>
-<col style="text-align:left;"/>
 </colgroup>
 
 <thead>
 <tr>
-	<th style="text-align:left;">Bitmask</th>
-	<th style="text-align:left;">Letter</th>
+	<th style="text-align:left;">Flag</th>
 	<th style="text-align:left;">Description</th>
 </tr>
 </thead>
 
 <tbody>
 <tr>
-	<td style="text-align:left;"><code>code_point_labels</code></td>
-	<td style="text-align:left;"><code>l</code></td>
+	<td style="text-align:left;"><code>code_labels</code></td>
 	<td style="text-align:left;">Generate the standard code point label for characters that do not have an official name</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>control_char_names</code></td>
-	<td style="text-align:left;"><code>c</code></td>
+	<td style="text-align:left;"><code>control_names</code></td>
 	<td style="text-align:left;">Use the common ASCII or ISO 8859 names for control characters</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>updated_char_names</code></td>
-	<td style="text-align:left;"><code>u</code></td>
+	<td style="text-align:left;"><code>updated_names</code></td>
 	<td style="text-align:left;">Where the official name was in error and a correction has been published, use that instead</td>
 </tr>
 </tbody>
@@ -380,9 +375,9 @@ library).</p>
 <p>Returns the name of a character. By default, only the official Unicode name is
 returned; an empty string is returned if the character does not have an
 official name. The <code>flags</code> argument can contain a bitwise-OR combination of
-any of the three options. If both <code>code_point_labels</code> and <code>control_char_names</code>
-are present, <code>control_char_names</code> takes precedence for characters that qualify
-for both.</p>
+any of the three options. If both <code>code_labels</code> and <code>control_names</code> are
+present, <code>control_names</code> takes precedence for characters that qualify for
+both.</p>
 
 <p>The character name table is stored in compressed form to save space. A call to
 <code>char_name()</code> may throw an exception derived from <code>InitializationError</code> if

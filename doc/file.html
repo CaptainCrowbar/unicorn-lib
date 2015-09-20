@@ -289,23 +289,21 @@ destination are on different physical file systems.</p>
 <li><code>using DirectoryIterator::<strong>pointer</strong> = const value_type*</code></li>
 <li><code>using DirectoryIterator::<strong>reference</strong> = const value_type&amp;</code></li>
 <li><code>DirectoryIterator::<strong>DirectoryIterator</strong>()</code></li>
-<li><code>explicit DirectoryIterator::<strong>DirectoryIterator</strong>(const value_type&amp; dir, Flagset flags = {})</code></li>
+<li><code>explicit DirectoryIterator::<strong>DirectoryIterator</strong>(const value_type&amp; dir, uint32_t flags = 0)</code></li>
 <li><code>[standard iterator operations]</code></li>
 </ul></li>
-<li><code>template &lt;typename C&gt; Irange&lt;DirectoryIterator&lt;C&gt;&gt; <strong>directory</strong>(const basic_string&lt;C&gt;&amp; dir, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;DirectoryIterator&lt;C&gt;&gt; <strong>directory</strong>(const basic_string&lt;C&gt;&amp; dir, uint32_t flags = 0)</code></li>
 </ul>
 
 <table>
 <colgroup>
 <col style="text-align:left;"/>
 <col style="text-align:left;"/>
-<col style="text-align:left;"/>
 </colgroup>
 
 <thead>
 <tr>
-	<th style="text-align:left;">Bitmask</th>
-	<th style="text-align:left;">Letter</th>
+	<th style="text-align:left;">Flag</th>
 	<th style="text-align:left;">Description</th>
 </tr>
 </thead>
@@ -313,22 +311,18 @@ destination are on different physical file systems.</p>
 <tbody>
 <tr>
 	<td style="text-align:left;"><code>dir_dotdot</code></td>
-	<td style="text-align:left;"><code>d</code></td>
 	<td style="text-align:left;">Include the . and .. entries</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>dir_fullname</code></td>
-	<td style="text-align:left;"><code>f</code></td>
 	<td style="text-align:left;">Return full file names instead of leaf names</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>dir_hidden</code></td>
-	<td style="text-align:left;"><code>h</code></td>
 	<td style="text-align:left;">Include hidden files</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>dir_unicode</code></td>
-	<td style="text-align:left;"><code>u</code></td>
 	<td style="text-align:left;">Skip files with non-Unicode names</td>
 </tr>
 </tbody>

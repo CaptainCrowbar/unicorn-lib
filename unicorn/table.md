@@ -107,7 +107,7 @@ The following keyword arguments are recognised:
 
 Keyword           | Argument type  | Default           | Description
 -------           | -------------  | -------           | -----------
-`Table::flags`    | `Flagset`      | `grapheme_units`  | How string lengths are measured
+`Table::flags`    | `uint32_t`     | `grapheme_units`  | How string lengths are measured
 `Table::margin`   | `size_t`       | `0`               | Number of spaces in the left margin
 `Table::spacing`  | `size_t`       | `2`               | Number of spaces between columns
 `Table::unfill`   | `bool`         | `false`           | Show repeated cells with a ditto mark

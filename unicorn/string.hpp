@@ -19,13 +19,18 @@ namespace Unicorn {
 
     // Constants
 
-    constexpr auto character_units  = Flagset::value('C');  // Measure string in characters (default)
-    constexpr auto grapheme_units   = Flagset::value('G');  // Measure string in grapheme clusters
-    constexpr auto narrow_context   = Flagset::value('N');  // East Asian width, defaulting to narrow
-    constexpr auto wide_context     = Flagset::value('W');  // East Asian width, defaulting to wide
-    constexpr auto wrap_crlf        = Flagset::value('r');  // Use CR+LF for line breaks (default LF)
-    constexpr auto wrap_enforce     = Flagset::value('e');  // Enforce right margin strictly
-    constexpr auto wrap_preserve    = Flagset::value('p');  // Preserve layout on already indented lines
+    // Remember that any other set of flags that might be combined with these
+    // needs to skip the bits that are already spoken for. The string length
+    // flags are linked to upper case letters for use with unicorn/format, so
+    // they have bit positions in the 0-25 range.
+
+    UNICORN_DEFINE_FLAG_LETTER(string length, character_units, 'C');  // Measure string in characters (default)
+    UNICORN_DEFINE_FLAG_LETTER(string length, grapheme_units, 'G');   // Measure string in grapheme clusters
+    UNICORN_DEFINE_FLAG_LETTER(string length, narrow_context, 'N');   // East Asian width, defaulting to narrow
+    UNICORN_DEFINE_FLAG_LETTER(string length, wide_context, 'W');     // East Asian width, defaulting to wide
+    UNICORN_DEFINE_FLAG(word wrapping, wrap_crlf, 26);                // Use CR+LF for line breaks (default LF)
+    UNICORN_DEFINE_FLAG(word wrapping, wrap_enforce, 27);             // Enforce right margin strictly
+    UNICORN_DEFINE_FLAG(word wrapping, wrap_preserve, 28);            // Preserve layout on already indented lines
 
     // String size functions
 
@@ -34,20 +39,19 @@ namespace Unicorn {
         constexpr auto east_asian_flags = narrow_context | wide_context;
         constexpr auto all_length_flags = character_units | grapheme_units | east_asian_flags;
 
-        inline void check_length_flags(Flagset& flags) {
-            flags.allow(all_length_flags, "string length");
-            flags.exclusive(character_units | grapheme_units, "string length");
-            flags.exclusive(character_units | east_asian_flags, "string length");
-            if (flags.empty())
-                flags = character_units;
+        inline void check_length_flags(uint32_t& flags) {
+            allow_flags(flags, all_length_flags, "string length");
+            exclusive_flags(flags, character_units | grapheme_units, "string length");
+            exclusive_flags(flags, character_units | east_asian_flags, "string length");
+            default_flags(flags, all_length_flags, character_units);
         }
 
         class EastAsianCount {
         public:
-            explicit EastAsianCount(Flagset flags) noexcept: count(), fset(flags) { memset(count, 0, sizeof(count)); }
+            explicit EastAsianCount(uint32_t flags) noexcept: count(), fset(flags) { memset(count, 0, sizeof(count)); }
             void add(char32_t c) noexcept { ++count[unsigned(east_asian_width(c))]; }
             size_t get() const noexcept {
-                size_t default_width = fset.get(wide_context) ? 2 : 1;
+                size_t default_width = fset & wide_context ? 2 : 1;
                 return count[neut] + count[half] + count[narr] + 2 * count[full] + 2 * count[wide]
                     + default_width * count[ambi];
             }
@@ -59,14 +63,13 @@ namespace Unicorn {
             static constexpr auto narr = int(East_Asian_Width::Na);
             static constexpr auto wide = int(East_Asian_Width::W);
             size_t count[6];
-            Flagset fset;
+            uint32_t fset;
         };
 
         template <typename C>
-        std::pair<UtfIterator<C>, bool> find_position(const Irange<UtfIterator<C>>& range,
-                size_t pos, Flagset flags = {}) {
+        std::pair<UtfIterator<C>, bool> find_position(const Irange<UtfIterator<C>>& range, size_t pos, uint32_t flags = 0) {
             check_length_flags(flags);
-            if (flags.get(character_units)) {
+            if (flags & character_units) {
                 auto i = std::begin(range);
                 size_t len = 0;
                 while (i != std::end(range) && len < pos) {
@@ -74,9 +77,9 @@ namespace Unicorn {
                     ++len;
                 }
                 return {i, len == pos};
-            } else if (flags.get(east_asian_flags)) {
+            } else if (flags & east_asian_flags) {
                 EastAsianCount eac(flags);
-                if (flags.get(grapheme_units)) {
+                if (flags & grapheme_units) {
                     auto graph = grapheme_range(range);
                     auto g = std::begin(graph);
                     while (g != std::end(graph) && eac.get() < pos) {
@@ -107,14 +110,14 @@ namespace Unicorn {
     }
 
     template <typename C>
-    size_t str_length(const Irange<UtfIterator<C>>& range, Flagset flags = {}) {
+    size_t str_length(const Irange<UtfIterator<C>>& range, uint32_t flags = 0) {
         using namespace UnicornDetail;
         check_length_flags(flags);
-        if (flags.get(character_units)) {
+        if (flags & character_units) {
             return range_count(range);
-        } else if (flags.get(east_asian_flags)) {
+        } else if (flags & east_asian_flags) {
             EastAsianCount eac(flags);
-            if (flags.get(grapheme_units)) {
+            if (flags & grapheme_units) {
                 for (auto g: grapheme_range(range))
                     eac.add(*std::begin(g));
             } else {
@@ -128,34 +131,32 @@ namespace Unicorn {
     }
 
     template <typename C>
-    size_t str_length(const UtfIterator<C>& b, const UtfIterator<C>& e, Flagset flags = {}) {
+    size_t str_length(const UtfIterator<C>& b, const UtfIterator<C>& e, uint32_t flags = 0) {
         return str_length(irange(b, e), flags);
     }
 
     template <typename C>
-    size_t str_length(const basic_string<C>& str, Flagset flags = {}) {
+    size_t str_length(const basic_string<C>& str, uint32_t flags = 0) {
         return str_length(utf_range(str), flags);
     }
 
     template <typename C>
-    UtfIterator<C> str_find_index(const Irange<UtfIterator<C>>& range, size_t pos,
-            Flagset flags = {}) {
+    UtfIterator<C> str_find_index(const Irange<UtfIterator<C>>& range, size_t pos, uint32_t flags = 0) {
         return UnicornDetail::find_position(range, pos, flags).first;
     }
 
     template <typename C>
-    UtfIterator<C> str_find_index(const UtfIterator<C>& b, const UtfIterator<C>& e, size_t pos,
-            Flagset flags = {}) {
+    UtfIterator<C> str_find_index(const UtfIterator<C>& b, const UtfIterator<C>& e, size_t pos, uint32_t flags = 0) {
         return str_find_index(irange(b, e), pos, flags);
     }
 
     template <typename C>
-    UtfIterator<C> str_find_index(const basic_string<C>& str, size_t pos, Flagset flags = {}) {
+    UtfIterator<C> str_find_index(const basic_string<C>& str, size_t pos, uint32_t flags = 0) {
         return str_find_index(utf_range(str), pos, flags);
     }
 
     template <typename C>
-    size_t str_find_offset(const basic_string<C>& str, size_t pos, Flagset flags = {}) {
+    size_t str_find_offset(const basic_string<C>& str, size_t pos, uint32_t flags = 0) {
         auto rc = UnicornDetail::find_position(utf_range(str), pos, flags);
         return rc.second ? rc.first.offset() : npos;
     }
@@ -830,7 +831,7 @@ namespace Unicorn {
     namespace UnicornDetail {
 
         template <typename C>
-        basic_string<C> expand_tabs(const basic_string<C>& str, const std::vector<size_t>& tabs, Flagset flags) {
+        basic_string<C> expand_tabs(const basic_string<C>& str, const std::vector<size_t>& tabs, uint32_t flags) {
             std::vector<size_t> xtabs = {0};
             for (auto t: tabs)
                 if (t > xtabs.back())
@@ -874,15 +875,13 @@ namespace Unicorn {
     }
 
     template <typename C, typename IntList>
-    basic_string<C> str_expand_tabs(const basic_string<C>& str, const IntList& tabs,
-            Flagset flags = {}) {
+    basic_string<C> str_expand_tabs(const basic_string<C>& str, const IntList& tabs, uint32_t flags = 0) {
         std::vector<size_t> tv(PRI_BOUNDS(tabs));
         return UnicornDetail::expand_tabs(str, tv, flags);
     }
 
     template <typename C, typename IntType>
-    basic_string<C> str_expand_tabs(const basic_string<C>& str, std::initializer_list<IntType> tabs,
-            Flagset flags = {}) {
+    basic_string<C> str_expand_tabs(const basic_string<C>& str, std::initializer_list<IntType> tabs, uint32_t flags = 0) {
         std::vector<size_t> tv(PRI_BOUNDS(tabs));
         return UnicornDetail::expand_tabs(str, tv, flags);
     }
@@ -893,15 +892,13 @@ namespace Unicorn {
     }
 
     template <typename C, typename IntList>
-    void str_expand_tabs_in(basic_string<C>& str, const IntList& tabs,
-            Flagset flags = {}) {
+    void str_expand_tabs_in(basic_string<C>& str, const IntList& tabs, uint32_t flags = 0) {
         auto result = str_expand_tabs(str, tabs, flags);
         str.swap(result);
     }
 
     template <typename C, typename IntType>
-    void str_expand_tabs_in(basic_string<C>& str, std::initializer_list<IntType> tabs,
-            Flagset flags = {}) {
+    void str_expand_tabs_in(basic_string<C>& str, std::initializer_list<IntType> tabs, uint32_t flags = 0) {
         auto result = str_expand_tabs(str, tabs, flags);
         str.swap(result);
     }
@@ -915,10 +912,9 @@ namespace Unicorn {
     namespace UnicornDetail {
 
         template <typename C>
-        void insert_padding(basic_string<C>& str, size_t old_length, size_t new_length,
-                char32_t c, Flagset flags, char side) {
+        void insert_padding(basic_string<C>& str, size_t old_length, size_t new_length, char32_t c, uint32_t flags, char side) {
             size_t pad_chars = new_length - old_length;
-            if (flags.get(east_asian_flags)) {
+            if (flags & east_asian_flags) {
                 auto eaw = east_asian_width(c);
                 if (eaw == East_Asian_Width::F || eaw == East_Asian_Width::W
                         || (eaw == East_Asian_Width::A && str_is_east_asian(str)))
@@ -941,8 +937,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    basic_string<C> str_fix_left(const basic_string<C>& str, size_t length,
-            char32_t c = U' ', Flagset flags = {}) {
+    basic_string<C> str_fix_left(const basic_string<C>& str, size_t length, char32_t c = U' ', uint32_t flags = 0) {
         size_t offset = str_find_offset(str, length, flags);
         if (offset == npos) {
             auto result = str;
@@ -954,8 +949,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    void str_fix_left_in(basic_string<C>& str, size_t length,
-            char32_t c = U' ', Flagset flags = {}) {
+    void str_fix_left_in(basic_string<C>& str, size_t length, char32_t c = U' ', uint32_t flags = 0) {
         size_t offset = str_find_offset(str, length, flags);
         if (offset == npos)
             UnicornDetail::insert_padding(str, str_length(str, flags), length, c, flags, 'R');
@@ -964,8 +958,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    basic_string<C> str_fix_right(const basic_string<C>& str, size_t length,
-            char32_t c = U' ', Flagset flags = {}) {
+    basic_string<C> str_fix_right(const basic_string<C>& str, size_t length, char32_t c = U' ', uint32_t flags = 0) {
         size_t old_length = str_length(str, flags);
         if (old_length < length) {
             auto result = str;
@@ -978,8 +971,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    void str_fix_right_in(basic_string<C>& str, size_t length,
-            char32_t c = U' ', Flagset flags = {}) {
+    void str_fix_right_in(basic_string<C>& str, size_t length, char32_t c = U' ', uint32_t flags = 0) {
         size_t old_length = str_length(str, flags);
         if (old_length < length) {
             UnicornDetail::insert_padding(str, old_length, length, c, flags, 'L');
@@ -1014,16 +1006,14 @@ namespace Unicorn {
     }
 
     template <typename FwdRange>
-    auto str_join(const FwdRange& r)
-    -> basic_string<std::decay_t<decltype((*std::begin(r))[0])>> {
+    auto str_join(const FwdRange& r) -> basic_string<std::decay_t<decltype((*std::begin(r))[0])>> {
         using range_char = std::decay_t<decltype((*std::begin(r))[0])>;
         using string_type = basic_string<range_char>;
         return str_join(r, string_type());
     }
 
     template <typename C>
-    basic_string<C> str_pad_left(const basic_string<C>& str, size_t length,
-            char32_t c = U' ', Flagset flags = {}) {
+    basic_string<C> str_pad_left(const basic_string<C>& str, size_t length, char32_t c = U' ', uint32_t flags = 0) {
         size_t old_length = str_length(str, flags);
         if (length > old_length) {
             auto result = str;
@@ -1035,16 +1025,14 @@ namespace Unicorn {
     }
 
     template <typename C>
-    void str_pad_left_in(basic_string<C>& str, size_t length,
-            char32_t c = U' ', Flagset flags = {}) {
+    void str_pad_left_in(basic_string<C>& str, size_t length, char32_t c = U' ', uint32_t flags = 0) {
         size_t old_length = str_length(str, flags);
         if (length > old_length)
             UnicornDetail::insert_padding(str, old_length, length, c, flags, 'L');
     }
 
     template <typename C>
-    basic_string<C> str_pad_right(const basic_string<C>& str, size_t length,
-            char32_t c = U' ', Flagset flags = {}) {
+    basic_string<C> str_pad_right(const basic_string<C>& str, size_t length, char32_t c = U' ', uint32_t flags = 0) {
         size_t old_length = str_length(str, flags);
         if (length > old_length) {
             auto result = str;
@@ -1056,16 +1044,14 @@ namespace Unicorn {
     }
 
     template <typename C>
-    void str_pad_right_in(basic_string<C>& str, size_t length,
-            char32_t c = U' ', Flagset flags = {}) {
+    void str_pad_right_in(basic_string<C>& str, size_t length, char32_t c = U' ', uint32_t flags = 0) {
         size_t old_length = str_length(str, flags);
         if (length > old_length)
             UnicornDetail::insert_padding(str, old_length, length, c, flags, 'R');
     }
 
     template <typename C>
-    bool str_partition(const basic_string<C>& str, basic_string<C>& prefix,
-            basic_string<C>& suffix) {
+    bool str_partition(const basic_string<C>& str, basic_string<C>& prefix, basic_string<C>& suffix) {
         if (str.empty()) {
             prefix.clear();
             suffix.clear();
@@ -1086,8 +1072,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    bool str_partition_at(const basic_string<C>& str, basic_string<C>& prefix,
-            basic_string<C>& suffix, const basic_string<C>& delim) {
+    bool str_partition_at(const basic_string<C>& str, basic_string<C>& prefix, basic_string<C>& suffix, const basic_string<C>& delim) {
         size_t pos = delim.empty() ? npos : str.find(delim);
         if (pos == npos) {
             prefix = str;
@@ -1102,15 +1087,13 @@ namespace Unicorn {
     }
 
     template <typename C>
-    bool str_partition_at(const basic_string<C>& str, basic_string<C>& prefix,
-            basic_string<C>& suffix, const C* delim) {
+    bool str_partition_at(const basic_string<C>& str, basic_string<C>& prefix, basic_string<C>& suffix, const C* delim) {
         using string_type = basic_string<C>;
         return str_partition_at(str, prefix, suffix, delim ? string_type(delim) : string_type());
     }
 
     template <typename C>
-    bool str_partition_by(const basic_string<C>& str, basic_string<C>& prefix,
-            basic_string<C>& suffix, const basic_string<C>& delim) {
+    bool str_partition_by(const basic_string<C>& str, basic_string<C>& prefix, basic_string<C>& suffix, const basic_string<C>& delim) {
         if (str.empty() || delim.empty()) {
             prefix = str;
             suffix.clear();
@@ -1147,8 +1130,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    bool str_partition_by(const basic_string<C>& str, basic_string<C>& prefix,
-            basic_string<C>& suffix, const C* delim) {
+    bool str_partition_by(const basic_string<C>& str, basic_string<C>& prefix, basic_string<C>& suffix, const C* delim) {
         using string_type = basic_string<C>;
         return str_partition_by(str, prefix, suffix, delim ? string_type(delim) : string_type());
     }
@@ -1226,8 +1208,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    basic_string<C> str_replace(const basic_string<C>& str, const basic_string<C>& target,
-            const basic_string<C>& sub, size_t n = npos) {
+    basic_string<C> str_replace(const basic_string<C>& str, const basic_string<C>& target, const basic_string<C>& sub, size_t n = npos) {
         using string_type = basic_string<C>;
         if (target.empty() || n == 0)
             return str;
@@ -1250,45 +1231,38 @@ namespace Unicorn {
     }
 
     template <typename C>
-    basic_string<C> str_replace(const basic_string<C>& str, const C* target,
-            const basic_string<C>& sub, size_t n = npos) {
+    basic_string<C> str_replace(const basic_string<C>& str, const C* target, const basic_string<C>& sub, size_t n = npos) {
         return str_replace(str, cstr(target), sub, n);
     }
 
     template <typename C>
-    basic_string<C> str_replace(const basic_string<C>& str, const basic_string<C>& target,
-            const C* sub, size_t n = npos) {
+    basic_string<C> str_replace(const basic_string<C>& str, const basic_string<C>& target, const C* sub, size_t n = npos) {
         return str_replace(str, target, cstr(sub), n);
     }
 
     template <typename C>
-    basic_string<C> str_replace(const basic_string<C>& str, const C* target,
-            const C* sub, size_t n = npos) {
+    basic_string<C> str_replace(const basic_string<C>& str, const C* target, const C* sub, size_t n = npos) {
         return str_replace(str, cstr(target), cstr(sub), n);
     }
 
     template <typename C>
-    void str_replace_in(basic_string<C>& str, const basic_string<C>& target,
-            const basic_string<C>& sub, size_t n = npos) {
+    void str_replace_in(basic_string<C>& str, const basic_string<C>& target, const basic_string<C>& sub, size_t n = npos) {
         auto result = str_replace(str, target, sub, n);
         str.swap(result);
     }
 
     template <typename C>
-    void str_replace_in(basic_string<C>& str, const C* target,
-            const basic_string<C>& sub, size_t n = npos) {
+    void str_replace_in(basic_string<C>& str, const C* target, const basic_string<C>& sub, size_t n = npos) {
         str_replace_in(str, cstr(target), sub, n);
     }
 
     template <typename C>
-    void str_replace_in(basic_string<C>& str, const basic_string<C>& target,
-            const C* sub, size_t n = npos) {
+    void str_replace_in(basic_string<C>& str, const basic_string<C>& target, const C* sub, size_t n = npos) {
         str_replace_in(str, target, cstr(sub), n);
     }
 
     template <typename C>
-    void str_replace_in(basic_string<C>& str, const C* target,
-            const C* sub, size_t n = npos) {
+    void str_replace_in(basic_string<C>& str, const C* target, const C* sub, size_t n = npos) {
         str_replace_in(str, cstr(target), cstr(sub), n);
     }
 
@@ -1306,8 +1280,7 @@ namespace Unicorn {
     }
 
     template <typename C, typename OutIter>
-    void str_split_at(const basic_string<C>& src, OutIter dst,
-            const basic_string<C>& delim) {
+    void str_split_at(const basic_string<C>& src, OutIter dst, const basic_string<C>& delim) {
         if (delim.empty()) {
             *dst++ = src;
             return;
@@ -1330,8 +1303,7 @@ namespace Unicorn {
     }
 
     template <typename C, typename OutIter>
-    void str_split_by(const basic_string<C>& src, OutIter dst,
-            const basic_string<C>& delim) {
+    void str_split_by(const basic_string<C>& src, OutIter dst, const basic_string<C>& delim) {
         if (delim.empty()) {
             *dst++ = src;
             return;
@@ -1386,8 +1358,7 @@ namespace Unicorn {
         }
 
         template <typename C>
-        void str_squeeze_helper(const basic_string<C>& src, basic_string<C>& dst, bool trim,
-                const basic_string<C>& chars) {
+        void str_squeeze_helper(const basic_string<C>& src, basic_string<C>& dst, bool trim, const basic_string<C>& chars) {
             if (chars.empty()) {
                 dst = src;
                 return;
@@ -1502,8 +1473,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    basic_string<C> utf_substring(const basic_string<C>& str, size_t index,
-            size_t length = npos, Flagset flags = {}) {
+    basic_string<C> utf_substring(const basic_string<C>& str, size_t index, size_t length = npos, uint32_t flags = 0) {
         UnicornDetail::check_length_flags(flags);
         auto b = utf_begin(str), e = utf_end(str);
         auto i = str_find_index(b, e, index, flags);
@@ -1512,8 +1482,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    basic_string<C> str_translate(const basic_string<C>& str, const basic_string<C>& target,
-            const basic_string<C>& sub) {
+    basic_string<C> str_translate(const basic_string<C>& str, const basic_string<C>& target, const basic_string<C>& sub) {
         using string_type = basic_string<C>;
         if (target.empty() || sub.empty())
             return str;
@@ -1532,45 +1501,38 @@ namespace Unicorn {
     }
 
     template <typename C>
-    basic_string<C> str_translate(const basic_string<C>& str, const C* target,
-            const basic_string<C>& sub) {
+    basic_string<C> str_translate(const basic_string<C>& str, const C* target, const basic_string<C>& sub) {
         return str_translate(str, cstr(target), sub);
     }
 
     template <typename C>
-    basic_string<C> str_translate(const basic_string<C>& str, const basic_string<C>& target,
-            const C* sub) {
+    basic_string<C> str_translate(const basic_string<C>& str, const basic_string<C>& target, const C* sub) {
         return str_translate(str, target, cstr(sub));
     }
 
     template <typename C>
-    basic_string<C> str_translate(const basic_string<C>& str, const C* target,
-            const C* sub) {
+    basic_string<C> str_translate(const basic_string<C>& str, const C* target, const C* sub) {
         return str_translate(str, cstr(target), cstr(sub));
     }
 
     template <typename C>
-    void str_translate_in(basic_string<C>& str, const basic_string<C>& target,
-            const basic_string<C>& sub) {
+    void str_translate_in(basic_string<C>& str, const basic_string<C>& target, const basic_string<C>& sub) {
         auto result = str_translate(str, target, sub);
         str.swap(result);
     }
 
     template <typename C>
-    void str_translate_in(basic_string<C>& str, const C* target,
-            const basic_string<C>& sub) {
+    void str_translate_in(basic_string<C>& str, const C* target, const basic_string<C>& sub) {
         str_translate_in(str, cstr(target), sub);
     }
 
     template <typename C>
-    void str_translate_in(basic_string<C>& str, const basic_string<C>& target,
-            const C* sub) {
+    void str_translate_in(basic_string<C>& str, const basic_string<C>& target, const C* sub) {
         str_translate_in(str, target, cstr(sub));
     }
 
     template <typename C>
-    void str_translate_in(basic_string<C>& str, const C* target,
-            const C* sub) {
+    void str_translate_in(basic_string<C>& str, const C* target, const C* sub) {
         str_translate_in(str, cstr(target), cstr(sub));
     }
 
@@ -1852,8 +1814,7 @@ namespace Unicorn {
     namespace UnicornDetail {
 
         template <typename C>
-        void check_whitespace(const UtfIterator<C>& i, const UtfIterator<C>& j,
-                size_t& linebreaks, size_t& tailspaces) {
+        void check_whitespace(const UtfIterator<C>& i, const UtfIterator<C>& j, size_t& linebreaks, size_t& tailspaces) {
             linebreaks = tailspaces = 0;
             auto k = i;
             while (k != j) {
@@ -1873,11 +1834,10 @@ namespace Unicorn {
     }
 
     template <typename C>
-    basic_string<C> str_wrap(const basic_string<C>& str, Flagset flags = {},
-            size_t width = 0, size_t margin1 = 0, size_t margin2 = npos) {
+    basic_string<C> str_wrap(const basic_string<C>& str, uint32_t flags = 0, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos) {
         using namespace UnicornDetail;
         using string_type = basic_string<C>;
-        flags.allow(wrap_crlf | wrap_enforce | wrap_preserve | all_length_flags, "word wrapping");
+        UnicornDetail::allow_flags(flags, wrap_crlf | wrap_enforce | wrap_preserve | all_length_flags, "word wrapping");
         if (width == 0 || width == npos) {
             auto columns = decnum(cstr(getenv("COLUMNS")));
             if (columns < 3)
@@ -1888,9 +1848,9 @@ namespace Unicorn {
             margin2 = margin1;
         if (margin1 >= width || margin2 >= width)
             throw std::length_error("Word wrap width and margins are inconsistent");
-        size_t spacing = flags.get(wide_context) ? 2 : 1;
+        size_t spacing = flags & wide_context ? 2 : 1;
         string_type newline, result;
-        if (flags.get(wrap_crlf))
+        if (flags & wrap_crlf)
             newline = {C('\r'), C('\n')};
         else
             newline = {C('\n')};
@@ -1911,7 +1871,7 @@ namespace Unicorn {
                 spaces = margin1;
             }
             i = j;
-            if (flags.get(wrap_preserve) && linebreaks >= 1 && tailspaces >= 1) {
+            if ((flags & wrap_preserve) && linebreaks >= 1 && tailspaces >= 1) {
                 if (words > 0)
                     result += newline;
                 result.append(tailspaces, C(' '));
@@ -1940,7 +1900,7 @@ namespace Unicorn {
                 result += word;
                 ++words;
                 linewidth += wordlen;
-                if (flags.get(wrap_enforce) && linewidth > size_t(width))
+                if ((flags & wrap_enforce) && linewidth > size_t(width))
                     throw std::length_error("Word is too long for wrapping width");
             }
             i = j;
@@ -1951,8 +1911,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    void str_wrap_in(basic_string<C>& str, Flagset flags = {},
-            size_t width = 0, size_t margin1 = 0, size_t margin2 = npos) {
+    void str_wrap_in(basic_string<C>& str, uint32_t flags = 0, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos) {
         auto result = str_wrap(str, flags, width, margin1, margin2);
         str.swap(result);
     }

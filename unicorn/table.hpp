@@ -11,7 +11,7 @@ namespace Unicorn {
 
     class Table {
     public:
-        static constexpr Kwarg<Flagset> flags = {};
+        static constexpr Kwarg<uint32_t> flags = {};
         static constexpr Kwarg<u8string> ditto = {}, empty = {};
         static constexpr Kwarg<size_t> margin = {}, spacing = {};
         static constexpr Kwarg<bool> unfill = {};
@@ -30,7 +30,7 @@ namespace Unicorn {
         template <typename C, typename... Args> void write(std::basic_ostream<C>& out, const Args&... args) const;
     private:
         struct layout_spec {
-            Flagset flags = grapheme_units;
+            uint32_t flags = grapheme_units;
             u8string ditto = "''", empty = "--";
             size_t margin = 0, spacing = 2;
             bool unfill = false;

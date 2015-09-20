@@ -71,9 +71,9 @@ Unicode string.</p>
 <li><code>WordIterator::<strong>WordIterator</strong>()</code></li>
 <li><code>[standard iterator operations]</code></li>
 </ul></li>
-<li><code>template &lt;typename C&gt; Irange&lt;WordIterator&lt;C&gt;&gt; <strong>word_range</strong>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j, Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; Irange&lt;WordIterator&lt;C&gt;&gt; <strong>word_range</strong>(const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; source, Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; Irange&lt;WordIterator&lt;C&gt;&gt; <strong>word_range</strong>(const basic_string&lt;C&gt;&amp; source, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;WordIterator&lt;C&gt;&gt; <strong>word_range</strong>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;WordIterator&lt;C&gt;&gt; <strong>word_range</strong>(const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; source, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;WordIterator&lt;C&gt;&gt; <strong>word_range</strong>(const basic_string&lt;C&gt;&amp; source, uint32_t flags = 0)</code></li>
 </ul>
 
 <p>A forward iterator over the words in a Unicode string. By default, all
@@ -86,13 +86,11 @@ words containing at least one alphanumeric character.</p>
 <colgroup>
 <col style="text-align:left;"/>
 <col style="text-align:left;"/>
-<col style="text-align:left;"/>
 </colgroup>
 
 <thead>
 <tr>
-	<th style="text-align:left;">Bitmask</th>
-	<th style="text-align:left;">Letter</th>
+	<th style="text-align:left;">Flag</th>
 	<th style="text-align:left;">Description</th>
 </tr>
 </thead>
@@ -100,17 +98,14 @@ words containing at least one alphanumeric character.</p>
 <tbody>
 <tr>
 	<td style="text-align:left;"><code>unicode_words</code></td>
-	<td style="text-align:left;"><code>u</code></td>
 	<td style="text-align:left;">Report all UAX29 words (default)</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>graphic_words</code></td>
-	<td style="text-align:left;"><code>g</code></td>
 	<td style="text-align:left;">Report only words containing a non-whitespace character</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>alpha_words</code></td>
-	<td style="text-align:left;"><code>a</code></td>
 	<td style="text-align:left;">Report only words containing an alphanumeric character</td>
 </tr>
 </tbody>
@@ -154,9 +149,9 @@ UAX29).</p>
 <li><code>LineIterator::<strong>LineIterator</strong>()</code></li>
 <li><code>[standard iterator operations]</code></li>
 </ul></li>
-<li><code>template &lt;typename C&gt; Irange&lt;LineIterator&lt;C&gt;&gt; <strong>line_range</strong>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j, Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; Irange&lt;LineIterator&lt;C&gt;&gt; <strong>line_range</strong>(const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; source, Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; Irange&lt;LineIterator&lt;C&gt;&gt; <strong>line_range</strong>(const basic_string&lt;C&gt;&amp; source, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;LineIterator&lt;C&gt;&gt; <strong>line_range</strong>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;LineIterator&lt;C&gt;&gt; <strong>line_range</strong>(const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; source, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;LineIterator&lt;C&gt;&gt; <strong>line_range</strong>(const basic_string&lt;C&gt;&amp; source, uint32_t flags = 0)</code></li>
 </ul>
 
 <p>A forward iterator over the lines in a Unicode string. Lines are ended by any
@@ -170,13 +165,11 @@ set, the line break is excluded from the segment.</p>
 <colgroup>
 <col style="text-align:left;"/>
 <col style="text-align:left;"/>
-<col style="text-align:left;"/>
 </colgroup>
 
 <thead>
 <tr>
-	<th style="text-align:left;">Bitmask</th>
-	<th style="text-align:left;">Letter</th>
+	<th style="text-align:left;">Flag</th>
 	<th style="text-align:left;">Description</th>
 </tr>
 </thead>
@@ -184,12 +177,10 @@ set, the line break is excluded from the segment.</p>
 <tbody>
 <tr>
 	<td style="text-align:left;"><code>keep_breaks</code></td>
-	<td style="text-align:left;"><code>k</code></td>
 	<td style="text-align:left;">Include line terminators in reported segments (default)</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>strip_breaks</code></td>
-	<td style="text-align:left;"><code>s</code></td>
 	<td style="text-align:left;">Do not include line terminators</td>
 </tr>
 </tbody>
@@ -210,9 +201,9 @@ set, the line break is excluded from the segment.</p>
 <li><code>ParagraphIterator::<strong>ParagraphIterator</strong>()</code></li>
 <li><code>[standard iterator operations]</code></li>
 </ul></li>
-<li><code>template &lt;typename C&gt; Irange&lt;ParagraphIterator&lt;C&gt;&gt; <strong>paragraph_range</strong>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j, Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; Irange&lt;ParagraphIterator&lt;C&gt;&gt; <strong>paragraph_range</strong>(const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; source, Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; Irange&lt;ParagraphIterator&lt;C&gt;&gt; <strong>paragraph_range</strong>(const basic_string&lt;C&gt;&amp; source, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;ParagraphIterator&lt;C&gt;&gt; <strong>paragraph_range</strong>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;ParagraphIterator&lt;C&gt;&gt; <strong>paragraph_range</strong>(const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; source, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;ParagraphIterator&lt;C&gt;&gt; <strong>paragraph_range</strong>(const basic_string&lt;C&gt;&amp; source, uint32_t flags = 0)</code></li>
 </ul>
 
 <p>A forward iterator over the paragraphs in a Unicode string. The flags passed
@@ -228,13 +219,11 @@ paragraph delimiters.</p>
 <colgroup>
 <col style="text-align:left;"/>
 <col style="text-align:left;"/>
-<col style="text-align:left;"/>
 </colgroup>
 
 <thead>
 <tr>
-	<th style="text-align:left;">Bitmask</th>
-	<th style="text-align:left;">Letter</th>
+	<th style="text-align:left;">Flag</th>
 	<th style="text-align:left;">Description</th>
 </tr>
 </thead>
@@ -242,27 +231,22 @@ paragraph delimiters.</p>
 <tbody>
 <tr>
 	<td style="text-align:left;"><code>multiline_paras</code></td>
-	<td style="text-align:left;"><code>m</code></td>
 	<td style="text-align:left;">Divide into paragraphs using multiple line breaks (default)</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>line_paras</code></td>
-	<td style="text-align:left;"><code>l</code></td>
 	<td style="text-align:left;">Divide into paragraphs using any line break</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>unicode_paras</code></td>
-	<td style="text-align:left;"><code>u</code></td>
 	<td style="text-align:left;">Divide into paragraphs using only Paragraph Separator</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>keep_breaks</code></td>
-	<td style="text-align:left;"><code>k</code></td>
 	<td style="text-align:left;">Include paragraph terminators in reported segments (default)</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>strip_breaks</code></td>
-	<td style="text-align:left;"><code>s</code></td>
 	<td style="text-align:left;">Do not include paragraph terminators</td>
 </tr>
 </tbody>

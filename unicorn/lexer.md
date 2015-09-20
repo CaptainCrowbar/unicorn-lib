@@ -110,7 +110,7 @@ TODO
 * `void BasicLexer::exact(int tag, const string_type& pattern)`
 * `void BasicLexer::exact(int tag, const char_type* pattern)`
 * `void BasicLexer::match(int tag, const regex_type& pattern)`
-* `void BasicLexer::match(int tag, const string_type& pattern, Flagset flags = {})`
-* `void BasicLexer::match(int tag, const char_type* pattern, Flagset flags = {})`
+* `void BasicLexer::match(int tag, const string_type& pattern, uint32_t flags = 0)`
+* `void BasicLexer::match(int tag, const char_type* pattern, uint32_t flags = 0)`
 
 TODO

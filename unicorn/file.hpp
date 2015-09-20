@@ -324,17 +324,17 @@ namespace Unicorn {
 
     }
 
-    constexpr auto dir_dotdot    = Flagset::value('d');  // Include . and ..
-    constexpr auto dir_fullname  = Flagset::value('f');  // Full file names
-    constexpr auto dir_hidden    = Flagset::value('h');  // Include hidden files
-    constexpr auto dir_unicode   = Flagset::value('u');  // Valid Unicode names only
+    UNICORN_DEFINE_FLAG(directory search, dir_dotdot, 0);    // Include . and ..
+    UNICORN_DEFINE_FLAG(directory search, dir_fullname, 1);  // Full file names
+    UNICORN_DEFINE_FLAG(directory search, dir_hidden, 2);    // Include hidden files
+    UNICORN_DEFINE_FLAG(directory search, dir_unicode, 3);   // Valid Unicode names only
 
     template <typename C>
     class DirectoryIterator:
     public InputIterator<DirectoryIterator<C>, const basic_string<C>> {
     public:
         DirectoryIterator() = default;
-        explicit DirectoryIterator(const basic_string<C>& dir, Flagset flags = {});
+        explicit DirectoryIterator(const basic_string<C>& dir, uint32_t flags = 0);
         const basic_string<C>& operator*() const noexcept { return current; }
         DirectoryIterator& operator++();
         friend bool operator==(const DirectoryIterator& lhs, const DirectoryIterator& rhs) noexcept
@@ -343,16 +343,16 @@ namespace Unicorn {
         UnicornDetail::DirectoryHelper impl;
         basic_string<C> prefix;
         basic_string<C> current;
-        Flagset fset;
+        uint32_t fset;
     };
 
     template <typename C>
-    DirectoryIterator<C>::DirectoryIterator(const basic_string<C>& dir, Flagset flags) {
+    DirectoryIterator<C>::DirectoryIterator(const basic_string<C>& dir, uint32_t flags) {
         auto normdir = UnicornDetail::normalize_file(dir);
         NativeString natdir;
         recode_filename(normdir, natdir);
         impl.init(natdir);
-        if (fset.get(dir_fullname) || ! fset.get(dir_hidden)) {
+        if ((fset & dir_fullname) || ! (fset & dir_hidden)) {
             prefix = std::move(normdir);
             if (! prefix.empty() && prefix.back() != static_cast<C>(file_delimiter))
                 prefix += static_cast<C>(file_delimiter);
@@ -371,16 +371,16 @@ namespace Unicorn {
             impl.next();
             if (impl.done())
                 break;
-            if (fset.get(dir_unicode) && ! valid_string(impl.file()))
+            if ((fset & dir_unicode) && ! valid_string(impl.file()))
                 continue;
             recode_filename(impl.file(), current);
-            if (! fset.get(dir_dotdot) && (current == link1 || current == link2))
+            if (! (fset & dir_dotdot) && (current == link1 || current == link2))
                 continue;
-            if (fset.get(dir_fullname) || ! fset.get(dir_hidden))
+            if ((fset & dir_fullname) || ! (fset & dir_hidden))
                 path = prefix + current;
-            if (! fset.get(dir_hidden) && file_is_hidden(path))
+            if (! (fset & dir_hidden) && file_is_hidden(path))
                 continue;
-            if (fset.get(dir_fullname))
+            if (fset & dir_fullname)
                 current = std::move(path);
             break;
         }
@@ -388,7 +388,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    Irange<DirectoryIterator<C>> directory(const basic_string<C>& dir, Flagset flags = {}) {
+    Irange<DirectoryIterator<C>> directory(const basic_string<C>& dir, uint32_t flags = 0) {
         return {DirectoryIterator<C>(dir, flags), DirectoryIterator<C>()};
     }
 

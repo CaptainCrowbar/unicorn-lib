@@ -4,6 +4,7 @@
 #include <chrono>
 #include <limits>
 #include <map>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -831,7 +832,7 @@ namespace {
         TEST_EQUAL(format_as<char>(ldate, "tl"), "2000-01-02T03:04:05");
         TEST_EQUAL(format_as<char>(ldate, "tl3"), "2000-01-02T03:04:05.678");
 
-        TEST_THROW(format_as<char>(udate, "tc"), FlagError);
+        TEST_THROW(format_as<char>(udate, "tc"), std::invalid_argument);
 
         #if defined(UNICORN_PCRE16)
             TEST_EQUAL(format_as<char16_t>(udate), u"2000-01-02 03:04:05");
@@ -991,16 +992,16 @@ namespace {
         // =, fx_centre  = Centre align
         // >, fx_right   = Right align
 
-        TEST_EQUAL(format_as<char>(42, "<", 0, 1u), "42");
-        TEST_EQUAL(format_as<char>(42, ">", 0, 1u), "42");
-        TEST_EQUAL(format_as<char>(42, "=", 0, 1u), "42");
-        TEST_EQUAL(format_as<char>(42, "<", 0, 5u), "42   ");
-        TEST_EQUAL(format_as<char>(42, ">", 0, 5u), "   42");
-        TEST_EQUAL(format_as<char>(42, "=", 0, 8u), "   42   ");
-        TEST_EQUAL(format_as<char>(42, "=", 0, 9u), "   42    ");
-        TEST_EQUAL(format_as<char>(42, "<", 0, 5u, U'*'), "42***");
-        TEST_EQUAL(format_as<char>(42, ">", 0, 5u, U'*'), "***42");
-        TEST_EQUAL(format_as<char>(42, "=", 0, 8u, U'*'), "***42***");
+        TEST_EQUAL(format_as<char>(42, fx_left, 0, 1u), "42");
+        TEST_EQUAL(format_as<char>(42, fx_right, 0, 1u), "42");
+        TEST_EQUAL(format_as<char>(42, fx_centre, 0, 1u), "42");
+        TEST_EQUAL(format_as<char>(42, fx_left, 0, 5u), "42   ");
+        TEST_EQUAL(format_as<char>(42, fx_right, 0, 5u), "   42");
+        TEST_EQUAL(format_as<char>(42, fx_centre, 0, 8u), "   42   ");
+        TEST_EQUAL(format_as<char>(42, fx_centre, 0, 9u), "   42    ");
+        TEST_EQUAL(format_as<char>(42, fx_left, 0, 5u, U'*'), "42***");
+        TEST_EQUAL(format_as<char>(42, fx_right, 0, 5u, U'*'), "***42");
+        TEST_EQUAL(format_as<char>(42, fx_centre, 0, 8u, U'*'), "***42***");
 
         TEST_EQUAL(format_as<char>(42, "<"), "42");
         TEST_EQUAL(format_as<char>(42, ">"), "42");

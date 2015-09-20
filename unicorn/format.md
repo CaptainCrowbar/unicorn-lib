@@ -44,7 +44,7 @@ for details.
 ## Basic formatting functions ##
 
 * `template <typename T> class FormatType`
-    * `[string type] operator()(T t, Flagset flags, int prec) const`
+    * `[string type] operator()(T t, uint64_t flags, int prec) const`
 
 TODO
 
@@ -84,10 +84,10 @@ TODO
 
 TODO
 
-* `template <typename T, typename C> void format_type(const T& t, basic_string<C>& dst, Flagset flags = {}, int prec = -1, size_t width = 0, char32_t pad = U' ')`
+* `template <typename T, typename C> void format_type(const T& t, basic_string<C>& dst, uint64_t flags = 0, int prec = -1, size_t width = 0, char32_t pad = U' ')`
 * `template <typename T, typename C> void format_type(const T& t, basic_string<C>& dst, const basic_string<C>& flags)`
 * `template <typename T, typename C> void format_type(const T& t, basic_string<C>& dst, const C* flags)`
-* `template <typename C, typename T> basic_string<C> format_as(const T& t, Flagset flags = {}, int prec = -1, size_t width = 0, char32_t pad = U' ')`
+* `template <typename C, typename T> basic_string<C> format_as(const T& t, uint64_t flags = 0, int prec = -1, size_t width = 0, char32_t pad = U' ')`
 * `template <typename C, typename T> basic_string<C> format_as(const T& t, const basic_string<C>& flags)`
 * `template <typename C, typename T> basic_string<C> format_as(const T& t, const C* flags)`
 
@@ -135,8 +135,8 @@ TODO
 
 ### Global flags ###
 
-Bitmask            | Letter  | Description
--------            | ------  | -----------
+Flag               | Letter  | Description
+----               | ------  | -----------
 `fx_left`          | `<`     | Left align (default)
 `fx_right`         | `>`     | Right align
 `fx_centre`        | `=`     | Centre align
@@ -152,8 +152,8 @@ TODO
 
 ### Boolean formatting ###
 
-Bitmask      | Letter  | Description
--------      | ------  | -----------
+Flag         | Letter  | Description
+----         | ------  | -----------
 `fx_tf`      | `t`     | Write as true or false (default)
 `fx_binary`  | `b`     | Write as 1 or 0
 `fx_yesno`   | `y`     | Write as yes or no
@@ -162,8 +162,8 @@ TODO
 
 ### Integer formatting ###
 
-Bitmask       | Letter  | Description
--------       | ------  | -----------
+Flag          | Letter  | Description
+----          | ------  | -----------
 `fx_decimal`  | `n`     | Decimal number (default)
 `fx_binary`   | `b`     | Binary number
 `fx_hex`      | `x`     | Hexadecimal number
@@ -175,8 +175,8 @@ TODO
 
 ### Floating point formatting ###
 
-Bitmask       | Letter  | Description
--------       | ------  | -----------
+Flag          | Letter  | Description
+----          | ------  | -----------
 `fx_digits`   | `d`     | Fixed significant figures
 `fx_exp`      | `e`     | Scientific notation
 `fx_fixed`    | `f`     | Fixed point notation
@@ -190,8 +190,8 @@ TODO
 
 ### Character and string formatting ###
 
-Bitmask        | Letter  | Description
--------        | ------  | -----------
+Flag           | Letter  | Description
+----           | ------  | -----------
 `fx_ascii`     | `a`     | Escape if not printable ASCII
 `fx_escape`    | `c`     | Escape C0/C1 controls
 `fx_quote`     | `q`     | Quote string, escape C0/C1
@@ -205,8 +205,8 @@ TODO
 
 ### Time and date formatting ###
 
-Bitmask      | Letter  | Description
--------      | ------  | -----------
+Flag         | Letter  | Description
+----         | ------  | -----------
 `fx_iso`     | `t`     | ISO 8601 with T delimiter
 `fx_common`  | `c`     | Local standard format
 `fx_local`   | `l`     | Local time zone

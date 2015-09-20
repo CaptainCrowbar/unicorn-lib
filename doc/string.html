@@ -79,17 +79,19 @@ is null.)</p>
 
 <h2 id="stringsizefunctions">String size functions</h2>
 
+<p>Most functions that need to calculate the size of a string, in this module and
+others, accept one of the following flags to indicate which definition of
+&#8220;size&#8221; the caller wants:</p>
+
 <table>
 <colgroup>
-<col style="text-align:left;"/>
 <col style="text-align:left;"/>
 <col style="text-align:left;"/>
 </colgroup>
 
 <thead>
 <tr>
-	<th style="text-align:left;">Bitmask</th>
-	<th style="text-align:left;">Letter</th>
+	<th style="text-align:left;">Flag</th>
 	<th style="text-align:left;">Description</th>
 </tr>
 </thead>
@@ -97,33 +99,27 @@ is null.)</p>
 <tbody>
 <tr>
 	<td style="text-align:left;"><code>character_units</code></td>
-	<td style="text-align:left;"><code>C</code></td>
 	<td style="text-align:left;">Count the number of Unicode characters in the string (this is normally the default)</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>grapheme_units</code></td>
-	<td style="text-align:left;"><code>G</code></td>
 	<td style="text-align:left;">Count the number of grapheme clusters (user-perceived characters) in the string</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>narrow_context</code></td>
-	<td style="text-align:left;"><code>N</code></td>
-	<td style="text-align:left;">Calculate the East Asian width; ambiguous characters default to narrow</td>
+	<td style="text-align:left;">Calculate the East Asian width (ambiguous characters default to narrow)</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>wide_context</code></td>
-	<td style="text-align:left;"><code>W</code></td>
-	<td style="text-align:left;">Calculate the East Asian width; ambiguous characters default to wide</td>
+	<td style="text-align:left;">Calculate the East Asian width (ambiguous characters default to wide)</td>
 </tr>
 </tbody>
 </table>
 
-<p>Most functions that need to calculate the size of a string, in this module and
-others, accept one of these flags to indicate which definition of &#8220;size&#8221; the
-caller wants. The various methods of measurement are implemented in the
-<code>str_length()</code> function, described below; anything else that needs a string
-size will normally obtain it by calling <code>str_length()</code> (or a related function
-such as <code>str_find_index()</code>).</p>
+<p>The various methods of measurement are implemented in the <code>str_length()</code>
+function, described below; anything else that needs a string size will
+normally obtain it by calling <code>str_length()</code> (or a related function such as
+<code>str_find_index()</code>).</p>
 
 <p>By default, a string&#8217;s length is a count of characters (Unicode scalar
 values); you can also select a count of grapheme clusters (user-perceived
@@ -135,18 +131,18 @@ Asian width options, giving a size based on the width of the base character of
 each grapheme cluster.</p>
 
 <ul>
-<li><code>template &lt;typename C&gt; size_t <strong>str_length</strong>(const basic_string&lt;C&gt;&amp; str, Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; size_t <strong>str_length</strong>(const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; range, Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; size_t <strong>str_length</strong>(const UtfIterator&lt;C&gt;&amp; begin, const UtfIterator&lt;C&gt;&amp; end, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; size_t <strong>str_length</strong>(const basic_string&lt;C&gt;&amp; str, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; size_t <strong>str_length</strong>(const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; range, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; size_t <strong>str_length</strong>(const UtfIterator&lt;C&gt;&amp; begin, const UtfIterator&lt;C&gt;&amp; end, uint32_t flags = 0)</code></li>
 </ul>
 
 <p>Return the length of the string, measured according to the flags supplied.</p>
 
 <ul>
-<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_index</strong>(const basic_string&lt;C&gt;&amp; str, size_t pos, Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_index</strong>(const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; range, size_t pos, Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_index</strong>(const UtfIterator&lt;C&gt;&amp; begin, const UtfIterator&lt;C&gt;&amp; end, size_t pos, Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; size_t <strong>str_find_offset</strong>(basic_string&lt;C&gt;&amp; str, size_t pos, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_index</strong>(const basic_string&lt;C&gt;&amp; str, size_t pos, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_index</strong>(const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; range, size_t pos, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt; <strong>str_find_index</strong>(const UtfIterator&lt;C&gt;&amp; begin, const UtfIterator&lt;C&gt;&amp; end, size_t pos, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; size_t <strong>str_find_offset</strong>(basic_string&lt;C&gt;&amp; str, size_t pos, uint32_t flags = 0)</code></li>
 </ul>
 
 <p>These return an iterator, or an offset in code units, pointing to the
@@ -393,11 +389,11 @@ number of characters in <code>str</code>.</p>
 
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_expand_tabs</strong>(const basic_string&lt;C&gt;&amp; str)</code></li>
-<li><code>template &lt;typename C, typename IntList&gt; basic_string&lt;C&gt; <strong>str_expand_tabs</strong>(const basic_string&lt;C&gt;&amp; str, const IntList&amp; tabs, Flagset flags = {})</code></li>
-<li><code>template &lt;typename C, typename IntType&gt; basic_string&lt;C&gt; <strong>str_expand_tabs</strong>(const basic_string&lt;C&gt;&amp; str, initializer_list&lt;IntType&gt; tabs, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C, typename IntList&gt; basic_string&lt;C&gt; <strong>str_expand_tabs</strong>(const basic_string&lt;C&gt;&amp; str, const IntList&amp; tabs, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C, typename IntType&gt; basic_string&lt;C&gt; <strong>str_expand_tabs</strong>(const basic_string&lt;C&gt;&amp; str, initializer_list&lt;IntType&gt; tabs, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename C&gt; void <strong>str_expand_tabs_in</strong>(basic_string&lt;C&gt;&amp; str)</code></li>
-<li><code>template &lt;typename C, typename IntList&gt; void <strong>str_expand_tabs_in</strong>(basic_string&lt;C&gt;&amp; str, const IntList&amp; tabs, Flagset flags = {})</code></li>
-<li><code>template &lt;typename C, typename IntType&gt; void <strong>str_expand_tabs_in</strong>(basic_string&lt;C&gt;&amp; str, initializer_list&lt;IntType&gt; tabs, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C, typename IntList&gt; void <strong>str_expand_tabs_in</strong>(basic_string&lt;C&gt;&amp; str, const IntList&amp; tabs, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C, typename IntType&gt; void <strong>str_expand_tabs_in</strong>(basic_string&lt;C&gt;&amp; str, initializer_list&lt;IntType&gt; tabs, uint32_t flags = 0)</code></li>
 </ul>
 
 <p>Expand tab characters to spaces. If the input string contains multiple lines
@@ -415,10 +411,10 @@ stops is used to increment the last one (e.g. <code>{5,10,20}</code> will be exp
 assumed.</p>
 
 <ul>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_fix_left</strong>(const basic_string&lt;C&gt;&amp; str, size_t length, char32_t c = U' ', Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; void <strong>str_fix_left_in</strong>(basic_string&lt;C&gt;&amp; str, size_t length, char32_t c = U' ', Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_fix_right</strong>(const basic_string&lt;C&gt;&amp; str, size_t length, char32_t c = U' ', Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; void <strong>str_fix_right_in</strong>(basic_string&lt;C&gt;&amp; str, size_t length, char32_t c = U' ', Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_fix_left</strong>(const basic_string&lt;C&gt;&amp; str, size_t length, char32_t c = U' ', uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_fix_left_in</strong>(basic_string&lt;C&gt;&amp; str, size_t length, char32_t c = U' ', uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_fix_right</strong>(const basic_string&lt;C&gt;&amp; str, size_t length, char32_t c = U' ', uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_fix_right_in</strong>(basic_string&lt;C&gt;&amp; str, size_t length, char32_t c = U' ', uint32_t flags = 0)</code></li>
 </ul>
 
 <p>Pad or truncate a string to a specific length; the character argument <code>c</code> is
@@ -442,10 +438,10 @@ each pair of strings. The character types of the string list and the delimiter
 must match.</p>
 
 <ul>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_pad_left</strong>(const basic_string&lt;C&gt;&amp; str, size_t length, char32_t c = U' ', Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; void <strong>str_pad_left_in</strong>(basic_string&lt;C&gt;&amp; str, size_t length, char32_t c = U' ', Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_pad_right</strong>(const basic_string&lt;C&gt;&amp; str, size_t length, char32_t c = U' ', Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; void <strong>str_pad_right_in</strong>(basic_string&lt;C&gt;&amp; str, size_t length, char32_t c = U' ', Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_pad_left</strong>(const basic_string&lt;C&gt;&amp; str, size_t length, char32_t c = U' ', uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_pad_left_in</strong>(basic_string&lt;C&gt;&amp; str, size_t length, char32_t c = U' ', uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_pad_right</strong>(const basic_string&lt;C&gt;&amp; str, size_t length, char32_t c = U' ', uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_pad_right_in</strong>(basic_string&lt;C&gt;&amp; str, size_t length, char32_t c = U' ', uint32_t flags = 0)</code></li>
 </ul>
 
 <p>Pad a string on the left or right to a specified length; the character
@@ -558,7 +554,7 @@ one character. In all cases, the original string will be left unchanged if
 
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_substring</strong>(const basic_string&lt;C&gt;&amp; str, size_t offset, size_t count = npos)</code></li>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>utf_substring</strong>(const basic_string&lt;C&gt;&amp; str, size_t index, size_t length = npos, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>utf_substring</strong>(const basic_string&lt;C&gt;&amp; str, size_t index, size_t length = npos, uint32_t flags = 0)</code></li>
 </ul>
 
 <p>These return a substring of the original string. The <code>str_substring()</code> function
@@ -646,21 +642,19 @@ Unicode line or paragraph breaking character is recognised and replaced; the
 <code>CR+LF</code> sequence is also treated as a single line break.</p>
 
 <ul>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_wrap</strong>(const basic_string&lt;C&gt;&amp; str, Flagset flags = {}, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos)</code></li>
-<li><code>template &lt;typename C&gt; void <strong>str_wrap_in</strong>(basic_string&lt;C&gt;&amp; str, Flagset flags = {}, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_wrap</strong>(const basic_string&lt;C&gt;&amp; str, uint32_t flags = 0, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_wrap_in</strong>(basic_string&lt;C&gt;&amp; str, uint32_t flags = 0, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos)</code></li>
 </ul>
 
 <table>
 <colgroup>
 <col style="text-align:left;"/>
 <col style="text-align:left;"/>
-<col style="text-align:left;"/>
 </colgroup>
 
 <thead>
 <tr>
-	<th style="text-align:left;">Bitmask</th>
-	<th style="text-align:left;">Letter</th>
+	<th style="text-align:left;">Flag</th>
 	<th style="text-align:left;">Description</th>
 </tr>
 </thead>
@@ -668,17 +662,14 @@ Unicode line or paragraph breaking character is recognised and replaced; the
 <tbody>
 <tr>
 	<td style="text-align:left;"><code>wrap_crlf</code></td>
-	<td style="text-align:left;"><code>r</code></td>
 	<td style="text-align:left;">Use CR+LF for line breaks (default LF)</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>wrap_enforce</code></td>
-	<td style="text-align:left;"><code>e</code></td>
 	<td style="text-align:left;">Enforce right margin strictly</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>wrap_preserve</code></td>
-	<td style="text-align:left;"><code>p</code></td>
 	<td style="text-align:left;">Preserve layout on already indented lines</td>
 </tr>
 </tbody>

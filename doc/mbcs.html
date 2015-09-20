@@ -44,13 +44,13 @@ specific byte order.</p>
 
 <ul>
 <li><code>template &lt;typename C&gt; void <strong>import_string</strong>(const string&amp; src, basic_string&lt;C&gt;&amp; dst)</code></li>
-<li><code>template &lt;typename C, typename C2&gt; void <strong>import_string</strong>(const string&amp; src, basic_string&lt;C&gt;&amp; dst, const basic_string&lt;C2&gt;&amp; enc, Flagset flags = {})</code></li>
-<li><code>template &lt;typename C, typename C2&gt; void <strong>import_string</strong>(const string&amp; src, basic_string&lt;C&gt;&amp; dst, const C2* enc, Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; void <strong>import_string</strong>(const string&amp; src, basic_string&lt;C&gt;&amp; dst, uint32_t enc, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C, typename C2&gt; void <strong>import_string</strong>(const string&amp; src, basic_string&lt;C&gt;&amp; dst, const basic_string&lt;C2&gt;&amp; enc, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C, typename C2&gt; void <strong>import_string</strong>(const string&amp; src, basic_string&lt;C&gt;&amp; dst, const C2* enc, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>import_string</strong>(const string&amp; src, basic_string&lt;C&gt;&amp; dst, uint32_t enc, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename C&gt; void <strong>export_string</strong>(const basic_string&lt;C&gt;&amp; src, string&amp; dst)</code></li>
-<li><code>template &lt;typename C, typename C2&gt; void <strong>export_string</strong>(const basic_string&lt;C&gt;&amp; src, string&amp; dst, const basic_string&lt;C2&gt;&amp; enc, Flagset flags = {})</code></li>
-<li><code>template &lt;typename C, typename C2&gt; void <strong>export_string</strong>(const basic_string&lt;C&gt;&amp; src, string&amp; dst, const C2* enc, Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; void <strong>export_string</strong>(const basic_string&lt;C&gt;&amp; src, string&amp; dst, uint32_t enc, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C, typename C2&gt; void <strong>export_string</strong>(const basic_string&lt;C&gt;&amp; src, string&amp; dst, const basic_string&lt;C2&gt;&amp; enc, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C, typename C2&gt; void <strong>export_string</strong>(const basic_string&lt;C&gt;&amp; src, string&amp; dst, const C2* enc, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>export_string</strong>(const basic_string&lt;C&gt;&amp; src, string&amp; dst, uint32_t enc, uint32_t flags = 0)</code></li>
 </ul>
 
 <p>These functions convert from an external multibyte encoding to Unicode
@@ -86,6 +86,10 @@ invalid data in the input string will be replaced with a system-defined
 replacement character (not necessarily <code>U+FFFD</code>); if <code>err_throw</code> is selected,
 invalid data will cause an <code>EncodingError</code> exception to be thrown, if this is
 detectable (see below).</p>
+
+<p>Ignoring invalid encoding is not allowed here; if any MBCS function that takes
+a <code>flags</code> argument is passed the <code>err_ignore</code> flags, it will throw
+<code>std::invalid_argument</code>.</p>
 
 <p>These functions necessarily inherit some of the limitations of the underlying
 native APIs. In particular, the Windows APIs do not reliably report encoding

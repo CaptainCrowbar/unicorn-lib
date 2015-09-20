@@ -71,19 +71,21 @@ is null.)
 
 ## String size functions ##
 
-Bitmask            | Letter  | Description
--------            | ------  | -----------
-`character_units`  | `C`     | Count the number of Unicode characters in the string (this is normally the default)
-`grapheme_units`   | `G`     | Count the number of grapheme clusters (user-perceived characters) in the string
-`narrow_context`   | `N`     | Calculate the East Asian width; ambiguous characters default to narrow
-`wide_context`     | `W`     | Calculate the East Asian width; ambiguous characters default to wide
-
 Most functions that need to calculate the size of a string, in this module and
-others, accept one of these flags to indicate which definition of "size" the
-caller wants. The various methods of measurement are implemented in the
-`str_length()` function, described below; anything else that needs a string
-size will normally obtain it by calling `str_length()` (or a related function
-such as `str_find_index()`).
+others, accept one of the following flags to indicate which definition of
+"size" the caller wants:
+
+Flag               | Description
+----               | -----------
+`character_units`  | Count the number of Unicode characters in the string (this is normally the default)
+`grapheme_units`   | Count the number of grapheme clusters (user-perceived characters) in the string
+`narrow_context`   | Calculate the East Asian width (ambiguous characters default to narrow)
+`wide_context`     | Calculate the East Asian width (ambiguous characters default to wide)
+
+The various methods of measurement are implemented in the `str_length()`
+function, described below; anything else that needs a string size will
+normally obtain it by calling `str_length()` (or a related function such as
+`str_find_index()`).
 
 By default, a string's length is a count of characters (Unicode scalar
 values); you can also select a count of grapheme clusters (user-perceived
@@ -94,16 +96,16 @@ units). The `grapheme_units` flag can be combined with either of the East
 Asian width options, giving a size based on the width of the base character of
 each grapheme cluster.
 
-* `template <typename C> size_t str_length(const basic_string<C>& str, Flagset flags = {})`
-* `template <typename C> size_t str_length(const Irange<UtfIterator<C>>& range, Flagset flags = {})`
-* `template <typename C> size_t str_length(const UtfIterator<C>& begin, const UtfIterator<C>& end, Flagset flags = {})`
+* `template <typename C> size_t str_length(const basic_string<C>& str, uint32_t flags = 0)`
+* `template <typename C> size_t str_length(const Irange<UtfIterator<C>>& range, uint32_t flags = 0)`
+* `template <typename C> size_t str_length(const UtfIterator<C>& begin, const UtfIterator<C>& end, uint32_t flags = 0)`
 
 Return the length of the string, measured according to the flags supplied.
 
-* `template <typename C> UtfIterator<C> str_find_index(const basic_string<C>& str, size_t pos, Flagset flags = {})`
-* `template <typename C> UtfIterator<C> str_find_index(const Irange<UtfIterator<C>>& range, size_t pos, Flagset flags = {})`
-* `template <typename C> UtfIterator<C> str_find_index(const UtfIterator<C>& begin, const UtfIterator<C>& end, size_t pos, Flagset flags = {})`
-* `template <typename C> size_t str_find_offset(basic_string<C>& str, size_t pos, Flagset flags = {})`
+* `template <typename C> UtfIterator<C> str_find_index(const basic_string<C>& str, size_t pos, uint32_t flags = 0)`
+* `template <typename C> UtfIterator<C> str_find_index(const Irange<UtfIterator<C>>& range, size_t pos, uint32_t flags = 0)`
+* `template <typename C> UtfIterator<C> str_find_index(const UtfIterator<C>& begin, const UtfIterator<C>& end, size_t pos, uint32_t flags = 0)`
+* `template <typename C> size_t str_find_offset(basic_string<C>& str, size_t pos, uint32_t flags = 0)`
 
 These return an iterator, or an offset in code units, pointing to the
 character at a given position, measured according to the flags supplied. If
@@ -310,11 +312,11 @@ the string. These will return an empty string if `length` is greater than the
 number of characters in `str`.
 
 * `template <typename C> basic_string<C> str_expand_tabs(const basic_string<C>& str)`
-* `template <typename C, typename IntList> basic_string<C> str_expand_tabs(const basic_string<C>& str, const IntList& tabs, Flagset flags = {})`
-* `template <typename C, typename IntType> basic_string<C> str_expand_tabs(const basic_string<C>& str, initializer_list<IntType> tabs, Flagset flags = {})`
+* `template <typename C, typename IntList> basic_string<C> str_expand_tabs(const basic_string<C>& str, const IntList& tabs, uint32_t flags = 0)`
+* `template <typename C, typename IntType> basic_string<C> str_expand_tabs(const basic_string<C>& str, initializer_list<IntType> tabs, uint32_t flags = 0)`
 * `template <typename C> void str_expand_tabs_in(basic_string<C>& str)`
-* `template <typename C, typename IntList> void str_expand_tabs_in(basic_string<C>& str, const IntList& tabs, Flagset flags = {})`
-* `template <typename C, typename IntType> void str_expand_tabs_in(basic_string<C>& str, initializer_list<IntType> tabs, Flagset flags = {})`
+* `template <typename C, typename IntList> void str_expand_tabs_in(basic_string<C>& str, const IntList& tabs, uint32_t flags = 0)`
+* `template <typename C, typename IntType> void str_expand_tabs_in(basic_string<C>& str, initializer_list<IntType> tabs, uint32_t flags = 0)`
 
 Expand tab characters to spaces. If the input string contains multiple lines
 (delimited by any of the standard Unicode line break characters), each line
@@ -330,10 +332,10 @@ stops is used to increment the last one (e.g. `{5,10,20}` will be expanded to
 `{5,10,20,30,40,...}`). An implicit tab stop at position zero is always
 assumed.
 
-* `template <typename C> basic_string<C> str_fix_left(const basic_string<C>& str, size_t length, char32_t c = U' ', Flagset flags = {})`
-* `template <typename C> void str_fix_left_in(basic_string<C>& str, size_t length, char32_t c = U' ', Flagset flags = {})`
-* `template <typename C> basic_string<C> str_fix_right(const basic_string<C>& str, size_t length, char32_t c = U' ', Flagset flags = {})`
-* `template <typename C> void str_fix_right_in(basic_string<C>& str, size_t length, char32_t c = U' ', Flagset flags = {})`
+* `template <typename C> basic_string<C> str_fix_left(const basic_string<C>& str, size_t length, char32_t c = U' ', uint32_t flags = 0)`
+* `template <typename C> void str_fix_left_in(basic_string<C>& str, size_t length, char32_t c = U' ', uint32_t flags = 0)`
+* `template <typename C> basic_string<C> str_fix_right(const basic_string<C>& str, size_t length, char32_t c = U' ', uint32_t flags = 0)`
+* `template <typename C> void str_fix_right_in(basic_string<C>& str, size_t length, char32_t c = U' ', uint32_t flags = 0)`
 
 Pad or truncate a string to a specific length; the character argument `c` is
 used for padding (converted to the appropriate encoding). The `str_fix_left()`
@@ -353,10 +355,10 @@ These concatenate a list of strings, optionally inserting a delimiter between
 each pair of strings. The character types of the string list and the delimiter
 must match.
 
-* `template <typename C> basic_string<C> str_pad_left(const basic_string<C>& str, size_t length, char32_t c = U' ', Flagset flags = {})`
-* `template <typename C> void str_pad_left_in(basic_string<C>& str, size_t length, char32_t c = U' ', Flagset flags = {})`
-* `template <typename C> basic_string<C> str_pad_right(const basic_string<C>& str, size_t length, char32_t c = U' ', Flagset flags = {})`
-* `template <typename C> void str_pad_right_in(basic_string<C>& str, size_t length, char32_t c = U' ', Flagset flags = {})`
+* `template <typename C> basic_string<C> str_pad_left(const basic_string<C>& str, size_t length, char32_t c = U' ', uint32_t flags = 0)`
+* `template <typename C> void str_pad_left_in(basic_string<C>& str, size_t length, char32_t c = U' ', uint32_t flags = 0)`
+* `template <typename C> basic_string<C> str_pad_right(const basic_string<C>& str, size_t length, char32_t c = U' ', uint32_t flags = 0)`
+* `template <typename C> void str_pad_right_in(basic_string<C>& str, size_t length, char32_t c = U' ', uint32_t flags = 0)`
 
 Pad a string on the left or right to a specified length; the character
 argument `c` is used for padding (converted to the appropriate encoding). The
@@ -455,7 +457,7 @@ one character. In all cases, the original string will be left unchanged if
 `chars` is empty.
 
 * `template <typename C> basic_string<C> str_substring(const basic_string<C>& str, size_t offset, size_t count = npos)`
-* `template <typename C> basic_string<C> utf_substring(const basic_string<C>& str, size_t index, size_t length = npos, Flagset flags = {})`
+* `template <typename C> basic_string<C> utf_substring(const basic_string<C>& str, size_t index, size_t length = npos, uint32_t flags = 0)`
 
 These return a substring of the original string. The `str_substring()` function
 returns the same string as `basic_string::substr()`, except that an offset out
@@ -535,14 +537,14 @@ These convert all line breaks to the same form, a single `LF` by default. Any
 Unicode line or paragraph breaking character is recognised and replaced; the
 `CR+LF` sequence is also treated as a single line break.
 
-* `template <typename C> basic_string<C> str_wrap(const basic_string<C>& str, Flagset flags = {}, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos)`
-* `template <typename C> void str_wrap_in(basic_string<C>& str, Flagset flags = {}, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos)`
+* `template <typename C> basic_string<C> str_wrap(const basic_string<C>& str, uint32_t flags = 0, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos)`
+* `template <typename C> void str_wrap_in(basic_string<C>& str, uint32_t flags = 0, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos)`
 
-Bitmask          | Letter  | Description
--------          | ------  | -----------
-`wrap_crlf`      | `r`     | Use CR+LF for line breaks (default LF)
-`wrap_enforce`   | `e`     | Enforce right margin strictly
-`wrap_preserve`  | `p`     | Preserve layout on already indented lines
+Flag             | Description
+----             | -----------
+`wrap_crlf`      | Use CR+LF for line breaks (default LF)
+`wrap_enforce`   | Enforce right margin strictly
+`wrap_preserve`  | Preserve layout on already indented lines
 
 Wrap the text in a string to a given width. Wrapping is done separately for
 each paragraph; paragraphs are delimited by two or more line breaks (as usual,

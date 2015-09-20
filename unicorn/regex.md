@@ -23,7 +23,6 @@ for details of the regular expression syntax.
 * [Regex match class][]
 * [Regex formatting class][]
 * [Regex iterator classes][]
-* [Regex literals][]
 * [Utility functions][]
 * [Version information][]
 
@@ -114,31 +113,31 @@ library instead.
 
 ## Regex options ##
 
-Bitmask               | Letter  | Description                                                                    | PCRE equivalent
--------               | ------  | -----------                                                                    | ---------------
-`rx_caseless`         | `i`     | Matching is case insensitive                                                   | `PCRE_CASELESS`
-`rx_dfa`              | `D`     | Use the alternative DFA matching algorithm                                     | `pcre_dfa_exec()`
-`rx_dollarnewline`    | `d`     | `$` may match line breaks preceding the end of the string                      | `~PCRE_DOLLAR_ENDONLY`
-`rx_dotinline`        | `l`     | `.` does not match line breaks                                                 | `~PCRE_DOTALL`
-`rx_extended`         | `x`     | Free-form mode; ignore whitespace and comments marked with `#`                 | `PCRE_EXTENDED`
-`rx_firstline`        | `f`     | Any match must start in the first line of the subject string                   | `PCRE_FIRSTLINE`
-`rx_multiline`        | `m`     | Multiline mode; `^` and `$` match the beginning and end of each line           | `PCRE_MULTILINE`
-`rx_newlineanycrlf`   | `A`     | Any of CR, LF, or CR+LF is recognised as a line break                          | `PCRE_NEWLINE_ANYCRLF`
-`rx_newlinecr`        | `C`     | Only CR is recognised as a line break                                          | `PCRE_NEWLINE_CR`
-`rx_newlinecrlf`      | `R`     | Only CR+LF is recognised as a line break                                       | `PCRE_NEWLINE_CRLF`
-`rx_newlinelf`        | `L`     | Only LF is recognised as a line break                                          | `PCRE_NEWLINE_LF`
-`rx_noautocapture`    | `c`     | Parentheses do not automatically capture; only named captures are recorded     | `PCRE_NO_AUTO_CAPTURE`
-`rx_nostartoptimize`  | `O`     | Disable some optimizations that affect `(*COMMIT)` and `(*MARK)` handling      | `PCRE_NO_START_OPTIMIZE`
-`rx_notbol`           | `B`     | Do not match `^` at the start of the subject string                            | `PCRE_NOTBOL`
-`rx_notempty`         | `z`     | Do not match an empty string                                                   | `PCRE_NOTEMPTY`
-`rx_notemptyatstart`  | `Z`     | Do not match an empty string at the start of the subject string                | `PCRE_NOTEMPTY_ATSTART`
-`rx_noteol`           | `E`     | Do not match `$` at the end of the subject string                              | `PCRE_NOTEOL`
-`rx_noutfcheck`       | `U`     | Skip UTF validity checks                                                       | `PCRE_NO_UTF{8,16,32}_CHECK`
-`rx_optimize`         | `o`     | Optimize the regex using PCRE's JIT compiler                                   | `PCRE_STUDY_JIT_COMPILE`
-`rx_partialhard`      | `P`     | Hard partial matching; prefer a partial match to a full match                  | `PCRE_PARTIAL_HARD`
-`rx_partialsoft`      | `p`     | Soft partial matching; prefer a full match to a partial match                  | `PCRE_PARTIAL_SOFT`
-`rx_prefershort`      | `S`     | Quantifiers are non-greedy in NFA mode; prefer shorter matches in DFA mode     | `PCRE_UNGREEDY,PCRE_DFA_SHORTEST`
-`rx_ucp`              | `u`     | Backslash-escape character sets use Unicode properties, instead of just ASCII  | `PCRE_UCP`
+Flag                  | Description                                                                    | PCRE equivalent
+----                  | -----------                                                                    | ---------------
+`rx_caseless`         | Matching is case insensitive                                                   | `PCRE_CASELESS`
+`rx_dfa`              | Use the alternative DFA matching algorithm                                     | `pcre_dfa_exec()`
+`rx_dollarnewline`    | `$` may match line breaks preceding the end of the string                      | `~PCRE_DOLLAR_ENDONLY`
+`rx_dotinline`        | `.` does not match line breaks                                                 | `~PCRE_DOTALL`
+`rx_extended`         | Free-form mode; ignore whitespace and comments marked with `#`                 | `PCRE_EXTENDED`
+`rx_firstline`        | Any match must start in the first line of the subject string                   | `PCRE_FIRSTLINE`
+`rx_multiline`        | Multiline mode; `^` and `$` match the beginning and end of each line           | `PCRE_MULTILINE`
+`rx_newlineanycrlf`   | Any of CR, LF, or CR+LF is recognised as a line break                          | `PCRE_NEWLINE_ANYCRLF`
+`rx_newlinecr`        | Only CR is recognised as a line break                                          | `PCRE_NEWLINE_CR`
+`rx_newlinecrlf`      | Only CR+LF is recognised as a line break                                       | `PCRE_NEWLINE_CRLF`
+`rx_newlinelf`        | Only LF is recognised as a line break                                          | `PCRE_NEWLINE_LF`
+`rx_noautocapture`    | Parentheses do not automatically capture; only named captures are recorded     | `PCRE_NO_AUTO_CAPTURE`
+`rx_nostartoptimize`  | Disable some optimizations that affect `(*COMMIT)` and `(*MARK)` handling      | `PCRE_NO_START_OPTIMIZE`
+`rx_notbol`           | Do not match `^` at the start of the subject string                            | `PCRE_NOTBOL`
+`rx_notempty`         | Do not match an empty string                                                   | `PCRE_NOTEMPTY`
+`rx_notemptyatstart`  | Do not match an empty string at the start of the subject string                | `PCRE_NOTEMPTY_ATSTART`
+`rx_noteol`           | Do not match `$` at the end of the subject string                              | `PCRE_NOTEOL`
+`rx_noutfcheck`       | Skip UTF validity checks                                                       | `PCRE_NO_UTF{8,16,32}_CHECK`
+`rx_optimize`         | Optimize the regex using PCRE's JIT compiler                                   | `PCRE_STUDY_JIT_COMPILE`
+`rx_partialhard`      | Hard partial matching; prefer a partial match to a full match                  | `PCRE_PARTIAL_HARD`
+`rx_partialsoft`      | Soft partial matching; prefer a full match to a partial match                  | `PCRE_PARTIAL_SOFT`
+`rx_prefershort`      | Quantifiers are non-greedy in NFA mode; prefer shorter matches in DFA mode     | `PCRE_UNGREEDY,PCRE_DFA_SHORTEST`
+`rx_ucp`              | Backslash-escape character sets use Unicode properties, instead of just ASCII  | `PCRE_UCP`
 
 Flags controlling regular expression matching behaviour. Most of these
 correspond directly to PCRE flags, but note that all flags must be specified
@@ -280,7 +279,7 @@ of UTF-8 mode.
 Member types.
 
 * `BasicRegex::BasicRegex()`
-* `explicit BasicRegex::BasicRegex(const string_type& pattern, Flagset flags = {})`
+* `explicit BasicRegex::BasicRegex(const string_type& pattern, uint32_t flags = 0)`
 * `BasicRegex::BasicRegex(const BasicRegex& r)`
 * `BasicRegex::BasicRegex(BasicRegex&& r) noexcept`
 * `BasicRegex::~BasicRegex() noexcept`
@@ -357,7 +356,7 @@ If the regex includes any named captures, this returns the group index
 capture by that name (or if the regex does not use named captures).
 
 * `BasicRegex::string_type BasicRegex::pattern() const`
-* `Flagset BasicRegex::flags() const noexcept`
+* `uint32_t BasicRegex::flags() const noexcept`
 
 These return the construction arguments.
 
@@ -386,8 +385,8 @@ account. If two regexes are semantically the same (i.e. always match or fail
 to match the same text) despite differing slightly in spelling, it is
 unspecified whether or not they will compare equal.
 
-* `template <typename C> BasicRegex<C> regex(const basic_string<C>& pattern, Flagset flags = {})`
-* `template <typename C> BasicRegex<C> regex(const C* pattern, Flagset flags = {})`
+* `template <typename C> BasicRegex<C> regex(const basic_string<C>& pattern, uint32_t flags = 0)`
+* `template <typename C> BasicRegex<C> regex(const C* pattern, uint32_t flags = 0)`
 
 Convenience functions to easily construct a regex object.
 
@@ -520,7 +519,7 @@ Member types.
 
 * `BasicRegexFormat::BasicRegexFormat()`
 * `BasicRegexFormat::BasicRegexFormat(const regex_type& pattern, const string_type& format)`
-* `BasicRegexFormat::BasicRegexFormat(const string_type& pattern, const string_type& format, Flagset flags = {})`
+* `BasicRegexFormat::BasicRegexFormat(const string_type& pattern, const string_type& format, uint32_t flags = 0)`
 * `BasicRegexFormat::BasicRegexFormat(const BasicRegexFormat& f)`
 * `BasicRegexFormat::BasicRegexFormat(BasicRegexFormat&& f) noexcept`
 * `BasicRegexFormat::~BasicRegexFormat() noexcept`
@@ -547,7 +546,7 @@ first `n` matches, discarding the unmatched text between them.
 * `BasicRegexFormat::regex_type BasicRegexFormat::regex() const`
 * `BasicRegexFormat::string_type BasicRegexFormat::format() const`
 * `BasicRegexFormat::string_type BasicRegexFormat::pattern() const`
-* `Flagset BasicRegexFormat::flags() const noexcept`
+* `uint32_t BasicRegexFormat::flags() const noexcept`
 
 These functions query the construction parameters. The `pattern()` and
 `flags()` functions are equivalent to `regex().pattern()` and
@@ -558,10 +557,10 @@ These functions query the construction parameters. The `pattern()` and
 
 Swap two objects.
 
-* `template <typename C> BasicRegexFormat<C> regex_format(const basic_string<C>& pattern, const basic_string<C>& format, Flagset flags = {})`
-* `template <typename C> BasicRegexFormat<C> regex_format(const basic_string<C>& pattern, const C* format, Flagset flags = {})`
-* `template <typename C> BasicRegexFormat<C> regex_format(const C* pattern, const basic_string<C>& format, Flagset flags = {})`
-* `template <typename C> BasicRegexFormat<C> regex_format(const C* pattern, const C* format, Flagset flags = {})`
+* `template <typename C> BasicRegexFormat<C> regex_format(const basic_string<C>& pattern, const basic_string<C>& format, uint32_t flags = 0)`
+* `template <typename C> BasicRegexFormat<C> regex_format(const basic_string<C>& pattern, const C* format, uint32_t flags = 0)`
+* `template <typename C> BasicRegexFormat<C> regex_format(const C* pattern, const basic_string<C>& format, uint32_t flags = 0)`
+* `template <typename C> BasicRegexFormat<C> regex_format(const C* pattern, const C* format, uint32_t flags = 0)`
 
 Convenience functions for constructing a regex format object.
 
@@ -616,37 +615,6 @@ An iterator over the substrings between matches for a given regex. These are
 normally returned by `BasicRegex::split()` rather than constructed directly by
 the user.
 
-## Regex literals ##
-
-* `namespace Literals`
-    * `Regex operator"" _re(const char* ptr, size_t len)`
-    * `Regex16 operator"" _re(const char16_t* ptr, size_t len)`
-    * `Regex32 operator"" _re(const char32_t* ptr, size_t len)`
-    * `WideRegex operator"" _re(const wchar_t* ptr, size_t len)`
-    * `ByteRegex operator"" _bre(const char* ptr, size_t len)`
-    * `RegexFormat operator"" _rf(const char* ptr, size_t len)`
-    * `RegexFormat16 operator"" _rf(const char16_t* ptr, size_t len)`
-    * `RegexFormat32 operator"" _rf(const char32_t* ptr, size_t len)`
-    * `WideRegexFormat operator"" _rf(const wchar_t* ptr, size_t len)`
-    * `ByteRegexFormat operator"" _brf(const char* ptr, size_t len)`
-
-Custom literals for regular expressions and formatters. The string part of the
-literal is expected to be in the traditional slash delimited form, with flags
-at the end if required. Examples:
-
-    auto reg = "/[a-z]+/"_re;      // = Regex("[a-z]+")
-    auto reg = U"/[a-z]+/"_re;     // = Regex32(U"[a-z]+")
-    auto reg = "/[a-z]*/iz"_re;    // = Regex("[a-z]*", rx_caseless | rx_notempty)
-    auto fmt = "/[a-z]+/_/"_rf;    // = RegexFormat("[a-z]+", "_")
-    auto fmt = "/[a-z]*/_/iz"_rf;  // = RegexFormat("[a-z]*", "_", rx_caseless | rx_notempty)
-
-Any character can be used as the delimiter (the constructors simply use the
-first character in the string), but restricting it to common ASCII punctuation
-is recommended for clarity. The delimiter can be escaped using a backslash;
-the second unescaped occurrence of the character (the third for formatting
-expressions) is taken to be the closing delimiter, and everything after that
-is interpreted as flag characters.
-
 ## Utility functions ##
 
 * `template <typename C> basic_string<C> regex_escape(const basic_string<C>& str)`
@@ -654,8 +622,9 @@ is interpreted as flag characters.
 
 These return a copy of the argument string, modified by inserting escape
 characters where necessary to produce a pattern that will exactly match the
-original string. (You can get the same effect by enclosing the text in
-`"\Q...\E"` delimiters, provided the text does not contain `"\E"`.)
+original string and nothing else. (You can get the same effect by enclosing
+the text in `"\Q...\E"` delimiters, provided the text does not contain
+`"\E"`.)
 
 ## Version information ##
 

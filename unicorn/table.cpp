@@ -9,7 +9,7 @@ using namespace std::literals;
 
 namespace Unicorn {
 
-    constexpr Kwarg<Flagset> Table::flags;
+    constexpr Kwarg<uint32_t> Table::flags;
     constexpr Kwarg<u8string> Table::ditto, Table::empty;
     constexpr Kwarg<size_t> Table::margin, Table::spacing;
     constexpr Kwarg<bool> Table::unfill;

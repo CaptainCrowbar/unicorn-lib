@@ -176,11 +176,11 @@ namespace Unicorn {
 
     // Character names
 
-    constexpr auto code_point_labels   = Flagset::value('l');
-    constexpr auto control_char_names  = Flagset::value('c');
-    constexpr auto updated_char_names  = Flagset::value('u');
+    UNICORN_DEFINE_FLAG(character name, code_labels, 0);
+    UNICORN_DEFINE_FLAG(character name, control_names, 1);
+    UNICORN_DEFINE_FLAG(character name, updated_names, 2);
 
-    u8string char_name(char32_t c, Flagset flags = {});
+    u8string char_name(char32_t c, uint32_t flags = 0);
 
     // Decomposition properties
 

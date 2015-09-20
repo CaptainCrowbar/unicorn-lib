@@ -12,13 +12,6 @@ namespace Unicorn {
 
     namespace UnicornDetail {
 
-        void utf_flags(Flagset& flags) {
-            flags.allow(err_ignore | err_replace | err_throw, "UTF error handling");
-            flags.exclusive(err_ignore | err_replace | err_throw, "UTF error handling");
-            if (flags.empty())
-                flags = err_ignore;
-        }
-
         //  UTF-8 byte distribution:
         //      00-7f = Single byte character
         //      80-bf = Second or later byte of a multibyte character

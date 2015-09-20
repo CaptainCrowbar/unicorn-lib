@@ -268,20 +268,20 @@ library).
 
 ## Character names ##
 
-* `u8string char_name(char32_t c, Flagset flags = {})`
+* `u8string char_name(char32_t c, uint32_t flags = 0)`
 
-Bitmask               | Letter  | Description
--------               | ------  | -----------
-`code_point_labels`   | `l`     | Generate the standard code point label for characters that do not have an official name
-`control_char_names`  | `c`     | Use the common ASCII or ISO 8859 names for control characters
-`updated_char_names`  | `u`     | Where the official name was in error and a correction has been published, use that instead
+Flag             | Description
+----             | -----------
+`code_labels`    | Generate the standard code point label for characters that do not have an official name
+`control_names`  | Use the common ASCII or ISO 8859 names for control characters
+`updated_names`  | Where the official name was in error and a correction has been published, use that instead
 
 Returns the name of a character. By default, only the official Unicode name is
 returned; an empty string is returned if the character does not have an
 official name. The `flags` argument can contain a bitwise-OR combination of
-any of the three options. If both `code_point_labels` and `control_char_names`
-are present, `control_char_names` takes precedence for characters that qualify
-for both.
+any of the three options. If both `code_labels` and `control_names` are
+present, `control_names` takes precedence for characters that qualify for
+both.
 
 The character name table is stored in compressed form to save space. A call to
 `char_name()` may throw an exception derived from `InitializationError` if

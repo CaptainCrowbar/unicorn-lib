@@ -152,10 +152,8 @@ namespace Unicorn {
         void exact(int tag, const string_type& pattern);
         void exact(int tag, const char_type* pattern) { exact(tag, cstr(pattern)); }
         void match(int tag, const regex_type& pattern) { add_match(tag, pattern); }
-        void match(int tag, const string_type& pattern, Flagset flags = {})
-            { add_match(tag, regex_type(pattern, flags)); }
-        void match(int tag, const char_type* pattern, Flagset flags = {})
-            { add_match(tag, regex_type(pattern, flags)); }
+        void match(int tag, const string_type& pattern, uint32_t flags = 0) { add_match(tag, regex_type(pattern, flags)); }
+        void match(int tag, const char_type* pattern, uint32_t flags = 0) { add_match(tag, regex_type(pattern, flags)); }
     private:
         friend class BasicTokenIterator<CX>;
         static constexpr size_t prefix_count = std::is_same<CX, void>::value ? 256 : 128;
@@ -214,11 +212,10 @@ namespace Unicorn {
     void BasicLexer<CX>::add_match(int tag, regex_type pattern) {
         if (pattern.empty())
             return;
-        Flagset new_flags = (pattern.flags() | rx_notempty | rx_partialsoft) & ~ rx_partialhard;
+        uint32_t new_flags = (pattern.flags() | rx_notempty | rx_partialsoft) & ~ rx_partialhard;
         if (new_flags != pattern.flags())
             pattern = regex_type(pattern.pattern(), new_flags);
-        auto call = [pattern] (const string_type& text, size_t offset)
-            { return pattern.anchor(text, offset).count(); };
+        auto call = [pattern] (const string_type& text, size_t offset) { return pattern.anchor(text, offset).count(); };
         lexemes.push_back(element{tag, call});
         string_type s(1, 0);
         for (size_t i = 0; i < prefix_count; ++i) {

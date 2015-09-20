@@ -30,13 +30,13 @@ Exception thrown to report an unknown encoding name or number.
 ## Conversion functions ##
 
 * `template <typename C> void import_string(const string& src, basic_string<C>& dst)`
-* `template <typename C, typename C2> void import_string(const string& src, basic_string<C>& dst, const basic_string<C2>& enc, Flagset flags = {})`
-* `template <typename C, typename C2> void import_string(const string& src, basic_string<C>& dst, const C2* enc, Flagset flags = {})`
-* `template <typename C> void import_string(const string& src, basic_string<C>& dst, uint32_t enc, Flagset flags = {})`
+* `template <typename C, typename C2> void import_string(const string& src, basic_string<C>& dst, const basic_string<C2>& enc, uint32_t flags = 0)`
+* `template <typename C, typename C2> void import_string(const string& src, basic_string<C>& dst, const C2* enc, uint32_t flags = 0)`
+* `template <typename C> void import_string(const string& src, basic_string<C>& dst, uint32_t enc, uint32_t flags = 0)`
 * `template <typename C> void export_string(const basic_string<C>& src, string& dst)`
-* `template <typename C, typename C2> void export_string(const basic_string<C>& src, string& dst, const basic_string<C2>& enc, Flagset flags = {})`
-* `template <typename C, typename C2> void export_string(const basic_string<C>& src, string& dst, const C2* enc, Flagset flags = {})`
-* `template <typename C> void export_string(const basic_string<C>& src, string& dst, uint32_t enc, Flagset flags = {})`
+* `template <typename C, typename C2> void export_string(const basic_string<C>& src, string& dst, const basic_string<C2>& enc, uint32_t flags = 0)`
+* `template <typename C, typename C2> void export_string(const basic_string<C>& src, string& dst, const C2* enc, uint32_t flags = 0)`
+* `template <typename C> void export_string(const basic_string<C>& src, string& dst, uint32_t enc, uint32_t flags = 0)`
 
 These functions convert from an external multibyte encoding to Unicode
 (`import_string()`), and from Unicode to an external multibyte encoding
@@ -69,6 +69,10 @@ invalid data in the input string will be replaced with a system-defined
 replacement character (not necessarily `U+FFFD`); if `err_throw` is selected,
 invalid data will cause an `EncodingError` exception to be thrown, if this is
 detectable (see below).
+
+Ignoring invalid encoding is not allowed here; if any MBCS function that takes
+a `flags` argument is passed the `err_ignore` flags, it will throw
+`std::invalid_argument`.
 
 These functions necessarily inherit some of the limitations of the underlying
 native APIs. In particular, the Windows APIs do not reliably report encoding

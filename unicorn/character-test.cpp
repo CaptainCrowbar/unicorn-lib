@@ -1075,36 +1075,36 @@ namespace {
         TEST_EQUAL(char_name(0xe01ef), "VARIATION SELECTOR-256");
 
         TEST_EQUAL(char_name(0x1a2), "LATIN CAPITAL LETTER OI");
-        TEST_EQUAL(char_name(0x1a2, updated_char_names), "LATIN CAPITAL LETTER GHA");
+        TEST_EQUAL(char_name(0x1a2, updated_names), "LATIN CAPITAL LETTER GHA");
         TEST_EQUAL(char_name(0x1d0c5), "BYZANTINE MUSICAL SYMBOL FHTORA SKLIRON CHROMA VASIS");
-        TEST_EQUAL(char_name(0x1d0c5, updated_char_names), "BYZANTINE MUSICAL SYMBOL FTHORA SKLIRON CHROMA VASIS");
+        TEST_EQUAL(char_name(0x1d0c5, updated_names), "BYZANTINE MUSICAL SYMBOL FTHORA SKLIRON CHROMA VASIS");
 
         TEST_EQUAL(char_name(0), "");
         TEST_EQUAL(char_name(0xa), "");
         TEST_EQUAL(char_name(0x7f), "");
         TEST_EQUAL(char_name(0x9f), "");
-        TEST_EQUAL(char_name(0, control_char_names), "NULL");
-        TEST_EQUAL(char_name(0xa, control_char_names), "LINE FEED");
-        TEST_EQUAL(char_name(0x7f, control_char_names), "DELETE");
-        TEST_EQUAL(char_name(0x9f, control_char_names), "APPLICATION PROGRAM COMMAND");
-        TEST_EQUAL(char_name(0, code_point_labels), "<control-0000>");
-        TEST_EQUAL(char_name(0xa, code_point_labels), "<control-000A>");
-        TEST_EQUAL(char_name(0x7f, code_point_labels), "<control-007F>");
-        TEST_EQUAL(char_name(0x9f, code_point_labels), "<control-009F>");
+        TEST_EQUAL(char_name(0, control_names), "NULL");
+        TEST_EQUAL(char_name(0xa, control_names), "LINE FEED");
+        TEST_EQUAL(char_name(0x7f, control_names), "DELETE");
+        TEST_EQUAL(char_name(0x9f, control_names), "APPLICATION PROGRAM COMMAND");
+        TEST_EQUAL(char_name(0, code_labels), "<control-0000>");
+        TEST_EQUAL(char_name(0xa, code_labels), "<control-000A>");
+        TEST_EQUAL(char_name(0x7f, code_labels), "<control-007F>");
+        TEST_EQUAL(char_name(0x9f, code_labels), "<control-009F>");
 
         TEST_EQUAL(char_name(0x20ff), "");
         TEST_EQUAL(char_name(0xd800), "");
         TEST_EQUAL(char_name(0xe000), "");
         TEST_EQUAL(char_name(0xfdd0), "");
         TEST_EQUAL(char_name(0x110000), "");
-        TEST_EQUAL(char_name(0x20ff, code_point_labels), "<reserved-20FF>");
-        TEST_EQUAL(char_name(0xd800, code_point_labels), "<surrogate-D800>");
-        TEST_EQUAL(char_name(0xe000, code_point_labels), "<private-use-E000>");
-        TEST_EQUAL(char_name(0xfdd0, code_point_labels), "<noncharacter-FDD0>");
-        TEST_EQUAL(char_name(0x110000, code_point_labels), "<noncharacter-110000>");
+        TEST_EQUAL(char_name(0x20ff, code_labels), "<reserved-20FF>");
+        TEST_EQUAL(char_name(0xd800, code_labels), "<surrogate-D800>");
+        TEST_EQUAL(char_name(0xe000, code_labels), "<private-use-E000>");
+        TEST_EQUAL(char_name(0xfdd0, code_labels), "<noncharacter-FDD0>");
+        TEST_EQUAL(char_name(0x110000, code_labels), "<noncharacter-110000>");
 
         for (char32_t c = 0; c <= 0x10ffff; ++c)
-            TEST_COMPARE(char_name(c, control_char_names | code_point_labels), !=, "");
+            TEST_COMPARE(char_name(c, control_names | code_labels), !=, "");
 
     }
 

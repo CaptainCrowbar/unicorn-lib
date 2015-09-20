@@ -57,7 +57,7 @@ for details.</p>
 <li><code>template &lt;typename T&gt; class <strong>FormatType</strong></code>
 
 <ul>
-<li><code>[string type] <strong>operator()</strong>(T t, Flagset flags, int prec) const</code></li>
+<li><code>[string type] <strong>operator()</strong>(T t, uint64_t flags, int prec) const</code></li>
 </ul></li>
 </ul>
 
@@ -102,10 +102,10 @@ for details.</p>
 <p>TODO</p>
 
 <ul>
-<li><code>template &lt;typename T, typename C&gt; void <strong>format_type</strong>(const T&amp; t, basic_string&lt;C&gt;&amp; dst, Flagset flags = {}, int prec = -1, size_t width = 0, char32_t pad = U' ')</code></li>
+<li><code>template &lt;typename T, typename C&gt; void <strong>format_type</strong>(const T&amp; t, basic_string&lt;C&gt;&amp; dst, uint64_t flags = 0, int prec = -1, size_t width = 0, char32_t pad = U' ')</code></li>
 <li><code>template &lt;typename T, typename C&gt; void <strong>format_type</strong>(const T&amp; t, basic_string&lt;C&gt;&amp; dst, const basic_string&lt;C&gt;&amp; flags)</code></li>
 <li><code>template &lt;typename T, typename C&gt; void <strong>format_type</strong>(const T&amp; t, basic_string&lt;C&gt;&amp; dst, const C* flags)</code></li>
-<li><code>template &lt;typename C, typename T&gt; basic_string&lt;C&gt; <strong>format_as</strong>(const T&amp; t, Flagset flags = {}, int prec = -1, size_t width = 0, char32_t pad = U' ')</code></li>
+<li><code>template &lt;typename C, typename T&gt; basic_string&lt;C&gt; <strong>format_as</strong>(const T&amp; t, uint64_t flags = 0, int prec = -1, size_t width = 0, char32_t pad = U' ')</code></li>
 <li><code>template &lt;typename C, typename T&gt; basic_string&lt;C&gt; <strong>format_as</strong>(const T&amp; t, const basic_string&lt;C&gt;&amp; flags)</code></li>
 <li><code>template &lt;typename C, typename T&gt; basic_string&lt;C&gt; <strong>format_as</strong>(const T&amp; t, const C* flags)</code></li>
 </ul>
@@ -175,7 +175,7 @@ for details.</p>
 
 <thead>
 <tr>
-	<th style="text-align:left;">Bitmask</th>
+	<th style="text-align:left;">Flag</th>
 	<th style="text-align:left;">Letter</th>
 	<th style="text-align:left;">Description</th>
 </tr>
@@ -248,7 +248,7 @@ for details.</p>
 
 <thead>
 <tr>
-	<th style="text-align:left;">Bitmask</th>
+	<th style="text-align:left;">Flag</th>
 	<th style="text-align:left;">Letter</th>
 	<th style="text-align:left;">Description</th>
 </tr>
@@ -286,7 +286,7 @@ for details.</p>
 
 <thead>
 <tr>
-	<th style="text-align:left;">Bitmask</th>
+	<th style="text-align:left;">Flag</th>
 	<th style="text-align:left;">Letter</th>
 	<th style="text-align:left;">Description</th>
 </tr>
@@ -339,7 +339,7 @@ for details.</p>
 
 <thead>
 <tr>
-	<th style="text-align:left;">Bitmask</th>
+	<th style="text-align:left;">Flag</th>
 	<th style="text-align:left;">Letter</th>
 	<th style="text-align:left;">Description</th>
 </tr>
@@ -402,7 +402,7 @@ for details.</p>
 
 <thead>
 <tr>
-	<th style="text-align:left;">Bitmask</th>
+	<th style="text-align:left;">Flag</th>
 	<th style="text-align:left;">Letter</th>
 	<th style="text-align:left;">Description</th>
 </tr>
@@ -465,7 +465,7 @@ for details.</p>
 
 <thead>
 <tr>
-	<th style="text-align:left;">Bitmask</th>
+	<th style="text-align:left;">Flag</th>
 	<th style="text-align:left;">Letter</th>
 	<th style="text-align:left;">Description</th>
 </tr>

@@ -172,62 +172,61 @@ namespace Unicorn {
             // Implementations of regex algorithms
 
             template <typename C>
-            void init_regex_impl(RegexInfo<C>& r, const typename PcreTraits<C>::string_type& pattern,
-                    Flagset flags, bool unicode) {
+            void init_regex_impl(RegexInfo<C>& r, const typename PcreTraits<C>::string_type& pattern, uint32_t flags, bool unicode) {
                 using pcre_traits = PcreTraits<C>;
-                flags.allow(rx_caseless | rx_dfa | rx_dollarnewline | rx_dotinline | rx_extended
+                allow_flags(flags, rx_caseless | rx_dfa | rx_dollarnewline | rx_dotinline | rx_extended
                     | rx_firstline | rx_multiline | rx_newlineanycrlf | rx_newlinecr | rx_newlinecrlf
                     | rx_newlinelf | rx_noautocapture | rx_nostartoptimize | rx_notbol | rx_notempty
                     | rx_notemptyatstart | rx_noteol | rx_noutfcheck | rx_optimize | rx_partialhard
                     | rx_partialsoft | rx_prefershort | rx_ucp, "regex");
-                flags.exclusive(rx_newlineanycrlf | rx_newlinecr | rx_newlinecrlf | rx_newlinelf, "regex");
-                flags.exclusive(rx_notempty | rx_notemptyatstart, "regex");
-                flags.exclusive(rx_partialhard | rx_partialsoft, "regex");
-                if (! unicode && flags.get(rx_noutfcheck | rx_ucp))
+                exclusive_flags(flags, rx_newlineanycrlf | rx_newlinecr | rx_newlinecrlf | rx_newlinelf, "regex");
+                exclusive_flags(flags, rx_notempty | rx_notemptyatstart, "regex");
+                exclusive_flags(flags, rx_partialhard | rx_partialsoft, "regex");
+                if (! unicode && (flags & (rx_noutfcheck | rx_ucp)))
                     throw FlagError(flags, "byte regex");
                 r.pat = pattern;
                 r.fset = flags;
                 int cflags = PCRE_EXTRA, sflags = 0;
                 if (unicode)
                     cflags |= PCRE_UTF8;
-                if (flags.get(rx_newlineanycrlf))
+                if (flags & rx_newlineanycrlf)
                     cflags |= PCRE_BSR_ANYCRLF | PCRE_NEWLINE_ANYCRLF;
-                else if (flags.get(rx_newlinecr))
+                else if (flags & rx_newlinecr)
                     cflags |= PCRE_BSR_ANYCRLF | PCRE_NEWLINE_CR;
-                else if (flags.get(rx_newlinecrlf))
+                else if (flags & rx_newlinecrlf)
                     cflags |= PCRE_BSR_ANYCRLF | PCRE_NEWLINE_CRLF;
-                else if (flags.get(rx_newlinelf))
+                else if (flags & rx_newlinelf)
                     cflags |= PCRE_BSR_ANYCRLF | PCRE_NEWLINE_LF;
                 else
                     cflags |= PCRE_BSR_ANYCRLF | PCRE_NEWLINE_ANYCRLF;
-                if (flags.get(rx_optimize)) {
+                if (flags & rx_optimize) {
                     sflags |= PCRE_STUDY_JIT_COMPILE;
-                    if (flags.get(rx_partialhard))
+                    if (flags & rx_partialhard)
                         sflags |= PCRE_STUDY_JIT_PARTIAL_HARD_COMPILE;
-                    else if (flags.get(rx_partialsoft))
+                    else if (flags & rx_partialsoft)
                         sflags |= PCRE_STUDY_JIT_PARTIAL_SOFT_COMPILE;
                 }
-                if (flags.get(rx_caseless))
+                if (flags & rx_caseless)
                     cflags |= PCRE_CASELESS;
-                if (! flags.get(rx_dollarnewline))
+                if (! (flags & rx_dollarnewline))
                     cflags |= PCRE_DOLLAR_ENDONLY;
-                if (! flags.get(rx_dotinline))
+                if (! (flags & rx_dotinline))
                     cflags |= PCRE_DOTALL;
-                if (flags.get(rx_extended))
+                if (flags & rx_extended)
                     cflags |= PCRE_EXTENDED;
-                if (flags.get(rx_firstline))
+                if (flags & rx_firstline)
                     cflags |= PCRE_FIRSTLINE;
-                if (flags.get(rx_multiline))
+                if (flags & rx_multiline)
                     cflags |= PCRE_MULTILINE;
-                if (flags.get(rx_noautocapture))
+                if (flags & rx_noautocapture)
                     cflags |= PCRE_NO_AUTO_CAPTURE;
-                if (flags.get(rx_nostartoptimize))
+                if (flags & rx_nostartoptimize)
                     cflags |= PCRE_NO_START_OPTIMIZE;
-                if (flags.get(rx_noutfcheck))
+                if (flags & rx_noutfcheck)
                     cflags |= PCRE_NO_UTF8_CHECK;
-                if (flags.get(rx_prefershort))
+                if (flags & rx_prefershort)
                     cflags |= PCRE_UNGREEDY;
-                if (flags.get(rx_ucp))
+                if (flags & rx_ucp)
                     cflags |= PCRE_UCP;
                 int error = 0, errpos = 0;
                 const char* errptr = nullptr;
@@ -244,8 +243,7 @@ namespace Unicorn {
             }
 
             template <typename C>
-            void init_match_impl(MatchInfo<C>& m, const RegexInfo<C>& r,
-                    const typename MatchInfo<C>::string_type& text) {
+            void init_match_impl(MatchInfo<C>& m, const RegexInfo<C>& r, const typename MatchInfo<C>::string_type& text) {
                 m.ofs.clear();
                 m.fset = r.fset;
                 m.ref = r.ref;
@@ -253,21 +251,21 @@ namespace Unicorn {
                 m.text = &text;
             }
 
-            int match_flags(Flagset fset) {
+            int match_flags(uint32_t fset) {
                 int mask = 0;
-                if (fset.get(rx_partialhard))
+                if (fset & rx_partialhard)
                     mask |= PCRE_PARTIAL_HARD;
-                if (fset.get(rx_partialsoft))
+                if (fset & rx_partialsoft)
                     mask |= PCRE_PARTIAL_SOFT;
-                if (fset.get(rx_notbol))
+                if (fset & rx_notbol)
                     mask |= PCRE_NOTBOL;
-                if (fset.get(rx_notempty))
+                if (fset & rx_notempty)
                     mask |= PCRE_NOTEMPTY;
-                if (fset.get(rx_notemptyatstart))
+                if (fset & rx_notemptyatstart)
                     mask |= PCRE_NOTEMPTY_ATSTART;
-                if (fset.get(rx_noteol))
+                if (fset & rx_noteol)
                     mask |= PCRE_NOTEOL;
-                if (fset.get(rx_nostartoptimize))
+                if (fset & rx_nostartoptimize)
                     mask |= PCRE_NO_START_OPTIMIZE;
                 return mask;
             }
@@ -283,8 +281,8 @@ namespace Unicorn {
                 int xflags = 0;
                 if (anchors > 0)
                     xflags |= PCRE_ANCHORED;
-                if (m.fset.get(rx_dfa)) {
-                    if (m.fset.get(rx_prefershort))
+                if (m.fset & rx_dfa) {
+                    if (m.fset & rx_prefershort)
                         xflags |= PCRE_DFA_SHORTEST;
                     if (m.ofs.size() < 40)
                         m.ofs.resize(40); // ovector + workspace
@@ -323,7 +321,7 @@ namespace Unicorn {
             { return count_groups_impl<char>(p.pcre()); }
         size_t named_group(const PcreRef<char>& p, const string& name) noexcept
             { return named_group_impl(p.pcre(), name); }
-        void init_regex(RegexInfo<char>& r, const string& pattern, Flagset flags, bool unicode)
+        void init_regex(RegexInfo<char>& r, const string& pattern, uint32_t flags, bool unicode)
             { init_regex_impl(r, pattern, flags, unicode); }
         void init_match(MatchInfo<char>& m, const RegexInfo<char>& r, const string& text)
             { init_match_impl(m, r, text); }
@@ -337,7 +335,7 @@ namespace Unicorn {
                 { return count_groups_impl<char16_t>(p.pcre()); }
             size_t named_group(const PcreRef<char16_t>& p, const u16string& name) noexcept
                 { return named_group_impl(p.pcre(), name); }
-            void init_regex(RegexInfo<char16_t>& r, const u16string& pattern, Flagset flags, bool unicode)
+            void init_regex(RegexInfo<char16_t>& r, const u16string& pattern, uint32_t flags, bool unicode)
                 { init_regex_impl(r, pattern, flags, unicode); }
             void init_match(MatchInfo<char16_t>& m, const RegexInfo<char16_t>& r, const u16string& text)
                 { init_match_impl(m, r, text); }
@@ -352,7 +350,7 @@ namespace Unicorn {
                 { return count_groups_impl<char32_t>(p.pcre()); }
             size_t named_group(const PcreRef<char32_t>& p, const u32string& name) noexcept
                 { return named_group_impl(p.pcre(), name); }
-            void init_regex(RegexInfo<char32_t>& r, const u32string& pattern, Flagset flags, bool unicode)
+            void init_regex(RegexInfo<char32_t>& r, const u32string& pattern, uint32_t flags, bool unicode)
                 { init_regex_impl(r, pattern, flags, unicode); }
             void init_match(MatchInfo<char32_t>& m, const RegexInfo<char32_t>& r, const u32string& text)
                 { init_match_impl(m, r, text); }
@@ -367,7 +365,7 @@ namespace Unicorn {
                 { return count_groups_impl<wchar_t>(p.pcre()); }
             size_t named_group(const PcreRef<wchar_t>& p, const wstring& name) noexcept
                 { return named_group_impl(p.pcre(), name); }
-            void init_regex(RegexInfo<wchar_t>& r, const wstring& pattern, Flagset flags, bool unicode)
+            void init_regex(RegexInfo<wchar_t>& r, const wstring& pattern, uint32_t flags, bool unicode)
                 { init_regex_impl(r, pattern, flags, unicode); }
             void init_match(MatchInfo<wchar_t>& m, const RegexInfo<wchar_t>& r, const wstring& text)
                 { init_match_impl(m, r, text); }

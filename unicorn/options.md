@@ -154,9 +154,9 @@ string that was supplied to the `Options` constructor.
 * `template <typename C> bool Options::parse(const std::vector<basic_string<C>>& args)`
 * `template <typename C> bool Options::parse(const basic_string<C>& args)`
 * `template <typename C> bool Options::parse(int argc, C** argv)`
-* `template <typename C, typename C2> bool Options::parse(const std::vector<basic_string<C>>& args, std::basic_ostream<C2>& out, Flagset flags = {})`
-* `template <typename C, typename C2> bool Options::parse(const basic_string<C>& args, std::basic_ostream<C2>& out, Flagset flags = {})`
-* `template <typename C, typename C2> bool Options::parse(int argc, C** argv, std::basic_ostream<C2>& out, Flagset flags = {})`
+* `template <typename C, typename C2> bool Options::parse(const std::vector<basic_string<C>>& args, std::basic_ostream<C2>& out, uint32_t flags = 0)`
+* `template <typename C, typename C2> bool Options::parse(const basic_string<C>& args, std::basic_ostream<C2>& out, uint32_t flags = 0)`
+* `template <typename C, typename C2> bool Options::parse(int argc, C** argv, std::basic_ostream<C2>& out, uint32_t flags = 0)`
 
 After the option specification has been constructed, call one of the `parse()`
 functions to parse the actual command line arguments. The arguments can be
@@ -175,11 +175,11 @@ the return value from `parse()` and end the program if it is true.
 
 The `flags` argument can be any combination of these:
 
-Bitmask         | Letter  | Description
--------         | ------  | -----------
-`opt_locale`    | `l`     | The argument list is in the local encoding
-`opt_noprefix`  | `n`     | The first argument is not the command name
-`opt_quoted`    | `q`     | Allow arguments to be quoted
+Flag            | Description
+----            | -----------
+`opt_locale`    | The argument list is in the local encoding
+`opt_noprefix`  | The first argument is not the command name
+`opt_quoted`    | Allow arguments to be quoted
 
 The `opt_locale` flag is only relevant to 8 bit strings, which are assumed to
 be UTF-8 by default; the flag is ignored if the `C` type is not `char`, since

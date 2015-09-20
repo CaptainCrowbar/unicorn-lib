@@ -170,7 +170,7 @@ namespace Unicorn {
         return i != npos ? opts[i].values : string_list();
     }
 
-    Options::help_mode Options::parse_args(string_list args, Flagset flags) {
+    Options::help_mode Options::parse_args(string_list args, uint32_t flags) {
         add_help_version();
         clean_up_arguments(args, flags);
         if (help_auto && args.empty())
@@ -210,10 +210,10 @@ namespace Unicorn {
         }
     }
 
-    void Options::clean_up_arguments(string_list& args, Flagset flags) {
-        if (! flags.get(opt_noprefix) && ! args.empty())
+    void Options::clean_up_arguments(string_list& args, uint32_t flags) {
+        if (! (flags & opt_noprefix) && ! args.empty())
             args.erase(std::begin(args));
-        if (flags.get(opt_quoted))
+        if (flags & opt_quoted)
             for (auto& arg: args)
                 if (arg.size() >= 2 && arg.front() == '\"' && arg.back() == '\"')
                     arg = arg.substr(1, arg.size() - 1);
@@ -333,8 +333,8 @@ namespace Unicorn {
         }
     }
 
-    u8string Options::arg_convert(const string& str, Flagset flags) {
-        if (! flags.get(opt_locale))
+    u8string Options::arg_convert(const string& str, uint32_t flags) {
+        if (! (flags & opt_locale))
             return str;
         u8string utf8;
         import_string(str, utf8, local_encoding());

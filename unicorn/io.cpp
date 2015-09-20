@@ -41,10 +41,7 @@ namespace Unicorn {
 
         using SharedFile = std::shared_ptr<FILE>;
 
-        void checked_fclose(FILE* f) {
-            if (f)
-                fclose(f);
-        }
+        void checked_fclose(FILE* f) { if (f) fclose(f); }
 
         SharedFile shared_fopen(const NativeString& file, const NativeString& mode, bool check) {
             FILE* f =
@@ -70,7 +67,7 @@ namespace Unicorn {
         u8string line8;
         string rdbuf;
         NativeString name;
-        Flagset flags;
+        uint32_t flags;
         u8string enc;
         u8string eol;
         SharedFile handle;
@@ -87,7 +84,7 @@ namespace Unicorn {
 
     FileReader& FileReader::operator++() {
         do getline();
-            while (impl && impl->flags.get(io_notempty)
+            while (impl && (impl->flags & io_notempty)
                 && std::all_of(utf_begin(impl->line8), utf_end(impl->line8), char_is_line_break));
         return *this;
     }
@@ -96,13 +93,12 @@ namespace Unicorn {
         return impl ? impl->lines : size_t(0);
     }
 
-    void FileReader::init(const NativeString& file, Flagset flags, const u8string& enc, const u8string& eol) {
+    void FileReader::init(const NativeString& file, uint32_t flags, const u8string& enc, const u8string& eol) {
         static const auto dashfile = "-"_nat;
-        flags.allow(err_replace | err_throw | io_bom | io_crlf | io_lf
-            | io_nofail | io_notempty | io_stdin | io_striplf | io_striptws
-            | io_stripws, "file input");
-        flags.exclusive(err_replace | err_throw, "file input");
-        flags.exclusive(io_crlf | io_lf | io_striplf | io_striptws | io_stripws, "file input");
+        UnicornDetail::allow_flags(flags, err_replace | err_throw | io_bom | io_crlf | io_lf
+            | io_nofail | io_notempty | io_stdin | io_striplf | io_striptws | io_stripws, "file io");
+        UnicornDetail::exclusive_flags(flags, err_replace | err_throw, "file io");
+        UnicornDetail::exclusive_flags(flags, io_crlf | io_lf | io_striplf | io_striptws | io_stripws, "file io");
         impl = std::make_shared<impl_type>();
         impl->name = file;
         impl->flags = flags;
@@ -111,26 +107,26 @@ namespace Unicorn {
         impl->lines = 0;
         if (enc.empty() || enc == "0")
             impl->enc = "utf-8";
-        if (flags.get(io_stdin) && (file.empty() || file == dashfile))
+        if ((flags & io_stdin) && (file.empty() || file == dashfile))
             impl->handle.reset(stdin, do_nothing);
         else
-            impl->handle = shared_fopen(file, "rb"_nat, ! flags.get(io_nofail));
+            impl->handle = shared_fopen(file, "rb"_nat, ! (flags & io_nofail));
         ++*this;
     }
 
     void FileReader::fixline() {
-        if (impl->flags.get(io_bom)) {
+        if (impl->flags & io_bom) {
             if (str_first_char(impl->line8) == byte_order_mark)
                 impl->line8.erase(0, utf_begin(impl->line8).count());
-            impl->flags.set(io_bom, false);
+            impl->flags &= ~ io_bom;
         }
-        if (impl->flags.get(io_lf))
+        if (impl->flags & io_lf)
             impl->line8 += '\n';
-        else if (impl->flags.get(io_crlf))
+        else if (impl->flags & io_crlf)
             impl->line8 += "\r\n";
-        else if (impl->flags.get(io_striptws))
+        else if (impl->flags & io_striptws)
             impl->line8 = str_trim_right(impl->line8);
-        else if (impl->flags.get(io_stripws))
+        else if (impl->flags & io_stripws)
             impl->line8 = str_trim(impl->line8);
     }
 
@@ -165,7 +161,7 @@ namespace Unicorn {
         }
         string encoded(impl->rdbuf, 0, eolpos + eolbytes);
         impl->rdbuf.erase(0, eolpos + eolbytes);
-        if (impl->flags.get(io_lf | io_crlf | io_striplf | io_striptws | io_stripws))
+        if (impl->flags & (io_lf | io_crlf | io_striplf | io_striptws | io_stripws))
             encoded.resize(eolpos);
         import_string(encoded, impl->line8, impl->enc, impl->flags & (err_replace | err_throw));
         fixline();
@@ -189,7 +185,7 @@ namespace Unicorn {
     struct FileWriter::impl_type {
         u8string wrbuf;
         NativeString name;
-        Flagset flags;
+        uint32_t flags;
         u8string enc;
         SharedFile handle;
         std::shared_ptr<Mutex> mutex;
@@ -202,31 +198,31 @@ namespace Unicorn {
             throw WriteError(impl->name, errno);
     }
 
-    void FileWriter::init(const NativeString& file, Flagset flags, const u8string& enc) {
+    void FileWriter::init(const NativeString& file, uint32_t flags, const u8string& enc) {
         static const NativeString dashfile{NativeCharacter('-')};
         static Mutex stdout_mutex;
         static Mutex stderr_mutex;
-        flags.allow(err_replace | err_throw | io_append | io_autoline | io_bom
-            | io_crlf | io_lf | io_linebuf | io_mutex | io_stderr
-            | io_stdout | io_unbuf | io_writeline, "file output");
-        flags.exclusive(err_replace | err_throw, "file output");
-        flags.exclusive(io_autoline | io_writeline, "file output");
-        flags.exclusive(io_crlf | io_lf, "file output");
-        flags.exclusive(io_linebuf | io_unbuf, "file output");
-        flags.exclusive(io_stderr | io_stdout, "file output");
+        UnicornDetail::allow_flags(flags, err_replace | err_throw | io_append | io_autoline | io_bom
+            | io_crlf | io_lf | io_linebuf | io_mutex | io_stderr | io_stdout | io_unbuf | io_writeline,
+            "file io");
+        UnicornDetail::exclusive_flags(flags, err_replace | err_throw, "file io");
+        UnicornDetail::exclusive_flags(flags, io_autoline | io_writeline, "file io");
+        UnicornDetail::exclusive_flags(flags, io_crlf | io_lf, "file io");
+        UnicornDetail::exclusive_flags(flags, io_linebuf | io_unbuf, "file io");
+        UnicornDetail::exclusive_flags(flags, io_stderr | io_stdout, "file io");
         impl = std::make_shared<impl_type>();
         impl->name = file;
         impl->flags = flags;
         impl->enc = enc;
         if (enc.empty() || enc == "0")
             impl->enc = "utf-8";
-        if (flags.get(io_stdout) && (file.empty() || file == dashfile))
+        if ((flags & io_stdout) && (file.empty() || file == dashfile))
             impl->handle.reset(stdout, do_nothing);
-        else if (flags.get(io_stderr) && (file.empty() || file == dashfile))
+        else if ((flags & io_stderr) && (file.empty() || file == dashfile))
             impl->handle.reset(stderr, do_nothing);
         else
-            impl->handle = shared_fopen(file, flags.get(io_append) ? "ab"_nat : "wb"_nat, true);
-        if (flags.get(io_mutex)) {
+            impl->handle = shared_fopen(file, flags & io_append ? "ab"_nat : "wb"_nat, true);
+        if (flags & io_mutex) {
             if (impl->handle.get() == stdout)
                 impl->mutex.reset(&stdout_mutex, do_nothing);
             else if (impl->handle.get() == stderr)
@@ -237,11 +233,11 @@ namespace Unicorn {
     }
 
     void FileWriter::fixtext(u8string& str) const {
-        if (impl->flags.get(io_writeline) || (impl->flags.get(io_autoline)
+        if ((impl->flags & io_writeline) || ((impl->flags & io_autoline)
                 && (str.empty() || ! char_is_line_break(str_last_char(str)))))
             str += '\n';
-        if (impl->flags.get(io_lf | io_crlf)) {
-            u8string brk = impl->flags.get(io_crlf) ? "\r\n"s : "\n"s;
+        if (impl->flags & (io_lf | io_crlf)) {
+            u8string brk = (impl->flags & io_crlf) ? "\r\n"s : "\n"s;
             auto i = utf_begin(str);
             while (i.offset() < str.size()) {
                 if (*i == '\r' && str[i.offset() + 1] == '\n')
@@ -258,7 +254,7 @@ namespace Unicorn {
         if (! impl)
             throw WriteError();
         fixtext(str);
-        if (impl->flags.get(io_linebuf)) {
+        if (impl->flags & io_linebuf) {
             str.insert(0, impl->wrbuf);
             impl->wrbuf.clear();
             auto b = utf_begin(str), e = utf_end(str), i = e;
@@ -277,10 +273,10 @@ namespace Unicorn {
             }
         }
         if (! str.empty()) {
-            if (impl->flags.get(io_bom)) {
+            if (impl->flags & io_bom) {
                 if (str_first_char(str) != byte_order_mark)
                     str.insert(0, utf8_bom);
-                impl->flags.set(io_bom, false);
+                impl->flags &= ~ io_bom;
             }
             string encoded;
             export_string(str, encoded, impl->enc, impl->flags & (err_replace | err_throw));
@@ -298,7 +294,7 @@ namespace Unicorn {
         auto err = errno;
         if (ferror(impl->handle.get()))
             throw WriteError(impl->name, err);
-        if (impl->flags.get(io_linebuf | io_unbuf))
+        if (impl->flags & (io_linebuf | io_unbuf))
             flush();
     }
 

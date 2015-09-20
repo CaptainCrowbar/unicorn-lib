@@ -54,9 +54,9 @@ Unicode string.
     * `using WordIterator::reference = const value_type&`
     * `WordIterator::WordIterator()`
     * `[standard iterator operations]`
-* `template <typename C> Irange<WordIterator<C>> word_range(const UtfIterator<C>& i, const UtfIterator<C>& j, Flagset flags = {})`
-* `template <typename C> Irange<WordIterator<C>> word_range(const Irange<UtfIterator<C>>& source, Flagset flags = {})`
-* `template <typename C> Irange<WordIterator<C>> word_range(const basic_string<C>& source, Flagset flags = {})`
+* `template <typename C> Irange<WordIterator<C>> word_range(const UtfIterator<C>& i, const UtfIterator<C>& j, uint32_t flags = 0)`
+* `template <typename C> Irange<WordIterator<C>> word_range(const Irange<UtfIterator<C>>& source, uint32_t flags = 0)`
+* `template <typename C> Irange<WordIterator<C>> word_range(const basic_string<C>& source, uint32_t flags = 0)`
 
 A forward iterator over the words in a Unicode string. By default, all
 segments identified as "words" by the UAX29 algorithm are returned; this will
@@ -64,11 +64,11 @@ include whitespace between words, punctuation marks, etc. Flags can be used to
 select only words containing at least one non-whitespace character, or only
 words containing at least one alphanumeric character.
 
-Bitmask          | Letter  | Description
--------          | ------  | -----------
-`unicode_words`  | `u`     | Report all UAX29 words (default)
-`graphic_words`  | `g`     | Report only words containing a non-whitespace character
-`alpha_words`    | `a`     | Report only words containing an alphanumeric character
+Flag             | Description
+----             | -----------
+`unicode_words`  | Report all UAX29 words (default)
+`graphic_words`  | Report only words containing a non-whitespace character
+`alpha_words`    | Report only words containing an alphanumeric character
 
 ## Sentence boundaries ##
 
@@ -99,9 +99,9 @@ UAX29).
     * `using LineIterator::reference = const value_type&`
     * `LineIterator::LineIterator()`
     * `[standard iterator operations]`
-* `template <typename C> Irange<LineIterator<C>> line_range(const UtfIterator<C>& i, const UtfIterator<C>& j, Flagset flags = {})`
-* `template <typename C> Irange<LineIterator<C>> line_range(const Irange<UtfIterator<C>>& source, Flagset flags = {})`
-* `template <typename C> Irange<LineIterator<C>> line_range(const basic_string<C>& source, Flagset flags = {})`
+* `template <typename C> Irange<LineIterator<C>> line_range(const UtfIterator<C>& i, const UtfIterator<C>& j, uint32_t flags = 0)`
+* `template <typename C> Irange<LineIterator<C>> line_range(const Irange<UtfIterator<C>>& source, uint32_t flags = 0)`
+* `template <typename C> Irange<LineIterator<C>> line_range(const basic_string<C>& source, uint32_t flags = 0)`
 
 A forward iterator over the lines in a Unicode string. Lines are ended by any
 character with the line break property. Multiple consecutive line break
@@ -110,10 +110,10 @@ single line break. By default, the segment identified by the dereferenced
 iterator includes the terminating line break; if the `strip_breaks` flag is
 set, the line break is excluded from the segment.
 
-Bitmask         | Letter  | Description
--------         | ------  | -----------
-`keep_breaks`   | `k`     | Include line terminators in reported segments (default)
-`strip_breaks`  | `s`     | Do not include line terminators
+Flag            | Description
+----            | -----------
+`keep_breaks`   | Include line terminators in reported segments (default)
+`strip_breaks`  | Do not include line terminators
 
 ## Paragraph boundaries ##
 
@@ -126,9 +126,9 @@ Bitmask         | Letter  | Description
     * `using ParagraphIterator::reference = const value_type&`
     * `ParagraphIterator::ParagraphIterator()`
     * `[standard iterator operations]`
-* `template <typename C> Irange<ParagraphIterator<C>> paragraph_range(const UtfIterator<C>& i, const UtfIterator<C>& j, Flagset flags = {})`
-* `template <typename C> Irange<ParagraphIterator<C>> paragraph_range(const Irange<UtfIterator<C>>& source, Flagset flags = {})`
-* `template <typename C> Irange<ParagraphIterator<C>> paragraph_range(const basic_string<C>& source, Flagset flags = {})`
+* `template <typename C> Irange<ParagraphIterator<C>> paragraph_range(const UtfIterator<C>& i, const UtfIterator<C>& j, uint32_t flags = 0)`
+* `template <typename C> Irange<ParagraphIterator<C>> paragraph_range(const Irange<UtfIterator<C>>& source, uint32_t flags = 0)`
+* `template <typename C> Irange<ParagraphIterator<C>> paragraph_range(const basic_string<C>& source, uint32_t flags = 0)`
 
 A forward iterator over the paragraphs in a Unicode string. The flags passed
 to the constructor determine how paragraphs are identified. By default, any
@@ -139,10 +139,10 @@ breaks to the Unicode paragraph separator character (`U+2029`). The
 `strip_breaks` flag works the same way as in `LineIterator`, skipping the
 paragraph delimiters.
 
-Bitmask            | Letter  | Description
--------            | ------  | -----------
-`multiline_paras`  | `m`     | Divide into paragraphs using multiple line breaks (default)
-`line_paras`       | `l`     | Divide into paragraphs using any line break
-`unicode_paras`    | `u`     | Divide into paragraphs using only Paragraph Separator
-`keep_breaks`      | `k`     | Include paragraph terminators in reported segments (default)
-`strip_breaks`     | `s`     | Do not include paragraph terminators
+Flag               | Description
+----               | -----------
+`multiline_paras`  | Divide into paragraphs using multiple line breaks (default)
+`line_paras`       | Divide into paragraphs using any line break
+`unicode_paras`    | Divide into paragraphs using only Paragraph Separator
+`keep_breaks`      | Include paragraph terminators in reported segments (default)
+`strip_breaks`     | Do not include paragraph terminators

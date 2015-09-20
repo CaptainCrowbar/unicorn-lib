@@ -25,14 +25,15 @@ UTF-32; `wstring` may hold either UTF-16 or UTF-32, depending on the compiler.
 
 ## Constants ##
 
-Bitmask        | Letter  | Description
--------        | ------  | -----------
-`err_ignore`   | `I`     | Assume valid UTF input
-`err_replace`  | `R`     | Replace invalid UTF with `U+FFFD`
-`err_throw`    | `T`     | Throw `EncodingError` on invalid UTF
+Flag           | Description
+----           | -----------
+`err_ignore`   | Assume valid UTF input
+`err_replace`  | Replace invalid UTF with `U+FFFD`
+`err_throw`    | Throw `EncodingError` on invalid UTF
 
-These flags are used in most encoding conversion functions, and some related
-functions, to indicate how to handle encoding errors in the input data.
+These bitmask flags are used in most encoding conversion functions, and some
+related functions, to indicate how to handle encoding errors in the input
+data.
 
 The `err_ignore` option is the default for the UTF conversion functions. This
 tells the function to assume that the input is already known to be a valid UTF
@@ -47,6 +48,8 @@ UTF-8 subsequences follows the Unicode recommended behaviour (Unicode Standard
 
 The `err_throw` option causes any input encoding error to throw an
 `EncodingError` exception.
+
+Behaviour is unspecified if more than one of these flags is combined.
 
 If ignoring errors sounds like an unsafe choice for the default action,
 remember that the Unicorn library is designed with the intention that text
@@ -85,7 +88,7 @@ four functions will be true for any value of `C`.
     * `using UtfIterator::value_type = char32_t`
     * `UtfIterator::UtfIterator() noexcept`
     * `explicit UtfIterator::UtfIterator(const string_type& src)`
-    * `UtfIterator::UtfIterator(const string_type& src, size_t offset, Flagset flags = {})`
+    * `UtfIterator::UtfIterator(const string_type& src, size_t offset, uint32_t flags = 0)`
     * `const string_type& UtfIterator::source() const noexcept`
     * `size_t UtfIterator::offset() const noexcept`
     * `size_t UtfIterator::count() const noexcept`
@@ -150,13 +153,13 @@ errors.
 
 Convenience aliases for specific iterators and ranges.
 
-* `template <typename C> UtfIterator<C> utf_begin(const basic_string<C>& src, Flagset flags = {})`
-* `template <typename C> UtfIterator<C> utf_end(const basic_string<C>& src, Flagset flags = {})`
-* `template <typename C> Irange<UtfIterator<C>> utf_range(const basic_string<C>& src, Flagset flags = {})`
+* `template <typename C> UtfIterator<C> utf_begin(const basic_string<C>& src, uint32_t flags = 0)`
+* `template <typename C> UtfIterator<C> utf_end(const basic_string<C>& src, uint32_t flags = 0)`
+* `template <typename C> Irange<UtfIterator<C>> utf_range(const basic_string<C>& src, uint32_t flags = 0)`
 
 These return iterators over an encoded string.
 
-* `template <typename C> UtfIterator<C> utf_iterator(const basic_string<C>& src, size_t offset, Flagset flags = {})`
+* `template <typename C> UtfIterator<C> utf_iterator(const basic_string<C>& src, size_t offset, uint32_t flags = 0)`
 
 Returns an iterator pointing to a specific offset in a string.
 
@@ -199,16 +202,16 @@ same way as for `UtfIterator`.
 
 Convenience aliases for specific iterators.
 
-* `template <typename C> UtfWriter<C> utf_writer(basic_string<C>& dst, Flagset flags = {}) noexcept`
+* `template <typename C> UtfWriter<C> utf_writer(basic_string<C>& dst, uint32_t flags = 0) noexcept`
 
 Returns an encoding iterator writing to the given destination string.
 
 ## UTF conversion functions ##
 
-* `template <typename C1, typename C2> void recode(const basic_string<C1>& src, basic_string<C2>& dst, Flagset flags = {})`
-* `template <typename C1, typename C2> void recode(const basic_string<C1>& src, size_t offset, basic_string<C2>& dst, Flagset flags = {})`
-* `template <typename C1, typename C2> void recode(const C1* src, size_t count, basic_string<C2>& dst, Flagset flags = {})`
-* `template <typename C2, typename C1> basic_string<C2> recode(const basic_string<C1>& src, Flagset flags = {})`
+* `template <typename C1, typename C2> void recode(const basic_string<C1>& src, basic_string<C2>& dst, uint32_t flags = 0)`
+* `template <typename C1, typename C2> void recode(const basic_string<C1>& src, size_t offset, basic_string<C2>& dst, uint32_t flags = 0)`
+* `template <typename C1, typename C2> void recode(const C1* src, size_t count, basic_string<C2>& dst, uint32_t flags = 0)`
+* `template <typename C2, typename C1> basic_string<C2> recode(const basic_string<C1>& src, uint32_t flags = 0)`
 * `template <typename C2, typename C1> basic_string<C2> recode(const basic_string<C1>& src, size_t offset, int on_error)`
 
 Encoding conversion functions. These convert from one UTF encoding to another;
@@ -225,11 +228,11 @@ The `flags` argument has its usual meaning. If the destination string was
 supplied by reference, after an exception is thrown the destination string
 will contain the successfully converted part of the string before the error.
 
-* `template <typename C> u8string to_utf8(const basic_string<C>& src, Flagset flags = {})`
-* `template <typename C> u16string to_utf16(const basic_string<C>& src, Flagset flags = {})`
-* `template <typename C> u32string to_utf32(const basic_string<C>& src, Flagset flags = {})`
-* `template <typename C> wstring to_wstring(const basic_string<C>& src, Flagset flags = {})`
-* `template <typename C> NativeString to_native(const basic_string<C>& src, Flagset flags = {})`
+* `template <typename C> u8string to_utf8(const basic_string<C>& src, uint32_t flags = 0)`
+* `template <typename C> u16string to_utf16(const basic_string<C>& src, uint32_t flags = 0)`
+* `template <typename C> u32string to_utf32(const basic_string<C>& src, uint32_t flags = 0)`
+* `template <typename C> wstring to_wstring(const basic_string<C>& src, uint32_t flags = 0)`
+* `template <typename C> NativeString to_native(const basic_string<C>& src, uint32_t flags = 0)`
 
 These are just shorthand for the corresponding invocation of `recode()`.
 

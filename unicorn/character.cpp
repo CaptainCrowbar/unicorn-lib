@@ -450,14 +450,14 @@ namespace Unicorn {
 
     }
 
-    u8string char_name(char32_t c, Flagset flags) {
+    u8string char_name(char32_t c, uint32_t flags) {
         using namespace UnicornDetail;
-        if (flags.get(control_char_names)) {
+        if (flags & control_names) {
             auto name_ptr = control_character_name(c);
             if (name_ptr)
                 return name_ptr;
         }
-        if (flags.get(updated_char_names)) {
+        if (flags & updated_names) {
             auto name_ptr = table_lookup(corrected_names_table, c, static_cast<const char*>(nullptr));
             if (name_ptr)
                 return name_ptr;
@@ -474,7 +474,7 @@ namespace Unicorn {
         name = hangul_name(c);
         if (! name.empty())
             return name;
-        if (flags.get(code_point_labels)) {
+        if (flags & code_labels) {
             auto gc = char_general_category(c);
             if (gc == GC::Cc)
                 name = "<control-";

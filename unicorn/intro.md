@@ -126,13 +126,6 @@ above.
 The abbreviations `src` and `dst` are frequently used for source and
 destination objects (i.e. input and output parameters).
 
-When a function's behaviour is controlled by boolean flags, a `Flagset` (from
-the [Prion library](https://github.com/CaptainCrowbar/prion-lib)) is usually
-used. This allows a set of flags to be passed either in a long form, as a list
-of named flags combined using bitwise _or_, or in a short form, as a string
-containing characters representing the flags. Refer to the `Flagset`
-documentation for details of how this works.
-
 ## Exception safety ##
 
 The `noexcept` qualifier is used as much as possible to indicate functions
@@ -145,9 +138,8 @@ function not marked `noexcept` may throw a `std::bad_alloc` exception; because
 this is so ubiquitous it is not usually mentioned in the documentation for
 individual functions.
 
-Functions that take a `Flagset` argument will throw `FlagError` if an invalid
-combination of flags is passed. Functions that take a callback function as an
-argument will propagate any exceptions thrown by that function.
+Functions that take a callback function as an argument will propagate any
+exceptions thrown by that function.
 
 Functions that accept UTF iterator arguments (see the
 [`unicorn/utf`](utf.html) module) can throw `EncodingError` if invalid Unicode
@@ -157,8 +149,8 @@ iterators were created.
 Any other exceptions that a function might throw are described in that
 function's description. If a function is not marked `noexcept`, but its
 documentation does not explicitly mention any exceptions, then it may throw
-`std::bad_alloc`, and possibly `FlagError` or `Unicorn::EncodingError` where
-appropriate, but will not throw anything else.
+`std::bad_alloc`, and possibly `Unicorn::EncodingError` if it implicitly does
+a checked encoding connversion, but will not throw anything else.
 
 ## Building Unicorn ##
 

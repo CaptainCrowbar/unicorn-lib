@@ -35,8 +35,7 @@ namespace Unicorn {
             struct Iconv {
             public:
                 iconv_t cd;
-                Iconv(const u8string& from, const u8string& to)
-                    { cd = iconv_open(to.data(), from.data()); }
+                Iconv(const u8string& from, const u8string& to) { cd = iconv_open(to.data(), from.data()); }
                 ~Iconv() { if (*this) iconv_close(cd); }
                 explicit operator bool() const { return cd != iconv_t(-1); }
                 bool operator!() const { return cd == iconv_t(-1); }
@@ -57,8 +56,7 @@ namespace Unicorn {
             constexpr uint32_t utf32_tag      = 12000;
             constexpr uint32_t utf32swap_tag  = 12001;
 
-            bool valid_codepage(uint32_t tag)
-                { return MultiByteToWideChar(tag, 0, "", -1, nullptr, 0) > 0; }
+            bool valid_codepage(uint32_t tag) { return MultiByteToWideChar(tag, 0, "", -1, nullptr, 0) > 0; }
 
         #endif
 
@@ -118,9 +116,7 @@ namespace Unicorn {
             return *this;
         }
 
-        Irange<NameIterator> name_range(const char* p) {
-            return {NameIterator(p), NameIterator()};
-        }
+        Irange<NameIterator> name_range(const char* p) { return {NameIterator(p), NameIterator()}; }
 
         class CharsetMap {
         public:
@@ -171,13 +167,11 @@ namespace Unicorn {
         UnicornDetail::EncodingTag find_encoding(const u8string& name) {
             using namespace UnicornDetail;
             static const CharsetMap map;
-            static const auto match_codepage = "/(?:cp|dos|ibm|ms|windows)-?(\\d+)/i"_re;
-            static const auto match_integer = "/\\d+/"_re;
-            static const auto match_unicode =
-                "/(?:cs|x)?(?:iso10646)?((?:ucs|utf)\\d+)(be|le|internal|swapped)?/"_re;
+            static const Regex match_codepage("(?:cp|dos|ibm|ms|windows)-?(\\d+)", rx_caseless);
+            static const Regex match_integer("\\d+");
+            static const Regex match_unicode("(?:cs|x)?(?:iso10646)?((?:ucs|utf)\\d+)(be|le|internal|swapped)?");
             #if defined(PRI_TARGET_UNIX)
-                static const std::vector<u8string> codepage_prefixes
-                    {"cp","dos","ibm","ms","windows-"};
+                static const std::vector<u8string> codepage_prefixes {"cp","dos","ibm","ms","windows-"};
             #endif
             // Check for UTF encodings
             auto smashed = smash_name(name, true);
@@ -279,7 +273,7 @@ namespace Unicorn {
         #if defined(PRI_TARGET_UNIX)
 
             void native_recode(const string& src, string& dst, const u8string& from, const u8string& to,
-                    const u8string& tag, Flagset flags) {
+                    const u8string& tag, uint32_t flags) {
                 Iconv conv(from, to);
                 if (! conv)
                     throw UnknownEncoding(tag);
@@ -299,7 +293,7 @@ namespace Unicorn {
                     } else if (errno == E2BIG) {
                         buf.resize(buf.size() + src.size());
                     } else {
-                        if (flags.get(err_throw))
+                        if (flags & err_throw)
                             throw EncodingError(tag, inpos, &src[inpos]);
                         if (outbytes < 3)
                             buf.resize(buf.size() + 3);
@@ -462,28 +456,28 @@ namespace Unicorn {
             return tag;
         }
 
-        void mbcs_flags(Flagset& flags) {
-            flags.allow(err_replace | err_throw, "MBCS error handling");
-            flags.exclusive(err_replace | err_throw, "MBCS error handling");
-            if (flags.empty())
+        void mbcs_flags(uint32_t& flags) {
+            if (flags & err_ignore)
+                throw std::invalid_argument("Invalid MBCS conversion flag: err_ignore");
+            if (flags == 0)
                 flags = err_replace;
         }
 
         #if defined(PRI_TARGET_UNIX)
 
-            void native_import(const string& src, string& dst, u8string tag, Flagset flags) {
+            void native_import(const string& src, string& dst, u8string tag, uint32_t flags) {
                 native_recode(src, dst, tag, "utf-8"s, tag, flags);
             }
 
-            void native_export(const string& src, string& dst, u8string tag, Flagset flags) {
+            void native_export(const string& src, string& dst, u8string tag, uint32_t flags) {
                 native_recode(src, dst, "utf-8"s, tag, tag, flags);
             }
 
         #else
 
-            void native_import(const string& src, wstring& dst, uint32_t tag, Flagset flags) {
+            void native_import(const string& src, wstring& dst, uint32_t tag, uint32_t flags) {
                 uint32_t wflags = 0;
-                if (flags.get(err_throw))
+                if (flags & err_throw)
                     wflags |= MB_ERR_INVALID_CHARS;
                 auto rc = MultiByteToWideChar(tag, wflags, src.data(), int(src.size()), nullptr, 0);
                 if (rc == 0) {
@@ -497,9 +491,9 @@ namespace Unicorn {
                 MultiByteToWideChar(tag, wflags, src.data(), int(src.size()), &dst[0], int(rc));
             }
 
-            void native_export(const wstring& src, string& dst, uint32_t tag, Flagset flags) {
+            void native_export(const wstring& src, string& dst, uint32_t tag, uint32_t flags) {
                 std::vector<uint32_t> tryflags;
-                if (flags.get(err_throw))
+                if (flags & err_throw)
                     tryflags = {WC_NO_BEST_FIT_CHARS | WC_ERR_INVALID_CHARS, WC_ERR_INVALID_CHARS, WC_NO_BEST_FIT_CHARS, 0};
                 else
                     tryflags = {WC_NO_BEST_FIT_CHARS, 0};
@@ -525,13 +519,13 @@ namespace Unicorn {
 
         #endif
 
-        bool utf_import(const string& src, NativeString& dst, EncodingTag tag, Flagset flags) {
+        bool utf_import(const string& src, NativeString& dst, EncodingTag tag, uint32_t flags) {
             if (tag == utf8_tag) {
                 recode(src, dst, flags);
                 return true;
             } else if (tag == utf16_tag || tag == utf16swap_tag) {
                 auto extra = src.size() % 2;
-                if (extra && flags.get(err_throw))
+                if (extra && (flags & err_throw))
                     throw EncodingError("UTF-16", src.size() - extra,
                         src.data() + src.size() - extra, extra);
                 u16string src16(src.size() / 2, 0);
@@ -544,7 +538,7 @@ namespace Unicorn {
                 return true;
             } else if (tag == utf32_tag || tag == utf32swap_tag) {
                 auto extra = src.size() % 4;
-                if (extra && flags.get(err_throw))
+                if (extra && (flags & err_throw))
                     throw EncodingError("UTF-32", src.size() - extra,
                         src.data() + src.size() - extra, extra);
                 u32string src32(src.size() / 4, 0);
@@ -560,7 +554,7 @@ namespace Unicorn {
             }
         }
 
-        bool utf_export(const NativeString& src, string& dst, EncodingTag tag, Flagset flags) {
+        bool utf_export(const NativeString& src, string& dst, EncodingTag tag, uint32_t flags) {
             if (tag == utf8_tag) {
                 recode(src, dst, flags);
                 return true;

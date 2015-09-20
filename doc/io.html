@@ -67,11 +67,11 @@ encodings, as well as other conveniences such as normalization of line breaks.</
 <li><code>using FileReader::<strong>value_type</strong> = u8string</code></li>
 <li><code>FileReader::<strong>FileReader</strong>()</code></li>
 <li><code>template &lt;typename C&gt; explicit FileReader::<strong>FileReader</strong>(const basic_string&lt;C&gt;&amp; file)</code></li>
-<li><code>template &lt;typename C&gt; FileReader::<strong>FileReader</strong>(const basic_string&lt;C&gt;&amp; file, Flagset flags)</code></li>
-<li><code>template &lt;typename C1, typename C2&gt; FileReader::<strong>FileReader</strong>(const basic_string&lt;C1&gt;&amp; file, Flagset flags, const basic_string&lt;C2&gt;&amp; enc)</code></li>
-<li><code>template &lt;typename C&gt; FileReader::<strong>FileReader</strong>(const basic_string&lt;C&gt;&amp; file, Flagset flags, uint32_t enc)</code></li>
-<li><code>template &lt;typename C1, typename C2, typename C3&gt; FileReader::<strong>FileReader</strong>(const basic_string&lt;C1&gt;&amp; file, Flagset flags, const basic_string&lt;C2&gt;&amp; enc, const basic_string&lt;C3&gt;&amp; eol)</code></li>
-<li><code>template &lt;typename C1, typename C2&gt; FileReader::<strong>FileReader</strong>(const basic_string&lt;C1&gt;&amp; file, Flagset flags, uint32_t enc, const basic_string&lt;C2&gt;&amp; eol)</code></li>
+<li><code>template &lt;typename C&gt; FileReader::<strong>FileReader</strong>(const basic_string&lt;C&gt;&amp; file, uint32_t flags)</code></li>
+<li><code>template &lt;typename C1, typename C2&gt; FileReader::<strong>FileReader</strong>(const basic_string&lt;C1&gt;&amp; file, uint32_t flags, const basic_string&lt;C2&gt;&amp; enc)</code></li>
+<li><code>template &lt;typename C&gt; FileReader::<strong>FileReader</strong>(const basic_string&lt;C&gt;&amp; file, uint32_t flags, uint32_t enc)</code></li>
+<li><code>template &lt;typename C1, typename C2, typename C3&gt; FileReader::<strong>FileReader</strong>(const basic_string&lt;C1&gt;&amp; file, uint32_t flags, const basic_string&lt;C2&gt;&amp; enc, const basic_string&lt;C3&gt;&amp; eol)</code></li>
+<li><code>template &lt;typename C1, typename C2&gt; FileReader::<strong>FileReader</strong>(const basic_string&lt;C1&gt;&amp; file, uint32_t flags, uint32_t enc, const basic_string&lt;C2&gt;&amp; eol)</code></li>
 <li><code>size_t FileReader::<strong>line</strong>() const noexcept</code></li>
 <li><code>[standard input iterator operations]</code></li>
 </ul></li>
@@ -83,13 +83,11 @@ encodings, as well as other conveniences such as normalization of line breaks.</
 <colgroup>
 <col style="text-align:left;"/>
 <col style="text-align:left;"/>
-<col style="text-align:left;"/>
 </colgroup>
 
 <thead>
 <tr>
-	<th style="text-align:left;">Bitmask</th>
-	<th style="text-align:left;">Letter</th>
+	<th style="text-align:left;">Flag</th>
 	<th style="text-align:left;">Description</th>
 </tr>
 </thead>
@@ -97,47 +95,38 @@ encodings, as well as other conveniences such as normalization of line breaks.</
 <tbody>
 <tr>
 	<td style="text-align:left;"><code>io_stdin</code></td>
-	<td style="text-align:left;"><code>i</code></td>
 	<td style="text-align:left;">Default to stdin</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>io_nofail</code></td>
-	<td style="text-align:left;"><code>f</code></td>
 	<td style="text-align:left;">Treat nonexistent file as empty</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>io_bom</code></td>
-	<td style="text-align:left;"><code>B</code></td>
 	<td style="text-align:left;">Strip leading BOM</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>io_lf</code></td>
-	<td style="text-align:left;"><code>n</code></td>
 	<td style="text-align:left;">Convert all line breaks to LF</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>io_crlf</code></td>
-	<td style="text-align:left;"><code>c</code></td>
 	<td style="text-align:left;">Convert all line breaks to CR+LF</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>io_striplf</code></td>
-	<td style="text-align:left;"><code>s</code></td>
 	<td style="text-align:left;">Strip line breaks</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>io_striptws</code></td>
-	<td style="text-align:left;"><code>t</code></td>
 	<td style="text-align:left;">Strip trailing whitespace</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>io_stripws</code></td>
-	<td style="text-align:left;"><code>S</code></td>
 	<td style="text-align:left;">Strip whitespace</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>io_notempty</code></td>
-	<td style="text-align:left;"><code>z</code></td>
 	<td style="text-align:left;">Skip empty lines</td>
 </tr>
 </tbody>
@@ -148,11 +137,11 @@ encodings, as well as other conveniences such as normalization of line breaks.</
 <p>TODO</p>
 
 <ul>
-<li><code>template &lt;typename C&gt; Irange&lt;FileReader&gt; <strong>read_lines</strong>(const basic_string&lt;C&gt;&amp; file, Flagset flags = {})</code></li>
-<li><code>template &lt;typename C1, typename C2&gt; Irange&lt;FileReader&gt; <strong>read_lines</strong>(const basic_string&lt;C1&gt;&amp; file, Flagset flags, const basic_string&lt;C2&gt;&amp; enc)</code></li>
-<li><code>template &lt;typename C&gt; Irange&lt;FileReader&gt; <strong>read_lines</strong>(const basic_string&lt;C&gt;&amp; file, Flagset flags, uint32_t enc)</code></li>
-<li><code>template &lt;typename C1, typename C2, typename C3&gt; Irange&lt;FileReader&gt; <strong>read_lines</strong>(const basic_string&lt;C1&gt;&amp; file, Flagset flags, const basic_string&lt;C2&gt;&amp; enc, const basic_string&lt;C3&gt;&amp; eol)</code></li>
-<li><code>template &lt;typename C1, typename C2&gt; Irange&lt;FileReader&gt; <strong>read_lines</strong>(const basic_string&lt;C1&gt;&amp; file, Flagset flags, uint32_t enc, const basic_string&lt;C2&gt;&amp; eol)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;FileReader&gt; <strong>read_lines</strong>(const basic_string&lt;C&gt;&amp; file, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C1, typename C2&gt; Irange&lt;FileReader&gt; <strong>read_lines</strong>(const basic_string&lt;C1&gt;&amp; file, uint32_t flags, const basic_string&lt;C2&gt;&amp; enc)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;FileReader&gt; <strong>read_lines</strong>(const basic_string&lt;C&gt;&amp; file, uint32_t flags, uint32_t enc)</code></li>
+<li><code>template &lt;typename C1, typename C2, typename C3&gt; Irange&lt;FileReader&gt; <strong>read_lines</strong>(const basic_string&lt;C1&gt;&amp; file, uint32_t flags, const basic_string&lt;C2&gt;&amp; enc, const basic_string&lt;C3&gt;&amp; eol)</code></li>
+<li><code>template &lt;typename C1, typename C2&gt; Irange&lt;FileReader&gt; <strong>read_lines</strong>(const basic_string&lt;C1&gt;&amp; file, uint32_t flags, uint32_t enc, const basic_string&lt;C2&gt;&amp; eol)</code></li>
 </ul>
 
 <p>TODO</p>
@@ -170,9 +159,9 @@ encodings, as well as other conveniences such as normalization of line breaks.</
 <li><code>using FileWriter::<strong>value_type</strong> = void</code></li>
 <li><code>FileWriter::<strong>FileWriter</strong>()</code></li>
 <li><code>template &lt;typename C&gt; explicit FileWriter::<strong>FileWriter</strong>(const basic_string&lt;C&gt;&amp; file)</code></li>
-<li><code>template &lt;typename C&gt; FileWriter::<strong>FileWriter</strong>(const basic_string&lt;C&gt;&amp; file, Flagset flags)</code></li>
-<li><code>template &lt;typename C1, typename C2&gt; FileWriter::<strong>FileWriter</strong>(const basic_string&lt;C1&gt;&amp; file, Flagset flags, const basic_string&lt;C2&gt;&amp; enc)</code></li>
-<li><code>template &lt;typename C&gt; FileWriter::<strong>FileWriter</strong>(const basic_string&lt;C&gt;&amp; file, Flagset flags, uint32_t enc)</code></li>
+<li><code>template &lt;typename C&gt; FileWriter::<strong>FileWriter</strong>(const basic_string&lt;C&gt;&amp; file, uint32_t flags)</code></li>
+<li><code>template &lt;typename C1, typename C2&gt; FileWriter::<strong>FileWriter</strong>(const basic_string&lt;C1&gt;&amp; file, uint32_t flags, const basic_string&lt;C2&gt;&amp; enc)</code></li>
+<li><code>template &lt;typename C&gt; FileWriter::<strong>FileWriter</strong>(const basic_string&lt;C&gt;&amp; file, uint32_t flags, uint32_t enc)</code></li>
 <li><code>void FileWriter::<strong>flush</strong>()</code></li>
 <li><code>[standard output iterator operations]</code></li>
 </ul></li>
@@ -184,13 +173,11 @@ encodings, as well as other conveniences such as normalization of line breaks.</
 <colgroup>
 <col style="text-align:left;"/>
 <col style="text-align:left;"/>
-<col style="text-align:left;"/>
 </colgroup>
 
 <thead>
 <tr>
-	<th style="text-align:left;">Bitmask</th>
-	<th style="text-align:left;">Letter</th>
+	<th style="text-align:left;">Flag</th>
 	<th style="text-align:left;">Description</th>
 </tr>
 </thead>
@@ -198,57 +185,46 @@ encodings, as well as other conveniences such as normalization of line breaks.</
 <tbody>
 <tr>
 	<td style="text-align:left;"><code>io_stdout</code></td>
-	<td style="text-align:left;"><code>o</code></td>
 	<td style="text-align:left;">Default to stdout</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>io_stderr</code></td>
-	<td style="text-align:left;"><code>e</code></td>
 	<td style="text-align:left;">Default to stderr</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>io_append</code></td>
-	<td style="text-align:left;"><code>a</code></td>
 	<td style="text-align:left;">Append to file</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>io_bom</code></td>
-	<td style="text-align:left;"><code>B</code></td>
 	<td style="text-align:left;">Insert leading BOM if not already there</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>io_lf</code></td>
-	<td style="text-align:left;"><code>n</code></td>
 	<td style="text-align:left;">Convert all line breaks to LF</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>io_crlf</code></td>
-	<td style="text-align:left;"><code>c</code></td>
 	<td style="text-align:left;">Convert all line breaks to CR+LF</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>io_writeline</code></td>
-	<td style="text-align:left;"><code>L</code></td>
 	<td style="text-align:left;">Write LF after every write</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>io_autoline</code></td>
-	<td style="text-align:left;"><code>A</code></td>
 	<td style="text-align:left;">Write LF if not already there</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>io_linebuf</code></td>
-	<td style="text-align:left;"><code>l</code></td>
 	<td style="text-align:left;">Line buffered output</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>io_unbuf</code></td>
-	<td style="text-align:left;"><code>u</code></td>
 	<td style="text-align:left;">Unbuffered output</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>io_mutex</code></td>
-	<td style="text-align:left;"><code>m</code></td>
 	<td style="text-align:left;">Hold per-file mutex while writing</td>
 </tr>
 </tbody>

@@ -245,9 +245,9 @@ string that was supplied to the <code>Options</code> constructor.</p>
 <li><code>template &lt;typename C&gt; bool Options::<strong>parse</strong>(const std::vector&lt;basic_string&lt;C&gt;&gt;&amp; args)</code></li>
 <li><code>template &lt;typename C&gt; bool Options::<strong>parse</strong>(const basic_string&lt;C&gt;&amp; args)</code></li>
 <li><code>template &lt;typename C&gt; bool Options::<strong>parse</strong>(int argc, C** argv)</code></li>
-<li><code>template &lt;typename C, typename C2&gt; bool Options::<strong>parse</strong>(const std::vector&lt;basic_string&lt;C&gt;&gt;&amp; args, std::basic_ostream&lt;C2&gt;&amp; out, Flagset flags = {})</code></li>
-<li><code>template &lt;typename C, typename C2&gt; bool Options::<strong>parse</strong>(const basic_string&lt;C&gt;&amp; args, std::basic_ostream&lt;C2&gt;&amp; out, Flagset flags = {})</code></li>
-<li><code>template &lt;typename C, typename C2&gt; bool Options::<strong>parse</strong>(int argc, C** argv, std::basic_ostream&lt;C2&gt;&amp; out, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C, typename C2&gt; bool Options::<strong>parse</strong>(const std::vector&lt;basic_string&lt;C&gt;&gt;&amp; args, std::basic_ostream&lt;C2&gt;&amp; out, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C, typename C2&gt; bool Options::<strong>parse</strong>(const basic_string&lt;C&gt;&amp; args, std::basic_ostream&lt;C2&gt;&amp; out, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C, typename C2&gt; bool Options::<strong>parse</strong>(int argc, C** argv, std::basic_ostream&lt;C2&gt;&amp; out, uint32_t flags = 0)</code></li>
 </ul>
 
 <p>After the option specification has been constructed, call one of the <code>parse()</code>
@@ -271,13 +271,11 @@ the return value from <code>parse()</code> and end the program if it is true.</p
 <colgroup>
 <col style="text-align:left;"/>
 <col style="text-align:left;"/>
-<col style="text-align:left;"/>
 </colgroup>
 
 <thead>
 <tr>
-	<th style="text-align:left;">Bitmask</th>
-	<th style="text-align:left;">Letter</th>
+	<th style="text-align:left;">Flag</th>
 	<th style="text-align:left;">Description</th>
 </tr>
 </thead>
@@ -285,17 +283,14 @@ the return value from <code>parse()</code> and end the program if it is true.</p
 <tbody>
 <tr>
 	<td style="text-align:left;"><code>opt_locale</code></td>
-	<td style="text-align:left;"><code>l</code></td>
 	<td style="text-align:left;">The argument list is in the local encoding</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>opt_noprefix</code></td>
-	<td style="text-align:left;"><code>n</code></td>
 	<td style="text-align:left;">The first argument is not the command name</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>opt_quoted</code></td>
-	<td style="text-align:left;"><code>q</code></td>
 	<td style="text-align:left;">Allow arguments to be quoted</td>
 </tr>
 </tbody>

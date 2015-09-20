@@ -243,16 +243,16 @@ destination are on different physical file systems.
     * `using DirectoryIterator::pointer = const value_type*`
     * `using DirectoryIterator::reference = const value_type&`
     * `DirectoryIterator::DirectoryIterator()`
-    * `explicit DirectoryIterator::DirectoryIterator(const value_type& dir, Flagset flags = {})`
+    * `explicit DirectoryIterator::DirectoryIterator(const value_type& dir, uint32_t flags = 0)`
     * `[standard iterator operations]`
-* `template <typename C> Irange<DirectoryIterator<C>> directory(const basic_string<C>& dir, Flagset flags = {})`
+* `template <typename C> Irange<DirectoryIterator<C>> directory(const basic_string<C>& dir, uint32_t flags = 0)`
 
-Bitmask         | Letter  | Description
--------         | ------  | -----------
-`dir_dotdot`    | `d`     | Include the . and .. entries
-`dir_fullname`  | `f`     | Return full file names instead of leaf names
-`dir_hidden`    | `h`     | Include hidden files
-`dir_unicode`   | `u`     | Skip files with non-Unicode names
+Flag            | Description
+----            | -----------
+`dir_dotdot`    | Include the . and .. entries
+`dir_fullname`  | Return full file names instead of leaf names
+`dir_hidden`    | Include hidden files
+`dir_unicode`   | Skip files with non-Unicode names
 
 An iterator over the files in a directory. Normally you should call the
 `directory()` function to get an iterator range, rather than explicitly

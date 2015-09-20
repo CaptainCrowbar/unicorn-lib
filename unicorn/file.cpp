@@ -59,7 +59,7 @@ namespace Unicorn {
             }
 
             bool native_file_is_root(const u8string& file) {
-                static const auto pattern = "!/{2,}[^/]+/?|/+!i"_re;
+                static const Regex pattern("/{2,}[^/]+/?|/+", rx_caseless);
                 return pattern.match(file).matched();
             }
 
@@ -178,7 +178,7 @@ namespace Unicorn {
             // File name operations
 
             bool native_file_is_absolute(const u8string& file) {
-                static const auto pattern = R"(/(\\\\\?\\)*([A-Z]:\\|\\{2,}[^?\\])/i)"_re;
+                static const Regex pattern(R"((\\\\\?\\)*([A-Z]:\\|\\{2,}[^?\\]))", rx_caseless);
                 return pattern.anchor(file).matched();
             }
 
@@ -191,7 +191,7 @@ namespace Unicorn {
             }
 
             bool native_file_is_root(const u8string& file) {
-                static const auto pattern = R"(/(\\\\\?\\)*([A-Z]:\\|\\{2,}[^?\\]+\\?|\\+)/i)"_re;
+                static const Regex pattern(R"((\\\\\?\\)*([A-Z]:\\|\\{2,}[^?\\]+\\?|\\+))", rx_caseless);
                 return pattern.match(file).matched();
             }
 

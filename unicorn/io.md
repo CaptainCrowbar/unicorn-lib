@@ -46,37 +46,37 @@ TODO
     * `using FileReader::value_type = u8string`
     * `FileReader::FileReader()`
     * `template <typename C> explicit FileReader::FileReader(const basic_string<C>& file)`
-    * `template <typename C> FileReader::FileReader(const basic_string<C>& file, Flagset flags)`
-    * `template <typename C1, typename C2> FileReader::FileReader(const basic_string<C1>& file, Flagset flags, const basic_string<C2>& enc)`
-    * `template <typename C> FileReader::FileReader(const basic_string<C>& file, Flagset flags, uint32_t enc)`
-    * `template <typename C1, typename C2, typename C3> FileReader::FileReader(const basic_string<C1>& file, Flagset flags, const basic_string<C2>& enc, const basic_string<C3>& eol)`
-    * `template <typename C1, typename C2> FileReader::FileReader(const basic_string<C1>& file, Flagset flags, uint32_t enc, const basic_string<C2>& eol)`
+    * `template <typename C> FileReader::FileReader(const basic_string<C>& file, uint32_t flags)`
+    * `template <typename C1, typename C2> FileReader::FileReader(const basic_string<C1>& file, uint32_t flags, const basic_string<C2>& enc)`
+    * `template <typename C> FileReader::FileReader(const basic_string<C>& file, uint32_t flags, uint32_t enc)`
+    * `template <typename C1, typename C2, typename C3> FileReader::FileReader(const basic_string<C1>& file, uint32_t flags, const basic_string<C2>& enc, const basic_string<C3>& eol)`
+    * `template <typename C1, typename C2> FileReader::FileReader(const basic_string<C1>& file, uint32_t flags, uint32_t enc, const basic_string<C2>& eol)`
     * `size_t FileReader::line() const noexcept`
     * `[standard input iterator operations]`
 
 TODO
 
-Bitmask        | Letter  | Description
--------        | ------  | -----------
-`io_stdin`     | `i`     | Default to stdin
-`io_nofail`    | `f`     | Treat nonexistent file as empty
-`io_bom`       | `B`     | Strip leading BOM
-`io_lf`        | `n`     | Convert all line breaks to LF
-`io_crlf`      | `c`     | Convert all line breaks to CR+LF
-`io_striplf`   | `s`     | Strip line breaks
-`io_striptws`  | `t`     | Strip trailing whitespace
-`io_stripws`   | `S`     | Strip whitespace
-`io_notempty`  | `z`     | Skip empty lines
+Flag           | Description
+----           | -----------
+`io_stdin`     | Default to stdin
+`io_nofail`    | Treat nonexistent file as empty
+`io_bom`       | Strip leading BOM
+`io_lf`        | Convert all line breaks to LF
+`io_crlf`      | Convert all line breaks to CR+LF
+`io_striplf`   | Strip line breaks
+`io_striptws`  | Strip trailing whitespace
+`io_stripws`   | Strip whitespace
+`io_notempty`  | Skip empty lines
 
 (May be combined with err_replace/throw)
 
 TODO
 
-* `template <typename C> Irange<FileReader> read_lines(const basic_string<C>& file, Flagset flags = {})`
-* `template <typename C1, typename C2> Irange<FileReader> read_lines(const basic_string<C1>& file, Flagset flags, const basic_string<C2>& enc)`
-* `template <typename C> Irange<FileReader> read_lines(const basic_string<C>& file, Flagset flags, uint32_t enc)`
-* `template <typename C1, typename C2, typename C3> Irange<FileReader> read_lines(const basic_string<C1>& file, Flagset flags, const basic_string<C2>& enc, const basic_string<C3>& eol)`
-* `template <typename C1, typename C2> Irange<FileReader> read_lines(const basic_string<C1>& file, Flagset flags, uint32_t enc, const basic_string<C2>& eol)`
+* `template <typename C> Irange<FileReader> read_lines(const basic_string<C>& file, uint32_t flags = 0)`
+* `template <typename C1, typename C2> Irange<FileReader> read_lines(const basic_string<C1>& file, uint32_t flags, const basic_string<C2>& enc)`
+* `template <typename C> Irange<FileReader> read_lines(const basic_string<C>& file, uint32_t flags, uint32_t enc)`
+* `template <typename C1, typename C2, typename C3> Irange<FileReader> read_lines(const basic_string<C1>& file, uint32_t flags, const basic_string<C2>& enc, const basic_string<C3>& eol)`
+* `template <typename C1, typename C2> Irange<FileReader> read_lines(const basic_string<C1>& file, uint32_t flags, uint32_t enc, const basic_string<C2>& eol)`
 
 TODO
 
@@ -90,27 +90,27 @@ TODO
     * `using FileWriter::value_type = void`
     * `FileWriter::FileWriter()`
     * `template <typename C> explicit FileWriter::FileWriter(const basic_string<C>& file)`
-    * `template <typename C> FileWriter::FileWriter(const basic_string<C>& file, Flagset flags)`
-    * `template <typename C1, typename C2> FileWriter::FileWriter(const basic_string<C1>& file, Flagset flags, const basic_string<C2>& enc)`
-    * `template <typename C> FileWriter::FileWriter(const basic_string<C>& file, Flagset flags, uint32_t enc)`
+    * `template <typename C> FileWriter::FileWriter(const basic_string<C>& file, uint32_t flags)`
+    * `template <typename C1, typename C2> FileWriter::FileWriter(const basic_string<C1>& file, uint32_t flags, const basic_string<C2>& enc)`
+    * `template <typename C> FileWriter::FileWriter(const basic_string<C>& file, uint32_t flags, uint32_t enc)`
     * `void FileWriter::flush()`
     * `[standard output iterator operations]`
 
 TODO
 
-Bitmask         | Letter  | Description
--------         | ------  | -----------
-`io_stdout`     | `o`     | Default to stdout
-`io_stderr`     | `e`     | Default to stderr
-`io_append`     | `a`     | Append to file
-`io_bom`        | `B`     | Insert leading BOM if not already there
-`io_lf`         | `n`     | Convert all line breaks to LF
-`io_crlf`       | `c`     | Convert all line breaks to CR+LF
-`io_writeline`  | `L`     | Write LF after every write
-`io_autoline`   | `A`     | Write LF if not already there
-`io_linebuf`    | `l`     | Line buffered output
-`io_unbuf`      | `u`     | Unbuffered output
-`io_mutex`      | `m`     | Hold per-file mutex while writing
+Flag            | Description
+----            | -----------
+`io_stdout`     | Default to stdout
+`io_stderr`     | Default to stderr
+`io_append`     | Append to file
+`io_bom`        | Insert leading BOM if not already there
+`io_lf`         | Convert all line breaks to LF
+`io_crlf`       | Convert all line breaks to CR+LF
+`io_writeline`  | Write LF after every write
+`io_autoline`   | Write LF if not already there
+`io_linebuf`    | Line buffered output
+`io_unbuf`      | Unbuffered output
+`io_mutex`      | Hold per-file mutex while writing
 
 (May be combined with err_replace/throw)
 

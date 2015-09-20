@@ -30,7 +30,6 @@ for details of the regular expression syntax.</p>
 <li><a href="#regexmatchclass">Regex match class</a></li>
 <li><a href="#regexformattingclass">Regex formatting class</a></li>
 <li><a href="#regexiteratorclasses">Regex iterator classes</a></li>
-<li><a href="#regexliterals">Regex literals</a></li>
 <li><a href="#utilityfunctions">Utility functions</a></li>
 <li><a href="#versioninformation">Version information</a></li>
 </ul>
@@ -127,13 +126,11 @@ library instead.</p>
 <col style="text-align:left;"/>
 <col style="text-align:left;"/>
 <col style="text-align:left;"/>
-<col style="text-align:left;"/>
 </colgroup>
 
 <thead>
 <tr>
-	<th style="text-align:left;">Bitmask</th>
-	<th style="text-align:left;">Letter</th>
+	<th style="text-align:left;">Flag</th>
 	<th style="text-align:left;">Description</th>
 	<th style="text-align:left;">PCRE equivalent</th>
 </tr>
@@ -142,139 +139,116 @@ library instead.</p>
 <tbody>
 <tr>
 	<td style="text-align:left;"><code>rx_caseless</code></td>
-	<td style="text-align:left;"><code>i</code></td>
 	<td style="text-align:left;">Matching is case insensitive</td>
 	<td style="text-align:left;"><code>PCRE_CASELESS</code></td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>rx_dfa</code></td>
-	<td style="text-align:left;"><code>D</code></td>
 	<td style="text-align:left;">Use the alternative DFA matching algorithm</td>
 	<td style="text-align:left;"><code>pcre_dfa_exec()</code></td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>rx_dollarnewline</code></td>
-	<td style="text-align:left;"><code>d</code></td>
 	<td style="text-align:left;"><code>$</code> may match line breaks preceding the end of the string</td>
 	<td style="text-align:left;"><code>~PCRE_DOLLAR_ENDONLY</code></td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>rx_dotinline</code></td>
-	<td style="text-align:left;"><code>l</code></td>
 	<td style="text-align:left;"><code>.</code> does not match line breaks</td>
 	<td style="text-align:left;"><code>~PCRE_DOTALL</code></td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>rx_extended</code></td>
-	<td style="text-align:left;"><code>x</code></td>
 	<td style="text-align:left;">Free-form mode; ignore whitespace and comments marked with <code>#</code></td>
 	<td style="text-align:left;"><code>PCRE_EXTENDED</code></td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>rx_firstline</code></td>
-	<td style="text-align:left;"><code>f</code></td>
 	<td style="text-align:left;">Any match must start in the first line of the subject string</td>
 	<td style="text-align:left;"><code>PCRE_FIRSTLINE</code></td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>rx_multiline</code></td>
-	<td style="text-align:left;"><code>m</code></td>
 	<td style="text-align:left;">Multiline mode; <code>^</code> and <code>$</code> match the beginning and end of each line</td>
 	<td style="text-align:left;"><code>PCRE_MULTILINE</code></td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>rx_newlineanycrlf</code></td>
-	<td style="text-align:left;"><code>A</code></td>
 	<td style="text-align:left;">Any of CR, LF, or CR+LF is recognised as a line break</td>
 	<td style="text-align:left;"><code>PCRE_NEWLINE_ANYCRLF</code></td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>rx_newlinecr</code></td>
-	<td style="text-align:left;"><code>C</code></td>
 	<td style="text-align:left;">Only CR is recognised as a line break</td>
 	<td style="text-align:left;"><code>PCRE_NEWLINE_CR</code></td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>rx_newlinecrlf</code></td>
-	<td style="text-align:left;"><code>R</code></td>
 	<td style="text-align:left;">Only CR+LF is recognised as a line break</td>
 	<td style="text-align:left;"><code>PCRE_NEWLINE_CRLF</code></td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>rx_newlinelf</code></td>
-	<td style="text-align:left;"><code>L</code></td>
 	<td style="text-align:left;">Only LF is recognised as a line break</td>
 	<td style="text-align:left;"><code>PCRE_NEWLINE_LF</code></td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>rx_noautocapture</code></td>
-	<td style="text-align:left;"><code>c</code></td>
 	<td style="text-align:left;">Parentheses do not automatically capture; only named captures are recorded</td>
 	<td style="text-align:left;"><code>PCRE_NO_AUTO_CAPTURE</code></td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>rx_nostartoptimize</code></td>
-	<td style="text-align:left;"><code>O</code></td>
 	<td style="text-align:left;">Disable some optimizations that affect <code>(*COMMIT)</code> and <code>(*MARK)</code> handling</td>
 	<td style="text-align:left;"><code>PCRE_NO_START_OPTIMIZE</code></td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>rx_notbol</code></td>
-	<td style="text-align:left;"><code>B</code></td>
 	<td style="text-align:left;">Do not match <code>^</code> at the start of the subject string</td>
 	<td style="text-align:left;"><code>PCRE_NOTBOL</code></td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>rx_notempty</code></td>
-	<td style="text-align:left;"><code>z</code></td>
 	<td style="text-align:left;">Do not match an empty string</td>
 	<td style="text-align:left;"><code>PCRE_NOTEMPTY</code></td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>rx_notemptyatstart</code></td>
-	<td style="text-align:left;"><code>Z</code></td>
 	<td style="text-align:left;">Do not match an empty string at the start of the subject string</td>
 	<td style="text-align:left;"><code>PCRE_NOTEMPTY_ATSTART</code></td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>rx_noteol</code></td>
-	<td style="text-align:left;"><code>E</code></td>
 	<td style="text-align:left;">Do not match <code>$</code> at the end of the subject string</td>
 	<td style="text-align:left;"><code>PCRE_NOTEOL</code></td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>rx_noutfcheck</code></td>
-	<td style="text-align:left;"><code>U</code></td>
 	<td style="text-align:left;">Skip UTF validity checks</td>
 	<td style="text-align:left;"><code>PCRE_NO_UTF{8,16,32}_CHECK</code></td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>rx_optimize</code></td>
-	<td style="text-align:left;"><code>o</code></td>
 	<td style="text-align:left;">Optimize the regex using PCRE&#8217;s JIT compiler</td>
 	<td style="text-align:left;"><code>PCRE_STUDY_JIT_COMPILE</code></td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>rx_partialhard</code></td>
-	<td style="text-align:left;"><code>P</code></td>
 	<td style="text-align:left;">Hard partial matching; prefer a partial match to a full match</td>
 	<td style="text-align:left;"><code>PCRE_PARTIAL_HARD</code></td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>rx_partialsoft</code></td>
-	<td style="text-align:left;"><code>p</code></td>
 	<td style="text-align:left;">Soft partial matching; prefer a full match to a partial match</td>
 	<td style="text-align:left;"><code>PCRE_PARTIAL_SOFT</code></td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>rx_prefershort</code></td>
-	<td style="text-align:left;"><code>S</code></td>
 	<td style="text-align:left;">Quantifiers are non-greedy in NFA mode; prefer shorter matches in DFA mode</td>
 	<td style="text-align:left;"><code>PCRE_UNGREEDY,PCRE_DFA_SHORTEST</code></td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>rx_ucp</code></td>
-	<td style="text-align:left;"><code>u</code></td>
 	<td style="text-align:left;">Backslash-escape character sets use Unicode properties, instead of just ASCII</td>
 	<td style="text-align:left;"><code>PCRE_UCP</code></td>
 </tr>
@@ -519,7 +493,7 @@ of UTF&#8211;8 mode.</p>
 
 <ul>
 <li><code>BasicRegex::<strong>BasicRegex</strong>()</code></li>
-<li><code>explicit BasicRegex::<strong>BasicRegex</strong>(const string_type&amp; pattern, Flagset flags = {})</code></li>
+<li><code>explicit BasicRegex::<strong>BasicRegex</strong>(const string_type&amp; pattern, uint32_t flags = 0)</code></li>
 <li><code>BasicRegex::<strong>BasicRegex</strong>(const BasicRegex&amp; r)</code></li>
 <li><code>BasicRegex::<strong>BasicRegex</strong>(BasicRegex&amp;&amp; r) noexcept</code></li>
 <li><code>BasicRegex::<strong>~BasicRegex</strong>() noexcept</code></li>
@@ -612,7 +586,7 @@ capture by that name (or if the regex does not use named captures).</p>
 
 <ul>
 <li><code>BasicRegex::string_type BasicRegex::<strong>pattern</strong>() const</code></li>
-<li><code>Flagset BasicRegex::<strong>flags</strong>() const noexcept</code></li>
+<li><code>uint32_t BasicRegex::<strong>flags</strong>() const noexcept</code></li>
 </ul>
 
 <p>These return the construction arguments.</p>
@@ -649,8 +623,8 @@ to match the same text) despite differing slightly in spelling, it is
 unspecified whether or not they will compare equal.</p>
 
 <ul>
-<li><code>template &lt;typename C&gt; BasicRegex&lt;C&gt; <strong>regex</strong>(const basic_string&lt;C&gt;&amp; pattern, Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; BasicRegex&lt;C&gt; <strong>regex</strong>(const C* pattern, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; BasicRegex&lt;C&gt; <strong>regex</strong>(const basic_string&lt;C&gt;&amp; pattern, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; BasicRegex&lt;C&gt; <strong>regex</strong>(const C* pattern, uint32_t flags = 0)</code></li>
 </ul>
 
 <p>Convenience functions to easily construct a regex object.</p>
@@ -813,7 +787,7 @@ efficient if the same formatting operation is going to be applied many times.</p
 <ul>
 <li><code>BasicRegexFormat::<strong>BasicRegexFormat</strong>()</code></li>
 <li><code>BasicRegexFormat::<strong>BasicRegexFormat</strong>(const regex_type&amp; pattern, const string_type&amp; format)</code></li>
-<li><code>BasicRegexFormat::<strong>BasicRegexFormat</strong>(const string_type&amp; pattern, const string_type&amp; format, Flagset flags = {})</code></li>
+<li><code>BasicRegexFormat::<strong>BasicRegexFormat</strong>(const string_type&amp; pattern, const string_type&amp; format, uint32_t flags = 0)</code></li>
 <li><code>BasicRegexFormat::<strong>BasicRegexFormat</strong>(const BasicRegexFormat&amp; f)</code></li>
 <li><code>BasicRegexFormat::<strong>BasicRegexFormat</strong>(BasicRegexFormat&amp;&amp; f) noexcept</code></li>
 <li><code>BasicRegexFormat::<strong>~BasicRegexFormat</strong>() noexcept</code></li>
@@ -844,7 +818,7 @@ first <code>n</code> matches, discarding the unmatched text between them.
 <li><code>BasicRegexFormat::regex_type BasicRegexFormat::<strong>regex</strong>() const</code></li>
 <li><code>BasicRegexFormat::string_type BasicRegexFormat::<strong>format</strong>() const</code></li>
 <li><code>BasicRegexFormat::string_type BasicRegexFormat::<strong>pattern</strong>() const</code></li>
-<li><code>Flagset BasicRegexFormat::<strong>flags</strong>() const noexcept</code></li>
+<li><code>uint32_t BasicRegexFormat::<strong>flags</strong>() const noexcept</code></li>
 </ul>
 
 <p>These functions query the construction parameters. The <code>pattern()</code> and
@@ -859,10 +833,10 @@ first <code>n</code> matches, discarding the unmatched text between them.
 <p>Swap two objects.</p>
 
 <ul>
-<li><code>template &lt;typename C&gt; BasicRegexFormat&lt;C&gt; <strong>regex_format</strong>(const basic_string&lt;C&gt;&amp; pattern, const basic_string&lt;C&gt;&amp; format, Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; BasicRegexFormat&lt;C&gt; <strong>regex_format</strong>(const basic_string&lt;C&gt;&amp; pattern, const C* format, Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; BasicRegexFormat&lt;C&gt; <strong>regex_format</strong>(const C* pattern, const basic_string&lt;C&gt;&amp; format, Flagset flags = {})</code></li>
-<li><code>template &lt;typename C&gt; BasicRegexFormat&lt;C&gt; <strong>regex_format</strong>(const C* pattern, const C* format, Flagset flags = {})</code></li>
+<li><code>template &lt;typename C&gt; BasicRegexFormat&lt;C&gt; <strong>regex_format</strong>(const basic_string&lt;C&gt;&amp; pattern, const basic_string&lt;C&gt;&amp; format, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; BasicRegexFormat&lt;C&gt; <strong>regex_format</strong>(const basic_string&lt;C&gt;&amp; pattern, const C* format, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; BasicRegexFormat&lt;C&gt; <strong>regex_format</strong>(const C* pattern, const basic_string&lt;C&gt;&amp; format, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; BasicRegexFormat&lt;C&gt; <strong>regex_format</strong>(const C* pattern, const C* format, uint32_t flags = 0)</code></li>
 </ul>
 
 <p>Convenience functions for constructing a regex format object.</p>
@@ -928,43 +902,6 @@ than constructed directly by the user.</p>
 normally returned by <code>BasicRegex::split()</code> rather than constructed directly by
 the user.</p>
 
-<h2 id="regexliterals">Regex literals</h2>
-
-<ul>
-<li><code>namespace Literals</code>
-
-<ul>
-<li><code>Regex <strong>operator&quot;&quot; _re</strong>(const char* ptr, size_t len)</code></li>
-<li><code>Regex16 <strong>operator&quot;&quot; _re</strong>(const char16_t* ptr, size_t len)</code></li>
-<li><code>Regex32 <strong>operator&quot;&quot; _re</strong>(const char32_t* ptr, size_t len)</code></li>
-<li><code>WideRegex <strong>operator&quot;&quot; _re</strong>(const wchar_t* ptr, size_t len)</code></li>
-<li><code>ByteRegex <strong>operator&quot;&quot; _bre</strong>(const char* ptr, size_t len)</code></li>
-<li><code>RegexFormat <strong>operator&quot;&quot; _rf</strong>(const char* ptr, size_t len)</code></li>
-<li><code>RegexFormat16 <strong>operator&quot;&quot; _rf</strong>(const char16_t* ptr, size_t len)</code></li>
-<li><code>RegexFormat32 <strong>operator&quot;&quot; _rf</strong>(const char32_t* ptr, size_t len)</code></li>
-<li><code>WideRegexFormat <strong>operator&quot;&quot; _rf</strong>(const wchar_t* ptr, size_t len)</code></li>
-<li><code>ByteRegexFormat <strong>operator&quot;&quot; _brf</strong>(const char* ptr, size_t len)</code></li>
-</ul></li>
-</ul>
-
-<p>Custom literals for regular expressions and formatters. The string part of the
-literal is expected to be in the traditional slash delimited form, with flags
-at the end if required. Examples:</p>
-
-<pre><code>auto reg = &quot;/[a-z]+/&quot;_re;      // = Regex(&quot;[a-z]+&quot;)
-auto reg = U&quot;/[a-z]+/&quot;_re;     // = Regex32(U&quot;[a-z]+&quot;)
-auto reg = &quot;/[a-z]*/iz&quot;_re;    // = Regex(&quot;[a-z]*&quot;, rx_caseless | rx_notempty)
-auto fmt = &quot;/[a-z]+/_/&quot;_rf;    // = RegexFormat(&quot;[a-z]+&quot;, &quot;_&quot;)
-auto fmt = &quot;/[a-z]*/_/iz&quot;_rf;  // = RegexFormat(&quot;[a-z]*&quot;, &quot;_&quot;, rx_caseless | rx_notempty)
-</code></pre>
-
-<p>Any character can be used as the delimiter (the constructors simply use the
-first character in the string), but restricting it to common ASCII punctuation
-is recommended for clarity. The delimiter can be escaped using a backslash;
-the second unescaped occurrence of the character (the third for formatting
-expressions) is taken to be the closing delimiter, and everything after that
-is interpreted as flag characters.</p>
-
 <h2 id="utilityfunctions">Utility functions</h2>
 
 <ul>
@@ -974,8 +911,9 @@ is interpreted as flag characters.</p>
 
 <p>These return a copy of the argument string, modified by inserting escape
 characters where necessary to produce a pattern that will exactly match the
-original string. (You can get the same effect by enclosing the text in
-<code>&quot;\Q...\E&quot;</code> delimiters, provided the text does not contain <code>&quot;\E&quot;</code>.)</p>
+original string and nothing else. (You can get the same effect by enclosing
+the text in <code>&quot;\Q...\E&quot;</code> delimiters, provided the text does not contain
+<code>&quot;\E&quot;</code>.)</p>
 
 <h2 id="versioninformation">Version information</h2>
 
