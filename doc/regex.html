@@ -275,8 +275,8 @@ SEPARATOR</code>; the last three are not recognised in byte mode), corresponding
 the <code>PCRE_NEWLINE_ANY</code> and <code>PCRE_BSR_UNICODE</code> flags.</p>
 
 <p>All regex constructors, and any functions that take a pattern and flags and
-implicitly construct a regex, will throw <code>FlagError</code> if the flags supplied are
-inconsistent:</p>
+implicitly construct a regex, will throw <code>std::invalid_argument</code> if the flags
+supplied are inconsistent:</p>
 
 <ul>
 <li>At most one of <code>rx_newlineanycrlf</code>, <code>rx_newlinecr</code>, <code>rx_newlinecrlf</code>, and <code>rx_newlinelf</code> may be used.</li>
@@ -502,9 +502,10 @@ of UTF&#8211;8 mode.</p>
 </ul>
 
 <p>Life cycle functions. The default constructor is equivalent to construction
-from an empty pattern. The second constructor will throw <code>FlagError</code> if an
-invalid combination of flags is passed, or <code>RegexError</code> if the pattern is
-invalid. See above for full details of how the flags are interpreted.</p>
+from an empty pattern. The second constructor will throw
+<code>std::invalid_argument</code> if an invalid combination of flags is passed, or
+<code>RegexError</code> if the pattern is invalid. See above for full details of how the
+flags are interpreted.</p>
 
 <ul>
 <li><code>BasicRegex::match_type BasicRegex::<strong>anchor</strong>(const string_type&amp; text, size_t offset = 0) const</code></li>

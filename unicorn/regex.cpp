@@ -174,16 +174,17 @@ namespace Unicorn {
             template <typename C>
             void init_regex_impl(RegexInfo<C>& r, const typename PcreTraits<C>::string_type& pattern, uint32_t flags, bool unicode) {
                 using pcre_traits = PcreTraits<C>;
-                allow_flags(flags, rx_caseless | rx_dfa | rx_dollarnewline | rx_dotinline | rx_extended
+                uint32_t allowed_flags = rx_caseless | rx_dfa | rx_dollarnewline | rx_dotinline | rx_extended
                     | rx_firstline | rx_multiline | rx_newlineanycrlf | rx_newlinecr | rx_newlinecrlf
                     | rx_newlinelf | rx_noautocapture | rx_nostartoptimize | rx_notbol | rx_notempty
-                    | rx_notemptyatstart | rx_noteol | rx_noutfcheck | rx_optimize | rx_partialhard
-                    | rx_partialsoft | rx_prefershort | rx_ucp, "regex");
+                    | rx_notemptyatstart | rx_noteol | rx_optimize | rx_partialhard | rx_partialsoft
+                    | rx_prefershort;
+                if (unicode)
+                    allowed_flags |= rx_noutfcheck | rx_ucp;
+                allow_flags(flags, allowed_flags, "regex");
                 exclusive_flags(flags, rx_newlineanycrlf | rx_newlinecr | rx_newlinecrlf | rx_newlinelf, "regex");
                 exclusive_flags(flags, rx_notempty | rx_notemptyatstart, "regex");
                 exclusive_flags(flags, rx_partialhard | rx_partialsoft, "regex");
-                if (! unicode && (flags & (rx_noutfcheck | rx_ucp)))
-                    throw FlagError(flags, "byte regex");
                 r.pat = pattern;
                 r.fset = flags;
                 int cflags = PCRE_EXTRA, sflags = 0;
