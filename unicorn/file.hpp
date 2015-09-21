@@ -376,12 +376,11 @@ namespace Unicorn {
             recode_filename(impl.file(), current);
             if (! (fset & dir_dotdot) && (current == link1 || current == link2))
                 continue;
-            if ((fset & dir_fullname) || ! (fset & dir_hidden))
-                path = prefix + current;
+            path = prefix + current;
             if (! (fset & dir_hidden) && file_is_hidden(path))
                 continue;
             if (fset & dir_fullname)
-                current = std::move(path);
+                current = path;
             break;
         }
         return *this;

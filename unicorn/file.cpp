@@ -101,14 +101,10 @@ namespace Unicorn {
 
             namespace {
 
-                bool remove_file_helper(const string& file, bool dir_check) {
-                    int rc = remove(file.data());
+                void remove_file_helper(const string& file) {
+                    int rc = std::remove(file.data());
                     int err = errno;
-                    if (rc == 0 || err == ENOENT)
-                        return true;
-                    else if (dir_check && (err == EEXIST || err == ENOTEMPTY))
-                        return false;
-                    else
+                    if (rc != 0 && err != ENOENT)
                         throw FileError(err, file);
                 }
 
@@ -257,22 +253,14 @@ namespace Unicorn {
 
             namespace {
 
-                bool remove_file_helper(const wstring& file, bool dir_check) {
-                    uint32_t error = 0;
-                    if (file_is_directory(file)) {
-                        if (RemoveDirectoryW(file.data()))
-                            return true;
-                        error = GetLastError();
-                        if (dir_check && error == ERROR_DIR_NOT_EMPTY)
-                            return false;
-                    } else {
-                        if (DeleteFileW(file.data()))
-                            return true;
-                        error = GetLastError();
-                    }
-                    if (error == ERROR_FILE_NOT_FOUND)
-                        return true;
+                void remove_file_helper(const wstring& file) {
+                    bool dir = file_is_directory(file), ok;
+                    if (dir)
+                        ok = RemoveDirectoryW(file.data());
                     else
+                        ok = DeleteFileW(file.data());
+                    auto error = GetLastError();
+                    if (! ok && error != ERROR_FILE_NOT_FOUND)
                         throw FileError(error, file);
                 }
 
@@ -349,12 +337,10 @@ namespace Unicorn {
         // File system operations
 
         void native_remove_file(const NativeString& file, bool recurse) {
-            if (recurse && ! remove_file_helper(file, true)
-                        && native_file_is_directory(file)
-                        && ! native_file_is_symlink(file))
-                for (auto& child: directory(file, dir_fullname | dir_hidden))
+            if (recurse && native_file_is_directory(file) && ! native_file_is_symlink(file))
+                for (auto child: directory(file, dir_fullname | dir_hidden))
                     native_remove_file(child, true);
-            remove_file_helper(file, false);
+            remove_file_helper(file);
         }
 
     }
