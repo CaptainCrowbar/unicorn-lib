@@ -30,35 +30,35 @@ namespace Unicorn {
 
     // Formatting behaviour flags
 
-    UNICORN_DEFINE_FLAG_64(formatting, fx_left, 52);     // '<'  // Left align                      all  --    --   --     --    --      --
-    UNICORN_DEFINE_FLAG_64(formatting, fx_centre, 53);   // '='  // Centre align                    all  --    --   --     --    --      --
-    UNICORN_DEFINE_FLAG_64(formatting, fx_right, 54);    // '>'  // Right align                     all  --    --   --     --    --      --
-    UNICORN_DEFINE_FLAG_LETTER(formatting, fx_upper,     'U');   // Convert to upper case           all  --    --   --     --    --      --
-    UNICORN_DEFINE_FLAG_LETTER(formatting, fx_lower,     'L');   // Convert to lower case           all  --    --   --     --    --      --
-    UNICORN_DEFINE_FLAG_LETTER(formatting, fx_title,     'T');   // Convert to title case           all  --    --   --     --    --      --
-    UNICORN_DEFINE_FLAG_LETTER(formatting, fx_tf,        't');   // Write as true/false             --   bool  --   --     --    --      --
-    UNICORN_DEFINE_FLAG_LETTER(formatting, fx_yesno,     'y');   // Write as yes/no                 --   bool  --   --     --    --      --
-    UNICORN_DEFINE_FLAG_LETTER(formatting, fx_binary,    'b');   // Binary number                   --   bool  int  --     --    --      --
-    UNICORN_DEFINE_FLAG_LETTER(formatting, fx_decimal,   'n');   // Decimal number                  --   --    int  --     char  string  --
-    UNICORN_DEFINE_FLAG_LETTER(formatting, fx_hex,       'x');   // Hexadecimal number              --   --    int  --     char  string  --
-    UNICORN_DEFINE_FLAG_LETTER(formatting, fx_roman,     'r');   // Roman numerals                  --   --    int  --     --    --      --
-    UNICORN_DEFINE_FLAG_LETTER(formatting, fx_sign,      's');   // Always show a sign              --   --    int  float  --    --      --
-    UNICORN_DEFINE_FLAG_LETTER(formatting, fx_signz,     'S');   // Always show a sign unless zero  --   --    int  float  --    --      --
-    UNICORN_DEFINE_FLAG_LETTER(formatting, fx_digits,    'd');   // Fixed significant figures       --   --    --   float  --    --      --
-    UNICORN_DEFINE_FLAG_LETTER(formatting, fx_exp,       'e');   // Scientific notation             --   --    --   float  --    --      --
-    UNICORN_DEFINE_FLAG_LETTER(formatting, fx_fixed,     'f');   // Fixed point notation            --   --    --   float  --    --      --
-    UNICORN_DEFINE_FLAG_LETTER(formatting, fx_general,   'g');   // Use the shorter of d or e       --   --    --   float  --    --      --
-    UNICORN_DEFINE_FLAG_LETTER(formatting, fx_prob,      'p');   // Probability format              --   --    --   float  --    --      --
-    UNICORN_DEFINE_FLAG_LETTER(formatting, fx_stripz,    'z');   // Strip trailing zeros            --   --    --   float  --    --      --
-    UNICORN_DEFINE_FLAG_LETTER(formatting, fx_ascii,     'a');   // Escape if not printable ASCII   --   --    --   --     char  string  --
-    UNICORN_DEFINE_FLAG_LETTER(formatting, fx_escape,    'c');   // Escape if C0/C1 control         --   --    --   --     char  string  --
-    UNICORN_DEFINE_FLAG_LETTER(formatting, fx_quote,     'q');   // Quote string, escape C0/C1      --   --    --   --     char  string  --
-    UNICORN_DEFINE_FLAG_LETTER(formatting, fx_ascquote,  'o');   // Quote string, escape non-ASCII  --   --    --   --     char  string  --
-    UNICORN_DEFINE_FLAG_LETTER(formatting, fx_hex8,      'u');   // Hex UTF-8 bytes                 --   --    --   --     char  string  --
-    UNICORN_DEFINE_FLAG_LETTER(formatting, fx_hex16,     'v');   // Hex UTF-16 code units           --   --    --   --     char  string  --
-    UNICORN_DEFINE_FLAG_LETTER(formatting, fx_iso,       't');   // ISO 8601 with T delimiter       --   --    --   --     --    --      date
-    UNICORN_DEFINE_FLAG_LETTER(formatting, fx_common,    'c');   // Local standard format           --   --    --   --     --    --      date
-    UNICORN_DEFINE_FLAG_LETTER(formatting, fx_local,     'l');   // Local time zone                 --   --    --   --     --    --      date
+    UNICORN_DEFINE_FLAG_64(formatting,      fx_left,      52);   // (<) Left align                  all  --    --   --     --    --      --
+    UNICORN_DEFINE_FLAG_64(formatting,      fx_centre,    53);   // (=) Centre align                all  --    --   --     --    --      --
+    UNICORN_DEFINE_FLAG_64(formatting,      fx_right,     54);   // (>) Right align                 all  --    --   --     --    --      --
+    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_upper,     'U');  // Convert to upper case           all  --    --   --     --    --      --
+    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_lower,     'L');  // Convert to lower case           all  --    --   --     --    --      --
+    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_title,     'T');  // Convert to title case           all  --    --   --     --    --      --
+    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_tf,        't');  // Write as true/false             --   bool  --   --     --    --      --
+    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_yesno,     'y');  // Write as yes/no                 --   bool  --   --     --    --      --
+    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_binary,    'b');  // Binary number                   --   bool  int  --     --    --      --
+    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_decimal,   'n');  // Decimal number                  --   --    int  --     char  string  --
+    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_hex,       'x');  // Hexadecimal number              --   --    int  --     char  string  --
+    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_roman,     'r');  // Roman numerals                  --   --    int  --     --    --      --
+    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_sign,      's');  // Always show a sign              --   --    int  float  --    --      --
+    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_signz,     'S');  // Always show a sign unless zero  --   --    int  float  --    --      --
+    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_digits,    'd');  // Fixed significant figures       --   --    --   float  --    --      --
+    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_exp,       'e');  // Scientific notation             --   --    --   float  --    --      --
+    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_fixed,     'f');  // Fixed point notation            --   --    --   float  --    --      --
+    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_general,   'g');  // Use the shorter of d or e       --   --    --   float  --    --      --
+    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_prob,      'p');  // Probability format              --   --    --   float  --    --      --
+    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_stripz,    'z');  // Strip trailing zeros            --   --    --   float  --    --      --
+    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_ascii,     'a');  // Escape if not printable ASCII   --   --    --   --     char  string  --
+    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_escape,    'c');  // Escape if C0/C1 control         --   --    --   --     char  string  --
+    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_quote,     'q');  // Quote string, escape C0/C1      --   --    --   --     char  string  --
+    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_ascquote,  'o');  // Quote string, escape non-ASCII  --   --    --   --     char  string  --
+    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_hex8,      'u');  // Hex UTF-8 bytes                 --   --    --   --     char  string  --
+    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_hex16,     'v');  // Hex UTF-16 code units           --   --    --   --     char  string  --
+    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_iso,       't');  // ISO 8601 with T delimiter       --   --    --   --     --    --      date
+    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_common,    'c');  // Local standard format           --   --    --   --     --    --      date
+    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_local,     'l');  // Local time zone                 --   --    --   --     --    --      date
 
     namespace UnicornDetail {
 

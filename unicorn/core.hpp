@@ -21,14 +21,14 @@ namespace Unicorn {
 
         #define UNICORN_DEFINE_FLAG(context, name, bitnum) \
             constexpr uint32_t name = 1ul << (bitnum); \
-            const UnicornDetail::RecordFlag name ## _ ## init(# context, # name, 1ul << (bitnum));
+            const ::Unicorn::UnicornDetail::RecordFlag name ## _ ## init(# context, # name, 1ul << (bitnum));
 
         #define UNICORN_DEFINE_FLAG_64(context, name, bitnum) \
             constexpr uint64_t name = 1ull << (bitnum); \
-            const UnicornDetail::RecordFlag name ## _ ## init(# context, # name, 1ull << (bitnum));
+            const ::Unicorn::UnicornDetail::RecordFlag name ## _ ## init(# context, # name, 1ull << (bitnum));
 
         #define UNICORN_DEFINE_FLAG_LETTER(context, name, letter) \
-            UNICORN_DEFINE_FLAG_64(context, name, UnicornDetail::letter_to_flag_index(letter))
+            UNICORN_DEFINE_FLAG_64(context, name, ::Unicorn::UnicornDetail::letter_to_flag_index(letter))
 
         u8string flag_name(const u8string& context, uint64_t flag);
         u8string flag_names(const u8string& context, uint64_t flags);
