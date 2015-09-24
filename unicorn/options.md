@@ -60,7 +60,7 @@ following information on the standard output:
 ## Exceptions ##
 
 * `class CommandLineError: public std::runtime_error`
-    * `CommandLineError::CommandLineError(const u8string& details, const u8string& arg, const u8string& arg2 = {})`
+    * `explicit CommandLineError::CommandLineError(const u8string& details, const u8string& arg = {}, const u8string& arg2 = {})`
 
 Thrown by `Options::parse()` during argument parsing, to report that the
 command line arguments supplied by the user were not consistent with the

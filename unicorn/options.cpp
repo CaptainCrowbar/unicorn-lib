@@ -27,6 +27,19 @@ namespace Unicorn {
                 throw CommandLineError("Argument not recognised", arg);
         }
 
+        u8string cmd_error(const u8string& details, const u8string& arg, const u8string& arg2) {
+            u8string msg = details;
+            if (! arg.empty() || ! arg2.empty())
+                msg += ": ";
+            if (! arg.empty())
+                msg += "$1q"_fmt(arg);
+            if (! arg.empty() && ! arg2.empty())
+                msg += ", ";
+            if (! arg2.empty())
+                msg += "$1q"_fmt(arg2);
+            return msg;
+        }
+
         const Regex& match_integer() {
             static const Regex r("[+-]?\\d+");
             return r;
@@ -42,7 +55,7 @@ namespace Unicorn {
     // Exceptions
 
     CommandLineError::CommandLineError(const u8string& details, const u8string& arg, const u8string& arg2):
-    std::runtime_error("$1: $2q"_fmt(details, arg) + (arg2.empty() ? ""s : ", $1q"_fmt(arg2))) {}
+    std::runtime_error(cmd_error(details, arg, arg2)) {}
 
     OptionSpecError::OptionSpecError(const u8string& option):
     std::runtime_error("Invalid option spec: $1q"_fmt(option)) {}

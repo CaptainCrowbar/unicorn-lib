@@ -16,7 +16,7 @@ namespace Unicorn {
     class CommandLineError:
     public std::runtime_error {
     public:
-        CommandLineError(const u8string& details, const u8string& arg, const u8string& arg2 = {});
+        explicit CommandLineError(const u8string& details, const u8string& arg = {}, const u8string& arg2 = {});
     };
 
     class OptionSpecError:
