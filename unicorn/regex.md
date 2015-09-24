@@ -389,7 +389,22 @@ unspecified whether or not they will compare equal.
 * `template <typename C> BasicRegex<C> regex(const basic_string<C>& pattern, uint32_t flags = 0)`
 * `template <typename C> BasicRegex<C> regex(const C* pattern, uint32_t flags = 0)`
 
-Convenience functions to easily construct a regex object.
+Convenience functions to construct a regex object.
+
+* `namespace Literals`
+    * `Regex operator"" _re(const char* ptr, size_t len)`
+    * `Regex operator"" _re_i(const char* ptr, size_t len)`
+    * `Regex16 operator"" _re(const char16_t* ptr, size_t len)`
+    * `Regex16 operator"" _re_i(const char16_t* ptr, size_t len)`
+    * `Regex32 operator"" _re(const char32_t* ptr, size_t len)`
+    * `Regex32 operator"" _re_i(const char32_t* ptr, size_t len)`
+    * `WideRegex operator"" _re(const wchar_t* ptr, size_t len)`
+    * `WideRegex operator"" _re_i(const wchar_t* ptr, size_t len)`
+    * `ByteRegex operator"" _re_b(const char* ptr, size_t len)`
+    * `ByteRegex operator"" _re_bi(const char* ptr, size_t len)`
+
+Regex literals. The versions with an `"_i"` suffix are case insensitive; apart
+from that, no options are supported.
 
 ## Regex match class ##
 
@@ -563,7 +578,7 @@ Swap two objects.
 * `template <typename C> BasicRegexFormat<C> regex_format(const C* pattern, const basic_string<C>& format, uint32_t flags = 0)`
 * `template <typename C> BasicRegexFormat<C> regex_format(const C* pattern, const C* format, uint32_t flags = 0)`
 
-Convenience functions for constructing a regex format object.
+Convenience functions to construct a regex format object.
 
 ## Regex iterator classes ##
 

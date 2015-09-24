@@ -628,7 +628,27 @@ unspecified whether or not they will compare equal.</p>
 <li><code>template &lt;typename C&gt; BasicRegex&lt;C&gt; <strong>regex</strong>(const C* pattern, uint32_t flags = 0)</code></li>
 </ul>
 
-<p>Convenience functions to easily construct a regex object.</p>
+<p>Convenience functions to construct a regex object.</p>
+
+<ul>
+<li><code>namespace Literals</code>
+
+<ul>
+<li><code>Regex <strong>operator&quot;&quot; _re</strong>(const char* ptr, size_t len)</code></li>
+<li><code>Regex <strong>operator&quot;&quot; _re_i</strong>(const char* ptr, size_t len)</code></li>
+<li><code>Regex16 <strong>operator&quot;&quot; _re</strong>(const char16_t* ptr, size_t len)</code></li>
+<li><code>Regex16 <strong>operator&quot;&quot; _re_i</strong>(const char16_t* ptr, size_t len)</code></li>
+<li><code>Regex32 <strong>operator&quot;&quot; _re</strong>(const char32_t* ptr, size_t len)</code></li>
+<li><code>Regex32 <strong>operator&quot;&quot; _re_i</strong>(const char32_t* ptr, size_t len)</code></li>
+<li><code>WideRegex <strong>operator&quot;&quot; _re</strong>(const wchar_t* ptr, size_t len)</code></li>
+<li><code>WideRegex <strong>operator&quot;&quot; _re_i</strong>(const wchar_t* ptr, size_t len)</code></li>
+<li><code>ByteRegex <strong>operator&quot;&quot; _re_b</strong>(const char* ptr, size_t len)</code></li>
+<li><code>ByteRegex <strong>operator&quot;&quot; _re_bi</strong>(const char* ptr, size_t len)</code></li>
+</ul></li>
+</ul>
+
+<p>Regex literals. The versions with an <code>&quot;_i&quot;</code> suffix are case insensitive; apart
+from that, no options are supported.</p>
 
 <h2 id="regexmatchclass">Regex match class</h2>
 
@@ -840,7 +860,7 @@ first <code>n</code> matches, discarding the unmatched text between them.
 <li><code>template &lt;typename C&gt; BasicRegexFormat&lt;C&gt; <strong>regex_format</strong>(const C* pattern, const C* format, uint32_t flags = 0)</code></li>
 </ul>
 
-<p>Convenience functions for constructing a regex format object.</p>
+<p>Convenience functions to construct a regex format object.</p>
 
 <h2 id="regexiteratorclasses">Regex iterator classes</h2>
 

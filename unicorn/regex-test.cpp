@@ -650,6 +650,29 @@ namespace {
 
     }
 
+    void check_regex_literals() {
+
+        using namespace Unicorn::Literals;
+
+        Regex r;
+        Regex16 r16;
+        Regex32 r32;
+        WideRegex wr;
+        ByteRegex br;
+
+        TRY(r = "[a-z]+"_re);       TEST(r.match("hello"));     TEST(! r.match("HELLO"));     TEST(! r.match("12345"));
+        TRY(r = "[a-z]+"_re_i);     TEST(r.match("hello"));     TEST(r.match("HELLO"));       TEST(! r.match("12345"));
+        TRY(r16 = u"[a-z]+"_re);    TEST(r16.match(u"hello"));  TEST(! r16.match(u"HELLO"));  TEST(! r16.match(u"12345"));
+        TRY(r16 = u"[a-z]+"_re_i);  TEST(r16.match(u"hello"));  TEST(r16.match(u"HELLO"));    TEST(! r16.match(u"12345"));
+        TRY(r32 = U"[a-z]+"_re);    TEST(r32.match(U"hello"));  TEST(! r32.match(U"HELLO"));  TEST(! r32.match(U"12345"));
+        TRY(r32 = U"[a-z]+"_re_i);  TEST(r32.match(U"hello"));  TEST(r32.match(U"HELLO"));    TEST(! r32.match(U"12345"));
+        TRY(wr = L"[a-z]+"_re);     TEST(wr.match(L"hello"));   TEST(! wr.match(L"HELLO"));   TEST(! wr.match(L"12345"));
+        TRY(wr = L"[a-z]+"_re_i);   TEST(wr.match(L"hello"));   TEST(wr.match(L"HELLO"));     TEST(! wr.match(L"12345"));
+        TRY(br = "[a-z]+"_re_b);    TEST(br.match("hello"));    TEST(! br.match("HELLO"));    TEST(! br.match("12345"));
+        TRY(br = "[a-z]+"_re_bi);   TEST(br.match("hello"));    TEST(br.match("HELLO"));      TEST(! br.match("12345"));
+
+    }
+
 }
 
 TEST_MODULE(unicorn, regex) {
@@ -664,5 +687,6 @@ TEST_MODULE(unicorn, regex) {
     check_utf32_regex();
     check_wchar_regex();
     check_byte_regex();
+    check_regex_literals();
 
 }

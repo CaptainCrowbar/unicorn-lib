@@ -11,6 +11,7 @@
 #include <utility>
 
 using namespace std::literals;
+using namespace Unicorn::Literals;
 
 namespace Unicorn {
 
@@ -337,7 +338,7 @@ namespace Unicorn {
         }
 
         void Element::read_number(const u8string& src, size_t& pos) {
-            static const Regex match_number("-?(0|[1-9]\\d*)(\\.\\d+)?([Ee][+-]?\\d+)?");
+            static const auto match_number = "-?(0|[1-9]\\d*)(\\.\\d+)?([Ee][+-]?\\d+)?"_re;
             auto match = match_number.anchor(src, pos);
             if (! match)
                 throw BadJson(pos);

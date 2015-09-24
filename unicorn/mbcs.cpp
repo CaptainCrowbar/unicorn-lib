@@ -167,9 +167,9 @@ namespace Unicorn {
         UnicornDetail::EncodingTag find_encoding(const u8string& name) {
             using namespace UnicornDetail;
             static const CharsetMap map;
-            static const Regex match_codepage("(?:cp|dos|ibm|ms|windows)-?(\\d+)", rx_caseless);
-            static const Regex match_integer("\\d+");
-            static const Regex match_unicode("(?:cs|x)?(?:iso10646)?((?:ucs|utf)\\d+)(be|le|internal|swapped)?");
+            static const auto match_codepage = "(?:cp|dos|ibm|ms|windows)-?(\\d+)"_re_i;
+            static const auto match_integer = "\\d+"_re;
+            static const auto match_unicode = "(?:cs|x)?(?:iso10646)?((?:ucs|utf)\\d+)(be|le|internal|swapped)?"_re;
             #if defined(PRI_TARGET_UNIX)
                 static const std::vector<u8string> codepage_prefixes {"cp","dos","ibm","ms","windows-"};
             #endif

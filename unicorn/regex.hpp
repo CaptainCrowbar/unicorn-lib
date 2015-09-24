@@ -514,6 +514,21 @@ namespace Unicorn {
         lhs.swap(rhs);
     }
 
+    namespace Literals {
+
+        inline auto operator"" _re(const char* ptr, size_t len) { return Regex(cstr(ptr, len)); }
+        inline auto operator"" _re_i(const char* ptr, size_t len) { return Regex(cstr(ptr, len), rx_caseless); }
+        inline auto operator"" _re(const char16_t* ptr, size_t len) { return Regex16(cstr(ptr, len)); }
+        inline auto operator"" _re_i(const char16_t* ptr, size_t len) { return Regex16(cstr(ptr, len), rx_caseless); }
+        inline auto operator"" _re(const char32_t* ptr, size_t len) { return Regex32(cstr(ptr, len)); }
+        inline auto operator"" _re_i(const char32_t* ptr, size_t len) { return Regex32(cstr(ptr, len), rx_caseless); }
+        inline auto operator"" _re(const wchar_t* ptr, size_t len) { return WideRegex(cstr(ptr, len)); }
+        inline auto operator"" _re_i(const wchar_t* ptr, size_t len) { return WideRegex(cstr(ptr, len), rx_caseless); }
+        inline auto operator"" _re_b(const char* ptr, size_t len) { return ByteRegex(cstr(ptr, len)); }
+        inline auto operator"" _re_bi(const char* ptr, size_t len) { return ByteRegex(cstr(ptr, len), rx_caseless); }
+
+    }
+
     // Regex formatting class
 
     template <typename CX>

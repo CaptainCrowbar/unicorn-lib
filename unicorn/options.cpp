@@ -10,6 +10,9 @@ namespace Unicorn {
 
     namespace {
 
+        const auto match_integer = "[+-]?\\d+"_re;
+        const auto match_float = "[+-]?(\\d+(\\.\\d*)?|\\.\\d+)(e[+-]?\\d+)?"_re_i;
+
         enum ArgType {
             is_argument = 'a',
             is_long_option = 'l',
@@ -38,16 +41,6 @@ namespace Unicorn {
             if (! arg2.empty())
                 msg += "$1q"_fmt(arg2);
             return msg;
-        }
-
-        const Regex& match_integer() {
-            static const Regex r("[+-]?\\d+");
-            return r;
-        }
-
-        const Regex& match_float() {
-            static const Regex r("[+-]?(\\d+(\\.\\d*)?|\\.\\d+)(e[+-]?\\d+)?", rx_caseless);
-            return r;
         }
 
     }
@@ -107,7 +100,7 @@ namespace Unicorn {
                 extra = "required";
             } else if (! opt.defval.empty() && opt.info.find("default") == npos) {
                 extra = "default ";
-                if (match_integer().match(opt.defval) || match_float().match(opt.defval))
+                if (match_integer.match(opt.defval) || match_float.match(opt.defval))
                     extra += opt.defval;
                 else
                     extra += "$1q"_fmt(opt.defval);
@@ -155,10 +148,10 @@ namespace Unicorn {
                 || (opt.is_float && opt.is_integer)
                 || ((opt.is_float || opt.is_integer) > 0 && ! opt.pattern.empty()))
             throw OptionSpecError(tag);
-        if (opt.is_float)
-            opt.pattern = match_float();
-        else if (opt.is_integer)
-            opt.pattern = match_integer();
+        if (opt.is_integer)
+            opt.pattern = match_integer;
+        else if (opt.is_float)
+            opt.pattern = match_float;
         if (! opt.defval.empty() && ! opt.pattern.empty() && ! opt.pattern.match(opt.defval))
             throw OptionSpecError(tag);
         if (find_index(opt.name) != npos || find_index(opt.abbrev) != npos)
