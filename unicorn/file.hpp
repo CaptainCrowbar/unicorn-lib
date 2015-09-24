@@ -18,8 +18,10 @@ namespace Unicorn {
 
     #if defined(PRI_TARGET_UNIX)
         constexpr char file_delimiter = '/';
+        constexpr char native_file_delimiter = '/';
     #else
         constexpr char file_delimiter = '\\';
+        constexpr wchar_t native_file_delimiter = L'\\';
     #endif
 
     template <typename C1, typename C2>
@@ -308,87 +310,80 @@ namespace Unicorn {
 
     // Directory iterators
 
-    namespace UnicornDetail {
-
-        class DirectoryHelper {
-        public:
-            void init(const NativeString& dir);
-            const NativeString& file() const noexcept;
-            void next();
-            bool done() const noexcept { return ! impl; }
-            bool equal(const DirectoryHelper& rhs) const noexcept { return impl == rhs.impl; }
-        private:
-            struct impl_type;
-            std::shared_ptr<impl_type> impl;
-        };
-
-    }
-
     UNICORN_DEFINE_FLAG(directory search, dir_dotdot, 0);    // Include . and ..
     UNICORN_DEFINE_FLAG(directory search, dir_fullname, 1);  // Full file names
     UNICORN_DEFINE_FLAG(directory search, dir_hidden, 2);    // Include hidden files
     UNICORN_DEFINE_FLAG(directory search, dir_unicode, 3);   // Valid Unicode names only
 
+    namespace UnicornDetail {
+
+        // Directory iterator implementation is split into three stages:
+
+        // 1. The system specific part that calls the operating system's
+        // directory walking API; this requires separate implementations for
+        // each OS.
+
+        // 2. The part that works only with native file names, but is not
+        // system specific apart from the choice of string type, so it can be
+        // written as a single implementation.
+
+        // 3. The part that translates the file name to the caller's preferred
+        // encoding; this is the template based interface exported to the
+        // caller.
+
+        class DirectoryStage1 {
+        protected:
+            const NativeString& leaf() const noexcept;
+            void init1(const NativeString& dir);
+            void next1();
+            bool done() const noexcept { return ! impl; }
+            bool equal(const DirectoryStage1& rhs) const noexcept { return impl == rhs.impl; }
+        private:
+            struct impl_type;
+            std::shared_ptr<impl_type> impl;
+        };
+
+        class DirectoryStage2:
+        public DirectoryStage1 {
+        protected:
+            const NativeString& filename() const noexcept { return current; }
+            void init2(const NativeString& dir, uint32_t flags);
+            void next2();
+        private:
+            NativeString prefix;
+            NativeString current;
+            uint32_t fset;
+        };
+
+    }
+
     template <typename C>
     class DirectoryIterator:
+    public UnicornDetail::DirectoryStage2,
     public InputIterator<DirectoryIterator<C>, const basic_string<C>> {
     public:
         DirectoryIterator() = default;
-        explicit DirectoryIterator(const basic_string<C>& dir, uint32_t flags = 0);
-        const basic_string<C>& operator*() const noexcept { return current; }
-        DirectoryIterator& operator++();
-        friend bool operator==(const DirectoryIterator& lhs, const DirectoryIterator& rhs) noexcept
-            { return lhs.impl.equal(rhs.impl); }
+        explicit DirectoryIterator(const basic_string<C>& dir, uint32_t flags = 0) {
+            auto normdir = UnicornDetail::normalize_file(dir);
+            NativeString natdir;
+            recode_filename(normdir, natdir);
+            init2(natdir, flags);
+            recode_filename(filename(), file);
+        }
+        const basic_string<C>& operator*() const noexcept { return file; }
+        DirectoryIterator& operator++() {
+            next2();
+            recode_filename(filename(), file);
+            return *this;
+        }
+        friend bool operator==(const DirectoryIterator& lhs, const DirectoryIterator& rhs) noexcept { return lhs.equal(rhs); }
     private:
-        UnicornDetail::DirectoryHelper impl;
-        basic_string<C> prefix;
-        basic_string<C> current;
-        uint32_t fset;
+        basic_string<C> file;
     };
 
-    template <typename C>
-    DirectoryIterator<C>::DirectoryIterator(const basic_string<C>& dir, uint32_t flags) {
-        auto normdir = UnicornDetail::normalize_file(dir);
-        NativeString natdir;
-        recode_filename(normdir, natdir);
-        impl.init(natdir);
-        if ((fset & dir_fullname) || ! (fset & dir_hidden)) {
-            prefix = std::move(normdir);
-            if (! prefix.empty() && prefix.back() != static_cast<C>(file_delimiter))
-                prefix += static_cast<C>(file_delimiter);
-        }
-        fset = flags;
-        ++*this;
-    }
-
-    template <typename C>
-    DirectoryIterator<C>& DirectoryIterator<C>::operator++() {
-        static const basic_string<C> link1(1, C('.'));
-        static const basic_string<C> link2(2, C('.'));
-        current.clear();
-        basic_string<C> path;
-        for (;;) {
-            impl.next();
-            if (impl.done())
-                break;
-            if ((fset & dir_unicode) && ! valid_string(impl.file()))
-                continue;
-            recode_filename(impl.file(), current);
-            if (! (fset & dir_dotdot) && (current == link1 || current == link2))
-                continue;
-            path = prefix + current;
-            if (! (fset & dir_hidden) && file_is_hidden(path))
-                continue;
-            if (fset & dir_fullname)
-                current = path;
-            break;
-        }
-        return *this;
-    }
-
-    template <typename C>
-    Irange<DirectoryIterator<C>> directory(const basic_string<C>& dir, uint32_t flags = 0) {
-        return {DirectoryIterator<C>(dir, flags), DirectoryIterator<C>()};
-    }
+    template <typename C> Irange<DirectoryIterator<C>> directory(const basic_string<C>& dir, uint32_t flags = 0)
+        { return {DirectoryIterator<C>(dir, flags), DirectoryIterator<C>()}; }
+    template <typename C> Irange<DirectoryIterator<C>> directory(const C* dir, uint32_t flags = 0)
+        { return {DirectoryIterator<C>(cstr(dir), flags), DirectoryIterator<C>()}; }
 
 }

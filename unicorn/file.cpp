@@ -133,7 +133,7 @@ namespace Unicorn {
 
             // Directory iterators
 
-            struct DirectoryHelper::impl_type {
+            struct DirectoryStage1::impl_type {
                 string name;
                 dirent entry;
                 char padding[NAME_MAX + 1];
@@ -141,7 +141,12 @@ namespace Unicorn {
                 ~impl_type() { if (dp) closedir(dp); }
             };
 
-            void DirectoryHelper::init(const string& dir) {
+            const string& DirectoryStage1::leaf() const noexcept {
+                static const string dummy {};
+                return impl ? impl->name : dummy;
+            }
+
+            void DirectoryStage1::init1(const string& dir) {
                 impl = std::make_shared<impl_type>();
                 memset(&impl->entry, 0, sizeof(impl->entry));
                 memset(impl->padding, 0, sizeof(impl->padding));
@@ -153,12 +158,7 @@ namespace Unicorn {
                     impl.reset();
             }
 
-            const string& DirectoryHelper::file() const noexcept {
-                static const string dummy {};
-                return impl ? impl->name : dummy;
-            }
-
-            void DirectoryHelper::next() {
+            void DirectoryStage1::next1() {
                 if (! impl)
                     return;
                 dirent* ptr = nullptr;
@@ -296,7 +296,7 @@ namespace Unicorn {
             // directory. There's a race condition here but there doesn't seem
             // to be anything we can do about it.
 
-            struct DirectoryHelper::impl_type {
+            struct DirectoryStage1::impl_type {
                 wstring name;
                 HANDLE handle;
                 WIN32_FIND_DATAW info;
@@ -304,7 +304,12 @@ namespace Unicorn {
                 ~impl_type() { if (handle) FindClose(handle); }
             };
 
-            void DirectoryHelper::init(const wstring& dir) {
+            const wstring& DirectoryStage1::leaf() const noexcept {
+                static const wstring dummy {};
+                return impl ? impl->name : dummy;
+            }
+
+            void DirectoryStage1::init1(const wstring& dir) {
                 if (! file_is_directory(dir))
                     return;
                 impl = std::make_shared<impl_type>();
@@ -316,12 +321,7 @@ namespace Unicorn {
                     impl.reset();
             }
 
-            const wstring& DirectoryHelper::file() const noexcept {
-                static const wstring dummy {};
-                return impl ? impl->name : dummy;
-            }
-
-            void DirectoryHelper::next() {
+            void DirectoryStage1::next1() {
                 if (! impl)
                     return;
                 if (! impl->first && ! FindNextFile(impl->handle, &impl->info)) {
@@ -341,6 +341,40 @@ namespace Unicorn {
                 for (auto child: directory(file, dir_fullname | dir_hidden))
                     native_remove_file(child, true);
             remove_file_helper(file);
+        }
+
+        // Directory iterators
+
+        void DirectoryStage2::init2(const NativeString& dir, uint32_t flags) {
+            init1(dir);
+            fset = flags;
+            if ((fset & dir_fullname) || ! (fset & dir_hidden)) {
+                prefix = dir;
+                if (! prefix.empty() && prefix.back() != native_file_delimiter)
+                    prefix += native_file_delimiter;
+            }
+            next2();
+        }
+
+        void DirectoryStage2::next2() {
+            static const NativeString link1(1, NativeCharacter('.'));
+            static const NativeString link2(2, NativeCharacter('.'));
+            current.clear();
+            for (;;) {
+                next1();
+                if (done())
+                    break;
+                if ((fset & dir_unicode) && ! valid_string(leaf()))
+                    continue;
+                if (! (fset & dir_dotdot) && (leaf() == link1 || leaf() == link2))
+                    continue;
+                current = prefix + leaf();
+                if (! (fset & dir_hidden) && file_is_hidden(current))
+                    continue;
+                if (! (fset & dir_fullname))
+                    current = leaf();
+                break;
+            }
         }
 
     }

@@ -246,6 +246,7 @@ destination are on different physical file systems.
     * `explicit DirectoryIterator::DirectoryIterator(const value_type& dir, uint32_t flags = 0)`
     * `[standard iterator operations]`
 * `template <typename C> Irange<DirectoryIterator<C>> directory(const basic_string<C>& dir, uint32_t flags = 0)`
+* `template <typename C> Irange<DirectoryIterator<C>> directory(const C* dir, uint32_t flags = 0)`
 
 Flag            | Description
 ----            | -----------
