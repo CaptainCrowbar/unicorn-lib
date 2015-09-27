@@ -23,16 +23,15 @@ Unicorn documentation with a copy of the Unicode standard on hand.
 
 Unicorn is written in C++14; you will need an up-to-date C++ compiler,
 probably a recent version of Clang or GCC. I developed it mainly on Mac OS X,
-using Clang 6.1 (LLVM 3.6). All test builds are made using strict compilation
+currently using Clang 7.0. All test builds are made using strict compilation
 mode (`-Wall -Wextra -Werror`).
 
-Unicorn has also been tested with GCC 4.9 on Ubuntu GNU/Linux,
+Unicorn has also been tested with GCC 4.9 and 5.1 on Ubuntu GNU/Linux,
 [Cygwin](http://www.cygwin.com/) on Microsoft Windows, and native Windows
 using [Nuwen-Mingw](http://nuwen.net/mingw.html), although I can't promise
 that the most recent checkin will have been tested with all of those. It will
-not work with any existing release of Microsoft Visual C++, due to that
-compiler's poor C++14 support, although it may be usable with the upcoming
-2015 release.
+not work with any existing release of Microsoft Visual C++, mainly due to that
+compiler's poor C++14 support.
 
 ## Design philosophy ##
 
