@@ -35,11 +35,11 @@ namespace Unicorn {
             size_t margin = 0, spacing = 2;
             bool unfill = false;
         };
-        std::vector<Format> formats;
-        std::vector<std::vector<u8string>> cells;
+        vector<Format> formats;
+        vector<vector<u8string>> cells;
         void force_break();
         template <typename... Args> static layout_spec parse_args(const Args&... args);
-        void write_table(const layout_spec& spec, std::vector<u8string>& lines) const;
+        void write_table(const layout_spec& spec, vector<u8string>& lines) const;
     };
 
     template <typename T>
@@ -57,7 +57,7 @@ namespace Unicorn {
     template <typename C, typename... Args>
     std::basic_string<C> Table::as_string(const Args&... args) const {
         auto spec = parse_args(args...);
-        std::vector<u8string> lines;
+        vector<u8string> lines;
         write_table(spec, lines);
         std::basic_string<C> result;
         for (auto& line: lines) {
@@ -70,7 +70,7 @@ namespace Unicorn {
     template <typename C, typename... Args>
     void Table::write(std::basic_ostream<C>& out, const Args&... args) const {
         auto spec = parse_args(args...);
-        std::vector<u8string> lines;
+        vector<u8string> lines;
         write_table(spec, lines);
         for (auto& line: lines)
             out << recode<C>(line) << C('\n');

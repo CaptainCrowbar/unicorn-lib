@@ -58,7 +58,7 @@ namespace Unicorn {
             // (These will always be called with x>=0 and prec>=0)
 
             u8string float_print(const char* format, long double x, int prec) {
-                std::vector<char> buf(32);
+                vector<char> buf(32);
                 for (;;) {
                     if (snprintf(buf.data(), buf.size(), format, prec, x) < int(buf.size()))
                         return buf.data();

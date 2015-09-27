@@ -15,7 +15,7 @@ using namespace Unicorn;
 namespace {
 
     u32string decode_hex(const u8string& code) {
-        std::vector<u8string> hexcodes;
+        vector<u8string> hexcodes;
         str_split_by(code, append(hexcodes), " /");
         u32string str;
         std::transform(PRI_BOUNDS(hexcodes), append(str), hexnum);
@@ -24,7 +24,7 @@ namespace {
 
     struct SplitGraphemes {
         template <typename String>
-        void operator()(const String& src, std::vector<String>& dst) const {
+        void operator()(const String& src, vector<String>& dst) const {
             for (auto& segment: grapheme_range(src))
                 dst.push_back(u_str(segment));
         }
@@ -32,7 +32,7 @@ namespace {
 
     struct SplitWords {
         template <typename String>
-        void operator()(const String& src, std::vector<String>& dst) const {
+        void operator()(const String& src, vector<String>& dst) const {
             for (auto& segment: word_range(src))
                 dst.push_back(u_str(segment));
         }
@@ -40,7 +40,7 @@ namespace {
 
     struct SplitSentences {
         template <typename String>
-        void operator()(const String& src, std::vector<String>& dst) const {
+        void operator()(const String& src, vector<String>& dst) const {
             for (auto& segment: sentence_range(src))
                 dst.push_back(u_str(segment));
         }
@@ -59,22 +59,22 @@ namespace {
             auto source8 = to_utf8(source32);
             auto source16 = to_utf16(source32);
             auto wsource = to_wstring(source32);
-            std::vector<u8string> breakdown;
+            vector<u8string> breakdown;
             str_split_by(line, append(breakdown), "/");
-            std::vector<u32string> expect32;
+            vector<u32string> expect32;
             std::transform(PRI_BOUNDS(breakdown), append(expect32), decode_hex);
-            std::vector<u8string> expect8(expect32.size());
-            std::vector<u16string> expect16(expect32.size());
-            std::vector<wstring> wexpect(expect32.size());
+            vector<u8string> expect8(expect32.size());
+            vector<u16string> expect16(expect32.size());
+            vector<wstring> wexpect(expect32.size());
             for (size_t i = 0; i < expect32.size(); ++i) {
                 expect8[i] = recode<char>(expect32[i]);
                 expect16[i] = recode<char16_t>(expect32[i]);
                 wexpect[i] = recode<wchar_t>(expect32[i]);
             }
-            std::vector<u8string> segments8;
-            std::vector<u16string> segments16;
-            std::vector<u32string> segments32;
-            std::vector<wstring> wsegments;
+            vector<u8string> segments8;
+            vector<u16string> segments16;
+            vector<u32string> segments32;
+            vector<wstring> wsegments;
             TRY(Split()(source8, segments8));
             TRY(Split()(source16, segments16));
             TRY(Split()(source32, segments32));

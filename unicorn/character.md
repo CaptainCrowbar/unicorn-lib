@@ -229,7 +229,7 @@ if it is not part of any block.
     * `u8string BlockInfo::name`
     * `char32_t BlockInfo::first`
     * `char32_t BlockInfo::last`
-* `const std::vector<BlockInfo>& unicode_block_list()`
+* `const vector<BlockInfo>& unicode_block_list()`
 
 The `unicode_block_list()` function returns a list of all Unicode character
 blocks (in code point order).
@@ -379,7 +379,7 @@ character is not numeric, the numeric value will be zero (expressed as `0/1`).
 ## Script properties ##
 
 * `u8string char_script(char32_t c)`
-* `std::vector<u8string> char_script_list(char32_t c)`
+* `vector<u8string> char_script_list(char32_t c)`
 
 These return the principal script associated with a character, or a list of
 scripts (in unspecified order) for characters that are commonly used with

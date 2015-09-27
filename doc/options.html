@@ -242,10 +242,10 @@ the <code>Options</code> object; the <code>version()</code> text is simply the o
 string that was supplied to the <code>Options</code> constructor.</p>
 
 <ul>
-<li><code>template &lt;typename C&gt; bool Options::<strong>parse</strong>(const std::vector&lt;basic_string&lt;C&gt;&gt;&amp; args)</code></li>
+<li><code>template &lt;typename C&gt; bool Options::<strong>parse</strong>(const vector&lt;basic_string&lt;C&gt;&gt;&amp; args)</code></li>
 <li><code>template &lt;typename C&gt; bool Options::<strong>parse</strong>(const basic_string&lt;C&gt;&amp; args)</code></li>
 <li><code>template &lt;typename C&gt; bool Options::<strong>parse</strong>(int argc, C** argv)</code></li>
-<li><code>template &lt;typename C, typename C2&gt; bool Options::<strong>parse</strong>(const std::vector&lt;basic_string&lt;C&gt;&gt;&amp; args, std::basic_ostream&lt;C2&gt;&amp; out, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C, typename C2&gt; bool Options::<strong>parse</strong>(const vector&lt;basic_string&lt;C&gt;&gt;&amp; args, std::basic_ostream&lt;C2&gt;&amp; out, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename C, typename C2&gt; bool Options::<strong>parse</strong>(const basic_string&lt;C&gt;&amp; args, std::basic_ostream&lt;C2&gt;&amp; out, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename C, typename C2&gt; bool Options::<strong>parse</strong>(int argc, C** argv, std::basic_ostream&lt;C2&gt;&amp; out, uint32_t flags = 0)</code></li>
 </ul>
@@ -317,7 +317,7 @@ is true:</p>
 
 <ul>
 <li><code>template &lt;typename T&gt; T Options::<strong>get</strong>(const u8string&amp; name) const</code></li>
-<li><code>template &lt;typename T&gt; std::vector&lt;T&gt; Options::<strong>get_list</strong>(const u8string&amp; name) const</code></li>
+<li><code>template &lt;typename T&gt; vector&lt;T&gt; Options::<strong>get_list</strong>(const u8string&amp; name) const</code></li>
 <li><code>bool Options::<strong>has</strong>(const u8string&amp; name) const</code></li>
 </ul>
 

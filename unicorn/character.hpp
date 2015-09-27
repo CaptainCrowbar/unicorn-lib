@@ -156,7 +156,7 @@ namespace Unicorn {
     };
 
     u8string char_block(char32_t c);
-    const std::vector<BlockInfo>& unicode_block_list();
+    const vector<BlockInfo>& unicode_block_list();
 
     // Case folding properties
 
@@ -222,7 +222,7 @@ namespace Unicorn {
     // Script properties
 
     u8string char_script(char32_t c);
-    std::vector<u8string> char_script_list(char32_t c);
+    vector<u8string> char_script_list(char32_t c);
     u8string script_name(const u8string& abbr);
 
 }

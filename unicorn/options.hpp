@@ -87,20 +87,20 @@ namespace Unicorn {
         u8string help() const;
         u8string version() const { return app_info; }
         template <typename C, typename C2>
-            bool parse(const std::vector<basic_string<C>>& args, std::basic_ostream<C2>& out, uint32_t flags = 0);
+            bool parse(const vector<basic_string<C>>& args, std::basic_ostream<C2>& out, uint32_t flags = 0);
         template <typename C, typename C2>
             bool parse(const basic_string<C>& args, std::basic_ostream<C2>& out, uint32_t flags = 0);
         template <typename C, typename C2>
             bool parse(int argc, C** argv, std::basic_ostream<C2>& out, uint32_t flags = 0);
-        template <typename C> bool parse(const std::vector<basic_string<C>>& args) { return parse(args, std::cout); }
+        template <typename C> bool parse(const vector<basic_string<C>>& args) { return parse(args, std::cout); }
         template <typename C> bool parse(const basic_string<C>& args) { return parse(args, std::cout); }
         template <typename C> bool parse(int argc, C** argv) { return parse(argc, argv, std::cout); }
         template <typename T> T get(const u8string& name) const
             { return UnicornDetail::ArgConv<T>()(str_join(find_values(name), " ")); }
-        template <typename T> std::vector<T> get_list(const u8string& name) const;
+        template <typename T> vector<T> get_list(const u8string& name) const;
         bool has(const u8string& name) const { return find_index(name, true) != npos; }
     private:
-        using string_list = std::vector<u8string>;
+        using string_list = vector<u8string>;
         enum class help_mode { none, version, usage };
         struct option_type {
             string_list values;
@@ -118,7 +118,7 @@ namespace Unicorn {
             bool is_multiple = false;
             bool is_required = false;
         };
-        using option_list = std::vector<option_type>;
+        using option_list = vector<option_type>;
         u8string app_info;
         bool help_auto;
         u8string help_head;
@@ -167,15 +167,15 @@ namespace Unicorn {
     }
 
     template <typename T>
-    std::vector<T> Options::get_list(const u8string& name) const {
+    vector<T> Options::get_list(const u8string& name) const {
         string_list svec = find_values(name);
-        std::vector<T> tvec;
+        vector<T> tvec;
         std::transform(PRI_BOUNDS(svec), append(tvec), UnicornDetail::ArgConv<T>());
         return tvec;
     }
 
     template <typename C, typename C2>
-    bool Options::parse(const std::vector<basic_string<C>>& args, std::basic_ostream<C2>& out, uint32_t flags) {
+    bool Options::parse(const vector<basic_string<C>>& args, std::basic_ostream<C2>& out, uint32_t flags) {
         check_flags(flags);
         string_list u8vec;
         std::transform(PRI_BOUNDS(args), append(u8vec),
@@ -204,7 +204,7 @@ namespace Unicorn {
     template <typename C, typename C2>
     bool Options::parse(int argc, C** argv, std::basic_ostream<C2>& out, uint32_t flags) {
         check_flags(flags);
-        std::vector<basic_string<C>> args(argv, argv + argc);
+        vector<basic_string<C>> args(argv, argv + argc);
         if (flags & opt_quoted)
             return parse(str_join(args, str_chars<C>(U' ')), out, flags);
         else

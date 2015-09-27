@@ -730,7 +730,7 @@ namespace {
     void check_file_system_operations_utf8() {
 
         string d1, d2, f1, f2;
-        std::vector<string> vec;
+        vector<string> vec;
 
         TEST(file_exists("."s));
         TEST(file_exists(".."s));
@@ -884,7 +884,7 @@ namespace {
     void check_file_system_operations_utf16() {
 
         u16string d1, d2, f1, f2;
-        std::vector<u16string> vec;
+        vector<u16string> vec;
 
         TEST(file_exists(u"."s));
         TEST(file_exists(u".."s));
@@ -1038,7 +1038,7 @@ namespace {
     void check_file_system_operations_utf32() {
 
         u32string d1, d2, f1, f2;
-        std::vector<u32string> vec;
+        vector<u32string> vec;
 
         TEST(file_exists(U"."s));
         TEST(file_exists(U".."s));

@@ -870,7 +870,7 @@ namespace {
 
     void check_expand() {
 
-        std::vector<int> tabs {5,10,15,20};
+        vector<int> tabs {5,10,15,20};
 
         const u8string a8 = u8"";
         const u8string b8 = u8"Hello world\tGoodbye";

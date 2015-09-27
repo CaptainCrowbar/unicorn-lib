@@ -290,7 +290,7 @@ namespace {
         u8string s;
         Regex r;
         Irange<MatchIterator> mr;
-        std::vector<u8string> v;
+        vector<u8string> v;
 
         TRY(r = Regex("[a-z]+", rx_caseless));
 
@@ -449,7 +449,7 @@ namespace {
             TEST_EQUAL(m.str(), u"world");
 
             Irange<MatchIterator16> mr;
-            std::vector<u16string> v;
+            vector<u16string> v;
 
             TRY(r = Regex16(u"\\w+"));
             TRY(mr = r.grep(s));
@@ -493,7 +493,7 @@ namespace {
             TEST_EQUAL(m.str(), U"world");
 
             Irange<MatchIterator32> mr;
-            std::vector<u32string> v;
+            vector<u32string> v;
 
             TRY(r = Regex32(U"\\w+"));
             TRY(mr = r.grep(s));
@@ -537,7 +537,7 @@ namespace {
             TEST_EQUAL(m.str(), L"world");
 
             Irange<WideMatchIterator> mr;
-            std::vector<wstring> v;
+            vector<wstring> v;
 
             TRY(r = WideRegex(L"\\w+"));
             TRY(mr = r.grep(s));
@@ -598,7 +598,7 @@ namespace {
         TRY(m = r.search(s1, 15));  TEST(! m.matched());  TEST_EQUAL(m.offset(), npos);  TEST_EQUAL(m.str(), "");
 
         Irange<ByteMatchIterator> mr;
-        std::vector<string> v;
+        vector<string> v;
 
         TRY(r = ByteRegex("\\w+"));
         TRY(mr = r.grep(s1));

@@ -19,7 +19,7 @@ namespace Unicorn {
             };
 
             u8string read_write_flag(char rw, const u8string& context, const u8string& name, uint64_t value) {
-                static std::vector<FlagInfo> table;
+                static vector<FlagInfo> table;
                 static Mutex mutex;
                 MutexLock lock(mutex);
                 if (rw == 'w') {
@@ -53,7 +53,7 @@ namespace Unicorn {
         }
 
         u8string flag_names(const u8string& context, uint64_t flags) {
-            std::vector<u8string> names;
+            vector<u8string> names;
             while (flags) {
                 uint64_t f = 1ull << __builtin_ctzll(flags);
                 names.push_back(flag_name(context, f));

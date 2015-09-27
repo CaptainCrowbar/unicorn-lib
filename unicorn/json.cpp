@@ -348,7 +348,7 @@ namespace Unicorn {
         }
 
         void Element::read_string(const u8string& src, size_t& pos) {
-            auto dst = std::make_unique<u8string>();
+            auto dst = make_unique<u8string>();
             size_t p = pos;
             read_utf8_string(src, p, *dst);
             etype = Json::string;
@@ -358,7 +358,7 @@ namespace Unicorn {
         }
 
         void Element::read_array(const u8string& src, size_t& pos) {
-            auto dst = std::make_unique<Array>();
+            auto dst = make_unique<Array>();
             size_t p = pos + 1;
             expect_ws(src, p, true);
             if (src[p] != ']') {
@@ -379,7 +379,7 @@ namespace Unicorn {
         }
 
         void Element::read_object(const u8string& src, size_t& pos) {
-            auto dst = std::make_unique<Object>();
+            auto dst = make_unique<Object>();
             size_t p = pos + 1;
             expect_ws(src, p, true);
             u8string key;

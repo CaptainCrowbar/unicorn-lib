@@ -887,7 +887,7 @@ namespace {
         TEST_EQUAL(char_block(0x10fffd), "Supplementary Private Use Area-B");
         TEST_EQUAL(char_block(0x110000), "");
 
-        std::vector<BlockInfo> blocks;
+        vector<BlockInfo> blocks;
 
         TRY(blocks = unicode_block_list());
         TEST(! blocks.empty());

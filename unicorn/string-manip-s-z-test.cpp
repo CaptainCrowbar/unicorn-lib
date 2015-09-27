@@ -13,9 +13,9 @@ namespace {
 
     void check_split() {
 
-        std::vector<u8string> v8;
-        std::vector<u16string> v16;
-        std::vector<u32string> v32;
+        vector<u8string> v8;
+        vector<u16string> v16;
+        vector<u32string> v32;
 
         TRY(str_split(""s, overwrite(v8)));                      TEST_EQUAL(v8.size(), 0);  TEST_EQUAL(str_join(v8, "/"), "");
         TRY(str_split("Hello"s, overwrite(v8)));                 TEST_EQUAL(v8.size(), 1);  TEST_EQUAL(str_join(v8, "/"), "Hello");

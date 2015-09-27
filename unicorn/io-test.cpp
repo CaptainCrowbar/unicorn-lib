@@ -29,7 +29,7 @@ namespace {
 
     void check_file_reader() {
 
-        using u8vector = std::vector<u8string>;
+        using u8vector = vector<u8string>;
         u8string s;
         u8vector vec;
         Irange<FileReader> range;
@@ -295,7 +295,7 @@ namespace {
     void check_file_writer() {
 
         string s;
-        std::vector<u32string> vec32;
+        vector<u32string> vec32;
         FileWriter writer;
         TempFile tempfile(testfile);
 

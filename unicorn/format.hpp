@@ -366,8 +366,8 @@ namespace Unicorn {
             size_t width;      // Field width
             char32_t pad;      // Padding character
         };
-        using sequence = std::vector<element>;
-        using string_list = std::vector<string_type>;
+        using sequence = vector<element>;
+        using string_list = vector<string_type>;
         string_type fmt {};
         size_t num = 0;
         sequence seq {};

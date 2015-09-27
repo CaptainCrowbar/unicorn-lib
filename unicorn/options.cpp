@@ -75,7 +75,7 @@ namespace Unicorn {
             text += "$1\n\n"_fmt(help_head);
         text += "Options:\n";
         string_list prefixes, suffixes;
-        std::vector<size_t> lengths;
+        vector<size_t> lengths;
         for (auto& opt: opts) {
             u8string prefix;
             if (opt.is_anon)

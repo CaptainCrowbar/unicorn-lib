@@ -329,9 +329,9 @@ namespace {
 
     void check_join() {
 
-        std::vector<u8string> v8;
-        std::vector<u16string> v16;
-        std::vector<u32string> v32;
+        vector<u8string> v8;
+        vector<u16string> v16;
+        vector<u32string> v32;
 
         v8.clear();                      TEST_EQUAL(str_join(v8), "");
         v8 = {"Hello"};                  TEST_EQUAL(str_join(v8), "Hello");

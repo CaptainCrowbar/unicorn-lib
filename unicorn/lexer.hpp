@@ -52,11 +52,11 @@ namespace Unicorn {
     public:
         SyntaxError(const u8string& text, size_t offset, const u8string& message = "Syntax error"):
             std::runtime_error(assemble(text, offset, message)),
-            bug(std::make_shared<u8string>(text)), ofs(offset) {}
+            bug(make_shared<u8string>(text)), ofs(offset) {}
         const char* text() const noexcept { return bug->data(); }
         size_t offset() const noexcept { return ofs; }
     private:
-        std::shared_ptr<u8string> bug;
+        shared_ptr<u8string> bug;
         size_t ofs;
         static u8string assemble(const u8string& text, size_t offset, const u8string& message);
     };
@@ -161,8 +161,8 @@ namespace Unicorn {
             int tag;
             callback_type call;
         };
-        using element_list = std::vector<element>;
-        using element_table = std::vector<element_list>;
+        using element_list = vector<element>;
+        using element_table = vector<element_list>;
         element_list lexemes;
         element_table prefix_table;
         void add_exact(int tag, const string_type& pattern);

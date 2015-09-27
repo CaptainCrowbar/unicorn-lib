@@ -27,7 +27,7 @@ namespace {
         Lexer::token_iterator it;
         Lexer::token_range range;
         u8string s, t;
-        std::vector<u8string> v;
+        vector<u8string> v;
 
         TRY(range = lex(s));
         TEST(std::begin(range) == std::end(range));
@@ -124,7 +124,7 @@ namespace {
             Lexer16::token_iterator it;
             Lexer16::token_range range;
             u16string s;
-            std::vector<u16string> v;
+            vector<u16string> v;
 
             TRY(lex.match(0, u"\\s+"));
             TRY(lex.match(0, u"#[^\\n]*"));
@@ -183,7 +183,7 @@ namespace {
             Lexer32::token_iterator it;
             Lexer32::token_range range;
             u32string s;
-            std::vector<u32string> v;
+            vector<u32string> v;
 
             TRY(lex.match(0, U"\\s+"));
             TRY(lex.match(0, U"#[^\\n]*"));
@@ -242,7 +242,7 @@ namespace {
             WideLexer::token_iterator it;
             WideLexer::token_range range;
             wstring s;
-            std::vector<wstring> v;
+            vector<wstring> v;
 
             TRY(lex.match(0, L"\\s+"));
             TRY(lex.match(0, L"#[^\\n]*"));
@@ -299,7 +299,7 @@ namespace {
         ByteLexer::token_iterator it;
         ByteLexer::token_range range;
         string s;
-        std::vector<string> v;
+        vector<string> v;
 
         TRY(lex.match(0, "\\s+"));
         TRY(lex.match(0, "#[^\\n]*"));

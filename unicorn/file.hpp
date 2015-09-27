@@ -54,7 +54,7 @@ namespace Unicorn {
         size_t files() const noexcept { return names ? names->size() : size_t(0); }
         int error() const noexcept { return err; }
     private:
-        std::shared_ptr<std::vector<NativeString>> names;
+        shared_ptr<vector<NativeString>> names;
         int err;
         static u8string assemble(int error, const u8string& files);
         template <typename... Names> static u8string assemble_files(const Names&... files);
@@ -63,7 +63,7 @@ namespace Unicorn {
     template <typename... More>
     FileError::FileError(int error, const NativeString& file, const More&... more):
     std::runtime_error(assemble(error, assemble_files(file, more...))),
-    names(std::make_shared<std::vector<NativeString>>()),
+    names(make_shared<vector<NativeString>>()),
     err(error) {
         *names = {file, more...};
     }
@@ -340,7 +340,7 @@ namespace Unicorn {
             bool equal(const DirectoryStage1& rhs) const noexcept { return impl == rhs.impl; }
         private:
             struct impl_type;
-            std::shared_ptr<impl_type> impl;
+            shared_ptr<impl_type> impl;
         };
 
         class DirectoryStage2:

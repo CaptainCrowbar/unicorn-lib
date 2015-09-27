@@ -20,12 +20,12 @@ namespace Unicorn {
         IOError(): std::runtime_error(assemble()), name(), err(0) {}
         explicit IOError(const char* msg): std::runtime_error(assemble(msg)), name(), err(0) {}
         template <typename C> IOError(const char* msg, const basic_string<C>& file, int error = 0):
-            std::runtime_error(assemble(msg, to_utf8(file), error)), name(std::make_shared<NativeString>()), err(error)
+            std::runtime_error(assemble(msg, to_utf8(file), error)), name(make_shared<NativeString>()), err(error)
             { recode(file, *name); }
         const NativeCharacter* file() const noexcept { static const NativeCharacter c = 0; return name ? name->data() : &c; }
         int error() const noexcept { return err; }
     private:
-        std::shared_ptr<NativeString> name;
+        shared_ptr<NativeString> name;
         int err;
         static u8string assemble(const char* msg = nullptr, const u8string& file = {}, int error = 0);
     };
@@ -102,7 +102,7 @@ namespace Unicorn {
         size_t line() const noexcept;
     private:
         struct impl_type;
-        std::shared_ptr<impl_type> impl;
+        shared_ptr<impl_type> impl;
         void init(const NativeString& file, uint32_t flags, const u8string& enc, const u8string& eol);
         void fixline();
         void getline();
@@ -144,7 +144,7 @@ namespace Unicorn {
         void flush();
     private:
         struct impl_type;
-        std::shared_ptr<impl_type> impl;
+        shared_ptr<impl_type> impl;
         void init(const NativeString& file, uint32_t flags, const u8string& enc);
         void fixtext(u8string& str) const;
         void write(u8string str);

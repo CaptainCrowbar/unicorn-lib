@@ -39,7 +39,7 @@ namespace Unicorn {
 
     namespace {
 
-        using SharedFile = std::shared_ptr<FILE>;
+        using SharedFile = shared_ptr<FILE>;
 
         void checked_fclose(FILE* f) { if (f) fclose(f); }
 
@@ -99,7 +99,7 @@ namespace Unicorn {
             | io_nofail | io_notempty | io_stdin | io_striplf | io_striptws | io_stripws, "file io");
         UnicornDetail::exclusive_flags(flags, err_replace | err_throw, "file io");
         UnicornDetail::exclusive_flags(flags, io_crlf | io_lf | io_striplf | io_striptws | io_stripws, "file io");
-        impl = std::make_shared<impl_type>();
+        impl = make_shared<impl_type>();
         impl->name = file;
         impl->flags = flags;
         impl->enc = enc;
@@ -188,7 +188,7 @@ namespace Unicorn {
         uint32_t flags;
         u8string enc;
         SharedFile handle;
-        std::shared_ptr<Mutex> mutex;
+        shared_ptr<Mutex> mutex;
     };
 
     void FileWriter::flush() {
@@ -210,7 +210,7 @@ namespace Unicorn {
         UnicornDetail::exclusive_flags(flags, io_crlf | io_lf, "file io");
         UnicornDetail::exclusive_flags(flags, io_linebuf | io_unbuf, "file io");
         UnicornDetail::exclusive_flags(flags, io_stderr | io_stdout, "file io");
-        impl = std::make_shared<impl_type>();
+        impl = make_shared<impl_type>();
         impl->name = file;
         impl->flags = flags;
         impl->enc = enc;
@@ -228,7 +228,7 @@ namespace Unicorn {
             else if (impl->handle.get() == stderr)
                 impl->mutex.reset(&stderr_mutex, do_nothing);
             else
-                impl->mutex = std::make_shared<Mutex>();
+                impl->mutex = make_shared<Mutex>();
         }
     }
 

@@ -171,7 +171,7 @@ namespace Unicorn {
             static const auto match_integer = "\\d+"_re;
             static const auto match_unicode = "(?:cs|x)?(?:iso10646)?((?:ucs|utf)\\d+)(be|le|internal|swapped)?"_re;
             #if defined(PRI_TARGET_UNIX)
-                static const std::vector<u8string> codepage_prefixes {"cp","dos","ibm","ms","windows-"};
+                static const vector<u8string> codepage_prefixes {"cp","dos","ibm","ms","windows-"};
             #endif
             // Check for UTF encodings
             auto smashed = smash_name(name, true);
@@ -492,7 +492,7 @@ namespace Unicorn {
             }
 
             void native_export(const wstring& src, string& dst, uint32_t tag, uint32_t flags) {
-                std::vector<uint32_t> tryflags;
+                vector<uint32_t> tryflags;
                 if (flags & err_throw)
                     tryflags = {WC_NO_BEST_FIT_CHARS | WC_ERR_INVALID_CHARS, WC_ERR_INVALID_CHARS, WC_NO_BEST_FIT_CHARS, 0};
                 else

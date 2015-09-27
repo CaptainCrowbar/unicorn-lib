@@ -38,7 +38,7 @@ namespace Unicorn {
         };
 
         class Element;
-        using Array = std::vector<Element>;
+        using Array = vector<Element>;
         using Object = std::map<u8string, Element>;
 
         class Element:

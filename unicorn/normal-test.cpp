@@ -24,7 +24,7 @@ using namespace Unicorn;
 
 #define NORM_TEST_TYPE(type) \
     do { \
-        std::vector<type> col(5); \
+        vector<type> col(5); \
         for (size_t i = 0; i < 5; ++i) \
             recode(unicode[i], col[i]); \
         NORM_TEST(type, NFC, 0, 1); \
@@ -67,8 +67,8 @@ namespace {
     void do_main_tests(size_t b, size_t e) {
         e = std::min(e, range_count(normalization_test_table));
         b = std::min(b, e);
-        std::vector<u8string> hexcodes;
-        std::vector<u32string> unicode;
+        vector<u8string> hexcodes;
+        vector<u32string> unicode;
         auto row_iter = std::begin(normalization_test_table) + b;
         for (size_t line = b; line < e; ++line) {
             auto& row = *row_iter++;
@@ -89,7 +89,7 @@ namespace {
         }
     }
 
-    void do_identity_tests(const std::vector<char32_t>& uchars, size_t b, size_t e) {
+    void do_identity_tests(const vector<char32_t>& uchars, size_t b, size_t e) {
         e = std::min(e, uchars.size());
         b = std::min(b, e);
         for (size_t i = b; i < e; ++i) {
@@ -106,7 +106,7 @@ namespace {
 TEST_MODULE(unicorn, normal) {
 
     auto norm_tests = range_count(normalization_test_table);
-    std::vector<char32_t> identity_chars;
+    vector<char32_t> identity_chars;
     for (auto&& row: normalization_identity_table)
         for (char32_t u = row.key; u <= row.value; ++u)
             identity_chars.push_back(u);
@@ -121,15 +121,15 @@ TEST_MODULE(unicorn, normal) {
 
         auto thread_count = Thread::cpu_threads();
         auto per_thread = norm_tests / thread_count + 1;
-        std::vector<std::shared_ptr<Thread>> threads;
+        vector<shared_ptr<Thread>> threads;
         for (size_t base = 0; base < norm_tests; base += per_thread)
-            threads.push_back(std::make_shared<Thread>([=] { do_main_tests(base, base + per_thread); }));
+            threads.push_back(make_shared<Thread>([=] { do_main_tests(base, base + per_thread); }));
         for (auto& t: threads)
             t->wait();
         threads.clear();
         per_thread = identity_chars.size() / thread_count + 1;
         for (size_t base = 0; base < identity_chars.size(); base += per_thread)
-            threads.push_back(std::make_shared<Thread>([=] { do_identity_tests(identity_chars, base, base + per_thread); }));
+            threads.push_back(make_shared<Thread>([=] { do_identity_tests(identity_chars, base, base + per_thread); }));
         for (auto& t: threads)
             t->wait();
 

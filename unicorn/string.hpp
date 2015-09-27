@@ -831,8 +831,8 @@ namespace Unicorn {
     namespace UnicornDetail {
 
         template <typename C>
-        basic_string<C> expand_tabs(const basic_string<C>& str, const std::vector<size_t>& tabs, uint32_t flags) {
-            std::vector<size_t> xtabs = {0};
+        basic_string<C> expand_tabs(const basic_string<C>& str, const vector<size_t>& tabs, uint32_t flags) {
+            vector<size_t> xtabs = {0};
             for (auto t: tabs)
                 if (t > xtabs.back())
                     xtabs.push_back(t);
@@ -876,13 +876,13 @@ namespace Unicorn {
 
     template <typename C, typename IntList>
     basic_string<C> str_expand_tabs(const basic_string<C>& str, const IntList& tabs, uint32_t flags = 0) {
-        std::vector<size_t> tv(PRI_BOUNDS(tabs));
+        vector<size_t> tv(PRI_BOUNDS(tabs));
         return UnicornDetail::expand_tabs(str, tv, flags);
     }
 
     template <typename C, typename IntType>
     basic_string<C> str_expand_tabs(const basic_string<C>& str, std::initializer_list<IntType> tabs, uint32_t flags = 0) {
-        std::vector<size_t> tv(PRI_BOUNDS(tabs));
+        vector<size_t> tv(PRI_BOUNDS(tabs));
         return UnicornDetail::expand_tabs(str, tv, flags);
     }
 

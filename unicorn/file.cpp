@@ -147,7 +147,7 @@ namespace Unicorn {
             }
 
             void DirectoryStage1::init1(const string& dir) {
-                impl = std::make_shared<impl_type>();
+                impl = make_shared<impl_type>();
                 memset(&impl->entry, 0, sizeof(impl->entry));
                 memset(impl->padding, 0, sizeof(impl->padding));
                 if (dir.empty())
@@ -312,7 +312,7 @@ namespace Unicorn {
             void DirectoryStage1::init1(const wstring& dir) {
                 if (! file_is_directory(dir))
                     return;
-                impl = std::make_shared<impl_type>();
+                impl = make_shared<impl_type>();
                 memset(&impl->info, 0, sizeof(impl->info));
                 impl->first = true;
                 auto glob = dir + L"\\*";

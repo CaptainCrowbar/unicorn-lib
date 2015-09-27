@@ -65,7 +65,7 @@ namespace Unicorn {
 
     namespace {
 
-        using CategoryTable = std::vector<std::pair<uint16_t, uint16_t>>;
+        using CategoryTable = vector<std::pair<uint16_t, uint16_t>>;
 
         std::function<bool(char32_t)> make_category_function(const CategoryTable& table) {
             return [=] (char32_t c) {
@@ -200,7 +200,7 @@ namespace Unicorn {
     namespace {
 
         class BlockList:
-        public std::vector<BlockInfo> {
+        public vector<BlockInfo> {
         public:
             BlockList() {
                 for (auto& kv: UnicornDetail::blocks_table) {
@@ -218,7 +218,7 @@ namespace Unicorn {
         return cstr(sparse_table_lookup(UnicornDetail::blocks_table, c));
     }
 
-    const std::vector<BlockInfo>& unicode_block_list() {
+    const vector<BlockInfo>& unicode_block_list() {
         static const BlockList blocks;
         return blocks;
     }
@@ -1001,15 +1001,15 @@ namespace Unicorn {
         class ScriptExtensionMap {
         public:
             ScriptExtensionMap();
-            std::vector<u8string> operator[](const char* cp) const;
+            vector<u8string> operator[](const char* cp) const;
         private:
-            std::unordered_map<const char*, std::vector<u8string>> map;
+            std::unordered_map<const char*, vector<u8string>> map;
         };
 
         ScriptExtensionMap::ScriptExtensionMap() {
             for (auto& kv: UnicornDetail::script_extensions_table) {
                 if (kv.value) {
-                    std::vector<u8string> scripts;
+                    vector<u8string> scripts;
                     u8string list(kv.value);
                     for (size_t i = 0; i < list.size(); i += 5)
                         scripts.push_back(list.substr(i, 4));
@@ -1018,7 +1018,7 @@ namespace Unicorn {
             }
         }
 
-        std::vector<u8string> ScriptExtensionMap::operator[](const char* cp) const {
+        vector<u8string> ScriptExtensionMap::operator[](const char* cp) const {
             auto i = map.find(cp);
             if (i == map.end())
                 return {};
@@ -1032,7 +1032,7 @@ namespace Unicorn {
         return decode_script(sparse_table_lookup(UnicornDetail::scripts_table, c));
     }
 
-    std::vector<u8string> char_script_list(char32_t c) {
+    vector<u8string> char_script_list(char32_t c) {
         static const ScriptExtensionMap map;
         auto cp = sparse_table_lookup(UnicornDetail::script_extensions_table, c);
         if (cp)

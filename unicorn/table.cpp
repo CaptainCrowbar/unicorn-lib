@@ -51,7 +51,7 @@ namespace Unicorn {
             cells.push_back({});
     }
 
-    void Table::write_table(const layout_spec& spec, std::vector<u8string>& lines) const {
+    void Table::write_table(const layout_spec& spec, vector<u8string>& lines) const {
         const size_t ditto_size = str_length(spec.ditto, spec.flags),
             empty_size = str_length(spec.empty, spec.flags);
         lines.resize(cells.size(), u8string(spec.margin, ' '));

@@ -128,7 +128,7 @@ namespace Unicorn {
         struct MatchInfo {
             using string_type = basic_string<C>;
             using pcre_ref = PcreRef<C>;
-            std::vector<int> ofs {};
+            vector<int> ofs {};
             uint32_t fset {};
             pcre_ref ref {};
             int status {-1};
@@ -324,15 +324,15 @@ namespace Unicorn {
     public std::runtime_error {
     public:
         RegexError(const u8string& pattern, int error, const u8string& message):
-            std::runtime_error(assemble(pattern, error, message)), pat(std::make_shared<u8string>(pattern)),
-            err(error), msg(std::make_shared<u8string>(message)) {}
+            std::runtime_error(assemble(pattern, error, message)), pat(make_shared<u8string>(pattern)),
+            err(error), msg(make_shared<u8string>(message)) {}
         const char* pattern() const noexcept { return pat->data(); }
         int error() const noexcept { return err; }
         const char* message() const noexcept { return msg->data(); }
     private:
-        std::shared_ptr<u8string> pat;
+        shared_ptr<u8string> pat;
         int err;
-        std::shared_ptr<u8string> msg;
+        shared_ptr<u8string> msg;
         static u8string assemble(const u8string& pattern, int error, u8string message);
         static u8string translate(int error);
     };
@@ -574,7 +574,7 @@ namespace Unicorn {
             int index;
             string_type text;
         };
-        using sequence = std::vector<element>;
+        using sequence = vector<element>;
         string_type fmt;
         regex_type reg;
         sequence seq;
@@ -645,7 +645,7 @@ namespace Unicorn {
             block_flag = tag;
             current = &block;
         };
-        std::vector<match_type> matches;
+        vector<match_type> matches;
         for (auto& m: reg.grep(text)) {
             matches.push_back(m);
             if (matches.size() >= n)

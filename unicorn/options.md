@@ -151,10 +151,10 @@ and `"--version"` options. The `help()` text is constructed automatically by
 the `Options` object; the `version()` text is simply the original `info`
 string that was supplied to the `Options` constructor.
 
-* `template <typename C> bool Options::parse(const std::vector<basic_string<C>>& args)`
+* `template <typename C> bool Options::parse(const vector<basic_string<C>>& args)`
 * `template <typename C> bool Options::parse(const basic_string<C>& args)`
 * `template <typename C> bool Options::parse(int argc, C** argv)`
-* `template <typename C, typename C2> bool Options::parse(const std::vector<basic_string<C>>& args, std::basic_ostream<C2>& out, uint32_t flags = 0)`
+* `template <typename C, typename C2> bool Options::parse(const vector<basic_string<C>>& args, std::basic_ostream<C2>& out, uint32_t flags = 0)`
 * `template <typename C, typename C2> bool Options::parse(const basic_string<C>& args, std::basic_ostream<C2>& out, uint32_t flags = 0)`
 * `template <typename C, typename C2> bool Options::parse(int argc, C** argv, std::basic_ostream<C2>& out, uint32_t flags = 0)`
 
@@ -199,7 +199,7 @@ Behaviour is unspecified if `parse()` is called more than once on the same
 `Options` object.
 
 * `template <typename T> T Options::get(const u8string& name) const`
-* `template <typename T> std::vector<T> Options::get_list(const u8string& name) const`
+* `template <typename T> vector<T> Options::get_list(const u8string& name) const`
 * `bool Options::has(const u8string& name) const`
 
 These return information about the options and arguments found in the command line.
