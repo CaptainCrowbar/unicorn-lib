@@ -199,7 +199,7 @@ namespace Unicorn {
     }
 
     void FileWriter::init(const NativeString& file, uint32_t flags, const u8string& enc) {
-        static const NativeString dashfile{NativeCharacter('-')};
+        static const NativeString dashfile{PRI_CHAR('-', NativeCharacter)};
         static Mutex stdout_mutex;
         static Mutex stderr_mutex;
         UnicornDetail::allow_flags(flags, err_replace | err_throw | io_append | io_autoline | io_bom

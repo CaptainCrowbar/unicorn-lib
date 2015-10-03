@@ -847,7 +847,7 @@ namespace Unicorn {
                 auto u1 = line_begin;
                 size_t col = 0;
                 while (u1 != line_end) {
-                    auto cut = std::find(str.begin() + u1.offset(), str.begin() + line_end.offset(), C('\t'));
+                    auto cut = std::find(str.begin() + u1.offset(), str.begin() + line_end.offset(), PRI_CHAR('\t', C));
                     auto u2 = utf_iterator(str, cut - str.begin());
                     str_append(result, u1, u2);
                     col += str_length(u1, u2, flags);
@@ -860,7 +860,7 @@ namespace Unicorn {
                         tab_col = xtabs.back() + delta * ((col - xtabs.back()) / delta + 1);
                     else
                         tab_col = *t;
-                    result.append(tab_col - col, C(' '));
+                    result.append(tab_col - col, PRI_CHAR(' ', C));
                     col = tab_col;
                     u1 = std::next(u2);
                 }
@@ -1353,7 +1353,7 @@ namespace Unicorn {
                     break;
                 i = std::find_if_not(j, end, char_is_white_space);
                 if (! trim || i != end)
-                    str_append_char(dst, C(' '));
+                    str_append_char(dst, PRI_CHAR(' ', C));
             }
         }
 
@@ -1767,7 +1767,7 @@ namespace Unicorn {
                 result += newline;
                 auto c = *j;
                 ++j;
-                if (j != e && c == C('\r') && *j == C('\n'))
+                if (j != e && c == PRI_CHAR('\r', C) && *j == PRI_CHAR('\n', C))
                     ++j;
             }
             i = j;
@@ -1787,7 +1787,7 @@ namespace Unicorn {
 
     template <typename C>
     basic_string<C> str_unify_lines(const basic_string<C>& str) {
-        return str_unify_lines(str, basic_string<C>(1, C('\n')));
+        return str_unify_lines(str, basic_string<C>(1, PRI_CHAR('\n', C)));
     }
 
     template <typename C>
@@ -1808,7 +1808,7 @@ namespace Unicorn {
 
     template <typename C>
     void str_unify_lines_in(basic_string<C>& str) {
-        str_unify_lines_in(str, basic_string<C>(1, C('\n')));
+        str_unify_lines_in(str, basic_string<C>(1, PRI_CHAR('\n', C)));
     }
 
     namespace UnicornDetail {
@@ -1822,7 +1822,7 @@ namespace Unicorn {
                 if (char_is_line_break(c))
                     ++linebreaks;
                 ++k;
-                if (k != j && c == C('\r') && *k == C('\n'))
+                if (k != j && c == PRI_CHAR('\r', C) && *k == PRI_CHAR('\n', C))
                     ++k;
                 if (char_is_inline_space(c))
                     ++tailspaces;
@@ -1851,9 +1851,9 @@ namespace Unicorn {
         size_t spacing = flags & wide_context ? 2 : 1;
         string_type newline, result;
         if (flags & wrap_crlf)
-            newline = {C('\r'), C('\n')};
+            newline = {PRI_CHAR('\r', C), PRI_CHAR('\n', C)};
         else
-            newline = {C('\n')};
+            newline = {PRI_CHAR('\n', C)};
         auto range = utf_range(str);
         auto i = std::begin(range), e = std::end(range);
         size_t linewidth = 0, words = 0, linebreaks = 0, spaces = margin1, tailspaces = 0;
@@ -1874,7 +1874,7 @@ namespace Unicorn {
             if ((flags & wrap_preserve) && linebreaks >= 1 && tailspaces >= 1) {
                 if (words > 0)
                     result += newline;
-                result.append(tailspaces, C(' '));
+                result.append(tailspaces, PRI_CHAR(' ', C));
                 j = std::find_if(i, e, char_is_line_break);
                 result += str_unify_lines(u_str(i, j), newline);
                 result += newline;
@@ -1888,12 +1888,12 @@ namespace Unicorn {
                         result += newline;
                         words = linewidth = 0;
                     } else {
-                        result += C(' ');
+                        result += PRI_CHAR(' ', C);
                         linewidth += spacing;
                     }
                 }
                 if (words == 0) {
-                    result.append(spaces, C(' '));
+                    result.append(spaces, PRI_CHAR(' ', C));
                     linewidth = spaces * spacing;
                     spaces = margin2;
                 }

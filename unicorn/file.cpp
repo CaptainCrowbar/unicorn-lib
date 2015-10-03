@@ -357,8 +357,8 @@ namespace Unicorn {
         }
 
         void DirectoryStage2::next2() {
-            static const NativeString link1(1, NativeCharacter('.'));
-            static const NativeString link2(2, NativeCharacter('.'));
+            static const NativeString link1(1, PRI_CHAR('.', NativeCharacter));
+            static const NativeString link2(2, PRI_CHAR('.', NativeCharacter));
             current.clear();
             for (;;) {
                 next1();

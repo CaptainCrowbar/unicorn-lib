@@ -242,16 +242,16 @@ namespace Unicorn {
         template <typename C>
         char32_t decode_escape(C c) {
             switch (c) {
-                case C('0'): return U'\0';
-                case C('a'): return U'\a';
-                case C('b'): return U'\b';
-                case C('e'): return 0x1b;
-                case C('f'): return U'\f';
-                case C('n'): return U'\n';
-                case C('r'): return U'\r';
-                case C('t'): return U'\t';
-                case C('v'): return U'\v';
-                default: return as_uchar(c);
+                case PRI_CHAR('0', C):  return U'\0';
+                case PRI_CHAR('a', C):  return U'\a';
+                case PRI_CHAR('b', C):  return U'\b';
+                case PRI_CHAR('e', C):  return 0x1b;
+                case PRI_CHAR('f', C):  return U'\f';
+                case PRI_CHAR('n', C):  return U'\n';
+                case PRI_CHAR('r', C):  return U'\r';
+                case PRI_CHAR('t', C):  return U'\t';
+                case PRI_CHAR('v', C):  return U'\v';
+                default:                return as_uchar(c);
             }
         }
 
@@ -863,36 +863,36 @@ namespace Unicorn {
             static constexpr const char* hexdigits = "0123456789abcdef";
             switch (c) {
                 case 0:
-                    dst += C('\\');
-                    dst += C('0');
+                    dst += PRI_CHAR('\\', C);
+                    dst += PRI_CHAR('0', C);
                     break;
-                case C('\t'):
-                    dst += C('\\');
-                    dst += C('t');
+                case PRI_CHAR('\t', C):
+                    dst += PRI_CHAR('\\', C);
+                    dst += PRI_CHAR('t', C);
                     break;
-                case C('\n'):
-                    dst += C('\\');
-                    dst += C('n');
+                case PRI_CHAR('\n', C):
+                    dst += PRI_CHAR('\\', C);
+                    dst += PRI_CHAR('n', C);
                     break;
-                case C('\f'):
-                    dst += C('\\');
-                    dst += C('f');
+                case PRI_CHAR('\f', C):
+                    dst += PRI_CHAR('\\', C);
+                    dst += PRI_CHAR('f', C);
                     break;
-                case C('\r'):
-                    dst += C('\\');
-                    dst += C('r');
+                case PRI_CHAR('\r', C):
+                    dst += PRI_CHAR('\\', C);
+                    dst += PRI_CHAR('r', C);
                     break;
-                case C('\"'): case C('$'): case C('\''): case C('('): case C(')'):
-                case C('*'): case C('+'): case C('.'): case C('?'): case C('['):
-                case C('\\'): case C(']'): case C('^'): case C('{'): case C('|'):
-                case C('}'):
-                    dst += C('\\');
+                case PRI_CHAR('\"', C): case PRI_CHAR('$', C): case PRI_CHAR('\'', C): case PRI_CHAR('(', C): case PRI_CHAR(')', C):
+                case PRI_CHAR('*', C): case PRI_CHAR('+', C): case PRI_CHAR('.', C): case PRI_CHAR('?', C): case PRI_CHAR('[', C):
+                case PRI_CHAR('\\', C): case PRI_CHAR(']', C): case PRI_CHAR('^', C): case PRI_CHAR('{', C): case PRI_CHAR('|', C):
+                case PRI_CHAR('}', C):
+                    dst += PRI_CHAR('\\', C);
                     dst += c;
                     break;
                 default:
                     if (as_uchar(c) <= 31 || c == 127) {
-                        dst += C('\\');
-                        dst += C('x');
+                        dst += PRI_CHAR('\\', C);
+                        dst += PRI_CHAR('x', C);
                         dst += static_cast<C>(hexdigits[(c >> 4) & 15]);
                         dst += static_cast<C>(hexdigits[c & 15]);
                     } else {

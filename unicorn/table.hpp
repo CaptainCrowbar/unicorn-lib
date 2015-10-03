@@ -62,7 +62,7 @@ namespace Unicorn {
         std::basic_string<C> result;
         for (auto& line: lines) {
             result += recode<C>(line);
-            result += C('\n');
+            result += PRI_CHAR('\n', C);
         }
         return result;
     }
@@ -73,7 +73,7 @@ namespace Unicorn {
         vector<u8string> lines;
         write_table(spec, lines);
         for (auto& line: lines)
-            out << recode<C>(line) << C('\n');
+            out << recode<C>(line) << PRI_CHAR('\n', C);
     }
 
     template <typename... Args>

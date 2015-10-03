@@ -90,7 +90,7 @@ namespace Unicorn {
                 return file;
             #else
                 auto nfile = file;
-                std::replace(PRI_BOUNDS(nfile), C('/'), C('\\'));
+                std::replace(PRI_BOUNDS(nfile), PRI_CHAR('/', C), PRI_CHAR('\\', C));
                 return nfile;
             #endif
         }
@@ -195,10 +195,10 @@ namespace Unicorn {
         auto nfile = UnicornDetail::normalize_file(file);
         auto cut = nfile.find_last_of(static_cast<C>(file_delimiter));
         #if defined(PRI_TARGET_NATIVE_WINDOWS)
-            if (cut == 2 && file[1] == C(':')
+            if (cut == 2 && file[1] == PRI_CHAR(':', C)
                     && char_is_ascii(file[0]) && ascii_isalpha(char(file[0])))
                 return {nfile.substr(0, 3), nfile.substr(3, npos)};
-            else if (cut == npos && file[1] == C(':')
+            else if (cut == npos && file[1] == PRI_CHAR(':', C)
                     && char_is_ascii(file[0]) && ascii_isalpha(char(file[0])))
                 return {nfile.substr(0, 2), nfile.substr(2, npos)};
         #endif
@@ -216,7 +216,7 @@ namespace Unicorn {
         auto cut = nfile.find_last_of(static_cast<C>(file_delimiter));
         #if defined(PRI_TARGET_NATIVE_WINDOWS)
             if (cut == npos && char_is_ascii(file[0]) && ascii_isalpha(char(file[0]))
-                    && file[1] == C(':'))
+                    && file[1] == PRI_CHAR(':', C))
                 cut = 1;
         #endif
         if (cut == npos)
@@ -225,7 +225,7 @@ namespace Unicorn {
             ++cut;
         if (cut >= nfile.size())
             return {};
-        auto dot = nfile.find_last_of(C('.'));
+        auto dot = nfile.find_last_of(PRI_CHAR('.', C));
         if (dot > cut && dot != npos)
             return {nfile.substr(cut, dot - cut), nfile.substr(dot, npos)};
         else
