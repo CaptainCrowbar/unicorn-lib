@@ -62,7 +62,10 @@ Byte order mark and replacement character in UTF-8.
 * `constexpr size_t max_compatibility_decomposition  = 18  = Maximum length of a compatibility decomposition`
 
 The maximum number of characters that a single character can expand into,
-under case mapping or decomposition.
+under case mapping or decomposition. Note that these represent the maximum
+size of a single decomposition step; decomposition is normally applied
+recursively, so a single character may end up exceeding these sizes after the
+complete decomposition process has been applied.
 
 ## Basic character functions ##
 

@@ -76,7 +76,10 @@ and their basic properties.</p>
 </ul>
 
 <p>The maximum number of characters that a single character can expand into,
-under case mapping or decomposition.</p>
+under case mapping or decomposition. Note that these represent the maximum
+size of a single decomposition step; decomposition is normally applied
+recursively, so a single character may end up exceeding these sizes after the
+complete decomposition process has been applied.</p>
 
 <h2 id="basiccharacterfunctions">Basic character functions</h2>
 
