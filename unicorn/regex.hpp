@@ -251,7 +251,7 @@ namespace Unicorn {
                 case PRI_CHAR('r', C):  return U'\r';
                 case PRI_CHAR('t', C):  return U'\t';
                 case PRI_CHAR('v', C):  return U'\v';
-                default:                return as_uchar(c);
+                default:                return char_to_uint(c);
             }
         }
 
@@ -890,7 +890,7 @@ namespace Unicorn {
                     dst += c;
                     break;
                 default:
-                    if (as_uchar(c) <= 31 || c == 127) {
+                    if (char_to_uint(c) <= 31 || c == 127) {
                         dst += PRI_CHAR('\\', C);
                         dst += PRI_CHAR('x', C);
                         dst += static_cast<C>(hexdigits[(c >> 4) & 15]);

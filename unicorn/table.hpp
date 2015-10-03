@@ -17,13 +17,12 @@ namespace Unicorn {
         static constexpr Kwarg<bool> unfill = {};
         Table(): formats(), cells(1) {}
         template <typename T> Table& operator<<(const T& t);
-        Table& operator<<(char c) { return *this << as_uchar(c); }
-        Table& operator<<(char16_t c) { return *this << as_uchar(c); }
-        Table& operator<<(char32_t c);
-        Table& operator<<(wchar_t c) { return *this << as_uchar(c); }
+        Table& operator<<(char c) { character_code(char_to_uint(c)); return *this; }
+        Table& operator<<(char16_t c) { character_code(char_to_uint(c)); return *this; }
+        Table& operator<<(char32_t c) { character_code(c); return *this; }
+        Table& operator<<(wchar_t c) { character_code(char_to_uint(c)); return *this; }
         void clear() noexcept { cells.clear(); cells.resize(1); formats.clear(); }
-        template <typename... FS> void format(const u8string& f, const FS&... fs)
-            { format(f); format(fs...); }
+        template <typename... FS> void format(const u8string& f, const FS&... fs) { format(f); format(fs...); }
         void format(const u8string& f) { formats.push_back(Unicorn::format(f)); }
         template <typename C, typename... Args> std::basic_string<C> as_string(const Args&... args) const;
         template <typename... Args> u8string str(const Args&... args) const { return as_string<char>(args...); }
@@ -31,12 +30,15 @@ namespace Unicorn {
     private:
         struct layout_spec {
             uint32_t flags = grapheme_units;
-            u8string ditto = "''", empty = "--";
-            size_t margin = 0, spacing = 2;
+            u8string ditto = "''";
+            u8string empty = "--";
+            size_t margin = 0;
+            size_t spacing = 2;
             bool unfill = false;
         };
         vector<Format> formats;
         vector<vector<u8string>> cells;
+        void character_code(char32_t c);
         void force_break();
         template <typename... Args> static layout_spec parse_args(const Args&... args);
         void write_table(const layout_spec& spec, vector<u8string>& lines) const;

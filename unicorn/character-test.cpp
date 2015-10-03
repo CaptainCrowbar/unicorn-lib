@@ -15,23 +15,6 @@ namespace {
 
     void check_basic_character_functions() {
 
-        TEST_EQUAL(as_uchar('\0'), U'\0');
-        TEST_EQUAL(as_uchar('A'), U'A');
-        TEST_EQUAL(as_uchar('\xff'), U'\u00ff');
-        TEST_EQUAL(as_uchar(u'\0'), U'\0');
-        TEST_EQUAL(as_uchar(u'A'), U'A');
-        TEST_EQUAL(as_uchar(u'\xff'), U'\u00ff');
-        TEST_EQUAL(as_uchar(u'\uf000'), U'\uf000');
-        TEST_EQUAL(as_uchar(U'\0'), U'\0');
-        TEST_EQUAL(as_uchar(U'A'), U'A');
-        TEST_EQUAL(as_uchar(U'\xff'), U'\u00ff');
-        TEST_EQUAL(as_uchar(U'\uf000'), U'\uf000');
-        TEST_EQUAL(as_uchar(U'\U0010f000'), U'\U0010f000');
-        TEST_EQUAL(as_uchar(L'\0'), U'\0');
-        TEST_EQUAL(as_uchar(L'A'), U'A');
-        TEST_EQUAL(as_uchar(L'\xff'), U'\u00ff');
-        TEST_EQUAL(as_uchar(L'\uf000'), U'\uf000');
-
         TEST_EQUAL(char_as_hex(0), "U+0000");
         TEST_EQUAL(char_as_hex('A'), "U+0041");
         TEST_EQUAL(char_as_hex(0x123), "U+0123");
@@ -144,6 +127,23 @@ namespace {
         TEST(char_is_noncharacter(0x10fffe));
         TEST(char_is_noncharacter(0x10ffff));
         TEST(char_is_noncharacter(0x110000));
+
+        TEST_EQUAL(char_to_uint('\0'), 0);
+        TEST_EQUAL(char_to_uint('A'), 65);
+        TEST_EQUAL(char_to_uint('\xff'), 0xff);
+        TEST_EQUAL(char_to_uint(u'\0'), 0);
+        TEST_EQUAL(char_to_uint(u'A'), 65);
+        TEST_EQUAL(char_to_uint(u'\xff'), 0xff);
+        TEST_EQUAL(char_to_uint(u'\uf000'), 0xf000);
+        TEST_EQUAL(char_to_uint(U'\0'), 0);
+        TEST_EQUAL(char_to_uint(U'A'), 65);
+        TEST_EQUAL(char_to_uint(U'\xff'), 0xff);
+        TEST_EQUAL(char_to_uint(U'\uf000'), 0xf000);
+        TEST_EQUAL(char_to_uint(U'\U0010f000'), 0x10f000);
+        TEST_EQUAL(char_to_uint(L'\0'), 0);
+        TEST_EQUAL(char_to_uint(L'A'), 65);
+        TEST_EQUAL(char_to_uint(L'\xff'), 0xff);
+        TEST_EQUAL(char_to_uint(L'\uf000'), 0xf000);
 
     }
 
@@ -1137,7 +1137,7 @@ namespace {
         #define DECOMPOSITION_TEST(mode, chr, length, expect) \
             do { \
                 size_t n; \
-                TRY(n = mode ## _decomposition(as_uchar(chr), buf)); \
+                TRY(n = mode ## _decomposition(char_to_uint(chr), buf)); \
                 TEST_EQUAL(n, length); \
                 u32string decomp(buf + 0, buf + n); \
                 TEST_EQUAL(decomp, expect); \

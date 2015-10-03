@@ -14,7 +14,7 @@ namespace Unicorn {
     constexpr Kwarg<size_t> Table::margin, Table::spacing;
     constexpr Kwarg<bool> Table::unfill;
 
-    Table& Table::operator<<(char32_t c) {
+    void Table::character_code(char32_t c) {
         switch (c) {
             case '\f': // eol + reset formats
                 force_break();
@@ -43,7 +43,6 @@ namespace Unicorn {
                 cells.push_back({});
                 break;
         }
-        return *this;
     }
 
     void Table::force_break() {

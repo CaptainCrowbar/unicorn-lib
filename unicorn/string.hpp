@@ -579,12 +579,12 @@ namespace Unicorn {
         auto out = utf_writer(dst);
         if (ptr)
             for (; n; --n)
-                *out = as_uchar(*ptr++);
+                *out = char_to_uint(*ptr++);
     }
 
     template <typename C, typename C2>
     void str_append_char(basic_string<C>& dst, C2 c2) {
-        *utf_writer(dst) = as_uchar(c2);
+        *utf_writer(dst) = char_to_uint(c2);
     }
 
     template <typename C, typename C2, typename C3, typename... Chars>

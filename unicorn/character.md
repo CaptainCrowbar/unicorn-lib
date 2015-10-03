@@ -66,14 +66,6 @@ under case mapping or decomposition.
 
 ## Basic character functions ##
 
-* `template <typename C> constexpr char32_t as_uchar(C c) noexcept`
-
-Converts any character type to a 32-bit character containing the corresponding
-Unicode code point. This should be used in preference to simply casting `c` to
-`char32_t`, because plain `char` is signed on most systems; this means that
-bytes in the range `0x80-0xff` are negative when stored in a `char`, and
-casting them directly to a `char32_t` will give the wrong answer.
-
 * `u8string char_as_hex(char32_t c)`
 
 Formats a code point in the conventional `U+XXXX` notation.
@@ -92,6 +84,14 @@ Formats a code point in the conventional `U+XXXX` notation.
 Basic character classification. These are properties that are related to
 simple ranges of code points, without requiring reference to the full Unicode
 property tables.
+
+* `template <typename C> constexpr uint32_t char_to_uint(C c) noexcept`
+
+Converts any character type to a 32-bit integer containing the corresponding
+Unicode code point. This should be used in preference to simply casting a
+character to an integer, because plain `char` is signed on most systems; this
+means that 8 bit code points are negative when stored in a `char`, and casting
+them directly to an unsigned integer will give the wrong answer.
 
 ## General category ##
 

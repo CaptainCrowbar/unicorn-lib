@@ -115,9 +115,10 @@ namespace Unicorn {
             if (token.offset >= token.text->size())
                 break;
             auto it = UnicornDetail::SubjectIterator<CX>::make_iterator(*token.text, token.offset);
+            auto u = char_to_uint(*it);
             auto elements = &lex->lexemes;
-            if (as_uchar(*it) < lex->prefix_table.size())
-                elements = &lex->prefix_table[as_uchar(*it)];
+            if (u < lex->prefix_table.size())
+                elements = &lex->prefix_table[u];
             for (auto& elem: *elements) {
                 auto count = elem.call(*token.text, token.offset);
                 if (count > token.count) {
@@ -126,7 +127,7 @@ namespace Unicorn {
                 }
             }
             if (token.count == 0)
-                throw SyntaxError(str_chars<char>(as_uchar(*it)), token.offset);
+                throw SyntaxError(str_chars<char>(u), token.offset);
             if (token.tag)
                 break;
         }
@@ -203,9 +204,9 @@ namespace Unicorn {
                 return 0;
         };
         lexemes.push_back(element{tag, call});
-        auto i = as_uchar(pattern[0]);
-        if (i < prefix_count)
-            prefix_table[i].push_back(lexemes.back());
+        auto u = char_to_uint(pattern[0]);
+        if (u < prefix_count)
+            prefix_table[u].push_back(lexemes.back());
     }
 
     template <typename CX>

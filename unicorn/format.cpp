@@ -206,7 +206,7 @@ namespace Unicorn {
                     prec = defprec;
                 u8string result;
                 for (auto c: s) {
-                    result += format_integer_radix(as_uchar(c), base, prec);
+                    result += format_integer_radix(char_to_uint(c), base, prec);
                     result += ' ';
                 }
                 if (! result.empty())

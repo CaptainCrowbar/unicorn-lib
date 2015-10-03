@@ -43,7 +43,6 @@ namespace Unicorn {
 
     // Basic character functions
 
-    template <typename C> constexpr char32_t as_uchar(C c) noexcept { return std::make_unsigned_t<C>(c); }
     inline u8string char_as_hex(char32_t c) { return "U+" + ascii_uppercase(hex(c, 4)); }
     constexpr bool char_is_ascii(char32_t c) noexcept { return c <= last_ascii_char; }
     constexpr bool char_is_latin1(char32_t c) noexcept { return c <= last_latin1_char; }
@@ -61,6 +60,7 @@ namespace Unicorn {
         { return (c >= first_private_use_char && c <= last_private_use_char)
             || (c >= first_private_use_char_a && c <= last_private_use_char_a)
             || (c >= first_private_use_char_b && c <= last_private_use_char_b); }
+    template <typename C> constexpr uint32_t char_to_uint(C c) noexcept { return std::make_unsigned_t<C>(c); }
 
     // General category
 

@@ -81,16 +81,6 @@ under case mapping or decomposition.</p>
 <h2 id="basiccharacterfunctions">Basic character functions</h2>
 
 <ul>
-<li><code>template &lt;typename C&gt; constexpr char32_t <strong>as_uchar</strong>(C c) noexcept</code></li>
-</ul>
-
-<p>Converts any character type to a 32-bit character containing the corresponding
-Unicode code point. This should be used in preference to simply casting <code>c</code> to
-<code>char32_t</code>, because plain <code>char</code> is signed on most systems; this means that
-bytes in the range <code>0x80-0xff</code> are negative when stored in a <code>char</code>, and
-casting them directly to a <code>char32_t</code> will give the wrong answer.</p>
-
-<ul>
 <li><code>u8string <strong>char_as_hex</strong>(char32_t c)</code></li>
 </ul>
 
@@ -112,6 +102,16 @@ casting them directly to a <code>char32_t</code> will give the wrong answer.</p>
 <p>Basic character classification. These are properties that are related to
 simple ranges of code points, without requiring reference to the full Unicode
 property tables.</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; constexpr uint32_t <strong>char_to_uint</strong>(C c) noexcept</code></li>
+</ul>
+
+<p>Converts any character type to a 32-bit integer containing the corresponding
+Unicode code point. This should be used in preference to simply casting a
+character to an integer, because plain <code>char</code> is signed on most systems; this
+means that 8 bit code points are negative when stored in a <code>char</code>, and casting
+them directly to an unsigned integer will give the wrong answer.</p>
 
 <h2 id="generalcategory">General category</h2>
 
