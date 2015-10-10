@@ -37,9 +37,13 @@ mode (<code>-Wall -Wextra -Werror</code>).</p>
 <p>Unicorn has also been tested with GCC 4.9 and 5.1 on Ubuntu GNU/Linux,
 <a href="http://www.cygwin.com/">Cygwin</a> on Microsoft Windows, and native Windows
 using <a href="http://nuwen.net/mingw.html">Nuwen-Mingw</a>, although I can&#8217;t promise
-that the most recent checkin will have been tested with all of those. It will
-not work with any existing release of Microsoft Visual C++, mainly due to that
-compiler&#8217;s poor C++14 support.</p>
+that the most recent checkin will have been tested with all of those.</p>
+
+<p>Currently, Unicorn will not work with any existing release of Microsoft Visual
+Studio. VS 2015 probably has sufficiently good C++11/14 support, but does not
+yet support UTF&#8211;8 source code; Microsoft developers have told me they&#8217;re
+trying to get this fixed, though, so I hope to be able to port Unicorn to MSVC
+in the future.</p>
 
 <h2 id="designphilosophy">Design philosophy</h2>
 
