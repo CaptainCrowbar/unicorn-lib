@@ -165,7 +165,7 @@ supplied are inconsistent:
 * At most one of `rx_newlineanycrlf`, `rx_newlinecr`, `rx_newlinecrlf`, and `rx_newlinelf` may be used.
 * `rx_notempty` and `rx_notemptyatstart` may not be combined.
 * `rx_partialhard` and `rx_partialsoft` may not be combined.
-* `rx_noutfcheck` and `rx_ucp` may not be used with a byte-mode regex.
+* `rx_noutfcheck` and `rx_ucp` may not be used with a byte mode regex.
 
 If you use the `rx_noutfcheck` flag, be careful about sanitizing your strings:
 **behaviour is undefined** if this flag is present and any regex pattern,
@@ -193,16 +193,11 @@ Code                              | Description
 `$+`                              | The last non-empty capture group
 `$<`                              | The text between the previous match and this one
 `$>`                              | The text between this match and the next one
-`$*`                              | The complete subject string
+`$[`, ``$` ``                     | The text before the current match
+`$]`, `$'`                        | The text after the current match
+`$_`                              | The complete subject string
 `\xHH`, `\x{HHH...}`              | Unicode character, identified by hexadecimal code point
 `\0`                              | Null character (`\x00`)
-`\a`                              | Alert character (`\x07`)
-`\b`                              | Backspace character (`\x08`)
-`\t`                              | Tab character (`\x09`)
-`\n`                              | Line feed character (`\x0a`)
-`\v`                              | Vertical tab character (`\x0b`)
-`\f`                              | Form feed character (`\x0c`)
-`\r`                              | Carriage return character (`\x0d`)
 `\e`                              | Escape character (`\x1b`)
 `\l`                              | Convert the next character to lower case
 `\u`                              | Convert the next character to upper case
@@ -210,6 +205,8 @@ Code                              | Description
 `\T...\E`                         | Convert the delimited text to title case
 `\U...\E`                         | Convert the delimited text to upper case
 `\Q...\E`                         | Copy the delimited text literally, ignoring all escape codes except `\E`
+`$$`, `\$`                        | Literal dollar sign
+`$\`, `\\`                        | Literal backslash
 
 Braces are only needed around a capture group number or name prefixed with `$`
 if it is immediately followed by a literal digit or letter that would
@@ -219,23 +216,26 @@ groups, if the name contains characters that are not alphanumeric. In the
 and `$+` codes will be replaced with empty strings if there are no non-empty
 captures.
 
-The `$<`, `$>`, and `$*` codes are mostly useful with the `extract()` method
-rather than `format()`, since `format()` copies the unmatched parts of the
-subject string anyway. If this is the first match in the subject string, `$<`
-starts at the beginning of the string; if this is the last match, `$>` runs to
-the end of the string. If the number of matches is limited (by setting the `n`
-argument in the `extract()` or `format()` functions), unhandled matches are
-not counted; `$>` runs from the end of the last handled match to the end of
-the subject string, regardless of whether or not there would have been any
-more matches if `n` had been larger.
+The `$<`, `$>`, `$[`, `$]`, and `$*` codes are mostly useful with the
+`extract()` method rather than `format()`, since `format()` copies the
+unmatched parts of the subject string anyway. If this is the first match in
+the subject string, `$<` starts at the beginning of the string; if this is the
+last match, `$>` runs to the end of the string. If there is only one match,
+`$<` and `$>` are the same as `$[` and `$]`.
+
+If the number of matches is limited (by setting the `n` argument in the
+`extract()` or `format()` functions), unhandled matches are not counted; `$>`
+runs from the end of the last handled match to the end of the subject string,
+regardless of whether or not there would have been any more matches if `n` had
+been larger.
 
 If a `$` or `\` escape prefix is followed by an unrecognised second character,
 the escape character is discarded and the second character is copied literally
 into the output string.
 
 When the case conversion codes (`\l`, `\u`, `\L`, `\T`, and `\U`) are used
-with byte-mode regexes, only ASCII characters will be converted. If a
-`\x{HHH...}` escape code is used with a byte-mode regex, the output is
+with byte mode regexes, only ASCII characters will be converted. If a
+`\x{HHH...}` escape code is used with a byte mode regex, the output is
 unspecified if the hexadecimal value is greater than `0xff`.
 
 ## Supporting types ##

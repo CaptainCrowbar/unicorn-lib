@@ -375,8 +375,8 @@ namespace {
         TRY(rf = RegexFormat("\\w", "\\0"));
         s = "Hello";  TEST_EQUAL(rf(s), "\0\0\0\0\0"s);
 
-        TRY(rf = RegexFormat("\\w+", "\\a\\b\\t\\n\\v\\f\\r\\e"));
-        s = "Hello";  TEST_EQUAL(rf(s), "\a\b\t\n\v\f\r\x1b");
+        TRY(rf = RegexFormat("\\w+", "\\e"));
+        s = "Hello world";  TEST_EQUAL(rf(s), "\x1b \x1b");
 
         TRY(rf = RegexFormat("\\w+", "(\\Q\\1$1\\E)"));
         s = "Hello";  TEST_EQUAL(rf(s), "(\\1$1)");
@@ -421,7 +421,11 @@ namespace {
         s = "*** Hello world ***";  TEST_EQUAL(rf.extract(s), "(Hello/*** / )(world/ / ***)");
         s = "*** Hello world ***";  TEST_EQUAL(rf.extract(s, 1), "(Hello/*** / world ***)");
 
-        TRY(rf = RegexFormat("\\w+", "($0:$*)"));
+        TRY(rf = RegexFormat("\\w+", "($0/$[/$])"));
+        s = "*** Hello world ***";  TEST_EQUAL(rf.extract(s), "(Hello/*** / world ***)(world/*** Hello / ***)");
+        s = "*** Hello world ***";  TEST_EQUAL(rf.extract(s, 1), "(Hello/*** / world ***)");
+
+        TRY(rf = RegexFormat("\\w+", "($0:$_)"));
         s = "*** Hello world ***";  TEST_EQUAL(rf.extract(s), "(Hello:*** Hello world ***)(world:*** Hello world ***)");
         s = "*** Hello world ***";  TEST_EQUAL(rf.extract(s, 1), "(Hello:*** Hello world ***)");
 

@@ -282,7 +282,7 @@ supplied are inconsistent:</p>
 <li>At most one of <code>rx_newlineanycrlf</code>, <code>rx_newlinecr</code>, <code>rx_newlinecrlf</code>, and <code>rx_newlinelf</code> may be used.</li>
 <li><code>rx_notempty</code> and <code>rx_notemptyatstart</code> may not be combined.</li>
 <li><code>rx_partialhard</code> and <code>rx_partialsoft</code> may not be combined.</li>
-<li><code>rx_noutfcheck</code> and <code>rx_ucp</code> may not be used with a byte-mode regex.</li>
+<li><code>rx_noutfcheck</code> and <code>rx_ucp</code> may not be used with a byte mode regex.</li>
 </ul>
 
 <p>If you use the <code>rx_noutfcheck</code> flag, be careful about sanitizing your strings:
@@ -345,7 +345,15 @@ replaced by the format string without further processing.</p>
 	<td style="text-align:left;">The text between this match and the next one</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>$*</code></td>
+	<td style="text-align:left;"><code>$[</code>, <code>$`</code></td>
+	<td style="text-align:left;">The text before the current match</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>$]</code>, <code>$'</code></td>
+	<td style="text-align:left;">The text after the current match</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>$_</code></td>
 	<td style="text-align:left;">The complete subject string</td>
 </tr>
 <tr>
@@ -355,34 +363,6 @@ replaced by the format string without further processing.</p>
 <tr>
 	<td style="text-align:left;"><code>\0</code></td>
 	<td style="text-align:left;">Null character (<code>\x00</code>)</td>
-</tr>
-<tr>
-	<td style="text-align:left;"><code>\a</code></td>
-	<td style="text-align:left;">Alert character (<code>\x07</code>)</td>
-</tr>
-<tr>
-	<td style="text-align:left;"><code>\b</code></td>
-	<td style="text-align:left;">Backspace character (<code>\x08</code>)</td>
-</tr>
-<tr>
-	<td style="text-align:left;"><code>\t</code></td>
-	<td style="text-align:left;">Tab character (<code>\x09</code>)</td>
-</tr>
-<tr>
-	<td style="text-align:left;"><code>\n</code></td>
-	<td style="text-align:left;">Line feed character (<code>\x0a</code>)</td>
-</tr>
-<tr>
-	<td style="text-align:left;"><code>\v</code></td>
-	<td style="text-align:left;">Vertical tab character (<code>\x0b</code>)</td>
-</tr>
-<tr>
-	<td style="text-align:left;"><code>\f</code></td>
-	<td style="text-align:left;">Form feed character (<code>\x0c</code>)</td>
-</tr>
-<tr>
-	<td style="text-align:left;"><code>\r</code></td>
-	<td style="text-align:left;">Carriage return character (<code>\x0d</code>)</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>\e</code></td>
@@ -412,6 +392,14 @@ replaced by the format string without further processing.</p>
 	<td style="text-align:left;"><code>\Q...\E</code></td>
 	<td style="text-align:left;">Copy the delimited text literally, ignoring all escape codes except <code>\E</code></td>
 </tr>
+<tr>
+	<td style="text-align:left;"><code>$$</code>, <code>\$</code></td>
+	<td style="text-align:left;">Literal dollar sign</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>$\</code>, <code>\\</code></td>
+	<td style="text-align:left;">Literal backslash</td>
+</tr>
 </tbody>
 </table>
 
@@ -423,23 +411,26 @@ groups, if the name contains characters that are not alphanumeric. In the
 and <code>$+</code> codes will be replaced with empty strings if there are no non-empty
 captures.</p>
 
-<p>The <code>$&lt;</code>, <code>$&gt;</code>, and <code>$*</code> codes are mostly useful with the <code>extract()</code> method
-rather than <code>format()</code>, since <code>format()</code> copies the unmatched parts of the
-subject string anyway. If this is the first match in the subject string, <code>$&lt;</code>
-starts at the beginning of the string; if this is the last match, <code>$&gt;</code> runs to
-the end of the string. If the number of matches is limited (by setting the <code>n</code>
-argument in the <code>extract()</code> or <code>format()</code> functions), unhandled matches are
-not counted; <code>$&gt;</code> runs from the end of the last handled match to the end of
-the subject string, regardless of whether or not there would have been any
-more matches if <code>n</code> had been larger.</p>
+<p>The <code>$&lt;</code>, <code>$&gt;</code>, <code>$[</code>, <code>$]</code>, and <code>$*</code> codes are mostly useful with the
+<code>extract()</code> method rather than <code>format()</code>, since <code>format()</code> copies the
+unmatched parts of the subject string anyway. If this is the first match in
+the subject string, <code>$&lt;</code> starts at the beginning of the string; if this is the
+last match, <code>$&gt;</code> runs to the end of the string. If there is only one match,
+<code>$&lt;</code> and <code>$&gt;</code> are the same as <code>$[</code> and <code>$]</code>.</p>
+
+<p>If the number of matches is limited (by setting the <code>n</code> argument in the
+<code>extract()</code> or <code>format()</code> functions), unhandled matches are not counted; <code>$&gt;</code>
+runs from the end of the last handled match to the end of the subject string,
+regardless of whether or not there would have been any more matches if <code>n</code> had
+been larger.</p>
 
 <p>If a <code>$</code> or <code>\</code> escape prefix is followed by an unrecognised second character,
 the escape character is discarded and the second character is copied literally
 into the output string.</p>
 
 <p>When the case conversion codes (<code>\l</code>, <code>\u</code>, <code>\L</code>, <code>\T</code>, and <code>\U</code>) are used
-with byte-mode regexes, only ASCII characters will be converted. If a
-<code>\x{HHH...}</code> escape code is used with a byte-mode regex, the output is
+with byte mode regexes, only ASCII characters will be converted. If a
+<code>\x{HHH...}</code> escape code is used with a byte mode regex, the output is
 unspecified if the hexadecimal value is greater than <code>0xff</code>.</p>
 
 <h2 id="supportingtypes">Supporting types</h2>

@@ -243,14 +243,7 @@ namespace Unicorn {
         char32_t decode_escape(C c) {
             switch (c) {
                 case PRI_CHAR('0', C):  return U'\0';
-                case PRI_CHAR('a', C):  return U'\a';
-                case PRI_CHAR('b', C):  return U'\b';
                 case PRI_CHAR('e', C):  return 0x1b;
-                case PRI_CHAR('f', C):  return U'\f';
-                case PRI_CHAR('n', C):  return U'\n';
-                case PRI_CHAR('r', C):  return U'\r';
-                case PRI_CHAR('t', C):  return U'\t';
-                case PRI_CHAR('v', C):  return U'\v';
                 default:                return char_to_uint(c);
             }
         }
@@ -556,19 +549,23 @@ namespace Unicorn {
         // Index field in element record indicates what to substitute
         // If index>=0, this is a numbered capture group
         enum tag_type {
-            literal   = -1,          // Literal text
-            named     = -2,          // Nameed capture group
-            reset     = - int('E'),  // \E = End of delimited text
-            lower     = - int('L'),  // \L = Convert delimited text to lower case
-            title     = - int('T'),  // \T = Convert delimited text to title case
-            upper     = - int('U'),  // \U = Convert delimited text to upper case
-            lower1    = - int('l'),  // \l = Convert next character to lower case
-            upper1    = - int('u'),  // \u = Convert next character to upper case
-            first     = - int('-'),  // $- = First non-empty capture group
-            last      = - int('+'),  // $+ = Last non-empty capture group
-            before    = - int('<'),  // $< = Text between previous match and this one
-            after     = - int('>'),  // $> = Text between this match and the next one
-            complete  = - int('*'),  // $* = Complete subject string
+            literal   = -1,           // Literal text
+            named     = -2,           // Nameed capture group
+            reset     = - int('E'),   // \E = End of delimited text
+            lower     = - int('L'),   // \L = Convert delimited text to lower case
+            title     = - int('T'),   // \T = Convert delimited text to title case
+            upper     = - int('U'),   // \U = Convert delimited text to upper case
+            lower1    = - int('l'),   // \l = Convert next character to lower case
+            upper1    = - int('u'),   // \u = Convert next character to upper case
+            first     = - int('-'),   // $- = First non-empty capture group
+            last      = - int('+'),   // $+ = Last non-empty capture group
+            prefix    = - int('<'),   // $< = Text between previous match and this one
+            suffix    = - int('>'),   // $> = Text between this match and the next one
+            before1   = - int('['),   // $[ = Text before this match
+            after1    = - int(']'),   // $] = Text after this match
+            before2   = - int('`'),   // $` = Text before this match
+            after2    = - int('\''),  // $' = Text after this match
+            complete  = - int('_'),   // $_ = Complete subject string
         };
         struct element {
             int index;
@@ -666,8 +663,10 @@ namespace Unicorn {
                     case reset:                          end_block(); break;
                     case lower: case title: case upper:  new_block(elem.index); break;
                     case lower1: case upper1:            char_flag = elem.index; break;
-                    case before:                         fragment = text.substr(prev, m.offset() - prev); break;
-                    case after:                          fragment = text.substr(m.endpos(), next - m.endpos()); break;
+                    case prefix:                         fragment = text.substr(prev, m.offset() - prev); break;
+                    case suffix:                         fragment = text.substr(m.endpos(), next - m.endpos()); break;
+                    case before1: case before2:          fragment = text.substr(0, m.offset()); break;
+                    case after1: case after2:            fragment = text.substr(m.endpos(), npos); break;
                     case first:                          fragment = m.first(); break;
                     case last:                           fragment = m.last(); break;
                     case complete:                       fragment = text; break;
@@ -708,12 +707,12 @@ namespace Unicorn {
             R"(|(?:\$(\d+)))"                                // (2) Numbered capture ($number)
             R"(|(?:\\([1-9])))"                              // (3) Numbered capture (\digit)
             R"(|(?:\$\{(\d+)\}))"                            // (4) Numbered capture (${number})
-            R"(|(?:\$([A-Za-z_][0-9A-Za-z_]*)))"             // (5) Named capture ($name)
+            R"(|(?:\$([A-Za-z][0-9A-Za-z_]*)))"              // (5) Named capture ($name)
             R"(|(?:\$\{([^{}]+)\}))"                         // (6) Named capture (${name})
-            R"(|(?:\$([*<>+-])))"                            // (7) Substring ($*,$<,$>,$+,$-)
+            R"(|(?:\$([-+<>\[\]`'_])))"                      // (7) Substring ($-,$+,$<,$>,$[,$],$`,$',$_)
             R"(|(?:\\x([[:xdigit:]]{2})))"                   // (8) Escape code (\xHH)
             R"(|(?:\\x\{([[:xdigit:]]+)\}))"                 // (9) Escape code (\x{HHH...})
-            R"(|(?:\\([0abefnrtv])))"                        // (10) Escape code
+            R"(|(?:\\([0e])))"                               // (10) Escape code
             R"(|(?:\\([ELTUlu])))"                           // (11) Escape code
             R"(|(?:\\Q((?:[^\\]|\\(?:[^E]|$))*)(?:\\E|$)))"  // (12) Literal text
             R"(|(?:[\\$](.)))";                              // (13) Unknown
