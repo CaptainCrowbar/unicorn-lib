@@ -21,7 +21,6 @@ file renaming and deletion, directory search, and so on.</p>
 <ul>
 <li><a href="#introduction">Introduction</a></li>
 <li><a href="#systemdependencies">System dependencies</a></li>
-<li><a href="#exceptions">Exceptions</a></li>
 <li><a href="#filenamefunctions">File name functions</a></li>
 <li><a href="#filesystemqueryfunctions">File system query functions</a></li>
 <li><a href="#filesystemmodifyingfunctions">File system modifying functions</a></li>
@@ -90,27 +89,6 @@ of <code>&quot;/foo/bar/hello.txt&quot;</code> is <code>&quot;hello.txt&quot;</c
 option, except that, if both the source and destination strings are the
 operating system&#8217;s native encoding, the string will simply be copied verbatim
 without checking for valid Unicode.</p>
-
-<h2 id="exceptions">Exceptions</h2>
-
-<ul>
-<li><code>class <strong>FileError</strong>: public std::runtime_error</code>
-
-<ul>
-<li><code>FileError::<strong>FileError</strong>()</code></li>
-<li><code>explicit FileError::<strong>FileError</strong>(int error)</code></li>
-<li><code>template &lt;typename... More&gt; FileError::<strong>FileError</strong>(int error, const NativeString&amp; file, const More&amp;... more)</code></li>
-<li><code>const NativeCharacter* FileError::<strong>file</strong>(size_t i = 0) const noexcept</code></li>
-<li><code>size_t FileError::<strong>files</strong>() const noexcept</code></li>
-<li><code>int FileError::<strong>error</strong>() const noexcept</code></li>
-</ul></li>
-</ul>
-
-<p>An exception thrown to report errors in file system operations. It can be
-constructed with the error code from the underlying native system call, and
-optionally one or more file names for reference. The <code>file()</code> method returns
-an empty string if the index is beyond the end of the supplied file list (i.e.
-if <code>i&gt;=files()</code>).</p>
 
 <h2 id="filenamefunctions">File name functions</h2>
 
@@ -203,8 +181,8 @@ split_file(&quot;.hello&quot;) == {&quot;.hello&quot;, &quot;&quot;}
 
 <p>These query the current working directory of the calling process. The first
 version requires the character type to be explicitly specified. These may
-throw <code>FileError</code> in some unusual cases of failure, usually involving access
-permission problems.</p>
+throw <code>std::system_error</code> in some unusual cases of failure, usually involving
+access permission problems.</p>
 
 <ul>
 <li><code>template &lt;typename C&gt; bool <strong>file_exists</strong>(const basic_string&lt;C&gt;&amp; file) noexcept</code></li>
@@ -247,11 +225,11 @@ system.</p>
 
 <p>Create a directory (with default permissions). If the <code>recurse</code> flag is set,
 this will recursively create any missing parent directories (like <code>mkdir -p</code>).
-It will do nothing if the directory already exists. It will throw <code>FileError</code>
-if the named file already exists but is not a directory, if the directory path
-is not a legal filename, if the parent directory does not exist and the
-<code>recurse</code> flag was not set, or if the caller does not have permission to
-create the directory.</p>
+It will do nothing if the directory already exists. It will throw
+<code>std::system_error</code> if the named file already exists but is not a directory,
+if the directory path is not a legal filename, if the parent directory does
+not exist and the <code>recurse</code> flag was not set, or if the caller does not have
+permission to create the directory.</p>
 
 <ul>
 <li><code>template &lt;typename C&gt; void <strong>remove_file</strong>(const basic_string&lt;C&gt;&amp; file, bool recurse = false)</code></li>
@@ -260,22 +238,22 @@ create the directory.</p>
 <p>Delete a file or directory. If the <code>recurse</code> flag is set, directories will be
 deleted recursively (like <code>rm -rf</code>; this will not follow symbolic links). This
 will do nothing if the named file does not exist to begin with. It will throw
-<code>FileError</code> if the directory path is not a legal filename, if the name refers
-to a nonempty directory and the <code>recurse</code> flag was not set, or if the caller
-does not have permission to delete the file.</p>
+<code>std::system_error</code> if the directory path is not a legal filename, if the name
+refers to a nonempty directory and the <code>recurse</code> flag was not set, or if the
+caller does not have permission to delete the file.</p>
 
 <ul>
 <li><code>template &lt;typename C&gt; void <strong>rename_file</strong>(const basic_string&lt;C&gt;&amp; src, const basic_string&lt;C&gt;&amp; dst)</code></li>
 </ul>
 
-<p>Rename a file or directory. This will throw <code>FileError</code> if either argument is
-not a legal filename, if the caller does not have permission to perform the
-operation, or under other OS-specific circumstances. This function is a thin
-wrapper around the underlying native file renaming functions, and will share
-any system specific limitations and variations; behaviour when the destination
-file already exists is system dependent (this may overwrite the file or throw
-an exception), and on most systems the call will fail if the source and
-destination are on different physical file systems.</p>
+<p>Rename a file or directory. This will throw <code>std::system_error</code> if either
+argument is not a legal filename, if the caller does not have permission to
+perform the operation, or under other OS-specific circumstances. This function
+is a thin wrapper around the underlying native file renaming functions, and
+will share any system specific limitations and variations; behaviour when the
+destination file already exists is system dependent (this may overwrite the
+file or throw an exception), and on most systems the call will fail if the
+source and destination are on different physical file systems.</p>
 
 <h2 id="directoryiterators">Directory iterators</h2>
 

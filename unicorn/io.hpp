@@ -7,74 +7,40 @@
 #include <cstdio>
 #include <iterator>
 #include <memory>
-#include <stdexcept>
 #include <string>
 
 namespace Unicorn {
 
-    // Exceptions
-
-    class IOError:
-    public std::runtime_error {
-    public:
-        IOError(): std::runtime_error(assemble()), name(), err(0) {}
-        explicit IOError(const char* msg): std::runtime_error(assemble(msg)), name(), err(0) {}
-        template <typename C> IOError(const char* msg, const basic_string<C>& file, int error = 0):
-            std::runtime_error(assemble(msg, to_utf8(file), error)), name(make_shared<NativeString>()), err(error)
-            { recode(file, *name); }
-        const NativeCharacter* file() const noexcept { static const NativeCharacter c = 0; return name ? name->data() : &c; }
-        int error() const noexcept { return err; }
-    private:
-        shared_ptr<NativeString> name;
-        int err;
-        static u8string assemble(const char* msg = nullptr, const u8string& file = {}, int error = 0);
-    };
-
-    class ReadError:
-    public IOError {
-    public:
-        ReadError(): IOError("Read error") {}
-        template <typename C> explicit ReadError(const basic_string<C>& file, int error = 0):
-            IOError("Read error", file, error) {}
-    };
-
-    class WriteError:
-    public IOError {
-    public:
-        WriteError(): IOError("Write error") {}
-        template <typename C> explicit WriteError(const basic_string<C>& file, int error = 0):
-            IOError("Write error", file, error) {}
-    };
-
     // I/O flags
 
-    // Combinable with the encoding error flags, so skip the first 3 bits.
+    // Skip the first 3 bits because these need to be compatible with the
+    // encoding error flags.
 
     // Common reader and writer flags
 
-    UNICORN_DEFINE_FLAG(file io, io_bom, 3);   // Strip or insert a BOM
-    UNICORN_DEFINE_FLAG(file io, io_lf, 4);    // Convert all line breaks to LF
-    UNICORN_DEFINE_FLAG(file io, io_crlf, 5);  // Convert all line breaks to CR+LF
+    UNICORN_DEFINE_FLAG(file io, io_bom,   3);  // Strip or insert a BOM
+    UNICORN_DEFINE_FLAG(file io, io_lf,    4);  // Convert all line breaks to LF
+    UNICORN_DEFINE_FLAG(file io, io_crlf,  5);  // Convert all line breaks to CR+LF
 
     // Reader flags
 
-    UNICORN_DEFINE_FLAG(file io, io_stdin, 6);      // Default to stdin
-    UNICORN_DEFINE_FLAG(file io, io_nofail, 7);     // Treat nonexistent file as empty
-    UNICORN_DEFINE_FLAG(file io, io_striplf, 8);    // Strip line breaks
-    UNICORN_DEFINE_FLAG(file io, io_striptws, 9);   // Strip trailing whitespace
-    UNICORN_DEFINE_FLAG(file io, io_stripws, 10);   // Strip whitespace
-    UNICORN_DEFINE_FLAG(file io, io_notempty, 11);  // Skip empty lines
+    UNICORN_DEFINE_FLAG(file io, io_stdin,     6);   // Default to stdin
+    UNICORN_DEFINE_FLAG(file io, io_nofail,    7);   // Treat nonexistent file as empty
+    UNICORN_DEFINE_FLAG(file io, io_striplf,   8);   // Strip line breaks
+    UNICORN_DEFINE_FLAG(file io, io_striptws,  9);   // Strip trailing whitespace
+    UNICORN_DEFINE_FLAG(file io, io_stripws,   10);  // Strip whitespace
+    UNICORN_DEFINE_FLAG(file io, io_notempty,  11);  // Skip empty lines
 
     // Writer flags
 
-    UNICORN_DEFINE_FLAG(file io, io_stdout, 12);     // Default to stdout
-    UNICORN_DEFINE_FLAG(file io, io_stderr, 13);     // Default to stderr
-    UNICORN_DEFINE_FLAG(file io, io_append, 14);     // Append to file
-    UNICORN_DEFINE_FLAG(file io, io_linebuf, 15);    // Line buffered output
-    UNICORN_DEFINE_FLAG(file io, io_unbuf, 16);      // Unbuffered output
-    UNICORN_DEFINE_FLAG(file io, io_writeline, 17);  // Write LF after every write
-    UNICORN_DEFINE_FLAG(file io, io_autoline, 18);   // Write LF if not already there
-    UNICORN_DEFINE_FLAG(file io, io_mutex, 19);      // Hold per-file mutex while writing
+    UNICORN_DEFINE_FLAG(file io, io_stdout,     12);  // Default to stdout
+    UNICORN_DEFINE_FLAG(file io, io_stderr,     13);  // Default to stderr
+    UNICORN_DEFINE_FLAG(file io, io_append,     14);  // Append to file
+    UNICORN_DEFINE_FLAG(file io, io_linebuf,    15);  // Line buffered output
+    UNICORN_DEFINE_FLAG(file io, io_unbuf,      16);  // Unbuffered output
+    UNICORN_DEFINE_FLAG(file io, io_writeline,  17);  // Write LF after every write
+    UNICORN_DEFINE_FLAG(file io, io_autoline,   18);  // Write LF if not already there
+    UNICORN_DEFINE_FLAG(file io, io_mutex,      19);  // Hold per-file mutex while writing
 
     // File input iterator
 

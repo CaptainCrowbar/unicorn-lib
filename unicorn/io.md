@@ -15,26 +15,8 @@ encodings, as well as other conveniences such as normalization of line breaks.
 
 ## Contents ##
 
-* [Exceptions][]
 * [File input iterator][]
 * [File output iterator][]
-
-## Exceptions ##
-
-* `class IOError: public std::runtime_error`
-    * `IOError::IOError()`
-    * `explicit IOError::IOError(const char* msg)`
-    * `template <typename C> IOError::IOError(const char* msg, const basic_string<C>& file, int error = 0)`
-    * `const NativeCharacter* IOError::file() const noexcept`
-    * `int IOError::error() const noexcept`
-* `class ReadError: public IOError`
-    * `ReadError::ReadError()`
-    * `template <typename C> explicit ReadError::ReadError(const basic_string<C>& file, int error = 0)`
-* `class WriteError: public IOError`
-    * `WriteError::WriteError()`
-    * `template <typename C> explicit WriteError::WriteError(const basic_string<C>& file, int error = 0)`
-
-TODO
 
 ## File input iterator ##
 

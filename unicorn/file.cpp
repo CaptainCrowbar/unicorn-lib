@@ -4,6 +4,7 @@
 #include "unicorn/regex.hpp"
 #include <cerrno>
 #include <cstdio>
+#include <system_error>
 
 #if defined(PRI_TARGET_UNIX)
     #include <dirent.h>
@@ -19,33 +20,10 @@ using namespace Unicorn::Literals;
 
 namespace Unicorn {
 
-    // Exceptions
+    namespace {
 
-    const NativeCharacter* FileError::file(size_t i) const noexcept {
-        static const NativeCharacter c = 0;
-        if (names && i < names->size())
-            return (*names)[i].data();
-        else
-            return &c;
-    }
+        template <typename C> u8string quote_file(const basic_string<C>& name) { return quote(to_utf8(name), true); }
 
-    u8string FileError::assemble(int error, const u8string& files) {
-        u8string s = "File system error" + files;
-        if (error) {
-            s += "; error ";
-            s += dec(error);
-            string details =
-            #if defined(PRI_TARGET_UNIX)
-                CrtError::translate(error);
-            #else
-                WindowsError::translate(error);
-            #endif
-            if (! details.empty()) {
-                s += "; ";
-                s += details;
-            }
-        }
-        return s;
     }
 
     namespace UnicornDetail {
@@ -71,7 +49,7 @@ namespace Unicorn {
                     if (getcwd(&name[0], name.size()))
                         break;
                     if (errno != ERANGE)
-                        throw FileError(errno);
+                        throw std::system_error(errno, std::generic_category());
                     name.resize(2 * name.size());
                 }
                 return name;
@@ -103,9 +81,9 @@ namespace Unicorn {
 
                 void remove_file_helper(const string& file) {
                     int rc = std::remove(file.data());
-                    int err = errno;
-                    if (rc != 0 && err != ENOENT)
-                        throw FileError(err, file);
+                    int error = errno;
+                    if (rc != 0 && error != ENOENT)
+                        throw std::system_error(error, std::generic_category(), quote_file(file));
                 }
 
             }
@@ -113,22 +91,27 @@ namespace Unicorn {
             void native_make_directory(const string& dir, bool recurse) {
                 if (mkdir(dir.data(), 0777) == 0)
                     return;
-                auto error = errno;
+                int error = errno;
                 if (error == EEXIST && native_file_is_directory(dir))
                     return;
                 if (! recurse || error != ENOENT || dir.empty())
-                    throw FileError(error, dir);
+                    throw std::system_error(error, std::generic_category(), quote_file(dir));
                 auto parent = split_path(dir).first;
                 if (parent == dir)
-                    throw FileError(error, dir);
+                    throw std::system_error(error, std::generic_category(), quote_file(dir));
                 native_make_directory(parent, recurse);
-                if (mkdir(dir.data(), 0777) != 0)
-                    throw FileError(errno, dir);
+                if (mkdir(dir.data(), 0777) != 0) {
+                    int error = errno;
+                    throw std::system_error(error, std::generic_category(), quote_file(dir));
+                }
             }
 
             void native_rename_file(const string& src, const string& dst) {
-                if (rename(src.data(), dst.data()))
-                    throw FileError(errno, src, dst);
+                if (rename(src.data(), dst.data())) {
+                    int error = errno;
+                    u8string note = quote_file(src) + " => " + quote_file(dst);
+                    throw std::system_error(error, std::generic_category(), note);
+                }
             }
 
             // Directory iterators
@@ -212,7 +195,7 @@ namespace Unicorn {
                 for (;;) {
                     auto rc = GetCurrentDirectoryW(name.size(), &name[0]);
                     if (rc == 0)
-                        throw FileError(GetLastError());
+                        throw std::system_error(GetLastError(), windows_category());
                     if (rc < name.size())
                         break;
                     name.resize(2 * name.size());
@@ -261,7 +244,7 @@ namespace Unicorn {
                         ok = DeleteFileW(file.data());
                     auto error = GetLastError();
                     if (! ok && error != ERROR_FILE_NOT_FOUND)
-                        throw FileError(error, file);
+                        throw std::system_error(error, std::generic_category(), quote_file(file));
                 }
 
             }
@@ -273,19 +256,24 @@ namespace Unicorn {
                 if (error == ERROR_ALREADY_EXISTS && native_file_is_directory(dir))
                     return;
                 if (! recurse || error != ERROR_PATH_NOT_FOUND || dir.empty())
-                    throw FileError(error, dir);
+                    throw std::system_error(error, windows_category(), quote_file(dir));
                 auto parent = split_path(dir).first;
                 if (parent == dir)
-                    throw FileError(error, dir);
+                    throw std::system_error(error, windows_category(), quote_file(dir));
                 native_make_directory(parent, recurse);
-                if (! CreateDirectoryW(dir.c_str(), nullptr))
-                    throw FileError(errno, dir);
+                if (! CreateDirectoryW(dir.c_str(), nullptr)) {
+                    error = GetLastError();
+                    throw std::system_error(error, windows_category(), quote_file(dir));
+                }
 
             }
 
             void native_rename_file(const wstring& src, const wstring& dst) {
-                if (! MoveFileW(src.c_str(), dst.c_str()))
-                    throw FileError(GetLastError(), src, dst);
+                if (! MoveFileW(src.c_str(), dst.c_str())) {
+                    auto error = GetLastError();
+                    u8string note = quote_file(src) + " => " + quote_file(dst);
+                    throw std::system_error(error, windows_category(), note);
+                }
             }
 
             // Directory iterators

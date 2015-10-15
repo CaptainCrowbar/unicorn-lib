@@ -2,6 +2,7 @@
 #include "unicorn/string.hpp"
 #include <cerrno>
 #include <cstdlib>
+#include <system_error>
 
 #if defined(PRI_TARGET_UNIX)
     extern char** environ;
@@ -47,13 +48,13 @@ namespace Unicorn {
             void native_set_env(const NativeString& key, const NativeString& value) {
                 MutexLock lock(env_mutex);
                 if (setenv(key.data(), value.data(), 1) == -1)
-                    throw CrtError(errno, "setenv()");
+                    throw std::system_error(errno, std::generic_category(), "setenv()");
             }
 
             void native_unset_env(const NativeString& key) {
                 MutexLock lock(env_mutex);
                 if (unsetenv(key.data()) == -1)
-                    throw CrtError(errno, "unsetenv()");
+                    throw std::system_error(errno, std::generic_category(), "unsetenv()");
             }
 
         #else
@@ -72,7 +73,7 @@ namespace Unicorn {
                 MutexLock lock(env_mutex);
                 auto key_value = key + L'=' + value;
                 if (_wputenv(key_value.data()) == -1)
-                    throw CrtError(errno, "_wputenv()");
+                    throw std::system_error(errno, std::generic_category(), "_wputenv()");
             }
 
             void native_unset_env(const NativeString& key) {

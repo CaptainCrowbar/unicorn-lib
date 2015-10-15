@@ -59,10 +59,10 @@ if the `flags` argument is not one of these values.
 
 All of these functions can throw `EncodingError` if the `err_throw` flag is
 used and invalid UTF encoding is encountered (either in a string supplied by
-the caller, or in one returned from the environment); `std::invalid_argument`
-if an environment variable name is empty or contains an equals sign, or a name
-or value contains a null character; or `SystemError` (or a derived exception)
-if anything else goes wrong with the underlying system calls.
+the caller, or in one returned from the environment), `std::invalid_argument`
+if an environment variable name is empty or contains an equals sign, or
+`std::system_error` if anything goes wrong with the underlying system API
+call.
 
 * `template <typename C> basic_string<C> get_env(const basic_string<C>& name, uint32_t flags = 0)`
 * `template <typename C> basic_string<C> get_env(const C* name, uint32_t flags = 0)`
@@ -128,9 +128,8 @@ constructed `Environment` object will be empty.
 * `template <typename C> void Environment::unset(const C* name, uint32_t flags = 0)`
 
 These perform the same operations as the corresponding environment variable
-functions described above (`operator[]` is a synonym for `get()`). They will
-throw the same exceptions (except for `SystemError`, since no system API is
-being called).
+functions described above (`operator[]` is a synonym for `get()`), and will
+throw the same exceptions.
 
 * `Environment::iterator Environment::begin() const`
 * `Environment::iterator Environment::end() const`

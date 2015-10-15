@@ -67,10 +67,10 @@ if the <code>flags</code> argument is not one of these values.</p>
 
 <p>All of these functions can throw <code>EncodingError</code> if the <code>err_throw</code> flag is
 used and invalid UTF encoding is encountered (either in a string supplied by
-the caller, or in one returned from the environment); <code>std::invalid_argument</code>
-if an environment variable name is empty or contains an equals sign, or a name
-or value contains a null character; or <code>SystemError</code> (or a derived exception)
-if anything else goes wrong with the underlying system calls.</p>
+the caller, or in one returned from the environment), <code>std::invalid_argument</code>
+if an environment variable name is empty or contains an equals sign, or
+<code>std::system_error</code> if anything goes wrong with the underlying system API
+call.</p>
 
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>get_env</strong>(const basic_string&lt;C&gt;&amp; name, uint32_t flags = 0)</code></li>
@@ -152,9 +152,8 @@ constructed <code>Environment</code> object will be empty.</p>
 </ul>
 
 <p>These perform the same operations as the corresponding environment variable
-functions described above (<code>operator[]</code> is a synonym for <code>get()</code>). They will
-throw the same exceptions (except for <code>SystemError</code>, since no system API is
-being called).</p>
+functions described above (<code>operator[]</code> is a synonym for <code>get()</code>), and will
+throw the same exceptions.</p>
 
 <ul>
 <li><code>Environment::iterator Environment::<strong>begin</strong>() const</code></li>

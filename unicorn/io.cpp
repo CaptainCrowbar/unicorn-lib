@@ -4,44 +4,19 @@
 #include "unicorn/string.hpp"
 #include <algorithm>
 #include <cerrno>
+#include <system_error>
 
 using namespace std::literals;
 using namespace Unicorn::Literals;
 
 namespace Unicorn {
 
-    // Exceptions
-
-    u8string IOError::assemble(const char* msg, const u8string& file, int error) {
-        auto s = cstr(msg);
-        if (s.empty())
-            s = "I/O error";
-        if (! file.empty()) {
-            s += "; file ";
-            if (file.front() == '<' && file.back() == '>')
-                s += file;
-            else
-                format_type(file, s, fx_quote);
-        }
-        if (error) {
-            s += "; error ";
-            s += dec(error);
-            string details = CrtError::translate(error);
-            if (! details.empty()) {
-                s += "; ";
-                s += details;
-            }
-        }
-        return s;
-    }
-
-    // I/O implementation
-
     namespace {
 
         using SharedFile = shared_ptr<FILE>;
 
         void checked_fclose(FILE* f) { if (f) fclose(f); }
+        template <typename C> u8string quote_file(const basic_string<C>& name) { return quote(to_utf8(name), true); }
 
         SharedFile shared_fopen(const NativeString& file, const NativeString& mode, bool check) {
             FILE* f =
@@ -51,12 +26,10 @@ namespace Unicorn {
                     _wfopen
                 #endif
                 (file.data(), mode.data());
-            if (f || ! check)
-                return {f, checked_fclose};
-            else if (mode == "rb"_nat)
-                throw ReadError(file, errno);
-            else
-                throw WriteError(file, errno);
+            int error = errno;
+            if (check && f == nullptr)
+                throw std::system_error(error, std::generic_category(), quote_file(file));
+            return {f, checked_fclose};
         }
 
     }
@@ -177,7 +150,7 @@ namespace Unicorn {
         auto err = errno;
         impl->rdbuf.resize(offset + rc);
         if (ferror(impl->handle.get()))
-            throw ReadError(impl->name, err);
+            throw std::system_error(err, std::generic_category(), quote_file(impl->name));
     }
 
     // Class FileWriter
@@ -193,9 +166,11 @@ namespace Unicorn {
 
     void FileWriter::flush() {
         if (! impl)
-            throw WriteError();
-        if (fflush(impl->handle.get()) == EOF)
-            throw WriteError(impl->name, errno);
+            throw std::system_error(EBADF, std::generic_category());
+        if (fflush(impl->handle.get()) == EOF) {
+            int err = errno;
+            throw std::system_error(err, std::generic_category(), quote_file(impl->name));
+        }
     }
 
     void FileWriter::init(const NativeString& file, uint32_t flags, const u8string& enc) {
@@ -252,7 +227,7 @@ namespace Unicorn {
 
     void FileWriter::write(u8string str) {
         if (! impl)
-            throw WriteError();
+            throw std::system_error(EBADF, std::generic_category());
         fixtext(str);
         if (impl->flags & io_linebuf) {
             str.insert(0, impl->wrbuf);
@@ -293,7 +268,7 @@ namespace Unicorn {
         fwrite(str.data(), 1, str.size(), impl->handle.get());
         auto err = errno;
         if (ferror(impl->handle.get()))
-            throw WriteError(impl->name, err);
+            throw std::system_error(err, std::generic_category(), quote_file(impl->name));
         if (impl->flags & (io_linebuf | io_unbuf))
             flush();
     }

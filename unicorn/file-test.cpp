@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <fstream>
 #include <string>
+#include <system_error>
 #include <utility>
 
 using namespace std::literals;
@@ -819,14 +820,14 @@ namespace {
         d2 = "__test_dir_1/test_dir_2";
         TEST(! file_exists(d1));
         TEST(! file_exists(d2));
-        TEST_THROW(make_directory(d2), FileError);
+        TEST_THROW(make_directory(d2), std::system_error);
         TRY(make_directory(d2, true));
         TEST(file_exists(d1));
         TEST(file_exists(d2));
         TEST(file_is_directory(d1));
         TEST(file_is_directory(d2));
         TRY(make_directory(d2, true));
-        TEST_THROW(remove_file(d1), FileError);
+        TEST_THROW(remove_file(d1), std::system_error);
         TRY(remove_file(d1, true));
         TEST(! file_exists(d1));
         TEST(! file_exists(d2));
@@ -850,7 +851,7 @@ namespace {
         TEST(file_exists(f1));
         TRY(touch(f2));
         TEST(file_exists(f2));
-        TEST_THROW(make_directory(f1), FileError);
+        TEST_THROW(make_directory(f1), std::system_error);
         TRY(dir = directory(d1));
         TRY(std::copy(PRI_BOUNDS(dir), overwrite(vec)));
         TEST_EQUAL(vec.size(), 2);
@@ -866,7 +867,7 @@ namespace {
         TEST_EQUAL(vec.size(), 2);
         std::sort(vec.begin(), vec.end());
         TEST_EQUAL(Test::format_range(vec), normalize_file("[__test_dir_1" SLASH "hello,__test_dir_1" SLASH "world]"s));
-        TEST_THROW(remove_file(d1), FileError);
+        TEST_THROW(remove_file(d1), std::system_error);
         TEST(file_exists(d1));
         TEST(file_exists(f1));
         TEST(file_exists(f2));
@@ -973,14 +974,14 @@ namespace {
         d2 = u"__test_dir_1/test_dir_2";
         TEST(! file_exists(d1));
         TEST(! file_exists(d2));
-        TEST_THROW(make_directory(d2), FileError);
+        TEST_THROW(make_directory(d2), std::system_error);
         TRY(make_directory(d2, true));
         TEST(file_exists(d1));
         TEST(file_exists(d2));
         TEST(file_is_directory(d1));
         TEST(file_is_directory(d2));
         TRY(make_directory(d2, true));
-        TEST_THROW(remove_file(d1), FileError);
+        TEST_THROW(remove_file(d1), std::system_error);
         TRY(remove_file(d1, true));
         TEST(! file_exists(d1));
         TEST(! file_exists(d2));
@@ -1004,7 +1005,7 @@ namespace {
         TEST(file_exists(f1));
         TRY(touch(f2));
         TEST(file_exists(f2));
-        TEST_THROW(make_directory(f1), FileError);
+        TEST_THROW(make_directory(f1), std::system_error);
         TRY(dir = directory(d1));
         TRY(std::copy(PRI_BOUNDS(dir), overwrite(vec)));
         TEST_EQUAL(vec.size(), 2);
@@ -1020,7 +1021,7 @@ namespace {
         TEST_EQUAL(vec.size(), 2);
         std::sort(vec.begin(), vec.end());
         TEST_EQUAL(Test::format_range(vec), normalize_file("[__test_dir_1" SLASH "hello,__test_dir_1" SLASH "world]"s));
-        TEST_THROW(remove_file(d1), FileError);
+        TEST_THROW(remove_file(d1), std::system_error);
         TEST(file_exists(d1));
         TEST(file_exists(f1));
         TEST(file_exists(f2));
@@ -1127,14 +1128,14 @@ namespace {
         d2 = U"__test_dir_1/test_dir_2";
         TEST(! file_exists(d1));
         TEST(! file_exists(d2));
-        TEST_THROW(make_directory(d2), FileError);
+        TEST_THROW(make_directory(d2), std::system_error);
         TRY(make_directory(d2, true));
         TEST(file_exists(d1));
         TEST(file_exists(d2));
         TEST(file_is_directory(d1));
         TEST(file_is_directory(d2));
         TRY(make_directory(d2, true));
-        TEST_THROW(remove_file(d1), FileError);
+        TEST_THROW(remove_file(d1), std::system_error);
         TRY(remove_file(d1, true));
         TEST(! file_exists(d1));
         TEST(! file_exists(d2));
@@ -1158,7 +1159,7 @@ namespace {
         TEST(file_exists(f1));
         TRY(touch(f2));
         TEST(file_exists(f2));
-        TEST_THROW(make_directory(f1), FileError);
+        TEST_THROW(make_directory(f1), std::system_error);
         TRY(dir = directory(d1));
         TRY(std::copy(PRI_BOUNDS(dir), overwrite(vec)));
         TEST_EQUAL(vec.size(), 2);
@@ -1174,7 +1175,7 @@ namespace {
         TEST_EQUAL(vec.size(), 2);
         std::sort(vec.begin(), vec.end());
         TEST_EQUAL(Test::format_range(vec), normalize_file("[__test_dir_1" SLASH "hello,__test_dir_1" SLASH "world]"s));
-        TEST_THROW(remove_file(d1), FileError);
+        TEST_THROW(remove_file(d1), std::system_error);
         TEST(file_exists(d1));
         TEST(file_exists(f1));
         TEST(file_exists(f2));

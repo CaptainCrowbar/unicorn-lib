@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <fstream>
 #include <string>
+#include <system_error>
 #include <vector>
 
 using namespace std::literals;
@@ -35,7 +36,7 @@ namespace {
         Irange<FileReader> range;
         TempFile tempfile(testfile);
 
-        TEST_THROW(range = read_lines(nonesuch), ReadError);
+        TEST_THROW(range = read_lines(nonesuch), std::system_error);
         TRY(range = read_lines(nonesuch, io_nofail));
         TEST_EQUAL(range_count(range), 0);
 

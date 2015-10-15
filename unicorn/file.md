@@ -14,7 +14,6 @@ file renaming and deletion, directory search, and so on.
 
 * [Introduction][]
 * [System dependencies][]
-* [Exceptions][]
 * [File name functions][]
 * [File system query functions][]
 * [File system modifying functions][]
@@ -78,22 +77,6 @@ These convert a file name from one UTF encoding to another, using the
 option, except that, if both the source and destination strings are the
 operating system's native encoding, the string will simply be copied verbatim
 without checking for valid Unicode.
-
-## Exceptions ##
-
-* `class FileError: public std::runtime_error`
-    * `FileError::FileError()`
-    * `explicit FileError::FileError(int error)`
-    * `template <typename... More> FileError::FileError(int error, const NativeString& file, const More&... more)`
-    * `const NativeCharacter* FileError::file(size_t i = 0) const noexcept`
-    * `size_t FileError::files() const noexcept`
-    * `int FileError::error() const noexcept`
-
-An exception thrown to report errors in file system operations. It can be
-constructed with the error code from the underlying native system call, and
-optionally one or more file names for reference. The `file()` method returns
-an empty string if the index is beyond the end of the supplied file list (i.e.
-if `i>=files()`).
 
 ## File name functions ##
 
@@ -174,8 +157,8 @@ These functions perform read-only operations on the file system.
 
 These query the current working directory of the calling process. The first
 version requires the character type to be explicitly specified. These may
-throw `FileError` in some unusual cases of failure, usually involving access
-permission problems.
+throw `std::system_error` in some unusual cases of failure, usually involving
+access permission problems.
 
 * `template <typename C> bool file_exists(const basic_string<C>& file) noexcept`
 
@@ -208,31 +191,31 @@ system.
 
 Create a directory (with default permissions). If the `recurse` flag is set,
 this will recursively create any missing parent directories (like `mkdir -p`).
-It will do nothing if the directory already exists. It will throw `FileError`
-if the named file already exists but is not a directory, if the directory path
-is not a legal filename, if the parent directory does not exist and the
-`recurse` flag was not set, or if the caller does not have permission to
-create the directory.
+It will do nothing if the directory already exists. It will throw
+`std::system_error` if the named file already exists but is not a directory,
+if the directory path is not a legal filename, if the parent directory does
+not exist and the `recurse` flag was not set, or if the caller does not have
+permission to create the directory.
 
 * `template <typename C> void remove_file(const basic_string<C>& file, bool recurse = false)`
 
 Delete a file or directory. If the `recurse` flag is set, directories will be
 deleted recursively (like `rm -rf`; this will not follow symbolic links). This
 will do nothing if the named file does not exist to begin with. It will throw
-`FileError` if the directory path is not a legal filename, if the name refers
-to a nonempty directory and the `recurse` flag was not set, or if the caller
-does not have permission to delete the file.
+`std::system_error` if the directory path is not a legal filename, if the name
+refers to a nonempty directory and the `recurse` flag was not set, or if the
+caller does not have permission to delete the file.
 
 * `template <typename C> void rename_file(const basic_string<C>& src, const basic_string<C>& dst)`
 
-Rename a file or directory. This will throw `FileError` if either argument is
-not a legal filename, if the caller does not have permission to perform the
-operation, or under other OS-specific circumstances. This function is a thin
-wrapper around the underlying native file renaming functions, and will share
-any system specific limitations and variations; behaviour when the destination
-file already exists is system dependent (this may overwrite the file or throw
-an exception), and on most systems the call will fail if the source and
-destination are on different physical file systems.
+Rename a file or directory. This will throw `std::system_error` if either
+argument is not a legal filename, if the caller does not have permission to
+perform the operation, or under other OS-specific circumstances. This function
+is a thin wrapper around the underlying native file renaming functions, and
+will share any system specific limitations and variations; behaviour when the
+destination file already exists is system dependent (this may overwrite the
+file or throw an exception), and on most systems the call will fail if the
+source and destination are on different physical file systems.
 
 ## Directory iterators ##
 

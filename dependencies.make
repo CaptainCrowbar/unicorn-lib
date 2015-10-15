@@ -16,7 +16,8 @@ build/$(TARGET)/environment-test.o: unicorn/environment-test.cpp unicorn/core.hp
   $(LIBROOT)/prion-lib/prion/unit-test.hpp
 build/$(TARGET)/environment.o: unicorn/environment.cpp unicorn/environment.hpp \
   unicorn/core.hpp $(LIBROOT)/prion-lib/prion/core.hpp unicorn/utf.hpp \
-  unicorn/character.hpp unicorn/property-values.hpp
+  unicorn/character.hpp unicorn/property-values.hpp unicorn/string.hpp \
+  unicorn/segment.hpp
 build/$(TARGET)/file-test.o: unicorn/file-test.cpp unicorn/core.hpp \
   $(LIBROOT)/prion-lib/prion/core.hpp unicorn/file.hpp unicorn/character.hpp \
   unicorn/property-values.hpp unicorn/string.hpp unicorn/segment.hpp \

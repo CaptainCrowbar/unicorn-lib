@@ -21,38 +21,9 @@ encodings, as well as other conveniences such as normalization of line breaks.</
 <h2 id="contents">Contents</h2>
 
 <ul>
-<li><a href="#exceptions">Exceptions</a></li>
 <li><a href="#fileinputiterator">File input iterator</a></li>
 <li><a href="#fileoutputiterator">File output iterator</a></li>
 </ul>
-
-<h2 id="exceptions">Exceptions</h2>
-
-<ul>
-<li><code>class <strong>IOError</strong>: public std::runtime_error</code>
-
-<ul>
-<li><code>IOError::<strong>IOError</strong>()</code></li>
-<li><code>explicit IOError::<strong>IOError</strong>(const char* msg)</code></li>
-<li><code>template &lt;typename C&gt; IOError::<strong>IOError</strong>(const char* msg, const basic_string&lt;C&gt;&amp; file, int error = 0)</code></li>
-<li><code>const NativeCharacter* IOError::<strong>file</strong>() const noexcept</code></li>
-<li><code>int IOError::<strong>error</strong>() const noexcept</code></li>
-</ul></li>
-<li><code>class <strong>ReadError</strong>: public IOError</code>
-
-<ul>
-<li><code>ReadError::<strong>ReadError</strong>()</code></li>
-<li><code>template &lt;typename C&gt; explicit ReadError::<strong>ReadError</strong>(const basic_string&lt;C&gt;&amp; file, int error = 0)</code></li>
-</ul></li>
-<li><code>class <strong>WriteError</strong>: public IOError</code>
-
-<ul>
-<li><code>WriteError::<strong>WriteError</strong>()</code></li>
-<li><code>template &lt;typename C&gt; explicit WriteError::<strong>WriteError</strong>(const basic_string&lt;C&gt;&amp; file, int error = 0)</code></li>
-</ul></li>
-</ul>
-
-<p>TODO</p>
 
 <h2 id="fileinputiterator">File input iterator</h2>
 
