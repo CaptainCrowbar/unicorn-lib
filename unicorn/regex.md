@@ -216,7 +216,7 @@ groups, if the name contains characters that are not alphanumeric. In the
 and `$+` codes will be replaced with empty strings if there are no non-empty
 captures.
 
-The `$<`, `$>`, `$[`, `$]`, and `$*` codes are mostly useful with the
+The `$<`, `$>`, `$[`, `$]`, and `$_` codes are mostly useful with the
 `extract()` method rather than `format()`, since `format()` copies the
 unmatched parts of the subject string anyway. If this is the first match in
 the subject string, `$<` starts at the beginning of the string; if this is the
@@ -234,9 +234,11 @@ the escape character is discarded and the second character is copied literally
 into the output string.
 
 When the case conversion codes (`\l`, `\u`, `\L`, `\T`, and `\U`) are used
-with byte mode regexes, only ASCII characters will be converted. If a
-`\x{HHH...}` escape code is used with a byte mode regex, the output is
-unspecified if the hexadecimal value is greater than `0xff`.
+with byte mode regexes, only ASCII characters will be converted.
+
+If the format string contains `\x{HHH...}` escape codes, an `EncodingError`
+exception will be thrown if the hexadecimal number is not a valid Unicode
+scalar value or, for byte mode regexes, if it is greater than `0xff`.
 
 ## Supporting types ##
 

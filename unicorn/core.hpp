@@ -58,8 +58,8 @@ namespace Unicorn {
     public:
         EncodingError():
             std::runtime_error(prefix({}, 0)), enc(), ofs(0) {}
-        explicit EncodingError(const u8string& encoding, size_t offset = 0):
-            std::runtime_error(prefix(encoding, offset)), enc(make_shared<u8string>(encoding)), ofs(offset) {}
+        explicit EncodingError(const u8string& encoding, size_t offset = 0, char32_t c = 0):
+            std::runtime_error(prefix(encoding, offset) + hexcode(&c, 1)), enc(make_shared<u8string>(encoding)), ofs(offset) {}
         template <typename C>
             EncodingError(const u8string& encoding, size_t offset, const C* ptr, size_t n = 1):
             std::runtime_error(prefix(encoding, offset) + hexcode(ptr, n)), enc(make_shared<u8string>(encoding)), ofs(offset) {}

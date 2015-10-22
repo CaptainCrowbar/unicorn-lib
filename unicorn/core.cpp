@@ -78,15 +78,10 @@ namespace Unicorn {
 
     u8string EncodingError::prefix(const u8string& encoding, size_t offset) {
         u8string s = "Encoding error";
-        if (! encoding.empty()) {
-            s += " (";
-            s += encoding;
-            s += ")";
-        }
-        if (offset > 0) {
-            s += "; offset ";
-            s += dec(offset);
-        }
+        if (! encoding.empty())
+            s += " (" + encoding + ")";
+        if (offset > 0)
+            s += "; offset " + dec(offset);
         return s;
     }
 

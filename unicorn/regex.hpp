@@ -611,10 +611,15 @@ namespace Unicorn {
     void BasicRegexFormat<CX>::add_literal(char32_t u) {
         if (seq.empty() || seq.back().index != literal)
             seq.push_back({literal, {}});
-        if (is_utf)
+        if (is_utf) {
+            if (! char_is_unicode(u))
+                throw EncodingError("Unicode", 0, u);
             str_append_char(seq.back().text, u);
-        else
+        } else {
+            if (u > 0xff)
+                throw EncodingError("byte", 0, u);
             seq.back().text += char_type(u);
+        }
     }
 
     template <typename CX>

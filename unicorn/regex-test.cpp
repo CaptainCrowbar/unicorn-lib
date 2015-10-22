@@ -429,6 +429,10 @@ namespace {
         s = "*** Hello world ***";  TEST_EQUAL(rf.extract(s), "(Hello:*** Hello world ***)(world:*** Hello world ***)");
         s = "*** Hello world ***";  TEST_EQUAL(rf.extract(s, 1), "(Hello:*** Hello world ***)");
 
+        TEST_THROW(RegexFormat("\\w", "\\x{d800}"), EncodingError);
+        TEST_THROW(RegexFormat("\\w", "\\x{dfff}"), EncodingError);
+        TEST_THROW(RegexFormat("\\w", "\\x{110000}"), EncodingError);
+
     }
 
     void check_utility_functions() {
@@ -633,6 +637,7 @@ namespace {
         s1 = "AEIOU \xc1\xc9\xcd\xd3\xda";
         TRY(s2 = rf(s1));
         TEST_EQUAL(s2, "aeiou \xc1\xc9\xcd\xd3\xda");
+        TEST_THROW(ByteRegexFormat("\\w", "\\x{100}"), EncodingError);
 
         Regex x;
         RegexFormat xf;

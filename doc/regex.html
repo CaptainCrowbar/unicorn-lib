@@ -411,7 +411,7 @@ groups, if the name contains characters that are not alphanumeric. In the
 and <code>$+</code> codes will be replaced with empty strings if there are no non-empty
 captures.</p>
 
-<p>The <code>$&lt;</code>, <code>$&gt;</code>, <code>$[</code>, <code>$]</code>, and <code>$*</code> codes are mostly useful with the
+<p>The <code>$&lt;</code>, <code>$&gt;</code>, <code>$[</code>, <code>$]</code>, and <code>$_</code> codes are mostly useful with the
 <code>extract()</code> method rather than <code>format()</code>, since <code>format()</code> copies the
 unmatched parts of the subject string anyway. If this is the first match in
 the subject string, <code>$&lt;</code> starts at the beginning of the string; if this is the
@@ -429,9 +429,11 @@ the escape character is discarded and the second character is copied literally
 into the output string.</p>
 
 <p>When the case conversion codes (<code>\l</code>, <code>\u</code>, <code>\L</code>, <code>\T</code>, and <code>\U</code>) are used
-with byte mode regexes, only ASCII characters will be converted. If a
-<code>\x{HHH...}</code> escape code is used with a byte mode regex, the output is
-unspecified if the hexadecimal value is greater than <code>0xff</code>.</p>
+with byte mode regexes, only ASCII characters will be converted.</p>
+
+<p>If the format string contains <code>\x{HHH...}</code> escape codes, an <code>EncodingError</code>
+exception will be thrown if the hexadecimal number is not a valid Unicode
+scalar value or, for byte mode regexes, if it is greater than <code>0xff</code>.</p>
 
 <h2 id="supportingtypes">Supporting types</h2>
 
