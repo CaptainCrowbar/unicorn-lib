@@ -13,7 +13,6 @@
 
 #pragma once
 
-#include "unicorn/core.hpp"
 #include <cstdint>
 
 namespace Unicorn {

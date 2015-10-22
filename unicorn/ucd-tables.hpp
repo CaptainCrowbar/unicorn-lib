@@ -3,8 +3,7 @@
 
 #pragma once
 
-#include "unicorn/core.hpp"
-#include "unicorn/character.hpp"
+#include "prion/core.hpp"
 #include "unicorn/property-values.hpp"
 #include <algorithm>
 #include <array>
@@ -13,6 +12,8 @@
 #include <utility>
 
 namespace Unicorn {
+
+    using namespace Prion;
 
     namespace UnicornDetail {
 

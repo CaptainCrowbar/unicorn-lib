@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "unicorn/core.hpp"
+#include <cstdint>
 
 // Windows brain damage
 #if defined(IN)

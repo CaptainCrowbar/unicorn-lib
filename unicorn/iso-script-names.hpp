@@ -1,9 +1,9 @@
 // Internal to the library, do not include this directly
 // NOT INSTALLED
 #pragma once
-#include "unicorn/core.hpp"
-#include "unicorn/character.hpp"
+#include "prion/core.hpp"
 namespace Unicorn {
+using namespace Prion;
 namespace UnicornDetail {
 struct ScriptInfo { const char* abbr; const char* name; };
 constexpr ScriptInfo iso_script_names[] {
@@ -21,6 +21,7 @@ constexpr ScriptInfo iso_script_names[] {
 {"bass","Bassa_Vah"},
 {"batk","Batak"},
 {"beng","Bengali"},
+{"bhks","Bhaiksuki"},
 {"blis","Blissymbols"},
 {"bopo","Bopomofo"},
 {"brah","Brahmi"},
@@ -86,6 +87,7 @@ constexpr ScriptInfo iso_script_names[] {
 {"latf","Latin"},
 {"latg","Latin"},
 {"latn","Latin"},
+{"leke","Leke"},
 {"lepc","Lepcha"},
 {"limb","Limbu"},
 {"lina","Linear_A"},
