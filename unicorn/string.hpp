@@ -602,65 +602,6 @@ namespace Unicorn {
             dst += str_repeat(s, n);
     }
 
-    template <typename C>
-    basic_string<C> str_change(const UtfIterator<C>& dst_begin, const UtfIterator<C>& dst_end,
-            const UtfIterator<C>& src_begin, const UtfIterator<C>& src_end) {
-        basic_string<C> result(dst_begin.source(), 0, dst_begin.offset());
-        result.append(src_begin.source(), src_begin.offset(), src_end.offset() - src_begin.offset());
-        result.append(dst_end.source(), dst_end.offset(), npos);
-        return result;
-    }
-
-    template <typename C>
-    basic_string<C> str_change(const Irange<UtfIterator<C>>& dst, const Irange<UtfIterator<C>>& src) {
-        return str_change(PRI_BOUNDS(dst), PRI_BOUNDS(src));
-    }
-
-    template <typename C>
-    basic_string<C> str_change(const UtfIterator<C>& dst_begin, const UtfIterator<C>& dst_end,
-            const basic_string<C>& src) {
-        basic_string<C> result(dst_begin.source(), 0, dst_begin.offset());
-        result += src;
-        result.append(dst_end.source(), dst_end.offset(), npos);
-        return result;
-    }
-
-    template <typename C>
-    basic_string<C> str_change(const Irange<UtfIterator<C>>& dst, const basic_string<C>& src) {
-        return str_change(PRI_BOUNDS(dst), utf_begin(src), utf_end(src));
-    }
-
-    template <typename C>
-    Irange<UtfIterator<C>> str_change_in(basic_string<C>& dst,
-            const UtfIterator<C>& range_begin, const UtfIterator<C>& range_end,
-            const UtfIterator<C>& src_begin, const UtfIterator<C>& src_end) {
-        size_t pos1 = range_begin.offset(), n1 = range_end.offset() - pos1,
-            pos2 = src_begin.offset(), n2 = src_end.offset() - pos2;
-        dst.replace(pos1, n1, src_begin.source(), pos2, n2);
-        return {utf_iterator(dst, pos1), utf_iterator(dst, pos1 + n2)};
-    }
-
-    template <typename C>
-    Irange<UtfIterator<C>> str_change_in(basic_string<C>& dst, const Irange<UtfIterator<C>>& range,
-            const Irange<UtfIterator<C>>& src) {
-        return str_change_in(dst, PRI_BOUNDS(range), PRI_BOUNDS(src));
-    }
-
-    template <typename C>
-    Irange<UtfIterator<C>> str_change_in(basic_string<C>& dst,
-            const UtfIterator<C>& range_begin, const UtfIterator<C>& range_end,
-            const basic_string<C>& src) {
-        size_t pos1 = range_begin.offset(), n1 = range_end.offset() - pos1;
-        dst.replace(pos1, n1, src);
-        return {utf_iterator(dst, pos1), utf_iterator(dst, pos1 + src.size())};
-    }
-
-    template <typename C>
-    Irange<UtfIterator<C>> str_change_in(basic_string<C>& dst, const Irange<UtfIterator<C>>& range,
-            const basic_string<C>& src) {
-        return str_change_in(dst, PRI_BOUNDS(range), utf_begin(src), utf_end(src));
-    }
-
     namespace UnicornDetail {
 
         template <typename S1, typename DS>
@@ -979,6 +920,106 @@ namespace Unicorn {
             size_t offset = str_find_offset(str, old_length - length, flags);
             str.erase(0, offset);
         }
+    }
+
+    template <typename C>
+    basic_string<C> str_insert(const UtfIterator<C>& dst, const UtfIterator<C>& src_begin, const UtfIterator<C>& src_end) {
+        basic_string<C> result(dst.source(), 0, dst.offset());
+        result.append(src_begin.source(), src_begin.offset(), src_end.offset() - src_begin.offset());
+        result.append(dst.source(), dst.offset(), npos);
+        return result;
+    }
+
+    template <typename C>
+    basic_string<C> str_insert(const UtfIterator<C>& dst, const Irange<UtfIterator<C>>& src) {
+        return str_insert(dst, PRI_BOUNDS(src));
+    }
+
+    template <typename C>
+    basic_string<C> str_insert(const UtfIterator<C>& dst, const basic_string<C>& src) {
+        basic_string<C> result(dst.source(), 0, dst.offset());
+        result += src;
+        result.append(dst.source(), dst.offset(), npos);
+        return result;
+    }
+
+    template <typename C>
+    basic_string<C> str_insert(const UtfIterator<C>& dst_begin, const UtfIterator<C>& dst_end,
+            const UtfIterator<C>& src_begin, const UtfIterator<C>& src_end) {
+        basic_string<C> result(dst_begin.source(), 0, dst_begin.offset());
+        result.append(src_begin.source(), src_begin.offset(), src_end.offset() - src_begin.offset());
+        result.append(dst_end.source(), dst_end.offset(), npos);
+        return result;
+    }
+
+    template <typename C>
+    basic_string<C> str_insert(const Irange<UtfIterator<C>>& dst, const Irange<UtfIterator<C>>& src) {
+        return str_insert(PRI_BOUNDS(dst), PRI_BOUNDS(src));
+    }
+
+    template <typename C>
+    basic_string<C> str_insert(const UtfIterator<C>& dst_begin, const UtfIterator<C>& dst_end,
+            const basic_string<C>& src) {
+        basic_string<C> result(dst_begin.source(), 0, dst_begin.offset());
+        result += src;
+        result.append(dst_end.source(), dst_end.offset(), npos);
+        return result;
+    }
+
+    template <typename C>
+    basic_string<C> str_insert(const Irange<UtfIterator<C>>& dst, const basic_string<C>& src) {
+        return str_insert(PRI_BOUNDS(dst), utf_begin(src), utf_end(src));
+    }
+
+    template <typename C>
+    Irange<UtfIterator<C>> str_insert_in(basic_string<C>& dst, const UtfIterator<C>& where,
+            const UtfIterator<C>& src_begin, const UtfIterator<C>& src_end) {
+        size_t ofs1 = where.offset(), ofs2 = src_begin.offset(), n = src_end.offset() - ofs2;
+        dst.insert(ofs1, src_begin.source(), ofs2, n);
+        return {utf_iterator(dst, ofs1), utf_iterator(dst, ofs1 + n)};
+    }
+
+    template <typename C>
+    Irange<UtfIterator<C>> str_insert_in(basic_string<C>& dst, const UtfIterator<C>& where, const Irange<UtfIterator<C>>& src) {
+        return str_insert_in(dst, where, PRI_BOUNDS(src));
+    }
+
+    template <typename C>
+    Irange<UtfIterator<C>> str_insert_in(basic_string<C>& dst, const UtfIterator<C>& where, const basic_string<C>& src) {
+        size_t ofs = where.offset();
+        dst.insert(ofs, src);
+        return {utf_iterator(dst, ofs), utf_iterator(dst, ofs + src.size())};
+    }
+
+    template <typename C>
+    Irange<UtfIterator<C>> str_insert_in(basic_string<C>& dst,
+            const UtfIterator<C>& range_begin, const UtfIterator<C>& range_end,
+            const UtfIterator<C>& src_begin, const UtfIterator<C>& src_end) {
+        size_t ofs1 = range_begin.offset(), n1 = range_end.offset() - ofs1,
+            ofs2 = src_begin.offset(), n2 = src_end.offset() - ofs2;
+        dst.replace(ofs1, n1, src_begin.source(), ofs2, n2);
+        return {utf_iterator(dst, ofs1), utf_iterator(dst, ofs1 + n2)};
+    }
+
+    template <typename C>
+    Irange<UtfIterator<C>> str_insert_in(basic_string<C>& dst, const Irange<UtfIterator<C>>& range,
+            const Irange<UtfIterator<C>>& src) {
+        return str_insert_in(dst, PRI_BOUNDS(range), PRI_BOUNDS(src));
+    }
+
+    template <typename C>
+    Irange<UtfIterator<C>> str_insert_in(basic_string<C>& dst,
+            const UtfIterator<C>& range_begin, const UtfIterator<C>& range_end,
+            const basic_string<C>& src) {
+        size_t ofs = range_begin.offset(), n = range_end.offset() - ofs;
+        dst.replace(ofs, n, src);
+        return {utf_iterator(dst, ofs), utf_iterator(dst, ofs + src.size())};
+    }
+
+    template <typename C>
+    Irange<UtfIterator<C>> str_insert_in(basic_string<C>& dst, const Irange<UtfIterator<C>>& range,
+            const basic_string<C>& src) {
+        return str_insert_in(dst, PRI_BOUNDS(range), utf_begin(src), utf_end(src));
     }
 
     template <typename FwdRange, typename C>

@@ -216,9 +216,9 @@ namespace Unicorn {
             auto i = utf_begin(str);
             while (i.offset() < str.size()) {
                 if (*i == '\r' && str[i.offset() + 1] == '\n')
-                    i = str_change_in(str, i, std::next(std::next(i)), brk).second;
+                    i = str_insert_in(str, i, std::next(std::next(i)), brk).second;
                 else if (char_is_line_break(*i))
-                    i = str_change_in(str, i, std::next(i), brk).second;
+                    i = str_insert_in(str, i, std::next(i), brk).second;
                 else
                     ++i;
             }

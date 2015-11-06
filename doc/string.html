@@ -321,28 +321,6 @@ characters skipped.</p>
 necessary encoding conversions.</p>
 
 <ul>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_change</strong>(const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; dst, const basic_string&lt;C&gt;&amp; src)</code></li>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_change</strong>(const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; dst, const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; src)</code></li>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_change</strong>(const UtfIterator&lt;C&gt;&amp; dst_begin, const UtfIterator&lt;C&gt;&amp; dst_end, const basic_string&lt;C&gt;&amp; src)</code></li>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_change</strong>(const UtfIterator&lt;C&gt;&amp; dst_begin, const UtfIterator&lt;C&gt;&amp; dst_end, const UtfIterator&lt;C&gt;&amp; src_begin, const UtfIterator&lt;C&gt;&amp; src_end)</code></li>
-<li><code>template &lt;typename C&gt; Irange&lt;UtfIterator&lt;C&gt;&gt; <strong>str_change_in</strong>(basic_string&lt;C&gt;&amp; dst, const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; range, const basic_string&lt;C&gt;&amp; src)</code></li>
-<li><code>template &lt;typename C&gt; Irange&lt;UtfIterator&lt;C&gt;&gt; <strong>str_change_in</strong>(basic_string&lt;C&gt;&amp; dst, const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; range, const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; src)</code></li>
-<li><code>template &lt;typename C&gt; Irange&lt;UtfIterator&lt;C&gt;&gt; <strong>str_change_in</strong>(basic_string&lt;C&gt;&amp; dst, const UtfIterator&lt;C&gt;&amp; range_begin, const UtfIterator&lt;C&gt;&amp; range_end, const basic_string&lt;C&gt;&amp; src)</code></li>
-<li><code>template &lt;typename C&gt; Irange&lt;UtfIterator&lt;C&gt;&gt; <strong>str_change_in</strong>(basic_string&lt;C&gt;&amp; dst, const UtfIterator&lt;C&gt;&amp; range_begin, const UtfIterator&lt;C&gt;&amp; range_end, const UtfIterator&lt;C&gt;&amp; src_begin, const UtfIterator&lt;C&gt;&amp; src_end)</code></li>
-</ul>
-
-<p>These replace the destination substring with a copy of the source string. The
-effect is the same as the <code>basic_string::replace()</code> methods, except that
-positions within the string are specified by UTF iterators instead of ordinary
-string iterators or offsets. The <code>str_change()</code> functions return the modified
-string, obtained by taking the underlying string from the destination
-iterators, and replacing the delimited substring with the source string; the
-<code>str_change_in()</code> functions update the destination string in place, replacing
-the substring delimited by <code>range</code> with the source string, and return a pair
-of iterators delimiting the newly inserted replacement string within the
-updated <code>dst</code>.</p>
-
-<ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_chars</strong>(char32_t c, size_t n = 1)</code></li>
 </ul>
 
@@ -426,6 +404,32 @@ anchors the string on the right and pads or truncates on the left. If the
 string can&#8217;t be adjusted to exactly the specified size (because one of the
 East Asian width options was selected and wide characters are present), the
 result will be one unit longer than the requested length.</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_insert</strong>(const UtfIterator&lt;C&gt;&amp; dst, const basic_string&lt;C&gt;&amp; src)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_insert</strong>(const UtfIterator&lt;C&gt;&amp; dst, const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; src)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_insert</strong>(const UtfIterator&lt;C&gt;&amp; dst, const UtfIterator&lt;C&gt;&amp; src_begin, const UtfIterator&lt;C&gt;&amp; src_end)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_insert</strong>(const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; dst, const basic_string&lt;C&gt;&amp; src)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_insert</strong>(const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; dst, const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; src)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_insert</strong>(const UtfIterator&lt;C&gt;&amp; dst_begin, const UtfIterator&lt;C&gt;&amp; dst_end, const basic_string&lt;C&gt;&amp; src)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_insert</strong>(const UtfIterator&lt;C&gt;&amp; dst_begin, const UtfIterator&lt;C&gt;&amp; dst_end, const UtfIterator&lt;C&gt;&amp; src_begin, const UtfIterator&lt;C&gt;&amp; src_end)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;UtfIterator&lt;C&gt;&gt; <strong>str_insert_in</strong>(basic_string&lt;C&gt;&amp; dst, const UtfIterator&lt;C&gt;&amp; where, const basic_string&lt;C&gt;&amp; src)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;UtfIterator&lt;C&gt;&gt; <strong>str_insert_in</strong>(basic_string&lt;C&gt;&amp; dst, const UtfIterator&lt;C&gt;&amp; where, const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; src)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;UtfIterator&lt;C&gt;&gt; <strong>str_insert_in</strong>(basic_string&lt;C&gt;&amp; dst, const UtfIterator&lt;C&gt;&amp; where, const UtfIterator&lt;C&gt;&amp; src_begin, const UtfIterator&lt;C&gt;&amp; src_end)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;UtfIterator&lt;C&gt;&gt; <strong>str_insert_in</strong>(basic_string&lt;C&gt;&amp; dst, const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; range, const basic_string&lt;C&gt;&amp; src)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;UtfIterator&lt;C&gt;&gt; <strong>str_insert_in</strong>(basic_string&lt;C&gt;&amp; dst, const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; range, const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; src)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;UtfIterator&lt;C&gt;&gt; <strong>str_insert_in</strong>(basic_string&lt;C&gt;&amp; dst, const UtfIterator&lt;C&gt;&amp; range_begin, const UtfIterator&lt;C&gt;&amp; range_end, const basic_string&lt;C&gt;&amp; src)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;UtfIterator&lt;C&gt;&gt; <strong>str_insert_in</strong>(basic_string&lt;C&gt;&amp; dst, const UtfIterator&lt;C&gt;&amp; range_begin, const UtfIterator&lt;C&gt;&amp; range_end, const UtfIterator&lt;C&gt;&amp; src_begin, const UtfIterator&lt;C&gt;&amp; src_end)</code></li>
+</ul>
+
+<p>These insert a copy of the source string into the destination string, either
+at a specified location or replacing a specified substring. The effect is
+similar to the <code>basic_string::insert()</code> and <code>replace()</code> methods, except that
+positions within the string are specified by UTF iterators instead of ordinary
+string iterators or offsets. The <code>str_insert()</code> functions return the modified
+string; the <code>str_insert_in()</code> functions update the destination string in place
+and return a pair of iterators delimiting the newly inserted replacement
+string within the updated <code>dst</code>.</p>
 
 <ul>
 <li><code>template &lt;typename FwdRange&gt; basic_string&lt;[character type]&gt; <strong>str_join</strong>(const FwdRange&amp; r)</code></li>

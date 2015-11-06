@@ -254,26 +254,6 @@ characters skipped.
 These append one or more characters to a Unicode string, performing any
 necessary encoding conversions.
 
-* `template <typename C> basic_string<C> str_change(const Irange<UtfIterator<C>>& dst, const basic_string<C>& src)`
-* `template <typename C> basic_string<C> str_change(const Irange<UtfIterator<C>>& dst, const Irange<UtfIterator<C>>& src)`
-* `template <typename C> basic_string<C> str_change(const UtfIterator<C>& dst_begin, const UtfIterator<C>& dst_end, const basic_string<C>& src)`
-* `template <typename C> basic_string<C> str_change(const UtfIterator<C>& dst_begin, const UtfIterator<C>& dst_end, const UtfIterator<C>& src_begin, const UtfIterator<C>& src_end)`
-* `template <typename C> Irange<UtfIterator<C>> str_change_in(basic_string<C>& dst, const Irange<UtfIterator<C>>& range, const basic_string<C>& src)`
-* `template <typename C> Irange<UtfIterator<C>> str_change_in(basic_string<C>& dst, const Irange<UtfIterator<C>>& range, const Irange<UtfIterator<C>>& src)`
-* `template <typename C> Irange<UtfIterator<C>> str_change_in(basic_string<C>& dst, const UtfIterator<C>& range_begin, const UtfIterator<C>& range_end, const basic_string<C>& src)`
-* `template <typename C> Irange<UtfIterator<C>> str_change_in(basic_string<C>& dst, const UtfIterator<C>& range_begin, const UtfIterator<C>& range_end, const UtfIterator<C>& src_begin, const UtfIterator<C>& src_end)`
-
-These replace the destination substring with a copy of the source string. The
-effect is the same as the `basic_string::replace()` methods, except that
-positions within the string are specified by UTF iterators instead of ordinary
-string iterators or offsets. The `str_change()` functions return the modified
-string, obtained by taking the underlying string from the destination
-iterators, and replacing the delimited substring with the source string; the
-`str_change_in()` functions update the destination string in place, replacing
-the substring delimited by `range` with the source string, and return a pair
-of iterators delimiting the newly inserted replacement string within the
-updated `dst`.
-
 * `template <typename C> basic_string<C> str_chars(char32_t c, size_t n = 1)`
 
 Returns a string containing `n` copies of the character, in the appropriate
@@ -346,6 +326,30 @@ anchors the string on the right and pads or truncates on the left. If the
 string can't be adjusted to exactly the specified size (because one of the
 East Asian width options was selected and wide characters are present), the
 result will be one unit longer than the requested length.
+
+* `template <typename C> basic_string<C> str_insert(const UtfIterator<C>& dst, const basic_string<C>& src)`
+* `template <typename C> basic_string<C> str_insert(const UtfIterator<C>& dst, const Irange<UtfIterator<C>>& src)`
+* `template <typename C> basic_string<C> str_insert(const UtfIterator<C>& dst, const UtfIterator<C>& src_begin, const UtfIterator<C>& src_end)`
+* `template <typename C> basic_string<C> str_insert(const Irange<UtfIterator<C>>& dst, const basic_string<C>& src)`
+* `template <typename C> basic_string<C> str_insert(const Irange<UtfIterator<C>>& dst, const Irange<UtfIterator<C>>& src)`
+* `template <typename C> basic_string<C> str_insert(const UtfIterator<C>& dst_begin, const UtfIterator<C>& dst_end, const basic_string<C>& src)`
+* `template <typename C> basic_string<C> str_insert(const UtfIterator<C>& dst_begin, const UtfIterator<C>& dst_end, const UtfIterator<C>& src_begin, const UtfIterator<C>& src_end)`
+* `template <typename C> Irange<UtfIterator<C>> str_insert_in(basic_string<C>& dst, const UtfIterator<C>& where, const basic_string<C>& src)`
+* `template <typename C> Irange<UtfIterator<C>> str_insert_in(basic_string<C>& dst, const UtfIterator<C>& where, const Irange<UtfIterator<C>>& src)`
+* `template <typename C> Irange<UtfIterator<C>> str_insert_in(basic_string<C>& dst, const UtfIterator<C>& where, const UtfIterator<C>& src_begin, const UtfIterator<C>& src_end)`
+* `template <typename C> Irange<UtfIterator<C>> str_insert_in(basic_string<C>& dst, const Irange<UtfIterator<C>>& range, const basic_string<C>& src)`
+* `template <typename C> Irange<UtfIterator<C>> str_insert_in(basic_string<C>& dst, const Irange<UtfIterator<C>>& range, const Irange<UtfIterator<C>>& src)`
+* `template <typename C> Irange<UtfIterator<C>> str_insert_in(basic_string<C>& dst, const UtfIterator<C>& range_begin, const UtfIterator<C>& range_end, const basic_string<C>& src)`
+* `template <typename C> Irange<UtfIterator<C>> str_insert_in(basic_string<C>& dst, const UtfIterator<C>& range_begin, const UtfIterator<C>& range_end, const UtfIterator<C>& src_begin, const UtfIterator<C>& src_end)`
+
+These insert a copy of the source string into the destination string, either
+at a specified location or replacing a specified substring. The effect is
+similar to the `basic_string::insert()` and `replace()` methods, except that
+positions within the string are specified by UTF iterators instead of ordinary
+string iterators or offsets. The `str_insert()` functions return the modified
+string; the `str_insert_in()` functions update the destination string in place
+and return a pair of iterators delimiting the newly inserted replacement
+string within the updated `dst`.
 
 * `template <typename FwdRange> basic_string<[character type]> str_join(const FwdRange& r)`
 * `template <typename FwdRange, typename C> basic_string<C> str_join(const FwdRange& r, const basic_string<C>& delim)`
