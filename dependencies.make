@@ -105,6 +105,10 @@ build/$(TARGET)/string-conversion-test.o: unicorn/string-conversion-test.cpp \
   unicorn/core.hpp $(LIBROOT)/prion-lib/prion/core.hpp unicorn/character.hpp \
   unicorn/property-values.hpp unicorn/string.hpp unicorn/segment.hpp \
   unicorn/utf.hpp $(LIBROOT)/prion-lib/prion/unit-test.hpp
+build/$(TARGET)/string-escape-test.o: unicorn/string-escape-test.cpp unicorn/core.hpp \
+  $(LIBROOT)/prion-lib/prion/core.hpp unicorn/string.hpp unicorn/character.hpp \
+  unicorn/property-values.hpp unicorn/segment.hpp unicorn/utf.hpp \
+  $(LIBROOT)/prion-lib/prion/unit-test.hpp
 build/$(TARGET)/string-manip-a-e-test.o: unicorn/string-manip-a-e-test.cpp \
   unicorn/core.hpp $(LIBROOT)/prion-lib/prion/core.hpp unicorn/character.hpp \
   unicorn/property-values.hpp unicorn/string.hpp unicorn/segment.hpp \

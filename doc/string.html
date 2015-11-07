@@ -25,6 +25,7 @@ in other modules with a more specific focus.</p>
 <li><a href="#stringalgorithms">String algorithms</a></li>
 <li><a href="#stringmanipulationfunctions">String manipulation functions</a></li>
 <li><a href="#casemappingfunctions">Case mapping functions</a></li>
+<li><a href="#escapingandquotingfunctions">Escaping and quoting functions</a></li>
 <li><a href="#typeconversionfunctions">Type conversion functions</a></li>
 </ul>
 
@@ -755,6 +756,171 @@ on the argument strings before comparison; using these functions is usually
 more efficient for a small number of comparisons, while calling <code>casefold()</code>
 and saving the case folded form of the string will be more efficient if the
 same string is going to be compared frequently.</p>
+
+<h2 id="escapingandquotingfunctions">Escaping and quoting functions</h2>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Flag</th>
+	<th style="text-align:left;">Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><code>esc_control</code></td>
+	<td style="text-align:left;">Escape only C0 controls and backslash (default)</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>esc_latin</code></td>
+	<td style="text-align:left;">Escape C0 and C1 controls</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>esc_nonascii</code></td>
+	<td style="text-align:left;">Escape all characters that are not printable ASCII</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>esc_punct</code></td>
+	<td style="text-align:left;">Escape ASCII punctuation as well as all non-ASCII</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>esc_keeplf</code></td>
+	<td style="text-align:left;">Do not escape line feeds</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>esc_uhex</code></td>
+	<td style="text-align:left;">Use <code>\u</code> and <code>\U</code> instead of <code>\x</code></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>esc_surrogate</code></td>
+	<td style="text-align:left;">Use two <code>\u</code> escapes for astral characters</td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>esc_utf8</code></td>
+	<td style="text-align:left;">Use UTF&#8211;8 hex bytes for non-ASCII characters</td>
+</tr>
+</tbody>
+</table>
+
+<p>Flags used by some of the escape functions.</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_encode_uri</strong>(const basic_string&lt;C&gt;&amp; str)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_encode_uri_component</strong>(const basic_string&lt;C&gt;&amp; str)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_encode_uri_in</strong>(basic_string&lt;C&gt;&amp; str)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_encode_uri_in_component</strong>(basic_string&lt;C&gt;&amp; str)</code></li>
+</ul>
+
+<p>These replace some characters in the string with percent encoding. These are
+similar to the correspondingly named JavaScript functions, except that they
+follow the slightly more stringent rules from <a href="https://www.ietf.org/rfc/rfc3986.txt">RFC
+3986</a>. Characters outside the printable
+ASCII range will always be encoded; ASCII alphanumeric characters will never
+be encoded. ASCII punctuation is selectively encoded:</p>
+
+<table>
+<colgroup>
+<col style="text-align:left;"/>
+<col style="text-align:left;"/>
+</colgroup>
+
+<thead>
+<tr>
+	<th style="text-align:left;">Characters</th>
+	<th style="text-align:left;">Behaviour</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+	<td style="text-align:left;"><code>&quot; % &lt; &gt; \ ^ ` { | }</code></td>
+	<td style="text-align:left;">Encoded by both <code>str_encode_uri()</code> and <code>str_encode_uri_component()</code></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>! # $ &amp; ' ( ) * + , / : ; = ? @ [ ]</code></td>
+	<td style="text-align:left;">Encoded by <code>str_encode_uri_component()</code> but not by <code>str_encode_uri()</code></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>- . _ ~</code></td>
+	<td style="text-align:left;">Left unencoded by both functions</td>
+</tr>
+</tbody>
+</table>
+
+<ul>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_escape</strong>(const basic_string&lt;C&gt;&amp; str, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_escape_in</strong>(basic_string&lt;C&gt;&amp; str, uint32_t flags = 0)</code></li>
+</ul>
+
+<p>These replace some of the characters in the string with escape codes. The
+conventional codes <code>\0</code>, <code>\t</code>, <code>\n</code>, <code>\f</code>, and <code>\r</code> are used for the control
+characters <code>NUL</code>, <code>HT</code>, <code>LF</code>, <code>FF</code>, and <code>CR</code>; any escaped ASCII characters are
+simply preceded with a backslash; all other characters are represented using
+<code>\xHH</code> or <code>\x{HHH...}</code> hexadecimal codes by default, unless one of the flags
+specifying a different format is used.</p>
+
+<p>The first four flags (<code>esc_control</code>, <code>esc_latin</code>, <code>esc_nonascii</code>, <code>esc_punct</code>)
+determine which characters are escaped; only one of these can be selected. The
+last three flags (<code>esc_uhex</code>, <code>esc_surrogate</code>, <code>esc_utf8</code>) modify the format
+of the escape codes; at most one of these can be selected.</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_quote</strong>(const basic_string&lt;C&gt;&amp; str)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_quote</strong>(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; quotes, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_quote</strong>(const basic_string&lt;C&gt;&amp; str, const C* quotes, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_quote_in</strong>(basic_string&lt;C&gt;&amp; str)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_quote_in</strong>(basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; quotes, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_quote_in</strong>(basic_string&lt;C&gt;&amp; str, const C* quotes, uint32_t flags = 0)</code></li>
+</ul>
+
+<p>These perform the same operation as <code>str_escape()</code>, but also add quotes around
+the string. The default quote mark is <code>&quot;\&quot;&quot;</code>; if a <code>quotes</code> string is
+supplied, its first and second characters will be used as the opening and
+closing quotes (an empty string is interpreted as <code>&quot;\&quot;&quot;</code>; a single character
+will be used for both quotes; anything beyond the second character is
+ignored).</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_unencode_uri</strong>(const basic_string&lt;C&gt;&amp; str)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_unencode_uri_in</strong>(basic_string&lt;C&gt;&amp; str)</code></li>
+</ul>
+
+<p>These perform the reverse transformation to <code>str_encode_uri()</code> and
+<code>str_encode_uri_component()</code>, replacing percent escape codes with the original
+characters. These will throw <code>EncodingError</code> if an invalid UTF&#8211;8 sequence is
+encountered.</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_unescape</strong>(const basic_string&lt;C&gt;&amp; str, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_unescape_in</strong>(basic_string&lt;C&gt;&amp; str, uint32_t flags = 0)</code></li>
+</ul>
+
+<p>These perform the reverse transformation to <code>str_escape()</code>, replacing escape
+codes with the original characters. Only the last three escaping flags
+(<code>esc_uhex</code>, <code>esc_surrogate</code>, <code>esc_utf8</code>) have any effect; any other flags are
+ignored. If a backslash is followed by a character not recognised as an escape
+code, the backslash will simply be discarded and the second character left
+unchanged. These will throw <code>EncodingError</code> if a hexadecimal code does not
+represent a valid Unicode scalar value.</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_unquote</strong>(const basic_string&lt;C&gt;&amp; str)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_unquote</strong>(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; quotes, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_unquote</strong>(const basic_string&lt;C&gt;&amp; str, const C* quotes, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_unquote_in</strong>(basic_string&lt;C&gt;&amp; str)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_unquote_in</strong>(basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; quotes, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_unquote_in</strong>(basic_string&lt;C&gt;&amp; str, const C* quotes, uint32_t flags = 0)</code></li>
+</ul>
+
+<p>These perform the reverse transformation to <code>str_quote()</code>, removing quote
+marks from the string, or from any quoted substrings within it, and then
+unescaping the resulting strings.</p>
 
 <h2 id="typeconversionfunctions">Type conversion functions</h2>
 

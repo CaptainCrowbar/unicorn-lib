@@ -18,6 +18,7 @@ in other modules with a more specific focus.
 * [String algorithms][]
 * [String manipulation functions][]
 * [Case mapping functions][]
+* [Escaping and quoting functions][]
 * [Type conversion functions][]
 
 ## Introduction ##
@@ -616,6 +617,98 @@ on the argument strings before comparison; using these functions is usually
 more efficient for a small number of comparisons, while calling `casefold()`
 and saving the case folded form of the string will be more efficient if the
 same string is going to be compared frequently.
+
+## Escaping and quoting functions ##
+
+Flag             | Description
+----             | -----------
+`esc_control`    | Escape only C0 controls and backslash (default)
+`esc_latin`      | Escape C0 and C1 controls
+`esc_nonascii`   | Escape all characters that are not printable ASCII
+`esc_punct`      | Escape ASCII punctuation as well as all non-ASCII
+`esc_keeplf`     | Do not escape line feeds
+`esc_uhex`       | Use `\u` and `\U` instead of `\x`
+`esc_surrogate`  | Use two `\u` escapes for astral characters
+`esc_utf8`       | Use UTF-8 hex bytes for non-ASCII characters
+
+Flags used by some of the escape functions.
+
+* `template <typename C> basic_string<C> str_encode_uri(const basic_string<C>& str)`
+* `template <typename C> basic_string<C> str_encode_uri_component(const basic_string<C>& str)`
+* `template <typename C> void str_encode_uri_in(basic_string<C>& str)`
+* `template <typename C> void str_encode_uri_in_component(basic_string<C>& str)`
+
+These replace some characters in the string with percent encoding. These are
+similar to the correspondingly named JavaScript functions, except that they
+follow the slightly more stringent rules from [RFC
+3986](https://www.ietf.org/rfc/rfc3986.txt). Characters outside the printable
+ASCII range will always be encoded; ASCII alphanumeric characters will never
+be encoded. ASCII punctuation is selectively encoded:
+
+| Characters                             | Behaviour
+| ----------                             | ---------
+| ``" % < > \ ^ ` { | }``                | Encoded by both `str_encode_uri()` and `str_encode_uri_component()`
+| `! # $ & ' ( ) * + , / : ; = ? @ [ ]`  | Encoded by `str_encode_uri_component()` but not by `str_encode_uri()`
+| `- . _ ~`                              | Left unencoded by both functions
+
+* `template <typename C> basic_string<C> str_escape(const basic_string<C>& str, uint32_t flags = 0)`
+* `template <typename C> void str_escape_in(basic_string<C>& str, uint32_t flags = 0)`
+
+These replace some of the characters in the string with escape codes. The
+conventional codes `\0`, `\t`, `\n`, `\f`, and `\r` are used for the control
+characters `NUL`, `HT`, `LF`, `FF`, and `CR`; any escaped ASCII characters are
+simply preceded with a backslash; all other characters are represented using
+`\xHH` or `\x{HHH...}` hexadecimal codes by default, unless one of the flags
+specifying a different format is used.
+
+The first four flags (`esc_control`, `esc_latin`, `esc_nonascii`, `esc_punct`)
+determine which characters are escaped; only one of these can be selected. The
+last three flags (`esc_uhex`, `esc_surrogate`, `esc_utf8`) modify the format
+of the escape codes; at most one of these can be selected.
+
+* `template <typename C> basic_string<C> str_quote(const basic_string<C>& str)`
+* `template <typename C> basic_string<C> str_quote(const basic_string<C>& str, const basic_string<C>& quotes, uint32_t flags = 0)`
+* `template <typename C> basic_string<C> str_quote(const basic_string<C>& str, const C* quotes, uint32_t flags = 0)`
+* `template <typename C> void str_quote_in(basic_string<C>& str)`
+* `template <typename C> void str_quote_in(basic_string<C>& str, const basic_string<C>& quotes, uint32_t flags = 0)`
+* `template <typename C> void str_quote_in(basic_string<C>& str, const C* quotes, uint32_t flags = 0)`
+
+These perform the same operation as `str_escape()`, but also add quotes around
+the string. The default quote mark is `"\""`; if a `quotes` string is
+supplied, its first and second characters will be used as the opening and
+closing quotes (an empty string is interpreted as `"\""`; a single character
+will be used for both quotes; anything beyond the second character is
+ignored).
+
+* `template <typename C> basic_string<C> str_unencode_uri(const basic_string<C>& str)`
+* `template <typename C> void str_unencode_uri_in(basic_string<C>& str)`
+
+These perform the reverse transformation to `str_encode_uri()` and
+`str_encode_uri_component()`, replacing percent escape codes with the original
+characters. These will throw `EncodingError` if an invalid UTF-8 sequence is
+encountered.
+
+* `template <typename C> basic_string<C> str_unescape(const basic_string<C>& str, uint32_t flags = 0)`
+* `template <typename C> void str_unescape_in(basic_string<C>& str, uint32_t flags = 0)`
+
+These perform the reverse transformation to `str_escape()`, replacing escape
+codes with the original characters. Only the last three escaping flags
+(`esc_uhex`, `esc_surrogate`, `esc_utf8`) have any effect; any other flags are
+ignored. If a backslash is followed by a character not recognised as an escape
+code, the backslash will simply be discarded and the second character left
+unchanged. These will throw `EncodingError` if a hexadecimal code does not
+represent a valid Unicode scalar value.
+
+* `template <typename C> basic_string<C> str_unquote(const basic_string<C>& str)`
+* `template <typename C> basic_string<C> str_unquote(const basic_string<C>& str, const basic_string<C>& quotes, uint32_t flags = 0)`
+* `template <typename C> basic_string<C> str_unquote(const basic_string<C>& str, const C* quotes, uint32_t flags = 0)`
+* `template <typename C> void str_unquote_in(basic_string<C>& str)`
+* `template <typename C> void str_unquote_in(basic_string<C>& str, const basic_string<C>& quotes, uint32_t flags = 0)`
+* `template <typename C> void str_unquote_in(basic_string<C>& str, const C* quotes, uint32_t flags = 0)`
+
+These perform the reverse transformation to `str_quote()`, removing quote
+marks from the string, or from any quoted substrings within it, and then
+unescaping the resulting strings.
 
 ## Type conversion functions ##
 
