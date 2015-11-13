@@ -811,10 +811,10 @@ same string is going to be compared frequently.</p>
 <p>Flags used by some of the escape functions.</p>
 
 <ul>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_encode_uri</strong>(const basic_string&lt;C&gt;&amp; str)</code></li>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_encode_uri_component</strong>(const basic_string&lt;C&gt;&amp; str)</code></li>
-<li><code>template &lt;typename C&gt; void <strong>str_encode_uri_in</strong>(basic_string&lt;C&gt;&amp; str)</code></li>
-<li><code>template &lt;typename C&gt; void <strong>str_encode_uri_in_component</strong>(basic_string&lt;C&gt;&amp; str)</code></li>
+<li><code>template &lt;typename C&gt; u8string <strong>str_encode_uri</strong>(const basic_string&lt;C&gt;&amp; str)</code></li>
+<li><code>template &lt;typename C&gt; u8string <strong>str_encode_uri_component</strong>(const basic_string&lt;C&gt;&amp; str)</code></li>
+<li><code>void <strong>str_encode_uri_in</strong>(u8string&amp; str)</code></li>
+<li><code>void <strong>str_encode_uri_in_component</strong>(u8string&amp; str)</code></li>
 </ul>
 
 <p>These replace some characters in the string with percent encoding. These are
@@ -853,6 +853,22 @@ be encoded. ASCII punctuation is selectively encoded:</p>
 </tbody>
 </table>
 
+<p>The URI encoding functions work with UTF&#8211;8 strings because an encoded URI can
+only be an ASCII string. These functions only apply percent encoding; they do
+not make any attempt to support IDNA domain names.</p>
+
+<ul>
+<li><code>u8string <strong>str_unencode_uri</strong>(const u8string&amp; str)</code></li>
+<li><code>void <strong>str_unencode_uri_in</strong>(u8string&amp; str)</code></li>
+</ul>
+
+<p>These perform the reverse transformation to <code>str_encode_uri()</code> and
+<code>str_encode_uri_component()</code>, replacing percent escape codes with the original
+characters. These will throw <code>EncodingError</code> if the input string contains any
+bytes that are not graphic ASCII characters, if it contains a percent sign
+that is not followed by two hex digits, or if the decoded string is not valid
+UTF&#8211;8.</p>
+
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_escape</strong>(const basic_string&lt;C&gt;&amp; str, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename C&gt; void <strong>str_escape_in</strong>(basic_string&lt;C&gt;&amp; str, uint32_t flags = 0)</code></li>
@@ -871,6 +887,19 @@ last three flags (<code>esc_uhex</code>, <code>esc_surrogate</code>, <code>esc_u
 of the escape codes; at most one of these can be selected.</p>
 
 <ul>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_unescape</strong>(const basic_string&lt;C&gt;&amp; str, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; void <strong>str_unescape_in</strong>(basic_string&lt;C&gt;&amp; str, uint32_t flags = 0)</code></li>
+</ul>
+
+<p>These perform the reverse transformation to <code>str_escape()</code>, replacing escape
+codes with the original characters. Only the last three escaping flags
+(<code>esc_uhex</code>, <code>esc_surrogate</code>, <code>esc_utf8</code>) have any effect; any other flags are
+ignored. If a backslash is followed by a character not recognised as an escape
+code, the backslash will simply be discarded and the second character left
+unchanged. These will throw <code>EncodingError</code> if a hexadecimal code does not
+represent a valid Unicode scalar value.</p>
+
+<ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_quote</strong>(const basic_string&lt;C&gt;&amp; str)</code></li>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_quote</strong>(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; quotes, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_quote</strong>(const basic_string&lt;C&gt;&amp; str, const C* quotes, uint32_t flags = 0)</code></li>
@@ -885,29 +914,6 @@ supplied, its first and second characters will be used as the opening and
 closing quotes (an empty string is interpreted as <code>&quot;\&quot;&quot;</code>; a single character
 will be used for both quotes; anything beyond the second character is
 ignored).</p>
-
-<ul>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_unencode_uri</strong>(const basic_string&lt;C&gt;&amp; str)</code></li>
-<li><code>template &lt;typename C&gt; void <strong>str_unencode_uri_in</strong>(basic_string&lt;C&gt;&amp; str)</code></li>
-</ul>
-
-<p>These perform the reverse transformation to <code>str_encode_uri()</code> and
-<code>str_encode_uri_component()</code>, replacing percent escape codes with the original
-characters. These will throw <code>EncodingError</code> if an invalid UTF&#8211;8 sequence is
-encountered.</p>
-
-<ul>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_unescape</strong>(const basic_string&lt;C&gt;&amp; str, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; void <strong>str_unescape_in</strong>(basic_string&lt;C&gt;&amp; str, uint32_t flags = 0)</code></li>
-</ul>
-
-<p>These perform the reverse transformation to <code>str_escape()</code>, replacing escape
-codes with the original characters. Only the last three escaping flags
-(<code>esc_uhex</code>, <code>esc_surrogate</code>, <code>esc_utf8</code>) have any effect; any other flags are
-ignored. If a backslash is followed by a character not recognised as an escape
-code, the backslash will simply be discarded and the second character left
-unchanged. These will throw <code>EncodingError</code> if a hexadecimal code does not
-represent a valid Unicode scalar value.</p>
 
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_unquote</strong>(const basic_string&lt;C&gt;&amp; str)</code></li>

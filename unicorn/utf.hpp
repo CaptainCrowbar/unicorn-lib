@@ -193,6 +193,7 @@ namespace Unicorn {
         const string_type& source() const noexcept { return *sptr; }
         size_t offset() const noexcept { return ofs; }
         size_t count() const noexcept { return units; }
+        Irange<const C*> range() const noexcept;
         string_type str() const { return sptr ? sptr->substr(ofs, units) : string_type(); }
         bool valid() const noexcept { return ok; }
         friend bool operator==(const UtfIterator& lhs, const UtfIterator& rhs) noexcept
@@ -247,6 +248,14 @@ namespace Unicorn {
                 throw EncodingError(UtfEncoding<C>::name(), ofs, sptr->data() + ofs, units);
         }
         return *this;
+    }
+
+    template <typename C>
+    Irange<const C*> UtfIterator<C>::range() const noexcept {
+        if (sptr)
+            return {sptr->data() + ofs, sptr->data() + ofs + units};
+        else
+            return {nullptr, nullptr};
     }
 
     using Utf8Iterator = UtfIterator<char>;

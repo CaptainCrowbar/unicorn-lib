@@ -633,10 +633,10 @@ Flag             | Description
 
 Flags used by some of the escape functions.
 
-* `template <typename C> basic_string<C> str_encode_uri(const basic_string<C>& str)`
-* `template <typename C> basic_string<C> str_encode_uri_component(const basic_string<C>& str)`
-* `template <typename C> void str_encode_uri_in(basic_string<C>& str)`
-* `template <typename C> void str_encode_uri_in_component(basic_string<C>& str)`
+* `template <typename C> u8string str_encode_uri(const basic_string<C>& str)`
+* `template <typename C> u8string str_encode_uri_component(const basic_string<C>& str)`
+* `void str_encode_uri_in(u8string& str)`
+* `void str_encode_uri_in_component(u8string& str)`
 
 These replace some characters in the string with percent encoding. These are
 similar to the correspondingly named JavaScript functions, except that they
@@ -650,6 +650,20 @@ be encoded. ASCII punctuation is selectively encoded:
 | ``" % < > \ ^ ` { | }``                | Encoded by both `str_encode_uri()` and `str_encode_uri_component()`
 | `! # $ & ' ( ) * + , / : ; = ? @ [ ]`  | Encoded by `str_encode_uri_component()` but not by `str_encode_uri()`
 | `- . _ ~`                              | Left unencoded by both functions
+
+The URI encoding functions work with UTF-8 strings because an encoded URI can
+only be an ASCII string. These functions only apply percent encoding; they do
+not make any attempt to support IDNA domain names.
+
+* `u8string str_unencode_uri(const u8string& str)`
+* `void str_unencode_uri_in(u8string& str)`
+
+These perform the reverse transformation to `str_encode_uri()` and
+`str_encode_uri_component()`, replacing percent escape codes with the original
+characters. These will throw `EncodingError` if the input string contains any
+bytes that are not graphic ASCII characters, if it contains a percent sign
+that is not followed by two hex digits, or if the decoded string is not valid
+UTF-8.
 
 * `template <typename C> basic_string<C> str_escape(const basic_string<C>& str, uint32_t flags = 0)`
 * `template <typename C> void str_escape_in(basic_string<C>& str, uint32_t flags = 0)`
@@ -666,6 +680,17 @@ determine which characters are escaped; only one of these can be selected. The
 last three flags (`esc_uhex`, `esc_surrogate`, `esc_utf8`) modify the format
 of the escape codes; at most one of these can be selected.
 
+* `template <typename C> basic_string<C> str_unescape(const basic_string<C>& str, uint32_t flags = 0)`
+* `template <typename C> void str_unescape_in(basic_string<C>& str, uint32_t flags = 0)`
+
+These perform the reverse transformation to `str_escape()`, replacing escape
+codes with the original characters. Only the last three escaping flags
+(`esc_uhex`, `esc_surrogate`, `esc_utf8`) have any effect; any other flags are
+ignored. If a backslash is followed by a character not recognised as an escape
+code, the backslash will simply be discarded and the second character left
+unchanged. These will throw `EncodingError` if a hexadecimal code does not
+represent a valid Unicode scalar value.
+
 * `template <typename C> basic_string<C> str_quote(const basic_string<C>& str)`
 * `template <typename C> basic_string<C> str_quote(const basic_string<C>& str, const basic_string<C>& quotes, uint32_t flags = 0)`
 * `template <typename C> basic_string<C> str_quote(const basic_string<C>& str, const C* quotes, uint32_t flags = 0)`
@@ -679,25 +704,6 @@ supplied, its first and second characters will be used as the opening and
 closing quotes (an empty string is interpreted as `"\""`; a single character
 will be used for both quotes; anything beyond the second character is
 ignored).
-
-* `template <typename C> basic_string<C> str_unencode_uri(const basic_string<C>& str)`
-* `template <typename C> void str_unencode_uri_in(basic_string<C>& str)`
-
-These perform the reverse transformation to `str_encode_uri()` and
-`str_encode_uri_component()`, replacing percent escape codes with the original
-characters. These will throw `EncodingError` if an invalid UTF-8 sequence is
-encountered.
-
-* `template <typename C> basic_string<C> str_unescape(const basic_string<C>& str, uint32_t flags = 0)`
-* `template <typename C> void str_unescape_in(basic_string<C>& str, uint32_t flags = 0)`
-
-These perform the reverse transformation to `str_escape()`, replacing escape
-codes with the original characters. Only the last three escaping flags
-(`esc_uhex`, `esc_surrogate`, `esc_utf8`) have any effect; any other flags are
-ignored. If a backslash is followed by a character not recognised as an escape
-code, the backslash will simply be discarded and the second character left
-unchanged. These will throw `EncodingError` if a hexadecimal code does not
-represent a valid Unicode scalar value.
 
 * `template <typename C> basic_string<C> str_unquote(const basic_string<C>& str)`
 * `template <typename C> basic_string<C> str_unquote(const basic_string<C>& str, const basic_string<C>& quotes, uint32_t flags = 0)`

@@ -130,6 +130,7 @@ four functions will be true for any value of <code>C</code>.</p>
 <li><code>const string_type&amp; UtfIterator::<strong>source</strong>() const noexcept</code></li>
 <li><code>size_t UtfIterator::<strong>offset</strong>() const noexcept</code></li>
 <li><code>size_t UtfIterator::<strong>count</strong>() const noexcept</code></li>
+<li><code>Irange&lt;const C*&gt; UtfIterator::<strong>range</strong>() const noexcept</code></li>
 <li><code>string_type <strong>str</strong>() const</code></li>
 <li><code>bool UtfIterator::<strong>valid</strong>() const noexcept</code></li>
 <li><code>[standard iterator operations]</code></li>
@@ -166,7 +167,8 @@ or 32 are always one-for-one.</p>
 state. The <code>source()</code> function returns a reference to the underlying encoded
 string. The <code>offset()</code> and <code>count()</code> functions return the position and length
 (in code units) of the current encoded character (or the group of code units
-currently being interpreted as an invalid character).</p>
+currently being interpreted as an invalid character). The <code>range()</code> function
+returns the same sequence of code units as a pair of pointers.</p>
 
 <p>The <code>str()</code> function returns a copy of the code units making up the current
 character. This will be empty if the iterator is default constructed or past

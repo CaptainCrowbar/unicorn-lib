@@ -92,6 +92,7 @@ four functions will be true for any value of `C`.
     * `const string_type& UtfIterator::source() const noexcept`
     * `size_t UtfIterator::offset() const noexcept`
     * `size_t UtfIterator::count() const noexcept`
+    * `Irange<const C*> UtfIterator::range() const noexcept`
     * `string_type str() const`
     * `bool UtfIterator::valid() const noexcept`
     * `[standard iterator operations]`
@@ -126,7 +127,8 @@ Besides the normal operations that can be applied to an iterator,
 state. The `source()` function returns a reference to the underlying encoded
 string. The `offset()` and `count()` functions return the position and length
 (in code units) of the current encoded character (or the group of code units
-currently being interpreted as an invalid character).
+currently being interpreted as an invalid character). The `range()` function
+returns the same sequence of code units as a pair of pointers.
 
 The `str()` function returns a copy of the code units making up the current
 character. This will be empty if the iterator is default constructed or past
