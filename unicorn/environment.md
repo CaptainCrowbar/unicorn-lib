@@ -42,7 +42,7 @@ This applies when writing environment strings too: if you set them using a
 call that matches the native character size, you can pass invalid UTF and it
 will simply be passed through to the underlying operating system API
 unchanged; but if your call requires an encoding conversion, UTF conversion
-follows the usual rules from the `[unicorn/utf](utf.html)` module.
+follows the usual rules from the [`unicorn/utf`](utf.html) module.
 
 Whether environment variable names are case sensitive is also operating system
 dependent.
@@ -54,7 +54,7 @@ mutex.
 ## Functions ##
 
 The `flags` argument passed to these functions must be one of the encoding
-conversion flags defined in `[unicorn/utf](utf.html)`. Behaviour is undefined
+conversion flags defined in [`unicorn/utf`](utf.html). Behaviour is undefined
 if the `flags` argument is not one of these values.
 
 All of these functions can throw `EncodingError` if the `err_throw` flag is

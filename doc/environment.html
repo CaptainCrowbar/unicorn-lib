@@ -50,7 +50,7 @@ original environment data was not in UTF form.</p>
 call that matches the native character size, you can pass invalid UTF and it
 will simply be passed through to the underlying operating system API
 unchanged; but if your call requires an encoding conversion, UTF conversion
-follows the usual rules from the <code>[unicorn/utf](utf.html)</code> module.</p>
+follows the usual rules from the <a href="utf.html"><code>unicorn/utf</code></a> module.</p>
 
 <p>Whether environment variable names are case sensitive is also operating system
 dependent.</p>
@@ -62,7 +62,7 @@ mutex.</p>
 <h2 id="functions">Functions</h2>
 
 <p>The <code>flags</code> argument passed to these functions must be one of the encoding
-conversion flags defined in <code>[unicorn/utf](utf.html)</code>. Behaviour is undefined
+conversion flags defined in <a href="utf.html"><code>unicorn/utf</code></a>. Behaviour is undefined
 if the <code>flags</code> argument is not one of these values.</p>
 
 <p>All of these functions can throw <code>EncodingError</code> if the <code>err_throw</code> flag is

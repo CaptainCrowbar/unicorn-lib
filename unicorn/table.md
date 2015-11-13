@@ -52,7 +52,7 @@ table to its default constructed state).
 * `template <typename... FS> void Table::format(const u8string& f, const FS&... fs)`
 
 This sets up formatting for the table's columns, using the formatting codes
-defined in `[unicorn/format](format.html)`. Each formatting element should be
+defined in [`unicorn/format`](format.html). Each formatting element should be
 of the form `"${1...}"`, with flags appropriate to the type of data expected
 in that column. Columns for which no format has been set, or whose format is
 an empty string, will be written using `to_str()` (from Prion, but called
@@ -97,7 +97,7 @@ encoding. The `str()` function is shorthand for `as_string<char>()`.
 
 By default, string lengths are measured in grapheme units (user perceived
 characters) in calculating fixed width table layout. Other measurement flags
-(from `[unicorn/string](string.html)`) can be passed if required.
+(from [`unicorn/string`](string.html)) can be passed if required.
 
 If the `unfill` flag is passed, cells that are identical to the one
 immediately above them will be written using a ditto mark (two apostrophes by
