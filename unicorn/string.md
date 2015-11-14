@@ -623,7 +623,7 @@ same string is going to be compared frequently.
 Flag             | Description
 ----             | -----------
 `esc_control`    | Escape only C0 controls and backslash (default)
-`esc_latin`      | Escape C0 and C1 controls
+`esc_control01`  | Escape C0 and C1 controls
 `esc_nonascii`   | Escape all characters that are not printable ASCII
 `esc_punct`      | Escape ASCII punctuation as well as all non-ASCII
 `esc_keeplf`     | Do not escape line feeds
@@ -675,10 +675,10 @@ simply preceded with a backslash; all other characters are represented using
 `\xHH` or `\x{HHH...}` hexadecimal codes by default, unless one of the flags
 specifying a different format is used.
 
-The first four flags (`esc_control`, `esc_latin`, `esc_nonascii`, `esc_punct`)
-determine which characters are escaped; only one of these can be selected. The
-last three flags (`esc_uhex`, `esc_surrogate`, `esc_utf8`) modify the format
-of the escape codes; at most one of these can be selected.
+The first four flags (`esc_control`, `esc_control01`, `esc_nonascii`,
+`esc_punct`) determine which characters are escaped; only one of these can be
+selected. The last three flags (`esc_uhex`, `esc_surrogate`, `esc_utf8`)
+modify the format of the escape codes; at most one of these can be selected.
 
 * `template <typename C> basic_string<C> str_unescape(const basic_string<C>& str, uint32_t flags = 0)`
 * `template <typename C> void str_unescape_in(basic_string<C>& str, uint32_t flags = 0)`
@@ -701,9 +701,9 @@ represent a valid Unicode scalar value.
 These perform the same operation as `str_escape()`, but also add quotes around
 the string. The default quote mark is `"\""`; if a `quotes` string is
 supplied, its first and second characters will be used as the opening and
-closing quotes (an empty string is interpreted as `"\""`; a single character
-will be used for both quotes; anything beyond the second character is
-ignored).
+closing quotes (a single character will be used for both quotes; anything
+beyond the second character is ignored). The quote and unquote functions will
+throw `std::invalid_argument` if a backslash is supplied as a quote character.
 
 * `template <typename C> basic_string<C> str_unquote(const basic_string<C>& str)`
 * `template <typename C> basic_string<C> str_unquote(const basic_string<C>& str, const basic_string<C>& quotes, uint32_t flags = 0)`

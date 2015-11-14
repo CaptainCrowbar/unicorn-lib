@@ -778,7 +778,7 @@ same string is going to be compared frequently.</p>
 	<td style="text-align:left;">Escape only C0 controls and backslash (default)</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>esc_latin</code></td>
+	<td style="text-align:left;"><code>esc_control01</code></td>
 	<td style="text-align:left;">Escape C0 and C1 controls</td>
 </tr>
 <tr>
@@ -881,10 +881,10 @@ simply preceded with a backslash; all other characters are represented using
 <code>\xHH</code> or <code>\x{HHH...}</code> hexadecimal codes by default, unless one of the flags
 specifying a different format is used.</p>
 
-<p>The first four flags (<code>esc_control</code>, <code>esc_latin</code>, <code>esc_nonascii</code>, <code>esc_punct</code>)
-determine which characters are escaped; only one of these can be selected. The
-last three flags (<code>esc_uhex</code>, <code>esc_surrogate</code>, <code>esc_utf8</code>) modify the format
-of the escape codes; at most one of these can be selected.</p>
+<p>The first four flags (<code>esc_control</code>, <code>esc_control01</code>, <code>esc_nonascii</code>,
+<code>esc_punct</code>) determine which characters are escaped; only one of these can be
+selected. The last three flags (<code>esc_uhex</code>, <code>esc_surrogate</code>, <code>esc_utf8</code>)
+modify the format of the escape codes; at most one of these can be selected.</p>
 
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_unescape</strong>(const basic_string&lt;C&gt;&amp; str, uint32_t flags = 0)</code></li>
@@ -911,9 +911,9 @@ represent a valid Unicode scalar value.</p>
 <p>These perform the same operation as <code>str_escape()</code>, but also add quotes around
 the string. The default quote mark is <code>&quot;\&quot;&quot;</code>; if a <code>quotes</code> string is
 supplied, its first and second characters will be used as the opening and
-closing quotes (an empty string is interpreted as <code>&quot;\&quot;&quot;</code>; a single character
-will be used for both quotes; anything beyond the second character is
-ignored).</p>
+closing quotes (a single character will be used for both quotes; anything
+beyond the second character is ignored). The quote and unquote functions will
+throw <code>std::invalid_argument</code> if a backslash is supplied as a quote character.</p>
 
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>str_unquote</strong>(const basic_string&lt;C&gt;&amp; str)</code></li>
