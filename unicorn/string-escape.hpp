@@ -161,14 +161,14 @@ namespace Unicorn {
     template <typename C>
     basic_string<C> str_unescape(const basic_string<C>& str, uint32_t flags = 0) {
         basic_string<C> result;
-        UnicornDetail::unescape_helper(str, result);
+        UnicornDetail::unescape_helper(str, result, flags);
         return result;
     }
 
     template <typename C>
     void str_unescape_in(basic_string<C>& str, uint32_t flags = 0) {
         basic_string<C> result;
-        UnicornDetail::unescape_helper(str, result);
+        UnicornDetail::unescape_helper(str, result, flags);
         str = std::move(result);
     }
 
