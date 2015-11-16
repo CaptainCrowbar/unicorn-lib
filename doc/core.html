@@ -109,20 +109,6 @@ ABI.</p>
 
 <p>These are defined to match the UTF encoding of the system&#8217;s <code>wstring</code> class.</p>
 
-<ul>
-<li><code>namespace Literals</code>
-
-<ul>
-<li><code>NativeString <strong>operator&quot;&quot; _nat</strong>(const char* s, size_t n)</code></li>
-</ul></li>
-</ul>
-
-<p>Literal suffix to make it easy to define native string constants. The
-implementation on wide character systems assumes that <code>char</code> values can simply
-be directly copied into a <code>wchar_t</code>, so this should only be used with simple
-ASCII strings; text containing Unicode characters will need separate narrow
-and wide character versions.</p>
-
 <h2 id="versioninformation">Version information</h2>
 
 <ul>

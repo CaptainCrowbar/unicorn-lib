@@ -73,22 +73,6 @@ namespace {
 
     }
 
-    void check_native_string() {
-
-        #if defined(PRI_TARGET_UNIX)
-
-            string s = "Hello world"_nat;
-            TEST_EQUAL(s, "Hello world"s);
-
-        #else
-
-            wstring s = "Hello world"_nat;
-            TEST_EQUAL(s, L"Hello world"s);
-
-        #endif
-
-    }
-
     void check_version_information() {
 
         auto v1 = unicorn_version(), v2 = unicode_version();
@@ -105,7 +89,6 @@ TEST_MODULE(unicorn, core) {
 
     check_flag_operations();
     check_character_types();
-    check_native_string();
     check_version_information();
 
 }

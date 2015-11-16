@@ -67,7 +67,7 @@ namespace Unicorn {
     }
 
     void FileReader::init(const NativeString& file, uint32_t flags, const u8string& enc, const u8string& eol) {
-        static const auto dashfile = "-"_nat;
+        static const NativeString dashfile = PRI_CSTR("-", NativeCharacter);
         UnicornDetail::allow_flags(flags, err_replace | err_throw | io_bom | io_crlf | io_lf
             | io_nofail | io_notempty | io_stdin | io_striplf | io_striptws | io_stripws, "file io");
         UnicornDetail::exclusive_flags(flags, err_replace | err_throw, "file io");
@@ -83,7 +83,7 @@ namespace Unicorn {
         if ((flags & io_stdin) && (file.empty() || file == dashfile))
             impl->handle.reset(stdin, do_nothing);
         else
-            impl->handle = shared_fopen(file, "rb"_nat, ! (flags & io_nofail));
+            impl->handle = shared_fopen(file, PRI_CSTR("rb", NativeCharacter), ! (flags & io_nofail));
         ++*this;
     }
 
@@ -196,7 +196,8 @@ namespace Unicorn {
         else if ((flags & io_stderr) && (file.empty() || file == dashfile))
             impl->handle.reset(stderr, do_nothing);
         else
-            impl->handle = shared_fopen(file, flags & io_append ? "ab"_nat : "wb"_nat, true);
+            impl->handle = shared_fopen(file,
+                flags & io_append ? PRI_CSTR("ab", NativeCharacter) : PRI_CSTR("wb", NativeCharacter), true);
         if (flags & io_mutex) {
             if (impl->handle.get() == stdout)
                 impl->mutex.reset(&stdout_mutex, do_nothing);

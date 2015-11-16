@@ -85,18 +85,6 @@ namespace Unicorn {
         return s;
     }
 
-    // Basic character types
-
-    namespace Literals {
-
-        NativeString operator"" _nat(const char* s, size_t n) {
-            NativeString ns(n, '\0');
-            std::transform(s, s + n, ns.begin(), [] (char c) { return NativeCharacter(uint8_t(c)); });
-            return ns;
-        }
-
-    }
-
     // Version information
 
     namespace UnicornDetail {

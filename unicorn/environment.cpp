@@ -23,7 +23,8 @@ namespace Unicorn {
     namespace UnicornDetail {
 
         void check_env(const NativeString& key) {
-            if (key.empty() || key.find_first_of("=\0"_nat) != npos)
+            static const NativeString not_allowed{'\0','='};
+            if (key.empty() || key.find_first_of(not_allowed) != npos)
                 throw std::invalid_argument("Invalid environment variable name");
         }
 
@@ -116,7 +117,7 @@ namespace Unicorn {
         NativeString key, value, kv;
         for (; *ptr != nullptr; ++ptr) {
             kv = *ptr;
-            str_partition_at(kv, key, value, "="_nat);
+            str_partition_at(kv, key, value, PRI_CSTR("=", NativeCharacter));
             env[key] = value;
         }
         map.swap(env);
@@ -130,7 +131,7 @@ namespace Unicorn {
         for (auto& kv: map) {
             offsets.push_back(temp_block.size());
             temp_block += kv.first;
-            temp_block += "="_nat;
+            temp_block += PRI_CHAR('=', NativeCharacter);
             temp_block += kv.second;
             temp_block += NativeCharacter(0);
         }

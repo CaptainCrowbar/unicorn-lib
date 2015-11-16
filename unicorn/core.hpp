@@ -112,12 +112,6 @@ namespace Unicorn {
     using NativeString = basic_string<NativeCharacter>;
     using WstringEquivalent = basic_string<WcharEquivalent>;
 
-    namespace Literals {
-
-        NativeString operator"" _nat(const char* s, size_t n);
-
-    }
-
     // Version information
 
     namespace UnicornDetail {

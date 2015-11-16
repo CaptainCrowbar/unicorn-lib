@@ -76,15 +76,6 @@ ABI.
 
 These are defined to match the UTF encoding of the system's `wstring` class.
 
-* `namespace Literals`
-    * `NativeString operator"" _nat(const char* s, size_t n)`
-
-Literal suffix to make it easy to define native string constants. The
-implementation on wide character systems assumes that `char` values can simply
-be directly copied into a `wchar_t`, so this should only be used with simple
-ASCII strings; text containing Unicode characters will need separate narrow
-and wide character versions.
-
 ## Version information ##
 
 * `Version unicorn_version() noexcept`
