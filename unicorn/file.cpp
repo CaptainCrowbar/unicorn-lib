@@ -5,6 +5,7 @@
 #include <cerrno>
 #include <cstdio>
 #include <system_error>
+#include <type_traits>
 
 #if defined(PRI_TARGET_UNIX)
     #include <dirent.h>
@@ -24,6 +25,10 @@ namespace Unicorn {
 
         template <typename C> u8string quote_file(const basic_string<C>& name) { return quote(to_utf8(name), true); }
 
+        #if defined(PRI_TARGET_NATIVE_WINDOWS)
+            using HandleTarget = std::remove_pointer_t<HANDLE>;
+        #endif
+
     }
 
     namespace UnicornDetail {
@@ -41,7 +46,7 @@ namespace Unicorn {
                 return pattern.match(file).matched();
             }
 
-            // File properties
+            // File system query functions
 
             string native_current_directory() {
                 string name(256, '\0');
@@ -75,7 +80,26 @@ namespace Unicorn {
                 return lstat(file.data(), &s) == 0 && S_ISLNK(s.st_mode);
             }
 
-            // File system operations
+            string native_resolve_symlink(const string& file) {
+                if (! native_file_is_symlink(file))
+                    return file;
+                vector<char> buf(256);
+                for (;;) {
+                    auto rc = readlink(file.data(), buf.data(), buf.size());
+                    if (rc < 0) {
+                        int error = errno;
+                        if (error == EINVAL || error == ENOENT || error == ENOTDIR)
+                            return file;
+                        else
+                            throw std::system_error(error, std::generic_category(), quote_file(file));
+                    }
+                    if (size_t(rc) <= buf.size() - 2)
+                        return string(buf.data(), rc);
+                    buf.resize(2 * buf.size());
+                }
+            }
+
+            // File system modifying functions
 
             namespace {
 
@@ -174,7 +198,7 @@ namespace Unicorn {
                 return pattern.match(file).matched();
             }
 
-            // File properties
+            // File system query functions
 
             namespace {
 
@@ -232,7 +256,27 @@ namespace Unicorn {
                 return sym;
             }
 
-            // File system operations
+            wstring native_resolve_symlink(const wstring& file) {
+                if (! native_file_is_symlink(file))
+                    return file;
+                shared_ptr<HandleTarget> handle(CreateFileW(file.data(), GENERIC_READ, FILE_SHARE_READ,
+                    nullptr, OPEN_EXISTING, 0, nullptr), CloseHandle);
+                if (! handle) {
+                    auto error = GetLastError();
+                    throw std::system_error(error, std::generic_category(), quote_file(file));
+                }
+                vector<FILE_NAME_INFO> buf(100);
+                for (;;) {
+                    if (GetFileInformationByHandleEx(handle.get(), FileNameInfo, &buf[0], buf.size() * sizeof(FILE_NAME_INFO)))
+                        return wstring(buf[0].FileName, buf[0].FileNameLength);
+                    auto error = GetLastError();
+                    if (error != ERROR_INSUFFICIENT_BUFFER)
+                        throw std::system_error(error, std::generic_category(), quote_file(file));
+                    buf.resize(2 * buf.size());
+                }
+            }
+
+            // File system modifying functions
 
             namespace {
 
@@ -322,7 +366,7 @@ namespace Unicorn {
 
         #endif
 
-        // File system operations
+        // File system modifying functions
 
         void native_remove_file(const NativeString& file, bool recurse) {
             if (recurse && native_file_is_directory(file) && ! native_file_is_symlink(file))

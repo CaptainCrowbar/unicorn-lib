@@ -40,9 +40,11 @@ disallowed characters), but not all of the Win32 wide character API functions
 that deal with files check for valid encoding; it&#8217;s not hard to create a file
 whose name is an arbitrary sequence of 16-bit integers. The HFS+ file system
 used by Apple on Mac OS X and iOS appears to be the only widely used file
-system that actually does enforce valid Unicode names at the file system level
-(though even on a Mac you need to be careful in the presence of remote file
-systems that may be on a different OS).</p>
+system that actually does enforce valid Unicode names at the file system
+level, although it then proceeds to complicate matters by using a proprietary
+normalization scheme that does not match any of the four standard ones (and
+even on a Mac you need to be careful in the presence of remote file systems
+that may be on a different OS).</p>
 
 <p>To make it possible to deal with this situation, this module uses the
 <code>NativeString</code> type from the <a href="core.html"><code>unicorn/core</code></a> module, which is
@@ -213,6 +215,18 @@ Windows this is a metadata property.</p>
 </ul>
 
 <p>True if the file is a symbolic link.</p>
+
+<ul>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>resolve_symlink</strong>(const basic_string&lt;C&gt;&amp; file)</code></li>
+</ul>
+
+<p>Returns the file pointed to by a symlink. If the argument names a file that
+does not exist or is not a symlink, this will simply return the argument
+unchanged. This will throw <code>std::system_error</code> if anything goes wrong, such as
+a permission failure or a symlink loop. On Windows, resolving a symlink
+requires opening the target file, so this will fail if the target file does
+not exist (presumably the symlink still contains a path but there does not
+appear to be any way to retrieve it).</p>
 
 <h2 id="filesystemmodifyingfunctions">File system modifying functions</h2>
 

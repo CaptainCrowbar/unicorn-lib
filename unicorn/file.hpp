@@ -191,7 +191,7 @@ namespace Unicorn {
             return {nfile.substr(cut, npos), {}};
     }
 
-    // File properties
+    // File system query functions
 
     namespace UnicornDetail {
 
@@ -200,6 +200,7 @@ namespace Unicorn {
         bool native_file_is_directory(const NativeString& file) noexcept;
         bool native_file_is_hidden(const NativeString& file) noexcept;
         bool native_file_is_symlink(const NativeString& file) noexcept;
+        NativeString native_resolve_symlink(const NativeString& file);
 
     }
 
@@ -239,7 +240,13 @@ namespace Unicorn {
         return native_file_is_symlink(native_file(file));
     }
 
-    // File system operations
+    template <typename C>
+    basic_string<C> resolve_symlink(const basic_string<C>& file) {
+        using namespace UnicornDetail;
+        return native_resolve_symlink(native_file(file));
+    }
+
+    // File system modifying functions
 
     namespace UnicornDetail {
 
