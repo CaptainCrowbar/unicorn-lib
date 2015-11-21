@@ -1,8 +1,8 @@
 body {
     background-color:  white;
-    border-bottom:     1px solid #448;
+    border-bottom:     1px solid #444;
     color:             #444;
-    font-family:       Helvetica, Verdana, Arial, sans-serif;
+    font-family:       "Lucida Grande", Helvetica, Verdana, Arial, sans-serif;
     font-size:         14px;
     margin:            2em;
     margin-top:        1em;
@@ -10,7 +10,7 @@ body {
 }
 
 h1 {
-    border-top:      1px solid #448;
+    border-top:      1px solid #444;
     color:           #666;
     font-size:       250%;
     padding-bottom:  0.25em;
@@ -19,7 +19,7 @@ h1 {
 }
 
 h2 {
-    border-top:      1px solid #448;
+    border-top:      1px solid #444;
     color:           #666;
     font-size:       150%;
     margin-top:      1.5em;
@@ -42,9 +42,7 @@ h4 {
 }
 
 p {
-    max-width:     50em;
-    margin-left:   3em;
-    margin-right:  3em;
+    max-width:  60em;
 }
 
 a {
@@ -61,66 +59,18 @@ a:hover, a:hover code {
 }
 
 a:visited, a:visited code {
-    color : #70b;
-}
-
-code {
-    background-color:  #eee;
-    border-radius:     0.25em;
-    border:            1px solid #ddd;
-    color:             #333;
-    font-family:       Menlo, monospace;
-    font-size:         12px;
-    margin:            0 0.25em;
-    padding:           0 0.25em;
-}
-
-code strong {
-    color:  #933;
+    color:  #70b;
 }
 
 li {
     margin-right:  5em;
 }
 
-li code {
-    white-space:  pre-wrap;
-}
-
-td code, th code {
-    color:  #333;
-}
-
-td code strong, th code strong {
-    color:  black;
-}
-
-pre {
-    background-color:  #eee;
-    border:            1px solid #444;
-    border-radius:     0.5em;
-    color:             #333;
-    font-family:       Menlo, "Lucida Console", monospace;
-    font-size:         12px;
-    margin-left:       4em;
-    margin-right:      6em;
-    max-width:         80em;
-    padding:           1em;
-    white-space:       pre-wrap;
-}
-
-pre code, td code, th code {
-    background:   transparent;
-    border:       none;
-    margin:       0;
-    padding:      0;
-}
-
 table {
-    margin-left:  4em;
+    margin-left:  2em;
 }
 
-td, th {
+th, td {
     border:          1px solid;
     border-radius:   0.25em;
     padding-bottom:  0.1em;
@@ -131,32 +81,58 @@ td, th {
     vertical-align:  top;
 }
 
-td {
-    background-color:  #eee;
-    border-color:      #ddd;
-}
-
 th {
-    background-color:  #ccc;
-    border-color:      #bbb;
+    background-color:  #ccd;
+    border-color:      #bbc;
     font-weight:       bold;
 }
 
-td.inter {
-    background-color:  #666;
-    border-color:      #555;
-    color:             #eee;
-    font-weight:       bold;
+td {
+    background-color:  #eef;
+    border-color:      #dde;
 }
 
+code {
+    color:        #262;
+    font-family:  "DejaVu Sans Mono", Menlo, "Lucida Console", monospace;
+    font-size:    12px;
+}
 
-.alert {
-    color:        #c40;
-    font-weight:  bold;
+code strong {
+    color:  #048;
+}
+
+li code {
+    white-space:  pre-wrap;
+}
+
+th code, td code {
+    color:  #262;
+}
+
+th code strong, td code strong {
+    color:  black;
+}
+
+pre {
+    background-color:  #efe;
+    border:            1px solid #454;
+    border-radius:     0.5em;
+    color:             #262;
+    font-family:       "DejaVu Sans Mono", Menlo, "Lucida Console", monospace;
+    font-size:         12px;
+    margin-left:       4em;
+    margin-right:      6em;
+    max-width:         80em;
+    padding:           1em;
+    white-space:       pre-wrap;
+}
+
+pre code, td code, th code {
+    background:  transparent;
+    border:      none;
+    margin:      0;
+    padding:     0;
 }
 
 .nobr { white-space: nowrap; }
-
-.good, .good code    { color: #060; }
-.maybe, .maybe code  { color: #048; }
-.bad, .bad code      { color: #c40; }

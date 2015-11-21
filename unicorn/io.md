@@ -11,7 +11,7 @@ The functions and classes in this module provided line oriented input and
 output, with automatic conversion between Unicode and external legacy
 encodings, as well as other conveniences such as normalization of line breaks.
 
-<p class="alert">[TODO: DOCUMENTATION]</p>
+[TODO: DOCUMENTATION]
 
 ## Contents ##
 

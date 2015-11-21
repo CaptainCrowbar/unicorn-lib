@@ -7,7 +7,7 @@ CSS: style.css
 
 #### `#include "unicorn/json.hpp"` ####
 
-<p class="alert">[TODO: DOCUMENTATION]</p>
+[TODO: DOCUMENTATION]
 
 ## Contents ##
 
