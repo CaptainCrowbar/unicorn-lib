@@ -128,7 +128,7 @@ namespace Unicorn {
 
             bool array_is_short(const Array& array, size_t max_array) noexcept {
                 return array.size() <= max_array
-                    && std::find_if(PRI_BOUNDS(array),
+                    && std::find_if(array.begin(), array.end(),
                         [] (auto& e) { return e.type() >= Json::array; })
                         == array.end();
             }

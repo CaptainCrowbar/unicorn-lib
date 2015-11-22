@@ -234,7 +234,7 @@ namespace Unicorn {
             using string_type = string;
             u8string operator()(const string& pattern) const {
                 u32string p32;
-                std::transform(PRI_BOUNDS(pattern), append(p32), [] (char c) { return uint8_t(c); });
+                std::transform(pattern.begin(), pattern.end(), append(p32), [] (char c) { return uint8_t(c); });
                 return to_utf8(p32);
             }
         };

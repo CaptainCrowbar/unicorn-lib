@@ -68,7 +68,7 @@ namespace Unicorn {
         UnicornDetail::LowerChar lc;
         auto range = utf_range(str);
         auto out = utf_writer(dst);
-        for (auto i = std::begin(range), e = std::end(range); i != e; ++i)
+        for (auto i = range.begin(), e = range.end(); i != e; ++i)
             lc.convert(i, e, out);
         return dst;
     }
@@ -81,7 +81,7 @@ namespace Unicorn {
         auto out = utf_writer(dst);
         for (auto& w: word_range(str)) {
             bool initial = true;
-            for (auto i = std::begin(w); i != std::end(w); ++i) {
+            for (auto i = w.begin(); i != w.end(); ++i) {
                 if (initial && char_is_cased(*i)) {
                     auto n = char_to_full_titlecase(*i, lc.buf);
                     std::copy_n(lc.buf, n, out);
@@ -130,7 +130,7 @@ namespace Unicorn {
             if (lhs.empty() || rhs.empty())
                 return ! rhs.empty();
             auto u1 = utf_range(lhs), u2 = utf_range(rhs);
-            auto i1 = std::begin(u1), i2 = std::begin(u2);
+            auto i1 = u1.begin(), i2 = u2.begin();
             char32_t buf1[max_case_decomposition], buf2[max_case_decomposition];
             size_t p1 = 0, p2 = 0;
             size_t n1 = char_to_full_casefold(*i1, buf1);
@@ -138,16 +138,16 @@ namespace Unicorn {
             for (;;) {
                 if (p1 == n1) {
                     p1 = 0;
-                    if (++i1 != std::end(u1))
+                    if (++i1 != u1.end())
                         n1 = char_to_full_casefold(*i1, buf1);
                 }
                 if (p2 == n2) {
                     p2 = 0;
-                    if (++i2 != std::end(u2))
+                    if (++i2 != u2.end())
                         n2 = char_to_full_casefold(*i2, buf2);
                 }
-                if ((p1 == 0 && i1 == std::end(u1)) || (p2 == 0 && i2 == std::end(u2)))
-                    return i2 != std::end(u2);
+                if ((p1 == 0 && i1 == u1.end()) || (p2 == 0 && i2 == u2.end()))
+                    return i2 != u2.end();
                 if (buf1[p1] != buf2[p2])
                     return buf1[p1] < buf2[p2];
                 ++p1;
@@ -164,7 +164,7 @@ namespace Unicorn {
             if (lhs.size() != rhs.size())
                 return false;
             auto u1 = utf_range(lhs), u2 = utf_range(rhs);
-            auto i1 = std::begin(u1), i2 = std::begin(u2);
+            auto i1 = u1.begin(), i2 = u2.begin();
             char32_t buf1[max_case_decomposition], buf2[max_case_decomposition];
             size_t p1 = 0, p2 = 0;
             size_t n1 = char_to_full_casefold(*i1, buf1);
@@ -172,16 +172,16 @@ namespace Unicorn {
             for (;;) {
                 if (p1 == n1) {
                     p1 = 0;
-                    if (++i1 != std::end(u1))
+                    if (++i1 != u1.end())
                         n1 = char_to_full_casefold(*i1, buf1);
                 }
                 if (p2 == n2) {
                     p2 = 0;
-                    if (++i2 != std::end(u2))
+                    if (++i2 != u2.end())
                         n2 = char_to_full_casefold(*i2, buf2);
                 }
-                if ((p1 == 0 && i1 == std::end(u1)) || (p2 == 0 && i2 == std::end(u2)))
-                    return i1 == std::end(u1) && i2 == std::end(u2);
+                if ((p1 == 0 && i1 == u1.end()) || (p2 == 0 && i2 == u2.end()))
+                    return i1 == u1.end() && i2 == u2.end();
                 if (buf1[p1] != buf2[p2])
                     return false;
                 ++p1;

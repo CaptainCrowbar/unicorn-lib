@@ -59,7 +59,7 @@ def write_array_header(cpp, entrytype, name):
 
 def write_array_footer(cpp, entrytype, name):
     cpp.write('};\n\n')
-    cpp.write('const Irange<{0} const*> {1}_table {{PRI_BOUNDS({1}_array)}};\n'.format(entrytype, name))
+    cpp.write('const Irange<{0} const*> {1}_table {{std::begin({1}_array), std::end({1}_array)}};\n'.format(entrytype, name))
 
 # Explicit array of individual strings:
 def write_array(cpp, name, table, entrytype, nlines=False):
@@ -96,7 +96,7 @@ def write_table_header(cpp, ktype, vtype, name):
 
 def write_table_footer(cpp, ktype, vtype, name):
     cpp.write('};\n\n')
-    cpp.write('const TableView<{0}, {1}> {2}_table {{PRI_BOUNDS({2}_array)}};\n'.format(ktype, vtype, name))
+    cpp.write('const TableView<{0}, {1}> {2}_table {{std::begin({2}_array), std::end({2}_array)}};\n'.format(ktype, vtype, name))
 
 # Explicit map from a character to one or more characters:
 def write_charmap(cpp, name, table, keysize=1, valsize=1):

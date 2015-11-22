@@ -59,9 +59,9 @@ namespace Unicorn {
         std::pair<UtfIterator<C>, bool> find_position(const Irange<UtfIterator<C>>& range, size_t pos, uint32_t flags = 0) {
             check_length_flags(flags);
             if (flags & character_units) {
-                auto i = std::begin(range);
+                auto i = range.begin();
                 size_t len = 0;
-                while (i != std::end(range) && len < pos) {
+                while (i != range.end() && len < pos) {
                     ++i;
                     ++len;
                 }
@@ -70,15 +70,15 @@ namespace Unicorn {
                 EastAsianCount eac(flags);
                 if (flags & grapheme_units) {
                     auto graph = grapheme_range(range);
-                    auto g = std::begin(graph);
-                    while (g != std::end(graph) && eac.get() < pos) {
-                        eac.add(*std::begin(*g));
+                    auto g = graph.begin();
+                    while (g != graph.end() && eac.get() < pos) {
+                        eac.add(*g->begin());
                         ++g;
                     }
-                    return {std::begin(*g), eac.get() >= pos};
+                    return {g->begin(), eac.get() >= pos};
                 } else {
-                    auto i = std::begin(range);
-                    while (i != std::end(range) && eac.get() < pos) {
+                    auto i = range.begin();
+                    while (i != range.end() && eac.get() < pos) {
                         eac.add(*i);
                         ++i;
                     }
@@ -86,13 +86,13 @@ namespace Unicorn {
                 }
             } else {
                 auto graph = grapheme_range(range);
-                auto g = std::begin(graph);
+                auto g = graph.begin();
                 size_t len = 0;
-                while (g != std::end(graph) && len < pos) {
+                while (g != graph.end() && len < pos) {
                     ++g;
                     ++len;
                 }
-                return {std::begin(*g), len == pos};
+                return {g->begin(), len == pos};
             }
         }
 
@@ -108,7 +108,7 @@ namespace Unicorn {
             EastAsianCount eac(flags);
             if (flags & grapheme_units) {
                 for (auto g: grapheme_range(range))
-                    eac.add(*std::begin(g));
+                    eac.add(*g.begin());
             } else {
                 for (auto c: range)
                     eac.add(c);

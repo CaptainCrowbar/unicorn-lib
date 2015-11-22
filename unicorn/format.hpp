@@ -119,7 +119,7 @@ namespace Unicorn {
                 s += char(d + (d <= 9 ? '0' : 'a' - 10));
                 t /= b;
             }
-            std::reverse(PRI_BOUNDS(s));
+            std::reverse(s.begin(), s.end());
             return s;
         }
 

@@ -141,9 +141,9 @@ namespace Unicorn {
         if (length == 0)
             return str;
         auto range = utf_range(str);
-        auto i = std::begin(range);
-        for (size_t j = 0; j < length && i != std::end(range); ++i, ++j) {}
-        if (i == std::end(range))
+        auto i = range.begin();
+        for (size_t j = 0; j < length && i != range.end(); ++i, ++j) {}
+        if (i == range.end())
             return {};
         else
             return str.substr(i.offset(), npos);
@@ -154,9 +154,9 @@ namespace Unicorn {
         if (length == 0)
             return;
         auto range = utf_range(str);
-        auto i = std::begin(range);
-        for (size_t j = 0; j < length && i != std::end(range); ++i, ++j) {}
-        if (i == std::end(range))
+        auto i = range.begin();
+        for (size_t j = 0; j < length && i != range.end(); ++i, ++j) {}
+        if (i == range.end())
             str.clear();
         else
             str.erase(0, i.offset());
@@ -167,9 +167,9 @@ namespace Unicorn {
         if (length == 0)
             return str;
         auto range = utf_range(str);
-        auto i = std::end(range);
-        for (size_t j = 0; j < length && i != std::begin(range); --i, ++j) {}
-        if (i == std::begin(range))
+        auto i = range.end();
+        for (size_t j = 0; j < length && i != range.begin(); --i, ++j) {}
+        if (i == range.begin())
             return {};
         else
             return str.substr(0, i.offset());
@@ -180,9 +180,9 @@ namespace Unicorn {
         if (length == 0)
             return;
         auto range = utf_range(str);
-        auto i = std::end(range);
-        for (size_t j = 0; j < length && i != std::begin(range); --i, ++j) {}
-        if (i == std::begin(range))
+        auto i = range.end();
+        for (size_t j = 0; j < length && i != range.begin(); --i, ++j) {}
+        if (i == range.begin())
             str.clear();
         else
             str.erase(i.offset(), npos);
@@ -236,13 +236,13 @@ namespace Unicorn {
 
     template <typename C, typename IntList>
     basic_string<C> str_expand_tabs(const basic_string<C>& str, const IntList& tabs, uint32_t flags = 0) {
-        vector<size_t> tv(PRI_BOUNDS(tabs));
+        vector<size_t> tv(tabs.begin(), tabs.end());
         return UnicornDetail::expand_tabs(str, tv, flags);
     }
 
     template <typename C, typename IntType>
     basic_string<C> str_expand_tabs(const basic_string<C>& str, std::initializer_list<IntType> tabs, uint32_t flags = 0) {
-        vector<size_t> tv(PRI_BOUNDS(tabs));
+        vector<size_t> tv(tabs.begin(), tabs.end());
         return UnicornDetail::expand_tabs(str, tv, flags);
     }
 
@@ -351,7 +351,7 @@ namespace Unicorn {
 
     template <typename C>
     basic_string<C> str_insert(const UtfIterator<C>& dst, const Irange<UtfIterator<C>>& src) {
-        return str_insert(dst, PRI_BOUNDS(src));
+        return str_insert(dst, src.begin(), src.end());
     }
 
     template <typename C>
@@ -373,7 +373,7 @@ namespace Unicorn {
 
     template <typename C>
     basic_string<C> str_insert(const Irange<UtfIterator<C>>& dst, const Irange<UtfIterator<C>>& src) {
-        return str_insert(PRI_BOUNDS(dst), PRI_BOUNDS(src));
+        return str_insert(dst.begin(), dst.end(), src.begin(), src.end());
     }
 
     template <typename C>
@@ -387,7 +387,7 @@ namespace Unicorn {
 
     template <typename C>
     basic_string<C> str_insert(const Irange<UtfIterator<C>>& dst, const basic_string<C>& src) {
-        return str_insert(PRI_BOUNDS(dst), utf_begin(src), utf_end(src));
+        return str_insert(dst.begin(), dst.end(), utf_begin(src), utf_end(src));
     }
 
     template <typename C>
@@ -400,7 +400,7 @@ namespace Unicorn {
 
     template <typename C>
     Irange<UtfIterator<C>> str_insert_in(basic_string<C>& dst, const UtfIterator<C>& where, const Irange<UtfIterator<C>>& src) {
-        return str_insert_in(dst, where, PRI_BOUNDS(src));
+        return str_insert_in(dst, where, src.begin(), src.end());
     }
 
     template <typename C>
@@ -423,7 +423,7 @@ namespace Unicorn {
     template <typename C>
     Irange<UtfIterator<C>> str_insert_in(basic_string<C>& dst, const Irange<UtfIterator<C>>& range,
             const Irange<UtfIterator<C>>& src) {
-        return str_insert_in(dst, PRI_BOUNDS(range), PRI_BOUNDS(src));
+        return str_insert_in(dst, range.begin(), range.end(), src.begin(), src.end());
     }
 
     template <typename C>
@@ -438,16 +438,18 @@ namespace Unicorn {
     template <typename C>
     Irange<UtfIterator<C>> str_insert_in(basic_string<C>& dst, const Irange<UtfIterator<C>>& range,
             const basic_string<C>& src) {
-        return str_insert_in(dst, PRI_BOUNDS(range), utf_begin(src), utf_end(src));
+        return str_insert_in(dst, range.begin(), range.end(), utf_begin(src), utf_end(src));
     }
 
     template <typename FwdRange, typename C>
     basic_string<C> str_join(const FwdRange& r, const basic_string<C>& delim) {
+        using std::begin;
+        using std::end;
         using string_type = basic_string<C>;
-        using range_char = std::decay_t<decltype((*std::begin(r))[0])>;
+        using range_char = std::decay_t<decltype((*begin(r))[0])>;
         PRI_STATIC_ASSERT((std::is_same<C, range_char>::value));
         string_type s;
-        auto i = std::begin(r), e = std::end(r);
+        auto i = begin(r), e = end(r);
         if (i != e) {
             s = *i;
             ++i;
@@ -466,8 +468,9 @@ namespace Unicorn {
     }
 
     template <typename FwdRange>
-    auto str_join(const FwdRange& r) -> basic_string<std::decay_t<decltype((*std::begin(r))[0])>> {
-        using range_char = std::decay_t<decltype((*std::begin(r))[0])>;
+    auto str_join(const FwdRange& r) {
+        using std::begin;
+        using range_char = std::decay_t<decltype((*begin(r))[0])>;
         using string_type = basic_string<range_char>;
         return str_join(r, string_type());
     }
@@ -518,15 +521,15 @@ namespace Unicorn {
             return false;
         }
         auto range = utf_range(str);
-        auto i = std::find_if(PRI_BOUNDS(range), char_is_white_space);
-        if (i == std::end(range)) {
+        auto i = std::find_if(range.begin(), range.end(), char_is_white_space);
+        if (i == range.end()) {
             prefix = str;
             suffix.clear();
             return false;
         }
-        auto j = std::find_if_not(i, std::end(range), char_is_white_space);
-        auto temp = u_str(std::begin(range), i);
-        suffix = u_str(j, std::end(range));
+        auto j = std::find_if_not(i, range.end(), char_is_white_space);
+        auto temp = u_str(range.begin(), i);
+        suffix = u_str(j, range.end());
         prefix.swap(temp);
         return true;
     }
@@ -568,10 +571,10 @@ namespace Unicorn {
         } else {
             auto match = [&] (char32_t c) { return u_delim.find(c) != npos; };
             auto range = utf_range(str);
-            auto p = std::find_if(PRI_BOUNDS(range), match);
+            auto p = std::find_if(range.begin(), range.end(), match);
             i = p.offset();
-            if (p != std::end(range)) {
-                auto q = std::find_if_not(p, std::end(range), match);
+            if (p != range.end()) {
+                auto q = std::find_if_not(p, range.end(), match);
                 j = q.offset();
             }
         }
@@ -729,12 +732,12 @@ namespace Unicorn {
     template <typename C, typename OutIter>
     void str_split(const basic_string<C>& src, OutIter dst) {
         auto range = utf_range(src);
-        auto i = std::begin(range), j = i;
-        while (i != std::end(range)) {
-            j = std::find_if_not(i, std::end(range), char_is_white_space);
-            if (j == std::end(range))
+        auto i = range.begin(), j = i;
+        while (i != range.end()) {
+            j = std::find_if_not(i, range.end(), char_is_white_space);
+            if (j == range.end())
                 break;
-            i = std::find_if(j, std::end(range), char_is_white_space);
+            i = std::find_if(j, range.end(), char_is_white_space);
             *dst++ = u_str(j, i);
         }
     }
@@ -783,12 +786,12 @@ namespace Unicorn {
         } else {
             auto match = [&] (char32_t c) { return u_delim.find(c) != npos; };
             auto range = utf_range(src);
-            auto i = std::begin(range), j = i;
-            while (i != std::end(range)) {
-                j = std::find_if_not(i, std::end(range), match);
-                if (j == std::end(range))
+            auto i = range.begin(), j = i;
+            while (i != range.end()) {
+                j = std::find_if_not(i, range.end(), match);
+                if (j == range.end())
                     break;
-                i = std::find_if(j, std::end(range), match);
+                i = std::find_if(j, range.end(), match);
                 *dst++ = u_str(j, i);
             }
         }
@@ -1011,7 +1014,7 @@ namespace Unicorn {
         template <typename String, typename Pred>
         String trim_helper(const String& src, int mode, Pred p) {
             auto range = utf_range(src);
-            auto i = std::begin(range), j = std::end(range);
+            auto i = range.begin(), j = range.end();
             if (mode & trimleft)
                 while (i != j && p(*i))
                     ++i;
@@ -1032,7 +1035,7 @@ namespace Unicorn {
         template <typename String, typename Pred>
         void trim_in_helper(String& src, int mode, Pred p) {
             auto range = utf_range(src);
-            auto i = std::begin(range), j = std::end(range);
+            auto i = range.begin(), j = range.end();
             if (mode & trimleft)
                 while (i != j && p(*i))
                     ++i;
@@ -1315,7 +1318,7 @@ namespace Unicorn {
         else
             newline = {PRI_CHAR('\n', C)};
         auto range = utf_range(str);
-        auto i = std::begin(range), e = std::end(range);
+        auto i = range.begin(), e = range.end();
         size_t linewidth = 0, words = 0, linebreaks = 0, spaces = margin1, tailspaces = 0;
         while (i != e) {
             auto j = std::find_if_not(i, e, char_is_white_space);

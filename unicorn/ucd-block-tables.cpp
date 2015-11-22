@@ -311,7 +311,7 @@ const KeyValue<char32_t, char const*> blocks_array[] {
 {0x110000,static_cast<char const*>(0)},
 };
 
-const TableView<char32_t, char const*> blocks_table {PRI_BOUNDS(blocks_array)};
+const TableView<char32_t, char const*> blocks_table {std::begin(blocks_array), std::end(blocks_array)};
 
 }
 }

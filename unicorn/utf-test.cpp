@@ -32,13 +32,13 @@ namespace {
     const wstring zw {0, 0, 0};
 
     #if defined(UNICORN_WCHAR_UTF16)
-        const wstring cw(PRI_BOUNDS(c16));
-        const wstring xw(PRI_BOUNDS(x16));
-        const wstring yw(PRI_BOUNDS(y16));
+        const wstring cw(c16.begin(), c16.end());
+        const wstring xw(x16.begin(), x16.end());
+        const wstring yw(y16.begin(), y16.end());
     #else
-        const wstring cw(PRI_BOUNDS(c32));
-        const wstring xw(PRI_BOUNDS(x32));
-        const wstring yw(PRI_BOUNDS(y32));
+        const wstring cw(c32.begin(), c32.end());
+        const wstring xw(x32.begin(), x32.end());
+        const wstring yw(y32.begin(), y32.end());
     #endif
 
     void check_basic_conversions() {
@@ -211,47 +211,47 @@ namespace {
 
         TEST_EQUAL(i8.str(), "");
         TRY(r8 = utf_range(c8));
-        TRY(i8 = r8.first);  TEST_EQUAL(*i8, 0x4d);      TEST_EQUAL(i8.str(), "\x4d");              TEST_EQUAL(string(PRI_BOUNDS(i8.range())), "\x4d");
-        TRY(++i8);           TEST_EQUAL(*i8, 0x430);     TEST_EQUAL(i8.str(), "\xd0\xb0");          TEST_EQUAL(string(PRI_BOUNDS(i8.range())), "\xd0\xb0");
-        TRY(++i8);           TEST_EQUAL(*i8, 0x4e8c);    TEST_EQUAL(i8.str(), "\xe4\xba\x8c");      TEST_EQUAL(string(PRI_BOUNDS(i8.range())), "\xe4\xba\x8c");
-        TRY(++i8);           TEST_EQUAL(*i8, 0x10302);   TEST_EQUAL(i8.str(), "\xf0\x90\x8c\x82");  TEST_EQUAL(string(PRI_BOUNDS(i8.range())), "\xf0\x90\x8c\x82");
-        TRY(++i8);           TEST_EQUAL(*i8, 0x10fffd);  TEST_EQUAL(i8.str(), "\xf4\x8f\xbf\xbd");  TEST_EQUAL(string(PRI_BOUNDS(i8.range())), "\xf4\x8f\xbf\xbd");
-        TRY(++i8);           TEST(i8 == r8.second);      TEST_EQUAL(i8.str(), "");                  TEST_EQUAL(string(PRI_BOUNDS(i8.range())), "");
-        TRY(--i8);           TEST_EQUAL(*i8, 0x10fffd);  TEST_EQUAL(i8.str(), "\xf4\x8f\xbf\xbd");  TEST_EQUAL(string(PRI_BOUNDS(i8.range())), "\xf4\x8f\xbf\xbd");
-        TRY(--i8);           TEST_EQUAL(*i8, 0x10302);   TEST_EQUAL(i8.str(), "\xf0\x90\x8c\x82");  TEST_EQUAL(string(PRI_BOUNDS(i8.range())), "\xf0\x90\x8c\x82");
-        TRY(--i8);           TEST_EQUAL(*i8, 0x4e8c);    TEST_EQUAL(i8.str(), "\xe4\xba\x8c");      TEST_EQUAL(string(PRI_BOUNDS(i8.range())), "\xe4\xba\x8c");
-        TRY(--i8);           TEST_EQUAL(*i8, 0x430);     TEST_EQUAL(i8.str(), "\xd0\xb0");          TEST_EQUAL(string(PRI_BOUNDS(i8.range())), "\xd0\xb0");
-        TRY(--i8);           TEST_EQUAL(*i8, 0x4d);      TEST_EQUAL(i8.str(), "\x4d");              TEST_EQUAL(string(PRI_BOUNDS(i8.range())), "\x4d");
+        TRY(i8 = r8.first);  TEST_EQUAL(*i8, 0x4d);      TEST_EQUAL(i8.str(), "\x4d");              TEST_EQUAL(string(i8.range().begin(), i8.range().end()), "\x4d");
+        TRY(++i8);           TEST_EQUAL(*i8, 0x430);     TEST_EQUAL(i8.str(), "\xd0\xb0");          TEST_EQUAL(string(i8.range().begin(), i8.range().end()), "\xd0\xb0");
+        TRY(++i8);           TEST_EQUAL(*i8, 0x4e8c);    TEST_EQUAL(i8.str(), "\xe4\xba\x8c");      TEST_EQUAL(string(i8.range().begin(), i8.range().end()), "\xe4\xba\x8c");
+        TRY(++i8);           TEST_EQUAL(*i8, 0x10302);   TEST_EQUAL(i8.str(), "\xf0\x90\x8c\x82");  TEST_EQUAL(string(i8.range().begin(), i8.range().end()), "\xf0\x90\x8c\x82");
+        TRY(++i8);           TEST_EQUAL(*i8, 0x10fffd);  TEST_EQUAL(i8.str(), "\xf4\x8f\xbf\xbd");  TEST_EQUAL(string(i8.range().begin(), i8.range().end()), "\xf4\x8f\xbf\xbd");
+        TRY(++i8);           TEST(i8 == r8.second);      TEST_EQUAL(i8.str(), "");                  TEST_EQUAL(string(i8.range().begin(), i8.range().end()), "");
+        TRY(--i8);           TEST_EQUAL(*i8, 0x10fffd);  TEST_EQUAL(i8.str(), "\xf4\x8f\xbf\xbd");  TEST_EQUAL(string(i8.range().begin(), i8.range().end()), "\xf4\x8f\xbf\xbd");
+        TRY(--i8);           TEST_EQUAL(*i8, 0x10302);   TEST_EQUAL(i8.str(), "\xf0\x90\x8c\x82");  TEST_EQUAL(string(i8.range().begin(), i8.range().end()), "\xf0\x90\x8c\x82");
+        TRY(--i8);           TEST_EQUAL(*i8, 0x4e8c);    TEST_EQUAL(i8.str(), "\xe4\xba\x8c");      TEST_EQUAL(string(i8.range().begin(), i8.range().end()), "\xe4\xba\x8c");
+        TRY(--i8);           TEST_EQUAL(*i8, 0x430);     TEST_EQUAL(i8.str(), "\xd0\xb0");          TEST_EQUAL(string(i8.range().begin(), i8.range().end()), "\xd0\xb0");
+        TRY(--i8);           TEST_EQUAL(*i8, 0x4d);      TEST_EQUAL(i8.str(), "\x4d");              TEST_EQUAL(string(i8.range().begin(), i8.range().end()), "\x4d");
         TEST(i8 == r8.first);
 
         TEST_EQUAL(i16.str(), u"");
         TRY(r16 = utf_range(c16));
-        TRY(i16 = r16.first);  TEST_EQUAL(*i16, 0x4d);      TEST_EQUAL(i16.str(), (u16string{0x004d}));          TEST_EQUAL(u16string(PRI_BOUNDS(i16.range())), (u16string{0x004d}));
-        TRY(++i16);            TEST_EQUAL(*i16, 0x430);     TEST_EQUAL(i16.str(), (u16string{0x0430}));          TEST_EQUAL(u16string(PRI_BOUNDS(i16.range())), (u16string{0x0430}));
-        TRY(++i16);            TEST_EQUAL(*i16, 0x4e8c);    TEST_EQUAL(i16.str(), (u16string{0x4e8c}));          TEST_EQUAL(u16string(PRI_BOUNDS(i16.range())), (u16string{0x4e8c}));
-        TRY(++i16);            TEST_EQUAL(*i16, 0x10302);   TEST_EQUAL(i16.str(), (u16string{0xd800, 0xdf02}));  TEST_EQUAL(u16string(PRI_BOUNDS(i16.range())), (u16string{0xd800, 0xdf02}));
-        TRY(++i16);            TEST_EQUAL(*i16, 0x10fffd);  TEST_EQUAL(i16.str(), (u16string{0xdbff, 0xdffd}));  TEST_EQUAL(u16string(PRI_BOUNDS(i16.range())), (u16string{0xdbff, 0xdffd}));
-        TRY(++i16);            TEST(i16 == r16.second);     TEST_EQUAL(i16.str(), u"");                          TEST_EQUAL(u16string(PRI_BOUNDS(i16.range())), u"");
-        TRY(--i16);            TEST_EQUAL(*i16, 0x10fffd);  TEST_EQUAL(i16.str(), (u16string{0xdbff, 0xdffd}));  TEST_EQUAL(u16string(PRI_BOUNDS(i16.range())), (u16string{0xdbff, 0xdffd}));
-        TRY(--i16);            TEST_EQUAL(*i16, 0x10302);   TEST_EQUAL(i16.str(), (u16string{0xd800, 0xdf02}));  TEST_EQUAL(u16string(PRI_BOUNDS(i16.range())), (u16string{0xd800, 0xdf02}));
-        TRY(--i16);            TEST_EQUAL(*i16, 0x4e8c);    TEST_EQUAL(i16.str(), (u16string{0x4e8c}));          TEST_EQUAL(u16string(PRI_BOUNDS(i16.range())), (u16string{0x4e8c}));
-        TRY(--i16);            TEST_EQUAL(*i16, 0x430);     TEST_EQUAL(i16.str(), (u16string{0x0430}));          TEST_EQUAL(u16string(PRI_BOUNDS(i16.range())), (u16string{0x0430}));
-        TRY(--i16);            TEST_EQUAL(*i16, 0x4d);      TEST_EQUAL(i16.str(), (u16string{0x004d}));          TEST_EQUAL(u16string(PRI_BOUNDS(i16.range())), (u16string{0x004d}));
+        TRY(i16 = r16.first);  TEST_EQUAL(*i16, 0x4d);      TEST_EQUAL(i16.str(), (u16string{0x004d}));          TEST_EQUAL(u16string(i16.range().begin(), i16.range().end()), (u16string{0x004d}));
+        TRY(++i16);            TEST_EQUAL(*i16, 0x430);     TEST_EQUAL(i16.str(), (u16string{0x0430}));          TEST_EQUAL(u16string(i16.range().begin(), i16.range().end()), (u16string{0x0430}));
+        TRY(++i16);            TEST_EQUAL(*i16, 0x4e8c);    TEST_EQUAL(i16.str(), (u16string{0x4e8c}));          TEST_EQUAL(u16string(i16.range().begin(), i16.range().end()), (u16string{0x4e8c}));
+        TRY(++i16);            TEST_EQUAL(*i16, 0x10302);   TEST_EQUAL(i16.str(), (u16string{0xd800, 0xdf02}));  TEST_EQUAL(u16string(i16.range().begin(), i16.range().end()), (u16string{0xd800, 0xdf02}));
+        TRY(++i16);            TEST_EQUAL(*i16, 0x10fffd);  TEST_EQUAL(i16.str(), (u16string{0xdbff, 0xdffd}));  TEST_EQUAL(u16string(i16.range().begin(), i16.range().end()), (u16string{0xdbff, 0xdffd}));
+        TRY(++i16);            TEST(i16 == r16.second);     TEST_EQUAL(i16.str(), u"");                          TEST_EQUAL(u16string(i16.range().begin(), i16.range().end()), u"");
+        TRY(--i16);            TEST_EQUAL(*i16, 0x10fffd);  TEST_EQUAL(i16.str(), (u16string{0xdbff, 0xdffd}));  TEST_EQUAL(u16string(i16.range().begin(), i16.range().end()), (u16string{0xdbff, 0xdffd}));
+        TRY(--i16);            TEST_EQUAL(*i16, 0x10302);   TEST_EQUAL(i16.str(), (u16string{0xd800, 0xdf02}));  TEST_EQUAL(u16string(i16.range().begin(), i16.range().end()), (u16string{0xd800, 0xdf02}));
+        TRY(--i16);            TEST_EQUAL(*i16, 0x4e8c);    TEST_EQUAL(i16.str(), (u16string{0x4e8c}));          TEST_EQUAL(u16string(i16.range().begin(), i16.range().end()), (u16string{0x4e8c}));
+        TRY(--i16);            TEST_EQUAL(*i16, 0x430);     TEST_EQUAL(i16.str(), (u16string{0x0430}));          TEST_EQUAL(u16string(i16.range().begin(), i16.range().end()), (u16string{0x0430}));
+        TRY(--i16);            TEST_EQUAL(*i16, 0x4d);      TEST_EQUAL(i16.str(), (u16string{0x004d}));          TEST_EQUAL(u16string(i16.range().begin(), i16.range().end()), (u16string{0x004d}));
         TEST(i16 == r16.first);
 
         TEST_EQUAL(i32.str(), U"");
         TRY(r32 = utf_range(c32));
-        TRY(i32 = r32.first);  TEST_EQUAL(*i32, 0x4d);      TEST_EQUAL(i32.str(), u32string{0x0000004d});  TEST_EQUAL(u32string(PRI_BOUNDS(i32.range())), u32string{0x0000004d});
-        TRY(++i32);            TEST_EQUAL(*i32, 0x430);     TEST_EQUAL(i32.str(), u32string{0x00000430});  TEST_EQUAL(u32string(PRI_BOUNDS(i32.range())), u32string{0x00000430});
-        TRY(++i32);            TEST_EQUAL(*i32, 0x4e8c);    TEST_EQUAL(i32.str(), u32string{0x00004e8c});  TEST_EQUAL(u32string(PRI_BOUNDS(i32.range())), u32string{0x00004e8c});
-        TRY(++i32);            TEST_EQUAL(*i32, 0x10302);   TEST_EQUAL(i32.str(), u32string{0x00010302});  TEST_EQUAL(u32string(PRI_BOUNDS(i32.range())), u32string{0x00010302});
-        TRY(++i32);            TEST_EQUAL(*i32, 0x10fffd);  TEST_EQUAL(i32.str(), u32string{0x0010fffd});  TEST_EQUAL(u32string(PRI_BOUNDS(i32.range())), u32string{0x0010fffd});
-        TRY(++i32);            TEST(i32 == r32.second);     TEST_EQUAL(i32.str(), U"");                    TEST_EQUAL(u32string(PRI_BOUNDS(i32.range())), U"");
-        TRY(--i32);            TEST_EQUAL(*i32, 0x10fffd);  TEST_EQUAL(i32.str(), u32string{0x0010fffd});  TEST_EQUAL(u32string(PRI_BOUNDS(i32.range())), u32string{0x0010fffd});
-        TRY(--i32);            TEST_EQUAL(*i32, 0x10302);   TEST_EQUAL(i32.str(), u32string{0x00010302});  TEST_EQUAL(u32string(PRI_BOUNDS(i32.range())), u32string{0x00010302});
-        TRY(--i32);            TEST_EQUAL(*i32, 0x4e8c);    TEST_EQUAL(i32.str(), u32string{0x00004e8c});  TEST_EQUAL(u32string(PRI_BOUNDS(i32.range())), u32string{0x00004e8c});
-        TRY(--i32);            TEST_EQUAL(*i32, 0x430);     TEST_EQUAL(i32.str(), u32string{0x00000430});  TEST_EQUAL(u32string(PRI_BOUNDS(i32.range())), u32string{0x00000430});
-        TRY(--i32);            TEST_EQUAL(*i32, 0x4d);      TEST_EQUAL(i32.str(), u32string{0x0000004d});  TEST_EQUAL(u32string(PRI_BOUNDS(i32.range())), u32string{0x0000004d});
+        TRY(i32 = r32.first);  TEST_EQUAL(*i32, 0x4d);      TEST_EQUAL(i32.str(), u32string{0x0000004d});  TEST_EQUAL(u32string(i32.range().begin(), i32.range().end()), u32string{0x0000004d});
+        TRY(++i32);            TEST_EQUAL(*i32, 0x430);     TEST_EQUAL(i32.str(), u32string{0x00000430});  TEST_EQUAL(u32string(i32.range().begin(), i32.range().end()), u32string{0x00000430});
+        TRY(++i32);            TEST_EQUAL(*i32, 0x4e8c);    TEST_EQUAL(i32.str(), u32string{0x00004e8c});  TEST_EQUAL(u32string(i32.range().begin(), i32.range().end()), u32string{0x00004e8c});
+        TRY(++i32);            TEST_EQUAL(*i32, 0x10302);   TEST_EQUAL(i32.str(), u32string{0x00010302});  TEST_EQUAL(u32string(i32.range().begin(), i32.range().end()), u32string{0x00010302});
+        TRY(++i32);            TEST_EQUAL(*i32, 0x10fffd);  TEST_EQUAL(i32.str(), u32string{0x0010fffd});  TEST_EQUAL(u32string(i32.range().begin(), i32.range().end()), u32string{0x0010fffd});
+        TRY(++i32);            TEST(i32 == r32.second);     TEST_EQUAL(i32.str(), U"");                    TEST_EQUAL(u32string(i32.range().begin(), i32.range().end()), U"");
+        TRY(--i32);            TEST_EQUAL(*i32, 0x10fffd);  TEST_EQUAL(i32.str(), u32string{0x0010fffd});  TEST_EQUAL(u32string(i32.range().begin(), i32.range().end()), u32string{0x0010fffd});
+        TRY(--i32);            TEST_EQUAL(*i32, 0x10302);   TEST_EQUAL(i32.str(), u32string{0x00010302});  TEST_EQUAL(u32string(i32.range().begin(), i32.range().end()), u32string{0x00010302});
+        TRY(--i32);            TEST_EQUAL(*i32, 0x4e8c);    TEST_EQUAL(i32.str(), u32string{0x00004e8c});  TEST_EQUAL(u32string(i32.range().begin(), i32.range().end()), u32string{0x00004e8c});
+        TRY(--i32);            TEST_EQUAL(*i32, 0x430);     TEST_EQUAL(i32.str(), u32string{0x00000430});  TEST_EQUAL(u32string(i32.range().begin(), i32.range().end()), u32string{0x00000430});
+        TRY(--i32);            TEST_EQUAL(*i32, 0x4d);      TEST_EQUAL(i32.str(), u32string{0x0000004d});  TEST_EQUAL(u32string(i32.range().begin(), i32.range().end()), u32string{0x0000004d});
         TEST(i32 == r32.first);
 
         TRY(rw = utf_range(cw));
@@ -281,21 +281,21 @@ namespace {
         Utf32Range r32;
         WcharRange rw;
 
-        TRY(r8 = utf_range(a8));    TRY(std::copy(PRI_BOUNDS(r8), overwrite(s32)));   TEST_EQUAL(s32, U"");
-        TRY(r8 = utf_range(b8));    TRY(std::copy(PRI_BOUNDS(r8), overwrite(s32)));   TEST_EQUAL(s32, U"Hello");
-        TRY(r8 = utf_range(c8));    TRY(std::copy(PRI_BOUNDS(r8), overwrite(s32)));   TEST_EQUAL(s32, c32);
-        TRY(r8 = utf_range(z8));    TRY(std::copy(PRI_BOUNDS(r8), overwrite(s32)));   TEST_EQUAL(s32, z32);
-        TRY(r16 = utf_range(a16));  TRY(std::copy(PRI_BOUNDS(r16), overwrite(s32)));  TEST_EQUAL(s32, U"");
-        TRY(r16 = utf_range(b16));  TRY(std::copy(PRI_BOUNDS(r16), overwrite(s32)));  TEST_EQUAL(s32, U"Hello");
-        TRY(r16 = utf_range(c16));  TRY(std::copy(PRI_BOUNDS(r16), overwrite(s32)));  TEST_EQUAL(s32, c32);
-        TRY(r16 = utf_range(z16));  TRY(std::copy(PRI_BOUNDS(r16), overwrite(s32)));  TEST_EQUAL(s32, z32);
-        TRY(r32 = utf_range(a32));  TRY(std::copy(PRI_BOUNDS(r32), overwrite(s32)));  TEST_EQUAL(s32, U"");
-        TRY(r32 = utf_range(b32));  TRY(std::copy(PRI_BOUNDS(r32), overwrite(s32)));  TEST_EQUAL(s32, U"Hello");
-        TRY(r32 = utf_range(c32));  TRY(std::copy(PRI_BOUNDS(r32), overwrite(s32)));  TEST_EQUAL(s32, c32);
-        TRY(r32 = utf_range(z32));  TRY(std::copy(PRI_BOUNDS(r32), overwrite(s32)));  TEST_EQUAL(s32, z32);
-        TRY(rw = utf_range(aw));    TRY(std::copy(PRI_BOUNDS(rw), overwrite(s32)));   TEST_EQUAL(s32, U"");
-        TRY(rw = utf_range(bw));    TRY(std::copy(PRI_BOUNDS(rw), overwrite(s32)));   TEST_EQUAL(s32, U"Hello");
-        TRY(rw = utf_range(cw));    TRY(std::copy(PRI_BOUNDS(rw), overwrite(s32)));   TEST_EQUAL(s32, c32);
+        TRY(r8 = utf_range(a8));    TRY(std::copy(r8.begin(), r8.end(), overwrite(s32)));   TEST_EQUAL(s32, U"");
+        TRY(r8 = utf_range(b8));    TRY(std::copy(r8.begin(), r8.end(), overwrite(s32)));   TEST_EQUAL(s32, U"Hello");
+        TRY(r8 = utf_range(c8));    TRY(std::copy(r8.begin(), r8.end(), overwrite(s32)));   TEST_EQUAL(s32, c32);
+        TRY(r8 = utf_range(z8));    TRY(std::copy(r8.begin(), r8.end(), overwrite(s32)));   TEST_EQUAL(s32, z32);
+        TRY(r16 = utf_range(a16));  TRY(std::copy(r16.begin(), r16.end(), overwrite(s32)));  TEST_EQUAL(s32, U"");
+        TRY(r16 = utf_range(b16));  TRY(std::copy(r16.begin(), r16.end(), overwrite(s32)));  TEST_EQUAL(s32, U"Hello");
+        TRY(r16 = utf_range(c16));  TRY(std::copy(r16.begin(), r16.end(), overwrite(s32)));  TEST_EQUAL(s32, c32);
+        TRY(r16 = utf_range(z16));  TRY(std::copy(r16.begin(), r16.end(), overwrite(s32)));  TEST_EQUAL(s32, z32);
+        TRY(r32 = utf_range(a32));  TRY(std::copy(r32.begin(), r32.end(), overwrite(s32)));  TEST_EQUAL(s32, U"");
+        TRY(r32 = utf_range(b32));  TRY(std::copy(r32.begin(), r32.end(), overwrite(s32)));  TEST_EQUAL(s32, U"Hello");
+        TRY(r32 = utf_range(c32));  TRY(std::copy(r32.begin(), r32.end(), overwrite(s32)));  TEST_EQUAL(s32, c32);
+        TRY(r32 = utf_range(z32));  TRY(std::copy(r32.begin(), r32.end(), overwrite(s32)));  TEST_EQUAL(s32, z32);
+        TRY(rw = utf_range(aw));    TRY(std::copy(rw.begin(), rw.end(), overwrite(s32)));   TEST_EQUAL(s32, U"");
+        TRY(rw = utf_range(bw));    TRY(std::copy(rw.begin(), rw.end(), overwrite(s32)));   TEST_EQUAL(s32, U"Hello");
+        TRY(rw = utf_range(cw));    TRY(std::copy(rw.begin(), rw.end(), overwrite(s32)));   TEST_EQUAL(s32, c32);
 
         TRY(std::copy(utf_begin(a8), utf_end(a8), overwrite(s32)));    TEST_EQUAL(s32, U"");
         TRY(std::copy(utf_begin(b8), utf_end(b8), overwrite(s32)));    TEST_EQUAL(s32, U"Hello");
@@ -341,21 +341,21 @@ namespace {
         TRY(std::copy(utf_iterator(c32, 3), utf_iterator(c32, 5), overwrite(s32)));  TEST_EQUAL(s32, (u32string{0x10302,0x10fffd}));
         TRY(std::copy(utf_iterator(c32, 4), utf_iterator(c32, 5), overwrite(s32)));  TEST_EQUAL(s32, (u32string{0x10fffd}));
 
-        s8.clear();   TRY(std::copy(PRI_BOUNDS(a32), utf_writer(s8)));   TEST_EQUAL(s8, "");
-        s8.clear();   TRY(std::copy(PRI_BOUNDS(b32), utf_writer(s8)));   TEST_EQUAL(s8, "Hello");
-        s8.clear();   TRY(std::copy(PRI_BOUNDS(c32), utf_writer(s8)));   TEST_EQUAL(s8, c8);
-        s8.clear();   TRY(std::copy(PRI_BOUNDS(z32), utf_writer(s8)));   TEST_EQUAL(s8, z8);
-        s16.clear();  TRY(std::copy(PRI_BOUNDS(a32), utf_writer(s16)));  TEST_EQUAL(s16, u"");
-        s16.clear();  TRY(std::copy(PRI_BOUNDS(b32), utf_writer(s16)));  TEST_EQUAL(s16, u"Hello");
-        s16.clear();  TRY(std::copy(PRI_BOUNDS(c32), utf_writer(s16)));  TEST_EQUAL(s16, c16);
-        s16.clear();  TRY(std::copy(PRI_BOUNDS(z32), utf_writer(s16)));  TEST_EQUAL(s16, z16);
-        s32.clear();  TRY(std::copy(PRI_BOUNDS(a32), utf_writer(s32)));  TEST_EQUAL(s32, U"");
-        s32.clear();  TRY(std::copy(PRI_BOUNDS(b32), utf_writer(s32)));  TEST_EQUAL(s32, U"Hello");
-        s32.clear();  TRY(std::copy(PRI_BOUNDS(c32), utf_writer(s32)));  TEST_EQUAL(s32, c32);
-        s32.clear();  TRY(std::copy(PRI_BOUNDS(z32), utf_writer(s32)));  TEST_EQUAL(s32, z32);
-        sw.clear();   TRY(std::copy(PRI_BOUNDS(a32), utf_writer(sw)));   TEST_EQUAL(sw, L"");
-        sw.clear();   TRY(std::copy(PRI_BOUNDS(b32), utf_writer(sw)));   TEST_EQUAL(sw, L"Hello");
-        sw.clear();   TRY(std::copy(PRI_BOUNDS(c32), utf_writer(sw)));   TEST_EQUAL(sw, cw);
+        s8.clear();   TRY(std::copy(a32.begin(), a32.end(), utf_writer(s8)));   TEST_EQUAL(s8, "");
+        s8.clear();   TRY(std::copy(b32.begin(), b32.end(), utf_writer(s8)));   TEST_EQUAL(s8, "Hello");
+        s8.clear();   TRY(std::copy(c32.begin(), c32.end(), utf_writer(s8)));   TEST_EQUAL(s8, c8);
+        s8.clear();   TRY(std::copy(z32.begin(), z32.end(), utf_writer(s8)));   TEST_EQUAL(s8, z8);
+        s16.clear();  TRY(std::copy(a32.begin(), a32.end(), utf_writer(s16)));  TEST_EQUAL(s16, u"");
+        s16.clear();  TRY(std::copy(b32.begin(), b32.end(), utf_writer(s16)));  TEST_EQUAL(s16, u"Hello");
+        s16.clear();  TRY(std::copy(c32.begin(), c32.end(), utf_writer(s16)));  TEST_EQUAL(s16, c16);
+        s16.clear();  TRY(std::copy(z32.begin(), z32.end(), utf_writer(s16)));  TEST_EQUAL(s16, z16);
+        s32.clear();  TRY(std::copy(a32.begin(), a32.end(), utf_writer(s32)));  TEST_EQUAL(s32, U"");
+        s32.clear();  TRY(std::copy(b32.begin(), b32.end(), utf_writer(s32)));  TEST_EQUAL(s32, U"Hello");
+        s32.clear();  TRY(std::copy(c32.begin(), c32.end(), utf_writer(s32)));  TEST_EQUAL(s32, c32);
+        s32.clear();  TRY(std::copy(z32.begin(), z32.end(), utf_writer(s32)));  TEST_EQUAL(s32, z32);
+        sw.clear();   TRY(std::copy(a32.begin(), a32.end(), utf_writer(sw)));   TEST_EQUAL(sw, L"");
+        sw.clear();   TRY(std::copy(b32.begin(), b32.end(), utf_writer(sw)));   TEST_EQUAL(sw, L"Hello");
+        sw.clear();   TRY(std::copy(c32.begin(), c32.end(), utf_writer(sw)));   TEST_EQUAL(sw, cw);
 
     }
 
@@ -653,15 +653,15 @@ namespace {
         Utf32Range r32;
         WcharRange rw;
 
-        TRY(r8 = utf_range(x8, err_replace));    TRY(std::copy(PRI_BOUNDS(r8), overwrite(s32)));   TEST_EQUAL(s32, y32);
-        TRY(r16 = utf_range(x16, err_replace));  TRY(std::copy(PRI_BOUNDS(r16), overwrite(s32)));  TEST_EQUAL(s32, y32);
-        TRY(r32 = utf_range(x32, err_replace));  TRY(std::copy(PRI_BOUNDS(r32), overwrite(s32)));  TEST_EQUAL(s32, y32);
-        TRY(rw = utf_range(xw, err_replace));    TRY(std::copy(PRI_BOUNDS(rw), overwrite(s32)));   TEST_EQUAL(s32, y32);
+        TRY(r8 = utf_range(x8, err_replace));    TRY(std::copy(r8.begin(), r8.end(), overwrite(s32)));   TEST_EQUAL(s32, y32);
+        TRY(r16 = utf_range(x16, err_replace));  TRY(std::copy(r16.begin(), r16.end(), overwrite(s32)));  TEST_EQUAL(s32, y32);
+        TRY(r32 = utf_range(x32, err_replace));  TRY(std::copy(r32.begin(), r32.end(), overwrite(s32)));  TEST_EQUAL(s32, y32);
+        TRY(rw = utf_range(xw, err_replace));    TRY(std::copy(rw.begin(), rw.end(), overwrite(s32)));   TEST_EQUAL(s32, y32);
 
-        s8.clear();   TRY(std::copy(PRI_BOUNDS(x32), utf_writer(s8, err_replace)));   TEST_EQUAL(s8, y8);
-        s16.clear();  TRY(std::copy(PRI_BOUNDS(x32), utf_writer(s16, err_replace)));  TEST_EQUAL(s16, y16);
-        s32.clear();  TRY(std::copy(PRI_BOUNDS(x32), utf_writer(s32, err_replace)));  TEST_EQUAL(s32, y32);
-        sw.clear();   TRY(std::copy(PRI_BOUNDS(x32), utf_writer(sw, err_replace)));   TEST_EQUAL(sw, yw);
+        s8.clear();   TRY(std::copy(x32.begin(), x32.end(), utf_writer(s8, err_replace)));   TEST_EQUAL(s8, y8);
+        s16.clear();  TRY(std::copy(x32.begin(), x32.end(), utf_writer(s16, err_replace)));  TEST_EQUAL(s16, y16);
+        s32.clear();  TRY(std::copy(x32.begin(), x32.end(), utf_writer(s32, err_replace)));  TEST_EQUAL(s32, y32);
+        sw.clear();   TRY(std::copy(x32.begin(), x32.end(), utf_writer(sw, err_replace)));   TEST_EQUAL(sw, yw);
 
         TRY(i8 = utf_begin(x8, err_throw));
         TRY(std::advance(i8, 4));
@@ -680,13 +680,13 @@ namespace {
         TEST_THROW_EQUAL(i32 = utf_iterator(x32, 5, err_throw), EncodingError, "Encoding error (UTF-32); offset 5; hex 0000d800");
 
         s8.clear();
-        TEST_THROW_EQUAL(std::copy(PRI_BOUNDS(x32), utf_writer(s8, err_throw)),
+        TEST_THROW_EQUAL(std::copy(x32.begin(), x32.end(), utf_writer(s8, err_throw)),
             EncodingError, "Encoding error (UTF-8); offset 5; hex 0000d800");
         s16.clear();
-        TEST_THROW_EQUAL(std::copy(PRI_BOUNDS(x32), utf_writer(s16, err_throw)),
+        TEST_THROW_EQUAL(std::copy(x32.begin(), x32.end(), utf_writer(s16, err_throw)),
             EncodingError, "Encoding error (UTF-16); offset 5; hex 0000d800");
         s32.clear();
-        TEST_THROW_EQUAL(std::copy(PRI_BOUNDS(x32), utf_writer(s32, err_throw)),
+        TEST_THROW_EQUAL(std::copy(x32.begin(), x32.end(), utf_writer(s32, err_throw)),
             EncodingError, "Encoding error (UTF-32); offset 5; hex 0000d800");
 
         // Check that error handling for UTF-8 matches the Unicode recommendation

@@ -45,7 +45,7 @@ namespace Unicorn {
             seg{i, i}, ends(j), next(i), bufsize(initsize), mode(flags) { ++*this; }
         const Irange<utf_iterator>& operator*() const noexcept { return seg; }
         BasicSegmentIterator& operator++() noexcept;
-        bool operator==(const BasicSegmentIterator& rhs) const noexcept { return std::begin(seg) == std::begin(rhs.seg); }
+        bool operator==(const BasicSegmentIterator& rhs) const noexcept { return seg.begin() == rhs.seg.begin(); }
     private:
         static constexpr size_t initsize = 16;
         Irange<utf_iterator> seg;  // Iterator pair marking current segment
@@ -66,7 +66,7 @@ namespace Unicorn {
             seg.first = seg.second;
             if (seg.first == ends)
                 break;
-            buf.erase(std::begin(buf), std::begin(buf) + len);
+            buf.erase(buf.begin(), buf.begin() + len);
             for (;;) {
                 while (next != ends && buf.size() < bufsize)
                     buf.push_back(PQ(*next++));
@@ -87,9 +87,9 @@ namespace Unicorn {
         UnicornDetail::SegmentFunction<Property> SF>
     bool BasicSegmentIterator<C, Property, PQ, SF>::select_segment() const noexcept {
         if (mode & graphic_words)
-            return std::find_if_not(PRI_BOUNDS(seg), char_is_white_space) != std::end(seg);
+            return std::find_if_not(seg.begin(), seg.end(), char_is_white_space) != seg.end();
         else if (mode & alpha_words)
-            return std::find_if(PRI_BOUNDS(seg), char_is_alphanumeric) != std::end(seg);
+            return std::find_if(seg.begin(), seg.end(), char_is_alphanumeric) != seg.end();
         else
             return true;
     }
@@ -106,7 +106,7 @@ namespace Unicorn {
 
     template <typename C> Irange<GraphemeIterator<C>>
     grapheme_range(const Irange<UtfIterator<C>>& source) {
-        return grapheme_range(PRI_BOUNDS(source));
+        return grapheme_range(source.begin(), source.end());
     }
 
     template <typename C> Irange<GraphemeIterator<C>>
@@ -128,7 +128,7 @@ namespace Unicorn {
 
     template <typename C> Irange<WordIterator<C>>
     word_range(const Irange<UtfIterator<C>>& source, uint32_t flags = 0) {
-        return word_range(PRI_BOUNDS(source), flags);
+        return word_range(source.begin(), source.end(), flags);
     }
 
     template <typename C> Irange<WordIterator<C>>
@@ -148,7 +148,7 @@ namespace Unicorn {
 
     template <typename C> Irange<SentenceIterator<C>>
     sentence_range(const Irange<UtfIterator<C>>& source) {
-        return sentence_range(PRI_BOUNDS(source));
+        return sentence_range(source.begin(), source.end());
     }
 
     template <typename C> Irange<SentenceIterator<C>>
@@ -245,7 +245,7 @@ namespace Unicorn {
             next(i), ends(j), mode(flags), find(f) { ++*this; }
         const Irange<utf_iterator>& operator*() const noexcept { return seg; }
         BlockSegmentIterator& operator++() noexcept;
-        bool operator==(const BlockSegmentIterator& rhs) const noexcept { return std::begin(seg) == std::begin(rhs.seg); }
+        bool operator==(const BlockSegmentIterator& rhs) const noexcept { return seg.begin() == rhs.seg.begin(); }
     private:
         Irange<utf_iterator> seg;   // Iterator pair marking current block
         utf_iterator next;          // Start of next block
@@ -280,7 +280,7 @@ namespace Unicorn {
 
     template <typename C>
     Irange<BlockSegmentIterator<C>> line_range(const Irange<UtfIterator<C>>& source, uint32_t flags = 0) {
-        return line_range(PRI_BOUNDS(source), flags);
+        return line_range(source.begin(), source.end(), flags);
     }
 
     template <typename C>
@@ -310,7 +310,7 @@ namespace Unicorn {
 
     template <typename C>
     Irange<BlockSegmentIterator<C>> paragraph_range(const Irange<UtfIterator<C>>& source, uint32_t flags = 0) {
-        return paragraph_range(PRI_BOUNDS(source), flags);
+        return paragraph_range(source.begin(), source.end(), flags);
     }
 
     template <typename C>

@@ -18,7 +18,7 @@ namespace {
         vector<u8string> hexcodes;
         str_split_by(code, append(hexcodes), " /");
         u32string str;
-        std::transform(PRI_BOUNDS(hexcodes), append(str), hexnum);
+        std::transform(hexcodes.begin(), hexcodes.end(), append(str), hexnum);
         return str;
     }
 
@@ -62,7 +62,7 @@ namespace {
             vector<u8string> breakdown;
             str_split_by(line, append(breakdown), "/");
             vector<u32string> expect32;
-            std::transform(PRI_BOUNDS(breakdown), append(expect32), decode_hex);
+            std::transform(breakdown.begin(), breakdown.end(), append(expect32), decode_hex);
             vector<u8string> expect8(expect32.size());
             vector<u16string> expect16(expect32.size());
             vector<wstring> wexpect(expect32.size());

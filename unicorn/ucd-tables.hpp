@@ -49,8 +49,8 @@ namespace Unicorn {
         V table_lookup(Irange<const T*> table, K key, V def) noexcept {
             T t;
             t.key = key;
-            auto it = std::lower_bound(PRI_BOUNDS(table), t);
-            if (it != std::end(table) && it->key == key)
+            auto it = std::lower_bound(table.begin(), table.end(), t);
+            if (it != table.end() && it->key == key)
                 return static_cast<V>(it->value);
             else
                 return def;
@@ -78,12 +78,12 @@ namespace Unicorn {
 
         template <typename K>
         bool sparse_set_lookup(Irange<const KeyValue<K, K>*> table, K key) noexcept {
-            if (std::begin(table) == std::end(table))
+            if (table.begin() == table.end())
                 return false;
             KeyValue<K, K> t;
             t.key = key;
-            auto it = std::upper_bound(PRI_BOUNDS(table), t);
-            if (it == std::begin(table))
+            auto it = std::upper_bound(table.begin(), table.end(), t);
+            if (it == table.begin())
                 return false;
             --it;
             return key >= it->key && key <= it->value;
@@ -92,11 +92,11 @@ namespace Unicorn {
         template <typename T, typename K>
         typename T::mapped_type sparse_table_lookup(Irange<const T*> table, K key) noexcept {
             using V = typename T::mapped_type;
-            if (std::begin(table) == std::end(table))
+            if (table.begin() == table.end())
                 return V();
             T t {key, V()};
-            auto it = std::upper_bound(PRI_BOUNDS(table), t);
-            if (it != std::begin(table))
+            auto it = std::upper_bound(table.begin(), table.end(), t);
+            if (it != table.begin())
                 --it;
             return it->value;
         }

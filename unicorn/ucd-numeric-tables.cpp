@@ -1595,7 +1595,7 @@ const KeyValue<char32_t, PackedPair<long long>> numeric_value_array[] {
 {0x2f891,{0,1}},
 };
 
-const TableView<char32_t, PackedPair<long long>> numeric_value_table {PRI_BOUNDS(numeric_value_array)};
+const TableView<char32_t, PackedPair<long long>> numeric_value_table {std::begin(numeric_value_array), std::end(numeric_value_array)};
 
 }
 }

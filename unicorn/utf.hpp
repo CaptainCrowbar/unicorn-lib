@@ -294,7 +294,7 @@ namespace Unicorn {
 
     template <typename C>
     basic_string<C> u_str(const Irange<UtfIterator<C>>& range) {
-        return u_str(PRI_BOUNDS(range));
+        return u_str(range.begin(), range.end());
     }
 
     // UTF encoding iterator

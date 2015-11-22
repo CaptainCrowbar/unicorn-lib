@@ -41,7 +41,7 @@ namespace Unicorn {
         bool operator()(const basic_string<C>& lhs, const basic_string<C>& rhs) const noexcept {
             if (sizeof(C) == 2) {
                 auto ur1 = utf_range(lhs), ur2 = utf_range(rhs);
-                return std::lexicographical_compare(PRI_BOUNDS(ur1), PRI_BOUNDS(ur2));
+                return std::lexicographical_compare(ur1.begin(), ur1.end(), ur2.begin(), ur2.end());
             } else {
                 return lhs < rhs;
             }
@@ -85,7 +85,7 @@ namespace Unicorn {
 
     template <typename C>
     UtfIterator<C> str_find_char(const Irange<UtfIterator<C>>& range, char32_t c) {
-        return std::find(PRI_BOUNDS(range), c);
+        return std::find(range.begin(), range.end(), c);
     }
 
     template <typename C>
@@ -106,7 +106,7 @@ namespace Unicorn {
 
     template <typename C>
     UtfIterator<C> str_find_last_char(const Irange<UtfIterator<C>>& range, char32_t c) {
-        return str_find_last_char(PRI_BOUNDS(range), c);
+        return str_find_last_char(range.begin(), range.end(), c);
     }
 
     template <typename C>
@@ -124,7 +124,7 @@ namespace Unicorn {
 
     template <typename C>
     UtfIterator<C> str_find_first_of(const Irange<UtfIterator<C>>& range, const basic_string<C>& target) {
-        return str_find_first_of(PRI_BOUNDS(range), target);
+        return str_find_first_of(range.begin(), range.end(), target);
     }
 
     template <typename C>
@@ -139,7 +139,7 @@ namespace Unicorn {
 
     template <typename C>
     UtfIterator<C> str_find_first_of(const Irange<UtfIterator<C>>& range, const C* target) {
-        return str_find_first_of(PRI_BOUNDS(range), target);
+        return str_find_first_of(range.begin(), range.end(), target);
     }
 
     template <typename C>
@@ -158,7 +158,7 @@ namespace Unicorn {
     template <typename C>
     UtfIterator<C> str_find_first_not_of(const Irange<UtfIterator<C>>& range,
             const basic_string<C>& target) {
-        return str_find_first_not_of(PRI_BOUNDS(range), target);
+        return str_find_first_not_of(range.begin(), range.end(), target);
     }
 
     template <typename C>
@@ -175,7 +175,7 @@ namespace Unicorn {
 
     template <typename C>
     UtfIterator<C> str_find_first_not_of(const Irange<UtfIterator<C>>& range, const C* target) {
-        return str_find_first_not_of(PRI_BOUNDS(range), target);
+        return str_find_first_not_of(range.begin(), range.end(), target);
     }
 
     template <typename C>
@@ -198,7 +198,7 @@ namespace Unicorn {
 
     template <typename C>
     UtfIterator<C> str_find_last_of(const Irange<UtfIterator<C>>& range, const basic_string<C>& target) {
-        return str_find_last_of(PRI_BOUNDS(range), target);
+        return str_find_last_of(range.begin(), range.end(), target);
     }
 
     template <typename C>
@@ -213,7 +213,7 @@ namespace Unicorn {
 
     template <typename C>
     UtfIterator<C> str_find_last_of(const Irange<UtfIterator<C>>& range, const C* target) {
-        return str_find_last_of(PRI_BOUNDS(range), target);
+        return str_find_last_of(range.begin(), range.end(), target);
     }
 
     template <typename C>
@@ -237,7 +237,7 @@ namespace Unicorn {
     template <typename C>
     UtfIterator<C> str_find_last_not_of(const Irange<UtfIterator<C>>& range,
             const basic_string<C>& target) {
-        return str_find_last_not_of(PRI_BOUNDS(range), target);
+        return str_find_last_not_of(range.begin(), range.end(), target);
     }
 
     template <typename C>
@@ -254,7 +254,7 @@ namespace Unicorn {
 
     template <typename C>
     UtfIterator<C> str_find_last_not_of(const Irange<UtfIterator<C>>& range, const C* target) {
-        return str_find_last_not_of(PRI_BOUNDS(range), target);
+        return str_find_last_not_of(range.begin(), range.end(), target);
     }
 
     template <typename C>
@@ -266,12 +266,12 @@ namespace Unicorn {
     UtfIterator<C> str_search(const UtfIterator<C>& b, const UtfIterator<C>& e,
             const basic_string<C>& target) {
         auto u_target = to_utf32(target);
-        return std::search(b, e, PRI_BOUNDS(u_target));
+        return std::search(b, e, u_target.begin(), u_target.end());
     }
 
     template <typename C>
     UtfIterator<C> str_search(const Irange<UtfIterator<C>>& range, const basic_string<C>& target) {
-        return str_search(PRI_BOUNDS(range), target);
+        return str_search(range.begin(), range.end(), target);
     }
 
     template <typename C>
@@ -286,7 +286,7 @@ namespace Unicorn {
 
     template <typename C>
     UtfIterator<C> str_search(const Irange<UtfIterator<C>>& range, const C* target) {
-        return str_search(PRI_BOUNDS(range), cstr(target));
+        return str_search(range.begin(), range.end(), cstr(target));
     }
 
     template <typename C>

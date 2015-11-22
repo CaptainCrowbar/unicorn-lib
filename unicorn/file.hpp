@@ -49,7 +49,7 @@ namespace Unicorn {
                 return file;
             #else
                 auto nfile = file;
-                std::replace(PRI_BOUNDS(nfile), PRI_CHAR('/', C), PRI_CHAR('\\', C));
+                std::replace(nfile.begin(), nfile.end(), PRI_CHAR('/', C), PRI_CHAR('\\', C));
                 return nfile;
             #endif
         }

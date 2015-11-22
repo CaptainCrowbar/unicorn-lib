@@ -18599,7 +18599,7 @@ std::array<char const*, 5> const normalization_test_array[] {
 /*18593*/ {{"115B9 0334 115AF","115B9 0334 115AF","115B9 0334 115AF","115B9 0334 115AF","115B9 0334 115AF"}},
 };
 
-const Irange<std::array<char const*, 5> const*> normalization_test_table {PRI_BOUNDS(normalization_test_array)};
+const Irange<std::array<char const*, 5> const*> normalization_test_table {std::begin(normalization_test_array), std::end(normalization_test_array)};
 
 const KeyValue<char32_t, char32_t> normalization_identity_array[] {
 {0x0,0x9f},
@@ -18996,7 +18996,7 @@ const KeyValue<char32_t, char32_t> normalization_identity_array[] {
 {0x2fa1e,0x10ffff},
 };
 
-const TableView<char32_t, char32_t> normalization_identity_table {PRI_BOUNDS(normalization_identity_array)};
+const TableView<char32_t, char32_t> normalization_identity_table {std::begin(normalization_identity_array), std::end(normalization_identity_array)};
 
 }
 }

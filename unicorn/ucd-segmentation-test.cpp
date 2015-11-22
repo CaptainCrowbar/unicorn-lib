@@ -408,7 +408,7 @@ char const* const grapheme_break_test_array[] {
 /*402*/ "0646 200D/0020",
 };
 
-const Irange<char const* const*> grapheme_break_test_table {PRI_BOUNDS(grapheme_break_test_array)};
+const Irange<char const* const*> grapheme_break_test_table {std::begin(grapheme_break_test_array), std::end(grapheme_break_test_array)};
 
 char const* const word_break_test_array[] {
 /*1*/ "0001/0001",
@@ -1902,7 +1902,7 @@ char const* const word_break_test_array[] {
 /*1489*/ "0061 005F 0061/002C/002C/0061",
 };
 
-const Irange<char const* const*> word_break_test_table {PRI_BOUNDS(word_break_test_array)};
+const Irange<char const* const*> word_break_test_table {std::begin(word_break_test_array), std::end(word_break_test_array)};
 
 char const* const sentence_break_test_array[] {
 /*1*/ "0001 0001",
@@ -2410,7 +2410,7 @@ char const* const sentence_break_test_array[] {
 /*503*/ "0646 200D 0020",
 };
 
-const Irange<char const* const*> sentence_break_test_table {PRI_BOUNDS(sentence_break_test_array)};
+const Irange<char const* const*> sentence_break_test_table {std::begin(sentence_break_test_array), std::end(sentence_break_test_array)};
 
 }
 }

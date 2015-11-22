@@ -92,7 +92,7 @@ namespace Unicorn {
                 } else if (exponent >= prec - 1) {
                     if (prec > 1)
                         result.erase(1, 1);
-                    result.insert(std::end(result), exponent - prec + 1, '0');
+                    result.insert(result.end(), exponent - prec + 1, '0');
                 } else if (exponent > 0) {
                     result.erase(1, 1);
                     result.insert(exponent + 1, 1, '.');
@@ -273,7 +273,7 @@ namespace Unicorn {
             if (flags & fx_stripz)
                 float_strip(s);
             if (t < 0 || (flags & fx_sign) || (t > 0 && (flags & fx_signz)))
-                s.insert(std::begin(s), t < 0 ? '-' : '+');
+                s.insert(s.begin(), t < 0 ? '-' : '+');
             return s;
         }
 

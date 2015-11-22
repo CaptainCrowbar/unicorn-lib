@@ -53,7 +53,7 @@ namespace Unicorn {
 
     template <typename C, typename C2>
     void str_append(basic_string<C>& str, const Irange<UtfIterator<C2>>& suffix) {
-        std::copy(std::begin(suffix), std::end(suffix), utf_writer(str));
+        std::copy(suffix.begin(), suffix.end(), utf_writer(str));
     }
 
     template <typename C, typename C2>

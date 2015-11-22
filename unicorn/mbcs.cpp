@@ -123,11 +123,11 @@ namespace Unicorn {
             CharsetMap();
             CharsetPtr operator[](uint32_t page) const {
                 auto i = pages.find(page);
-                return i == std::end(pages) ? nullptr : i->second;
+                return i == pages.end() ? nullptr : i->second;
             }
             CharsetPtr operator[](const u8string& name) const {
                 auto i = names.find(name);
-                return i == std::end(names) ? nullptr : i->second;
+                return i == names.end() ? nullptr : i->second;
             }
         private:
             using page_map = std::unordered_map<uint32_t, CharsetPtr>;
@@ -340,9 +340,9 @@ namespace Unicorn {
                     size_t cut = value.find_first_of(",;");
                     if (cut != npos)
                         value.resize(cut);
-                    auto cut2 = std::find_if(PRI_BOUNDS(value),
+                    auto cut2 = std::find_if(value.begin(), value.end(),
                         [] (char c) { return uint8_t(c) > 127; });
-                    value.erase(cut2, std::end(value));
+                    value.erase(cut2, value.end());
                     return value;
                 }
             }
@@ -413,7 +413,7 @@ namespace Unicorn {
             {
                 MutexLock lock(mtx);
                 auto it = cache.find(lcname);
-                if (it != std::end(cache))
+                if (it != cache.end())
                     return it->second;
             }
             auto tag = EncodingTag();
@@ -438,7 +438,7 @@ namespace Unicorn {
             {
                 MutexLock lock(mtx);
                 auto it = cache.find(page);
-                if (it != std::end(cache))
+                if (it != cache.end())
                     return it->second;
             }
             auto tag = EncodingTag();
@@ -531,7 +531,7 @@ namespace Unicorn {
                 u16string src16(src.size() / 2, 0);
                 memcpy(&src16[0], src.data(), src.size());
                 if (tag == utf16swap_tag)
-                    std::transform(PRI_BOUNDS(src16), std::begin(src16), reverse_char16);
+                    std::transform(src16.begin(), src16.end(), src16.begin(), reverse_char16);
                 if (extra)
                     src16 += char16_t(replacement_char);
                 recode(src16, dst, flags);
@@ -544,7 +544,7 @@ namespace Unicorn {
                 u32string src32(src.size() / 4, 0);
                 memcpy(&src32[0], src.data(), src.size());
                 if (tag == utf32swap_tag)
-                    std::transform(PRI_BOUNDS(src32), std::begin(src32), reverse_char32);
+                    std::transform(src32.begin(), src32.end(), src32.begin(), reverse_char32);
                 if (extra)
                     src32 += char16_t(replacement_char);
                 recode(src32, dst, flags);
@@ -562,7 +562,7 @@ namespace Unicorn {
                 u16string dst16;
                 recode(src, dst16, flags);
                 if (tag == utf16swap_tag)
-                    std::transform(PRI_BOUNDS(dst16), std::begin(dst16), reverse_char16);
+                    std::transform(dst16.begin(), dst16.end(), dst16.begin(), reverse_char16);
                 dst.resize(2 * dst16.size());
                 memcpy(&dst[0], dst16.data(), dst.size());
                 return true;
@@ -570,7 +570,7 @@ namespace Unicorn {
                 u32string dst32;
                 recode(src, dst32, flags);
                 if (tag == utf32swap_tag)
-                    std::transform(PRI_BOUNDS(dst32), std::begin(dst32), reverse_char32);
+                    std::transform(dst32.begin(), dst32.end(), dst32.begin(), reverse_char32);
                 dst.resize(4 * dst32.size());
                 memcpy(&dst[0], dst32.data(), dst.size());
                 return true;

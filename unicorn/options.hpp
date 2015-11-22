@@ -170,7 +170,7 @@ namespace Unicorn {
     vector<T> Options::get_list(const u8string& name) const {
         string_list svec = find_values(name);
         vector<T> tvec;
-        std::transform(PRI_BOUNDS(svec), append(tvec), UnicornDetail::ArgConv<T>());
+        std::transform(svec.begin(), svec.end(), append(tvec), UnicornDetail::ArgConv<T>());
         return tvec;
     }
 
@@ -178,7 +178,7 @@ namespace Unicorn {
     bool Options::parse(const vector<basic_string<C>>& args, std::basic_ostream<C2>& out, uint32_t flags) {
         check_flags(flags);
         string_list u8vec;
-        std::transform(PRI_BOUNDS(args), append(u8vec),
+        std::transform(args.begin(), args.end(), append(u8vec),
             [=] (const basic_string<C>& s) { return arg_convert(s, flags); });
         auto help_wanted = parse_args(u8vec, flags);
         send_help(out, help_wanted);

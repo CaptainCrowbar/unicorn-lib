@@ -120,7 +120,7 @@ namespace Unicorn {
         }
         size_t maxlen = 0;
         if (! opts.empty())
-            maxlen = *std::max_element(PRI_BOUNDS(lengths));
+            maxlen = *std::max_element(lengths.begin(), lengths.end());
         for (size_t i = 0; i < opts.size(); ++i)
             text += "    $1  = $2\n"_fmt(str_pad_right(prefixes[i], maxlen, U' ', grapheme_units), suffixes[i]);
         if (opts.empty())
@@ -163,7 +163,7 @@ namespace Unicorn {
         str_trim_in(name, "-");
         if (name.empty())
             return npos;
-        auto i = std::find_if(PRI_BOUNDS(opts),
+        auto i = std::find_if(opts.begin(), opts.end(),
             [=] (const auto& o) { return o.name == name || o.abbrev == name; });
         if (i == opts.end() || (found && ! i->found))
             return npos;
@@ -218,7 +218,7 @@ namespace Unicorn {
 
     void Options::clean_up_arguments(string_list& args, uint32_t flags) {
         if (! (flags & opt_noprefix) && ! args.empty())
-            args.erase(std::begin(args));
+            args.erase(args.begin());
         if (flags & opt_quoted)
             for (auto& arg: args)
                 if (arg.size() >= 2 && arg.front() == '\"' && arg.back() == '\"')
@@ -227,10 +227,10 @@ namespace Unicorn {
 
     Options::string_list Options::parse_forced_anonymous(string_list& args) {
         string_list anon;
-        auto i = std::find(PRI_BOUNDS(args), "--");
-        if (i != std::end(args)) {
-            anon.assign(i + 1, std::end(args));
-            args.erase(i, std::end(args));
+        auto i = std::find(args.begin(), args.end(), "--");
+        if (i != args.end()) {
+            anon.assign(i + 1, args.end());
+            args.erase(i, args.end());
         }
         return anon;
     }
@@ -243,7 +243,7 @@ namespace Unicorn {
                 bool paired = str_partition_at(args[i], key, value, "=");
                 if (paired) {
                     args[i] = key;
-                    args.insert(std::begin(args) + i + 1, value);
+                    args.insert(args.begin() + i + 1, value);
                     ++i;
                 }
             }
@@ -256,13 +256,13 @@ namespace Unicorn {
         while (i < args.size()) {
             if (arg_type(args[i]) == is_short_option) {
                 auto arg = args[i];
-                args.erase(std::begin(args) + i);
+                args.erase(args.begin() + i);
                 size_t j = 0;
                 for (auto u = std::next(utf_begin(arg)), uend = utf_end(arg); u != uend; ++u, ++j) {
                     size_t o = find_index(arg.substr(u.offset(), u.count()));
                     if (o == npos)
                         throw CommandLineError("Unknown option", arg);
-                    args.insert(std::begin(args) + i + j, "--" + opts[o].name);
+                    args.insert(args.begin() + i + j, "--" + opts[o].name);
                 }
                 i += j;
             } else {
@@ -300,23 +300,23 @@ namespace Unicorn {
                     throw CommandLineError("Invalid argument to option", args[i], arg);
                 opt.values.push_back(arg);
             }
-            args.erase(std::begin(args) + i, std::begin(args) + i + n);
+            args.erase(args.begin() + i, args.begin() + i + n);
         }
     }
 
     void Options::parse_remaining_anonymous(string_list& args, const string_list& anon) {
-        args.insert(std::end(args), PRI_BOUNDS(anon));
+        args.insert(args.end(), anon.begin(), anon.end());
         for (auto& opt: opts) {
             if (args.empty())
                 break;
             if (opt.is_anon) {
                 opt.found = true;
                 if (opt.is_multiple) {
-                    opt.values.insert(std::end(opt.values), PRI_BOUNDS(args));
+                    opt.values.insert(opt.values.end(), args.begin(), args.end());
                     args.clear();
                 } else {
                     opt.values.push_back(args[0]);
-                    args.erase(std::begin(args));
+                    args.erase(args.begin());
                 }
             }
         }

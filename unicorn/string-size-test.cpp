@@ -22,9 +22,9 @@ namespace {
     const u32string utf32_example {0x430,0x4e8c,0x10302,0x10fffd};
 
     #if defined(UNICORN_WCHAR_UTF16)
-        const wstring wide_example(PRI_BOUNDS(utf16_example));
+        const wstring wide_example(utf16_example.begin(), utf16_example.end());
     #else
-        const wstring wide_example(PRI_BOUNDS(utf32_example));
+        const wstring wide_example(utf32_example.begin(), utf32_example.end());
     #endif
 
     void check_length() {

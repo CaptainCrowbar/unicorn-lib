@@ -30,7 +30,7 @@ namespace {
         vector<u8string> v;
 
         TRY(range = lex(s));
-        TEST(std::begin(range) == std::end(range));
+        TEST(range.begin() == range.end());
 
         TRY(lex.match(0, "\\s+"));
         TRY(lex.match(0, "#[^\\n]*"));
@@ -40,27 +40,27 @@ namespace {
         TRY(lex.exact(4, "<magic>"));
 
         TRY(range = lex(s));
-        TEST(std::begin(range) == std::end(range));
+        TEST(range.begin() == range.end());
 
         s = "Hello world\n";
         TRY(range = lex(s));
-        TEST_EQUAL(std::distance(PRI_BOUNDS(range)), 2);
-        TRY(std::copy(PRI_BOUNDS(range), overwrite(v)));
+        TEST_EQUAL(std::distance(range.begin(), range.end()), 2);
+        TRY(std::copy(range.begin(), range.end(), overwrite(v)));
         TEST_EQUAL(Test::format_range(v), "[Hello,world]");
-        TRY(it = std::begin(range));
-        REQUIRE(it != std::end(range));
+        TRY(it = range.begin());
+        REQUIRE(it != range.end());
         TEST_EQUAL(it->offset, 0);
         TEST_EQUAL(it->count, 5);
         TEST_EQUAL(u8string(*it), "Hello");
         TEST_EQUAL(it->tag, 1);
         TRY(++it);
-        REQUIRE(it != std::end(range));
+        REQUIRE(it != range.end());
         TEST_EQUAL(it->offset, 6);
         TEST_EQUAL(it->count, 5);
         TEST_EQUAL(u8string(*it), "world");
         TEST_EQUAL(it->tag, 1);
         TRY(++it);
-        TEST(it == std::end(range));
+        TEST(it == range.end());
 
         s = "Hello world\n"
             "# Comment\n"
@@ -82,8 +82,8 @@ namespace {
             "1: Goodbye\n"
         );
 
-        TEST_EQUAL(std::distance(PRI_BOUNDS(range)), 9);
-        TRY(std::copy(PRI_BOUNDS(range), overwrite(v)));
+        TEST_EQUAL(std::distance(range.begin(), range.end()), 9);
+        TRY(std::copy(range.begin(), range.end(), overwrite(v)));
         TEST_EQUAL(Test::format_range(v), "[Hello,world,2,+,2,=,4,<magic>,Goodbye]");
 
         TRY(lex.call(5, [] (const u8string& str, size_t pos) -> size_t {
@@ -105,13 +105,13 @@ namespace {
             "(a b c (d e f) g h i)"
             "Goodbye";
         TRY(range = lex(s));
-        TEST_EQUAL(std::distance(PRI_BOUNDS(range)), 4);
-        TRY(std::copy(PRI_BOUNDS(range), overwrite(v)));
+        TEST_EQUAL(std::distance(range.begin(), range.end()), 4);
+        TRY(std::copy(range.begin(), range.end(), overwrite(v)));
         TEST_EQUAL(Test::format_range(v), "[Hello,(a b c),(a b c (d e f) g h i),Goodbye]");
 
         s = "Hello@world";
         TRY(range = lex(s));
-        TRY(it = std::begin(range));
+        TRY(it = range.begin());
         TEST_THROW_EQUAL(++it, SyntaxError, "Syntax error at offset 5: Unexpected \"@\"");
 
     }
@@ -139,8 +139,8 @@ namespace {
                 u"<magic>\n"
                 u"Goodbye\n";
             TRY(range = lex(s));
-            TEST_EQUAL(std::distance(PRI_BOUNDS(range)), 9);
-            TRY(std::copy(PRI_BOUNDS(range), overwrite(v)));
+            TEST_EQUAL(std::distance(range.begin(), range.end()), 9);
+            TRY(std::copy(range.begin(), range.end(), overwrite(v)));
             TEST_EQUAL(Test::format_range(v), "[Hello,world,2,+,2,=,4,<magic>,Goodbye]");
 
             TRY(lex.call(5, [] (const u16string& str, size_t pos) -> size_t {
@@ -162,13 +162,13 @@ namespace {
                 u"(a b c (d e f) g h i)"
                 u"Goodbye";
             TRY(range = lex(s));
-            TEST_EQUAL(std::distance(PRI_BOUNDS(range)), 4);
-            TRY(std::copy(PRI_BOUNDS(range), overwrite(v)));
+            TEST_EQUAL(std::distance(range.begin(), range.end()), 4);
+            TRY(std::copy(range.begin(), range.end(), overwrite(v)));
             TEST_EQUAL(Test::format_range(v), "[Hello,(a b c),(a b c (d e f) g h i),Goodbye]");
 
             s = u"Hello@world";
             TRY(range = lex(s));
-            TRY(it = std::begin(range));
+            TRY(it = range.begin());
             TEST_THROW_EQUAL(++it, SyntaxError, "Syntax error at offset 5: Unexpected \"@\"");
 
         #endif
@@ -198,8 +198,8 @@ namespace {
                 U"<magic>\n"
                 U"Goodbye\n";
             TRY(range = lex(s));
-            TEST_EQUAL(std::distance(PRI_BOUNDS(range)), 9);
-            TRY(std::copy(PRI_BOUNDS(range), overwrite(v)));
+            TEST_EQUAL(std::distance(range.begin(), range.end()), 9);
+            TRY(std::copy(range.begin(), range.end(), overwrite(v)));
             TEST_EQUAL(Test::format_range(v), "[Hello,world,2,+,2,=,4,<magic>,Goodbye]");
 
             TRY(lex.call(5, [] (const u32string& str, size_t pos) -> size_t {
@@ -221,13 +221,13 @@ namespace {
                 U"(a b c (d e f) g h i)"
                 U"Goodbye";
             TRY(range = lex(s));
-            TEST_EQUAL(std::distance(PRI_BOUNDS(range)), 4);
-            TRY(std::copy(PRI_BOUNDS(range), overwrite(v)));
+            TEST_EQUAL(std::distance(range.begin(), range.end()), 4);
+            TRY(std::copy(range.begin(), range.end(), overwrite(v)));
             TEST_EQUAL(Test::format_range(v), "[Hello,(a b c),(a b c (d e f) g h i),Goodbye]");
 
             s = U"Hello@world";
             TRY(range = lex(s));
-            TRY(it = std::begin(range));
+            TRY(it = range.begin());
             TEST_THROW_EQUAL(++it, SyntaxError, "Syntax error at offset 5: Unexpected \"@\"");
 
         #endif
@@ -257,8 +257,8 @@ namespace {
                 L"<magic>\n"
                 L"Goodbye\n";
             TRY(range = lex(s));
-            TEST_EQUAL(std::distance(PRI_BOUNDS(range)), 9);
-            TRY(std::copy(PRI_BOUNDS(range), overwrite(v)));
+            TEST_EQUAL(std::distance(range.begin(), range.end()), 9);
+            TRY(std::copy(range.begin(), range.end(), overwrite(v)));
             TEST_EQUAL(Test::format_range(v), "[Hello,world,2,+,2,=,4,<magic>,Goodbye]");
 
             TRY(lex.call(5, [] (const wstring& str, size_t pos) -> size_t {
@@ -280,13 +280,13 @@ namespace {
                 L"(a b c (d e f) g h i)"
                 L"Goodbye";
             TRY(range = lex(s));
-            TEST_EQUAL(std::distance(PRI_BOUNDS(range)), 4);
-            TRY(std::copy(PRI_BOUNDS(range), overwrite(v)));
+            TEST_EQUAL(std::distance(range.begin(), range.end()), 4);
+            TRY(std::copy(range.begin(), range.end(), overwrite(v)));
             TEST_EQUAL(Test::format_range(v), "[Hello,(a b c),(a b c (d e f) g h i),Goodbye]");
 
             s = L"Hello@world";
             TRY(range = lex(s));
-            TRY(it = std::begin(range));
+            TRY(it = range.begin());
             TEST_THROW_EQUAL(++it, SyntaxError, "Syntax error at offset 5: Unexpected \"@\"");
 
         #endif
@@ -314,8 +314,8 @@ namespace {
             "<magic>\n"
             "Goodbye\n";
         TRY(range = lex(s));
-        TEST_EQUAL(std::distance(PRI_BOUNDS(range)), 9);
-        TRY(std::copy(PRI_BOUNDS(range), overwrite(v)));
+        TEST_EQUAL(std::distance(range.begin(), range.end()), 9);
+        TRY(std::copy(range.begin(), range.end(), overwrite(v)));
         TEST_EQUAL(Test::format_range(v), "[Hello,world,2,+,2,=,4,<magic>,Goodbye]");
 
         TRY(lex.call(5, [] (const string& str, size_t pos) -> size_t {
@@ -337,13 +337,13 @@ namespace {
             "(a b c (d e f) g h i)"
             "Goodbye";
         TRY(range = lex(s));
-        TEST_EQUAL(std::distance(PRI_BOUNDS(range)), 4);
-        TRY(std::copy(PRI_BOUNDS(range), overwrite(v)));
+        TEST_EQUAL(std::distance(range.begin(), range.end()), 4);
+        TRY(std::copy(range.begin(), range.end(), overwrite(v)));
         TEST_EQUAL(Test::format_range(v), "[Hello,(a b c),(a b c (d e f) g h i),Goodbye]");
 
         s = "Hello@world";
         TRY(range = lex(s));
-        TRY(it = std::begin(range));
+        TRY(it = range.begin());
         TEST_THROW_EQUAL(++it, SyntaxError, "Syntax error at offset 5: Unexpected \"@\"");
 
     }

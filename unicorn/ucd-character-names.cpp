@@ -5992,7 +5992,7 @@ const KeyValue<char32_t, char const*> corrected_names_array[] {
 {0x1d0c5,"BYZANTINE MUSICAL SYMBOL FTHORA SKLIRON CHROMA VASIS"},
 };
 
-const TableView<char32_t, char const*> corrected_names_table {PRI_BOUNDS(corrected_names_array)};
+const TableView<char32_t, char const*> corrected_names_table {std::begin(corrected_names_array), std::end(corrected_names_array)};
 
 }
 }

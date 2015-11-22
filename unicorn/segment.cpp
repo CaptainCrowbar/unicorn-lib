@@ -13,7 +13,7 @@ namespace Unicorn {
             else if (size_t(i) >= buf.size())
                 return P::EOT;
             else
-                return std::begin(buf)[i];
+                return buf[i];
         }
 
     }

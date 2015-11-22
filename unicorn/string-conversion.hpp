@@ -32,7 +32,7 @@ namespace Unicorn {
             if (endpos == npos)
                 endpos = str.size();
             u8string fragment(endpos - offset, 0);
-            std::transform(std::begin(str) + offset, std::begin(str) + endpos, std::begin(fragment),
+            std::transform(str.begin() + offset, str.begin() + endpos, fragment.begin(),
                 [] (C c) { return char(c); });
             char* endptr = nullptr;
             if (std::is_signed<T>::value) {
@@ -86,7 +86,7 @@ namespace Unicorn {
         if (endpos == npos)
             endpos = str.size();
         u8string fragment(endpos - offset, 0);
-        std::transform(std::begin(str) + offset, std::begin(str) + endpos, std::begin(fragment),
+        std::transform(str.begin() + offset, str.begin() + endpos, fragment.begin(),
             [] (C c) { return char(c); });
         char* endptr = nullptr;
         auto value = strtold(fragment.data(), &endptr);

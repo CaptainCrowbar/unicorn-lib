@@ -180,7 +180,7 @@ namespace Unicorn {
     }
 
     bool char_is_bidi_mirrored(char32_t c) noexcept {
-        return std::binary_search(PRI_BOUNDS(UnicornDetail::bidi_mirrored_table), c);
+        return std::binary_search(std::begin(UnicornDetail::bidi_mirrored_table), std::end(UnicornDetail::bidi_mirrored_table), c);
     }
 
     char32_t bidi_mirroring_glyph(char32_t c) noexcept {
