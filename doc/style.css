@@ -98,7 +98,7 @@ code {
     font-size:    12px;
 }
 
-code strong {
+code strong, strong code {
     color:  #048;
 }
 
