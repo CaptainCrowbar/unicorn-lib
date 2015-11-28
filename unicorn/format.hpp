@@ -396,9 +396,9 @@ namespace Unicorn {
             if (match.offset() > prev)
                 add_literal(format.substr(prev, match.offset() - prev));
             if (match.count(1))
-                add_index(str_to_integer<unsigned>(match[1]), match[2]);
+                add_index(str_to_int<unsigned>(match[1]), match[2]);
             else if (match.count(3))
-                add_index(str_to_integer<unsigned>(match[3]), match[4]);
+                add_index(str_to_int<unsigned>(match[3]), match[4]);
             else
                 add_literal(match[5]);
             prev = match.endpos();

@@ -37,16 +37,13 @@ namespace Unicorn {
                     ++i;
                     if (i != end && ! char_is_digit(*i))
                         pad = *i++;
-                    if (i != end && char_is_digit(*i)) {
-                        width = str_to_integer<size_t>(str, i.offset());
-                        i = std::find_if_not(i, end, char_is_digit);
-                    }
+                    if (i != end && char_is_digit(*i))
+                        i = str_to_int<size_t>(width, i);
+                } else if (char_is_alpha(*i)) {
+                    flags |= letter_to_flag(*i++);
                 } else if (char_is_digit(*i)) {
-                    prec = str_to_integer<int>(str, i.offset());
-                    i = std::find_if_not(i, end, char_is_digit);
+                    i = str_to_int<int>(prec, i);
                 } else {
-                    if (char_is_alpha(*i))
-                        flags |= letter_to_flag(*i);
                     ++i;
                 }
             }

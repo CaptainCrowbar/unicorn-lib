@@ -718,25 +718,34 @@ unescaping the resulting strings.
 
 ## Type conversion functions ##
 
-* `template <typename T, typename C> size_t str_to_integer(T& t, const basic_string<C>& str, size_t offset = 0)`
-* `template <typename T, typename C> T str_to_integer(const basic_string<C>& str, size_t offset = 0)`
-* `template <typename T, typename C> size_t hex_to_integer(T& t, const basic_string<C>& str, size_t offset = 0)`
-* `template <typename T, typename C> T hex_to_integer(const basic_string<C>& str, size_t offset = 0)`
-* `template <typename T, typename C> size_t str_to_real(T& t, const basic_string<C>& str, size_t offset = 0)`
-* `template <typename T, typename C> T str_to_real(const basic_string<C>& str, size_t offset = 0)`
+* `template <typename T, typename C> UtfIterator<C> str_to_int(T& t, const basic_string<C>& str, uint32_t flags = 0)`
+* `template <typename T, typename C> UtfIterator<C> str_to_int(T& t, const UtfIterator<C>& start, uint32_t flags = 0)`
+* `template <typename T, typename C> T str_to_int(const basic_string<C>& str, uint32_t flags = 0)`
+* `template <typename T, typename C> T str_to_int(const UtfIterator<C>& start, uint32_t flags = 0)`
+* `template <typename T, typename C> UtfIterator<C> hex_to_int(T& t, const basic_string<C>& str, uint32_t flags = 0)`
+* `template <typename T, typename C> UtfIterator<C> hex_to_int(T& t, const UtfIterator<C>& start, uint32_t flags = 0)`
+* `template <typename T, typename C> T hex_to_int(const basic_string<C>& str, uint32_t flags = 0)`
+* `template <typename T, typename C> T hex_to_int(const UtfIterator<C>& start, uint32_t flags = 0)`
+* `template <typename T, typename C> UtfIterator<C> str_to_float(T& t, const basic_string<C>& str, uint32_t flags = 0)`
+* `template <typename T, typename C> UtfIterator<C> str_to_float(T& t, const UtfIterator<C>& start, uint32_t flags = 0)`
+* `template <typename T, typename C> T str_to_float(const basic_string<C>& str, uint32_t flags = 0)`
+* `template <typename T, typename C> T str_to_float(const UtfIterator<C>& start, uint32_t flags = 0)`
 
 Conversions from a string to an integer (in decimal or hexadecimal) or a
-floating point number. In each pair of functions, the first version writes the
-result into a variable passed by reference, and returns the number of
-characters read from the string; the second version returns the result, and
-requires the return type to be explicitly specified at the call site.
+floating point number. In each set of four overloaded functions, the first two
+versions write the result into a variable passed by reference, and return the
+number of characters read from the string; the last two versions return the
+result, and require the return type to be explicitly specified at the call
+site.
 
-A value out of range for the return type will be clamped to the nearest end of
-its valid range. The result will be zero if the string does not contain a
-valid number. Any characters after a valid number are ignored. Note that,
-unlike the otherwise similar `strtol()` and related functions, these do not
-skip leading whitespace.
+Any characters after a valid number are ignored. Note that, unlike the
+otherwise similar `strtol()` and related functions, these do not skip leading
+whitespace.
 
-All of the characters that might be part of a number are in the ASCII range,
-so the return value of the first version of each function does not need to
-distinguish between characters and code points.
+The only flag recognised is `err_throw`. By default, a value out of range for
+the return type will be clamped to the nearest end of its valid range, and the
+result will be zero if the string does not contain a valid number. If
+`err_throw` is set, an invalid number will throw `std::invalid_argument`, and
+a result out of range will throw `std::range_error`. In the versions that take
+the result as a reference argument, this will be left unchanged if an
+exception is thrown.
