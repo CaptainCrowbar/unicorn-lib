@@ -774,41 +774,29 @@ same string is going to be compared frequently.</p>
 
 <tbody>
 <tr>
-	<td style="text-align:left;"><code>esc_control</code></td>
-	<td style="text-align:left;">Escape only C0 controls and backslash (default)</td>
+	<td style="text-align:left;"><code>esc_apos</code></td>
+	<td style="text-align:left;">Quote with apostrophe instead of quote mark (ignored by <code>str_escape()</code>)</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>esc_control01</code></td>
-	<td style="text-align:left;">Escape C0 and C1 controls</td>
+	<td style="text-align:left;"><code>esc_ascii</code></td>
+	<td style="text-align:left;">Escape all non-ASCII characters</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>esc_nonascii</code></td>
-	<td style="text-align:left;">Escape all characters that are not printable ASCII</td>
+	<td style="text-align:left;"><code>esc_nostdc</code></td>
+	<td style="text-align:left;">Do not use standard C symbols such as <code>\n</code></td>
+</tr>
+<tr>
+	<td style="text-align:left;"><code>esc_pcre</code></td>
+	<td style="text-align:left;">Use <code>\x{...}</code> instead of <code>\u</code> and <code>\U</code> (implies <code>esc_ascii</code>)</td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>esc_punct</code></td>
-	<td style="text-align:left;">Escape ASCII punctuation as well as all non-ASCII</td>
-</tr>
-<tr>
-	<td style="text-align:left;"><code>esc_keeplf</code></td>
-	<td style="text-align:left;">Do not escape line feeds</td>
-</tr>
-<tr>
-	<td style="text-align:left;"><code>esc_uhex</code></td>
-	<td style="text-align:left;">Use <code>\u</code> and <code>\U</code> instead of <code>\x{...}</code></td>
-</tr>
-<tr>
-	<td style="text-align:left;"><code>esc_surrogate</code></td>
-	<td style="text-align:left;">Use two <code>\u</code> escapes for astral characters</td>
-</tr>
-<tr>
-	<td style="text-align:left;"><code>esc_utf8</code></td>
-	<td style="text-align:left;">Use UTF&#8211;8 hex bytes for non-ASCII characters</td>
+	<td style="text-align:left;">Escape ASCII punctuation</td>
 </tr>
 </tbody>
 </table>
 
-<p>Flags used by some of the escape functions.</p>
+<p>Flags used by <code>str_escape()</code> and related functions.</p>
 
 <ul>
 <li><code>template &lt;typename C&gt; u8string str_encode_uri(const basic_string&lt;C&gt;&amp; str)</code></li>
@@ -871,54 +859,35 @@ characters.</p>
 <li><code>template &lt;typename C&gt; void str_escape_in(basic_string&lt;C&gt;&amp; str, uint32_t flags = 0)</code></li>
 </ul>
 
-<p>These replace some of the characters in the string with escape codes. The
-conventional codes <code>\0</code>, <code>\t</code>, <code>\n</code>, <code>\f</code>, and <code>\r</code> are used for the control
-characters <code>NUL</code>, <code>HT</code>, <code>LF</code>, <code>FF</code>, and <code>CR</code>; any escaped ASCII characters are
-simply preceded with a backslash; all other characters are represented using
-<code>\xHH</code> or <code>\x{HHH...}</code> hexadecimal codes by default, unless one of the flags
-specifying a different format is used.</p>
-
-<p>The first four flags (<code>esc_control</code>, <code>esc_control01</code>, <code>esc_nonascii</code>,
-<code>esc_punct</code>) determine which characters are escaped; only one of these can be
-selected. The last three flags (<code>esc_uhex</code>, <code>esc_surrogate</code>, <code>esc_utf8</code>)
-modify the format of the escape codes; at most one of these can be selected.</p>
+<p>Replace some of the characters in the string with escape codes using a leading
+backslash. Normally, only C0 and C1 control characters, plus the backslash
+itself, will be escaped, and conventional C codes such as <code>&quot;\n&quot;</code> will be used
+instead of <code>&quot;\x...&quot;</code> for the relevant control characters. These behaviour
+settings can be changed by using the flags listed above.</p>
 
 <ul>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; str_unescape(const basic_string&lt;C&gt;&amp; str, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; void str_unescape_in(basic_string&lt;C&gt;&amp; str, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; str_unescape(const basic_string&lt;C&gt;&amp; str)</code></li>
+<li><code>template &lt;typename C&gt; void str_unescape_in(basic_string&lt;C&gt;&amp; str)</code></li>
 </ul>
 
 <p>These perform the reverse transformation to <code>str_escape()</code>, replacing escape
-codes with the original characters. Only the last three escaping flags
-(<code>esc_uhex</code>, <code>esc_surrogate</code>, <code>esc_utf8</code>) have any effect; any other flags are
-ignored. If a backslash is followed by a character not recognised as an escape
-code, the backslash will simply be discarded and the second character left
-unchanged. These will throw <code>EncodingError</code> if a hexadecimal code does not
-represent a valid Unicode scalar value.</p>
+codes with the original characters. If a backslash is followed by a character
+not recognised as an escape code, the backslash will simply be discarded and
+the second character left unchanged. These will throw <code>EncodingError</code> if a
+hexadecimal code does not represent a valid Unicode scalar value.</p>
 
 <ul>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; str_quote(const basic_string&lt;C&gt;&amp; str)</code></li>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; str_quote(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; quotes, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; str_quote(const basic_string&lt;C&gt;&amp; str, const C* quotes, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; void str_quote_in(basic_string&lt;C&gt;&amp; str)</code></li>
-<li><code>template &lt;typename C&gt; void str_quote_in(basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; quotes, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; void str_quote_in(basic_string&lt;C&gt;&amp; str, const C* quotes, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; str_quote(const basic_string&lt;C&gt;&amp; str, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; void str_quote_in(basic_string&lt;C&gt;&amp; str, uint32_t flags = 0)</code></li>
 </ul>
 
 <p>These perform the same operation as <code>str_escape()</code>, but also add quotes around
-the string. The default quote mark is <code>&quot;\&quot;&quot;</code>; if a <code>quotes</code> string is
-supplied, its first and second characters will be used as the opening and
-closing quotes (a single character will be used for both quotes; anything
-beyond the second character is ignored). The quote and unquote functions will
-throw <code>std::invalid_argument</code> if a backslash is supplied as a quote character.</p>
+the string. The default quote mark is <code>&quot;\&quot;&quot;</code>; the <code>esc_apos</code> flag uses an
+apostrophe instead.</p>
 
 <ul>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; str_unquote(const basic_string&lt;C&gt;&amp; str)</code></li>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; str_unquote(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; quotes, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; str_unquote(const basic_string&lt;C&gt;&amp; str, const C* quotes, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; void str_unquote_in(basic_string&lt;C&gt;&amp; str)</code></li>
-<li><code>template &lt;typename C&gt; void str_unquote_in(basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; quotes, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; void str_unquote_in(basic_string&lt;C&gt;&amp; str, const C* quotes, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; str_unquote(const basic_string&lt;C&gt;&amp; str, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; void str_unquote_in(basic_string&lt;C&gt;&amp; str, uint32_t flags = 0)</code></li>
 </ul>
 
 <p>These perform the reverse transformation to <code>str_quote()</code>, removing quote
