@@ -44,6 +44,9 @@ namespace Unicorn {
     // Basic character functions
 
     inline u8string char_as_hex(char32_t c) { return "U+" + ascii_uppercase(hex(c, 4)); }
+    constexpr bool char_is_digit(char32_t c) noexcept { return c >= U'0' && c <= U'9'; }
+    constexpr bool char_is_xdigit(char32_t c) noexcept
+        { return (c >= U'0' && c <= U'9') || (c >= U'A' && c <= U'F') || (c >= U'a' && c <= U'f'); }
     constexpr bool char_is_ascii(char32_t c) noexcept { return c <= last_ascii_char; }
     constexpr bool char_is_latin1(char32_t c) noexcept { return c <= last_latin1_char; }
     constexpr bool char_is_surrogate(char32_t c) noexcept { return c >= first_surrogate_char && c <= last_surrogate_char; }

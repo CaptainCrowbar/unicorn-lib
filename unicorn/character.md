@@ -73,6 +73,11 @@ complete decomposition process has been applied.
 
 Formats a code point in the conventional `U+XXXX` notation.
 
+* `constexpr bool char_is_digit(char32_t c) noexcept`
+* `constexpr bool char_is_xdigit(char32_t c) noexcept`
+
+These match only the corresponding ASCII characters.
+
 * `constexpr bool char_is_ascii(char32_t c) noexcept`
 * `constexpr bool char_is_latin1(char32_t c) noexcept`
 * `constexpr bool char_is_bmp(char32_t c) noexcept`

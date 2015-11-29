@@ -689,7 +689,8 @@ apostrophe instead.
 
 These perform the reverse transformation to `str_quote()`, removing quote
 marks from the string, or from any quoted substrings within it, and then
-unescaping the resulting strings.
+unescaping the resulting strings. The only flag that has any effect is
+`esc_apos`.
 
 ## Type conversion functions ##
 

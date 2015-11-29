@@ -97,7 +97,7 @@ namespace Unicorn {
         }
 
         template <typename C>
-        void escape_helper(const basic_string<C>& src, basic_string<C>& dst, uint32_t flags, char32_t quote) {
+        void escape_helper(const basic_string<C>& src, basic_string<C>& dst, uint32_t flags, char32_t quote = 0xffffffff) {
             const bool ascii = flags & (esc_ascii | esc_pcre);
             const bool nostdc = flags & esc_nostdc;
             const bool pcre = flags & esc_pcre;
@@ -107,7 +107,7 @@ namespace Unicorn {
                     append_escape_stdc(c, dst);
                 } else if (c <= 0x1f || c == 0x7f) {
                     append_escape_x2(c, dst);
-                } else if (c == U'\\' || (quote != 0 && c == quote) || (punct && c < 0x80 && ascii_ispunct(char(c)))) {
+                } else if (c == U'\\' || c == quote || (punct && c < 0x80 && ascii_ispunct(char(c)))) {
                     dst += C('\\');
                     dst += C(c);
                 } else if (c < 0x80 || ! ascii) {
@@ -122,11 +122,62 @@ namespace Unicorn {
             }
         }
 
+        constexpr uint32_t decode_xdigit(char32_t c) {
+            return c >= U'0' && c <= U'9' ? c - U'0'
+                : c >= U'A' && c <= U'F' ? c - U'A' + 10
+                : c >= U'a' && c <= U'f' ? c - U'a' + 10 : 0;
+        }
+
         template <typename C>
-        void unescape_helper(const basic_string<C>& src, basic_string<C>& dst) {
-            // TODO
-            (void)src;
-            (void)dst;
+        void read_hex_char(UtfIterator<C>& i, UtfIterator<C> end, char32_t& c, size_t maxlen, bool varlen) {
+            if (i == end)
+                return;
+            if (varlen && *i == U'{') {
+                ++i;
+                c = 0;
+                for (; i != end && char_is_xdigit(*i); ++i)
+                    c = (c << 4) + decode_xdigit(*i);
+                if (i != end && *i == U'}')
+                    ++i;
+            } else {
+                if (! char_is_xdigit(*i))
+                    return;
+                c = 0;
+                for (size_t j = 0; j < maxlen && i != end && char_is_xdigit(*i); ++i, ++j)
+                    c = (c << 4) + decode_xdigit(*i);
+            }
+        }
+
+        template <typename C>
+        void unescape_helper(const basic_string<C>& src, basic_string<C>& dst, char32_t quote = 0xffffffff) {
+            auto i = utf_begin(src), j = i, end = utf_end(src);
+            while (i != end) {
+                for (j = i; j != end && *j != U'\\' && *j != quote; ++j) {}
+                dst.append(src, i.offset(), j.offset() - i.offset());
+                if (j == end || *j == quote)
+                    break;
+                i = std::next(j);
+                if (i == end) {
+                    str_append_char(dst, *j);
+                    break;
+                }
+                char32_t c = *i;
+                switch (*i) {
+                    case C('0'):  c = U'\0'; ++i; break;
+                    case C('a'):  c = U'\a'; ++i; break;
+                    case C('b'):  c = U'\b'; ++i; break;
+                    case C('t'):  c = U'\t'; ++i; break;
+                    case C('n'):  c = U'\n'; ++i; break;
+                    case C('v'):  c = U'\v'; ++i; break;
+                    case C('f'):  c = U'\f'; ++i; break;
+                    case C('r'):  c = U'\r'; ++i; break;
+                    case C('x'):  ++i; read_hex_char(i, end, c, 2, true); break;
+                    case C('u'):  ++i; read_hex_char(i, end, c, 4, false); break;
+                    case C('U'):  ++i; read_hex_char(i, end, c, 8, false); break;
+                    default:      ++i; break;
+                }
+                str_append_char(dst, c);
+            }
         }
 
         template <typename C>
@@ -163,28 +214,28 @@ namespace Unicorn {
     template <typename C>
     basic_string<C> str_escape(const basic_string<C>& str, uint32_t flags = 0) {
         basic_string<C> result;
-        UnicornDetail::escape_helper(str, result, flags, 0);
+        UnicornDetail::escape_helper(str, result, flags);
         return result;
     }
 
     template <typename C>
     void str_escape_in(basic_string<C>& str, uint32_t flags = 0) {
         basic_string<C> result;
-        UnicornDetail::escape_helper(str, result, flags, 0);
+        UnicornDetail::escape_helper(str, result, flags);
         str = std::move(result);
     }
 
     template <typename C>
-    basic_string<C> str_unescape(const basic_string<C>& str, uint32_t flags = 0) {
+    basic_string<C> str_unescape(const basic_string<C>& str) {
         basic_string<C> result;
-        UnicornDetail::unescape_helper(str, result, flags);
+        UnicornDetail::unescape_helper(str, result);
         return result;
     }
 
     template <typename C>
-    void str_unescape_in(basic_string<C>& str, uint32_t flags = 0) {
+    void str_unescape_in(basic_string<C>& str) {
         basic_string<C> result;
-        UnicornDetail::unescape_helper(str, result, flags);
+        UnicornDetail::unescape_helper(str, result);
         str = std::move(result);
     }
 

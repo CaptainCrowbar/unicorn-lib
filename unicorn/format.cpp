@@ -9,13 +9,6 @@ using namespace Unicorn::Literals;
 
 namespace Unicorn {
 
-    namespace {
-
-        constexpr bool char_is_alpha(char32_t c) noexcept { return char_is_ascii(c) && ascii_isalpha(char(c)); }
-        constexpr bool char_is_digit(char32_t c) noexcept { return char_is_ascii(c) && ascii_isdigit(char(c)); }
-
-    }
-
     namespace UnicornDetail {
 
         // Alignment and padding
@@ -39,7 +32,7 @@ namespace Unicorn {
                         pad = *i++;
                     if (i != end && char_is_digit(*i))
                         i = str_to_int<size_t>(width, i);
-                } else if (char_is_alpha(*i)) {
+                } else if (char_is_ascii(*i) && ascii_isalpha(char(*i))) {
                     flags |= letter_to_flag(*i++);
                 } else if (char_is_digit(*i)) {
                     i = str_to_int<int>(prec, i);

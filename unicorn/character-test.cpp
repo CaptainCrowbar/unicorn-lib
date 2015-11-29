@@ -16,41 +16,73 @@ namespace {
     void check_basic_character_functions() {
 
         TEST_EQUAL(char_as_hex(0), "U+0000");
-        TEST_EQUAL(char_as_hex('A'), "U+0041");
+        TEST_EQUAL(char_as_hex(U'A'), "U+0041");
         TEST_EQUAL(char_as_hex(0x123), "U+0123");
         TEST_EQUAL(char_as_hex(0x4567), "U+4567");
         TEST_EQUAL(char_as_hex(0x89abc), "U+89ABC");
         TEST_EQUAL(char_as_hex(0x100def), "U+100DEF");
 
+        TEST(! char_is_digit(0));
+        TEST(char_is_digit(U'0'));
+        TEST(char_is_digit(U'9'));
+        TEST(! char_is_digit(U'A'));
+        TEST(! char_is_digit(U'F'));
+        TEST(! char_is_digit(U'G'));
+        TEST(! char_is_digit(U'Z'));
+        TEST(! char_is_digit(U'a'));
+        TEST(! char_is_digit(U'f'));
+        TEST(! char_is_digit(U'g'));
+        TEST(! char_is_digit(U'z'));
+        TEST(! char_is_digit(U'!'));
+        TEST(! char_is_digit(U'~'));
+        TEST(! char_is_digit(0xff));
+        TEST(! char_is_digit(0x100));
+
+        TEST(! char_is_xdigit(0));
+        TEST(char_is_xdigit(U'0'));
+        TEST(char_is_xdigit(U'9'));
+        TEST(char_is_xdigit(U'A'));
+        TEST(char_is_xdigit(U'F'));
+        TEST(! char_is_xdigit(U'G'));
+        TEST(! char_is_xdigit(U'Z'));
+        TEST(char_is_xdigit(U'a'));
+        TEST(char_is_xdigit(U'f'));
+        TEST(! char_is_xdigit(U'g'));
+        TEST(! char_is_xdigit(U'z'));
+        TEST(! char_is_xdigit(U'!'));
+        TEST(! char_is_xdigit(U'~'));
+        TEST(! char_is_xdigit(0xff));
+        TEST(! char_is_xdigit(0x100));
+
         TEST(char_is_ascii(0));
-        TEST(char_is_ascii('\t'));
-        TEST(char_is_ascii('\n'));
+        TEST(char_is_ascii(U'\t'));
+        TEST(char_is_ascii(U'\n'));
         TEST(char_is_ascii(0x1f));
-        TEST(char_is_ascii(' '));
-        TEST(char_is_ascii('!'));
-        TEST(char_is_ascii('/'));
-        TEST(char_is_ascii('0'));
-        TEST(char_is_ascii('9'));
-        TEST(char_is_ascii(':'));
-        TEST(char_is_ascii('@'));
-        TEST(char_is_ascii('A'));
-        TEST(char_is_ascii('Z'));
-        TEST(char_is_ascii('['));
-        TEST(char_is_ascii('`'));
-        TEST(char_is_ascii('a'));
-        TEST(char_is_ascii('z'));
-        TEST(char_is_ascii('{'));
-        TEST(char_is_ascii('~'));
+        TEST(char_is_ascii(U' '));
+        TEST(char_is_ascii(U'!'));
+        TEST(char_is_ascii(U'/'));
+        TEST(char_is_ascii(U'0'));
+        TEST(char_is_ascii(U'9'));
+        TEST(char_is_ascii(U':'));
+        TEST(char_is_ascii(U'@'));
+        TEST(char_is_ascii(U'A'));
+        TEST(char_is_ascii(U'Z'));
+        TEST(char_is_ascii(U'['));
+        TEST(char_is_ascii(U'`'));
+        TEST(char_is_ascii(U'a'));
+        TEST(char_is_ascii(U'z'));
+        TEST(char_is_ascii(U'{'));
+        TEST(char_is_ascii(U'~'));
         TEST(char_is_ascii(0x7f));
         TEST(! char_is_ascii(0x80));
 
         TEST(char_is_latin1(0));
-        TEST(char_is_latin1('A'));
+        TEST(char_is_latin1(U'A'));
         TEST(char_is_latin1(0xff));
         TEST(! char_is_latin1(0x100));
 
         TEST(char_is_bmp(0));
-        TEST(char_is_bmp('A'));
+        TEST(char_is_bmp(U'A'));
         TEST(! char_is_bmp(0xd800));
         TEST(char_is_bmp(0xffff));
         TEST(! char_is_bmp(0x10000));
@@ -58,7 +90,7 @@ namespace {
         TEST(! char_is_bmp(0x110000));
 
         TEST(! char_is_astral(0));
-        TEST(! char_is_astral('A'));
+        TEST(! char_is_astral(U'A'));
         TEST(! char_is_astral(0xd800));
         TEST(! char_is_astral(0xffff));
         TEST(char_is_astral(0x10000));
@@ -66,7 +98,7 @@ namespace {
         TEST(! char_is_astral(0x110000));
 
         TEST(char_is_unicode(0));
-        TEST(char_is_unicode('A'));
+        TEST(char_is_unicode(U'A'));
         TEST(char_is_unicode(0xd7ff));
         TEST(! char_is_unicode(0xd800));
         TEST(! char_is_unicode(0xdfff));
@@ -106,7 +138,7 @@ namespace {
         TEST(! char_is_private_use(0x10fffe));
 
         TEST(! char_is_noncharacter(0));
-        TEST(! char_is_noncharacter('A'));
+        TEST(! char_is_noncharacter(U'A'));
         TEST(! char_is_noncharacter(0xd7ff));
         TEST(char_is_noncharacter(0xd800));
         TEST(char_is_noncharacter(0xdfff));

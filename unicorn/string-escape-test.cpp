@@ -155,11 +155,94 @@ namespace {
         s32 = U"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")";  TRY(str_escape_in(s32, esc_pcre));    TEST_EQUAL(s32, U"(\"\\x01\\x{80}\\x{a7}\\x{b6} \\\\ \\x{20ac}uro \\x{12000}\\n\")");
         s32 = U"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")";  TRY(str_escape_in(s32, esc_punct));   TEST_EQUAL(s32, U"\\(\\\"\\x01\u0080§¶ \\\\ €uro \U00012000\\n\\\"\\)");
 
-        // TODO
+        s1 = "";                                                                    TRY(s2 = str_unescape(s1));  TEST_EQUAL(s2, "");
+        s1 = "Hello world";                                                         TRY(s2 = str_unescape(s1));  TEST_EQUAL(s2, "Hello world");
+        s1 = u8"(\"\\x01\u0080§¶ \\\\ €uro \U00012000\\n\")";                       TRY(s2 = str_unescape(s1));  TEST_EQUAL(s2, u8"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")");
+        s1 = u8"(\"\\x01\\u0080\\u00a7\\u00b6 \\\\ \\u20acuro \\U00012000\\n\")";   TRY(s2 = str_unescape(s1));  TEST_EQUAL(s2, u8"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")");
+        s1 = u8"(\"\\x01\u0080§¶ \\\\ €uro \U00012000\\x0a\")";                     TRY(s2 = str_unescape(s1));  TEST_EQUAL(s2, u8"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")");
+        s1 = u8"(\"\\x01\\x{80}\\x{a7}\\x{b6} \\\\ \\x{20ac}uro \\x{12000}\\n\")";  TRY(s2 = str_unescape(s1));  TEST_EQUAL(s2, u8"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")");
+        s1 = u8"\\(\\\"\\x01\u0080§¶ \\\\ €uro \U00012000\\n\\\"\\)";               TRY(s2 = str_unescape(s1));  TEST_EQUAL(s2, u8"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")");
+        s1 = "";                                                                    TRY(str_unescape_in(s1));    TEST_EQUAL(s1, "");
+        s1 = "Hello world";                                                         TRY(str_unescape_in(s1));    TEST_EQUAL(s1, "Hello world");
+        s1 = u8"(\"\\x01\u0080§¶ \\\\ €uro \U00012000\\n\")";                       TRY(str_unescape_in(s1));    TEST_EQUAL(s1, u8"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")");
+        s1 = u8"(\"\\x01\\u0080\\u00a7\\u00b6 \\\\ \\u20acuro \\U00012000\\n\")";   TRY(str_unescape_in(s1));    TEST_EQUAL(s1, u8"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")");
+        s1 = u8"(\"\\x01\u0080§¶ \\\\ €uro \U00012000\\x0a\")";                     TRY(str_unescape_in(s1));    TEST_EQUAL(s1, u8"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")");
+        s1 = u8"(\"\\x01\\x{80}\\x{a7}\\x{b6} \\\\ \\x{20ac}uro \\x{12000}\\n\")";  TRY(str_unescape_in(s1));    TEST_EQUAL(s1, u8"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")");
+        s1 = u8"\\(\\\"\\x01\u0080§¶ \\\\ €uro \U00012000\\n\\\"\\)";               TRY(str_unescape_in(s1));    TEST_EQUAL(s1, u8"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")");
+        s16 = u"";                                                                  TRY(str_unescape_in(s16));   TEST_EQUAL(s16, u"");
+        s16 = u"Hello world";                                                       TRY(str_unescape_in(s16));   TEST_EQUAL(s16, u"Hello world");
+        s16 = u"(\"\\x01\u0080§¶ \\\\ €uro \U00012000\\n\")";                       TRY(str_unescape_in(s16));   TEST_EQUAL(s16, u"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")");
+        s16 = u"(\"\\x01\\u0080\\u00a7\\u00b6 \\\\ \\u20acuro \\U00012000\\n\")";   TRY(str_unescape_in(s16));   TEST_EQUAL(s16, u"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")");
+        s16 = u"(\"\\x01\u0080§¶ \\\\ €uro \U00012000\\x0a\")";                     TRY(str_unescape_in(s16));   TEST_EQUAL(s16, u"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")");
+        s16 = u"(\"\\x01\\x{80}\\x{a7}\\x{b6} \\\\ \\x{20ac}uro \\x{12000}\\n\")";  TRY(str_unescape_in(s16));   TEST_EQUAL(s16, u"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")");
+        s16 = u"\\(\\\"\\x01\u0080§¶ \\\\ €uro \U00012000\\n\\\"\\)";               TRY(str_unescape_in(s16));   TEST_EQUAL(s16, u"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")");
+        s32 = U"";                                                                  TRY(str_unescape_in(s32));   TEST_EQUAL(s32, U"");
+        s32 = U"Hello world";                                                       TRY(str_unescape_in(s32));   TEST_EQUAL(s32, U"Hello world");
+        s32 = U"(\"\\x01\u0080§¶ \\\\ €uro \U00012000\\n\")";                       TRY(str_unescape_in(s32));   TEST_EQUAL(s32, U"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")");
+        s32 = U"(\"\\x01\\u0080\\u00a7\\u00b6 \\\\ \\u20acuro \\U00012000\\n\")";   TRY(str_unescape_in(s32));   TEST_EQUAL(s32, U"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")");
+        s32 = U"(\"\\x01\u0080§¶ \\\\ €uro \U00012000\\x0a\")";                     TRY(str_unescape_in(s32));   TEST_EQUAL(s32, U"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")");
+        s32 = U"(\"\\x01\\x{80}\\x{a7}\\x{b6} \\\\ \\x{20ac}uro \\x{12000}\\n\")";  TRY(str_unescape_in(s32));   TEST_EQUAL(s32, U"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")");
+        s32 = U"\\(\\\"\\x01\u0080§¶ \\\\ €uro \U00012000\\n\\\"\\)";               TRY(str_unescape_in(s32));   TEST_EQUAL(s32, U"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")");
 
     }
 
     void check_quote() {
+
+        u8string s1, s2;
+        u16string s16;
+        u32string s32;
+
+        s1 = "";                                             TRY(s2 = str_quote(s1));              TEST_EQUAL(s2, "\"\"");
+        s1 = "Hello world";                                  TRY(s2 = str_quote(s1));              TEST_EQUAL(s2, "\"Hello world\"");
+        s1 = "Hello world";                                  TRY(s2 = str_quote(s1, esc_ascii));   TEST_EQUAL(s2, "\"Hello world\"");
+        s1 = "Hello world";                                  TRY(s2 = str_quote(s1, esc_nostdc));  TEST_EQUAL(s2, "\"Hello world\"");
+        s1 = "Hello world";                                  TRY(s2 = str_quote(s1, esc_pcre));    TEST_EQUAL(s2, "\"Hello world\"");
+        s1 = "Hello world";                                  TRY(s2 = str_quote(s1, esc_punct));   TEST_EQUAL(s2, "\"Hello world\"");
+        s1 = u8"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")";  TRY(s2 = str_quote(s1));              TEST_EQUAL(s2, u8"\"(\\\"\\x01\u0080§¶ \\\\ €uro \U00012000\\n\\\")\"");
+        s1 = u8"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")";  TRY(s2 = str_quote(s1, esc_apos));    TEST_EQUAL(s2, u8"'(\"\\x01\u0080§¶ \\\\ €uro \U00012000\\n\")'");
+        s1 = u8"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")";  TRY(s2 = str_quote(s1, esc_ascii));   TEST_EQUAL(s2, u8"\"(\\\"\\x01\\u0080\\u00a7\\u00b6 \\\\ \\u20acuro \\U00012000\\n\\\")\"");
+        s1 = u8"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")";  TRY(s2 = str_quote(s1, esc_nostdc));  TEST_EQUAL(s2, u8"\"(\\\"\\x01\u0080§¶ \\\\ €uro \U00012000\\x0a\\\")\"");
+        s1 = u8"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")";  TRY(s2 = str_quote(s1, esc_pcre));    TEST_EQUAL(s2, u8"\"(\\\"\\x01\\x{80}\\x{a7}\\x{b6} \\\\ \\x{20ac}uro \\x{12000}\\n\\\")\"");
+        s1 = u8"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")";  TRY(s2 = str_quote(s1, esc_punct));   TEST_EQUAL(s2, u8"\"\\(\\\"\\x01\u0080§¶ \\\\ €uro \U00012000\\n\\\"\\)\"");
+
+        s1 = "";                                             TRY(str_quote_in(s1));              TEST_EQUAL(s1, "\"\"");
+        s1 = "Hello world";                                  TRY(str_quote_in(s1));              TEST_EQUAL(s1, "\"Hello world\"");
+        s1 = "Hello world";                                  TRY(str_quote_in(s1, esc_ascii));   TEST_EQUAL(s1, "\"Hello world\"");
+        s1 = "Hello world";                                  TRY(str_quote_in(s1, esc_nostdc));  TEST_EQUAL(s1, "\"Hello world\"");
+        s1 = "Hello world";                                  TRY(str_quote_in(s1, esc_pcre));    TEST_EQUAL(s1, "\"Hello world\"");
+        s1 = "Hello world";                                  TRY(str_quote_in(s1, esc_punct));   TEST_EQUAL(s1, "\"Hello world\"");
+        s1 = u8"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")";  TRY(str_quote_in(s1));              TEST_EQUAL(s1, u8"\"(\\\"\\x01\u0080§¶ \\\\ €uro \U00012000\\n\\\")\"");
+        s1 = u8"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")";  TRY(str_quote_in(s1, esc_apos));    TEST_EQUAL(s1, u8"'(\"\\x01\u0080§¶ \\\\ €uro \U00012000\\n\")'");
+        s1 = u8"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")";  TRY(str_quote_in(s1, esc_ascii));   TEST_EQUAL(s1, u8"\"(\\\"\\x01\\u0080\\u00a7\\u00b6 \\\\ \\u20acuro \\U00012000\\n\\\")\"");
+        s1 = u8"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")";  TRY(str_quote_in(s1, esc_nostdc));  TEST_EQUAL(s1, u8"\"(\\\"\\x01\u0080§¶ \\\\ €uro \U00012000\\x0a\\\")\"");
+        s1 = u8"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")";  TRY(str_quote_in(s1, esc_pcre));    TEST_EQUAL(s1, u8"\"(\\\"\\x01\\x{80}\\x{a7}\\x{b6} \\\\ \\x{20ac}uro \\x{12000}\\n\\\")\"");
+        s1 = u8"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")";  TRY(str_quote_in(s1, esc_punct));   TEST_EQUAL(s1, u8"\"\\(\\\"\\x01\u0080§¶ \\\\ €uro \U00012000\\n\\\"\\)\"");
+
+        s16 = u"";                                           TRY(str_quote_in(s16));              TEST_EQUAL(s16, u"\"\"");
+        s16 = u"Hello world";                                TRY(str_quote_in(s16));              TEST_EQUAL(s16, u"\"Hello world\"");
+        s16 = u"Hello world";                                TRY(str_quote_in(s16, esc_ascii));   TEST_EQUAL(s16, u"\"Hello world\"");
+        s16 = u"Hello world";                                TRY(str_quote_in(s16, esc_nostdc));  TEST_EQUAL(s16, u"\"Hello world\"");
+        s16 = u"Hello world";                                TRY(str_quote_in(s16, esc_pcre));    TEST_EQUAL(s16, u"\"Hello world\"");
+        s16 = u"Hello world";                                TRY(str_quote_in(s16, esc_punct));   TEST_EQUAL(s16, u"\"Hello world\"");
+        s16 = u"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")";  TRY(str_quote_in(s16));              TEST_EQUAL(s16, u"\"(\\\"\\x01\u0080§¶ \\\\ €uro \U00012000\\n\\\")\"");
+        s16 = u"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")";  TRY(str_quote_in(s16, esc_apos));    TEST_EQUAL(s16, u"'(\"\\x01\u0080§¶ \\\\ €uro \U00012000\\n\")'");
+        s16 = u"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")";  TRY(str_quote_in(s16, esc_ascii));   TEST_EQUAL(s16, u"\"(\\\"\\x01\\u0080\\u00a7\\u00b6 \\\\ \\u20acuro \\U00012000\\n\\\")\"");
+        s16 = u"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")";  TRY(str_quote_in(s16, esc_nostdc));  TEST_EQUAL(s16, u"\"(\\\"\\x01\u0080§¶ \\\\ €uro \U00012000\\x0a\\\")\"");
+        s16 = u"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")";  TRY(str_quote_in(s16, esc_pcre));    TEST_EQUAL(s16, u"\"(\\\"\\x01\\x{80}\\x{a7}\\x{b6} \\\\ \\x{20ac}uro \\x{12000}\\n\\\")\"");
+        s16 = u"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")";  TRY(str_quote_in(s16, esc_punct));   TEST_EQUAL(s16, u"\"\\(\\\"\\x01\u0080§¶ \\\\ €uro \U00012000\\n\\\"\\)\"");
+
+        s32 = U"";                                           TRY(str_quote_in(s32));              TEST_EQUAL(s32, U"\"\"");
+        s32 = U"Hello world";                                TRY(str_quote_in(s32));              TEST_EQUAL(s32, U"\"Hello world\"");
+        s32 = U"Hello world";                                TRY(str_quote_in(s32, esc_ascii));   TEST_EQUAL(s32, U"\"Hello world\"");
+        s32 = U"Hello world";                                TRY(str_quote_in(s32, esc_nostdc));  TEST_EQUAL(s32, U"\"Hello world\"");
+        s32 = U"Hello world";                                TRY(str_quote_in(s32, esc_pcre));    TEST_EQUAL(s32, U"\"Hello world\"");
+        s32 = U"Hello world";                                TRY(str_quote_in(s32, esc_punct));   TEST_EQUAL(s32, U"\"Hello world\"");
+        s32 = U"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")";  TRY(str_quote_in(s32));              TEST_EQUAL(s32, U"\"(\\\"\\x01\u0080§¶ \\\\ €uro \U00012000\\n\\\")\"");
+        s32 = U"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")";  TRY(str_quote_in(s32, esc_apos));    TEST_EQUAL(s32, U"'(\"\\x01\u0080§¶ \\\\ €uro \U00012000\\n\")'");
+        s32 = U"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")";  TRY(str_quote_in(s32, esc_ascii));   TEST_EQUAL(s32, U"\"(\\\"\\x01\\u0080\\u00a7\\u00b6 \\\\ \\u20acuro \\U00012000\\n\\\")\"");
+        s32 = U"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")";  TRY(str_quote_in(s32, esc_nostdc));  TEST_EQUAL(s32, U"\"(\\\"\\x01\u0080§¶ \\\\ €uro \U00012000\\x0a\\\")\"");
+        s32 = U"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")";  TRY(str_quote_in(s32, esc_pcre));    TEST_EQUAL(s32, U"\"(\\\"\\x01\\x{80}\\x{a7}\\x{b6} \\\\ \\x{20ac}uro \\x{12000}\\n\\\")\"");
+        s32 = U"(\"\u0001\u0080§¶ \\ €uro \U00012000\n\")";  TRY(str_quote_in(s32, esc_punct));   TEST_EQUAL(s32, U"\"\\(\\\"\\x01\u0080§¶ \\\\ €uro \U00012000\\n\\\"\\)\"");
 
         // TODO
 

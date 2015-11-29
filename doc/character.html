@@ -36,43 +36,43 @@ and their basic properties.</p>
 <h2 id="constants">Constants</h2>
 
 <ul>
-<li><code>constexpr char32_t <strong>last_ascii_char</strong>            = 0x7f      = Highest ASCII code point</code></li>
-<li><code>constexpr char32_t <strong>last_latin1_char</strong>           = 0xff      = Highest ISO 8859 code point</code></li>
-<li><code>constexpr char32_t <strong>line_separator_char</strong>        = 0x2028    = Unicode line separator character</code></li>
-<li><code>constexpr char32_t <strong>paragraph_separator_char</strong>   = 0x2029    = Unicode paragraph separator character</code></li>
-<li><code>constexpr char32_t <strong>first_surrogate_char</strong>       = 0xd800    = First UTF-16 surrogate code</code></li>
-<li><code>constexpr char32_t <strong>first_high_surrogate_char</strong>  = 0xd800    = First UTF-16 high surrogate code</code></li>
-<li><code>constexpr char32_t <strong>last_high_surrogate_char</strong>   = 0xdbff    = Last UTF-16 high surrogate code</code></li>
-<li><code>constexpr char32_t <strong>first_low_surrogate_char</strong>   = 0xdc00    = First UTF-16 low surrogate code</code></li>
-<li><code>constexpr char32_t <strong>last_low_surrogate_char</strong>    = 0xdfff    = Last UTF-16 low surrogate code</code></li>
-<li><code>constexpr char32_t <strong>last_surrogate_char</strong>        = 0xdfff    = Last UTF-16 surrogate code</code></li>
-<li><code>constexpr char32_t <strong>first_private_use_char</strong>     = 0xe000    = Beginning of BMP private use area</code></li>
-<li><code>constexpr char32_t <strong>last_private_use_char</strong>      = 0xf8ff    = End of BMP private use area</code></li>
-<li><code>constexpr char32_t <strong>first_noncharacter</strong>         = 0xfdd0    = Beginning of reserved noncharacter block</code></li>
-<li><code>constexpr char32_t <strong>last_noncharacter</strong>          = 0xfdef    = End of reserved noncharacter block</code></li>
-<li><code>constexpr char32_t <strong>byte_order_mark</strong>            = 0xfeff    = Unicode byte order mark</code></li>
-<li><code>constexpr char32_t <strong>replacement_char</strong>           = 0xfffd    = Unicode replacement character</code></li>
-<li><code>constexpr char32_t <strong>last_bmp_char</strong>              = 0xffff    = End of basic multilingual plane</code></li>
-<li><code>constexpr char32_t <strong>first_private_use_a_char</strong>   = 0xf0000   = Beginning of supplementary private use area A</code></li>
-<li><code>constexpr char32_t <strong>last_private_use_a_char</strong>    = 0xffffd   = End of supplementary private use area A</code></li>
-<li><code>constexpr char32_t <strong>first_private_use_b_char</strong>   = 0x100000  = Beginning of supplementary private use area B</code></li>
-<li><code>constexpr char32_t <strong>last_private_use_b_char</strong>    = 0x10fffd  = End of supplementary private use area B</code></li>
-<li><code>constexpr char32_t <strong>last_unicode_char</strong>          = 0x10ffff  = Highest possible Unicode code point</code></li>
+<li><code>constexpr char32_t last_ascii_char            = 0x7f      = Highest ASCII code point</code></li>
+<li><code>constexpr char32_t last_latin1_char           = 0xff      = Highest ISO 8859 code point</code></li>
+<li><code>constexpr char32_t line_separator_char        = 0x2028    = Unicode line separator character</code></li>
+<li><code>constexpr char32_t paragraph_separator_char   = 0x2029    = Unicode paragraph separator character</code></li>
+<li><code>constexpr char32_t first_surrogate_char       = 0xd800    = First UTF-16 surrogate code</code></li>
+<li><code>constexpr char32_t first_high_surrogate_char  = 0xd800    = First UTF-16 high surrogate code</code></li>
+<li><code>constexpr char32_t last_high_surrogate_char   = 0xdbff    = Last UTF-16 high surrogate code</code></li>
+<li><code>constexpr char32_t first_low_surrogate_char   = 0xdc00    = First UTF-16 low surrogate code</code></li>
+<li><code>constexpr char32_t last_low_surrogate_char    = 0xdfff    = Last UTF-16 low surrogate code</code></li>
+<li><code>constexpr char32_t last_surrogate_char        = 0xdfff    = Last UTF-16 surrogate code</code></li>
+<li><code>constexpr char32_t first_private_use_char     = 0xe000    = Beginning of BMP private use area</code></li>
+<li><code>constexpr char32_t last_private_use_char      = 0xf8ff    = End of BMP private use area</code></li>
+<li><code>constexpr char32_t first_noncharacter         = 0xfdd0    = Beginning of reserved noncharacter block</code></li>
+<li><code>constexpr char32_t last_noncharacter          = 0xfdef    = End of reserved noncharacter block</code></li>
+<li><code>constexpr char32_t byte_order_mark            = 0xfeff    = Unicode byte order mark</code></li>
+<li><code>constexpr char32_t replacement_char           = 0xfffd    = Unicode replacement character</code></li>
+<li><code>constexpr char32_t last_bmp_char              = 0xffff    = End of basic multilingual plane</code></li>
+<li><code>constexpr char32_t first_private_use_a_char   = 0xf0000   = Beginning of supplementary private use area A</code></li>
+<li><code>constexpr char32_t last_private_use_a_char    = 0xffffd   = End of supplementary private use area A</code></li>
+<li><code>constexpr char32_t first_private_use_b_char   = 0x100000  = Beginning of supplementary private use area B</code></li>
+<li><code>constexpr char32_t last_private_use_b_char    = 0x10fffd  = End of supplementary private use area B</code></li>
+<li><code>constexpr char32_t last_unicode_char          = 0x10ffff  = Highest possible Unicode code point</code></li>
 </ul>
 
 <p>Some useful Unicode code points.</p>
 
 <ul>
-<li><code>constexpr const char* <strong>utf8_bom</strong>          = &quot;\xef\xbb\xbf&quot;  = Byte order mark (U+FEFF) in UTF-8</code></li>
-<li><code>constexpr const char* <strong>utf8_replacement</strong>  = &quot;\xef\xbf\xbd&quot;  = Replacement character (U+FFFD) in UTF-8</code></li>
+<li><code>constexpr const char* utf8_bom          = &quot;\xef\xbb\xbf&quot;  = Byte order mark (U+FEFF) in UTF-8</code></li>
+<li><code>constexpr const char* utf8_replacement  = &quot;\xef\xbf\xbd&quot;  = Replacement character (U+FFFD) in UTF-8</code></li>
 </ul>
 
 <p>Byte order mark and replacement character in UTF&#8211;8.</p>
 
 <ul>
-<li><code>constexpr size_t <strong>max_case_decomposition</strong>           = 3   = Maximum length of a full case mapping</code></li>
-<li><code>constexpr size_t <strong>max_canonical_decomposition</strong>      = 2   = Maximum length of a canonical decomposition</code></li>
-<li><code>constexpr size_t <strong>max_compatibility_decomposition</strong>  = 18  = Maximum length of a compatibility decomposition</code></li>
+<li><code>constexpr size_t max_case_decomposition           = 3   = Maximum length of a full case mapping</code></li>
+<li><code>constexpr size_t max_canonical_decomposition      = 2   = Maximum length of a canonical decomposition</code></li>
+<li><code>constexpr size_t max_compatibility_decomposition  = 18  = Maximum length of a compatibility decomposition</code></li>
 </ul>
 
 <p>The maximum number of characters that a single character can expand into,
@@ -84,22 +84,29 @@ complete decomposition process has been applied.</p>
 <h2 id="basiccharacterfunctions">Basic character functions</h2>
 
 <ul>
-<li><code>u8string <strong>char_as_hex</strong>(char32_t c)</code></li>
+<li><code>u8string char_as_hex(char32_t c)</code></li>
 </ul>
 
 <p>Formats a code point in the conventional <code>U+XXXX</code> notation.</p>
 
 <ul>
-<li><code>constexpr bool <strong>char_is_ascii</strong>(char32_t c) noexcept</code></li>
-<li><code>constexpr bool <strong>char_is_latin1</strong>(char32_t c) noexcept</code></li>
-<li><code>constexpr bool <strong>char_is_bmp</strong>(char32_t c) noexcept</code></li>
-<li><code>constexpr bool <strong>char_is_astral</strong>(char32_t c) noexcept</code></li>
-<li><code>constexpr bool <strong>char_is_unicode</strong>(char32_t c) noexcept</code></li>
-<li><code>constexpr bool <strong>char_is_surrogate</strong>(char32_t c) noexcept</code></li>
-<li><code>constexpr bool <strong>char_is_high_surrogate</strong>(char32_t c) noexcept</code></li>
-<li><code>constexpr bool <strong>char_is_low_surrogate</strong>(char32_t c) noexcept</code></li>
-<li><code>constexpr bool <strong>char_is_noncharacter</strong>(char32_t c) noexcept</code></li>
-<li><code>constexpr bool <strong>char_is_private_use</strong>(char32_t c) noexcept</code></li>
+<li><code>constexpr bool char_is_digit(char32_t c) noexcept</code></li>
+<li><code>constexpr bool char_is_xdigit(char32_t c) noexcept</code></li>
+</ul>
+
+<p>These match only the corresponding ASCII characters.</p>
+
+<ul>
+<li><code>constexpr bool char_is_ascii(char32_t c) noexcept</code></li>
+<li><code>constexpr bool char_is_latin1(char32_t c) noexcept</code></li>
+<li><code>constexpr bool char_is_bmp(char32_t c) noexcept</code></li>
+<li><code>constexpr bool char_is_astral(char32_t c) noexcept</code></li>
+<li><code>constexpr bool char_is_unicode(char32_t c) noexcept</code></li>
+<li><code>constexpr bool char_is_surrogate(char32_t c) noexcept</code></li>
+<li><code>constexpr bool char_is_high_surrogate(char32_t c) noexcept</code></li>
+<li><code>constexpr bool char_is_low_surrogate(char32_t c) noexcept</code></li>
+<li><code>constexpr bool char_is_noncharacter(char32_t c) noexcept</code></li>
+<li><code>constexpr bool char_is_private_use(char32_t c) noexcept</code></li>
 </ul>
 
 <p>Basic character classification. These are properties that are related to
@@ -107,7 +114,7 @@ simple ranges of code points, without requiring reference to the full Unicode
 property tables.</p>
 
 <ul>
-<li><code>template &lt;typename C&gt; constexpr uint32_t <strong>char_to_uint</strong>(C c) noexcept</code></li>
+<li><code>template &lt;typename C&gt; constexpr uint32_t char_to_uint(C c) noexcept</code></li>
 </ul>
 
 <p>Converts any character type to a 32-bit integer containing the corresponding
@@ -194,27 +201,27 @@ integer comparisons simple.)</p>
 constexpr uint16_t</code>.</p>
 
 <ul>
-<li><code>uint16_t <strong>char_general_category</strong>(char32_t c) noexcept</code></li>
+<li><code>uint16_t char_general_category(char32_t c) noexcept</code></li>
 </ul>
 
 <p>Returns the general category of a character.</p>
 
 <ul>
-<li><code>char <strong>char_primary_category</strong>(char32_t c) noexcept</code></li>
+<li><code>char char_primary_category(char32_t c) noexcept</code></li>
 </ul>
 
 <p>Returns the first letter of the character&#8217;s general category.</p>
 
 <ul>
-<li><code>bool <strong>char_is_alphanumeric</strong>(char32_t c) noexcept  [gc=L,N]</code></li>
-<li><code>bool <strong>char_is_control</strong>(char32_t c) noexcept       [gc=Cc]</code></li>
-<li><code>bool <strong>char_is_format</strong>(char32_t c) noexcept        [gc=Cf]</code></li>
-<li><code>bool <strong>char_is_letter</strong>(char32_t c) noexcept        [gc=L]</code></li>
-<li><code>bool <strong>char_is_mark</strong>(char32_t c) noexcept          [gc=M]</code></li>
-<li><code>bool <strong>char_is_number</strong>(char32_t c) noexcept        [gc=N]</code></li>
-<li><code>bool <strong>char_is_punctuation</strong>(char32_t c) noexcept   [gc=P]</code></li>
-<li><code>bool <strong>char_is_symbol</strong>(char32_t c) noexcept        [gc=S]</code></li>
-<li><code>bool <strong>char_is_separator</strong>(char32_t c) noexcept     [gc=Z]</code></li>
+<li><code>bool char_is_alphanumeric(char32_t c) noexcept  [gc=L,N]</code></li>
+<li><code>bool char_is_control(char32_t c) noexcept       [gc=Cc]</code></li>
+<li><code>bool char_is_format(char32_t c) noexcept        [gc=Cf]</code></li>
+<li><code>bool char_is_letter(char32_t c) noexcept        [gc=L]</code></li>
+<li><code>bool char_is_mark(char32_t c) noexcept          [gc=M]</code></li>
+<li><code>bool char_is_number(char32_t c) noexcept        [gc=N]</code></li>
+<li><code>bool char_is_punctuation(char32_t c) noexcept   [gc=P]</code></li>
+<li><code>bool char_is_symbol(char32_t c) noexcept        [gc=S]</code></li>
+<li><code>bool char_is_separator(char32_t c) noexcept     [gc=Z]</code></li>
 </ul>
 
 <p>These check for a character&#8217;s membership in a broad general category. (The
@@ -222,9 +229,9 @@ miscellaneous categories not listed here are covered elsewhere in this
 module.)</p>
 
 <ul>
-<li><code>std::function&lt;bool(char32_t)&gt; <strong>gc_predicate</strong>(uint16_t cat)</code></li>
-<li><code>std::function&lt;bool(char32_t)&gt; <strong>gc_predicate</strong>(const u8string&amp; cat)</code></li>
-<li><code>std::function&lt;bool(char32_t)&gt; <strong>gc_predicate</strong>(const char* cat)</code></li>
+<li><code>std::function&lt;bool(char32_t)&gt; gc_predicate(uint16_t cat)</code></li>
+<li><code>std::function&lt;bool(char32_t)&gt; gc_predicate(const u8string&amp; cat)</code></li>
+<li><code>std::function&lt;bool(char32_t)&gt; gc_predicate(const char* cat)</code></li>
 </ul>
 
 <p>These return function objects that can be used to test a character for
@@ -236,10 +243,10 @@ by the Unicode standard, the special category <code>&quot;LC&quot;</code> or <co
 cased letter, i.e. equivalent to <code>&quot;Lltu&quot;</code>.</p>
 
 <ul>
-<li><code>u8string <strong>decode_gc</strong>(uint16_t cat)</code></li>
-<li><code>constexpr uint16_t <strong>encode_gc</strong>(char c1, char c2) noexcept</code></li>
-<li><code>constexpr uint16_t <strong>encode_gc</strong>(const char* cat) noexcept</code></li>
-<li><code>uint16_t <strong>encode_gc</strong>(const u8string&amp; cat) noexcept</code></li>
+<li><code>u8string decode_gc(uint16_t cat)</code></li>
+<li><code>constexpr uint16_t encode_gc(char c1, char c2) noexcept</code></li>
+<li><code>constexpr uint16_t encode_gc(const char* cat) noexcept</code></li>
+<li><code>uint16_t encode_gc(const u8string&amp; cat) noexcept</code></li>
 </ul>
 
 <p>These convert between a GC abbreviation (passed as either a pair of letters or
@@ -248,21 +255,21 @@ a string) and its integer code.</p>
 <h2 id="booleanproperties">Boolean properties</h2>
 
 <ul>
-<li><code>bool <strong>char_is_assigned</strong>(char32_t c) noexcept</code></li>
-<li><code>bool <strong>char_is_unassigned</strong>(char32_t c) noexcept</code></li>
-<li><code>bool <strong>char_is_white_space</strong>(char32_t c) noexcept</code></li>
-<li><code>bool <strong>char_is_line_break</strong>(char32_t c) noexcept</code></li>
-<li><code>bool <strong>char_is_inline_space</strong>(char32_t c) noexcept</code></li>
-<li><code>bool <strong>char_is_id_start</strong>(char32_t c) noexcept</code></li>
-<li><code>bool <strong>char_is_id_nonstart</strong>(char32_t c) noexcept</code></li>
-<li><code>bool <strong>char_is_id_continue</strong>(char32_t c) noexcept</code></li>
-<li><code>bool <strong>char_is_xid_start</strong>(char32_t c) noexcept</code></li>
-<li><code>bool <strong>char_is_xid_nonstart</strong>(char32_t c) noexcept</code></li>
-<li><code>bool <strong>char_is_xid_continue</strong>(char32_t c) noexcept</code></li>
-<li><code>bool <strong>char_is_pattern_syntax</strong>(char32_t c) noexcept</code></li>
-<li><code>bool <strong>char_is_pattern_white_space</strong>(char32_t c) noexcept</code></li>
-<li><code>bool <strong>char_is_default_ignorable</strong>(char32_t c) noexcept</code></li>
-<li><code>bool <strong>char_is_soft_dotted</strong>(char32_t c) noexcept</code></li>
+<li><code>bool char_is_assigned(char32_t c) noexcept</code></li>
+<li><code>bool char_is_unassigned(char32_t c) noexcept</code></li>
+<li><code>bool char_is_white_space(char32_t c) noexcept</code></li>
+<li><code>bool char_is_line_break(char32_t c) noexcept</code></li>
+<li><code>bool char_is_inline_space(char32_t c) noexcept</code></li>
+<li><code>bool char_is_id_start(char32_t c) noexcept</code></li>
+<li><code>bool char_is_id_nonstart(char32_t c) noexcept</code></li>
+<li><code>bool char_is_id_continue(char32_t c) noexcept</code></li>
+<li><code>bool char_is_xid_start(char32_t c) noexcept</code></li>
+<li><code>bool char_is_xid_nonstart(char32_t c) noexcept</code></li>
+<li><code>bool char_is_xid_continue(char32_t c) noexcept</code></li>
+<li><code>bool char_is_pattern_syntax(char32_t c) noexcept</code></li>
+<li><code>bool char_is_pattern_white_space(char32_t c) noexcept</code></li>
+<li><code>bool char_is_default_ignorable(char32_t c) noexcept</code></li>
+<li><code>bool char_is_soft_dotted(char32_t c) noexcept</code></li>
 </ul>
 
 <p>Various boolean tests, mostly corresponding to standard Unicode character
@@ -272,11 +279,11 @@ characters that are not line breaks.</p>
 <h2 id="bidirectionalproperties">Bidirectional properties</h2>
 
 <ul>
-<li><code>Bidi_Class <strong>bidi_class</strong>(char32_t c) noexcept</code></li>
-<li><code>bool <strong>char_is_bidi_mirrored</strong>(char32_t c) noexcept</code></li>
-<li><code>char32_t <strong>bidi_mirroring_glyph</strong>(char32_t c) noexcept</code></li>
-<li><code>char32_t <strong>bidi_paired_bracket</strong>(char32_t c) noexcept</code></li>
-<li><code>char <strong>bidi_paired_bracket_type</strong>(char32_t c) noexcept</code></li>
+<li><code>Bidi_Class bidi_class(char32_t c) noexcept</code></li>
+<li><code>bool char_is_bidi_mirrored(char32_t c) noexcept</code></li>
+<li><code>char32_t bidi_mirroring_glyph(char32_t c) noexcept</code></li>
+<li><code>char32_t bidi_paired_bracket(char32_t c) noexcept</code></li>
+<li><code>char bidi_paired_bracket_type(char32_t c) noexcept</code></li>
 </ul>
 
 <p>Properties relevant to the Unicode bidirectional algorithm.</p>
@@ -284,21 +291,21 @@ characters that are not line breaks.</p>
 <h2 id="blockproperties">Block properties</h2>
 
 <ul>
-<li><code>u8string <strong>char_block</strong>(char32_t c)</code></li>
+<li><code>u8string char_block(char32_t c)</code></li>
 </ul>
 
 <p>Returns the name of the block to which a character belongs, or an empty string
 if it is not part of any block.</p>
 
 <ul>
-<li><code>struct <strong>BlockInfo</strong></code>
+<li><code>struct BlockInfo</code>
 
 <ul>
-<li><code>u8string BlockInfo::<strong>name</strong></code></li>
-<li><code>char32_t BlockInfo::<strong>first</strong></code></li>
-<li><code>char32_t BlockInfo::<strong>last</strong></code></li>
+<li><code>u8string BlockInfo::name</code></li>
+<li><code>char32_t BlockInfo::first</code></li>
+<li><code>char32_t BlockInfo::last</code></li>
 </ul></li>
-<li><code>const vector&lt;BlockInfo&gt;&amp; <strong>unicode_block_list</strong>()</code></li>
+<li><code>const vector&lt;BlockInfo&gt;&amp; unicode_block_list()</code></li>
 </ul>
 
 <p>The <code>unicode_block_list()</code> function returns a list of all Unicode character
@@ -307,24 +314,24 @@ blocks (in code point order).</p>
 <h2 id="casefoldingproperties">Case folding properties</h2>
 
 <ul>
-<li><code>bool <strong>char_is_cased</strong>(char32_t c) noexcept</code></li>
-<li><code>bool <strong>char_is_case_ignorable</strong>(char32_t c) noexcept</code></li>
-<li><code>bool <strong>char_is_uppercase</strong>(char32_t c) noexcept</code></li>
-<li><code>bool <strong>char_is_lowercase</strong>(char32_t c) noexcept</code></li>
-<li><code>bool <strong>char_is_titlecase</strong>(char32_t c) noexcept</code></li>
+<li><code>bool char_is_cased(char32_t c) noexcept</code></li>
+<li><code>bool char_is_case_ignorable(char32_t c) noexcept</code></li>
+<li><code>bool char_is_uppercase(char32_t c) noexcept</code></li>
+<li><code>bool char_is_lowercase(char32_t c) noexcept</code></li>
+<li><code>bool char_is_titlecase(char32_t c) noexcept</code></li>
 </ul>
 
 <p>Boolean Unicode properties related to case conversion.</p>
 
 <ul>
-<li><code>char32_t <strong>char_to_simple_uppercase</strong>(char32_t c) noexcept</code></li>
-<li><code>char32_t <strong>char_to_simple_lowercase</strong>(char32_t c) noexcept</code></li>
-<li><code>char32_t <strong>char_to_simple_titlecase</strong>(char32_t c) noexcept</code></li>
-<li><code>char32_t <strong>char_to_simple_casefold</strong>(char32_t c) noexcept</code></li>
-<li><code>size_t <strong>char_to_full_uppercase</strong>(char32_t c, char32_t* dst) noexcept</code></li>
-<li><code>size_t <strong>char_to_full_lowercase</strong>(char32_t c, char32_t* dst) noexcept</code></li>
-<li><code>size_t <strong>char_to_full_titlecase</strong>(char32_t c, char32_t* dst) noexcept</code></li>
-<li><code>size_t <strong>char_to_full_casefold</strong>(char32_t c, char32_t* dst) noexcept</code></li>
+<li><code>char32_t char_to_simple_uppercase(char32_t c) noexcept</code></li>
+<li><code>char32_t char_to_simple_lowercase(char32_t c) noexcept</code></li>
+<li><code>char32_t char_to_simple_titlecase(char32_t c) noexcept</code></li>
+<li><code>char32_t char_to_simple_casefold(char32_t c) noexcept</code></li>
+<li><code>size_t char_to_full_uppercase(char32_t c, char32_t* dst) noexcept</code></li>
+<li><code>size_t char_to_full_lowercase(char32_t c, char32_t* dst) noexcept</code></li>
+<li><code>size_t char_to_full_titlecase(char32_t c, char32_t* dst) noexcept</code></li>
+<li><code>size_t char_to_full_casefold(char32_t c, char32_t* dst) noexcept</code></li>
 </ul>
 
 <p>Single-character case conversion functions. The simple case mapping functions
@@ -343,7 +350,7 @@ library).</p>
 <h2 id="characternames">Character names</h2>
 
 <ul>
-<li><code>u8string <strong>char_name</strong>(char32_t c, uint32_t flags = 0)</code></li>
+<li><code>u8string char_name(char32_t c, uint32_t flags = 0)</code></li>
 </ul>
 
 <table>
@@ -389,21 +396,21 @@ something goes wrong while loading the table.</p>
 <h2 id="decompositionproperties">Decomposition properties</h2>
 
 <ul>
-<li><code>int <strong>combining_class</strong>(char32_t c) noexcept</code></li>
+<li><code>int combining_class(char32_t c) noexcept</code></li>
 </ul>
 
 <p>Returns the character&#8217;s canonical combining class.</p>
 
 <ul>
-<li><code>char32_t <strong>canonical_composition</strong>(char32_t c1, char32_t c2) noexcept</code></li>
+<li><code>char32_t canonical_composition(char32_t c1, char32_t c2) noexcept</code></li>
 </ul>
 
 <p>Returns the canonical composition of the two characters, or zero if the two
 characters do not combine.</p>
 
 <ul>
-<li><code>size_t <strong>canonical_decomposition</strong>(char32_t c, char32_t* dst) noexcept</code></li>
-<li><code>size_t <strong>compatibility_decomposition</strong>(char32_t c, char32_t* dst) noexcept</code></li>
+<li><code>size_t canonical_decomposition(char32_t c, char32_t* dst) noexcept</code></li>
+<li><code>size_t compatibility_decomposition(char32_t c, char32_t* dst) noexcept</code></li>
 </ul>
 
 <p>These generate the canonical or compatibility decomposition of a character
@@ -416,62 +423,62 @@ or zero if the character does not have a decomposition of the relevant type.</p>
 <h2 id="enumerationproperties">Enumeration properties</h2>
 
 <ul>
-<li><code>enum class <strong>Bidi_Class</strong></code>
+<li><code>enum class Bidi_Class</code>
 
 <ul>
 <li><code>Default, AL, AN, B, BN, CS, EN, ES, ET, FSI, L, LRE, LRI, LRO, NSM, ON, PDF, PDI, R, RLE, RLI, RLO, S, WS</code></li>
 </ul></li>
-<li><code>enum class <strong>East_Asian_Width</strong></code>
+<li><code>enum class East_Asian_Width</code>
 
 <ul>
 <li><code>N, A, F, H, Na, W</code></li>
 </ul></li>
-<li><code>enum class <strong>Grapheme_Cluster_Break</strong></code>
+<li><code>enum class Grapheme_Cluster_Break</code>
 
 <ul>
 <li><code>Other, Control, CR, EOT, Extend, L, LF, LV, LVT, Prepend, Regional_Indicator, SOT, SpacingMark, T, V</code></li>
 </ul></li>
-<li><code>enum class <strong>Hangul_Syllable_Type</strong></code>
+<li><code>enum class Hangul_Syllable_Type</code>
 
 <ul>
 <li><code>NA, L, LV, LVT, T, V</code></li>
 </ul></li>
-<li><code>enum class <strong>Indic_Positional_Category</strong></code>
+<li><code>enum class Indic_Positional_Category</code>
 
 <ul>
 <li><code>NA, Bottom, Bottom_And_Right, Left, Left_And_Right, Overstruck, Right, Top, Top_And_Bottom, Top_And_Bottom_And_Right, Top_And_Left, Top_And_Left_And_Right, Top_And_Right, Visual_Order_Left</code></li>
 </ul></li>
-<li><code>enum class <strong>Indic_Syllabic_Category</strong></code>
+<li><code>enum class Indic_Syllabic_Category</code>
 
 <ul>
 <li><code>Other, Avagraha, Bindu, Brahmi_Joining_Number, Cantillation_Mark, Consonant, Consonant_Dead, Consonant_Final, Consonant_Head_Letter, Consonant_Killer, Consonant_Medial, Consonant_Placeholder, Consonant_Preceding_Repha, Consonant_Prefixed, Consonant_Subjoined, Consonant_Succeeding_Repha, Consonant_With_Stacker, Gemination_Mark, Invisible_Stacker, Joiner, Modifying_Letter, Non_Joiner, Nukta, Number, Number_Joiner, Pure_Killer, Register_Shifter, Syllable_Modifier, Tone_Letter, Tone_Mark, Virama, Visarga, Vowel, Vowel_Dependent, Vowel_Independent</code></li>
 </ul></li>
-<li><code>enum class <strong>Joining_Group</strong></code>
+<li><code>enum class Joining_Group</code>
 
 <ul>
 <li><code>No_Joining_Group, Ain, Alaph, Alef, Beh, Beth, Burushaski_Yeh_Barree, Dalath_Rish, Dal, E, Farsi_Yeh, Feh, Fe, Final_Semkath, Gaf, Gamal, Hah, Heh_Goal, Heh, Heth, He, Kaf, Kaph, Khaph, Knotted_Heh, Lamadh, Lam, Meem, Mim, Noon, Nun, Nya, Pe, Qaf, Qaph, Reh, Reversed_Pe, Rohingya_Yeh, Sadhe, Sad, Seen, Semkath, Shin, Swash_Kaf, Syriac_Waw, Tah, Taw, Teh_Marbuta_Goal, Teh_Marbuta, Teth, Waw, Yeh_Barree, Yeh_With_Tail, Yeh, Yudh_He, Yudh, Zain, Zhain</code></li>
 </ul></li>
-<li><code>enum class <strong>Joining_Type</strong></code>
+<li><code>enum class Joining_Type</code>
 
 <ul>
 <li><code>Dual_Joining, Join_Causing, Left_Joining, Non_Joining, Right_Joining, Transparent</code></li>
 </ul></li>
-<li><code>enum class <strong>Line_Break</strong></code>
+<li><code>enum class Line_Break</code>
 
 <ul>
 <li><code>XX, AI, AL, B2, BA, BB, BK, CB, CJ, CL, CM, CP, CR, EX, GL, H2, H3, HL, HY, ID, IN, IS, JL, JT, JV, LF, NL, NS, NU, OP, PO, PR, QU, RI, SA, SG, SP, SY, WJ, ZW</code></li>
 </ul></li>
-<li><code>enum class <strong>Numeric_Type</strong></code>
+<li><code>enum class Numeric_Type</code>
 
 <ul>
 <li><code>None, Decimal, Digit, Numeric</code></li>
 </ul></li>
-<li><code>enum class <strong>Sentence_Break</strong></code>
+<li><code>enum class Sentence_Break</code>
 
 <ul>
 <li><code>Other, ATerm, Close, CR, EOT, Extend, Format, LF, Lower, Numeric, OLetter, SContinue, Sep, SOT, Sp, STerm, Upper</code></li>
 </ul></li>
-<li><code>enum class <strong>Word_Break</strong></code>
+<li><code>enum class Word_Break</code>
 
 <ul>
 <li><code>Other, ALetter, CR, Double_Quote, EOT, Extend, ExtendNumLet, Format, Hebrew_Letter, Katakana, LF, MidLetter, MidNum, MidNumLet, Newline, Numeric, Regional_Indicator, Single_Quote, SOT</code></li>
@@ -483,34 +490,34 @@ their spelling in the Unicode standard, which is not entirely consistent about
 naming conventions.</p>
 
 <ul>
-<li><code>East_Asian_Width <strong>east_asian_width</strong>(char32_t c) noexcept</code></li>
-<li><code>Grapheme_Cluster_Break <strong>grapheme_cluster_break</strong>(char32_t c) noexcept</code></li>
-<li><code>Hangul_Syllable_Type <strong>hangul_syllable_type</strong>(char32_t c) noexcept</code></li>
-<li><code>Indic_Positional_Category <strong>indic_positional_category</strong>(char32_t c) noexcept</code></li>
-<li><code>Indic_Syllabic_Category <strong>indic_syllabic_category</strong>(char32_t c) noexcept</code></li>
-<li><code>Joining_Group <strong>joining_group</strong>(char32_t c) noexcept</code></li>
-<li><code>Joining_Type <strong>joining_type</strong>(char32_t c) noexcept</code></li>
-<li><code>Line_Break <strong>line_break</strong>(char32_t c) noexcept</code></li>
-<li><code>Numeric_Type <strong>numeric_type</strong>(char32_t c) noexcept</code></li>
-<li><code>Sentence_Break <strong>sentence_break</strong>(char32_t c) noexcept</code></li>
-<li><code>Word_Break <strong>word_break</strong>(char32_t c) noexcept</code></li>
+<li><code>East_Asian_Width east_asian_width(char32_t c) noexcept</code></li>
+<li><code>Grapheme_Cluster_Break grapheme_cluster_break(char32_t c) noexcept</code></li>
+<li><code>Hangul_Syllable_Type hangul_syllable_type(char32_t c) noexcept</code></li>
+<li><code>Indic_Positional_Category indic_positional_category(char32_t c) noexcept</code></li>
+<li><code>Indic_Syllabic_Category indic_syllabic_category(char32_t c) noexcept</code></li>
+<li><code>Joining_Group joining_group(char32_t c) noexcept</code></li>
+<li><code>Joining_Type joining_type(char32_t c) noexcept</code></li>
+<li><code>Line_Break line_break(char32_t c) noexcept</code></li>
+<li><code>Numeric_Type numeric_type(char32_t c) noexcept</code></li>
+<li><code>Sentence_Break sentence_break(char32_t c) noexcept</code></li>
+<li><code>Word_Break word_break(char32_t c) noexcept</code></li>
 </ul>
 
 <p>Functions returning the properties of a character.</p>
 
 <ul>
-<li><code>u8string <strong>property_value</strong>(Bidi_Class val)</code></li>
-<li><code>u8string <strong>property_value</strong>(East_Asian_Width val)</code></li>
-<li><code>u8string <strong>property_value</strong>(Grapheme_Cluster_Break val)</code></li>
-<li><code>u8string <strong>property_value</strong>(Hangul_Syllable_Type val)</code></li>
-<li><code>u8string <strong>property_value</strong>(Indic_Positional_Category val)</code></li>
-<li><code>u8string <strong>property_value</strong>(Indic_Syllabic_Category val)</code></li>
-<li><code>u8string <strong>property_value</strong>(Joining_Group val)</code></li>
-<li><code>u8string <strong>property_value</strong>(Joining_Type val)</code></li>
-<li><code>u8string <strong>property_value</strong>(Line_Break val)</code></li>
-<li><code>u8string <strong>property_value</strong>(Numeric_Type val)</code></li>
-<li><code>u8string <strong>property_value</strong>(Sentence_Break val)</code></li>
-<li><code>u8string <strong>property_value</strong>(Word_Break val)</code></li>
+<li><code>u8string property_value(Bidi_Class val)</code></li>
+<li><code>u8string property_value(East_Asian_Width val)</code></li>
+<li><code>u8string property_value(Grapheme_Cluster_Break val)</code></li>
+<li><code>u8string property_value(Hangul_Syllable_Type val)</code></li>
+<li><code>u8string property_value(Indic_Positional_Category val)</code></li>
+<li><code>u8string property_value(Indic_Syllabic_Category val)</code></li>
+<li><code>u8string property_value(Joining_Group val)</code></li>
+<li><code>u8string property_value(Joining_Type val)</code></li>
+<li><code>u8string property_value(Line_Break val)</code></li>
+<li><code>u8string property_value(Numeric_Type val)</code></li>
+<li><code>u8string property_value(Sentence_Break val)</code></li>
+<li><code>u8string property_value(Word_Break val)</code></li>
 </ul>
 
 <p>Functions converting an enumerated property value into a string for display.</p>
@@ -518,7 +525,7 @@ naming conventions.</p>
 <h2 id="numericproperties">Numeric properties</h2>
 
 <ul>
-<li><code>std::pair&lt;long long, long long&gt; <strong>numeric_value</strong>(char32_t c)</code></li>
+<li><code>std::pair&lt;long long, long long&gt; numeric_value(char32_t c)</code></li>
 </ul>
 
 <p>Returns the numeric value of a character, as a pair containg the numerator and
@@ -528,8 +535,8 @@ character is not numeric, the numeric value will be zero (expressed as <code>0/1
 <h2 id="scriptproperties">Script properties</h2>
 
 <ul>
-<li><code>u8string <strong>char_script</strong>(char32_t c)</code></li>
-<li><code>vector&lt;u8string&gt; <strong>char_script_list</strong>(char32_t c)</code></li>
+<li><code>u8string char_script(char32_t c)</code></li>
+<li><code>vector&lt;u8string&gt; char_script_list(char32_t c)</code></li>
 </ul>
 
 <p>These return the principal script associated with a character, or a list of
@@ -538,7 +545,7 @@ multiple scripts. These return the ISO 15924 four letter abbreviations of the
 script names; use <code>script_name()</code> to convert these to full names.</p>
 
 <ul>
-<li><code>u8string <strong>script_name</strong>(const u8string&amp; abbr)</code></li>
+<li><code>u8string script_name(const u8string&amp; abbr)</code></li>
 </ul>
 
 <p>Converts an ISO 15924 script code (case insensitive) to the full name of the
