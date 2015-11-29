@@ -795,7 +795,7 @@ same string is going to be compared frequently.</p>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>esc_uhex</code></td>
-	<td style="text-align:left;">Use <code>\u</code> and <code>\U</code> instead of <code>\x</code></td>
+	<td style="text-align:left;">Use <code>\u</code> and <code>\U</code> instead of <code>\x{...}</code></td>
 </tr>
 <tr>
 	<td style="text-align:left;"><code>esc_surrogate</code></td>
@@ -814,7 +814,7 @@ same string is going to be compared frequently.</p>
 <li><code>template &lt;typename C&gt; u8string str_encode_uri(const basic_string&lt;C&gt;&amp; str)</code></li>
 <li><code>template &lt;typename C&gt; u8string str_encode_uri_component(const basic_string&lt;C&gt;&amp; str)</code></li>
 <li><code>void str_encode_uri_in(u8string&amp; str)</code></li>
-<li><code>void str_encode_uri_in_component(u8string&amp; str)</code></li>
+<li><code>void str_encode_uri_component_in(u8string&amp; str)</code></li>
 </ul>
 
 <p>These replace some characters in the string with percent encoding. These are
@@ -864,10 +864,7 @@ not make any attempt to support IDNA domain names.</p>
 
 <p>These perform the reverse transformation to <code>str_encode_uri()</code> and
 <code>str_encode_uri_component()</code>, replacing percent escape codes with the original
-characters. These will throw <code>EncodingError</code> if the input string contains any
-bytes that are not graphic ASCII characters, if it contains a percent sign
-that is not followed by two hex digits, or if the decoded string is not valid
-UTF&#8211;8.</p>
+characters.</p>
 
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt; str_escape(const basic_string&lt;C&gt;&amp; str, uint32_t flags = 0)</code></li>

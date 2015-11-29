@@ -21,15 +21,11 @@ namespace Unicorn {
         void unencode_uri_helper(const u8string& src, u8string& dst) {
             size_t i = 0, size = src.size();
             while (i < size) {
-                if (src[i] == '%') {
-                    if (size - i < 3 || ! ascii_isxdigit(src[i + 1]) || ! ascii_isxdigit(src[i + 2]))
-                        throw EncodingError("URI", i, src.data() + i, std::min(size - i, size_t(3)));
+                if (src[i] == '%' && size - i >= 3 && ascii_isxdigit(src[i + 1]) && ascii_isxdigit(src[i + 2])) {
                     dst += char(hexnum(src.substr(i + 1, 2)));
                     i += 3;
-                } else if (src[i] >= 33 && src[i] <= 126) {
-                    dst += src[i];
                 } else {
-                    throw EncodingError("URI", i, char_to_uint(src[i]));
+                    dst += src[i++];
                 }
             }
         }
@@ -42,7 +38,7 @@ namespace Unicorn {
         str = std::move(result);
     }
 
-    void str_encode_uri_in_component(u8string& str) {
+    void str_encode_uri_component_in(u8string& str) {
         u8string result;
         UnicornDetail::encode_uri_helper(str, result, UnicornDetail::uri_comp_escaped);
         str = std::move(result);

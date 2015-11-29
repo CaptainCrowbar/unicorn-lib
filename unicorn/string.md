@@ -627,7 +627,7 @@ Flag             | Description
 `esc_nonascii`   | Escape all characters that are not printable ASCII
 `esc_punct`      | Escape ASCII punctuation as well as all non-ASCII
 `esc_keeplf`     | Do not escape line feeds
-`esc_uhex`       | Use `\u` and `\U` instead of `\x`
+`esc_uhex`       | Use `\u` and `\U` instead of `\x{...}`
 `esc_surrogate`  | Use two `\u` escapes for astral characters
 `esc_utf8`       | Use UTF-8 hex bytes for non-ASCII characters
 
@@ -636,7 +636,7 @@ Flags used by some of the escape functions.
 * `template <typename C> u8string str_encode_uri(const basic_string<C>& str)`
 * `template <typename C> u8string str_encode_uri_component(const basic_string<C>& str)`
 * `void str_encode_uri_in(u8string& str)`
-* `void str_encode_uri_in_component(u8string& str)`
+* `void str_encode_uri_component_in(u8string& str)`
 
 These replace some characters in the string with percent encoding. These are
 similar to the correspondingly named JavaScript functions, except that they
@@ -660,10 +660,7 @@ not make any attempt to support IDNA domain names.
 
 These perform the reverse transformation to `str_encode_uri()` and
 `str_encode_uri_component()`, replacing percent escape codes with the original
-characters. These will throw `EncodingError` if the input string contains any
-bytes that are not graphic ASCII characters, if it contains a percent sign
-that is not followed by two hex digits, or if the decoded string is not valid
-UTF-8.
+characters.
 
 * `template <typename C> basic_string<C> str_escape(const basic_string<C>& str, uint32_t flags = 0)`
 * `template <typename C> void str_escape_in(basic_string<C>& str, uint32_t flags = 0)`
