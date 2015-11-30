@@ -39,7 +39,7 @@ namespace Unicorn {
                 if (char_is_unassigned(c) || char_is_control(c) || char_is_white_space(c))
                     throw std::invalid_argument("Invalid table divider: "s + char_as_hex(c));
                 force_break();
-                cells.back().push_back(u8string(1, 0) + str_chars<char>(c));
+                cells.back().push_back(u8string(1, 0) + str_char<char>(c));
                 cells.push_back({});
                 break;
         }
@@ -82,7 +82,7 @@ namespace Unicorn {
             width += cell_size + spec.spacing;
             for (size_t r = 0; r < rows; ++r) {
                 if (cells[r].size() == 1 && cells[r][0][0] == 0)
-                    str_append_chars(lines[r], *std::next(utf_begin(cells[r][0])), cell_size);
+                    str_append_chars(lines[r], cell_size, *std::next(utf_begin(cells[r][0])));
                 str_fix_left_in(lines[r], width, ' ', spec.flags);
             }
         }

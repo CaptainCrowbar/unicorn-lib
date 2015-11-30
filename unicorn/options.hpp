@@ -206,7 +206,7 @@ namespace Unicorn {
         check_flags(flags);
         vector<basic_string<C>> args(argv, argv + argc);
         if (flags & opt_quoted)
-            return parse(str_join(args, str_chars<C>(U' ')), out, flags);
+            return parse(str_join(args, str_char<C>(U' ')), out, flags);
         else
             return parse(args, out, flags);
     }

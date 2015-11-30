@@ -87,14 +87,14 @@ namespace Unicorn {
             }
             size_t extra = width - len;
             if (flags & fx_right)
-                str_append_chars(dst, pad, extra);
+                str_append_chars(dst, extra, pad);
             else if (flags & fx_centre)
-                str_append_chars(dst, pad, extra / 2);
+                str_append_chars(dst, extra / 2, pad);
             dst += src;
             if (flags & fx_left)
-                str_append_chars(dst, pad, extra);
+                str_append_chars(dst, extra, pad);
             else if (flags & fx_centre)
-                str_append_chars(dst, pad, (extra + 1) / 2);
+                str_append_chars(dst, (extra + 1) / 2, pad);
         }
 
         void translate_flags(const u8string& str, uint64_t& flags, int& prec, size_t& width, char32_t& pad);
@@ -186,7 +186,7 @@ namespace Unicorn {
         template <typename C>
         struct FormatCharacter {
             u8string operator()(C t, uint64_t flags, int prec) const {
-                return format_string(str_chars<char>(t), flags, prec);
+                return format_string(str_char<char>(t), flags, prec);
             }
         };
 

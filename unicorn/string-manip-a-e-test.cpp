@@ -146,51 +146,54 @@ namespace {
         s32.clear();  TRY(str_append_char(s32, 0x430, 0x4e8c, 0x10302, 0x10fffd));  TEST_EQUAL(s32, utf32_example);
 
         s8.clear();
-        TRY(str_append_chars(s8, U'A', 2));  TEST_EQUAL(s8, u8"AA");
-        TRY(str_append_chars(s8, U'€', 4));  TEST_EQUAL(s8, u8"AA€€€€");
+        TRY(str_append_chars(s8, 2, U'A'));  TEST_EQUAL(s8, u8"AA");
+        TRY(str_append_chars(s8, 4, U'€'));  TEST_EQUAL(s8, u8"AA€€€€");
         s16.clear();
-        TRY(str_append_chars(s16, U'A', 2));  TEST_EQUAL(s16, u"AA");
-        TRY(str_append_chars(s16, U'€', 4));  TEST_EQUAL(s16, u"AA€€€€");
+        TRY(str_append_chars(s16, 2, U'A'));  TEST_EQUAL(s16, u"AA");
+        TRY(str_append_chars(s16, 4, U'€'));  TEST_EQUAL(s16, u"AA€€€€");
         s32.clear();
-        TRY(str_append_chars(s32, U'A', 2));  TEST_EQUAL(s32, U"AA");
-        TRY(str_append_chars(s32, U'€', 4));  TEST_EQUAL(s32, U"AA€€€€");
+        TRY(str_append_chars(s32, 2, U'A'));  TEST_EQUAL(s32, U"AA");
+        TRY(str_append_chars(s32, 4, U'€'));  TEST_EQUAL(s32, U"AA€€€€");
 
     }
 
     void check_chars() {
 
-        TEST_EQUAL(str_chars<char>('A'), "A");
-        TEST_EQUAL(str_chars<char>(0x430), "\xd0\xb0");
-        TEST_EQUAL(str_chars<char>(0x4e8c), "\xe4\xba\x8c");
-        TEST_EQUAL(str_chars<char>(0x10302), "\xf0\x90\x8c\x82");
-        TEST_EQUAL(str_chars<char>(0x10fffd), "\xf4\x8f\xbf\xbd");
-        TEST_EQUAL(str_chars<char>('A', 3), "AAA");
-        TEST_EQUAL(str_chars<char>(0x430, 3), "\xd0\xb0\xd0\xb0\xd0\xb0");
-        TEST_EQUAL(str_chars<char>(0x4e8c, 3), "\xe4\xba\x8c\xe4\xba\x8c\xe4\xba\x8c");
-        TEST_EQUAL(str_chars<char>(0x10302, 3), "\xf0\x90\x8c\x82\xf0\x90\x8c\x82\xf0\x90\x8c\x82");
-        TEST_EQUAL(str_chars<char>(0x10fffd, 3), "\xf4\x8f\xbf\xbd\xf4\x8f\xbf\xbd\xf4\x8f\xbf\xbd");
+        TEST_EQUAL(str_char<char>(U'A'), "A");
+        TEST_EQUAL(str_char<char>(0x430), "\xd0\xb0");
+        TEST_EQUAL(str_char<char>(0x4e8c), "\xe4\xba\x8c");
+        TEST_EQUAL(str_char<char>(0x10302), "\xf0\x90\x8c\x82");
+        TEST_EQUAL(str_char<char>(0x10fffd), "\xf4\x8f\xbf\xbd");
 
-        TEST_EQUAL(str_chars<char16_t>('A'), u"A");
-        TEST_EQUAL(str_chars<char16_t>(0x430), u16string{0x0430});
-        TEST_EQUAL(str_chars<char16_t>(0x4e8c), u16string{0x4e8c});
-        TEST_EQUAL(str_chars<char16_t>(0x10302), (u16string{0xd800,0xdf02}));
-        TEST_EQUAL(str_chars<char16_t>(0x10fffd), (u16string{0xdbff,0xdffd}));
-        TEST_EQUAL(str_chars<char16_t>('A', 3), u"AAA");
-        TEST_EQUAL(str_chars<char16_t>(0x430, 3), (u16string{0x0430,0x0430,0x0430}));
-        TEST_EQUAL(str_chars<char16_t>(0x4e8c, 3), (u16string{0x4e8c,0x4e8c,0x4e8c}));
-        TEST_EQUAL(str_chars<char16_t>(0x10302, 3), (u16string{0xd800,0xdf02,0xd800,0xdf02,0xd800,0xdf02}));
-        TEST_EQUAL(str_chars<char16_t>(0x10fffd, 3), (u16string{0xdbff,0xdffd,0xdbff,0xdffd,0xdbff,0xdffd}));
+        TEST_EQUAL(str_char<char16_t>(U'A'), u"A");
+        TEST_EQUAL(str_char<char16_t>(0x430), u16string{0x0430});
+        TEST_EQUAL(str_char<char16_t>(0x4e8c), u16string{0x4e8c});
+        TEST_EQUAL(str_char<char16_t>(0x10302), (u16string{0xd800,0xdf02}));
+        TEST_EQUAL(str_char<char16_t>(0x10fffd), (u16string{0xdbff,0xdffd}));
 
-        TEST_EQUAL(str_chars<char32_t>('A'), U"A");
-        TEST_EQUAL(str_chars<char32_t>(0x430), u32string{0x430});
-        TEST_EQUAL(str_chars<char32_t>(0x4e8c), u32string{0x4e8c});
-        TEST_EQUAL(str_chars<char32_t>(0x10302), u32string{0x10302});
-        TEST_EQUAL(str_chars<char32_t>(0x10fffd), u32string{0x10fffd});
-        TEST_EQUAL(str_chars<char32_t>('A', 3), U"AAA");
-        TEST_EQUAL(str_chars<char32_t>(0x430, 3), (u32string{0x430,0x430,0x430}));
-        TEST_EQUAL(str_chars<char32_t>(0x4e8c, 3), (u32string{0x4e8c,0x4e8c,0x4e8c}));
-        TEST_EQUAL(str_chars<char32_t>(0x10302, 3), (u32string{0x10302,0x10302,0x10302}));
-        TEST_EQUAL(str_chars<char32_t>(0x10fffd, 3), (u32string{0x10fffd,0x10fffd,0x10fffd}));
+        TEST_EQUAL(str_char<char32_t>(U'A'), U"A");
+        TEST_EQUAL(str_char<char32_t>(0x430), u32string{0x430});
+        TEST_EQUAL(str_char<char32_t>(0x4e8c), u32string{0x4e8c});
+        TEST_EQUAL(str_char<char32_t>(0x10302), u32string{0x10302});
+        TEST_EQUAL(str_char<char32_t>(0x10fffd), u32string{0x10fffd});
+
+        TEST_EQUAL(str_chars<char>(3, U'A'), "AAA");
+        TEST_EQUAL(str_chars<char>(3, 0x430), "\xd0\xb0\xd0\xb0\xd0\xb0");
+        TEST_EQUAL(str_chars<char>(3, 0x4e8c), "\xe4\xba\x8c\xe4\xba\x8c\xe4\xba\x8c");
+        TEST_EQUAL(str_chars<char>(3, 0x10302), "\xf0\x90\x8c\x82\xf0\x90\x8c\x82\xf0\x90\x8c\x82");
+        TEST_EQUAL(str_chars<char>(3, 0x10fffd), "\xf4\x8f\xbf\xbd\xf4\x8f\xbf\xbd\xf4\x8f\xbf\xbd");
+
+        TEST_EQUAL(str_chars<char16_t>(3, U'A'), u"AAA");
+        TEST_EQUAL(str_chars<char16_t>(3, 0x430), (u16string{0x0430,0x0430,0x0430}));
+        TEST_EQUAL(str_chars<char16_t>(3, 0x4e8c), (u16string{0x4e8c,0x4e8c,0x4e8c}));
+        TEST_EQUAL(str_chars<char16_t>(3, 0x10302), (u16string{0xd800,0xdf02,0xd800,0xdf02,0xd800,0xdf02}));
+        TEST_EQUAL(str_chars<char16_t>(3, 0x10fffd), (u16string{0xdbff,0xdffd,0xdbff,0xdffd,0xdbff,0xdffd}));
+
+        TEST_EQUAL(str_chars<char32_t>(3, U'A'), U"AAA");
+        TEST_EQUAL(str_chars<char32_t>(3, 0x430), (u32string{0x430,0x430,0x430}));
+        TEST_EQUAL(str_chars<char32_t>(3, 0x4e8c), (u32string{0x4e8c,0x4e8c,0x4e8c}));
+        TEST_EQUAL(str_chars<char32_t>(3, 0x10302), (u32string{0x10302,0x10302,0x10302}));
+        TEST_EQUAL(str_chars<char32_t>(3, 0x10fffd), (u32string{0x10fffd,0x10fffd,0x10fffd}));
 
     }
 

@@ -17,11 +17,10 @@
 
 namespace Unicorn {
 
-    UNICORN_DEFINE_FLAG(string escaping, esc_apos,    0);  // Quote with apostrophe instead of quote mark (ignored by `str_escape()`)
-    UNICORN_DEFINE_FLAG(string escaping, esc_ascii,   1);  // Escape all non-ASCII characters
-    UNICORN_DEFINE_FLAG(string escaping, esc_nostdc,  2);  // Do not use standard C symbols such as `\n`
-    UNICORN_DEFINE_FLAG(string escaping, esc_pcre,    3);  // Use `\x{...}` instead of `\u` and `\U` (implies `esc_nonascii`)
-    UNICORN_DEFINE_FLAG(string escaping, esc_punct,   4);  // Escape ASCII punctuation
+    UNICORN_DEFINE_FLAG(string escaping, esc_ascii,   0);  // Escape all non-ASCII characters
+    UNICORN_DEFINE_FLAG(string escaping, esc_nostdc,  1);  // Do not use standard C symbols such as `\n`
+    UNICORN_DEFINE_FLAG(string escaping, esc_pcre,    2);  // Use `\x{...}` instead of `\u` and `\U` (implies `esc_nonascii`)
+    UNICORN_DEFINE_FLAG(string escaping, esc_punct,   3);  // Escape ASCII punctuation
 
     namespace UnicornDetail {
 
@@ -149,17 +148,17 @@ namespace Unicorn {
         }
 
         template <typename C>
-        void unescape_helper(const basic_string<C>& src, basic_string<C>& dst, char32_t quote = 0xffffffff) {
-            auto i = utf_begin(src), j = i, end = utf_end(src);
+        UtfIterator<C> unescape_helper(const UtfIterator<C>& begin, const UtfIterator<C>& end, basic_string<C>& dst, char32_t quote = 0xffffffff) {
+            auto i = begin, j = begin;
             while (i != end) {
                 for (j = i; j != end && *j != U'\\' && *j != quote; ++j) {}
-                dst.append(src, i.offset(), j.offset() - i.offset());
+                str_append(dst, i, j);
                 if (j == end || *j == quote)
-                    break;
+                    return j;
                 i = std::next(j);
                 if (i == end) {
                     str_append_char(dst, *j);
-                    break;
+                    return end;
                 }
                 char32_t c = *i;
                 switch (*i) {
@@ -178,16 +177,16 @@ namespace Unicorn {
                 }
                 str_append_char(dst, c);
             }
+            return end;
         }
 
         template <typename C>
-        void unquote_helper(const basic_string<C>& src, basic_string<C>& dst, uint32_t flags) {
-            const char32_t quote = flags & esc_apos ? U'\'' : U'\"';
-            // TODO
-            (void)src;
-            (void)dst;
-            (void)flags;
-            (void)quote;
+        void unquote_helper(const basic_string<C>& src, basic_string<C>& dst, char32_t quote) {
+            auto i = utf_begin(src), j = i, end = utf_end(src);
+            while (i != end) {
+                j = unescape_helper(i, end, dst, quote);
+                i = std::find_if(j, end, [quote] (char32_t c) { return c != quote; });
+            }
         }
 
     }
@@ -228,46 +227,44 @@ namespace Unicorn {
     template <typename C>
     basic_string<C> str_unescape(const basic_string<C>& str) {
         basic_string<C> result;
-        UnicornDetail::unescape_helper(str, result);
+        UnicornDetail::unescape_helper(utf_begin(str), utf_end(str), result);
         return result;
     }
 
     template <typename C>
     void str_unescape_in(basic_string<C>& str) {
         basic_string<C> result;
-        UnicornDetail::unescape_helper(str, result);
+        UnicornDetail::unescape_helper(utf_begin(str), utf_end(str), result);
         str = std::move(result);
     }
 
     template <typename C>
-    basic_string<C> str_quote(const basic_string<C>& str, uint32_t flags = 0) {
-        const char32_t quote = flags & esc_apos ? U'\'' : U'\"';
-        auto result = str_chars<C>(quote);
+    basic_string<C> str_quote(const basic_string<C>& str, uint32_t flags = 0, char32_t quote = U'\"') {
+        auto result = str_char<C>(quote);
         UnicornDetail::escape_helper(str, result, flags, quote);
         str_append_char(result, quote);
         return result;
     }
 
     template <typename C>
-    void str_quote_in(basic_string<C>& str, uint32_t flags = 0) {
-        const char32_t quote = flags & esc_apos ? U'\'' : U'\"';
-        auto result = str_chars<C>(quote);
+    void str_quote_in(basic_string<C>& str, uint32_t flags = 0, char32_t quote = U'\"') {
+        auto result = str_char<C>(quote);
         UnicornDetail::escape_helper(str, result, flags, quote);
         str_append_char(result, quote);
         str = std::move(result);
     }
 
     template <typename C>
-    basic_string<C> str_unquote(const basic_string<C>& str, uint32_t flags = 0) {
+    basic_string<C> str_unquote(const basic_string<C>& str, char32_t quote = U'\"') {
         basic_string<C> result;
-        UnicornDetail::unquote_helper(str, result, flags);
+        UnicornDetail::unquote_helper(str, result, quote);
         return result;
     }
 
     template <typename C>
-    void str_unquote_in(basic_string<C>& str, uint32_t flags = 0) {
+    void str_unquote_in(basic_string<C>& str, char32_t quote = U'\"') {
         basic_string<C> result;
-        UnicornDetail::unquote_helper(str, result, flags);
+        UnicornDetail::unquote_helper(str, result, quote);
         str = std::move(result);
     }
 

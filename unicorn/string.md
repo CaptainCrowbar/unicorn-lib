@@ -250,14 +250,15 @@ characters skipped.
 * `template <typename C, typename C2> void str_append(basic_string<C>& str, const C2* suffix)`
 * `template <typename C, typename C2> void str_append(basic_string<C>& dst, const C2* ptr, size_t n)`
 * `template <typename C, typename C2, typename... Chars> void str_append_char(basic_string<C>& dst, C2 c2, Chars... chars)`
-* `template <typename C> void str_append_chars(basic_string<C>& dst, char32_t c, size_t n)`
+* `template <typename C> void str_append_chars(basic_string<C>& dst, size_t n, char32_t c)`
 
 These append one or more characters to a Unicode string, performing any
 necessary encoding conversions.
 
-* `template <typename C> basic_string<C> str_chars(char32_t c, size_t n = 1)`
+* `template <typename C> basic_string<C> str_char(char32_t c)`
+* `template <typename C> basic_string<C> str_chars(size_t n, char32_t c)`
 
-Returns a string containing `n` copies of the character, in the appropriate
+Return a string containing `n` copies of the character, in the appropriate
 encoding.
 
 * `template <typename C, typename... Strings> basic_string<C> str_concat(const basic_string<C>& s, const Strings&... ss)`
@@ -622,13 +623,12 @@ same string is going to be compared frequently.
 
 Flag          | Description
 ----          | -----------
-`esc_apos`    | Quote with apostrophe instead of quote mark (ignored by `str_escape()`)
 `esc_ascii`   | Escape all non-ASCII characters
 `esc_nostdc`  | Do not use standard C symbols such as `\n`
 `esc_pcre`    | Use `\x{...}` instead of `\u` and `\U` (implies `esc_ascii`)
 `esc_punct`   | Escape ASCII punctuation
 
-Flags used by `str_escape()` and related functions.
+Flags recognised by `str_escape()` and related functions.
 
 * `template <typename C> u8string str_encode_uri(const basic_string<C>& str)`
 * `template <typename C> u8string str_encode_uri_component(const basic_string<C>& str)`
@@ -677,20 +677,18 @@ not recognised as an escape code, the backslash will simply be discarded and
 the second character left unchanged. These will throw `EncodingError` if a
 hexadecimal code does not represent a valid Unicode scalar value.
 
-* `template <typename C> basic_string<C> str_quote(const basic_string<C>& str, uint32_t flags = 0)`
-* `template <typename C> void str_quote_in(basic_string<C>& str, uint32_t flags = 0)`
+* `template <typename C> basic_string<C> str_quote(const basic_string<C>& str, uint32_t flags = 0, char32_t quote = '\"')`
+* `template <typename C> void str_quote_in(basic_string<C>& str, uint32_t flags = 0, char32_t quote = '\"')`
 
 These perform the same operation as `str_escape()`, but also add quotes around
-the string. The default quote mark is `"\""`; the `esc_apos` flag uses an
-apostrophe instead.
+the string.
 
-* `template <typename C> basic_string<C> str_unquote(const basic_string<C>& str, uint32_t flags = 0)`
-* `template <typename C> void str_unquote_in(basic_string<C>& str, uint32_t flags = 0)`
+* `template <typename C> basic_string<C> str_unquote(const basic_string<C>& str, char32_t quote = '\"')`
+* `template <typename C> void str_unquote_in(basic_string<C>& str, char32_t quote = '\"')`
 
 These perform the reverse transformation to `str_quote()`, removing quote
 marks from the string, or from any quoted substrings within it, and then
-unescaping the resulting strings. The only flag that has any effect is
-`esc_apos`.
+unescaping the resulting strings.
 
 ## Type conversion functions ##
 

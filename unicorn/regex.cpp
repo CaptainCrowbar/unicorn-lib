@@ -414,7 +414,7 @@ namespace Unicorn {
             Version v {0,0,0};
             auto& table = UnicornDetail::unicode_version_table().table;
             for (auto& entry: table) {
-                if (unassigned.match(str_chars<char>(entry.second)))
+                if (unassigned.match(str_char<char>(entry.second)))
                     break;
                 v = entry.first;
             }

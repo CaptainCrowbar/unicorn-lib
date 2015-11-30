@@ -127,7 +127,7 @@ namespace Unicorn {
                 }
             }
             if (token.count == 0)
-                throw SyntaxError(str_chars<char>(u), token.offset);
+                throw SyntaxError(str_char<char>(u), token.offset);
             if (token.tag)
                 break;
         }

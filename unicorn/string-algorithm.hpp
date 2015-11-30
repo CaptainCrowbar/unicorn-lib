@@ -90,7 +90,7 @@ namespace Unicorn {
 
     template <typename C>
     UtfIterator<C> str_find_char(const basic_string<C>& str, char32_t c) {
-        return utf_iterator(str, str.find(str_chars<C>(c)));
+        return utf_iterator(str, str.find(str_char<C>(c)));
     }
 
     template <typename C>
@@ -111,7 +111,7 @@ namespace Unicorn {
 
     template <typename C>
     UtfIterator<C> str_find_last_char(const basic_string<C>& str, char32_t c) {
-        return utf_iterator(str, str.rfind(str_chars<C>(c)));
+        return utf_iterator(str, str.rfind(str_char<C>(c)));
     }
 
     template <typename C>

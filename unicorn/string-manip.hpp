@@ -286,7 +286,7 @@ namespace Unicorn {
                 else
                     str.append(pad_chars, static_cast<C>(c));
             } else {
-                auto padding = str_chars<C>(c, pad_chars);
+                auto padding = str_chars<C>(pad_chars, c);
                 if (side == 'L')
                     str.insert(0, padding);
                 else
@@ -1245,7 +1245,7 @@ namespace Unicorn {
 
     template <typename C>
     basic_string<C> str_unify_lines(const basic_string<C>& str, char32_t newline) {
-        return str_unify_lines(str, str_chars<C>(newline));
+        return str_unify_lines(str, str_char<C>(newline));
     }
 
     template <typename C>
@@ -1266,7 +1266,7 @@ namespace Unicorn {
 
     template <typename C>
     void str_unify_lines_in(basic_string<C>& str, char32_t newline) {
-        str_unify_lines_in(str, str_chars<C>(newline));
+        str_unify_lines_in(str, str_char<C>(newline));
     }
 
     template <typename C>
