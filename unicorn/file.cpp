@@ -80,6 +80,17 @@ namespace Unicorn {
                 return lstat(file.data(), &s) == 0 && S_ISLNK(s.st_mode);
             }
 
+            uintmax_t native_file_size(const NativeString& file, uint32_t flags) noexcept {
+                struct stat s;
+                if (lstat(file.data(), &s) != 0)
+                    return 0;
+                uintmax_t bytes = s.st_size;
+                if ((flags & fs_recurse) && S_ISDIR(s.st_mode))
+                    for (auto& child: directory(file, fs_all | fs_fullname))
+                        bytes += native_file_size(child, fs_recurse);
+                return bytes;
+            }
+
             string native_resolve_symlink(const string& file) {
                 if (! native_file_is_symlink(file))
                     return file;
@@ -112,18 +123,18 @@ namespace Unicorn {
 
             }
 
-            void native_make_directory(const string& dir, bool recurse) {
+            void native_make_directory(const string& dir, uint32_t flags) {
                 if (mkdir(dir.data(), 0777) == 0)
                     return;
                 int error = errno;
                 if (error == EEXIST && native_file_is_directory(dir))
                     return;
-                if (! recurse || error != ENOENT || dir.empty())
+                if ((flags & fs_recurse) == 0 || error != ENOENT || dir.empty())
                     throw std::system_error(error, std::generic_category(), quote_file(dir));
                 auto parent = split_path(dir).first;
                 if (parent == dir)
                     throw std::system_error(error, std::generic_category(), quote_file(dir));
-                native_make_directory(parent, recurse);
+                native_make_directory(parent, fs_recurse);
                 if (mkdir(dir.data(), 0777) != 0) {
                     int error = errno;
                     throw std::system_error(error, std::generic_category(), quote_file(dir));
@@ -256,6 +267,17 @@ namespace Unicorn {
                 return sym;
             }
 
+            uintmax_t native_file_size(const NativeString& file, uint32_t flags) noexcept {
+                WIN32_FILE_ATTRIBUTE_DATA info;
+                if (! GetFileAttributesEx(file.data(), GetFileExInfoStandard, &info))
+                    return 0;
+                auto bytes = (uintmax_t(info.nFileSizeHigh) << 32) + uintmax_t(info.nFileSizeLow);
+                if (flags & fs_recurse)
+                    for (auto& child: directory(file, fs_all | fs_fullname))
+                        bytes += native_file_size(child, fs_recurse);
+                return bytes;
+            }
+
             wstring native_resolve_symlink(const wstring& file) {
                 if (! native_file_is_symlink(file))
                     return file;
@@ -293,18 +315,18 @@ namespace Unicorn {
 
             }
 
-            void native_make_directory(const wstring& dir, bool recurse) {
+            void native_make_directory(const wstring& dir, uint32_t flags) {
                 if (CreateDirectoryW(dir.c_str(), nullptr))
                     return;
                 auto error = GetLastError();
                 if (error == ERROR_ALREADY_EXISTS && native_file_is_directory(dir))
                     return;
-                if (! recurse || error != ERROR_PATH_NOT_FOUND || dir.empty())
+                if ((flags & fs_recurse) == 0 || error != ERROR_PATH_NOT_FOUND || dir.empty())
                     throw std::system_error(error, windows_category(), quote_file(dir));
                 auto parent = split_path(dir).first;
                 if (parent == dir)
                     throw std::system_error(error, windows_category(), quote_file(dir));
-                native_make_directory(parent, recurse);
+                native_make_directory(parent, flags);
                 if (! CreateDirectoryW(dir.c_str(), nullptr)) {
                     error = GetLastError();
                     throw std::system_error(error, windows_category(), quote_file(dir));
@@ -368,10 +390,10 @@ namespace Unicorn {
 
         // File system modifying functions
 
-        void native_remove_file(const NativeString& file, bool recurse) {
-            if (recurse && native_file_is_directory(file) && ! native_file_is_symlink(file))
-                for (auto child: directory(file, dir_fullname | dir_hidden))
-                    native_remove_file(child, true);
+        void native_remove_file(const NativeString& file, uint32_t flags) {
+            if ((flags & fs_recurse) && native_file_is_directory(file) && ! native_file_is_symlink(file))
+                for (auto child: directory(file, fs_all | fs_fullname))
+                    native_remove_file(child, fs_recurse);
             remove_file_helper(file);
         }
 
@@ -380,7 +402,7 @@ namespace Unicorn {
         void DirectoryStage2::init2(const NativeString& dir, uint32_t flags) {
             init1(dir);
             fset = flags;
-            if ((fset & dir_fullname) || ! (fset & dir_hidden)) {
+            if (! (fset & fs_all) || (fset & fs_fullname)) {
                 prefix = dir;
                 if (! prefix.empty() && prefix.back() != native_file_delimiter)
                     prefix += native_file_delimiter;
@@ -396,14 +418,14 @@ namespace Unicorn {
                 next1();
                 if (done())
                     break;
-                if ((fset & dir_unicode) && ! valid_string(leaf()))
+                if ((fset & fs_unicode) && ! valid_string(leaf()))
                     continue;
-                if (! (fset & dir_dotdot) && (leaf() == link1 || leaf() == link2))
+                if (! (fset & fs_dotdot) && (leaf() == link1 || leaf() == link2))
                     continue;
                 current = prefix + leaf();
-                if (! (fset & dir_hidden) && file_is_hidden(current))
+                if (! (fset & fs_all) && file_is_hidden(current))
                     continue;
-                if (! (fset & dir_fullname))
+                if (! (fset & fs_fullname))
                     current = leaf();
                 break;
             }

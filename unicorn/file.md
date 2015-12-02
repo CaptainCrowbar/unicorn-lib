@@ -13,6 +13,7 @@ file renaming and deletion, directory search, and so on.
 ## Contents ##
 
 * [Introduction][]
+* [Constants][]
 * [System dependencies][]
 * [File name functions][]
 * [File system query functions][]
@@ -64,6 +65,16 @@ of backslashes for slashes, and drive roots such as `"C:\"` for `"/"`.
 The term "leaf name" is used here to mean the name of an individual file
 within a directory, with no directory path prefix (for example, the leaf name
 of `"/foo/bar/hello.txt"` is `"hello.txt"`).
+
+## Constants ##
+
+Flag           | Description
+----           | -----------
+`fs_all`       | Include hidden files
+`fs_dotdot`    | Include . and ..
+`fs_fullname`  | Return full file names
+`fs_recurse`   | Recursive directory operations
+`fs_unicode`   | Skip files with non-Unicode names
 
 ## System dependencies ##
 
@@ -122,7 +133,7 @@ Examples:
     file_path("foo", "bar", "hello.txt") == "foo/bar/hello.txt"
     file_path("/foo", "/bar", "hello.txt") == "/bar/hello.txt"
 
-* `template <typename C> std::pair<basic_string<C>, basic_string<C>> split_path(const basic_string<C>& file, bool keep = false)`
+* `template <typename C> std::pair<basic_string<C>, basic_string<C>> split_path(const basic_string<C>& file, uint32_t flags = 0)`
 * `template <typename C> std::pair<basic_string<C>, basic_string<C>> split_file(const basic_string<C>& file)`
 
 These functions break down a file name into its constituent parts. The
@@ -130,11 +141,13 @@ These functions break down a file name into its constituent parts. The
 for example, if the original file name is `"/foo/bar/hello.txt"`, the
 directory name is `"/foo/bar"` and the leaf name is `"hello.txt"`. If the file
 name refers to the file system root (e.g. `"/"`), the directory is the full
-file name and the leaf name is empty. By default, the delimiter between the
-directory and leaf names is discarded, unless the directory is a root name
-that requires the delimiter suffix for correct identification; if the `keep`
-flag is set, the delimiter (if any) will always be kept at the end of the
-directory part.
+file name and the leaf name is empty.
+
+By default, the delimiter between the directory and leaf names is discarded,
+unless the directory is a root name that requires the delimiter suffix for
+correct identification; if the `fs_fullname` flag is set, the delimiter (if
+any) will always be kept at the end of the directory part. This is the only
+flag recognised.
 
 The `split_file()` function breaks the leaf name into a base and extension
 (discarding the directory part); for example, if the original file name is
@@ -184,6 +197,15 @@ Windows this is a metadata property.
 
 True if the file is a symbolic link.
 
+* `template <typename C> uintmax_t file_size(const basic_string<C>& file, uint32_t flags = 0) noexcept`
+
+Returns the size of the file in bytes. This will return zero if the file does
+not exist, or if it can't be accessed for any other reason. If the file is a
+directory, by default only the size of the directory entry itself (which may
+be zero on some systems) is returned; if the `fs_recurse` flag is supplied,
+the directory's contents will be recursively scanned (symbolic links are not
+followed).
+
 * `template <typename C> basic_string<C> resolve_symlink(const basic_string<C>& file)`
 
 Returns the file pointed to by a symlink. If the argument names a file that
@@ -199,24 +221,24 @@ appear to be any way to retrieve it).
 These functions perform operations that require write access to the file
 system.
 
-* `template <typename C> void make_directory(const basic_string<C>& dir, bool recurse = false)`
+* `template <typename C> void make_directory(const basic_string<C>& dir, uint32_t flags = 0)`
 
-Create a directory (with default permissions). If the `recurse` flag is set,
-this will recursively create any missing parent directories (like `mkdir -p`).
-It will do nothing if the directory already exists. It will throw
+Create a directory (with default permissions). If the `fs_recurse` flag is
+set, this will recursively create any missing parent directories (like `mkdir
+-p`). It will do nothing if the directory already exists. It will throw
 `std::system_error` if the named file already exists but is not a directory,
 if the directory path is not a legal filename, if the parent directory does
 not exist and the `recurse` flag was not set, or if the caller does not have
 permission to create the directory.
 
-* `template <typename C> void remove_file(const basic_string<C>& file, bool recurse = false)`
+* `template <typename C> void remove_file(const basic_string<C>& file, uint32_t flags = 0)`
 
-Delete a file or directory. If the `recurse` flag is set, directories will be
-deleted recursively (like `rm -rf`; this will not follow symbolic links). This
-will do nothing if the named file does not exist to begin with. It will throw
-`std::system_error` if the directory path is not a legal filename, if the name
-refers to a nonempty directory and the `recurse` flag was not set, or if the
-caller does not have permission to delete the file.
+Delete a file or directory. If the `fs_recurse` flag is set, directories will
+be deleted recursively (like `rm -rf`; this will not follow symbolic links).
+This will do nothing if the named file does not exist to begin with. It will
+throw `std::system_error` if the directory path is not a legal filename, if
+the name refers to a nonempty directory and the `recurse` flag was not set, or
+if the caller does not have permission to delete the file.
 
 * `template <typename C> void rename_file(const basic_string<C>& src, const basic_string<C>& dst)`
 
@@ -243,12 +265,14 @@ source and destination are on different physical file systems.
 * `template <typename C> Irange<DirectoryIterator<C>> directory(const basic_string<C>& dir, uint32_t flags = 0)`
 * `template <typename C> Irange<DirectoryIterator<C>> directory(const C* dir, uint32_t flags = 0)`
 
-Flag            | Description
-----            | -----------
-`dir_dotdot`    | Include the . and .. entries
-`dir_fullname`  | Return full file names instead of leaf names
-`dir_hidden`    | Include hidden files
-`dir_unicode`   | Skip files with non-Unicode names
+The following flags are recognised:
+
+Flag           | Description
+----           | -----------
+`fs_all`       | Include hidden files
+`fs_dotdot`    | Include . and ..
+`fs_fullname`  | Return full file names
+`fs_unicode`   | Skip files with non-Unicode names
 
 An iterator over the files in a directory. Normally you should call the
 `directory()` function to get an iterator range, rather than explicitly
@@ -259,13 +283,12 @@ refers to a file that does not exist or is not a directory, it will simply be
 treated as an empty directory.
 
 By default, an iterator dereferences to a file's leaf name; if the
-`dir_fullname` option is used, the full path is reported instead, including
-the directory (this is based on the name passed to the constructor, and will
-not be a fully qualified absolute path if the original name was not).
+`fs_fullname` option is used, the full path is reported instead, including the
+directory (this is based on the name passed to the constructor, and will not
+be a fully qualified absolute path if the original name was not).
 
-The `dir_unicode` flag checks only the file's leaf name. If it is combined
-with the `dir_fullname` flag, the returned paths can still contain invalid
-Unicode if the directory path was invalid to begin with.
+If the `fs_unicode` flag is supplied, and the original directory name was
+invalid UTF, no files will be returned.
 
 The order in which files are returned is unspecified; do not rely on them
 being returned in the same order as the `ls` or `dir` command, or on the order

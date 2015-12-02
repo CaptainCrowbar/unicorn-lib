@@ -13,6 +13,14 @@
 
 namespace Unicorn {
 
+    // Constants
+
+    UNICORN_DEFINE_FLAG(file system, fs_all,       0);  // Include hidden files
+    UNICORN_DEFINE_FLAG(file system, fs_dotdot,    1);  // Include . and ..
+    UNICORN_DEFINE_FLAG(file system, fs_fullname,  2);  // Return full file names
+    UNICORN_DEFINE_FLAG(file system, fs_recurse,   3);  // Recursive directory operations
+    UNICORN_DEFINE_FLAG(file system, fs_unicode,   4);  // Skip files with non-Unicode names
+
     // System dependencies
 
     #if defined(PRI_TARGET_UNIX)
@@ -150,7 +158,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    std::pair<basic_string<C>, basic_string<C>> split_path(const basic_string<C>& file, bool keep = false) {
+    std::pair<basic_string<C>, basic_string<C>> split_path(const basic_string<C>& file, uint32_t flags = 0) {
         auto nfile = UnicornDetail::normalize_file(file);
         auto cut = nfile.find_last_of(static_cast<C>(file_delimiter));
         #if defined(PRI_TARGET_NATIVE_WINDOWS)
@@ -161,12 +169,14 @@ namespace Unicorn {
                     && char_is_ascii(file[0]) && ascii_isalpha(char(file[0])))
                 return {nfile.substr(0, 2), nfile.substr(2, npos)};
         #endif
-        if (cut == npos)
+        if (cut == npos) {
             return {{}, nfile};
-        else if (cut == 0)
+        } else if (cut == 0) {
             return {nfile.substr(0, 1), nfile.substr(1, npos)};
-        else
-            return {nfile.substr(0, cut + size_t(keep)), nfile.substr(cut + 1, npos)};
+        } else {
+            size_t cut1 = flags & fs_fullname ? cut + 1 : cut;
+            return {nfile.substr(0, cut1), nfile.substr(cut + 1, npos)};
+        }
     }
 
     template <typename C>
@@ -200,6 +210,7 @@ namespace Unicorn {
         bool native_file_is_directory(const NativeString& file) noexcept;
         bool native_file_is_hidden(const NativeString& file) noexcept;
         bool native_file_is_symlink(const NativeString& file) noexcept;
+        uintmax_t native_file_size(const NativeString& file, uint32_t flags) noexcept;
         NativeString native_resolve_symlink(const NativeString& file);
 
     }
@@ -241,6 +252,12 @@ namespace Unicorn {
     }
 
     template <typename C>
+    uintmax_t file_size(const basic_string<C>& file, uint32_t flags = 0) noexcept {
+        using namespace UnicornDetail;
+        return native_file_size(native_file(file), flags);
+    }
+
+    template <typename C>
     basic_string<C> resolve_symlink(const basic_string<C>& file) {
         using namespace UnicornDetail;
         return native_resolve_symlink(native_file(file));
@@ -250,22 +267,22 @@ namespace Unicorn {
 
     namespace UnicornDetail {
 
-        void native_make_directory(const NativeString& dir, bool recurse);
-        void native_remove_file(const NativeString& file, bool recurse);
+        void native_make_directory(const NativeString& dir, uint32_t flags);
+        void native_remove_file(const NativeString& file, uint32_t flags);
         void native_rename_file(const NativeString& src, const NativeString& dst);
 
     }
 
     template <typename C>
-    void make_directory(const basic_string<C>& dir, bool recurse = false) {
+    void make_directory(const basic_string<C>& dir, uint32_t flags = 0) {
         using namespace UnicornDetail;
-        native_make_directory(native_file(dir), recurse);
+        native_make_directory(native_file(dir), flags);
     }
 
     template <typename C>
-    void remove_file(const basic_string<C>& file, bool recurse = false) {
+    void remove_file(const basic_string<C>& file, uint32_t flags = 0) {
         using namespace UnicornDetail;
-        native_remove_file(native_file(file), recurse);
+        native_remove_file(native_file(file), flags);
     }
 
     template <typename C>
@@ -276,26 +293,21 @@ namespace Unicorn {
 
     // Directory iterators
 
-    UNICORN_DEFINE_FLAG(directory search, dir_dotdot, 0);    // Include . and ..
-    UNICORN_DEFINE_FLAG(directory search, dir_fullname, 1);  // Full file names
-    UNICORN_DEFINE_FLAG(directory search, dir_hidden, 2);    // Include hidden files
-    UNICORN_DEFINE_FLAG(directory search, dir_unicode, 3);   // Valid Unicode names only
-
     namespace UnicornDetail {
 
         // Directory iterator implementation is split into three stages:
 
-        // 1. The system specific part that calls the operating system's
+        // Stage 1: The system specific part that calls the operating system's
         // directory walking API; this requires separate implementations for
         // each OS.
 
-        // 2. The part that works only with native file names, but is not
-        // system specific apart from the choice of string type, so it can be
-        // written as a single implementation.
+        // Stage 2: The part that works only with native file names, but is
+        // not system specific apart from the choice of string type, so it can
+        // be written as a single implementation.
 
-        // 3. The part that translates the file name to the caller's preferred
-        // encoding; this is the template based interface exported to the
-        // caller.
+        // Stage 3: The part that translates the file name to the caller's
+        // preferred encoding; this is the template based interface exported
+        // to the caller.
 
         class DirectoryStage1 {
         protected:
@@ -330,6 +342,8 @@ namespace Unicorn {
     public:
         DirectoryIterator() = default;
         explicit DirectoryIterator(const basic_string<C>& dir, uint32_t flags = 0) {
+            if ((flags & fs_unicode) && ! valid_string(dir))
+                return;
             auto normdir = UnicornDetail::normalize_file(dir);
             NativeString natdir;
             recode_filename(normdir, natdir);
