@@ -241,7 +241,8 @@ namespace Unicorn {
 
         u8string format_floating(long double t, uint64_t flags, int prec) {
             using std::fabs;
-            allow_flags(flags, fx_global_flags | fx_digits | fx_exp | fx_fixed | fx_general | fx_prob | fx_sign | fx_signz | fx_stripz, "formatting");
+            allow_flags(flags, fx_global_flags | fx_digits | fx_exp | fx_fixed | fx_general
+                | fx_prob | fx_sign | fx_signz | fx_stripz, "formatting");
             exclusive_flags(flags, fx_digits | fx_exp | fx_fixed | fx_general | fx_prob, "formatting");
             exclusive_flags(flags, fx_sign | fx_signz, "formatting");
             if (prec < 0)
@@ -268,8 +269,10 @@ namespace Unicorn {
         }
 
         u8string format_string(const u8string& t, uint64_t flags, int prec) {
-            allow_flags(flags, fx_global_flags | fx_ascii | fx_ascquote | fx_decimal | fx_escape | fx_hex | fx_hex8 | fx_hex16 | fx_quote, "formatting");
-            exclusive_flags(flags, fx_ascii | fx_ascquote  | fx_escape | fx_decimal | fx_hex | fx_hex8 | fx_hex16 | fx_quote, "formatting");
+            allow_flags(flags, fx_global_flags | fx_ascii | fx_ascquote | fx_decimal | fx_escape
+                | fx_hex | fx_hex8 | fx_hex16 | fx_quote, "formatting");
+            exclusive_flags(flags, fx_ascii | fx_ascquote  | fx_escape | fx_decimal | fx_hex
+                    | fx_hex8 | fx_hex16 | fx_quote, "formatting");
             if (flags & fx_quote)
                 return string_escape(t, fx_quote);
             else if (flags & fx_ascquote)

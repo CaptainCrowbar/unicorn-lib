@@ -211,9 +211,9 @@ namespace Unicorn {
         };
 
         struct FormatVersion {
-            u8string operator()(const Version& t, uint64_t flags, int /*prec*/) const {
+            u8string operator()(const Version& t, uint64_t flags, int prec) const {
                 allow_flags(flags, fx_global_flags, "formatting");
-                return t.str();
+                return prec >= 0 ? t.str(prec) : t.str();
             }
         };
 

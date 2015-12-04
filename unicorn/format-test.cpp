@@ -930,22 +930,30 @@ namespace {
 
         Version v1 {1, 0, 0}, v2 {2, 3, 4};
 
-        TEST_EQUAL(format_as<char>(v1), "1.0.0");
+        TEST_EQUAL(format_as<char>(v1), "1.0");
         TEST_EQUAL(format_as<char>(v2), "2.3.4");
+        TEST_EQUAL(format_as<char>(v1, "4"), "1.0.0.0");
+        TEST_EQUAL(format_as<char>(v2, "4"), "2.3.4.0");
 
         #if defined(UNICORN_PCRE16)
-            TEST_EQUAL(format_as<char16_t>(v1), u"1.0.0");
+            TEST_EQUAL(format_as<char16_t>(v1), u"1.0");
             TEST_EQUAL(format_as<char16_t>(v2), u"2.3.4");
+            TEST_EQUAL(format_as<char16_t>(v1, u"4"), u"1.0.0.0");
+            TEST_EQUAL(format_as<char16_t>(v2, u"4"), u"2.3.4.0");
         #endif
 
         #if defined(UNICORN_PCRE32)
-            TEST_EQUAL(format_as<char32_t>(v1), U"1.0.0");
+            TEST_EQUAL(format_as<char32_t>(v1), U"1.0");
             TEST_EQUAL(format_as<char32_t>(v2), U"2.3.4");
+            TEST_EQUAL(format_as<char32_t>(v1, U"4"), U"1.0.0.0");
+            TEST_EQUAL(format_as<char32_t>(v2, U"4"), U"2.3.4.0");
         #endif
 
         #if defined(UNICORN_PCRE_WCHAR)
-            TEST_EQUAL(format_as<wchar_t>(v1), L"1.0.0");
+            TEST_EQUAL(format_as<wchar_t>(v1), L"1.0");
             TEST_EQUAL(format_as<wchar_t>(v2), L"2.3.4");
+            TEST_EQUAL(format_as<wchar_t>(v1, L"4"), L"1.0.0.0");
+            TEST_EQUAL(format_as<wchar_t>(v2, L"4"), L"2.3.4.0");
         #endif
 
     }
