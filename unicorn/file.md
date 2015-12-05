@@ -68,22 +68,24 @@ of `"/foo/bar/hello.txt"` is `"hello.txt"`).
 
 ## Constants ##
 
-Flag           | Description
-----           | -----------
-`fs_all`       | Include hidden files
-`fs_dotdot`    | Include . and ..
-`fs_fullname`  | Return full file names
-`fs_recurse`   | Recursive directory operations
-`fs_unicode`   | Skip files with non-Unicode names
+Flag               | Description
+----               | -----------
+**`fs_all`**       | Include hidden files
+**`fs_dotdot`**    | Include . and ..
+**`fs_fullname`**  | Return full file names
+**`fs_recurse`**   | Recursive directory operations
+**`fs_unicode`**   | Skip files with non-Unicode names
 
 ## System dependencies ##
 
-* `constexpr char file_delimiter = ['/' on Unix, '\\' on Windows]`
+* `constexpr char` **`file_delimiter`** `= ['/' on Unix, '\\' on Windows]`
 
 The standard delimiter for directory paths.
 
-* `template <typename C1, typename C2> void recode_filename(const basic_string<C1>& src, basic_string<C2>& dst)`
-* `template <typename C2, typename C1> basic_string<C2> recode_filename(const basic_string<C1>& src)`
+* `template <typename C1, typename C2> void` **`recode_filename`**
+    `(const basic_string<C1>& src, basic_string<C2>& dst)`
+* `template <typename C2, typename C1> basic_string<C2>` **`recode_filename`**
+    `(const basic_string<C1>& src)`
 
 These convert a file name from one UTF encoding to another, using the
 `recode()` functions from [`unicorn/utf`](utf.html) with the `err_replace`
@@ -100,10 +102,14 @@ aware of the standard double slash convention for network paths <span
 class="nobr">(`"//server/path..."`),</span> and the Windows versions are aware
 of UNC paths <span class="nobr">(`"\\?\path..."`).</span>
 
-* `template <typename C> bool file_is_absolute(const basic_string<C>& file)`
-* `template <typename C> bool file_is_relative(const basic_string<C>& file)`
-* `template <typename C> bool file_is_drive_absolute(const basic_string<C>& file)`
-* `template <typename C> bool file_is_drive_relative(const basic_string<C>& file)`
+* `template <typename C> bool` **`file_is_absolute`**
+    `(const basic_string<C>& file)`
+* `template <typename C> bool` **`file_is_relative`**
+    `(const basic_string<C>& file)`
+* `template <typename C> bool` **`file_is_drive_absolute`**
+    `(const basic_string<C>& file)`
+* `template <typename C> bool` **`file_is_drive_relative`**
+    `(const basic_string<C>& file)`
 
 These indicate whether a file name is absolute or relative; exactly one of
 them will be true for any file name (an empty string is considered to be a
@@ -116,12 +122,15 @@ absolute with respect to an unspecified current drive <span
 class="nobr">(`"\path..."`).</span> Both of these functions are always false
 on Unix.
 
-* `template <typename C> bool file_is_root(const basic_string<C>& file)`
+* `template <typename C> bool` **`file_is_root`**
+    `(const basic_string<C>& file)`
 
 True if the file name refers to the root of a directory tree.
 
-* `template <typename C, typename... Args> basic_string<C> file_path(const basic_string<C>& file, Args... args)`
-* `template <typename C, typename... Args> basic_string<C> file_path(const C* file, Args... args)`
+* `template <typename C, typename... Args> basic_string<C>` **`file_path`**
+    `(const basic_string<C>& file, Args... args)`
+* `template <typename C, typename... Args> basic_string<C>` **`file_path`**
+    `(const C* file, Args... args)`
 
 Assembles a directory path from a series of path elements or relative paths.
 If any argument is an absolute path, this is taken as the root of the final
@@ -133,8 +142,10 @@ Examples:
     file_path("foo", "bar", "hello.txt") == "foo/bar/hello.txt"
     file_path("/foo", "/bar", "hello.txt") == "/bar/hello.txt"
 
-* `template <typename C> std::pair<basic_string<C>, basic_string<C>> split_path(const basic_string<C>& file, uint32_t flags = 0)`
-* `template <typename C> std::pair<basic_string<C>, basic_string<C>> split_file(const basic_string<C>& file)`
+* `template <typename C> std::pair<basic_string<C>, basic_string<C>>` **`split_path`**
+    `(const basic_string<C>& file, uint32_t flags = 0)`
+* `template <typename C> std::pair<basic_string<C>, basic_string<C>>` **`split_file`**
+    `(const basic_string<C>& file)`
 
 These functions break down a file name into its constituent parts. The
 `split_path()` function breaks the full name into directory and leaf names;
@@ -167,37 +178,43 @@ Examples:
 
 These functions perform read-only operations on the file system.
 
-* `template <typename C> basic_string<C> current_directory()`
-* `template <typename C> void current_directory(basic_string<C>& dir)`
+* `template <typename C> basic_string<C>` **`current_directory`**`()`
+* `template <typename C> void` **`current_directory`**
+    `(basic_string<C>& dir)`
 
 These query the current working directory of the calling process. The first
 version requires the character type to be explicitly specified. These may
-throw `std::system_error` in some unusual cases of failure, usually involving
+throw `std::`**`system_error`** in some unusual cases of failure, usually involving
 access permission problems.
 
-* `template <typename C> bool file_exists(const basic_string<C>& file) noexcept`
+* `template <typename C> bool` **`file_exists`**
+    `(const basic_string<C>& file) noexcept`
 
 Query whether a file exists. This may give a false negative if the file exists
 but is not accessible to the calling process.
 
-* `template <typename C> bool file_is_directory(const basic_string<C>& file) noexcept`
+* `template <typename C> bool` **`file_is_directory`**
+    `(const basic_string<C>& file) noexcept`
 
 Query whether a file is a directory. This will return `false` if the file does
 not exist; it may give a false negative if the directory exists but is not
 accessible to the calling process.
 
-* `template <typename C> bool file_is_hidden(const basic_string<C>& file) noexcept`
+* `template <typename C> bool` **`file_is_hidden`**
+    `(const basic_string<C>& file) noexcept`
 
 True if the file is normally hidden. This will return `false` if the file does
 not exist or is not accessible to the calling process. On Unix this is based
 on the file name (a file is hidden if its name starts with a dot), but on
 Windows this is a metadata property.
 
-* `template <typename C> bool file_is_symlink(const basic_string<C>& file) noexcept`
+* `template <typename C> bool` **`file_is_symlink`**
+    `(const basic_string<C>& file) noexcept`
 
 True if the file is a symbolic link.
 
-* `template <typename C> uintmax_t file_size(const basic_string<C>& file, uint32_t flags = 0) noexcept`
+* `template <typename C> uintmax_t` **`file_size`**
+    `(const basic_string<C>& file, uint32_t flags = 0) noexcept`
 
 Returns the size of the file in bytes. This will return zero if the file does
 not exist, or if it can't be accessed for any other reason. If the file is a
@@ -206,11 +223,12 @@ be zero on some systems) is returned; if the `fs_recurse` flag is supplied,
 the directory's contents will be recursively scanned (symbolic links are not
 followed).
 
-* `template <typename C> basic_string<C> resolve_symlink(const basic_string<C>& file)`
+* `template <typename C> basic_string<C>` **`resolve_symlink`**
+    `(const basic_string<C>& file)`
 
 Returns the file pointed to by a symlink. If the argument names a file that
 does not exist or is not a symlink, this will simply return the argument
-unchanged. This will throw `std::system_error` if anything goes wrong, such as
+unchanged. This will throw `std::`**`system_error`** if anything goes wrong, such as
 a permission failure or a symlink loop. On Windows, resolving a symlink
 requires opening the target file, so this will fail if the target file does
 not exist (presumably the symlink still contains a path but there does not
@@ -221,28 +239,31 @@ appear to be any way to retrieve it).
 These functions perform operations that require write access to the file
 system.
 
-* `template <typename C> void make_directory(const basic_string<C>& dir, uint32_t flags = 0)`
+* `template <typename C> void` **`make_directory`**
+    `(const basic_string<C>& dir, uint32_t flags = 0)`
 
 Create a directory (with default permissions). If the `fs_recurse` flag is
 set, this will recursively create any missing parent directories (like `mkdir
 -p`). It will do nothing if the directory already exists. It will throw
-`std::system_error` if the named file already exists but is not a directory,
+`std::`**`system_error`** if the named file already exists but is not a directory,
 if the directory path is not a legal filename, if the parent directory does
 not exist and the `recurse` flag was not set, or if the caller does not have
 permission to create the directory.
 
-* `template <typename C> void remove_file(const basic_string<C>& file, uint32_t flags = 0)`
+* `template <typename C> void` **`remove_file`**
+    `(const basic_string<C>& file, uint32_t flags = 0)`
 
 Delete a file or directory. If the `fs_recurse` flag is set, directories will
 be deleted recursively (like `rm -rf`; this will not follow symbolic links).
 This will do nothing if the named file does not exist to begin with. It will
-throw `std::system_error` if the directory path is not a legal filename, if
+throw `std::`**`system_error`** if the directory path is not a legal filename, if
 the name refers to a nonempty directory and the `recurse` flag was not set, or
 if the caller does not have permission to delete the file.
 
-* `template <typename C> void rename_file(const basic_string<C>& src, const basic_string<C>& dst)`
+* `template <typename C> void` **`rename_file`**
+    `(const basic_string<C>& src, const basic_string<C>& dst)`
 
-Rename a file or directory. This will throw `std::system_error` if either
+Rename a file or directory. This will throw `std::`**`system_error`** if either
 argument is not a legal filename, if the caller does not have permission to
 perform the operation, or under other OS-specific circumstances. This function
 is a thin wrapper around the underlying native file renaming functions, and
@@ -253,26 +274,31 @@ source and destination are on different physical file systems.
 
 ## Directory iterators ##
 
-* `template <typename C> class DirectoryIterator`
-    * `using DirectoryIterator::difference_type = ptrdiff_t`
-    * `using DirectoryIterator::iterator_category = std::input_iterator_tag`
-    * `using DirectoryIterator::value_type = basic_string<C>`
-    * `using DirectoryIterator::pointer = const value_type*`
-    * `using DirectoryIterator::reference = const value_type&`
-    * `DirectoryIterator::DirectoryIterator()`
-    * `explicit DirectoryIterator::DirectoryIterator(const value_type& dir, uint32_t flags = 0)`
-    * `[standard iterator operations]`
-* `template <typename C> Irange<DirectoryIterator<C>> directory(const basic_string<C>& dir, uint32_t flags = 0)`
-* `template <typename C> Irange<DirectoryIterator<C>> directory(const C* dir, uint32_t flags = 0)`
+* `template <typename C> class` **`DirectoryIterator`**
+    * `using DirectoryIterator::`**`difference_type`**
+        `= ptrdiff_t`
+    * `using DirectoryIterator::`**`iterator_category`**
+        `= std::`**`input_iterator_tag`**
+    * `using DirectoryIterator::`**`value_type`**
+        `= basic_string<C>`
+    * `using DirectoryIterator::`**`pointer`**
+        `= const value_type*`
+    * `using DirectoryIterator::`**`reference`**
+        `= const value_type&`
+    * `DirectoryIterator::`**`DirectoryIterator`**`()`
+    * `explicit DirectoryIterator::`**`DirectoryIterator`**`(const value_type& dir, uint32_t flags = 0)`
+    * _[standard iterator operations]_
+* `template <typename C> Irange<DirectoryIterator<C>>` **`directory`**`(const basic_string<C>& dir, uint32_t flags = 0)`
+* `template <typename C> Irange<DirectoryIterator<C>>` **`directory`**`(const C* dir, uint32_t flags = 0)`
 
 The following flags are recognised:
 
-Flag           | Description
-----           | -----------
-`fs_all`       | Include hidden files
-`fs_dotdot`    | Include . and ..
-`fs_fullname`  | Return full file names
-`fs_unicode`   | Skip files with non-Unicode names
+Flag               | Description
+----               | -----------
+**`fs_all`**       | Include hidden files
+**`fs_dotdot`**    | Include . and ..
+**`fs_fullname`**  | Return full file names
+**`fs_unicode`**   | Skip files with non-Unicode names
 
 An iterator over the files in a directory. Normally you should call the
 `directory()` function to get an iterator range, rather than explicitly

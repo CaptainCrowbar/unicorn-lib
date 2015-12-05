@@ -19,7 +19,7 @@ of converting Unicode strings into the four standard normalization forms.</p>
 <h2 id="normalizationfunctions">Normalization functions</h2>
 
 <ul>
-<li><code>enum <strong>NormalizationForm</strong></code>
+<li><code>enum NormalizationForm</code>
 
 <ul>
 <li><code>NFC, NFD, NFKC, NFKD</code></li>
@@ -29,8 +29,8 @@ of converting Unicode strings into the four standard normalization forms.</p>
 <p>The standard Unicode normalization forms.</p>
 
 <ul>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>normalize</strong>(const basic_string&lt;C&gt;&amp; src, NormalizationForm form)</code></li>
-<li><code>template &lt;typename C&gt; void <strong>normalize_in</strong>(basic_string&lt;C&gt;&amp; src, NormalizationForm form)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>normalize</code></strong><code>(const basic_string&lt;C&gt;&amp; src, NormalizationForm form)</code></li>
+<li><code>template &lt;typename C&gt; void</code> *<em><code>normalize_in</code></em>*<code>(basic_string&lt;C&gt;&amp; src, NormalizationForm form)</code></li>
 </ul>
 
 <p>Convert a string to one of the normalized forms. The <code>normalize()</code> function

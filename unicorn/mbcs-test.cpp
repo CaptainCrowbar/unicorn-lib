@@ -5,7 +5,7 @@
 #include <iostream>
 #include <string>
 
-#if defined(PRI_TARGET_NATIVE_WINDOWS)
+#if defined(PRI_TARGET_WINDOWS)
     #include <windows.h>
 #endif
 

@@ -25,26 +25,26 @@
 <h2 id="exceptions">Exceptions</h2>
 
 <ul>
-<li><code>class <strong>Exception</strong>: public std::runtime_error</code>
+<li><code>class</code> <strong><code>Exception</code></strong><code>: public std::</code><strong><code>runtime_error</code></strong>
 
 <ul>
-<li><code>explicit Exception::<strong>Exception</strong>(u8string message, size_t pos = npos)</code></li>
-<li><code>size_t Exception::<strong>pos</strong>() const noexcept</code></li>
+<li><code>explicit Exception::</code><strong><code>Exception</code></strong><code>(u8string message, size_t pos = npos)</code></li>
+<li><code>size_t Exception::</code><strong><code>pos</code></strong><code>() const noexcept</code></li>
 </ul></li>
-<li><code>class <strong>BadJson</strong>: public Exception</code>
+<li><code>class</code> <strong><code>BadJson</code></strong><code>: public Exception</code>
 
 <ul>
-<li><code>explicit BadJson::<strong>BadJson</strong>(size_t pos)</code></li>
+<li><code>explicit BadJson::</code><strong><code>BadJson</code></strong><code>(size_t pos)</code></li>
 </ul></li>
-<li><code>class <strong>EndOfFile</strong>: public Exception</code>
+<li><code>class</code> <strong><code>EndOfFile</code></strong><code>: public Exception</code>
 
 <ul>
-<li><code>explicit EndOfFile::<strong>EndOfFile</strong>(size_t pos)</code></li>
+<li><code>explicit EndOfFile::</code><strong><code>EndOfFile</code></strong><code>(size_t pos)</code></li>
 </ul></li>
-<li><code>class <strong>WrongType</strong>: public Exception</code>
+<li><code>class</code> <strong><code>WrongType</code></strong><code>: public Exception</code>
 
 <ul>
-<li><code>WrongType::<strong>WrongType</strong>()</code></li>
+<li><code>WrongType::</code><strong><code>WrongType</code></strong><code>()</code></li>
 </ul></li>
 </ul>
 
@@ -53,101 +53,101 @@
 <h2 id="elementclass">Element class</h2>
 
 <ul>
-<li><code>enum <strong>ElementType</strong></code>
+<li><code>enum</code> <strong><code>ElementType</code></strong>
 
 <ul>
-<li><code>null</code></li>
-<li><code>boolean</code></li>
-<li><code>number</code></li>
-<li><code>string</code></li>
-<li><code>array</code></li>
-<li><code>object</code></li>
+<li><strong><code>null</code></strong></li>
+<li><strong><code>boolean</code></strong></li>
+<li><strong><code>number</code></strong></li>
+<li><strong><code>string</code></strong></li>
+<li><strong><code>array</code></strong></li>
+<li><strong><code>object</code></strong></li>
 </ul></li>
 </ul>
 
 <p>TODO</p>
 
 <ul>
-<li><code>class <strong>Element</strong></code></li>
+<li><code>class</code> <strong><code>Element</code></strong></li>
 </ul>
 
 <p>TODO</p>
 
 <ul>
-<li><code>using <strong>Array</strong> = std::vector&lt;Element&gt;</code></li>
-<li><code>using <strong>Object</strong> = std::map&lt;u8string, Element&gt;</code></li>
+<li><code>using</code> <strong><code>Array</code></strong> <code>= std::vector&lt;Element&gt;</code></li>
+<li><code>using</code> <strong><code>Object</code></strong> <code>= std::map&lt;u8string, Element&gt;</code></li>
 </ul>
 
 <p>TODO</p>
 
 <ul>
-<li><code>Element::<strong>Element</strong>() noexcept</code></li>
-<li><code>Element::<strong>Element</strong>(std::nullptr_t) noexcept</code></li>
-<li><code>Element::<strong>Element</strong>(bool value) noexcept</code></li>
-<li><code>template &lt;typename T&gt; Element::<strong>Element</strong>(const T&amp; value, typename std::enable_if_t&lt;std::is_arithmetic&lt;T&gt;::value&gt;* = nullptr) noexcept</code></li>
-<li><code>Element::<strong>Element</strong>(const u8string&amp; value)</code></li>
-<li><code>Element::<strong>Element</strong>(const char* value)</code></li>
-<li><code>Element::<strong>Element</strong>(const Array&amp; value)</code></li>
-<li><code>template &lt;typename... Args&gt; Element::<strong>Element</strong>(const Args&amp;... args)</code></li>
-<li><code>Element::<strong>Element</strong>(const Object&amp; value)</code></li>
-<li><code>Element::<strong>Element</strong>(const Element&amp; e)</code></li>
-<li><code>Element::<strong>Element</strong>(Element&amp;&amp; e) noexcept</code></li>
-<li><code>Element::<strong>~Element</strong>() noexcept</code></li>
-<li><code>Element&amp; Element::<strong>operator=</strong>(const Element&amp; e)</code></li>
-<li><code>Element&amp; Element::<strong>operator=</strong>(Element&amp;&amp; e) noexcept</code></li>
+<li><code>Element::</code><strong><code>Element</code></strong><code>() noexcept</code></li>
+<li><code>Element::</code><strong><code>Element</code></strong><code>(std::nullptr_t) noexcept</code></li>
+<li><code>Element::</code><strong><code>Element</code></strong><code>(bool value) noexcept</code></li>
+<li><code>template &lt;typename T&gt; Element::</code><strong><code>Element</code></strong><code>(const T&amp; value, typename std::enable_if_t&lt;std::is_arithmetic&lt;T&gt;::value&gt;* = nullptr) noexcept</code></li>
+<li><code>Element::</code><strong><code>Element</code></strong><code>(const u8string&amp; value)</code></li>
+<li><code>Element::</code><strong><code>Element</code></strong><code>(const char* value)</code></li>
+<li><code>Element::</code><strong><code>Element</code></strong><code>(const Array&amp; value)</code></li>
+<li><code>template &lt;typename... Args&gt; Element::</code><strong><code>Element</code></strong><code>(const Args&amp;... args)</code></li>
+<li><code>Element::</code><strong><code>Element</code></strong><code>(const Object&amp; value)</code></li>
+<li><code>Element::</code><strong><code>Element</code></strong><code>(const Element&amp; e)</code></li>
+<li><code>Element::</code><strong><code>Element</code></strong><code>(Element&amp;&amp; e) noexcept</code></li>
+<li><code>Element::</code><strong><code>~Element</code></strong><code>() noexcept</code></li>
+<li><code>Element&amp; Element::</code><strong><code>operator=</code></strong><code>(const Element&amp; e)</code></li>
+<li><code>Element&amp; Element::</code><strong><code>operator=</code></strong><code>(Element&amp;&amp; e) noexcept</code></li>
 </ul>
 
 <p>TODO</p>
 
 <ul>
-<li><code>Element&amp; Element::<strong>operator[]</strong>(size_t key)</code></li>
-<li><code>const Element&amp; Element::<strong>operator[]</strong>(size_t key) const</code></li>
-<li><code>Element&amp; Element::<strong>operator[]</strong>(const u8string&amp; key)</code></li>
-<li><code>const Element&amp; Element::<strong>operator[]</strong>(const u8string&amp; key) const</code></li>
+<li><code>Element&amp; Element::</code><strong><code>operator[]</code></strong><code>(size_t key)</code></li>
+<li><code>const Element&amp; Element::</code><strong><code>operator[]</code></strong><code>(size_t key) const</code></li>
+<li><code>Element&amp; Element::</code><strong><code>operator[]</code></strong><code>(const u8string&amp; key)</code></li>
+<li><code>const Element&amp; Element::</code><strong><code>operator[]</code></strong><code>(const u8string&amp; key) const</code></li>
 </ul>
 
 <p>TODO</p>
 
 <ul>
-<li><code>bool&amp; Element::<strong>boolean</strong>()</code></li>
-<li><code>bool Element::<strong>boolean</strong>() const</code></li>
-<li><code>double&amp; Element::<strong>number</strong>()</code></li>
-<li><code>double Element::<strong>number</strong>() const</code></li>
-<li><code>u8string&amp; Element::<strong>string</strong>()</code></li>
-<li><code>const u8string&amp; Element::<strong>string</strong>() const</code></li>
-<li><code>Array&amp; Element::<strong>array</strong>()</code></li>
-<li><code>const Array&amp; Element::<strong>array</strong>() const</code></li>
-<li><code>Object&amp; Element::<strong>object</strong>()</code></li>
-<li><code>const Object&amp; Element::<strong>object</strong>() const</code></li>
+<li><code>bool&amp; Element::</code><strong><code>boolean</code></strong><code>()</code></li>
+<li><code>bool Element::</code><strong><code>boolean</code></strong><code>() const</code></li>
+<li><code>double&amp; Element::</code><strong><code>number</code></strong><code>()</code></li>
+<li><code>double Element::</code><strong><code>number</code></strong><code>() const</code></li>
+<li><code>u8string&amp; Element::</code><strong><code>string</code></strong><code>()</code></li>
+<li><code>const u8string&amp; Element::</code><strong><code>string</code></strong><code>() const</code></li>
+<li><code>Array&amp; Element::</code><strong><code>array</code></strong><code>()</code></li>
+<li><code>const Array&amp; Element::</code><strong><code>array</code></strong><code>() const</code></li>
+<li><code>Object&amp; Element::</code><strong><code>object</code></strong><code>()</code></li>
+<li><code>const Object&amp; Element::</code><strong><code>object</code></strong><code>() const</code></li>
 </ul>
 
 <p>TODO</p>
 
 <ul>
-<li><code>void Element::<strong>layout</strong>(std::ostream&amp; out, size_t max_array = 0) const</code></li>
-<li><code>u8string Element::<strong>str</strong>() const</code></li>
-<li><code>void Element::<strong>write</strong>(u8string&amp; dst) const</code></li>
-<li><code>std::ostream&amp; <strong>operator&lt;&lt;</strong>(std::ostream&amp; out, const Element&amp; e)</code></li>
+<li><code>void Element::</code><strong><code>layout</code></strong><code>(std::ostream&amp; out, size_t max_array = 0) const</code></li>
+<li><code>u8string Element::</code><strong><code>str</code></strong><code>() const</code></li>
+<li><code>void Element::</code><strong><code>write</code></strong><code>(u8string&amp; dst) const</code></li>
+<li><code>std::</code><strong><code>ostream</code></strong><code>&amp; operator&lt;&lt;(std::ostream&amp; out, const Element&amp; e)</code></li>
 </ul>
 
 <p>TODO</p>
 
 <ul>
-<li><code>ElementType Element::<strong>type</strong>() const noexcept</code></li>
+<li><code>ElementType Element::</code><strong><code>type</code></strong><code>() const noexcept</code></li>
 </ul>
 
 <p>TODO</p>
 
 <ul>
-<li><code>static Element Element::<strong>read</strong>(const u8string&amp; src)</code></li>
-<li><code>static Element Element::<strong>read</strong>(const u8string&amp; src, size_t&amp; pos)</code></li>
+<li><code>static Element Element::</code><strong><code>read</code></strong><code>(const u8string&amp; src)</code></li>
+<li><code>static Element Element::</code><strong><code>read</code></strong><code>(const u8string&amp; src, size_t&amp; pos)</code></li>
 </ul>
 
 <p>TODO</p>
 
 <ul>
-<li><code>bool <strong>operator==</strong>(const Element&amp; lhs, const Element&amp; rhs) noexcept</code></li>
-<li><code>bool <strong>operator!=</strong>(const Element&amp; lhs, const Element&amp; rhs) noexcept</code></li>
+<li><code>bool</code> <strong><code>operator==</code></strong><code>(const Element&amp; lhs, const Element&amp; rhs) noexcept</code></li>
+<li><code>bool</code> <strong><code>operator!=</code></strong><code>(const Element&amp; lhs, const Element&amp; rhs) noexcept</code></li>
 </ul>
 
 <p>TODO</p>

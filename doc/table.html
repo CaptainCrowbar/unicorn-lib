@@ -13,7 +13,7 @@
 
 <h4 id="includeunicorntable.hpp"><code>#include &quot;unicorn/table.hpp&quot;</code></h4>
 
-<p><code>Unicorn::Table</code> is a utility class for simple table layout in fixed width
+<p><code>Unicorn::</code><strong><code>Table</code></strong> is a utility class for simple table layout in fixed width
 text, a task often useful in formatting the output from command line programs
 and similar utilities. Tables are compiled in UTF&#8211;8 but can be written to
 strings or output streams of any UTF encoding.</p>
@@ -44,25 +44,25 @@ Maxwell Smart     86      0x056  +86.00
 <h2 id="tableclass">Table class</h2>
 
 <ul>
-<li><code>Table::<strong>Table</strong>()</code></li>
-<li><code>Table::<strong>Table</strong>(const Table&amp; t)</code></li>
-<li><code>Table::<strong>Table</strong>(Table&amp;&amp; t) noexcept</code></li>
-<li><code>Table::<strong>~Table</strong>() noexcept</code></li>
-<li><code>Table&amp; Table::<strong>operator=</strong>(const Table&amp; t)</code></li>
-<li><code>Table&amp; Table::<strong>operator=</strong>(Table&amp;&amp; t) noexcept</code></li>
+<li><code>Table::</code><strong><code>Table</code></strong><code>()</code></li>
+<li><code>Table::</code><strong><code>Table</code></strong><code>(const Table&amp; t)</code></li>
+<li><code>Table::</code><strong><code>Table</code></strong><code>(Table&amp;&amp; t) noexcept</code></li>
+<li><code>Table::</code><strong><code>~Table</code></strong><code>() noexcept</code></li>
+<li><code>Table&amp; Table::</code><strong><code>operator=</code></strong><code>(const Table&amp; t)</code></li>
+<li><code>Table&amp; Table::</code><strong><code>operator=</code></strong><code>(Table&amp;&amp; t) noexcept</code></li>
 </ul>
 
 <p>Life cycle functions.</p>
 
 <ul>
-<li><code>void Table::<strong>clear</strong>() noexcept</code></li>
+<li><code>void Table::</code><strong><code>clear</code></strong><code>() noexcept</code></li>
 </ul>
 
 <p>Clears all cell data and formatting settings from the table (i.e. resets the
 table to its default constructed state).</p>
 
 <ul>
-<li><code>template &lt;typename... FS&gt; void Table::<strong>format</strong>(const u8string&amp; f, const FS&amp;... fs)</code></li>
+<li><code>template &lt;typename... FS&gt; void Table::</code><strong><code>format</code></strong><code>(const u8string&amp; f, const FS&amp;... fs)</code></li>
 </ul>
 
 <p>This sets up formatting for the table&#8217;s columns, using the formatting codes
@@ -75,14 +75,14 @@ Formatting is applied to cell data entered after a call to <code>format()</code>
 existing cells already in the table will not be reformatted.</p>
 
 <ul>
-<li><code>template &lt;typename T&gt; Table&amp; Table::<strong>operator&lt;&lt;</strong>(const T&amp; t)</code></li>
+<li><code>template &lt;typename T&gt; Table&amp; Table::</code><strong><code>operator&lt;&lt;</code></strong><code>(const T&amp; t)</code></li>
 </ul>
 
 <p>Adds a data cell to the table. The cell will be formatted according to the
 current column&#8217;s formatting code, if one has been set.</p>
 
 <ul>
-<li><code>Table&amp; Table::<strong>operator&lt;&lt;</strong>([character type] c)</code></li>
+<li><code>Table&amp; Table::</code><strong><code>operator&lt;&lt;</code></strong><code>([character type] c)</code></li>
 </ul>
 
 <p>Single character insertion is used to request various miscellaneous control operations, as
@@ -128,14 +128,14 @@ first column or row.</p>
 
 <p>If the character is a control character (not listed above), whitespace, or an
 unassigned code point, the insertion operator will throw
-<code>std::invalid_argument</code>. Otherwise, the character is used to write a
+<code>std::</code><strong><code>invalid_argument</code></strong>. Otherwise, the character is used to write a
 horizontal rule across the table, by repeating the character to match the
 width of each column.</p>
 
 <ul>
-<li><code>template &lt;typename C, typename... Args&gt; std::basic_string&lt;C&gt; Table::<strong>as_string</strong>(const Args&amp;... args) const</code></li>
-<li><code>template &lt;typename... Args&gt; u8string Table::<strong>str</strong>(const Args&amp;... args) const</code></li>
-<li><code>template &lt;typename C, typename... Args&gt; void Table::<strong>write</strong>(std::basic_ostream&lt;C&gt;&amp; out, const Args&amp;... args) const</code></li>
+<li><code>template &lt;typename C, typename... Args&gt; std::basic_string&lt;C&gt; Table::</code><strong><code>as_string</code></strong><code>(const Args&amp;... args) const</code></li>
+<li><code>template &lt;typename... Args&gt; u8string Table::</code><strong><code>str</code></strong><code>(const Args&amp;... args) const</code></li>
+<li><code>template &lt;typename C, typename... Args&gt; void Table::</code><strong><code>write</code></strong><code>(std::basic_ostream&lt;C&gt;&amp; out, const Args&amp;... args) const</code></li>
 </ul>
 
 <p>These format the table, to a string or an output stream, in the chosen UTF
@@ -170,37 +170,37 @@ default) instead of repeating their contents.</p>
 
 <tbody>
 <tr>
-	<td style="text-align:left;"><code>Table::flags</code></td>
+	<td style="text-align:left;"><code>Table::</code><strong><code>flags</code></strong></td>
 	<td style="text-align:left;"><code>uint32_t</code></td>
 	<td style="text-align:left;"><code>grapheme_units</code></td>
 	<td style="text-align:left;">How string lengths are measured</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>Table::margin</code></td>
+	<td style="text-align:left;"><code>Table::</code><strong><code>margin</code></strong></td>
 	<td style="text-align:left;"><code>size_t</code></td>
 	<td style="text-align:left;"><code>0</code></td>
 	<td style="text-align:left;">Number of spaces in the left margin</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>Table::spacing</code></td>
+	<td style="text-align:left;"><code>Table::</code><strong><code>spacing</code></strong></td>
 	<td style="text-align:left;"><code>size_t</code></td>
 	<td style="text-align:left;"><code>2</code></td>
 	<td style="text-align:left;">Number of spaces between columns</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>Table::unfill</code></td>
+	<td style="text-align:left;"><code>Table::</code><strong><code>unfill</code></strong></td>
 	<td style="text-align:left;"><code>bool</code></td>
 	<td style="text-align:left;"><code>false</code></td>
 	<td style="text-align:left;">Show repeated cells with a ditto mark</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>Table::ditto</code></td>
+	<td style="text-align:left;"><code>Table::</code><strong><code>ditto</code></strong></td>
 	<td style="text-align:left;"><code>u8string</code></td>
 	<td style="text-align:left;"><code>&quot;''&quot;</code></td>
 	<td style="text-align:left;">Symbol used for repeated cells in unfill mode</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>Table::empty</code></td>
+	<td style="text-align:left;"><code>Table::</code><strong><code>empty</code></strong></td>
 	<td style="text-align:left;"><code>u8string</code></td>
 	<td style="text-align:left;"><code>&quot;--&quot;</code></td>
 	<td style="text-align:left;">Symbol used for empty cells</td>

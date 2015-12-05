@@ -72,27 +72,27 @@ Options:
 <h2 id="exceptions">Exceptions</h2>
 
 <ul>
-<li><code>class <strong>CommandLineError</strong>: public std::runtime_error</code>
+<li><code>class</code> <strong><code>CommandLineError</code></strong><code>: public std::runtime_error</code>
 
 <ul>
-<li><code>explicit CommandLineError::<strong>CommandLineError</strong>(const u8string&amp; details, const u8string&amp; arg = {}, const u8string&amp; arg2 = {})</code></li>
+<li><code>explicit CommandLineError::</code><strong><code>CommandLineError</code></strong><code>(const u8string&amp; details, const u8string&amp; arg = {}, const u8string&amp; arg2 = {})</code></li>
 </ul></li>
 </ul>
 
-<p>Thrown by <code>Options::parse()</code> during argument parsing, to report that the
+<p>Thrown by <code>Options::</code><strong><code>parse</code></strong><code>()</code> during argument parsing, to report that the
 command line arguments supplied by the user were not consistent with the
 option specification.</p>
 
 <ul>
-<li><code>class <strong>OptionSpecError</strong>: public std::runtime_error</code>
+<li><code>class</code> <strong><code>OptionSpecError</code></strong><code>: public std::runtime_error</code>
 
 <ul>
-<li><code>explicit OptionSpecError::<strong>OptionSpecError</strong>(const u8string&amp; option)</code></li>
-<li><code>OptionSpecError::<strong>OptionSpecError</strong>(const u8string&amp; details, const u8string&amp; option)</code></li>
+<li><code>explicit OptionSpecError::</code><strong><code>OptionSpecError</code></strong><code>(const u8string&amp; option)</code></li>
+<li><code>OptionSpecError::</code><strong><code>OptionSpecError</code></strong><code>(const u8string&amp; details, const u8string&amp; option)</code></li>
 </ul></li>
 </ul>
 
-<p>Thrown by <code>Options::add()</code> during the creation of an option specification, to
+<p>Thrown by <code>Options::</code><strong><code>add</code></strong><code>()</code> during the creation of an option specification, to
 report an invalid combination of properties.</p>
 
 <h2 id="classoptions">Class Options</h2>
@@ -114,52 +114,52 @@ report an invalid combination of properties.</p>
 
 <tbody>
 <tr>
-	<td style="text-align:left;"><code>Options::abbrev</code></td>
+	<td style="text-align:left;"><code>Options::</code><strong><code>abbrev</code></strong></td>
 	<td style="text-align:left;"><code>u8string</code></td>
 	<td style="text-align:left;">A single letter abbreviation for the option (e.g. <code>&quot;-x&quot;</code>; the hyphen is optional).</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>Options::anon</code></td>
+	<td style="text-align:left;"><code>Options::</code><strong><code>anon</code></strong></td>
 	<td style="text-align:left;"><code>bool</code></td>
 	<td style="text-align:left;">Anonymous arguments (not claimed by any other option) will be assigned to this option.</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>Options::boolean</code></td>
+	<td style="text-align:left;"><code>Options::</code><strong><code>boolean</code></strong></td>
 	<td style="text-align:left;"><code>bool</code></td>
 	<td style="text-align:left;">This option is a boolean switch and does not take arguments.</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>Options::defval</code></td>
+	<td style="text-align:left;"><code>Options::</code><strong><code>defval</code></strong></td>
 	<td style="text-align:left;"><code>u8string</code></td>
 	<td style="text-align:left;">Use this default value if the option is not supplied by the user.</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>Options::floating</code></td>
+	<td style="text-align:left;"><code>Options::</code><strong><code>floating</code></strong></td>
 	<td style="text-align:left;"><code>bool</code></td>
 	<td style="text-align:left;">The argument value must be a floating point number.</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>Options::group</code></td>
+	<td style="text-align:left;"><code>Options::</code><strong><code>group</code></strong></td>
 	<td style="text-align:left;"><code>u8string</code></td>
 	<td style="text-align:left;">Assign the option to a mutual exclusion group; at most one option from a group is allowed.</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>Options::integer</code></td>
+	<td style="text-align:left;"><code>Options::</code><strong><code>integer</code></strong></td>
 	<td style="text-align:left;"><code>bool</code></td>
 	<td style="text-align:left;">The argument value must be an integer.</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>Options::multiple</code></td>
+	<td style="text-align:left;"><code>Options::</code><strong><code>multiple</code></strong></td>
 	<td style="text-align:left;"><code>bool</code></td>
 	<td style="text-align:left;">This option may be followed by multiple arguments.</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>Options::pattern</code></td>
+	<td style="text-align:left;"><code>Options::</code><strong><code>pattern</code></strong></td>
 	<td style="text-align:left;"><code>u8string</code></td>
 	<td style="text-align:left;">The argument value must match this regular expression.</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>Options::required</code></td>
+	<td style="text-align:left;"><code>Options::</code><strong><code>required</code></strong></td>
 	<td style="text-align:left;"><code>bool</code></td>
 	<td style="text-align:left;">This option is mandatory.</td>
 </tr>
@@ -169,7 +169,7 @@ report an invalid combination of properties.</p>
 <p>Keyword arguments for the <code>add()</code> function, described below.</p>
 
 <ul>
-<li><code>explicit Options::<strong>Options</strong>(const u8string&amp; info, const u8string&amp; head = {}, const u8string&amp; tail = {})</code></li>
+<li><code>explicit Options::</code><strong><code>Options</code></strong><code>(const u8string&amp; info, const u8string&amp; head = {}, const u8string&amp; tail = {})</code></li>
 </ul>
 
 <p>Constructor to initialize an option specification. The <code>info</code> argument is a
@@ -180,17 +180,17 @@ the user calls it with the <code>&quot;--version&quot;</code> option. The option
 option list when the full <code>&quot;--help&quot;</code> option is invoked.</p>
 
 <ul>
-<li><code>Options::<strong>Options</strong>(const Options&amp; opt)</code></li>
-<li><code>Options::<strong>Options</strong>(Options&amp;&amp; opt) noexcept</code></li>
-<li><code>Options::<strong>~Options</strong>() noexcept</code></li>
-<li><code>Options&amp; Options::<strong>operator=</strong>(const Options&amp; opt)</code></li>
-<li><code>Options&amp; Options::<strong>operator=</strong>(Options&amp;&amp; opt) noexcept</code></li>
+<li><code>Options::</code><strong><code>Options</code></strong><code>(const Options&amp; opt)</code></li>
+<li><code>Options::</code><strong><code>Options</code></strong><code>(Options&amp;&amp; opt) noexcept</code></li>
+<li><code>Options::</code><strong><code>~Options</code></strong><code>() noexcept</code></li>
+<li><code>Options&amp; Options::</code><strong><code>operator=</code></strong><code>(const Options&amp; opt)</code></li>
+<li><code>Options&amp; Options::</code><strong><code>operator=</code></strong><code>(Options&amp;&amp; opt) noexcept</code></li>
 </ul>
 
 <p>Other life cycle functions.</p>
 
 <ul>
-<li><code>template &lt;typename... Args&gt; void Options::<strong>add</strong>(const u8string&amp; name, const u8string&amp; info, const Args&amp;... args)</code></li>
+<li><code>template &lt;typename... Args&gt; void Options::</code><strong><code>add</code></strong><code>(const u8string&amp; name, const u8string&amp; info, const Args&amp;... args)</code></li>
 </ul>
 
 <p>Adds an option to the parser. The <code>name</code> argument is the full name of the
@@ -225,15 +225,15 @@ parse the actual command line arguments. Once the arguments have been parsed,
 the <code>get()</code>, <code>get_list()</code>, and <code>has()</code> functions can be used to query them.</p>
 
 <ul>
-<li><code>void Options::<strong>autohelp</strong>() noexcept</code></li>
+<li><code>void Options::</code><strong><code>autohelp</code></strong><code>() noexcept</code></li>
 </ul>
 
 <p>If this is set, calling the program with no arguments will be interpreted as a
 request for help (i.e. an empty argument list is equivalent to <code>&quot;--help&quot;</code>).</p>
 
 <ul>
-<li><code>u8string Options::<strong>help</strong>() const</code></li>
-<li><code>u8string Options::<strong>version</strong>() const</code></li>
+<li><code>u8string Options::</code><strong><code>help</code></strong><code>() const</code></li>
+<li><code>u8string Options::</code><strong><code>version</code></strong><code>() const</code></li>
 </ul>
 
 <p>These are the same texts that will be presented to the user by the <code>&quot;--help&quot;</code>
@@ -242,12 +242,12 @@ the <code>Options</code> object; the <code>version()</code> text is simply the o
 string that was supplied to the <code>Options</code> constructor.</p>
 
 <ul>
-<li><code>template &lt;typename C&gt; bool Options::<strong>parse</strong>(const vector&lt;basic_string&lt;C&gt;&gt;&amp; args)</code></li>
-<li><code>template &lt;typename C&gt; bool Options::<strong>parse</strong>(const basic_string&lt;C&gt;&amp; args)</code></li>
-<li><code>template &lt;typename C&gt; bool Options::<strong>parse</strong>(int argc, C** argv)</code></li>
-<li><code>template &lt;typename C, typename C2&gt; bool Options::<strong>parse</strong>(const vector&lt;basic_string&lt;C&gt;&gt;&amp; args, std::basic_ostream&lt;C2&gt;&amp; out, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C, typename C2&gt; bool Options::<strong>parse</strong>(const basic_string&lt;C&gt;&amp; args, std::basic_ostream&lt;C2&gt;&amp; out, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C, typename C2&gt; bool Options::<strong>parse</strong>(int argc, C** argv, std::basic_ostream&lt;C2&gt;&amp; out, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; bool Options::</code><strong><code>parse</code></strong><code>(const vector&lt;basic_string&lt;C&gt;&gt;&amp; args)</code></li>
+<li><code>template &lt;typename C&gt; bool Options::</code><strong><code>parse</code></strong><code>(const basic_string&lt;C&gt;&amp; args)</code></li>
+<li><code>template &lt;typename C&gt; bool Options::</code><strong><code>parse</code></strong><code>(int argc, C** argv)</code></li>
+<li><code>template &lt;typename C, typename C2&gt; bool Options::</code><strong><code>parse</code></strong><code>(const vector&lt;basic_string&lt;C&gt;&gt;&amp; args, std::basic_ostream&lt;C2&gt;&amp; out, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C, typename C2&gt; bool Options::</code><strong><code>parse</code></strong><code>(const basic_string&lt;C&gt;&amp; args, std::basic_ostream&lt;C2&gt;&amp; out, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C, typename C2&gt; bool Options::</code><strong><code>parse</code></strong><code>(int argc, C** argv, std::basic_ostream&lt;C2&gt;&amp; out, uint32_t flags = 0)</code></li>
 </ul>
 
 <p>After the option specification has been constructed, call one of the <code>parse()</code>
@@ -260,7 +260,7 @@ command name (which will be discarded); use the <code>opt_noprefix</code> flag t
 override this.</p>
 
 <p>If help or version information is requested, it will be written to the given
-output stream (<code>std::cout</code> by default). The <code>parse()</code> function will return
+output stream (<code>std::</code><strong><code>cout</code></strong> by default). The <code>parse()</code> function will return
 true if all requested processing has already been handled (i.e. if help or
 version information has been presented to the user); the caller should check
 the return value from <code>parse()</code> and end the program if it is true.</p>
@@ -282,15 +282,15 @@ the return value from <code>parse()</code> and end the program if it is true.</p
 
 <tbody>
 <tr>
-	<td style="text-align:left;"><code>opt_locale</code></td>
+	<td style="text-align:left;"><strong><code>opt_locale</code></strong></td>
 	<td style="text-align:left;">The argument list is in the local encoding</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>opt_noprefix</code></td>
+	<td style="text-align:left;"><strong><code>opt_noprefix</code></strong></td>
 	<td style="text-align:left;">The first argument is not the command name</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>opt_quoted</code></td>
+	<td style="text-align:left;"><strong><code>opt_quoted</code></strong></td>
 	<td style="text-align:left;">Allow arguments to be quoted</td>
 </tr>
 </tbody>
@@ -316,9 +316,9 @@ is true:</p>
 <code>Options</code> object.</p>
 
 <ul>
-<li><code>template &lt;typename T&gt; T Options::<strong>get</strong>(const u8string&amp; name) const</code></li>
-<li><code>template &lt;typename T&gt; vector&lt;T&gt; Options::<strong>get_list</strong>(const u8string&amp; name) const</code></li>
-<li><code>bool Options::<strong>has</strong>(const u8string&amp; name) const</code></li>
+<li><code>template &lt;typename T&gt; T Options::</code><strong><code>get</code></strong><code>(const u8string&amp; name) const</code></li>
+<li><code>template &lt;typename T&gt; vector&lt;T&gt; Options::</code><strong><code>get_list</code></strong><code>(const u8string&amp; name) const</code></li>
+<li><code>bool Options::</code><strong><code>has</code></strong><code>(const u8string&amp; name) const</code></li>
 </ul>
 
 <p>These return information about the options and arguments found in the command line.

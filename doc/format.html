@@ -55,60 +55,66 @@ for details.</p>
 <h2 id="basicformattingfunctions">Basic formatting functions</h2>
 
 <ul>
-<li><code>template &lt;typename T&gt; class <strong>FormatType</strong></code>
+<li><code>template &lt;typename T&gt; class</code> <strong><code>FormatType</code></strong>
 
 <ul>
-<li><code>[string type] <strong>operator()</strong>(T t, uint64_t flags, int prec) const</code></li>
+<li><code>[string type]</code> <strong><code>operator()</code></strong><code>(T t, uint64_t flags, int prec) const</code></li>
 </ul></li>
 </ul>
 
 <p>TODO</p>
 
 <ul>
-<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;bool&gt;</code></li>
-<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;signed char&gt;</code></li>
-<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;unsigned char&gt;</code></li>
-<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;short&gt;</code></li>
-<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;unsigned short&gt;</code></li>
-<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;int&gt;</code></li>
-<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;unsigned&gt;</code></li>
-<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;long&gt;</code></li>
-<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;unsigned long&gt;</code></li>
-<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;long long&gt;</code></li>
-<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;unsigned long long&gt;</code></li>
-<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;int128_t&gt;</code></li>
-<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;uint128_t&gt;</code></li>
-<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;float&gt;</code></li>
-<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;double&gt;</code></li>
-<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;long double&gt;</code></li>
-<li><code>template &lt;typename C&gt; class <strong>FormatType</strong>&lt;basic_string&lt;C&gt;&gt;</code></li>
-<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;char*&gt;</code></li>
-<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;char16_t*&gt;</code></li>
-<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;char32_t*&gt;</code></li>
-<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;wchar_t*&gt;</code></li>
-<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;const char*&gt;</code></li>
-<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;const char16_t*&gt;</code></li>
-<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;const char32_t*&gt;</code></li>
-<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;const wchar_t*&gt;</code></li>
-<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;char&gt;</code></li>
-<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;char16_t&gt;</code></li>
-<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;char32_t&gt;</code></li>
-<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;wchar_t&gt;</code></li>
-<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;std::chrono::system_clock::time_point&gt;</code></li>
-<li><code>template &lt;typename R, typename P&gt; class <strong>FormatType</strong>&lt;std::chrono::duration&lt;R, P&gt;&gt;</code></li>
-<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;Uuid&gt;</code></li>
-<li><code>template &lt;&gt; class <strong>FormatType</strong>&lt;Version&gt;</code></li>
+<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;bool&gt;</code></li>
+<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;signed char&gt;</code></li>
+<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;unsigned char&gt;</code></li>
+<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;short&gt;</code></li>
+<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;unsigned short&gt;</code></li>
+<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;int&gt;</code></li>
+<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;unsigned&gt;</code></li>
+<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;long&gt;</code></li>
+<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;unsigned long&gt;</code></li>
+<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;long long&gt;</code></li>
+<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;unsigned long long&gt;</code></li>
+<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;int128_t&gt;</code></li>
+<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;uint128_t&gt;</code></li>
+<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;float&gt;</code></li>
+<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;double&gt;</code></li>
+<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;long double&gt;</code></li>
+<li><code>template &lt;typename C&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;basic_string&lt;C&gt;&gt;</code></li>
+<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;char*&gt;</code></li>
+<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;char16_t*&gt;</code></li>
+<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;char32_t*&gt;</code></li>
+<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;wchar_t*&gt;</code></li>
+<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;const char*&gt;</code></li>
+<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;const char16_t*&gt;</code></li>
+<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;const char32_t*&gt;</code></li>
+<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;const wchar_t*&gt;</code></li>
+<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;char&gt;</code></li>
+<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;char16_t&gt;</code></li>
+<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;char32_t&gt;</code></li>
+<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;wchar_t&gt;</code></li>
+<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;std::chrono::system_clock::time_point&gt;</code></li>
+<li><code>template &lt;typename R, typename P&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;std::chrono::duration&lt;R, P&gt;&gt;</code></li>
+<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;Uuid&gt;</code></li>
+<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;Version&gt;</code></li>
 </ul>
 
 <p>TODO</p>
 
 <ul>
-<li><code>template &lt;typename T, typename C&gt; void <strong>format_type</strong>(const T&amp; t, basic_string&lt;C&gt;&amp; dst, uint64_t flags = 0, int prec = -1, size_t width = 0, char32_t pad = U' ')</code></li>
-<li><code>template &lt;typename T, typename C&gt; void <strong>format_type</strong>(const T&amp; t, basic_string&lt;C&gt;&amp; dst, const basic_string&lt;C&gt;&amp; flags)</code></li>
-<li><code>template &lt;typename T, typename C&gt; void <strong>format_type</strong>(const T&amp; t, basic_string&lt;C&gt;&amp; dst, const C* flags)</code></li>
-<li><code>template &lt;typename C, typename T&gt; basic_string&lt;C&gt; <strong>format_as</strong>(const T&amp; t, uint64_t flags = 0, int prec = -1, size_t width = 0, char32_t pad = U' ')</code></li>
-<li><code>template &lt;typename C, typename T&gt; basic_string&lt;C&gt; <strong>format_as</strong>(const T&amp; t, const basic_string&lt;C&gt;&amp; flags)</code></li>
-<li><code>template &lt;typename C, typename T&gt; basic_string&lt;C&gt; <strong>format_as</strong>(const T&amp; t, const C* flags)</code></li>
+<li><code>template &lt;typename T, typename C&gt; void</code> <strong><code>format_type</code></strong>
+<code>(const T&amp; t, basic_string&lt;C&gt;&amp; dst, uint64_t flags = 0, int prec = -1, size_t width = 0, char32_t pad = U' ')</code></li>
+<li><code>template &lt;typename T, typename C&gt; void</code> <strong><code>format_type</code></strong>
+<code>(const T&amp; t, basic_string&lt;C&gt;&amp; dst, const basic_string&lt;C&gt;&amp; flags)</code></li>
+<li><code>template &lt;typename T, typename C&gt; void</code> <strong><code>format_type</code></strong>
+<code>(const T&amp; t, basic_string&lt;C&gt;&amp; dst, const C* flags)</code></li>
+<li><code>template &lt;typename C, typename T&gt; basic_string&lt;C&gt;</code> <strong><code>format_as</code></strong>
+<code>(const T&amp; t, uint64_t flags = 0, int prec = -1, size_t width = 0, char32_t pad = U' ')</code></li>
+<li><code>template &lt;typename C, typename T&gt; basic_string&lt;C&gt;</code> <strong><code>format_as</code></strong>
+<code>(const T&amp; t, const basic_string&lt;C&gt;&amp; flags)</code></li>
+<li><code>template &lt;typename C, typename T&gt; basic_string&lt;C&gt;</code> <strong><code>format_as</code></strong>
+<code>(const T&amp; t, const C* flags)</code></li>
 </ul>
 
 <p>TODO</p>
@@ -116,34 +122,35 @@ for details.</p>
 <h2 id="formatterclass">Formatter class</h2>
 
 <ul>
-<li><code>template &lt;typename C&gt; class <strong>BasicFormat</strong></code>
+<li><code>template &lt;typename C&gt; class</code> <strong><code>BasicFormat</code></strong>
 
 <ul>
-<li><code>using BasicFormat::<strong>char_type</strong> = C</code></li>
-<li><code>using BasicFormat::<strong>string_type</strong> = basic_string&lt;C&gt;</code></li>
-<li><code>BasicFormat::<strong>BasicFormat</strong>()</code></li>
-<li><code>explicit BasicFormat::<strong>BasicFormat</strong>(const string_type&amp; format)</code></li>
-<li><code>BasicFormat::<strong>BasicFormat</strong>(const BasicFormat&amp; f)</code></li>
-<li><code>BasicFormat::<strong>BasicFormat</strong>(BasicFormat&amp;&amp; f) noexcept</code></li>
-<li><code>BasicFormat::<strong>~BasicFormat</strong>() noexcept</code></li>
-<li><code>BasicFormat&amp; BasicFormat::<strong>operator=</strong>(const BasicFormat&amp; f)</code></li>
-<li><code>BasicFormat&amp; BasicFormat::<strong>operator=</strong>(BasicFormat&amp;&amp; f) noexcept</code></li>
-<li><code>template &lt;typename... Args&gt; BasicFormat::string_type BasicFormat::<strong>operator()</strong>(const Args&amp;... args) const</code></li>
-<li><code>bool BasicFormat::<strong>empty</strong>() const noexcept</code></li>
-<li><code>size_t BasicFormat::<strong>fields</strong>() const</code></li>
-<li><code>BasicFormat::string_type BasicFormat::<strong>format</strong>() const</code></li>
+<li><code>using BasicFormat::</code><strong><code>char_type</code></strong> <code>= C</code></li>
+<li><code>using BasicFormat::</code><strong><code>string_type</code></strong>
+<code>= basic_string&lt;C&gt;</code></li>
+<li><code>BasicFormat::</code><strong><code>BasicFormat</code></strong><code>()</code></li>
+<li><code>explicit BasicFormat::</code><strong><code>BasicFormat</code></strong><code>(const string_type&amp; format)</code></li>
+<li><code>BasicFormat::</code><strong><code>BasicFormat</code></strong><code>(const BasicFormat&amp; f)</code></li>
+<li><code>BasicFormat::</code><strong><code>BasicFormat</code></strong><code>(BasicFormat&amp;&amp; f) noexcept</code></li>
+<li><code>BasicFormat::</code><strong><code>~BasicFormat</code></strong><code>() noexcept</code></li>
+<li><code>BasicFormat&amp; BasicFormat::</code><strong><code>operator=</code></strong><code>(const BasicFormat&amp; f)</code></li>
+<li><code>BasicFormat&amp; BasicFormat::</code><strong><code>operator=</code></strong><code>(BasicFormat&amp;&amp; f) noexcept</code></li>
+<li><code>template &lt;typename... Args&gt; BasicFormat::string_type BasicFormat::</code><strong><code>operator()</code></strong><code>(const Args&amp;... args) const</code></li>
+<li><code>bool BasicFormat::</code><strong><code>empty</code></strong><code>() const noexcept</code></li>
+<li><code>size_t BasicFormat::</code><strong><code>fields</code></strong><code>() const</code></li>
+<li><code>BasicFormat::</code><strong><code>string_type</code></strong> <code>BasicFormat::</code><strong><code>format</code></strong><code>() const</code></li>
 </ul></li>
-<li><code>using <strong>Format</strong> = BasicFormat&lt;char&gt;</code></li>
-<li><code>using <strong>Format16</strong> = BasicFormat&lt;char16_t&gt;</code></li>
-<li><code>using <strong>Format32</strong> = BasicFormat&lt;char32_t&gt;</code></li>
-<li><code>using <strong>WideFormat</strong> = BasicFormat&lt;wchar_t&gt;</code></li>
+<li><code>using</code> <strong><code>Format</code></strong> <code>= BasicFormat&lt;char&gt;</code></li>
+<li><code>using</code> <strong><code>Format16</code></strong> <code>= BasicFormat&lt;char16_t&gt;</code></li>
+<li><code>using</code> <strong><code>Format32</code></strong> <code>= BasicFormat&lt;char32_t&gt;</code></li>
+<li><code>using</code> <strong><code>WideFormat</code></strong> <code>= BasicFormat&lt;wchar_t&gt;</code></li>
 </ul>
 
 <p>TODO</p>
 
 <ul>
-<li><code>template &lt;typename C&gt; BasicFormat&lt;C&gt; <strong>format</strong>(const basic_string&lt;C&gt;&amp; fmt)</code></li>
-<li><code>template &lt;typename C&gt; BasicFormat&lt;C&gt; <strong>format</strong>(const C* fmt)</code></li>
+<li><code>template &lt;typename C&gt; BasicFormat&lt;C&gt;</code> <strong><code>format</code></strong><code>(const basic_string&lt;C&gt;&amp; fmt)</code></li>
+<li><code>template &lt;typename C&gt; BasicFormat&lt;C&gt;</code> <strong><code>format</code></strong><code>(const C* fmt)</code></li>
 </ul>
 
 <p>TODO</p>
@@ -154,10 +161,14 @@ for details.</p>
 <li><code>namespace Literals</code>
 
 <ul>
-<li><code>Format <strong>operator&quot;&quot; _fmt</strong>(const char* ptr, size_t len)</code></li>
-<li><code>Format16 <strong>operator&quot;&quot; _fmt</strong>(const char16_t* ptr, size_t len)</code></li>
-<li><code>Format32 <strong>operator&quot;&quot; _fmt</strong>(const char32_t* ptr, size_t len)</code></li>
-<li><code>WideFormat <strong>operator&quot;&quot; _fmt</strong>(const wchar_t* ptr, size_t len)</code></li>
+<li><code>Format</code> <strong><code>operator&quot;&quot; _fmt</code></strong>
+<code>(const char* ptr, size_t len)</code></li>
+<li><code>Format16</code> <strong><code>operator&quot;&quot; _fmt</code></strong>
+<code>(const char16_t* ptr, size_t len)</code></li>
+<li><code>Format32</code> <strong><code>operator&quot;&quot; _fmt</code></strong>
+<code>(const char32_t* ptr, size_t len)</code></li>
+<li><code>WideFormat</code> <strong><code>operator&quot;&quot; _fmt</code></strong>
+<code>(const wchar_t* ptr, size_t len)</code></li>
 </ul></li>
 </ul>
 
@@ -184,52 +195,52 @@ for details.</p>
 
 <tbody>
 <tr>
-	<td style="text-align:left;"><code>fx_left</code></td>
+	<td style="text-align:left;"><strong><code>fx_left</code></strong></td>
 	<td style="text-align:left;"><code>&lt;</code></td>
 	<td style="text-align:left;">Left align (default)</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>fx_right</code></td>
+	<td style="text-align:left;"><strong><code>fx_right</code></strong></td>
 	<td style="text-align:left;"><code>&gt;</code></td>
 	<td style="text-align:left;">Right align</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>fx_centre</code></td>
+	<td style="text-align:left;"><strong><code>fx_centre</code></strong></td>
 	<td style="text-align:left;"><code>=</code></td>
 	<td style="text-align:left;">Centre align</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>fx_upper</code></td>
+	<td style="text-align:left;"><strong><code>fx_upper</code></strong></td>
 	<td style="text-align:left;"><code>U</code></td>
 	<td style="text-align:left;">Convert to upper case</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>fx_lower</code></td>
+	<td style="text-align:left;"><strong><code>fx_lower</code></strong></td>
 	<td style="text-align:left;"><code>L</code></td>
 	<td style="text-align:left;">Convert to lower case</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>fx_title</code></td>
+	<td style="text-align:left;"><strong><code>fx_title</code></strong></td>
 	<td style="text-align:left;"><code>T</code></td>
 	<td style="text-align:left;">Convert to title case</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>character_units</code></td>
+	<td style="text-align:left;"><strong><code>character_units</code></strong></td>
 	<td style="text-align:left;"><code>C</code></td>
 	<td style="text-align:left;">Measure string in characters (default)</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>grapheme_units</code></td>
+	<td style="text-align:left;"><strong><code>grapheme_units</code></strong></td>
 	<td style="text-align:left;"><code>G</code></td>
 	<td style="text-align:left;">Measure string in grapheme clusters</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>narrow_context</code></td>
+	<td style="text-align:left;"><strong><code>narrow_context</code></strong></td>
 	<td style="text-align:left;"><code>N</code></td>
 	<td style="text-align:left;">East Asian width, defaulting to narrow</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>wide_context</code></td>
+	<td style="text-align:left;"><strong><code>wide_context</code></strong></td>
 	<td style="text-align:left;"><code>W</code></td>
 	<td style="text-align:left;">East Asian width, defaulting to wide</td>
 </tr>
@@ -257,17 +268,17 @@ for details.</p>
 
 <tbody>
 <tr>
-	<td style="text-align:left;"><code>fx_tf</code></td>
+	<td style="text-align:left;"><strong><code>fx_tf</code></strong></td>
 	<td style="text-align:left;"><code>t</code></td>
 	<td style="text-align:left;">Write as true or false (default)</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>fx_binary</code></td>
+	<td style="text-align:left;"><strong><code>fx_binary</code></strong></td>
 	<td style="text-align:left;"><code>b</code></td>
 	<td style="text-align:left;">Write as 1 or 0</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>fx_yesno</code></td>
+	<td style="text-align:left;"><strong><code>fx_yesno</code></strong></td>
 	<td style="text-align:left;"><code>y</code></td>
 	<td style="text-align:left;">Write as yes or no</td>
 </tr>
@@ -295,32 +306,32 @@ for details.</p>
 
 <tbody>
 <tr>
-	<td style="text-align:left;"><code>fx_decimal</code></td>
+	<td style="text-align:left;"><strong><code>fx_decimal</code></strong></td>
 	<td style="text-align:left;"><code>n</code></td>
 	<td style="text-align:left;">Decimal number (default)</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>fx_binary</code></td>
+	<td style="text-align:left;"><strong><code>fx_binary</code></strong></td>
 	<td style="text-align:left;"><code>b</code></td>
 	<td style="text-align:left;">Binary number</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>fx_hex</code></td>
+	<td style="text-align:left;"><strong><code>fx_hex</code></strong></td>
 	<td style="text-align:left;"><code>x</code></td>
 	<td style="text-align:left;">Hexadecimal number</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>fx_roman</code></td>
+	<td style="text-align:left;"><strong><code>fx_roman</code></strong></td>
 	<td style="text-align:left;"><code>r</code></td>
 	<td style="text-align:left;">Roman numerals</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>fx_sign</code></td>
+	<td style="text-align:left;"><strong><code>fx_sign</code></strong></td>
 	<td style="text-align:left;"><code>s</code></td>
 	<td style="text-align:left;">Always show a sign</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>fx_signz</code></td>
+	<td style="text-align:left;"><strong><code>fx_signz</code></strong></td>
 	<td style="text-align:left;"><code>S</code></td>
 	<td style="text-align:left;">Always show a sign unless zero</td>
 </tr>
@@ -348,42 +359,42 @@ for details.</p>
 
 <tbody>
 <tr>
-	<td style="text-align:left;"><code>fx_digits</code></td>
+	<td style="text-align:left;"><strong><code>fx_digits</code></strong></td>
 	<td style="text-align:left;"><code>d</code></td>
 	<td style="text-align:left;">Fixed significant figures</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>fx_exp</code></td>
+	<td style="text-align:left;"><strong><code>fx_exp</code></strong></td>
 	<td style="text-align:left;"><code>e</code></td>
 	<td style="text-align:left;">Scientific notation</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>fx_fixed</code></td>
+	<td style="text-align:left;"><strong><code>fx_fixed</code></strong></td>
 	<td style="text-align:left;"><code>f</code></td>
 	<td style="text-align:left;">Fixed point notation</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>fx_general</code></td>
+	<td style="text-align:left;"><strong><code>fx_general</code></strong></td>
 	<td style="text-align:left;"><code>g</code></td>
 	<td style="text-align:left;">Use the shorter of d or e (default)</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>fx_prob</code></td>
+	<td style="text-align:left;"><strong><code>fx_prob</code></strong></td>
 	<td style="text-align:left;"><code>p</code></td>
 	<td style="text-align:left;">Probability format</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>fx_sign</code></td>
+	<td style="text-align:left;"><strong><code>fx_sign</code></strong></td>
 	<td style="text-align:left;"><code>s</code></td>
 	<td style="text-align:left;">Always show a sign</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>fx_signz</code></td>
+	<td style="text-align:left;"><strong><code>fx_signz</code></strong></td>
 	<td style="text-align:left;"><code>S</code></td>
 	<td style="text-align:left;">Always show a sign unless zero</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>fx_stripz</code></td>
+	<td style="text-align:left;"><strong><code>fx_stripz</code></strong></td>
 	<td style="text-align:left;"><code>z</code></td>
 	<td style="text-align:left;">Strip trailing zeros</td>
 </tr>
@@ -411,42 +422,42 @@ for details.</p>
 
 <tbody>
 <tr>
-	<td style="text-align:left;"><code>fx_ascii</code></td>
+	<td style="text-align:left;"><strong><code>fx_ascii</code></strong></td>
 	<td style="text-align:left;"><code>a</code></td>
 	<td style="text-align:left;">Escape if not printable ASCII</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>fx_escape</code></td>
+	<td style="text-align:left;"><strong><code>fx_escape</code></strong></td>
 	<td style="text-align:left;"><code>c</code></td>
 	<td style="text-align:left;">Escape C0/C1 controls</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>fx_quote</code></td>
+	<td style="text-align:left;"><strong><code>fx_quote</code></strong></td>
 	<td style="text-align:left;"><code>q</code></td>
 	<td style="text-align:left;">Quote string, escape C0/C1</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>fx_ascquote</code></td>
+	<td style="text-align:left;"><strong><code>fx_ascquote</code></strong></td>
 	<td style="text-align:left;"><code>o</code></td>
 	<td style="text-align:left;">Quote string, escape non-ASCII</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>fx_decimal</code></td>
+	<td style="text-align:left;"><strong><code>fx_decimal</code></strong></td>
 	<td style="text-align:left;"><code>n</code></td>
 	<td style="text-align:left;">Decimal number</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>fx_hex</code></td>
+	<td style="text-align:left;"><strong><code>fx_hex</code></strong></td>
 	<td style="text-align:left;"><code>x</code></td>
 	<td style="text-align:left;">Hexadecimal number</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>fx_hex8</code></td>
+	<td style="text-align:left;"><strong><code>fx_hex8</code></strong></td>
 	<td style="text-align:left;"><code>u</code></td>
 	<td style="text-align:left;">Hex UTF&#8211;8 bytes</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>fx_hex16</code></td>
+	<td style="text-align:left;"><strong><code>fx_hex16</code></strong></td>
 	<td style="text-align:left;"><code>v</code></td>
 	<td style="text-align:left;">Hex UTF&#8211;16 code units</td>
 </tr>
@@ -474,17 +485,17 @@ for details.</p>
 
 <tbody>
 <tr>
-	<td style="text-align:left;"><code>fx_iso</code></td>
+	<td style="text-align:left;"><strong><code>fx_iso</code></strong></td>
 	<td style="text-align:left;"><code>t</code></td>
 	<td style="text-align:left;">ISO 8601 with T delimiter</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>fx_common</code></td>
+	<td style="text-align:left;"><strong><code>fx_common</code></strong></td>
 	<td style="text-align:left;"><code>c</code></td>
 	<td style="text-align:left;">Local standard format</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>fx_local</code></td>
+	<td style="text-align:left;"><strong><code>fx_local</code></strong></td>
 	<td style="text-align:left;"><code>l</code></td>
 	<td style="text-align:left;">Local time zone</td>
 </tr>

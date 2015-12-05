@@ -28,13 +28,13 @@ specific byte order.</p>
 <h2 id="exceptions">Exceptions</h2>
 
 <ul>
-<li><code>class <strong>UnknownEncoding</strong>: public std::runtime_error</code>
+<li><code>class</code> <strong><code>UnknownEncoding</code></strong><code>: public std::</code><strong><code>runtime_error</code></strong>
 
 <ul>
-<li><code>UnknownEncoding::<strong>UnknownEncoding</strong>()</code></li>
-<li><code>explicit UnknownEncoding::<strong>UnknownEncoding</strong>(const u8string&amp; encoding, const u8string&amp; details = {})</code></li>
-<li><code>explicit UnknownEncoding::<strong>UnknownEncoding</strong>(uint32_t encoding, const u8string&amp; details = {})</code></li>
-<li><code>const char* UnknownEncoding::<strong>encoding</strong>() const noexcept</code></li>
+<li><code>UnknownEncoding::</code><strong><code>UnknownEncoding</code></strong><code>()</code></li>
+<li><code>explicit UnknownEncoding::</code><strong><code>UnknownEncoding</code></strong><code>(const u8string&amp; encoding, const u8string&amp; details = {})</code></li>
+<li><code>explicit UnknownEncoding::</code><strong><code>UnknownEncoding</code></strong><code>(uint32_t encoding, const u8string&amp; details = {})</code></li>
+<li><code>const char* UnknownEncoding::</code><strong><code>encoding</code></strong><code>() const noexcept</code></li>
 </ul></li>
 </ul>
 
@@ -43,14 +43,22 @@ specific byte order.</p>
 <h2 id="conversionfunctions">Conversion functions</h2>
 
 <ul>
-<li><code>template &lt;typename C&gt; void <strong>import_string</strong>(const string&amp; src, basic_string&lt;C&gt;&amp; dst)</code></li>
-<li><code>template &lt;typename C, typename C2&gt; void <strong>import_string</strong>(const string&amp; src, basic_string&lt;C&gt;&amp; dst, const basic_string&lt;C2&gt;&amp; enc, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C, typename C2&gt; void <strong>import_string</strong>(const string&amp; src, basic_string&lt;C&gt;&amp; dst, const C2* enc, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; void <strong>import_string</strong>(const string&amp; src, basic_string&lt;C&gt;&amp; dst, uint32_t enc, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; void <strong>export_string</strong>(const basic_string&lt;C&gt;&amp; src, string&amp; dst)</code></li>
-<li><code>template &lt;typename C, typename C2&gt; void <strong>export_string</strong>(const basic_string&lt;C&gt;&amp; src, string&amp; dst, const basic_string&lt;C2&gt;&amp; enc, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C, typename C2&gt; void <strong>export_string</strong>(const basic_string&lt;C&gt;&amp; src, string&amp; dst, const C2* enc, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; void <strong>export_string</strong>(const basic_string&lt;C&gt;&amp; src, string&amp; dst, uint32_t enc, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; void</code> <strong><code>import_string</code></strong>
+<code>(const string&amp; src, basic_string&lt;C&gt;&amp; dst)</code></li>
+<li><code>template &lt;typename C, typename C2&gt; void</code> <strong><code>import_string</code></strong>
+<code>(const string&amp; src, basic_string&lt;C&gt;&amp; dst, const basic_string&lt;C2&gt;&amp; enc, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C, typename C2&gt; void</code> <strong><code>import_string</code></strong>
+<code>(const string&amp; src, basic_string&lt;C&gt;&amp; dst, const C2* enc, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; void</code> <strong><code>import_string</code></strong>
+<code>(const string&amp; src, basic_string&lt;C&gt;&amp; dst, uint32_t enc, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; void</code> <strong><code>export_string</code></strong>
+<code>(const basic_string&lt;C&gt;&amp; src, string&amp; dst)</code></li>
+<li><code>template &lt;typename C, typename C2&gt; void</code> <strong><code>export_string</code></strong>
+<code>(const basic_string&lt;C&gt;&amp; src, string&amp; dst, const basic_string&lt;C2&gt;&amp; enc, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C, typename C2&gt; void</code> <strong><code>export_string</code></strong>
+<code>(const basic_string&lt;C&gt;&amp; src, string&amp; dst, const C2* enc, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; void</code> <strong><code>export_string</code></strong>
+<code>(const basic_string&lt;C&gt;&amp; src, string&amp; dst, uint32_t enc, uint32_t flags = 0)</code></li>
 </ul>
 
 <p>These functions convert from an external multibyte encoding to Unicode
@@ -89,7 +97,7 @@ detectable (see below).</p>
 
 <p>Ignoring invalid encoding is not allowed here; if any MBCS function that takes
 a <code>flags</code> argument is passed the <code>err_ignore</code> flags, it will throw
-<code>std::invalid_argument</code>.</p>
+<code>std::</code><strong><code>invalid_argument</code></strong>.</p>
 
 <p>These functions necessarily inherit some of the limitations of the underlying
 native APIs. In particular, the Windows APIs do not reliably report encoding
@@ -100,7 +108,8 @@ will go ahead and replace invalid data without reporting an error.</p>
 <h2 id="utilityfunctions">Utility functions</h2>
 
 <ul>
-<li><code>u8string <strong>local_encoding</strong>(const u8string&amp; default_encoding = &quot;utf-8&quot;)</code></li>
+<li><code>u8string</code> <strong><code>local_encoding</code></strong>
+<code>(const u8string&amp; default_encoding = &quot;utf-8&quot;)</code></li>
 </ul>
 
 <p>Returns the encoding of the current default locale. The default value will be

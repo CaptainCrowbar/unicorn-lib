@@ -27,90 +27,105 @@ for details.
 
 ## Exceptions ##
 
-* `class SyntaxError: public std::runtime_error`
-    * `SyntaxError::SyntaxError(const u8string& text, size_t offset, const u8string& message = "Syntax error")`
-    * `const char* SyntaxError::text() const noexcept`
-    * `size_t SyntaxError::offset() const noxcept`
+* `class` **`SyntaxError`**`: public std::runtime_error`
+    * `SyntaxError::`**`SyntaxError`**`(const u8string& text, size_t offset, const u8string& message = "Syntax error")`
+    * `const char* SyntaxError::`**`text`**`() const noexcept`
+    * `size_t SyntaxError::`**`offset`**`() const noxcept`
 
 TODO
 
 ## Token structure ##
 
-* `template <typename C> struct BasicToken`
-    * `using BasicToken::char_type = C`
-    * `using BasicToken::string_type = basic_string<C>`
-    * `const BasicToken::string_type* text`
-    * `size_t BasicToken::offset`
-    * `size_t BasicToken::count`
-    * `int BasicToken::tag`
-    * `BasicToken::operator string_type() const`
-* `using Token = BasicToken<char>`
-* `using Token16 = BasicToken<char16_t>`
-* `using Token32 = BasicToken<char32_t>`
-* `using WideToken = BasicToken<wchar_t>`
+* `template <typename C> struct` **`BasicToken`**
+    * `using BasicToken::`**`char_type`** `= C`
+    * `using BasicToken::`**`string_type`**
+        `= basic_string<C>`
+    * `const string_type* BasicToken::`**`text`**
+    * `size_t BasicToken::`**`offset`**
+    * `size_t BasicToken::`**`count`**
+    * `int BasicToken::`**`tag`**
+    * `BasicToken::`**`operator string_type`**`() const`
+* `using` **`Token`** `= BasicToken<char>`
+* `using` **`Token16`** `= BasicToken<char16_t>`
+* `using` **`Token32`** `= BasicToken<char32_t>`
+* `using` **`WideToken`** `= BasicToken<wchar_t>`
 
 TODO
 
 ## Token iterator ##
 
-* `template <typename CX> class BasicTokenIterator`
-    * `using BasicTokenIterator::char_type = [char if CX is void, otherwise CX]`
-    * `using BasicTokenIterator::string_type = basic_string<char_type>`
-    * `using BasicTokenIterator::difference_type = ptrdiff_t`
-    * `using BasicTokenIterator::iterator_category = std::forward_iterator_tag`
-    * `using BasicTokenIterator::pointer = const BasicToken<char_type>*`
-    * `using BasicTokenIterator::reference = const BasicToken<char_type>&`
-    * `using BasicTokenIterator::value_type = BasicToken<char_type>`
-    * `BasicTokenIterator::BasicTokenIterator()`
-    * `[standard iterator operations]`
-* `using TokenIterator = BasicTokenIterator<char>`
-* `using TokenIterator16 = BasicTokenIterator<char16_t>`
-* `using TokenIterator32 = BasicTokenIterator<char32_t>`
-* `using WideTokenIterator = BasicTokenIterator<wchar_t>`
-* `using ByteTokenIterator = BasicTokenIterator<void>`
+* `template <typename CX> class` **`BasicTokenIterator`**
+    * `using BasicTokenIterator::`**`char_type`**
+        `= [char if CX is void, otherwise CX]`
+    * `using BasicTokenIterator::`**`string_type`**
+        `= basic_string<char_type>`
+    * `using BasicTokenIterator::`**`difference_type`**
+        `= ptrdiff_t`
+    * `using BasicTokenIterator::`**`iterator_category`**
+        `= std::`**`forward_iterator_tag`**
+    * `using BasicTokenIterator::`**`pointer`**
+        `= const BasicToken<char_type>*`
+    * `using BasicTokenIterator::`**`reference`**
+        `= const BasicToken<char_type>&`
+    * `using BasicTokenIterator::`**`value_type`**
+        `= BasicToken<char_type>`
+    * `BasicTokenIterator::`**`BasicTokenIterator`**`()`
+    * _[standard iterator operations]_
+* `using` **`TokenIterator`** `= BasicTokenIterator<char>`
+* `using` **`TokenIterator16`** `= BasicTokenIterator<char16_t>`
+* `using` **`TokenIterator32`** `= BasicTokenIterator<char32_t>`
+* `using` **`WideTokenIterator`** `= BasicTokenIterator<wchar_t>`
+* `using` **`ByteTokenIterator`** `= BasicTokenIterator<void>`
 
 TODO
 
 ## Lexer class ##
 
-* `template <typename CX> class BasicLexer`
-* `using Lexer = BasicLexer<char>`
-* `using Lexer16 = BasicLexer<char16_t>`
-* `using Lexer32 = BasicLexer<char32_t>`
-* `using WideLexer = BasicLexer<wchar_t>`
-* `using ByteLexer = BasicLexer<void>`
+* `template <typename CX> class` **`BasicLexer`**
+* `using` **`Lexer`** `= BasicLexer<char>`
+* `using` **`Lexer16`** `= BasicLexer<char16_t>`
+* `using` **`Lexer32`** `= BasicLexer<char32_t>`
+* `using` **`WideLexer`** `= BasicLexer<wchar_t>`
+* `using` **`ByteLexer`** `= BasicLexer<void>`
 
 TODO
 
-* `using BasicLexer::char_type = [char if CX is void, otherwise CX]`
-* `using BasicLexer::string_type = basic_string<char_type>`
-* `using BasicLexer::regex_type = BasicRegex<CX>`
-* `using BasicLexer::token_type = BasicToken<char_type>`
-* `using BasicLexer::callback_type = std::function<size_t(const string_type&, size_t)>`
-* `using BasicLexer::token_iterator = BasicTokenIterator<CX>`
-* `using BasicLexer::token_range = Irange<token_iterator>`
+* `using BasicLexer::`**`char_type`**
+    `= [char if CX is void, otherwise CX]`
+* `using BasicLexer::`**`string_type`**
+    `= basic_string<char_type>`
+* `using BasicLexer::`**`regex_type`**
+    `= BasicRegex<CX>`
+* `using BasicLexer::`**`token_type`**
+    `= BasicToken<char_type>`
+* `using BasicLexer::`**`callback_type`**
+    `= std::function<size_t(const string_type&, size_t)>`
+* `using BasicLexer::`**`token_iterator`**
+    `= BasicTokenIterator<CX>`
+* `using BasicLexer::`**`token_range`**
+    `= Irange<token_iterator>`
 
 TODO
 
-* `BasicLexer::BasicLexer()`
-* `BasicLexer::BasicLexer(const BasicLexer& lex)`
-* `BasicLexer::BasicLexer(BasicLexer&& lex) noexcept`
-* `BasicLexer::~BasicLexer() noexcept`
-* `BasicLexer& BasicLexer::operator=(const BasicLexer& lex)`
-* `BasicLexer& BasicLexer::operator=(BasicLexer&& lex) noexcept`
+* `BasicLexer::`**`BasicLexer`**`()`
+* `BasicLexer::`**`BasicLexer`**`(const BasicLexer& lex)`
+* `BasicLexer::`**`BasicLexer`**`(BasicLexer&& lex) noexcept`
+* `BasicLexer::`**`~BasicLexer`**`() noexcept`
+* `BasicLexer& BasicLexer::`**`operator=`**`(const BasicLexer& lex)`
+* `BasicLexer& BasicLexer::`**`operator=`**`(BasicLexer&& lex) noexcept`
 
 TODO
 
-* `BasicLexer::token_range BasicLexer::lex(const string_type& text) const`
-* `BasicLexer::token_range BasicLexer::operator()(const string_type& text) const`
+* `BasicLexer::token_range BasicLexer::`**`lex`**`(const string_type& text) const`
+* `BasicLexer::token_range BasicLexer::`**`operator()`**`(const string_type& text) const`
 
 TODO
 
-* `void BasicLexer::call(int tag, const callback_type& call)`
-* `void BasicLexer::exact(int tag, const string_type& pattern)`
-* `void BasicLexer::exact(int tag, const char_type* pattern)`
-* `void BasicLexer::match(int tag, const regex_type& pattern)`
-* `void BasicLexer::match(int tag, const string_type& pattern, uint32_t flags = 0)`
-* `void BasicLexer::match(int tag, const char_type* pattern, uint32_t flags = 0)`
+* `void BasicLexer::`**`call`**`(int tag, const callback_type& call)`
+* `void BasicLexer::`**`exact`**`(int tag, const string_type& pattern)`
+* `void BasicLexer::`**`exact`**`(int tag, const char_type* pattern)`
+* `void BasicLexer::`**`match`**`(int tag, const regex_type& pattern)`
+* `void BasicLexer::`**`match`**`(int tag, const string_type& pattern, uint32_t flags = 0)`
+* `void BasicLexer::`**`match`**`(int tag, const char_type* pattern, uint32_t flags = 0)`
 
 TODO

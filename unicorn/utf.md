@@ -25,11 +25,11 @@ UTF-32; `wstring` may hold either UTF-16 or UTF-32, depending on the compiler.
 
 ## Constants ##
 
-Flag           | Description
-----           | -----------
-`err_ignore`   | Assume valid UTF input
-`err_replace`  | Replace invalid UTF with `U+FFFD`
-`err_throw`    | Throw `EncodingError` on invalid UTF
+Flag               | Description
+----               | -----------
+**`err_ignore`**   | Assume valid UTF input
+**`err_replace`**  | Replace invalid UTF with `U+FFFD`
+**`err_throw`**    | Throw `EncodingError` on invalid UTF
 
 These bitmask flags are used in most encoding conversion functions, and some
 related functions, to indicate how to handle encoding errors in the input
@@ -62,40 +62,48 @@ not accept the `err_ignore` option.
 
 ## Utility functions ##
 
-* `template <typename C> unsigned code_units(char32_t c)`
+* `template <typename C> unsigned` **`code_units`**
+    `(char32_t c)`
 
 Returns the number of code units in the encoding of the character `c`, in the
 UTF encoding implied by the character type `C`.
 
-* `template <typename C> bool is_single_unit(C c)` _-- This code unit represents a character by itself_
-* `template <typename C> bool is_start_unit(C c)` _-- This is the first code unit of a multi-unit character_
-* `template <typename C> bool is_following_unit(C c)` _-- This is the second or subsequent code unit of a multi-unit character_
-* `template <typename C> bool is_invalid_unit(C c)` _-- This value is not a legal code unit_
-* `template <typename C> bool is_initial_unit(C c)` _-- Either a single unit or a start unit_
+* `template <typename C> bool` **`is_single_unit`**`(C c)` _-- This code unit represents a character by itself_
+* `template <typename C> bool` **`is_start_unit`**`(C c)` _-- This is the first code unit of a multi-unit character_
+* `template <typename C> bool` **`is_following_unit`**`(C c)` _-- This is the second or subsequent code unit of a multi-unit character_
+* `template <typename C> bool` **`is_invalid_unit`**`(C c)` _-- This value is not a legal code unit_
+* `template <typename C> bool` **`is_initial_unit`**`(C c)` _-- Either a single unit or a start unit_
 
 These give the properties of individual code units. Exactly one of the first
 four functions will be true for any value of `C`.
 
 ## UTF decoding iterator ##
 
-* `template <typename C> class UtfIterator`
-    * `using UtfIterator::code_unit = C`
-    * `using UtfIterator::string_type = basic_string<C>`
-    * `using UtfIterator::difference_type = ptrdiff_t`
-    * `using UtfIterator::iterator_category = std::bidirectional_iterator_tag`
-    * `using UtfIterator::pointer = const char32_t*`
-    * `using UtfIterator::reference = const char32_t&`
-    * `using UtfIterator::value_type = char32_t`
-    * `UtfIterator::UtfIterator() noexcept`
-    * `explicit UtfIterator::UtfIterator(const string_type& src)`
-    * `UtfIterator::UtfIterator(const string_type& src, size_t offset, uint32_t flags = 0)`
-    * `const string_type& UtfIterator::source() const noexcept`
-    * `size_t UtfIterator::offset() const noexcept`
-    * `size_t UtfIterator::count() const noexcept`
-    * `Irange<const C*> UtfIterator::range() const noexcept`
-    * `string_type str() const`
-    * `bool UtfIterator::valid() const noexcept`
-    * `[standard iterator operations]`
+* `template <typename C> class` **`UtfIterator`**
+    * `using UtfIterator::`**`code_unit`**
+        `= C`
+    * `using UtfIterator::`**`string_type`**
+        `= basic_string<C>`
+    * `using UtfIterator::`**`difference_type`**
+        `= ptrdiff_t`
+    * `using UtfIterator::`**`iterator_category`**
+        `= std::bidirectional_iterator_tag`
+    * `using UtfIterator::`**`pointer`**
+        `= const char32_t*`
+    * `using UtfIterator::`**`reference`**
+        `= const char32_t&`
+    * `using UtfIterator::`**`value_type`**
+        `= char32_t`
+    * `UtfIterator::`**`UtfIterator`**`() noexcept`
+    * `explicit UtfIterator::`**`UtfIterator`**`(const string_type& src)`
+    * `UtfIterator::`**`UtfIterator`**`(const string_type& src, size_t offset, uint32_t flags = 0)`
+    * `const string_type& UtfIterator::`**`source`**`() const noexcept`
+    * `size_t UtfIterator::`**`offset`**`() const noexcept`
+    * `size_t UtfIterator::`**`count`**`() const noexcept`
+    * `Irange<const C*> UtfIterator::`**`range`**`() const noexcept`
+    * `string_type` **`str`**`() const`
+    * `bool UtfIterator::`**`valid`**`() const noexcept`
+    * _[standard iterator operations]_
 
 This is a bidirectional iterator over any UTF-encoded text. The template
 argument type (`C`) is the code unit type of the underlying encoded string,
@@ -144,47 +152,58 @@ iterator, but if one of the non-default error handling options is selected, it
 will check for valid Unicode characters and treat invalid code points as
 errors.
 
-* `using Utf8Iterator = UtfIterator<char>`
-* `using Utf16Iterator = UtfIterator<char16_t>`
-* `using Utf32Iterator = UtfIterator<char32_t>`
-* `using WcharIterator = UtfIterator<wchar_t>`
-* `using Utf8Range = Irange<Utf8Iterator>`
-* `using Utf16Range = Irange<Utf16Iterator>`
-* `using Utf32Range = Irange<Utf32Iterator>`
-* `using WcharRange = Irange<WcharIterator>`
+* `using` **`Utf8Iterator`** `= UtfIterator<char>`
+* `using` **`Utf16Iterator`** `= UtfIterator<char16_t>`
+* `using` **`Utf32Iterator`** `= UtfIterator<char32_t>`
+* `using` **`WcharIterator`** `= UtfIterator<wchar_t>`
+* `using` **`Utf8Range`** `= Irange<Utf8Iterator>`
+* `using` **`Utf16Range`** `= Irange<Utf16Iterator>`
+* `using` **`Utf32Range`** `= Irange<Utf32Iterator>`
+* `using` **`WcharRange`** `= Irange<WcharIterator>`
 
 Convenience aliases for specific iterators and ranges.
 
-* `template <typename C> UtfIterator<C> utf_begin(const basic_string<C>& src, uint32_t flags = 0)`
-* `template <typename C> UtfIterator<C> utf_end(const basic_string<C>& src, uint32_t flags = 0)`
-* `template <typename C> Irange<UtfIterator<C>> utf_range(const basic_string<C>& src, uint32_t flags = 0)`
+* `template <typename C> UtfIterator<C>` **`utf_begin`**
+    `(const basic_string<C>& src, uint32_t flags = 0)`
+* `template <typename C> UtfIterator<C>` **`utf_end`**
+    `(const basic_string<C>& src, uint32_t flags = 0)`
+* `template <typename C> Irange<UtfIterator<C>>` **`utf_range`**
+    `(const basic_string<C>& src, uint32_t flags = 0)`
 
 These return iterators over an encoded string.
 
-* `template <typename C> UtfIterator<C> utf_iterator(const basic_string<C>& src, size_t offset, uint32_t flags = 0)`
+* `template <typename C> UtfIterator<C>` **`utf_iterator`**
+    `(const basic_string<C>& src, size_t offset, uint32_t flags = 0)`
 
 Returns an iterator pointing to a specific offset in a string.
 
-* `template <typename C> basic_string<C> u_str(const UtfIterator<C>& i, const UtfIterator<C>& j)`
-* `template <typename C> basic_string<C> u_str(const Irange<UtfIterator<C>>& range)`
+* `template <typename C> basic_string<C>` **`u_str`**`(const UtfIterator<C>& i, const UtfIterator<C>& j)`
+* `template <typename C> basic_string<C>` **`u_str`**`(const Irange<UtfIterator<C>>& range)`
 
 These return a copy of the substring between two iterators.
 
 ## UTF encoding iterator ##
 
-* `template <typename C> class UtfWriter`
-    * `using UtfWriter::code_unit = C`
-    * `using UtfWriter::string_type = basic_string<C>`
-    * `using UtfWriter::difference_type = void`
-    * `using UtfWriter::iterator_category = std::output_iterator_tag`
-    * `using UtfWriter::pointer = void`
-    * `using UtfWriter::reference = void`
-    * `using UtfWriter::value_type = char32_t`
-    * `UtfWriter::UtfWriter() noexcept`
-    * `explicit UtfWriter::UtfWriter(string_type& dst) noexcept`
-    * `UtfWriter::UtfWriter(string_type& dst, int on_error) noexcept`
-    * `bool UtfWriter::valid() const noexcept`
-    * `[standard iterator operations]`
+* `template <typename C> class` **`UtfWriter`**
+    * `using UtfWriter::`**`code_unit`**
+        `= C`
+    * `using UtfWriter::`**`string_type`**
+        `= basic_string<C>`
+    * `using UtfWriter::`**`difference_type`**
+        `= void`
+    * `using UtfWriter::`**`iterator_category`**
+        `= std::output_iterator_tag`
+    * `using UtfWriter::`**`pointer`**
+        `= void`
+    * `using UtfWriter::`**`reference`**
+        `= void`
+    * `using UtfWriter::`**`value_type`**
+        `= char32_t`
+    * `UtfWriter::`**`UtfWriter`**`() noexcept`
+    * `explicit UtfWriter::`**`UtfWriter`**`(string_type& dst) noexcept`
+    * `UtfWriter::`**`UtfWriter`**`(string_type& dst, int on_error) noexcept`
+    * `bool UtfWriter::`**`valid`**`() const noexcept`
+    * _[standard iterator operations]_
 
 This is an output iterator that writes encoded characters onto the end of a
 string. As with `UtfIterator`, the encoding form is determined by the size of
@@ -197,24 +216,25 @@ If an exception is thrown, nothing will be written to the output string.
 Otherwise, the `flags` argument and the `valid()` function work in much the
 same way as for `UtfIterator`.
 
-* `using Utf8Writer = UtfWriter<char>`
-* `using Utf16Writer = UtfWriter<char16_t>`
-* `using Utf32Writer = UtfWriter<char32_t>`
-* `using WcharWriter = UtfWriter<wchar_t>`
+* `using` **`Utf8Writer`** `= UtfWriter<char>`
+* `using` **`Utf16Writer`** `= UtfWriter<char16_t>`
+* `using` **`Utf32Writer`** `= UtfWriter<char32_t>`
+* `using` **`WcharWriter`** `= UtfWriter<wchar_t>`
 
 Convenience aliases for specific iterators.
 
-* `template <typename C> UtfWriter<C> utf_writer(basic_string<C>& dst, uint32_t flags = 0) noexcept`
+* `template <typename C> UtfWriter<C>` **`utf_writer`**
+    `(basic_string<C>& dst, uint32_t flags = 0) noexcept`
 
 Returns an encoding iterator writing to the given destination string.
 
 ## UTF conversion functions ##
 
-* `template <typename C1, typename C2> void recode(const basic_string<C1>& src, basic_string<C2>& dst, uint32_t flags = 0)`
-* `template <typename C1, typename C2> void recode(const basic_string<C1>& src, size_t offset, basic_string<C2>& dst, uint32_t flags = 0)`
-* `template <typename C1, typename C2> void recode(const C1* src, size_t count, basic_string<C2>& dst, uint32_t flags = 0)`
-* `template <typename C2, typename C1> basic_string<C2> recode(const basic_string<C1>& src, uint32_t flags = 0)`
-* `template <typename C2, typename C1> basic_string<C2> recode(const basic_string<C1>& src, size_t offset, int on_error)`
+* `template <typename C1, typename C2> void` **`recode`**`(const basic_string<C1>& src, basic_string<C2>& dst, uint32_t flags = 0)`
+* `template <typename C1, typename C2> void` **`recode`**`(const basic_string<C1>& src, size_t offset, basic_string<C2>& dst, uint32_t flags = 0)`
+* `template <typename C1, typename C2> void` **`recode`**`(const C1* src, size_t count, basic_string<C2>& dst, uint32_t flags = 0)`
+* `template <typename C2, typename C1> basic_string<C2>` **`recode`**`(const basic_string<C1>& src, uint32_t flags = 0)`
+* `template <typename C2, typename C1> basic_string<C2>` **`recode`**`(const basic_string<C1>& src, size_t offset, int on_error)`
 
 Encoding conversion functions. These convert from one UTF encoding to another;
 as usual, the encoding forms are determined by the size of the input (`C1`)
@@ -230,29 +250,37 @@ The `flags` argument has its usual meaning. If the destination string was
 supplied by reference, after an exception is thrown the destination string
 will contain the successfully converted part of the string before the error.
 
-* `template <typename C> u8string to_utf8(const basic_string<C>& src, uint32_t flags = 0)`
-* `template <typename C> u16string to_utf16(const basic_string<C>& src, uint32_t flags = 0)`
-* `template <typename C> u32string to_utf32(const basic_string<C>& src, uint32_t flags = 0)`
-* `template <typename C> wstring to_wstring(const basic_string<C>& src, uint32_t flags = 0)`
-* `template <typename C> NativeString to_native(const basic_string<C>& src, uint32_t flags = 0)`
+* `template <typename C> u8string` **`to_utf8`**
+    `(const basic_string<C>& src, uint32_t flags = 0)`
+* `template <typename C> u16string` **`to_utf16`**
+    `(const basic_string<C>& src, uint32_t flags = 0)`
+* `template <typename C> u32string` **`to_utf32`**
+    `(const basic_string<C>& src, uint32_t flags = 0)`
+* `template <typename C> wstring` **`to_wstring`**
+    `(const basic_string<C>& src, uint32_t flags = 0)`
+* `template <typename C> NativeString` **`to_native`**
+    `(const basic_string<C>& src, uint32_t flags = 0)`
 
 These are just shorthand for the corresponding invocation of `recode()`.
 
 ## UTF validation functions ##
 
-* `template <typename C> void sanitize(basic_string<C>& str)`
+* `template <typename C> void` **`sanitize`**`(basic_string<C>& str)`
 
 This ensures that the string is a valid UTF encoding, by replacing any invalid
 data with the `U+FFFD` replacement character.
 
-* `template <typename C> bool valid_string(const basic_string<C>& str)`
-* `template <typename C> void check_string(const basic_string<C>& str)`
+* `template <typename C> bool` **`valid_string`**
+    `(const basic_string<C>& str)`
+* `template <typename C> void` **`check_string`**
+    `(const basic_string<C>& str)`
 
 These check for valid encoding. If the string contains invalid UTF,
 `valid_string()` returns `false`, while `check_string()` throws
 `EncodingError`.
 
-* `template <typename C> size_t valid_count(const basic_string<C>& str) noexcept`
+* `template <typename C> size_t` **`valid_count`**
+    `(const basic_string<C>& str) noexcept`
 
 Finds the position of the first invalid UTF encoding in a string. The return
 value is the offset (in code units) to the first invalid code unit, or `npos`

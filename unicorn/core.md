@@ -26,18 +26,18 @@ Everything in the Prion library is imported.
 
 ## Exceptions ##
 
-* `class InitializationError: public std::runtime_error`
+* `class` **`InitializationError`**`: public std::runtime_error`
 
 An abstract base class for internal errors that may happen while loading the
 Unicode tables used by certain functions. Functions that can throw exceptions
 derived from this are individually documented.
 
-* `class EncodingError: public std::runtime_error`
-    * `EncodingError::EncodingError()`
-    * `explicit EncodingError::EncodingError(const u8string& encoding, size_t offset = 0, char32_t c = 0)`
-    * `template <typename C> EncodingError::EncodingError(const u8string& encoding, size_t offset, const C* ptr, size_t n = 1)`
-    * `const char* EncodingError::encoding() noexcept const`
-    * `size_t EncodingError::offset() const noexcept`
+* `class` **`EncodingError`**`: public std::runtime_error`
+    * `EncodingError::`**`EncodingError`**`()`
+    * `explicit EncodingError::`**`EncodingError`**`(const u8string& encoding, size_t offset = 0, char32_t c = 0)`
+    * `template <typename C> EncodingError::`**`EncodingError`**`(const u8string& encoding, size_t offset, const C* ptr, size_t n = 1)`
+    * `const char* EncodingError::`**`encoding`**`() noexcept const`
+    * `size_t EncodingError::`**`offset`**`() const noexcept`
 
 An exception thrown to indicate a text encoding error encountered when
 converting a string from one encoding to another, or when checking an encoded
@@ -48,38 +48,38 @@ error message.
 
 ## Basic character types ##
 
-* `#define UNICORN_NATIVE_WCHAR 1`
+* `#define` **`UNICORN_NATIVE_WCHAR`** `1`
 
 Defined if the operating system's native API uses wide character strings (this
 is currently defined only for native Windows builds).
 
-* `#define UNICORN_WCHAR_UTF16 1`
-* `#define UNICORN_WCHAR_UTF32 1`
+* `#define` **`UNICORN_WCHAR_UTF16`** `1`
+* `#define` **`UNICORN_WCHAR_UTF32`** `1`
 
 One of these is defined to indicate which UTF encoding the system's `wstring`
 class uses.
 
-* `template <typename C> struct IsCharacterType`
-    * `static constexpr bool IsCharacterType::value`
+* `template <typename C> struct` **`IsCharacterType`**
+    * `static constexpr bool IsCharacterType::`**`value`**
 
 The `value` flag is true if `C` is one of the character types recognized by
 the Unicorn library (`char`, `char16_t`, `char32_t`, or `wchar_t`).
 
-* `using NativeCharacter = [char on Unix, wchar_t on Windows]`
-* `using NativeString = [string on Unix, wstring on Windows]`
+* `using` **`NativeCharacter`** `= [char on Unix, wchar_t on Windows]`
+* `using` **`NativeString`** `= [string on Unix, wstring on Windows]`
 
 These are the character and string types used in the operating system's native
 ABI.
 
-* `using WcharEquivalent = [char16_t or char32_t]`
-* `using WstringEquivalent = [u16string or u32string]`
+* `using` **`WcharEquivalent`** `= [char16_t or char32_t]`
+* `using` **`WstringEquivalent`** `= [u16string or u32string]`
 
 These are defined to match the UTF encoding of the system's `wstring` class.
 
 ## Version information ##
 
-* `Version unicorn_version() noexcept`
-* `Version unicode_version() noexcept`
+* `Version` **`unicorn_version`**`() noexcept`
+* `Version` **`unicode_version`**`() noexcept`
 
 These return the version of the Unicorn library and the supported version of
 the Unicode standard.

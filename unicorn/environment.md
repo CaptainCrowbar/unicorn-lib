@@ -59,103 +59,113 @@ if the `flags` argument is not one of these values.
 
 All of these functions can throw `EncodingError` if the `err_throw` flag is
 used and invalid UTF encoding is encountered (either in a string supplied by
-the caller, or in one returned from the environment), `std::invalid_argument`
+the caller, or in one returned from the environment), `std::`**`invalid_argument`**
 if an environment variable name is empty or contains an equals sign, or
-`std::system_error` if anything goes wrong with the underlying system API
+`std::`**`system_error`** if anything goes wrong with the underlying system API
 call.
 
-* `template <typename C> basic_string<C> get_env(const basic_string<C>& name, uint32_t flags = 0)`
-* `template <typename C> basic_string<C> get_env(const C* name, uint32_t flags = 0)`
+* `template <typename C> basic_string<C>` **`get_env`**
+    `(const basic_string<C>& name, uint32_t flags = 0)`
+* `template <typename C> basic_string<C>` **`get_env`**
+    `(const C* name, uint32_t flags = 0)`
 
 Query the value of an environment variable. This will return an empty string
 if the variable does not exist.
 
-* `template <typename C> bool has_env(const basic_string<C>& name, uint32_t flags = 0)`
-* `template <typename C> bool has_env(const C* name, uint32_t flags = 0)`
+* `template <typename C> bool` **`has_env`**
+    `(const basic_string<C>& name, uint32_t flags = 0)`
+* `template <typename C> bool` **`has_env`**
+    `(const C* name, uint32_t flags = 0)`
 
 Query whether an environment variable exists. Windows, unlike Unix, does not
 always distinguish clearly between a variable that does not exist, and one
 that exists but whose value is an empty string; if a variable has been set to
 an empty value, this function may or may not report its existence on Windows.
 
-* `template <typename C> void set_env(const basic_string<C>& name, const basic_string<C>& value, uint32_t flags = 0)`
-* `template <typename C> void set_env(const basic_string<C>& name, const C* value, uint32_t flags = 0)`
-* `template <typename C> void set_env(const C* name, const basic_string<C>& value, uint32_t flags = 0)`
-* `template <typename C> void set_env(const C* name, const C* value, uint32_t flags = 0)`
+* `template <typename C> void` **`set_env`**
+    `(const basic_string<C>& name, const basic_string<C>& value, uint32_t flags = 0)`
+* `template <typename C> void` **`set_env`**
+    `(const basic_string<C>& name, const C* value, uint32_t flags = 0)`
+* `template <typename C> void` **`set_env`**
+    `(const C* name, const basic_string<C>& value, uint32_t flags = 0)`
+* `template <typename C> void` **`set_env`**
+    `(const C* name, const C* value, uint32_t flags = 0)`
 
 Set the value of a variable in the process's environment block.
 
-* `template <typename C> void unset_env(const basic_string<C>& name, uint32_t flags = 0)`
-* `template <typename C> void unset_env(const C* name, uint32_t flags = 0)`
+* `template <typename C> void` **`unset_env`**
+    `(const basic_string<C>& name, uint32_t flags = 0)`
+* `template <typename C> void` **`unset_env`**
+    `(const C* name, uint32_t flags = 0)`
 
 Delete a variable from the process's environment block.
 
 ## Class Environment ##
 
-* `class Environment`
+* `class` **`Environment`**
 
 A class that holds a complete environment block.
 
-* `class Environment::iterator`
+* `class` **`Environment`**`::iterator`
 
 A read-only iterator over the name-value pairs stored in an `Environment`
 object. This is a forward iterator whose value type is
-`std::pair<NativeString,NativeString>`.
+`std::`**`pair`**`<NativeString,NativeString>`.
 
-* `Environment::Environment()`
-* `explicit Environment::Environment(bool from_process)`
-* `Environment::Environment(const Environment& env)`
-* `Environment::Environment(Environment&& env) noexcept`
-* `Environment::~Environment() noexcept`
-* `Environment& Environment::operator=(const Environment& env)`
-* `Environment& Environment::operator=(Environment&& env) noexcept`
+* `Environment::`**`Environment`**`()`
+* `explicit Environment::`**`Environment`**`(bool from_process)`
+* `Environment::`**`Environment`**`(const Environment& env)`
+* `Environment::`**`Environment`**`(Environment&& env) noexcept`
+* `Environment::`**`~Environment`**`() noexcept`
+* `Environment& Environment::`**`operator=`**`(const Environment& env)`
+* `Environment& Environment::`**`operator=`**`(Environment&& env) noexcept`
 
 Life cycle operations. If the `from_process` flag is set, the constructor will
 copy the environment data from the calling process; otherwise, the newly
 constructed `Environment` object will be empty.
 
-* `template <typename C> basic_string<C> Environment::operator[](const basic_string<C>& name)`
-* `template <typename C> basic_string<C> Environment::operator[](const C* name)`
-* `template <typename C> basic_string<C> Environment::get(const basic_string<C>& name, uint32_t flags = 0)`
-* `template <typename C> basic_string<C> Environment::get(const C* name, uint32_t flags = 0)`
-* `template <typename C> bool Environment::has(const basic_string<C>& name, uint32_t flags = 0)`
-* `template <typename C> bool Environment::has(const C* name, uint32_t flags = 0)`
-* `template <typename C> void Environment::set(const basic_string<C>& name, const basic_string<C>& value, uint32_t flags = 0)`
-* `template <typename C> void Environment::set(const basic_string<C>& name, const C* value, uint32_t flags = 0)`
-* `template <typename C> void Environment::set(const C* name, const basic_string<C>& value, uint32_t flags = 0)`
-* `template <typename C> void Environment::set(const C* name, const C* value, uint32_t flags = 0)`
-* `template <typename C> void Environment::unset(const basic_string<C>& name, uint32_t flags = 0)`
-* `template <typename C> void Environment::unset(const C* name, uint32_t flags = 0)`
+* `template <typename C> basic_string<C> Environment::`**`operator[]`**`(const basic_string<C>& name)`
+* `template <typename C> basic_string<C> Environment::`**`operator[]`**`(const C* name)`
+* `template <typename C> basic_string<C> Environment::`**`get`**`(const basic_string<C>& name, uint32_t flags = 0)`
+* `template <typename C> basic_string<C> Environment::`**`get`**`(const C* name, uint32_t flags = 0)`
+* `template <typename C> bool Environment::`**`has`**`(const basic_string<C>& name, uint32_t flags = 0)`
+* `template <typename C> bool Environment::`**`has`**`(const C* name, uint32_t flags = 0)`
+* `template <typename C> void Environment::`**`set`**`(const basic_string<C>& name, const basic_string<C>& value, uint32_t flags = 0)`
+* `template <typename C> void Environment::`**`set`**`(const basic_string<C>& name, const C* value, uint32_t flags = 0)`
+* `template <typename C> void Environment::`**`set`**`(const C* name, const basic_string<C>& value, uint32_t flags = 0)`
+* `template <typename C> void Environment::`**`set`**`(const C* name, const C* value, uint32_t flags = 0)`
+* `template <typename C> void Environment::`**`unset`**`(const basic_string<C>& name, uint32_t flags = 0)`
+* `template <typename C> void Environment::`**`unset`**`(const C* name, uint32_t flags = 0)`
 
 These perform the same operations as the corresponding environment variable
 functions described above (`operator[]` is a synonym for `get()`), and will
 throw the same exceptions.
 
-* `Environment::iterator Environment::begin() const`
-* `Environment::iterator Environment::end() const`
+* `Environment::iterator Environment::`**`begin`**`() const`
+* `Environment::iterator Environment::`**`end`**`() const`
 
 Iterators over the name-value pairs stored in an `Environment` object.
 
-* `void Environment::clear()`
+* `void Environment::`**`clear`**`()`
 
 Clears all data from the environment block.
 
-* `bool Environment::empty() const noexcept`
+* `bool Environment::`**`empty`**`() const noexcept`
 
 True if the environment block contains no data.
 
-* `void Environment::load()`
+* `void Environment::`**`load`**`()`
 
 Loads the `Environment` object's data from the calling process's environment
 block. Any existing data in the `Environment` object is discarded.
 
-* `NativeCharacter** Environment::ptr()`
+* `NativeCharacter** Environment::`**`ptr`**`()`
 
 Collects the environment block into a single data block in the standard format
 (suitable for passing to process spawning functions, for example), and returns
 a pointer to it. The returned pointer is invalidated by any operation that may
 modify the `Environment` object (any call to a non-`const` function).
 
-* `size_t Environment::size() const noexcept`
+* `size_t Environment::`**`size`**`() const noexcept`
 
 Returns the number of entries (variables) in the environment block.

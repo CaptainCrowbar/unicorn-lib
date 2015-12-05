@@ -27,11 +27,11 @@
 <h2 id="imports">Imports</h2>
 
 <ul>
-<li><code>using namespace <strong>Prion</strong></code></li>
+<li><code>using namespace Prion</code></li>
 <li><code>namespace Unicorn::Literals</code>
 
 <ul>
-<li><code>using namespace Prion::<strong>Literals</strong></code></li>
+<li><code>using namespace Prion::Literals</code></li>
 </ul></li>
 </ul>
 
@@ -40,7 +40,7 @@
 <h2 id="exceptions">Exceptions</h2>
 
 <ul>
-<li><code>class <strong>InitializationError</strong>: public std::runtime_error</code></li>
+<li><code>class</code> <strong><code>InitializationError</code></strong><code>: public std::runtime_error</code></li>
 </ul>
 
 <p>An abstract base class for internal errors that may happen while loading the
@@ -48,14 +48,14 @@ Unicode tables used by certain functions. Functions that can throw exceptions
 derived from this are individually documented.</p>
 
 <ul>
-<li><code>class <strong>EncodingError</strong>: public std::runtime_error</code>
+<li><code>class</code> <strong><code>EncodingError</code></strong><code>: public std::runtime_error</code>
 
 <ul>
-<li><code>EncodingError::<strong>EncodingError</strong>()</code></li>
-<li><code>explicit EncodingError::<strong>EncodingError</strong>(const u8string&amp; encoding, size_t offset = 0, char32_t c = 0)</code></li>
-<li><code>template &lt;typename C&gt; EncodingError::<strong>EncodingError</strong>(const u8string&amp; encoding, size_t offset, const C* ptr, size_t n = 1)</code></li>
-<li><code>const char* EncodingError::<strong>encoding</strong>() noexcept const</code></li>
-<li><code>size_t EncodingError::<strong>offset</strong>() const noexcept</code></li>
+<li><code>EncodingError::</code><strong><code>EncodingError</code></strong><code>()</code></li>
+<li><code>explicit EncodingError::</code><strong><code>EncodingError</code></strong><code>(const u8string&amp; encoding, size_t offset = 0, char32_t c = 0)</code></li>
+<li><code>template &lt;typename C&gt; EncodingError::</code><strong><code>EncodingError</code></strong><code>(const u8string&amp; encoding, size_t offset, const C* ptr, size_t n = 1)</code></li>
+<li><code>const char* EncodingError::</code><strong><code>encoding</code></strong><code>() noexcept const</code></li>
+<li><code>size_t EncodingError::</code><strong><code>offset</code></strong><code>() const noexcept</code></li>
 </ul></li>
 </ul>
 
@@ -69,25 +69,25 @@ error message.</p>
 <h2 id="basiccharactertypes">Basic character types</h2>
 
 <ul>
-<li><code>#define <strong>UNICORN_NATIVE_WCHAR</strong> 1</code></li>
+<li><code>#define</code> <strong><code>UNICORN_NATIVE_WCHAR</code></strong> <code>1</code></li>
 </ul>
 
 <p>Defined if the operating system&#8217;s native API uses wide character strings (this
 is currently defined only for native Windows builds).</p>
 
 <ul>
-<li><code>#define <strong>UNICORN_WCHAR_UTF16</strong> 1</code></li>
-<li><code>#define <strong>UNICORN_WCHAR_UTF32</strong> 1</code></li>
+<li><code>#define</code> <strong><code>UNICORN_WCHAR_UTF16</code></strong> <code>1</code></li>
+<li><code>#define</code> <strong><code>UNICORN_WCHAR_UTF32</code></strong> <code>1</code></li>
 </ul>
 
 <p>One of these is defined to indicate which UTF encoding the system&#8217;s <code>wstring</code>
 class uses.</p>
 
 <ul>
-<li><code>template &lt;typename C&gt; struct <strong>IsCharacterType</strong></code>
+<li><code>template &lt;typename C&gt; struct</code> <strong><code>IsCharacterType</code></strong>
 
 <ul>
-<li><code>static constexpr bool IsCharacterType::<strong>value</strong></code></li>
+<li><code>static constexpr bool IsCharacterType::</code><strong><code>value</code></strong></li>
 </ul></li>
 </ul>
 
@@ -95,16 +95,16 @@ class uses.</p>
 the Unicorn library (<code>char</code>, <code>char16_t</code>, <code>char32_t</code>, or <code>wchar_t</code>).</p>
 
 <ul>
-<li><code>using <strong>NativeCharacter</strong> = [char on Unix, wchar_t on Windows]</code></li>
-<li><code>using <strong>NativeString</strong> = [string on Unix, wstring on Windows]</code></li>
+<li><code>using</code> <strong><code>NativeCharacter</code></strong> <code>= [char on Unix, wchar_t on Windows]</code></li>
+<li><code>using</code> <strong><code>NativeString</code></strong> <code>= [string on Unix, wstring on Windows]</code></li>
 </ul>
 
 <p>These are the character and string types used in the operating system&#8217;s native
 ABI.</p>
 
 <ul>
-<li><code>using <strong>WcharEquivalent</strong> = [char16_t or char32_t]</code></li>
-<li><code>using <strong>WstringEquivalent</strong> = [u16string or u32string]</code></li>
+<li><code>using</code> <strong><code>WcharEquivalent</code></strong> <code>= [char16_t or char32_t]</code></li>
+<li><code>using</code> <strong><code>WstringEquivalent</code></strong> <code>= [u16string or u32string]</code></li>
 </ul>
 
 <p>These are defined to match the UTF encoding of the system&#8217;s <code>wstring</code> class.</p>
@@ -112,8 +112,8 @@ ABI.</p>
 <h2 id="versioninformation">Version information</h2>
 
 <ul>
-<li><code>Version <strong>unicorn_version</strong>() noexcept</code></li>
-<li><code>Version <strong>unicode_version</strong>() noexcept</code></li>
+<li><code>Version</code> <strong><code>unicorn_version</code></strong><code>() noexcept</code></li>
+<li><code>Version</code> <strong><code>unicode_version</code></strong><code>() noexcept</code></li>
 </ul>
 
 <p>These return the version of the Unicorn library and the supported version of

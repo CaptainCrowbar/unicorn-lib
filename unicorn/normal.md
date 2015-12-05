@@ -17,8 +17,8 @@ of converting Unicode strings into the four standard normalization forms.
 
 The standard Unicode normalization forms.
 
-* `template <typename C> basic_string<C> normalize(const basic_string<C>& src, NormalizationForm form)`
-* `template <typename C> void normalize_in(basic_string<C>& src, NormalizationForm form)`
+* `template <typename C> basic_string<C>` **`normalize`**`(const basic_string<C>& src, NormalizationForm form)`
+* `template <typename C> void` **`normalize_in`**`(basic_string<C>& src, NormalizationForm form)`
 
 Convert a string to one of the normalized forms. The `normalize()` function
 returns the normalized string, while `normalize_in()` updates the source

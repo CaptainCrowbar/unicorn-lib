@@ -36,21 +36,30 @@ substring if this is needed.</p>
 <h2 id="graphemeclusterboundaries">Grapheme cluster boundaries</h2>
 
 <ul>
-<li><code>template &lt;typename C&gt; class <strong>GraphemeIterator</strong></code>
+<li><code>template &lt;typename C&gt; class</code> <strong><code>GraphemeIterator</code></strong>
 
 <ul>
-<li><code>using GraphemeIterator::<strong>utf_iterator</strong> = UtfIterator&lt;C&gt;</code></li>
-<li><code>using GraphemeIterator::<strong>difference_type</strong> = ptrdiff_t</code></li>
-<li><code>using GraphemeIterator::<strong>iterator_category</strong> = std::forward_iterator_tag</code></li>
-<li><code>using GraphemeIterator::<strong>value_type</strong> = Irange&lt;utf_iterator&gt;</code></li>
-<li><code>using GraphemeIterator::<strong>pointer</strong> = const value_type*</code></li>
-<li><code>using GraphemeIterator::<strong>reference</strong> = const value_type&amp;</code></li>
-<li><code>GraphemeIterator::<strong>GraphemeIterator</strong>()</code></li>
-<li><code>[standard iterator operations]</code></li>
+<li><code>using GraphemeIterator::</code><strong><code>utf_iterator</code></strong>
+<code>= UtfIterator&lt;C&gt;</code></li>
+<li><code>using GraphemeIterator::</code><strong><code>difference_type</code></strong>
+<code>= ptrdiff_t</code></li>
+<li><code>using GraphemeIterator::</code><strong><code>iterator_category</code></strong>
+<code>= std::forward_iterator_tag</code></li>
+<li><code>using GraphemeIterator::</code><strong><code>value_type</code></strong>
+<code>= Irange&lt;utf_iterator&gt;</code></li>
+<li><code>using GraphemeIterator::</code><strong><code>pointer</code></strong>
+<code>= const value_type*</code></li>
+<li><code>using GraphemeIterator::</code><strong><code>reference</code></strong>
+<code>= const value_type&amp;</code></li>
+<li><code>GraphemeIterator::</code><strong><code>GraphemeIterator</code></strong><code>()</code></li>
+<li><em>[standard iterator operations]</em></li>
 </ul></li>
-<li><code>template &lt;typename C&gt; Irange&lt;GraphemeIterator&lt;C&gt;&gt; <strong>grapheme_range</strong>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j)</code></li>
-<li><code>template &lt;typename C&gt; Irange&lt;GraphemeIterator&lt;C&gt;&gt; <strong>grapheme_range</strong>(const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; source)</code></li>
-<li><code>template &lt;typename C&gt; Irange&lt;GraphemeIterator&lt;C&gt;&gt; <strong>grapheme_range</strong>(const basic_string&lt;C&gt;&amp; source)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;GraphemeIterator&lt;C&gt;&gt;</code> <strong><code>grapheme_range</code></strong>
+<code>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;GraphemeIterator&lt;C&gt;&gt;</code> <strong><code>grapheme_range</code></strong>
+<code>(const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; source)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;GraphemeIterator&lt;C&gt;&gt;</code> <strong><code>grapheme_range</code></strong>
+<code>(const basic_string&lt;C&gt;&amp; source)</code></li>
 </ul>
 
 <p>A forward iterator over the grapheme clusters (user-perceived characters) in a
@@ -59,21 +68,30 @@ Unicode string.</p>
 <h2 id="wordboundaries">Word boundaries</h2>
 
 <ul>
-<li><code>template &lt;typename C&gt; class <strong>WordIterator</strong></code>
+<li><code>template &lt;typename C&gt; class</code> <strong><code>WordIterator</code></strong>
 
 <ul>
-<li><code>using WordIterator::<strong>utf_iterator</strong> = UtfIterator&lt;C&gt;</code></li>
-<li><code>using WordIterator::<strong>difference_type</strong> = ptrdiff_t</code></li>
-<li><code>using WordIterator::<strong>iterator_category</strong> = std::forward_iterator_tag</code></li>
-<li><code>using WordIterator::<strong>value_type</strong> = Irange&lt;utf_iterator&gt;</code></li>
-<li><code>using WordIterator::<strong>pointer</strong> = const value_type*</code></li>
-<li><code>using WordIterator::<strong>reference</strong> = const value_type&amp;</code></li>
-<li><code>WordIterator::<strong>WordIterator</strong>()</code></li>
-<li><code>[standard iterator operations]</code></li>
+<li><code>using WordIterator::</code><strong><code>utf_iterator</code></strong>
+<code>= UtfIterator&lt;C&gt;</code></li>
+<li><code>using WordIterator::</code><strong><code>difference_type</code></strong>
+<code>= ptrdiff_t</code></li>
+<li><code>using WordIterator::</code><strong><code>iterator_category</code></strong>
+<code>= std::forward_iterator_tag</code></li>
+<li><code>using WordIterator::</code><strong><code>value_type</code></strong>
+<code>= Irange&lt;utf_iterator&gt;</code></li>
+<li><code>using WordIterator::</code><strong><code>pointer</code></strong>
+<code>= const value_type*</code></li>
+<li><code>using WordIterator::</code><strong><code>reference</code></strong>
+<code>= const value_type&amp;</code></li>
+<li><code>WordIterator::</code><strong><code>WordIterator</code></strong><code>()</code></li>
+<li><em>[standard iterator operations]</em></li>
 </ul></li>
-<li><code>template &lt;typename C&gt; Irange&lt;WordIterator&lt;C&gt;&gt; <strong>word_range</strong>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; Irange&lt;WordIterator&lt;C&gt;&gt; <strong>word_range</strong>(const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; source, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; Irange&lt;WordIterator&lt;C&gt;&gt; <strong>word_range</strong>(const basic_string&lt;C&gt;&amp; source, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;WordIterator&lt;C&gt;&gt;</code> <strong><code>word_range</code></strong>
+<code>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;WordIterator&lt;C&gt;&gt;</code> <strong><code>word_range</code></strong>
+<code>(const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; source, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;WordIterator&lt;C&gt;&gt;</code> <strong><code>word_range</code></strong>
+<code>(const basic_string&lt;C&gt;&amp; source, uint32_t flags = 0)</code></li>
 </ul>
 
 <p>A forward iterator over the words in a Unicode string. By default, all
@@ -97,15 +115,15 @@ words containing at least one alphanumeric character.</p>
 
 <tbody>
 <tr>
-	<td style="text-align:left;"><code>unicode_words</code></td>
+	<td style="text-align:left;"><strong><code>unicode_words</code></strong></td>
 	<td style="text-align:left;">Report all UAX29 words (default)</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>graphic_words</code></td>
+	<td style="text-align:left;"><strong><code>graphic_words</code></strong></td>
 	<td style="text-align:left;">Report only words containing a non-whitespace character</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>alpha_words</code></td>
+	<td style="text-align:left;"><strong><code>alpha_words</code></strong></td>
 	<td style="text-align:left;">Report only words containing an alphanumeric character</td>
 </tr>
 </tbody>
@@ -114,21 +132,30 @@ words containing at least one alphanumeric character.</p>
 <h2 id="sentenceboundaries">Sentence boundaries</h2>
 
 <ul>
-<li><code>template &lt;typename C&gt; class <strong>SentenceIterator</strong></code>
+<li><code>template &lt;typename C&gt; class</code> <strong><code>SentenceIterator</code></strong>
 
 <ul>
-<li><code>using SentenceIterator::<strong>utf_iterator</strong> = UtfIterator&lt;C&gt;</code></li>
-<li><code>using SentenceIterator::<strong>difference_type</strong> = ptrdiff_t</code></li>
-<li><code>using SentenceIterator::<strong>iterator_category</strong> = std::forward_iterator_tag</code></li>
-<li><code>using SentenceIterator::<strong>value_type</strong> = Irange&lt;utf_iterator&gt;</code></li>
-<li><code>using SentenceIterator::<strong>pointer</strong> = const value_type*</code></li>
-<li><code>using SentenceIterator::<strong>reference</strong> = const value_type&amp;</code></li>
-<li><code>SentenceIterator::<strong>SentenceIterator</strong>()</code></li>
-<li><code>[standard iterator operations]</code></li>
+<li><code>using SentenceIterator::</code><strong><code>utf_iterator</code></strong>
+<code>= UtfIterator&lt;C&gt;</code></li>
+<li><code>using SentenceIterator::</code><strong><code>difference_type</code></strong>
+<code>= ptrdiff_t</code></li>
+<li><code>using SentenceIterator::</code><strong><code>iterator_category</code></strong>
+<code>= std::forward_iterator_tag</code></li>
+<li><code>using SentenceIterator::</code><strong><code>value_type</code></strong>
+<code>= Irange&lt;utf_iterator&gt;</code></li>
+<li><code>using SentenceIterator::</code><strong><code>pointer</code></strong>
+<code>= const value_type*</code></li>
+<li><code>using SentenceIterator::</code><strong><code>reference</code></strong>
+<code>= const value_type&amp;</code></li>
+<li><code>SentenceIterator::</code><strong><code>SentenceIterator</code></strong><code>()</code></li>
+<li><em>[standard iterator operations]</em></li>
 </ul></li>
-<li><code>template &lt;typename C&gt; Irange&lt;SentenceIterator&lt;C&gt;&gt; <strong>sentence_range</strong>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j)</code></li>
-<li><code>template &lt;typename C&gt; Irange&lt;SentenceIterator&lt;C&gt;&gt; <strong>sentence_range</strong>(const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; source)</code></li>
-<li><code>template &lt;typename C&gt; Irange&lt;SentenceIterator&lt;C&gt;&gt; <strong>sentence_range</strong>(const basic_string&lt;C&gt;&amp; source)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;SentenceIterator&lt;C&gt;&gt;</code> <strong><code>sentence_range</code></strong>
+<code>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;SentenceIterator&lt;C&gt;&gt;</code> <strong><code>sentence_range</code></strong>
+<code>(const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; source)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;SentenceIterator&lt;C&gt;&gt;</code> <strong><code>sentence_range</code></strong>
+<code>(const basic_string&lt;C&gt;&amp; source)</code></li>
 </ul>
 
 <p>A forward iterator over the sentences in a Unicode string (as defined by
@@ -137,21 +164,30 @@ UAX29).</p>
 <h2 id="lineboundaries">Line boundaries</h2>
 
 <ul>
-<li><code>template &lt;typename C&gt; class <strong>LineIterator</strong></code>
+<li><code>template &lt;typename C&gt; class</code> <strong><code>LineIterator</code></strong>
 
 <ul>
-<li><code>using LineIterator::<strong>utf_iterator</strong> = UtfIterator&lt;C&gt;</code></li>
-<li><code>using LineIterator::<strong>difference_type</strong> = ptrdiff_t</code></li>
-<li><code>using LineIterator::<strong>iterator_category</strong> = std::forward_iterator_tag</code></li>
-<li><code>using LineIterator::<strong>value_type</strong> = Irange&lt;utf_iterator&gt;</code></li>
-<li><code>using LineIterator::<strong>pointer</strong> = const value_type*</code></li>
-<li><code>using LineIterator::<strong>reference</strong> = const value_type&amp;</code></li>
-<li><code>LineIterator::<strong>LineIterator</strong>()</code></li>
-<li><code>[standard iterator operations]</code></li>
+<li><code>using LineIterator::</code><strong><code>utf_iterator</code></strong>
+<code>= UtfIterator&lt;C&gt;</code></li>
+<li><code>using LineIterator::</code><strong><code>difference_type</code></strong>
+<code>= ptrdiff_t</code></li>
+<li><code>using LineIterator::</code><strong><code>iterator_category</code></strong>
+<code>= std::forward_iterator_tag</code></li>
+<li><code>using LineIterator::</code><strong><code>value_type</code></strong>
+<code>= Irange&lt;utf_iterator&gt;</code></li>
+<li><code>using LineIterator::</code><strong><code>pointer</code></strong>
+<code>= const value_type*</code></li>
+<li><code>using LineIterator::</code><strong><code>reference</code></strong>
+<code>= const value_type&amp;</code></li>
+<li><code>LineIterator::</code><strong><code>LineIterator</code></strong><code>()</code></li>
+<li><em>[standard iterator operations]</em></li>
 </ul></li>
-<li><code>template &lt;typename C&gt; Irange&lt;LineIterator&lt;C&gt;&gt; <strong>line_range</strong>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; Irange&lt;LineIterator&lt;C&gt;&gt; <strong>line_range</strong>(const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; source, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; Irange&lt;LineIterator&lt;C&gt;&gt; <strong>line_range</strong>(const basic_string&lt;C&gt;&amp; source, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;LineIterator&lt;C&gt;&gt;</code> <strong><code>line_range</code></strong>
+<code>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;LineIterator&lt;C&gt;&gt;</code> <strong><code>line_range</code></strong>
+<code>(const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; source, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;LineIterator&lt;C&gt;&gt;</code> <strong><code>line_range</code></strong>
+<code>(const basic_string&lt;C&gt;&amp; source, uint32_t flags = 0)</code></li>
 </ul>
 
 <p>A forward iterator over the lines in a Unicode string. Lines are ended by any
@@ -176,11 +212,11 @@ set, the line break is excluded from the segment.</p>
 
 <tbody>
 <tr>
-	<td style="text-align:left;"><code>keep_breaks</code></td>
+	<td style="text-align:left;"><strong><code>keep_breaks</code></strong></td>
 	<td style="text-align:left;">Include line terminators in reported segments (default)</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>strip_breaks</code></td>
+	<td style="text-align:left;"><strong><code>strip_breaks</code></strong></td>
 	<td style="text-align:left;">Do not include line terminators</td>
 </tr>
 </tbody>
@@ -189,21 +225,30 @@ set, the line break is excluded from the segment.</p>
 <h2 id="paragraphboundaries">Paragraph boundaries</h2>
 
 <ul>
-<li><code>template &lt;typename C&gt; class <strong>ParagraphIterator</strong></code>
+<li><code>template &lt;typename C&gt; class</code> <strong><code>ParagraphIterator</code></strong>
 
 <ul>
-<li><code>using ParagraphIterator::<strong>utf_iterator</strong> = UtfIterator&lt;C&gt;</code></li>
-<li><code>using ParagraphIterator::<strong>difference_type</strong> = ptrdiff_t</code></li>
-<li><code>using ParagraphIterator::<strong>iterator_category</strong> = std::forward_iterator_tag</code></li>
-<li><code>using ParagraphIterator::<strong>value_type</strong> = Irange&lt;utf_iterator&gt;</code></li>
-<li><code>using ParagraphIterator::<strong>pointer</strong> = const value_type*</code></li>
-<li><code>using ParagraphIterator::<strong>reference</strong> = const value_type&amp;</code></li>
-<li><code>ParagraphIterator::<strong>ParagraphIterator</strong>()</code></li>
-<li><code>[standard iterator operations]</code></li>
+<li><code>using ParagraphIterator::</code><strong><code>utf_iterator</code></strong>
+<code>= UtfIterator&lt;C&gt;</code></li>
+<li><code>using ParagraphIterator::</code><strong><code>difference_type</code></strong>
+<code>= ptrdiff_t</code></li>
+<li><code>using ParagraphIterator::</code><strong><code>iterator_category</code></strong>
+<code>= std::forward_iterator_tag</code></li>
+<li><code>using ParagraphIterator::</code><strong><code>value_type</code></strong>
+<code>= Irange&lt;utf_iterator&gt;</code></li>
+<li><code>using ParagraphIterator::</code><strong><code>pointer</code></strong>
+<code>= const value_type*</code></li>
+<li><code>using ParagraphIterator::</code><strong><code>reference</code></strong>
+<code>= const value_type&amp;</code></li>
+<li><code>ParagraphIterator::</code><strong><code>ParagraphIterator</code></strong><code>()</code></li>
+<li><em>[standard iterator operations]</em></li>
 </ul></li>
-<li><code>template &lt;typename C&gt; Irange&lt;ParagraphIterator&lt;C&gt;&gt; <strong>paragraph_range</strong>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; Irange&lt;ParagraphIterator&lt;C&gt;&gt; <strong>paragraph_range</strong>(const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; source, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; Irange&lt;ParagraphIterator&lt;C&gt;&gt; <strong>paragraph_range</strong>(const basic_string&lt;C&gt;&amp; source, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;ParagraphIterator&lt;C&gt;&gt;</code> <strong><code>paragraph_range</code></strong>
+<code>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;ParagraphIterator&lt;C&gt;&gt;</code> <strong><code>paragraph_range</code></strong>
+<code>(const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; source, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;ParagraphIterator&lt;C&gt;&gt;</code> <strong><code>paragraph_range</code></strong>
+<code>(const basic_string&lt;C&gt;&amp; source, uint32_t flags = 0)</code></li>
 </ul>
 
 <p>A forward iterator over the paragraphs in a Unicode string. The flags passed
@@ -230,23 +275,23 @@ paragraph delimiters.</p>
 
 <tbody>
 <tr>
-	<td style="text-align:left;"><code>multiline_paras</code></td>
+	<td style="text-align:left;"><strong><code>multiline_paras</code></strong></td>
 	<td style="text-align:left;">Divide into paragraphs using multiple line breaks (default)</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>line_paras</code></td>
+	<td style="text-align:left;"><strong><code>line_paras</code></strong></td>
 	<td style="text-align:left;">Divide into paragraphs using any line break</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>unicode_paras</code></td>
+	<td style="text-align:left;"><strong><code>unicode_paras</code></strong></td>
 	<td style="text-align:left;">Divide into paragraphs using only Paragraph Separator</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>keep_breaks</code></td>
+	<td style="text-align:left;"><strong><code>keep_breaks</code></strong></td>
 	<td style="text-align:left;">Include paragraph terminators in reported segments (default)</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>strip_breaks</code></td>
+	<td style="text-align:left;"><strong><code>strip_breaks</code></strong></td>
 	<td style="text-align:left;">Do not include paragraph terminators</td>
 </tr>
 </tbody>

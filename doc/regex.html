@@ -57,7 +57,7 @@ also use regexes internally; these require only UTF&#8211;8 support, which is al
 available.)</p>
 
 <p>In addition to the four UTF-based regex classes, this module also supports
-byte oriented regexes, which simply treat a <code>std::string</code> as a sequence of
+byte oriented regexes, which simply treat a <code>std::</code><strong><code>string</code></strong> as a sequence of
 arbitrary bytes, with no assumptions about content encoding. Byte regexes work
 the same as UTF&#8211;8 regexes as far as possible, except that characters in the
 regex are matched against individual bytes instead of encoded characters. The
@@ -76,9 +76,9 @@ turns out to be impractical; for several reasons, standard regular expressions
 are inadequate for use with generalized Unicode strings.</p>
 
 <p>The most obvious reason is that standard C++ regexes are not actually required
-to support Unicode strings at all. Unlike <code>std::basic_string</code>, for which
+to support Unicode strings at all. Unlike <code>std::</code><strong><code>basic_string</code></strong>, for which
 specializations for 8, 16, and 32 bit characters are required to exist, only
-two specializations of <code>std::basic_regex</code> are mandated, for <code>char</code> (the
+two specializations of <code>std::</code><strong><code>basic_regex</code></strong> are mandated, for <code>char</code> (the
 system&#8217;s native multibyte encoding, which may or may not be UTF&#8211;8, but see
 below for a caveat on this) and <code>wchar_t</code> (the system&#8217;s wide character
 encoding, which can reasonably be expected to be either UTF&#8211;16 or UTF&#8211;32, but
@@ -90,7 +90,7 @@ actually require the wide character encoding to be UTF&#8211;16 or 32. It is on 
 systems I know of, though, and the Unicorn library explicitly does not support
 systems on which it is not one of those.)</p>
 
-<p>An implementation is allowed to instantiate <code>std::basic_regex</code> for other
+<p>An implementation is allowed to instantiate <code>std::</code><strong><code>basic_regex</code></strong> for other
 character types, but in practise most do not, and in any case even an
 implementation that supplied specializations for all four character types
 would still not be reliably usable with UTF&#8211;8 (since the plain <code>char</code> encoding
@@ -105,10 +105,10 @@ represented by more than one code unit in UTF&#8211;8/16). This still allows lit
 matching of multi-unit UTF&#8211;8/16 characters (the encoding will be the same in
 the regex and the subject string, so they will match unit for unit), but makes
 it impossible to match multi-unit characters to non-literal regex elements;
-for example, <code>std::regex(&quot;.&quot;)</code> will not match <code>u8&quot;€&quot;</code> (even if the system
+for example, <code>std::</code><strong><code>regex</code></strong><code>(&quot;.&quot;)</code> will not match <code>u8&quot;€&quot;</code> (even if the system
 encoding is UTF&#8211;8). For the same reason, it is impossible to specify a
 character range that includes multibyte characters (e.g.
-<code>std::regex(u8&quot;[À-ÿ]&quot;)</code> will not do what you probably expected).</p>
+<code>std::</code><strong><code>regex</code></strong><code>(u8&quot;[À-ÿ]&quot;)</code> will not do what you probably expected).</p>
 
 <p>Finally, standard regexes don&#8217;t support the <code>\p{...}</code> and <code>\P{...}</code> character
 classes, which match on Unicode properties. This may be a minor obstacle
@@ -275,7 +275,7 @@ SEPARATOR</code>; the last three are not recognised in byte mode), corresponding
 the <code>PCRE_NEWLINE_ANY</code> and <code>PCRE_BSR_UNICODE</code> flags.</p>
 
 <p>All regex constructors, and any functions that take a pattern and flags and
-implicitly construct a regex, will throw <code>std::invalid_argument</code> if the flags
+implicitly construct a regex, will throw <code>std::</code><strong><code>invalid_argument</code></strong> if the flags
 supplied are inconsistent:</p>
 
 <ul>
@@ -345,7 +345,7 @@ replaced by the format string without further processing.</p>
 	<td style="text-align:left;">The text between this match and the next one</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>$[</code>, <code>$`</code></td>
+	<td style="text-align:left;"><code>$[</code>, <code>$</code>`</td>
 	<td style="text-align:left;">The text before the current match</td>
 </tr>
 <tr>
@@ -438,13 +438,13 @@ scalar value or, for byte mode regexes, if it is greater than <code>0xff</code>.
 <h2 id="supportingtypes">Supporting types</h2>
 
 <ul>
-<li><code>class <strong>RegexError</strong>: public std::runtime_error</code>
+<li><code>class</code> <strong><code>RegexError</code></strong><code>: public std::</code><strong><code>runtime_error</code></strong>
 
 <ul>
-<li><code>RegexError::<strong>RegexError</strong>(const u8string&amp; pattern, int error, const u8string&amp; message)</code></li>
-<li><code>const char* RegexError::<strong>pattern</strong>() const noexcept</code></li>
-<li><code>int RegexError::<strong>error</strong>() const noexcept</code></li>
-<li><code>const char* RegexError::<strong>message</strong>() const noexcept</code></li>
+<li><code>RegexError::</code><strong><code>RegexError</code></strong><code>(const u8string&amp; pattern, int error, const u8string&amp; message)</code></li>
+<li><code>const char* RegexError::</code><strong><code>pattern</code></strong><code>() const noexcept</code></li>
+<li><code>int RegexError::</code><strong><code>error</code></strong><code>() const noexcept</code></li>
+<li><code>const char* RegexError::</code><strong><code>message</code></strong><code>() const noexcept</code></li>
 </ul></li>
 </ul>
 
@@ -454,44 +454,53 @@ underlying PCRE call reports an error.</p>
 <h2 id="regularexpressionclass">Regular expression class</h2>
 
 <ul>
-<li><code>template &lt;typename CX&gt; class <strong>BasicRegex</strong></code></li>
-<li><code>using <strong>Regex</strong> = BasicRegex&lt;char&gt;</code></li>
-<li><code>using <strong>Regex16</strong> = BasicRegex&lt;char16_t&gt;</code></li>
-<li><code>using <strong>Regex32</strong> = BasicRegex&lt;char32_t&gt;</code></li>
-<li><code>using <strong>WideRegex</strong> = BasicRegex&lt;wchar_t&gt;</code></li>
-<li><code>using <strong>ByteRegex</strong> = BasicRegex&lt;void&gt;</code></li>
+<li><code>template &lt;typename CX&gt; class</code> <strong><code>BasicRegex</code></strong></li>
+<li><code>using</code> <strong><code>Regex</code></strong> <code>= BasicRegex&lt;char&gt;</code></li>
+<li><code>using</code> <strong><code>Regex16</code></strong> <code>= BasicRegex&lt;char16_t&gt;</code></li>
+<li><code>using</code> <strong><code>Regex32</code></strong> <code>= BasicRegex&lt;char32_t&gt;</code></li>
+<li><code>using</code> <strong><code>WideRegex</code></strong> <code>= BasicRegex&lt;wchar_t&gt;</code></li>
+<li><code>using</code> <strong><code>ByteRegex</code></strong> <code>= BasicRegex&lt;void&gt;</code></li>
 </ul>
 
 <p>The generic regular expression class, and aliases for each of the possible
 instantiations. In this and all other templates in this module, the template
 argument <code>CX</code> can be any of the four standard character types, or <code>void</code>. When
 <code>void</code> is used, the resulting regex works on single byte strings (i.e the
-character and string types are <code>char</code> and <code>std::string</code>, the same as if the
+character and string types are <code>char</code> and <code>std::</code><strong><code>string</code></strong>, the same as if the
 template argument had been <code>char</code>), but matches using PCRE&#8217;s byte mode instead
 of UTF&#8211;8 mode.</p>
 
 <ul>
-<li><code>using BasicRegex::<strong>char_type</strong> = [char if CX is void, otherwise CX]</code></li>
-<li><code>using BasicRegex::<strong>cx_type</strong> = CX</code></li>
-<li><code>using BasicRegex::<strong>string_type</strong> = basic_string&lt;char_type&gt;</code></li>
-<li><code>using BasicRegex::<strong>match_type</strong> = BasicMatch&lt;CX&gt;</code></li>
-<li><code>using BasicRegex::<strong>match_iterator</strong> = BasicMatchIterator&lt;CX&gt;</code></li>
-<li><code>using BasicRegex::<strong>match_range</strong> = Irange&lt;match_iterator&gt;</code></li>
-<li><code>using BasicRegex::<strong>split_iterator</strong> = BasicSplitIterator&lt;CX&gt;</code></li>
-<li><code>using BasicRegex::<strong>split_range</strong> = Irange&lt;split_iterator&gt;</code></li>
-<li><code>using BasicRegex::<strong>utf_iterator</strong> = UtfIterator&lt;CX&gt; [not defined if CX is void]</code></li>
+<li><code>using BasicRegex::</code><strong><code>char_type</code></strong>
+<code>= [char if CX is void, otherwise CX]</code></li>
+<li><code>using BasicRegex::</code><strong><code>cx_type</code></strong>
+<code>= CX</code></li>
+<li><code>using BasicRegex::</code><strong><code>string_type</code></strong>
+<code>= basic_string&lt;char_type&gt;</code></li>
+<li><code>using BasicRegex::</code><strong><code>match_type</code></strong>
+<code>= BasicMatch&lt;CX&gt;</code></li>
+<li><code>using BasicRegex::</code><strong><code>match_iterator</code></strong>
+<code>= BasicMatchIterator&lt;CX&gt;</code></li>
+<li><code>using BasicRegex::</code><strong><code>match_range</code></strong>
+<code>= Irange&lt;match_iterator&gt;</code></li>
+<li><code>using BasicRegex::</code><strong><code>split_iterator</code></strong>
+<code>= BasicSplitIterator&lt;CX&gt;</code></li>
+<li><code>using BasicRegex::</code><strong><code>split_range</code></strong>
+<code>= Irange&lt;split_iterator&gt;</code></li>
+<li><code>using BasicRegex::</code><strong><code>utf_iterator</code></strong>
+<code>= UtfIterator&lt;CX&gt; [not defined if CX is void]</code></li>
 </ul>
 
 <p>Member types.</p>
 
 <ul>
-<li><code>BasicRegex::<strong>BasicRegex</strong>()</code></li>
-<li><code>explicit BasicRegex::<strong>BasicRegex</strong>(const string_type&amp; pattern, uint32_t flags = 0)</code></li>
-<li><code>BasicRegex::<strong>BasicRegex</strong>(const BasicRegex&amp; r)</code></li>
-<li><code>BasicRegex::<strong>BasicRegex</strong>(BasicRegex&amp;&amp; r) noexcept</code></li>
-<li><code>BasicRegex::<strong>~BasicRegex</strong>() noexcept</code></li>
-<li><code>BasicRegex&amp; BasicRegex::<strong>operator=</strong>(const BasicRegex&amp; r)</code></li>
-<li><code>BasicRegex&amp; BasicRegex::<strong>operator=</strong>(BasicRegex&amp;&amp; r) noexcept</code></li>
+<li><code>BasicRegex::</code><strong><code>BasicRegex</code></strong><code>()</code></li>
+<li><code>explicit BasicRegex::</code><strong><code>BasicRegex</code></strong><code>(const string_type&amp; pattern, uint32_t flags = 0)</code></li>
+<li><code>BasicRegex::</code><strong><code>BasicRegex</code></strong><code>(const BasicRegex&amp; r)</code></li>
+<li><code>BasicRegex::</code><strong><code>BasicRegex</code></strong><code>(BasicRegex&amp;&amp; r) noexcept</code></li>
+<li><code>BasicRegex::</code><strong><code>~BasicRegex</code></strong><code>() noexcept</code></li>
+<li><code>BasicRegex&amp; BasicRegex::</code><strong><code>operator=</code></strong><code>(const BasicRegex&amp; r)</code></li>
+<li><code>BasicRegex&amp; BasicRegex::</code><strong><code>operator=</code></strong><code>(BasicRegex&amp;&amp; r) noexcept</code></li>
 </ul>
 
 <p>Life cycle functions. The default constructor is equivalent to construction
@@ -501,14 +510,14 @@ from an empty pattern. The second constructor will throw
 flags are interpreted.</p>
 
 <ul>
-<li><code>BasicRegex::match_type BasicRegex::<strong>anchor</strong>(const string_type&amp; text, size_t offset = 0) const</code></li>
-<li><code>BasicRegex::match_type BasicRegex::<strong>anchor</strong>(const utf_iterator&amp; start) const [not defined if CX is void]</code></li>
-<li><code>BasicRegex::match_type BasicRegex::<strong>match</strong>(const string_type&amp; text, size_t offset = 0) const</code></li>
-<li><code>BasicRegex::match_type BasicRegex::<strong>match</strong>(const utf_iterator&amp; start) const [not defined if CX is void]</code></li>
-<li><code>BasicRegex::match_type BasicRegex::<strong>search</strong>(const string_type&amp; text, size_t offset = 0) const</code></li>
-<li><code>BasicRegex::match_type BasicRegex::<strong>search</strong>(const utf_iterator&amp; start) const [not defined if CX is void]</code></li>
-<li><code>BasicRegex::match_type BasicRegex::<strong>operator()</strong>(const string_type&amp; text, size_t offset = 0) const</code></li>
-<li><code>BasicRegex::match_type BasicRegex::<strong>operator()</strong>(const utf_iterator&amp; start) const [not defined if CX is void]</code></li>
+<li><code>BasicRegex::match_type BasicRegex::</code><strong><code>anchor</code></strong><code>(const string_type&amp; text, size_t offset = 0) const</code></li>
+<li><code>BasicRegex::match_type BasicRegex::</code><strong><code>anchor</code></strong><code>(const utf_iterator&amp; start) const [not defined if CX is void]</code></li>
+<li><code>BasicRegex::match_type BasicRegex::</code><strong><code>match</code></strong><code>(const string_type&amp; text, size_t offset = 0) const</code></li>
+<li><code>BasicRegex::match_type BasicRegex::</code><strong><code>match</code></strong><code>(const utf_iterator&amp; start) const [not defined if CX is void]</code></li>
+<li><code>BasicRegex::match_type BasicRegex::</code><strong><code>search</code></strong><code>(const string_type&amp; text, size_t offset = 0) const</code></li>
+<li><code>BasicRegex::match_type BasicRegex::</code><strong><code>search</code></strong><code>(const utf_iterator&amp; start) const [not defined if CX is void]</code></li>
+<li><code>BasicRegex::match_type BasicRegex::</code><strong><code>operator()</code></strong><code>(const string_type&amp; text, size_t offset = 0) const</code></li>
+<li><code>BasicRegex::match_type BasicRegex::</code><strong><code>operator()</code></strong><code>(const utf_iterator&amp; start) const [not defined if CX is void]</code></li>
 </ul>
 
 <p>These are the regex matching functions. The <code>search()</code> functions return a
@@ -532,20 +541,20 @@ constructed, but a few kinds of regex error are not detected by PCRE until
 execution time).</p>
 
 <ul>
-<li><code>size_t BasicRegex::<strong>count</strong>(const string_type&amp; text) const</code></li>
+<li><code>size_t BasicRegex::</code><strong><code>count</code></strong><code>(const string_type&amp; text) const</code></li>
 </ul>
 
 <p>Return the number of non-overlapping matches found in the text.</p>
 
 <ul>
-<li><code>bool BasicRegex::<strong>empty</strong>() const noexcept</code></li>
+<li><code>bool BasicRegex::</code><strong><code>empty</code></strong><code>() const noexcept</code></li>
 </ul>
 
 <p>True if the pattern is empty.</p>
 
 <ul>
-<li><code>BasicRegex::string_type BasicRegex::<strong>extract</strong>(const string_type&amp; fmt, const string_type&amp; text, size_t n = npos) const</code></li>
-<li><code>BasicRegex::string_type BasicRegex::<strong>format</strong>(const string_type&amp; fmt, const string_type&amp; text, size_t n = npos) const</code></li>
+<li><code>BasicRegex::string_type BasicRegex::</code><strong><code>extract</code></strong><code>(const string_type&amp; fmt, const string_type&amp; text, size_t n = npos) const</code></li>
+<li><code>BasicRegex::string_type BasicRegex::</code><strong><code>format</code></strong><code>(const string_type&amp; fmt, const string_type&amp; text, size_t n = npos) const</code></li>
 </ul>
 
 <p>The <code>format()</code> function uses the formatting string to transform the text,
@@ -556,7 +565,7 @@ formatting in the same way as <code>format()</code>, but discards the unmatched 
 between matches.</p>
 
 <ul>
-<li><code>BasicRegex::match_range BasicRegex::<strong>grep</strong>(const string_type&amp; text) const</code></li>
+<li><code>BasicRegex::match_range BasicRegex::</code><strong><code>grep</code></strong><code>(const string_type&amp; text) const</code></li>
 </ul>
 
 <p>This returns a range object that can be used to iterate over all matches
@@ -564,14 +573,14 @@ within the subject string. Refer to the <code>BasicMatchIterator</code> class (b
 further details.</p>
 
 <ul>
-<li><code>size_t BasicRegex::<strong>groups</strong>() const noexcept</code></li>
+<li><code>size_t BasicRegex::</code><strong><code>groups</code></strong><code>() const noexcept</code></li>
 </ul>
 
 <p>Returns the number of groups in the regex (the number of parenthesized
 captures, plus one for the complete match).</p>
 
 <ul>
-<li><code>size_t BasicRegex::<strong>named</strong>(const string_type&amp; name) const noexcept</code></li>
+<li><code>size_t BasicRegex::</code><strong><code>named</code></strong><code>(const string_type&amp; name) const noexcept</code></li>
 </ul>
 
 <p>If the regex includes any named captures, this returns the group index
@@ -579,14 +588,14 @@ captures, plus one for the complete match).</p>
 capture by that name (or if the regex does not use named captures).</p>
 
 <ul>
-<li><code>BasicRegex::string_type BasicRegex::<strong>pattern</strong>() const</code></li>
-<li><code>uint32_t BasicRegex::<strong>flags</strong>() const noexcept</code></li>
+<li><code>BasicRegex::string_type BasicRegex::</code><strong><code>pattern</code></strong><code>() const</code></li>
+<li><code>uint32_t BasicRegex::</code><strong><code>flags</code></strong><code>() const noexcept</code></li>
 </ul>
 
 <p>These return the construction arguments.</p>
 
 <ul>
-<li><code>BasicRegex::split_range BasicRegex::<strong>split</strong>(const string_type&amp; text) const</code></li>
+<li><code>BasicRegex::split_range BasicRegex::</code><strong><code>split</code></strong><code>(const string_type&amp; text) const</code></li>
 </ul>
 
 <p>This returns a range object that can be used to iterate over the substrings
@@ -595,19 +604,19 @@ string using regex matches as delimiters. Refer to the <code>BasicSplitIterator<
 class (below) for further details.</p>
 
 <ul>
-<li><code>void BasicRegex::<strong>swap</strong>(BasicRegex&amp; r) noexcept</code></li>
-<li><code>template &lt;typename CX&gt; void <strong>swap</strong>(BasicRegex&lt;CX&gt;&amp; lhs, BasicRegex&lt;CX&gt;&amp; rhs) noexcept</code></li>
+<li><code>void BasicRegex::</code><strong><code>swap</code></strong><code>(BasicRegex&amp; r) noexcept</code></li>
+<li><code>template &lt;typename CX&gt; void</code> <strong><code>swap</code></strong><code>(BasicRegex&lt;CX&gt;&amp; lhs, BasicRegex&lt;CX&gt;&amp; rhs) noexcept</code></li>
 </ul>
 
 <p>Swap two regex objects.</p>
 
 <ul>
-<li><code>bool <strong>operator==</strong>(const BasicRegex&amp; lhs, const BasicRegex&amp; rhs) noexcept</code></li>
-<li><code>bool <strong>operator!=</strong>(const BasicRegex&amp; lhs, const BasicRegex&amp; rhs) noexcept</code></li>
-<li><code>bool <strong>operator&lt;</strong>(const BasicRegex&amp; lhs, const BasicRegex&amp; rhs) noexcept</code></li>
-<li><code>bool <strong>operator&gt;</strong>(const BasicRegex&amp; lhs, const BasicRegex&amp; rhs) noexcept</code></li>
-<li><code>bool <strong>operator&lt;=</strong>(const BasicRegex&amp; lhs, const BasicRegex&amp; rhs) noexcept</code></li>
-<li><code>bool <strong>operator&gt;=</strong>(const BasicRegex&amp; lhs, const BasicRegex&amp; rhs) noexcept</code></li>
+<li><code>bool</code> <strong><code>operator==</code></strong><code>(const BasicRegex&amp; lhs, const BasicRegex&amp; rhs) noexcept</code></li>
+<li><code>bool</code> <strong><code>operator!=</code></strong><code>(const BasicRegex&amp; lhs, const BasicRegex&amp; rhs) noexcept</code></li>
+<li><code>bool</code> <strong><code>operator&lt;</code></strong><code>(const BasicRegex&amp; lhs, const BasicRegex&amp; rhs) noexcept</code></li>
+<li><code>bool</code> <strong><code>operator&gt;</code></strong><code>(const BasicRegex&amp; lhs, const BasicRegex&amp; rhs) noexcept</code></li>
+<li><code>bool</code> <strong><code>operator&lt;=</code></strong><code>(const BasicRegex&amp; lhs, const BasicRegex&amp; rhs) noexcept</code></li>
+<li><code>bool</code> <strong><code>operator&gt;=</code></strong><code>(const BasicRegex&amp; lhs, const BasicRegex&amp; rhs) noexcept</code></li>
 </ul>
 
 <p>Comparison operators. The order is approximately based on the pattern text,
@@ -617,26 +626,36 @@ to match the same text) despite differing slightly in spelling, it is
 unspecified whether or not they will compare equal.</p>
 
 <ul>
-<li><code>template &lt;typename C&gt; BasicRegex&lt;C&gt; <strong>regex</strong>(const basic_string&lt;C&gt;&amp; pattern, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; BasicRegex&lt;C&gt; <strong>regex</strong>(const C* pattern, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; BasicRegex&lt;C&gt;</code> <strong><code>regex</code></strong><code>(const basic_string&lt;C&gt;&amp; pattern, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; BasicRegex&lt;C&gt;</code> <strong><code>regex</code></strong><code>(const C* pattern, uint32_t flags = 0)</code></li>
 </ul>
 
 <p>Convenience functions to construct a regex object.</p>
 
 <ul>
-<li><code>namespace Literals</code>
+<li><code>namespace</code> <strong><code>Literals</code></strong>
 
 <ul>
-<li><code>Regex <strong>operator&quot;&quot; _re</strong>(const char* ptr, size_t len)</code></li>
-<li><code>Regex <strong>operator&quot;&quot; _re_i</strong>(const char* ptr, size_t len)</code></li>
-<li><code>Regex16 <strong>operator&quot;&quot; _re</strong>(const char16_t* ptr, size_t len)</code></li>
-<li><code>Regex16 <strong>operator&quot;&quot; _re_i</strong>(const char16_t* ptr, size_t len)</code></li>
-<li><code>Regex32 <strong>operator&quot;&quot; _re</strong>(const char32_t* ptr, size_t len)</code></li>
-<li><code>Regex32 <strong>operator&quot;&quot; _re_i</strong>(const char32_t* ptr, size_t len)</code></li>
-<li><code>WideRegex <strong>operator&quot;&quot; _re</strong>(const wchar_t* ptr, size_t len)</code></li>
-<li><code>WideRegex <strong>operator&quot;&quot; _re_i</strong>(const wchar_t* ptr, size_t len)</code></li>
-<li><code>ByteRegex <strong>operator&quot;&quot; _re_b</strong>(const char* ptr, size_t len)</code></li>
-<li><code>ByteRegex <strong>operator&quot;&quot; _re_bi</strong>(const char* ptr, size_t len)</code></li>
+<li><code>Regex</code> <strong><code>operator&quot;&quot; _re</code></strong>
+<code>(const char* ptr, size_t len)</code></li>
+<li><code>Regex</code> <strong><code>operator&quot;&quot; _re_i</code></strong>
+<code>(const char* ptr, size_t len)</code></li>
+<li><code>Regex16</code> <strong><code>operator&quot;&quot; _re</code></strong>
+<code>(const char16_t* ptr, size_t len)</code></li>
+<li><code>Regex16</code> <strong><code>operator&quot;&quot; _re_i</code></strong>
+<code>(const char16_t* ptr, size_t len)</code></li>
+<li><code>Regex32</code> <strong><code>operator&quot;&quot; _re</code></strong>
+<code>(const char32_t* ptr, size_t len)</code></li>
+<li><code>Regex32</code> <strong><code>operator&quot;&quot; _re_i</code></strong>
+<code>(const char32_t* ptr, size_t len)</code></li>
+<li><code>WideRegex</code> <strong><code>operator&quot;&quot; _re</code></strong>
+<code>(const wchar_t* ptr, size_t len)</code></li>
+<li><code>WideRegex</code> <strong><code>operator&quot;&quot; _re_i</code></strong>
+<code>(const wchar_t* ptr, size_t len)</code></li>
+<li><code>ByteRegex</code> <strong><code>operator&quot;&quot; _re_b</code></strong>
+<code>(const char* ptr, size_t len)</code></li>
+<li><code>ByteRegex</code> <strong><code>operator&quot;&quot; _re_bi</code></strong>
+<code>(const char* ptr, size_t len)</code></li>
 </ul></li>
 </ul>
 
@@ -646,47 +665,57 @@ from that, no options are supported.</p>
 <h2 id="regexmatchclass">Regex match class</h2>
 
 <ul>
-<li><code>template &lt;typename CX&gt; class <strong>BasicMatch</strong></code></li>
-<li><code>using <strong>Match</strong> = BasicMatch&lt;char&gt;</code></li>
-<li><code>using <strong>Match16</strong> = BasicMatch&lt;char16_t&gt;</code></li>
-<li><code>using <strong>Match32</strong> = BasicMatch&lt;char32_t&gt;</code></li>
-<li><code>using <strong>WideMatch</strong> = BasicMatch&lt;wchar_t&gt;</code></li>
-<li><code>using <strong>ByteMatch</strong> = BasicMatch&lt;void&gt;</code></li>
+<li><code>template &lt;typename CX&gt; class</code> <strong><code>BasicMatch</code></strong></li>
+<li><code>using</code> <strong><code>Match</code></strong> <code>= BasicMatch&lt;char&gt;</code></li>
+<li><code>using</code> <strong><code>Match16</code></strong> <code>= BasicMatch&lt;char16_t&gt;</code></li>
+<li><code>using</code> <strong><code>Match32</code></strong> <code>= BasicMatch&lt;char32_t&gt;</code></li>
+<li><code>using</code> <strong><code>WideMatch</code></strong> <code>= BasicMatch&lt;wchar_t&gt;</code></li>
+<li><code>using</code> <strong><code>ByteMatch</code></strong> <code>= BasicMatch&lt;void&gt;</code></li>
 </ul>
 
 <p>This template class is returned by regex matching functions, reporting the
 result of the matching attempt.</p>
 
 <ul>
-<li><code>using BasicMatch::<strong>char_type</strong> = [char if CX is void, otherwise CX]</code></li>
-<li><code>using BasicMatch::<strong>cx_type</strong> = CX</code></li>
-<li><code>using BasicMatch::<strong>string_type</strong> = basic_string&lt;char_type&gt;</code></li>
-<li><code>using BasicMatch::<strong>regex_type</strong> = BasicRegex&lt;CX&gt;</code></li>
-<li><code>using BasicMatch::<strong>const_iterator</strong> = const char_type*</code></li>
-<li><code>using BasicMatch::<strong>const_reference</strong> = const char_type&amp;</code></li>
-<li><code>using BasicMatch::<strong>difference_type</strong> = ptrdiff_t</code></li>
-<li><code>using BasicMatch::<strong>iterator</strong> = [string::const_iterator if CX is void, otherwise UtfIterator&lt;CX&gt;]</code></li>
-<li><code>using BasicMatch::<strong>reference</strong> = const value_type&amp;</code></li>
-<li><code>using BasicMatch::<strong>value_type</strong> = [char if CX is void, otherwise char32_t]</code></li>
+<li><code>using BasicMatch::</code><strong><code>char_type</code></strong>
+<code>= [char if CX is void, otherwise CX]</code></li>
+<li><code>using BasicMatch::</code><strong><code>cx_type</code></strong>
+<code>= CX</code></li>
+<li><code>using BasicMatch::</code><strong><code>string_type</code></strong>
+<code>= basic_string&lt;char_type&gt;</code></li>
+<li><code>using BasicMatch::</code><strong><code>regex_type</code></strong>
+<code>= BasicRegex&lt;CX&gt;</code></li>
+<li><code>using BasicMatch::</code><strong><code>const_iterator</code></strong>
+<code>= const char_type*</code></li>
+<li><code>using BasicMatch::</code><strong><code>const_reference</code></strong>
+<code>= const char_type&amp;</code></li>
+<li><code>using BasicMatch::</code><strong><code>difference_type</code></strong>
+<code>= ptrdiff_t</code></li>
+<li><code>using BasicMatch::</code><strong><code>iterator</code></strong>
+<code>= [string::const_iterator if CX is void, otherwise UtfIterator&lt;CX&gt;]</code></li>
+<li><code>using BasicMatch::</code><strong><code>reference</code></strong>
+<code>= const value_type&amp;</code></li>
+<li><code>using BasicMatch::</code><strong><code>value_type</code></strong>
+<code>= [char if CX is void, otherwise char32_t]</code></li>
 </ul>
 
 <p>Member types.</p>
 
 <ul>
-<li><code>BasicMatch::<strong>BasicMatch</strong>()</code></li>
-<li><code>BasicMatch::<strong>BasicMatch</strong>(const BasicMatch&amp; m)</code></li>
-<li><code>BasicMatch::<strong>BasicMatch</strong>(BasicMatch&amp;&amp; m) noexcept</code></li>
-<li><code>BasicMatch::<strong>~BasicMatch</strong>() noexcept</code></li>
-<li><code>BasicMatch&amp; BasicMatch::<strong>operator=</strong>(const BasicMatch&amp; m)</code></li>
-<li><code>BasicMatch&amp; BasicMatch::<strong>operator=</strong>(BasicMatch&amp;&amp; m) noexcept</code></li>
+<li><code>BasicMatch::</code><strong><code>BasicMatch</code></strong><code>()</code></li>
+<li><code>BasicMatch::</code><strong><code>BasicMatch</code></strong><code>(const BasicMatch&amp; m)</code></li>
+<li><code>BasicMatch::</code><strong><code>BasicMatch</code></strong><code>(BasicMatch&amp;&amp; m) noexcept</code></li>
+<li><code>BasicMatch::</code><strong><code>~BasicMatch</code></strong><code>() noexcept</code></li>
+<li><code>BasicMatch&amp; BasicMatch::</code><strong><code>operator=</code></strong><code>(const BasicMatch&amp; m)</code></li>
+<li><code>BasicMatch&amp; BasicMatch::</code><strong><code>operator=</code></strong><code>(BasicMatch&amp;&amp; m) noexcept</code></li>
 </ul>
 
 <p>Life cycle functions. Normally a match object will be returned by a regex
 matching function rather than directly constructed by the user.</p>
 
 <ul>
-<li><code>BasicMatch::iterator BasicMatch::<strong>begin</strong>(size_t i = 0) const noexcept</code></li>
-<li><code>BasicMatch::iterator BasicMatch::<strong>end</strong>(size_t i = 0) const noexcept</code></li>
+<li><code>BasicMatch::iterator BasicMatch::</code><strong><code>begin</code></strong><code>(size_t i = 0) const noexcept</code></li>
+<li><code>BasicMatch::iterator BasicMatch::</code><strong><code>end</code></strong><code>(size_t i = 0) const noexcept</code></li>
 </ul>
 
 <p>These return UTF iterators over the characters within a match. The default
@@ -697,22 +726,22 @@ was unsuccessful, <code>begin()</code> and <code>end()</code> will return the sa
 value is otherwise unspecified).</p>
 
 <ul>
-<li><code>bool BasicMatch::<strong>empty</strong>() const noexcept</code></li>
+<li><code>bool BasicMatch::</code><strong><code>empty</code></strong><code>() const noexcept</code></li>
 </ul>
 
 <p>True if the match failed or matched an empty string.</p>
 
 <ul>
-<li><code>BasicMatch::string_type BasicMatch::<strong>first</strong>() const</code></li>
-<li><code>BasicMatch::string_type BasicMatch::<strong>last</strong>() const</code></li>
+<li><code>BasicMatch::string_type BasicMatch::</code><strong><code>first</code></strong><code>() const</code></li>
+<li><code>BasicMatch::string_type BasicMatch::</code><strong><code>last</code></strong><code>() const</code></li>
 </ul>
 
 <p>These return the first and last non-empty capture groups (not counting the
 complete match), or empty strings if there are no such groups.</p>
 
 <ul>
-<li><code>bool BasicMatch::<strong>full_or_partial</strong>() const noexcept</code></li>
-<li><code>bool BasicMatch::<strong>partial</strong>() const noexcept</code></li>
+<li><code>bool BasicMatch::</code><strong><code>full_or_partial</code></strong><code>() const noexcept</code></li>
+<li><code>bool BasicMatch::</code><strong><code>partial</code></strong><code>() const noexcept</code></li>
 </ul>
 
 <p>The <code>partial()</code> function is true if a partial match was detected, while
@@ -723,16 +752,16 @@ options was selected when the original regex was compiled; otherwise,
 <code>matched()</code>.</p>
 
 <ul>
-<li><code>size_t BasicMatch::<strong>groups</strong>() const noexcept</code></li>
+<li><code>size_t BasicMatch::</code><strong><code>groups</code></strong><code>() const noexcept</code></li>
 </ul>
 
 <p>The number of groups in the match (the number of captures, plus one for the
 complete match).</p>
 
 <ul>
-<li><code>bool BasicMatch::<strong>matched</strong>(size_t i = 0) const noexcept</code></li>
-<li><code>explicit BasicMatch::<strong>operator bool</strong>() const noexcept</code></li>
-<li><code>bool BasicMatch::<strong>operator!</strong>() const noexcept</code></li>
+<li><code>bool BasicMatch::</code><strong><code>matched</code></strong><code>(size_t i = 0) const noexcept</code></li>
+<li><code>explicit BasicMatch::</code><strong><code>operator bool</code></strong><code>() const noexcept</code></li>
+<li><code>bool BasicMatch::</code><strong><code>operator!</code></strong><code>() const noexcept</code></li>
 </ul>
 
 <p>The <code>matched()</code> function indicates whether a capture group, identified by
@@ -740,9 +769,9 @@ number, was matched; by default, it indicates whether the match as a whole was
 successful. The boolean conversion is equivalent to <code>matched(0)</code>.</p>
 
 <ul>
-<li><code>size_t BasicMatch::<strong>offset</strong>(size_t i = 0) const noexcept</code></li>
-<li><code>size_t BasicMatch::<strong>endpos</strong>(size_t i = 0) const noexcept</code></li>
-<li><code>size_t BasicMatch::<strong>count</strong>(size_t i = 0) const noexcept</code></li>
+<li><code>size_t BasicMatch::</code><strong><code>offset</code></strong><code>(size_t i = 0) const noexcept</code></li>
+<li><code>size_t BasicMatch::</code><strong><code>endpos</code></strong><code>(size_t i = 0) const noexcept</code></li>
+<li><code>size_t BasicMatch::</code><strong><code>count</code></strong><code>(size_t i = 0) const noexcept</code></li>
 </ul>
 
 <p>These return the starting position, end position, and size of the match, or of
@@ -752,10 +781,10 @@ index refers to a group that does not exist in the regex or was not included
 in the match, the two offsets will both be <code>npos</code> and the size will be zero.</p>
 
 <ul>
-<li><code>BasicMatch::string_type BasicMatch::<strong>str</strong>(size_t i = 0) const</code></li>
-<li><code>BasicMatch::string_type BasicMatch::<strong>named</strong>(const string_type&amp; name) const</code></li>
-<li><code>BasicMatch::string_type BasicMatch::<strong>operator[]</strong>(size_t i) const</code></li>
-<li><code>BasicMatch::<strong>operator string_type</strong>() const</code></li>
+<li><code>BasicMatch::string_type BasicMatch::</code><strong><code>str</code></strong><code>(size_t i = 0) const</code></li>
+<li><code>BasicMatch::string_type BasicMatch::</code><strong><code>named</code></strong><code>(const string_type&amp; name) const</code></li>
+<li><code>BasicMatch::string_type BasicMatch::</code><strong><code>operator[]</code></strong><code>(size_t i) const</code></li>
+<li><code>BasicMatch::</code><strong><code>operator string_type</code></strong><code>() const</code></li>
 </ul>
 
 <p>The <code>str()</code> and <code>named()</code> functions return a copy of the substring matched by
@@ -766,8 +795,8 @@ conversion operator is equivalent to <code>str(0)</code>, which returns the comp
 match.</p>
 
 <ul>
-<li><code>void BasicMatch::<strong>swap</strong>(BasicMatch&amp; m) noexcept</code></li>
-<li><code>template &lt;typename CX&gt; void <strong>swap</strong>(BasicMatch&lt;CX&gt;&amp; lhs, BasicMatch&lt;CX&gt;&amp; rhs) noexcept</code></li>
+<li><code>void BasicMatch::</code><strong><code>swap</code></strong><code>(BasicMatch&amp; m) noexcept</code></li>
+<li><code>template &lt;typename CX&gt; void</code> <strong><code>swap</code></strong><code>(BasicMatch&lt;CX&gt;&amp; lhs, BasicMatch&lt;CX&gt;&amp; rhs) noexcept</code></li>
 </ul>
 
 <p>Swap two match objects.</p>
@@ -775,38 +804,39 @@ match.</p>
 <h2 id="regexformattingclass">Regex formatting class</h2>
 
 <ul>
-<li><code>template &lt;typename CX&gt; class <strong>BasicRegexFormat</strong></code></li>
-<li><code>using <strong>RegexFormat</strong> = BasicRegexFormat&lt;char&gt;</code></li>
-<li><code>using <strong>RegexFormat16</strong> = BasicRegexFormat&lt;char16_t&gt;</code></li>
-<li><code>using <strong>RegexFormat32</strong> = BasicRegexFormat&lt;char32_t&gt;</code></li>
-<li><code>using <strong>WideRegexFormat</strong> = BasicRegexFormat&lt;wchar_t&gt;</code></li>
-<li><code>using <strong>ByteRegexFormat</strong> = BasicRegexFormat&lt;void&gt;</code></li>
+<li><code>template &lt;typename CX&gt; class</code> <strong><code>BasicRegexFormat</code></strong></li>
+<li><code>using</code> <strong><code>RegexFormat</code></strong> <code>= BasicRegexFormat&lt;char&gt;</code></li>
+<li><code>using</code> <strong><code>RegexFormat16</code></strong> <code>= BasicRegexFormat&lt;char16_t&gt;</code></li>
+<li><code>using</code> <strong><code>RegexFormat32</code></strong> <code>= BasicRegexFormat&lt;char32_t&gt;</code></li>
+<li><code>using</code> <strong><code>WideRegexFormat</code></strong> <code>= BasicRegexFormat&lt;wchar_t&gt;</code></li>
+<li><code>using</code> <strong><code>ByteRegexFormat</code></strong> <code>= BasicRegexFormat&lt;void&gt;</code></li>
 </ul>
 
 <p>The regex format class contains both a regex and a format string. It provides
-operations equivalent to the <code>BasicRegex::format()</code> function, but compiling
+operations equivalent to the <code>BasicRegex::</code><strong><code>format</code></strong><code>()</code> function, but compiling
 the format string only once by constructing a regex format object will be more
 efficient if the same formatting operation is going to be applied many times.</p>
 
 <ul>
-<li><code>using BasicRegexFormat::<strong>char_type</strong> = [char if CX is void, otherwise CX]</code></li>
-<li><code>using BasicRegexFormat::<strong>cx_type</strong> = CX</code></li>
-<li><code>using BasicRegexFormat::<strong>string_type</strong> = basic_string&lt;char_type&gt;</code></li>
-<li><code>using BasicRegexFormat::<strong>regex_type</strong> = BasicRegex&lt;CX&gt;</code></li>
-<li><code>using BasicRegexFormat::<strong>match_type</strong> = BasicMatch&lt;CX&gt;</code></li>
+<li><code>using BasicRegexFormat::</code><strong><code>char_type</code></strong> <code>= [char if CX is void, otherwise CX]</code></li>
+<li><code>using BasicRegexFormat::</code><strong><code>cx_type</code></strong> <code>= CX</code></li>
+<li><code>using BasicRegexFormat::</code><strong><code>string_type</code></strong>
+<code>= basic_string&lt;char_type&gt;</code></li>
+<li><code>using BasicRegexFormat::</code><strong><code>regex_type</code></strong> <code>= BasicRegex&lt;CX&gt;</code></li>
+<li><code>using BasicRegexFormat::</code><strong><code>match_type</code></strong> <code>= BasicMatch&lt;CX&gt;</code></li>
 </ul>
 
 <p>Member types.</p>
 
 <ul>
-<li><code>BasicRegexFormat::<strong>BasicRegexFormat</strong>()</code></li>
-<li><code>BasicRegexFormat::<strong>BasicRegexFormat</strong>(const regex_type&amp; pattern, const string_type&amp; format)</code></li>
-<li><code>BasicRegexFormat::<strong>BasicRegexFormat</strong>(const string_type&amp; pattern, const string_type&amp; format, uint32_t flags = 0)</code></li>
-<li><code>BasicRegexFormat::<strong>BasicRegexFormat</strong>(const BasicRegexFormat&amp; f)</code></li>
-<li><code>BasicRegexFormat::<strong>BasicRegexFormat</strong>(BasicRegexFormat&amp;&amp; f) noexcept</code></li>
-<li><code>BasicRegexFormat::<strong>~BasicRegexFormat</strong>() noexcept</code></li>
-<li><code>BasicRegexFormat&amp; BasicRegexFormat::<strong>operator=</strong>(const BasicRegexFormat&amp; f)</code></li>
-<li><code>BasicRegexFormat&amp; BasicRegexFormat::<strong>operator=</strong>(BasicRegexFormat&amp;&amp; f) noexcept</code></li>
+<li><code>BasicRegexFormat::</code><strong><code>BasicRegexFormat</code></strong><code>()</code></li>
+<li><code>BasicRegexFormat::</code><strong><code>BasicRegexFormat</code></strong><code>(const regex_type&amp; pattern, const string_type&amp; format)</code></li>
+<li><code>BasicRegexFormat::</code><strong><code>BasicRegexFormat</code></strong><code>(const string_type&amp; pattern, const string_type&amp; format, uint32_t flags = 0)</code></li>
+<li><code>BasicRegexFormat::</code><strong><code>BasicRegexFormat</code></strong><code>(const BasicRegexFormat&amp; f)</code></li>
+<li><code>BasicRegexFormat::</code><strong><code>BasicRegexFormat</code></strong><code>(BasicRegexFormat&amp;&amp; f) noexcept</code></li>
+<li><code>BasicRegexFormat::</code><strong><code>~BasicRegexFormat</code></strong><code>() noexcept</code></li>
+<li><code>BasicRegexFormat&amp; BasicRegexFormat::</code><strong><code>operator=</code></strong><code>(const BasicRegexFormat&amp; f)</code></li>
+<li><code>BasicRegexFormat&amp; BasicRegexFormat::</code><strong><code>operator=</code></strong><code>(BasicRegexFormat&amp;&amp; f) noexcept</code></li>
 </ul>
 
 <p>Life cycle functions. The object is constructed from a regex (supplied either
@@ -815,9 +845,9 @@ third constructor can throw the same exceptions as the corresponding regex
 constructor.</p>
 
 <ul>
-<li><code>BasicRegexFormat::string_type BasicRegexFormat::<strong>format</strong>(const string_type&amp; text, size_t n = npos) const</code></li>
-<li><code>BasicRegexFormat::string_type BasicRegexFormat::<strong>extract</strong>(const string_type&amp; text, size_t n = npos) const</code></li>
-<li><code>BasicRegexFormat::string_type BasicRegexFormat::<strong>operator()</strong>(const string_type&amp; text, size_t n = npos) const</code></li>
+<li><code>BasicRegexFormat::</code>*<em><code>string_type</code></em>* <code>BasicRegexFormat::</code><strong><code>format</code></strong><code>(const string_type&amp; text, size_t n = npos) const</code></li>
+<li><code>BasicRegexFormat::</code>*<em><code>string_type</code></em>* <code>BasicRegexFormat::</code><strong><code>extract</code></strong><code>(const string_type&amp; text, size_t n = npos) const</code></li>
+<li><code>BasicRegexFormat::</code>*<em><code>string_type</code></em>* <code>BasicRegexFormat::</code><strong><code>operator()</code></strong><code>(const string_type&amp; text, size_t n = npos) const</code></li>
 </ul>
 
 <p>The <code>format()</code> function (and the equivalent function call operator) uses the
@@ -829,10 +859,10 @@ first <code>n</code> matches, discarding the unmatched text between them.
 <code>regex.format(fmt,text)</code>, and similarly for <code>extract()</code>.</p>
 
 <ul>
-<li><code>BasicRegexFormat::regex_type BasicRegexFormat::<strong>regex</strong>() const</code></li>
-<li><code>BasicRegexFormat::string_type BasicRegexFormat::<strong>format</strong>() const</code></li>
-<li><code>BasicRegexFormat::string_type BasicRegexFormat::<strong>pattern</strong>() const</code></li>
-<li><code>uint32_t BasicRegexFormat::<strong>flags</strong>() const noexcept</code></li>
+<li><code>BasicRegexFormat::ex_type BasicRegexFormat::</code><strong><code>regex</code></strong><code>() const</code></li>
+<li><code>BasicRegexFormat::ing_type BasicRegexFormat::</code><strong><code>format</code></strong><code>() const</code></li>
+<li><code>BasicRegexFormat::ing_type BasicRegexFormat::</code><strong><code>pattern</code></strong><code>() const</code></li>
+<li><code>uint32_t BasicRegexFormat::</code><strong><code>flags</code></strong><code>() const noexcept</code></li>
 </ul>
 
 <p>These functions query the construction parameters. The <code>pattern()</code> and
@@ -840,17 +870,21 @@ first <code>n</code> matches, discarding the unmatched text between them.
 <code>regex().flags()</code>.</p>
 
 <ul>
-<li><code>void BasicRegexFormat::<strong>swap</strong>(BasicRegexFormat&amp; r) noexcept</code></li>
-<li><code>template &lt;typename CX&gt; void <strong>swap</strong>(BasicRegexFormat&lt;CX&gt;&amp; lhs, BasicRegexFormat&lt;CX&gt;&amp; rhs) noexcept</code></li>
+<li><code>void BasicRegexFormat::</code><strong><code>swap</code></strong><code>(BasicRegexFormat&amp; r) noexcept</code></li>
+<li><code>template &lt;typename CX&gt; void</code> <strong><code>swap</code></strong><code>(BasicRegexFormat&lt;CX&gt;&amp; lhs, BasicRegexFormat&lt;CX&gt;&amp; rhs) noexcept</code></li>
 </ul>
 
 <p>Swap two objects.</p>
 
 <ul>
-<li><code>template &lt;typename C&gt; BasicRegexFormat&lt;C&gt; <strong>regex_format</strong>(const basic_string&lt;C&gt;&amp; pattern, const basic_string&lt;C&gt;&amp; format, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; BasicRegexFormat&lt;C&gt; <strong>regex_format</strong>(const basic_string&lt;C&gt;&amp; pattern, const C* format, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; BasicRegexFormat&lt;C&gt; <strong>regex_format</strong>(const C* pattern, const basic_string&lt;C&gt;&amp; format, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; BasicRegexFormat&lt;C&gt; <strong>regex_format</strong>(const C* pattern, const C* format, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; BasicRegexFormat&lt;C&gt;</code> <strong><code>regex_format</code></strong>
+<code>(const basic_string&lt;C&gt;&amp; pattern, const basic_string&lt;C&gt;&amp; format, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; BasicRegexFormat&lt;C&gt;</code> <strong><code>regex_format</code></strong>
+<code>(const basic_string&lt;C&gt;&amp; pattern, const C* format, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; BasicRegexFormat&lt;C&gt;</code> <strong><code>regex_format</code></strong>
+<code>(const C* pattern, const basic_string&lt;C&gt;&amp; format, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; BasicRegexFormat&lt;C&gt;</code> <strong><code>regex_format</code></strong>
+<code>(const C* pattern, const C* format, uint32_t flags = 0)</code></li>
 </ul>
 
 <p>Convenience functions to construct a regex format object.</p>
@@ -858,69 +892,92 @@ first <code>n</code> matches, discarding the unmatched text between them.
 <h2 id="regexiteratorclasses">Regex iterator classes</h2>
 
 <ul>
-<li><code>template &lt;typename CX&gt; class <strong>BasicMatchIterator</strong></code>
+<li><code>template &lt;typename CX&gt; class</code> <strong><code>BasicMatchIterator</code></strong>
 
 <ul>
-<li><code>using BasicMatchIterator::<strong>char_type</strong> = [char if CX is void, otherwise CX]</code></li>
-<li><code>using BasicMatchIterator::<strong>cx_type</strong> = CX</code></li>
-<li><code>using BasicMatchIterator::<strong>string_type</strong> = basic_string&lt;char_type&gt;</code></li>
-<li><code>using BasicMatchIterator::<strong>regex_type</strong> = BasicRegex&lt;CX&gt;</code></li>
-<li><code>using BasicMatchIterator::<strong>match_type</strong> = BasicMatch&lt;CX&gt;</code></li>
-<li><code>using BasicMatchIterator::<strong>difference_type</strong> = ptrdiff_t</code></li>
-<li><code>using BasicMatchIterator::<strong>iterator_category</strong> = std::forward_iterator_tag</code></li>
-<li><code>using BasicMatchIterator::<strong>pointer</strong> = const match_type*</code></li>
-<li><code>using BasicMatchIterator::<strong>reference</strong> = const match_type&amp;</code></li>
-<li><code>using BasicMatchIterator::<strong>value_type</strong> = match_type</code></li>
-<li><code>BasicMatchIterator::<strong>BasicMatchIterator</strong>()</code></li>
-<li><code>BasicMatchIterator::<strong>BasicMatchIterator</strong>(const regex_type&amp; re, const string_type&amp; text)</code></li>
-<li><code>[standard iterator operations]</code></li>
+<li><code>using BasicMatchIterator::</code><strong><code>char_type</code></strong>
+<code>= [char if CX is void, otherwise CX]</code></li>
+<li><code>using BasicMatchIterator::</code><strong><code>cx_type</code></strong>
+<code>= CX</code></li>
+<li><code>using BasicMatchIterator::</code><strong><code>string_type</code></strong>
+<code>= basic_string&lt;char_type&gt;</code></li>
+<li><code>using BasicMatchIterator::</code><strong><code>regex_type</code></strong>
+<code>= BasicRegex&lt;CX&gt;</code></li>
+<li><code>using BasicMatchIterator::</code><strong><code>match_type</code></strong>
+<code>= BasicMatch&lt;CX&gt;</code></li>
+<li><code>using BasicMatchIterator::</code><strong><code>difference_type</code></strong>
+<code>= ptrdiff_t</code></li>
+<li><code>using BasicMatchIterator::</code><strong><code>iterator_category</code></strong>
+<code>= std::</code><strong><code>forward_iterator_tag</code></strong></li>
+<li><code>using BasicMatchIterator::</code><strong><code>pointer</code></strong>
+<code>= const match_type*</code></li>
+<li><code>using BasicMatchIterator::</code><strong><code>reference</code></strong>
+<code>= const match_type&amp;</code></li>
+<li><code>using BasicMatchIterator::</code><strong><code>value_type</code></strong>
+<code>= match_type</code></li>
+<li><code>BasicMatchIterator::</code><strong><code>BasicMatchIterator</code></strong><code>()</code></li>
+<li><code>BasicMatchIterator::</code><strong><code>BasicMatchIterator</code></strong><code>(const regex_type&amp; re, const string_type&amp; text)</code></li>
+<li><em>[standard iterator operations]</em></li>
 </ul></li>
-<li><code>using <strong>MatchIterator</strong> = BasicMatchIterator&lt;char&gt;</code></li>
-<li><code>using <strong>MatchIterator16</strong> = BasicMatchIterator&lt;char16_t&gt;</code></li>
-<li><code>using <strong>MatchIterator32</strong> = BasicMatchIterator&lt;char32_t&gt;</code></li>
-<li><code>using <strong>WideMatchIterator</strong> = BasicMatchIterator&lt;wchar_t&gt;</code></li>
-<li><code>using <strong>ByteMatchIterator</strong> = BasicMatchIterator&lt;void&gt;</code></li>
+<li><code>using</code> <strong><code>MatchIterator</code></strong> <code>= BasicMatchIterator&lt;char&gt;</code></li>
+<li><code>using</code> <strong><code>MatchIterator16</code></strong> <code>= BasicMatchIterator&lt;char16_t&gt;</code></li>
+<li><code>using</code> <strong><code>MatchIterator32</code></strong> <code>= BasicMatchIterator&lt;char32_t&gt;</code></li>
+<li><code>using</code> <strong><code>WideMatchIterator</code></strong> <code>= BasicMatchIterator&lt;wchar_t&gt;</code></li>
+<li><code>using</code> <strong><code>ByteMatchIterator</code></strong> <code>= BasicMatchIterator&lt;void&gt;</code></li>
 </ul>
 
 <p>An iterator over the (non-overlapping) matches found within a subject string
-for a given regex. These are normally returned by <code>BasicRegex::grep()</code> rather
+for a given regex. These are normally returned by <code>BasicRegex::</code><strong><code>grep</code></strong><code>()</code> rather
 than constructed directly by the user.</p>
 
 <ul>
-<li><code>template &lt;typename CX&gt; class <strong>BasicSplitIterator</strong></code>
+<li><code>template &lt;typename CX&gt; class</code> <strong><code>BasicSplitIterator</code></strong>
 
 <ul>
-<li><code>using BasicSplitIterator::<strong>char_type</strong> = [char if CX is void, otherwise CX]</code></li>
-<li><code>using BasicSplitIterator::<strong>cx_type</strong> = CX</code></li>
-<li><code>using BasicSplitIterator::<strong>string_type</strong> = basic_string&lt;char_type&gt;</code></li>
-<li><code>using BasicSplitIterator::<strong>regex_type</strong> = BasicRegex&lt;CX&gt;</code></li>
-<li><code>using BasicSplitIterator::<strong>match_type</strong> = BasicMatch&lt;CX&gt;</code></li>
-<li><code>using BasicSplitIterator::<strong>match_iterator</strong> = BasicMatchIterator&lt;CX&gt;</code></li>
-<li><code>using BasicSplitIterator::<strong>difference_type</strong> = ptrdiff_t</code></li>
-<li><code>using BasicSplitIterator::<strong>iterator_category</strong> = std::forward_iterator_tag</code></li>
-<li><code>using BasicSplitIterator::<strong>pointer</strong> = const string_type*</code></li>
-<li><code>using BasicSplitIterator::<strong>reference</strong> = const string_type&amp;</code></li>
-<li><code>using BasicSplitIterator::<strong>value_type</strong> = string_type</code></li>
-<li><code>BasicSplitIterator::<strong>BasicSplitIterator</strong>()</code></li>
-<li><code>BasicSplitIterator::<strong>BasicSplitIterator</strong>(const regex_type&amp; re, const string_type&amp; text)</code></li>
-<li><code>[standard iterator operations]</code></li>
+<li><code>using BasicSplitIterator::</code><strong><code>char_type</code></strong>
+<code>= [char if CX is void, otherwise CX]</code></li>
+<li><code>using BasicSplitIterator::</code><strong><code>cx_type</code></strong>
+<code>= CX</code></li>
+<li><code>using BasicSplitIterator::</code><strong><code>string_type</code></strong>
+<code>= basic_string&lt;char_type&gt;</code></li>
+<li><code>using BasicSplitIterator::</code><strong><code>regex_type</code></strong>
+<code>= BasicRegex&lt;CX&gt;</code></li>
+<li><code>using BasicSplitIterator::</code><strong><code>match_type</code></strong>
+<code>= BasicMatch&lt;CX&gt;</code></li>
+<li><code>using BasicSplitIterator::</code><strong><code>match_iterator</code></strong>
+<code>= BasicMatchIterator&lt;CX&gt;</code></li>
+<li><code>using BasicSplitIterator::</code><strong><code>difference_type</code></strong>
+<code>= ptrdiff_t</code></li>
+<li><code>using BasicSplitIterator::</code><strong><code>iterator_category</code></strong>
+<code>= std::</code><strong><code>forward_iterator_tag</code></strong></li>
+<li><code>using BasicSplitIterator::</code><strong><code>pointer</code></strong>
+<code>= const string_type*</code></li>
+<li><code>using BasicSplitIterator::</code><strong><code>reference</code></strong>
+<code>= const string_type&amp;</code></li>
+<li><code>using BasicSplitIterator::</code><strong><code>value_type</code></strong>
+<code>= string_type</code></li>
+<li><code>BasicSplitIterator::</code><strong><code>BasicSplitIterator</code></strong><code>()</code></li>
+<li><code>BasicSplitIterator::</code><strong><code>BasicSplitIterator</code></strong><code>(const regex_type&amp; re, const string_type&amp; text)</code></li>
+<li><em>[standard iterator operations]</em></li>
 </ul></li>
-<li><code>using <strong>SplitIterator</strong> = BasicSplitIterator&lt;char&gt;</code></li>
-<li><code>using <strong>SplitIterator16</strong> = BasicSplitIterator&lt;char16_t&gt;</code></li>
-<li><code>using <strong>SplitIterator32</strong> = BasicSplitIterator&lt;char32_t&gt;</code></li>
-<li><code>using <strong>WideSplitIterator</strong> = BasicSplitIterator&lt;wchar_t&gt;</code></li>
-<li><code>using <strong>ByteSplitIterator</strong> = BasicSplitIterator&lt;void&gt;</code></li>
+<li><code>using</code> <strong><code>SplitIterator</code></strong> <code>= BasicSplitIterator&lt;char&gt;</code></li>
+<li><code>using</code> <strong><code>SplitIterator16</code></strong> <code>= BasicSplitIterator&lt;char16_t&gt;</code></li>
+<li><code>using</code> <strong><code>SplitIterator32</code></strong> <code>= BasicSplitIterator&lt;char32_t&gt;</code></li>
+<li><code>using</code> <strong><code>WideSplitIterator</code></strong> <code>= BasicSplitIterator&lt;wchar_t&gt;</code></li>
+<li><code>using</code> <strong><code>ByteSplitIterator</code></strong> <code>= BasicSplitIterator&lt;void&gt;</code></li>
 </ul>
 
 <p>An iterator over the substrings between matches for a given regex. These are
-normally returned by <code>BasicRegex::split()</code> rather than constructed directly by
+normally returned by <code>BasicRegex::</code><strong><code>split</code></strong><code>()</code> rather than constructed directly by
 the user.</p>
 
 <h2 id="utilityfunctions">Utility functions</h2>
 
 <ul>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>regex_escape</strong>(const basic_string&lt;C&gt;&amp; str)</code></li>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; <strong>regex_escape</strong>(const C* str)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>regex_escape</code></strong>
+<code>(const basic_string&lt;C&gt;&amp; str)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>regex_escape</code></strong>
+<code>(const C* str)</code></li>
 </ul>
 
 <p>These return a copy of the argument string, modified by inserting escape
@@ -932,13 +989,13 @@ the text in <code>&quot;\Q...\E&quot;</code> delimiters, provided the text does 
 <h2 id="versioninformation">Version information</h2>
 
 <ul>
-<li><code>Version <strong>regex_version</strong>() noexcept</code></li>
+<li><code>Version</code> <strong><code>regex_version</code></strong><code>() noexcept</code></li>
 </ul>
 
 <p>Returns the version of PCRE used to build this library.</p>
 
 <ul>
-<li><code>Version <strong>regex_unicode_version</strong>() noexcept</code></li>
+<li><code>Version</code> <strong><code>regex_unicode_version</code></strong><code>() noexcept</code></li>
 </ul>
 
 <p>Returns the PCRE library&#8217;s version of Unicode. Because the PCRE library is

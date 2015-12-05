@@ -25,7 +25,7 @@ namespace Unicorn {
 
         template <typename C> u8string quote_file(const basic_string<C>& name) { return quote(to_utf8(name), true); }
 
-        #if defined(PRI_TARGET_NATIVE_WINDOWS)
+        #if defined(PRI_TARGET_WINDOWS)
             using HandleTarget = std::remove_pointer_t<HANDLE>;
         #endif
 

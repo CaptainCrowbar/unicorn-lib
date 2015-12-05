@@ -417,7 +417,7 @@ namespace Unicorn {
                     return it->second;
             }
             auto tag = EncodingTag();
-            #if defined(PRI_TARGET_NATIVE_WINDOWS)
+            #if defined(PRI_TARGET_WINDOWS)
                 if (lcname.find_first_not_of("0123456789") == npos)
                     tag = lookup_encoding(uint32_t(decnum(lcname)));
             #endif

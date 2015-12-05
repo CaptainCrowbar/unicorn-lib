@@ -59,38 +59,38 @@ following information on the standard output:
 
 ## Exceptions ##
 
-* `class CommandLineError: public std::runtime_error`
-    * `explicit CommandLineError::CommandLineError(const u8string& details, const u8string& arg = {}, const u8string& arg2 = {})`
+* `class` **`CommandLineError`**`: public std::runtime_error`
+    * `explicit CommandLineError::`**`CommandLineError`**`(const u8string& details, const u8string& arg = {}, const u8string& arg2 = {})`
 
-Thrown by `Options::parse()` during argument parsing, to report that the
+Thrown by `Options::`**`parse`**`()` during argument parsing, to report that the
 command line arguments supplied by the user were not consistent with the
 option specification.
 
-* `class OptionSpecError: public std::runtime_error`
-    * `explicit OptionSpecError::OptionSpecError(const u8string& option)`
-    * `OptionSpecError::OptionSpecError(const u8string& details, const u8string& option)`
+* `class` **`OptionSpecError`**`: public std::runtime_error`
+    * `explicit OptionSpecError::`**`OptionSpecError`**`(const u8string& option)`
+    * `OptionSpecError::`**`OptionSpecError`**`(const u8string& details, const u8string& option)`
 
-Thrown by `Options::add()` during the creation of an option specification, to
+Thrown by `Options::`**`add`**`()` during the creation of an option specification, to
 report an invalid combination of properties.
 
 ## Class Options ##
 
-Keyword              | Type        | Description
--------              | ----        | -----------
-`Options::abbrev`    | `u8string`  | A single letter abbreviation for the option (e.g. `"-x"`; the hyphen is optional).
-`Options::anon`      | `bool`      | Anonymous arguments (not claimed by any other option) will be assigned to this option.
-`Options::boolean`   | `bool`      | This option is a boolean switch and does not take arguments.
-`Options::defval`    | `u8string`  | Use this default value if the option is not supplied by the user.
-`Options::floating`  | `bool`      | The argument value must be a floating point number.
-`Options::group`     | `u8string`  | Assign the option to a mutual exclusion group; at most one option from a group is allowed.
-`Options::integer`   | `bool`      | The argument value must be an integer.
-`Options::multiple`  | `bool`      | This option may be followed by multiple arguments.
-`Options::pattern`   | `u8string`  | The argument value must match this regular expression.
-`Options::required`  | `bool`      | This option is mandatory.
+Keyword                    | Type        | Description
+-------                    | ----        | -----------
+`Options::`**`abbrev`**    | `u8string`  | A single letter abbreviation for the option (e.g. `"-x"`; the hyphen is optional).
+`Options::`**`anon`**      | `bool`      | Anonymous arguments (not claimed by any other option) will be assigned to this option.
+`Options::`**`boolean`**   | `bool`      | This option is a boolean switch and does not take arguments.
+`Options::`**`defval`**    | `u8string`  | Use this default value if the option is not supplied by the user.
+`Options::`**`floating`**  | `bool`      | The argument value must be a floating point number.
+`Options::`**`group`**     | `u8string`  | Assign the option to a mutual exclusion group; at most one option from a group is allowed.
+`Options::`**`integer`**   | `bool`      | The argument value must be an integer.
+`Options::`**`multiple`**  | `bool`      | This option may be followed by multiple arguments.
+`Options::`**`pattern`**   | `u8string`  | The argument value must match this regular expression.
+`Options::`**`required`**  | `bool`      | This option is mandatory.
 
 Keyword arguments for the `add()` function, described below.
 
-* `explicit Options::Options(const u8string& info, const u8string& head = {}, const u8string& tail = {})`
+* `explicit Options::`**`Options`**`(const u8string& info, const u8string& head = {}, const u8string& tail = {})`
 
 Constructor to initialize an option specification. The `info` argument is a
 string containing the basic description of the program, typically something
@@ -99,15 +99,15 @@ the user calls it with the `"--version"` option. The optional `head` and
 `tail` arguments are extra text that will be printed before and after the
 option list when the full `"--help"` option is invoked.
 
-* `Options::Options(const Options& opt)`
-* `Options::Options(Options&& opt) noexcept`
-* `Options::~Options() noexcept`
-* `Options& Options::operator=(const Options& opt)`
-* `Options& Options::operator=(Options&& opt) noexcept`
+* `Options::`**`Options`**`(const Options& opt)`
+* `Options::`**`Options`**`(Options&& opt) noexcept`
+* `Options::`**`~Options`**`() noexcept`
+* `Options& Options::`**`operator=`**`(const Options& opt)`
+* `Options& Options::`**`operator=`**`(Options&& opt) noexcept`
 
 Other life cycle functions.
 
-* `template <typename... Args> void Options::add(const u8string& name, const u8string& info, const Args&... args)`
+* `template <typename... Args> void Options::`**`add`**`(const u8string& name, const u8string& info, const Args&... args)`
 
 Adds an option to the parser. The `name` argument is the full name of the
 option, which users can invoke with `"--name"` (the option name can be
@@ -138,25 +138,25 @@ to `add()` to construct the option specification before calling `parse()` to
 parse the actual command line arguments. Once the arguments have been parsed,
 the `get()`, `get_list()`, and `has()` functions can be used to query them.
 
-* `void Options::autohelp() noexcept`
+* `void Options::`**`autohelp`**`() noexcept`
 
 If this is set, calling the program with no arguments will be interpreted as a
 request for help (i.e. an empty argument list is equivalent to `"--help"`).
 
-* `u8string Options::help() const`
-* `u8string Options::version() const`
+* `u8string Options::`**`help`**`() const`
+* `u8string Options::`**`version`**`() const`
 
 These are the same texts that will be presented to the user by the `"--help"`
 and `"--version"` options. The `help()` text is constructed automatically by
 the `Options` object; the `version()` text is simply the original `info`
 string that was supplied to the `Options` constructor.
 
-* `template <typename C> bool Options::parse(const vector<basic_string<C>>& args)`
-* `template <typename C> bool Options::parse(const basic_string<C>& args)`
-* `template <typename C> bool Options::parse(int argc, C** argv)`
-* `template <typename C, typename C2> bool Options::parse(const vector<basic_string<C>>& args, std::basic_ostream<C2>& out, uint32_t flags = 0)`
-* `template <typename C, typename C2> bool Options::parse(const basic_string<C>& args, std::basic_ostream<C2>& out, uint32_t flags = 0)`
-* `template <typename C, typename C2> bool Options::parse(int argc, C** argv, std::basic_ostream<C2>& out, uint32_t flags = 0)`
+* `template <typename C> bool Options::`**`parse`**`(const vector<basic_string<C>>& args)`
+* `template <typename C> bool Options::`**`parse`**`(const basic_string<C>& args)`
+* `template <typename C> bool Options::`**`parse`**`(int argc, C** argv)`
+* `template <typename C, typename C2> bool Options::`**`parse`**`(const vector<basic_string<C>>& args, std::basic_ostream<C2>& out, uint32_t flags = 0)`
+* `template <typename C, typename C2> bool Options::`**`parse`**`(const basic_string<C>& args, std::basic_ostream<C2>& out, uint32_t flags = 0)`
+* `template <typename C, typename C2> bool Options::`**`parse`**`(int argc, C** argv, std::basic_ostream<C2>& out, uint32_t flags = 0)`
 
 After the option specification has been constructed, call one of the `parse()`
 functions to parse the actual command line arguments. The arguments can be
@@ -168,7 +168,7 @@ command name (which will be discarded); use the `opt_noprefix` flag to
 override this.
 
 If help or version information is requested, it will be written to the given
-output stream (`std::cout` by default). The `parse()` function will return
+output stream (`std::`**`cout`** by default). The `parse()` function will return
 true if all requested processing has already been handled (i.e. if help or
 version information has been presented to the user); the caller should check
 the return value from `parse()` and end the program if it is true.
@@ -177,9 +177,9 @@ The `flags` argument can be any combination of these:
 
 Flag            | Description
 ----            | -----------
-`opt_locale`    | The argument list is in the local encoding
-`opt_noprefix`  | The first argument is not the command name
-`opt_quoted`    | Allow arguments to be quoted
+**`opt_locale`**  | The argument list is in the local encoding
+**`opt_noprefix`**  | The first argument is not the command name
+**`opt_quoted`**  | Allow arguments to be quoted
 
 The `opt_locale` flag is only relevant to 8 bit strings, which are assumed to
 be UTF-8 by default; the flag is ignored if the `C` type is not `char`, since
@@ -198,9 +198,9 @@ is true:
 Behaviour is unspecified if `parse()` is called more than once on the same
 `Options` object.
 
-* `template <typename T> T Options::get(const u8string& name) const`
-* `template <typename T> vector<T> Options::get_list(const u8string& name) const`
-* `bool Options::has(const u8string& name) const`
+* `template <typename T> T Options::`**`get`**`(const u8string& name) const`
+* `template <typename T> vector<T> Options::`**`get_list`**`(const u8string& name) const`
+* `bool Options::`**`has`**`(const u8string& name) const`
 
 These return information about the options and arguments found in the command line.
 The option name can be supplied with or without leading hyphens. Only the full name is

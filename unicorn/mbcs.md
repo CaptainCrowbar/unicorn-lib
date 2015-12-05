@@ -19,24 +19,32 @@ specific byte order.
 
 ## Exceptions ##
 
-* `class UnknownEncoding: public std::runtime_error`
-    * `UnknownEncoding::UnknownEncoding()`
-    * `explicit UnknownEncoding::UnknownEncoding(const u8string& encoding, const u8string& details = {})`
-    * `explicit UnknownEncoding::UnknownEncoding(uint32_t encoding, const u8string& details = {})`
-    * `const char* UnknownEncoding::encoding() const noexcept`
+* `class` **`UnknownEncoding`**`: public std::`**`runtime_error`**
+    * `UnknownEncoding::`**`UnknownEncoding`**`()`
+    * `explicit UnknownEncoding::`**`UnknownEncoding`**`(const u8string& encoding, const u8string& details = {})`
+    * `explicit UnknownEncoding::`**`UnknownEncoding`**`(uint32_t encoding, const u8string& details = {})`
+    * `const char* UnknownEncoding::`**`encoding`**`() const noexcept`
 
 Exception thrown to report an unknown encoding name or number.
 
 ## Conversion functions ##
 
-* `template <typename C> void import_string(const string& src, basic_string<C>& dst)`
-* `template <typename C, typename C2> void import_string(const string& src, basic_string<C>& dst, const basic_string<C2>& enc, uint32_t flags = 0)`
-* `template <typename C, typename C2> void import_string(const string& src, basic_string<C>& dst, const C2* enc, uint32_t flags = 0)`
-* `template <typename C> void import_string(const string& src, basic_string<C>& dst, uint32_t enc, uint32_t flags = 0)`
-* `template <typename C> void export_string(const basic_string<C>& src, string& dst)`
-* `template <typename C, typename C2> void export_string(const basic_string<C>& src, string& dst, const basic_string<C2>& enc, uint32_t flags = 0)`
-* `template <typename C, typename C2> void export_string(const basic_string<C>& src, string& dst, const C2* enc, uint32_t flags = 0)`
-* `template <typename C> void export_string(const basic_string<C>& src, string& dst, uint32_t enc, uint32_t flags = 0)`
+* `template <typename C> void` **`import_string`**
+    `(const string& src, basic_string<C>& dst)`
+* `template <typename C, typename C2> void` **`import_string`**
+    `(const string& src, basic_string<C>& dst, const basic_string<C2>& enc, uint32_t flags = 0)`
+* `template <typename C, typename C2> void` **`import_string`**
+    `(const string& src, basic_string<C>& dst, const C2* enc, uint32_t flags = 0)`
+* `template <typename C> void` **`import_string`**
+    `(const string& src, basic_string<C>& dst, uint32_t enc, uint32_t flags = 0)`
+* `template <typename C> void` **`export_string`**
+    `(const basic_string<C>& src, string& dst)`
+* `template <typename C, typename C2> void` **`export_string`**
+    `(const basic_string<C>& src, string& dst, const basic_string<C2>& enc, uint32_t flags = 0)`
+* `template <typename C, typename C2> void` **`export_string`**
+    `(const basic_string<C>& src, string& dst, const C2* enc, uint32_t flags = 0)`
+* `template <typename C> void` **`export_string`**
+    `(const basic_string<C>& src, string& dst, uint32_t enc, uint32_t flags = 0)`
 
 These functions convert from an external multibyte encoding to Unicode
 (`import_string()`), and from Unicode to an external multibyte encoding
@@ -72,7 +80,7 @@ detectable (see below).
 
 Ignoring invalid encoding is not allowed here; if any MBCS function that takes
 a `flags` argument is passed the `err_ignore` flags, it will throw
-`std::invalid_argument`.
+`std::`**`invalid_argument`**.
 
 These functions necessarily inherit some of the limitations of the underlying
 native APIs. In particular, the Windows APIs do not reliably report encoding
@@ -82,7 +90,8 @@ will go ahead and replace invalid data without reporting an error.
 
 ## Utility functions ##
 
-* `u8string local_encoding(const u8string& default_encoding = "utf-8")`
+* `u8string` **`local_encoding`**
+    `(const u8string& default_encoding = "utf-8")`
 
 Returns the encoding of the current default locale. The default value will be
 returned if no encoding information can be obtained from the operating system.
