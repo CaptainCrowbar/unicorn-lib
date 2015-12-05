@@ -1,11 +1,8 @@
-Title: Unicorn Library: Text Segmentation
-CSS: style.css
-
 # [Unicorn Library](index.html): Text Segmentation #
 
-#### Unicode library for C++ by Ross Smith ####
+_Unicode library for C++ by Ross Smith_
 
-#### `#include "unicorn/segment.hpp"` ####
+* `#include "unicorn/segment.hpp"`
 
 This module contains classes and functions for breaking text up into
 characters, words, sentences, lines, and paragraphs. Most of the rules
@@ -19,35 +16,22 @@ substring if this is needed.
 
 ## Contents ##
 
-* [Grapheme cluster boundaries][]
-* [Word boundaries][]
-* [Sentence boundaries][]
-* [Line boundaries][]
-* [Paragraph boundaries][]
+[TOC]
 
 ## Grapheme cluster boundaries ##
 
 * `template <typename C> class` **`GraphemeIterator`**
-    * `using GraphemeIterator::`**`utf_iterator`**
-        `= UtfIterator<C>`
-    * `using GraphemeIterator::`**`difference_type`**
-        `= ptrdiff_t`
-    * `using GraphemeIterator::`**`iterator_category`**
-        `= std::forward_iterator_tag`
-    * `using GraphemeIterator::`**`value_type`**
-        `= Irange<utf_iterator>`
-    * `using GraphemeIterator::`**`pointer`**
-        `= const value_type*`
-    * `using GraphemeIterator::`**`reference`**
-        `= const value_type&`
+    * `using GraphemeIterator::`**`utf_iterator`** `= UtfIterator<C>`
+    * `using GraphemeIterator::`**`difference_type`** `= ptrdiff_t`
+    * `using GraphemeIterator::`**`iterator_category`** `= std::forward_iterator_tag`
+    * `using GraphemeIterator::`**`value_type`** `= Irange<utf_iterator>`
+    * `using GraphemeIterator::`**`pointer`** `= const value_type*`
+    * `using GraphemeIterator::`**`reference`** `= const value_type&`
     * `GraphemeIterator::`**`GraphemeIterator`**`()`
     * _[standard iterator operations]_
-* `template <typename C> Irange<GraphemeIterator<C>>` **`grapheme_range`**
-    `(const UtfIterator<C>& i, const UtfIterator<C>& j)`
-* `template <typename C> Irange<GraphemeIterator<C>>` **`grapheme_range`**
-    `(const Irange<UtfIterator<C>>& source)`
-* `template <typename C> Irange<GraphemeIterator<C>>` **`grapheme_range`**
-    `(const basic_string<C>& source)`
+* `template <typename C> Irange<GraphemeIterator<C>>` **`grapheme_range`**`(const UtfIterator<C>& i, const UtfIterator<C>& j)`
+* `template <typename C> Irange<GraphemeIterator<C>>` **`grapheme_range`**`(const Irange<UtfIterator<C>>& source)`
+* `template <typename C> Irange<GraphemeIterator<C>>` **`grapheme_range`**`(const basic_string<C>& source)`
 
 A forward iterator over the grapheme clusters (user-perceived characters) in a
 Unicode string.
@@ -55,26 +39,17 @@ Unicode string.
 ## Word boundaries ##
 
 * `template <typename C> class` **`WordIterator`**
-    * `using WordIterator::`**`utf_iterator`**
-        `= UtfIterator<C>`
-    * `using WordIterator::`**`difference_type`**
-        `= ptrdiff_t`
-    * `using WordIterator::`**`iterator_category`**
-        `= std::forward_iterator_tag`
-    * `using WordIterator::`**`value_type`**
-        `= Irange<utf_iterator>`
-    * `using WordIterator::`**`pointer`**
-        `= const value_type*`
-    * `using WordIterator::`**`reference`**
-        `= const value_type&`
+    * `using WordIterator::`**`utf_iterator`** `= UtfIterator<C>`
+    * `using WordIterator::`**`difference_type`** `= ptrdiff_t`
+    * `using WordIterator::`**`iterator_category`** `= std::forward_iterator_tag`
+    * `using WordIterator::`**`value_type`** `= Irange<utf_iterator>`
+    * `using WordIterator::`**`pointer`** `= const value_type*`
+    * `using WordIterator::`**`reference`** `= const value_type&`
     * `WordIterator::`**`WordIterator`**`()`
     * _[standard iterator operations]_
-* `template <typename C> Irange<WordIterator<C>>` **`word_range`**
-    `(const UtfIterator<C>& i, const UtfIterator<C>& j, uint32_t flags = 0)`
-* `template <typename C> Irange<WordIterator<C>>` **`word_range`**
-    `(const Irange<UtfIterator<C>>& source, uint32_t flags = 0)`
-* `template <typename C> Irange<WordIterator<C>>` **`word_range`**
-    `(const basic_string<C>& source, uint32_t flags = 0)`
+* `template <typename C> Irange<WordIterator<C>>` **`word_range`**`(const UtfIterator<C>& i, const UtfIterator<C>& j, uint32_t flags = 0)`
+* `template <typename C> Irange<WordIterator<C>>` **`word_range`**`(const Irange<UtfIterator<C>>& source, uint32_t flags = 0)`
+* `template <typename C> Irange<WordIterator<C>>` **`word_range`**`(const basic_string<C>& source, uint32_t flags = 0)`
 
 A forward iterator over the words in a Unicode string. By default, all
 segments identified as "words" by the UAX29 algorithm are returned; this will
@@ -91,26 +66,17 @@ Flag                 | Description
 ## Sentence boundaries ##
 
 * `template <typename C> class` **`SentenceIterator`**
-    * `using SentenceIterator::`**`utf_iterator`**
-        `= UtfIterator<C>`
-    * `using SentenceIterator::`**`difference_type`**
-        `= ptrdiff_t`
-    * `using SentenceIterator::`**`iterator_category`**
-        `= std::forward_iterator_tag`
-    * `using SentenceIterator::`**`value_type`**
-        `= Irange<utf_iterator>`
-    * `using SentenceIterator::`**`pointer`**
-        `= const value_type*`
-    * `using SentenceIterator::`**`reference`**
-        `= const value_type&`
+    * `using SentenceIterator::`**`utf_iterator`** `= UtfIterator<C>`
+    * `using SentenceIterator::`**`difference_type`** `= ptrdiff_t`
+    * `using SentenceIterator::`**`iterator_category`** `= std::forward_iterator_tag`
+    * `using SentenceIterator::`**`value_type`** `= Irange<utf_iterator>`
+    * `using SentenceIterator::`**`pointer`** `= const value_type*`
+    * `using SentenceIterator::`**`reference`** `= const value_type&`
     * `SentenceIterator::`**`SentenceIterator`**`()`
     * _[standard iterator operations]_
-* `template <typename C> Irange<SentenceIterator<C>>` **`sentence_range`**
-    `(const UtfIterator<C>& i, const UtfIterator<C>& j)`
-* `template <typename C> Irange<SentenceIterator<C>>` **`sentence_range`**
-    `(const Irange<UtfIterator<C>>& source)`
-* `template <typename C> Irange<SentenceIterator<C>>` **`sentence_range`**
-    `(const basic_string<C>& source)`
+* `template <typename C> Irange<SentenceIterator<C>>` **`sentence_range`**`(const UtfIterator<C>& i, const UtfIterator<C>& j)`
+* `template <typename C> Irange<SentenceIterator<C>>` **`sentence_range`**`(const Irange<UtfIterator<C>>& source)`
+* `template <typename C> Irange<SentenceIterator<C>>` **`sentence_range`**`(const basic_string<C>& source)`
 
 A forward iterator over the sentences in a Unicode string (as defined by
 UAX29).
@@ -118,26 +84,17 @@ UAX29).
 ## Line boundaries ##
 
 * `template <typename C> class` **`LineIterator`**
-    * `using LineIterator::`**`utf_iterator`**
-        `= UtfIterator<C>`
-    * `using LineIterator::`**`difference_type`**
-        `= ptrdiff_t`
-    * `using LineIterator::`**`iterator_category`**
-        `= std::forward_iterator_tag`
-    * `using LineIterator::`**`value_type`**
-        `= Irange<utf_iterator>`
-    * `using LineIterator::`**`pointer`**
-        `= const value_type*`
-    * `using LineIterator::`**`reference`**
-        `= const value_type&`
+    * `using LineIterator::`**`utf_iterator`** `= UtfIterator<C>`
+    * `using LineIterator::`**`difference_type`** `= ptrdiff_t`
+    * `using LineIterator::`**`iterator_category`** `= std::forward_iterator_tag`
+    * `using LineIterator::`**`value_type`** `= Irange<utf_iterator>`
+    * `using LineIterator::`**`pointer`** `= const value_type*`
+    * `using LineIterator::`**`reference`** `= const value_type&`
     * `LineIterator::`**`LineIterator`**`()`
     * _[standard iterator operations]_
-* `template <typename C> Irange<LineIterator<C>>` **`line_range`**
-    `(const UtfIterator<C>& i, const UtfIterator<C>& j, uint32_t flags = 0)`
-* `template <typename C> Irange<LineIterator<C>>` **`line_range`**
-    `(const Irange<UtfIterator<C>>& source, uint32_t flags = 0)`
-* `template <typename C> Irange<LineIterator<C>>` **`line_range`**
-    `(const basic_string<C>& source, uint32_t flags = 0)`
+* `template <typename C> Irange<LineIterator<C>>` **`line_range`**`(const UtfIterator<C>& i, const UtfIterator<C>& j, uint32_t flags = 0)`
+* `template <typename C> Irange<LineIterator<C>>` **`line_range`**`(const Irange<UtfIterator<C>>& source, uint32_t flags = 0)`
+* `template <typename C> Irange<LineIterator<C>>` **`line_range`**`(const basic_string<C>& source, uint32_t flags = 0)`
 
 A forward iterator over the lines in a Unicode string. Lines are ended by any
 character with the line break property. Multiple consecutive line break
@@ -154,26 +111,17 @@ Flag                | Description
 ## Paragraph boundaries ##
 
 * `template <typename C> class` **`ParagraphIterator`**
-    * `using ParagraphIterator::`**`utf_iterator`**
-        `= UtfIterator<C>`
-    * `using ParagraphIterator::`**`difference_type`**
-        `= ptrdiff_t`
-    * `using ParagraphIterator::`**`iterator_category`**
-        `= std::forward_iterator_tag`
-    * `using ParagraphIterator::`**`value_type`**
-        `= Irange<utf_iterator>`
-    * `using ParagraphIterator::`**`pointer`**
-        `= const value_type*`
-    * `using ParagraphIterator::`**`reference`**
-        `= const value_type&`
+    * `using ParagraphIterator::`**`utf_iterator`** `= UtfIterator<C>`
+    * `using ParagraphIterator::`**`difference_type`** `= ptrdiff_t`
+    * `using ParagraphIterator::`**`iterator_category`** `= std::forward_iterator_tag`
+    * `using ParagraphIterator::`**`value_type`** `= Irange<utf_iterator>`
+    * `using ParagraphIterator::`**`pointer`** `= const value_type*`
+    * `using ParagraphIterator::`**`reference`** `= const value_type&`
     * `ParagraphIterator::`**`ParagraphIterator`**`()`
     * _[standard iterator operations]_
-* `template <typename C> Irange<ParagraphIterator<C>>` **`paragraph_range`**
-    `(const UtfIterator<C>& i, const UtfIterator<C>& j, uint32_t flags = 0)`
-* `template <typename C> Irange<ParagraphIterator<C>>` **`paragraph_range`**
-    `(const Irange<UtfIterator<C>>& source, uint32_t flags = 0)`
-* `template <typename C> Irange<ParagraphIterator<C>>` **`paragraph_range`**
-    `(const basic_string<C>& source, uint32_t flags = 0)`
+* `template <typename C> Irange<ParagraphIterator<C>>` **`paragraph_range`**`(const UtfIterator<C>& i, const UtfIterator<C>& j, uint32_t flags = 0)`
+* `template <typename C> Irange<ParagraphIterator<C>>` **`paragraph_range`**`(const Irange<UtfIterator<C>>& source, uint32_t flags = 0)`
+* `template <typename C> Irange<ParagraphIterator<C>>` **`paragraph_range`**`(const basic_string<C>& source, uint32_t flags = 0)`
 
 A forward iterator over the paragraphs in a Unicode string. The flags passed
 to the constructor determine how paragraphs are identified. By default, any

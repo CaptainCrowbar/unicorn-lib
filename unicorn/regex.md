@@ -1,11 +1,8 @@
-Title: Unicorn Library: Regular Expressions
-CSS: style.css
-
 # [Unicorn Library](index.html): Regular Expressions #
 
-#### Unicode library for C++ by Ross Smith ####
+_Unicode library for C++ by Ross Smith_
 
-#### `#include "unicorn/regex.hpp"` ####
+* `#include "unicorn/regex.hpp"`
 
 This module provides Unicode-aware regular expressions, and related classes
 and functions. It calls the widely available [PCRE](http://www.pcre.org/)
@@ -14,17 +11,7 @@ for details of the regular expression syntax.
 
 ## Contents ##
 
-* [Introduction][]
-* [Unicorn::Regex vs std::regex][]
-* [Regex options][]
-* [Formatting syntax][]
-* [Supporting types][]
-* [Regular expression class][]
-* [Regex match class][]
-* [Regex formatting class][]
-* [Regex iterator classes][]
-* [Utility functions][]
-* [Version information][]
+[TOC]
 
 ## Introduction ##
 
@@ -113,31 +100,31 @@ library instead.
 
 ## Regex options ##
 
-Flag                  | Description                                                                    | PCRE equivalent
-----                  | -----------                                                                    | ---------------
-`rx_caseless`         | Matching is case insensitive                                                   | `PCRE_CASELESS`
-`rx_dfa`              | Use the alternative DFA matching algorithm                                     | `pcre_dfa_exec()`
-`rx_dollarnewline`    | `$` may match line breaks preceding the end of the string                      | `~PCRE_DOLLAR_ENDONLY`
-`rx_dotinline`        | `.` does not match line breaks                                                 | `~PCRE_DOTALL`
-`rx_extended`         | Free-form mode; ignore whitespace and comments marked with `#`                 | `PCRE_EXTENDED`
-`rx_firstline`        | Any match must start in the first line of the subject string                   | `PCRE_FIRSTLINE`
-`rx_multiline`        | Multiline mode; `^` and `$` match the beginning and end of each line           | `PCRE_MULTILINE`
-`rx_newlineanycrlf`   | Any of CR, LF, or CR+LF is recognised as a line break                          | `PCRE_NEWLINE_ANYCRLF`
-`rx_newlinecr`        | Only CR is recognised as a line break                                          | `PCRE_NEWLINE_CR`
-`rx_newlinecrlf`      | Only CR+LF is recognised as a line break                                       | `PCRE_NEWLINE_CRLF`
-`rx_newlinelf`        | Only LF is recognised as a line break                                          | `PCRE_NEWLINE_LF`
-`rx_noautocapture`    | Parentheses do not automatically capture; only named captures are recorded     | `PCRE_NO_AUTO_CAPTURE`
-`rx_nostartoptimize`  | Disable some optimizations that affect `(*COMMIT)` and `(*MARK)` handling      | `PCRE_NO_START_OPTIMIZE`
-`rx_notbol`           | Do not match `^` at the start of the subject string                            | `PCRE_NOTBOL`
-`rx_notempty`         | Do not match an empty string                                                   | `PCRE_NOTEMPTY`
-`rx_notemptyatstart`  | Do not match an empty string at the start of the subject string                | `PCRE_NOTEMPTY_ATSTART`
-`rx_noteol`           | Do not match `$` at the end of the subject string                              | `PCRE_NOTEOL`
-`rx_noutfcheck`       | Skip UTF validity checks                                                       | `PCRE_NO_UTF{8,16,32}_CHECK`
-`rx_optimize`         | Optimize the regex using PCRE's JIT compiler                                   | `PCRE_STUDY_JIT_COMPILE`
-`rx_partialhard`      | Hard partial matching; prefer a partial match to a full match                  | `PCRE_PARTIAL_HARD`
-`rx_partialsoft`      | Soft partial matching; prefer a full match to a partial match                  | `PCRE_PARTIAL_SOFT`
-`rx_prefershort`      | Quantifiers are non-greedy in NFA mode; prefer shorter matches in DFA mode     | `PCRE_UNGREEDY,PCRE_DFA_SHORTEST`
-`rx_ucp`              | Backslash-escape character sets use Unicode properties, instead of just ASCII  | `PCRE_UCP`
+Flag                      | Description                                                                    | PCRE equivalent
+----                      | -----------                                                                    | ---------------
+**`rx_caseless`**         | Matching is case insensitive                                                   | `PCRE_CASELESS`
+**`rx_dfa`**              | Use the alternative DFA matching algorithm                                     | `pcre_dfa_exec()`
+**`rx_dollarnewline`**    | `$` may match line breaks preceding the end of the string                      | `~PCRE_DOLLAR_ENDONLY`
+**`rx_dotinline`**        | `.` does not match line breaks                                                 | `~PCRE_DOTALL`
+**`rx_extended`**         | Free-form mode; ignore whitespace and comments marked with `#`                 | `PCRE_EXTENDED`
+**`rx_firstline`**        | Any match must start in the first line of the subject string                   | `PCRE_FIRSTLINE`
+**`rx_multiline`**        | Multiline mode; `^` and `$` match the beginning and end of each line           | `PCRE_MULTILINE`
+**`rx_newlineanycrlf`**   | Any of CR, LF, or CR+LF is recognised as a line break                          | `PCRE_NEWLINE_ANYCRLF`
+**`rx_newlinecr`**        | Only CR is recognised as a line break                                          | `PCRE_NEWLINE_CR`
+**`rx_newlinecrlf`**      | Only CR+LF is recognised as a line break                                       | `PCRE_NEWLINE_CRLF`
+**`rx_newlinelf`**        | Only LF is recognised as a line break                                          | `PCRE_NEWLINE_LF`
+**`rx_noautocapture`**    | Parentheses do not automatically capture; only named captures are recorded     | `PCRE_NO_AUTO_CAPTURE`
+**`rx_nostartoptimize`**  | Disable some optimizations that affect `(*COMMIT)` and `(*MARK)` handling      | `PCRE_NO_START_OPTIMIZE`
+**`rx_notbol`**           | Do not match `^` at the start of the subject string                            | `PCRE_NOTBOL`
+**`rx_notempty`**         | Do not match an empty string                                                   | `PCRE_NOTEMPTY`
+**`rx_notemptyatstart`**  | Do not match an empty string at the start of the subject string                | `PCRE_NOTEMPTY_ATSTART`
+**`rx_noteol`**           | Do not match `$` at the end of the subject string                              | `PCRE_NOTEOL`
+**`rx_noutfcheck`**       | Skip UTF validity checks                                                       | `PCRE_NO_UTF{8,16,32}_CHECK`
+**`rx_optimize`**         | Optimize the regex using PCRE's JIT compiler                                   | `PCRE_STUDY_JIT_COMPILE`
+**`rx_partialhard`**      | Hard partial matching; prefer a partial match to a full match                  | `PCRE_PARTIAL_HARD`
+**`rx_partialsoft`**      | Soft partial matching; prefer a full match to a partial match                  | `PCRE_PARTIAL_SOFT`
+**`rx_prefershort`**      | Quantifiers are non-greedy in NFA mode; prefer shorter matches in DFA mode     | `PCRE_UNGREEDY,PCRE_DFA_SHORTEST`
+**`rx_ucp`**              | Backslash-escape character sets use Unicode properties, instead of just ASCII  | `PCRE_UCP`
 
 Flags controlling regular expression matching behaviour. Most of these
 correspond directly to PCRE flags, but note that all flags must be specified
@@ -268,24 +255,15 @@ character and string types are `char` and `std::`**`string`**, the same as if th
 template argument had been `char`), but matches using PCRE's byte mode instead
 of UTF-8 mode.
 
-* `using BasicRegex::`**`char_type`**
-    `= [char if CX is void, otherwise CX]`
-* `using BasicRegex::`**`cx_type`**
-    `= CX`
-* `using BasicRegex::`**`string_type`**
-    `= basic_string<char_type>`
-* `using BasicRegex::`**`match_type`**
-    `= BasicMatch<CX>`
-* `using BasicRegex::`**`match_iterator`**
-    `= BasicMatchIterator<CX>`
-* `using BasicRegex::`**`match_range`**
-    `= Irange<match_iterator>`
-* `using BasicRegex::`**`split_iterator`**
-    `= BasicSplitIterator<CX>`
-* `using BasicRegex::`**`split_range`**
-    `= Irange<split_iterator>`
-* `using BasicRegex::`**`utf_iterator`**
-    `= UtfIterator<CX> [not defined if CX is void]`
+* `using BasicRegex::`**`char_type`** `= [char if CX is void, otherwise CX]`
+* `using BasicRegex::`**`cx_type`** `= CX`
+* `using BasicRegex::`**`string_type`** `= basic_string<char_type>`
+* `using BasicRegex::`**`match_type`** `= BasicMatch<CX>`
+* `using BasicRegex::`**`match_iterator`** `= BasicMatchIterator<CX>`
+* `using BasicRegex::`**`match_range`** `= Irange<match_iterator>`
+* `using BasicRegex::`**`split_iterator`** `= BasicSplitIterator<CX>`
+* `using BasicRegex::`**`split_range`** `= Irange<split_iterator>`
+* `using BasicRegex::`**`utf_iterator`** `= UtfIterator<CX> [not defined if CX is void]`
 
 Member types.
 
@@ -403,26 +381,16 @@ unspecified whether or not they will compare equal.
 Convenience functions to construct a regex object.
 
 * `namespace` **`Literals`**
-    * `Regex` **`operator"" _re`**
-        `(const char* ptr, size_t len)`
-    * `Regex` **`operator"" _re_i`**
-        `(const char* ptr, size_t len)`
-    * `Regex16` **`operator"" _re`**
-        `(const char16_t* ptr, size_t len)`
-    * `Regex16` **`operator"" _re_i`**
-        `(const char16_t* ptr, size_t len)`
-    * `Regex32` **`operator"" _re`**
-        `(const char32_t* ptr, size_t len)`
-    * `Regex32` **`operator"" _re_i`**
-        `(const char32_t* ptr, size_t len)`
-    * `WideRegex` **`operator"" _re`**
-        `(const wchar_t* ptr, size_t len)`
-    * `WideRegex` **`operator"" _re_i`**
-        `(const wchar_t* ptr, size_t len)`
-    * `ByteRegex` **`operator"" _re_b`**
-        `(const char* ptr, size_t len)`
-    * `ByteRegex` **`operator"" _re_bi`**
-        `(const char* ptr, size_t len)`
+    * `Regex` **`operator"" _re`**`(const char* ptr, size_t len)`
+    * `Regex` **`operator"" _re_i`**`(const char* ptr, size_t len)`
+    * `Regex16` **`operator"" _re`**`(const char16_t* ptr, size_t len)`
+    * `Regex16` **`operator"" _re_i`**`(const char16_t* ptr, size_t len)`
+    * `Regex32` **`operator"" _re`**`(const char32_t* ptr, size_t len)`
+    * `Regex32` **`operator"" _re_i`**`(const char32_t* ptr, size_t len)`
+    * `WideRegex` **`operator"" _re`**`(const wchar_t* ptr, size_t len)`
+    * `WideRegex` **`operator"" _re_i`**`(const wchar_t* ptr, size_t len)`
+    * `ByteRegex` **`operator"" _re_b`**`(const char* ptr, size_t len)`
+    * `ByteRegex` **`operator"" _re_bi`**`(const char* ptr, size_t len)`
 
 Regex literals. The versions with an `"_i"` suffix are case insensitive; apart
 from that, no options are supported.
@@ -439,26 +407,16 @@ from that, no options are supported.
 This template class is returned by regex matching functions, reporting the
 result of the matching attempt.
 
-* `using BasicMatch::`**`char_type`**
-    `= [char if CX is void, otherwise CX]`
-* `using BasicMatch::`**`cx_type`**
-    `= CX`
-* `using BasicMatch::`**`string_type`**
-    `= basic_string<char_type>`
-* `using BasicMatch::`**`regex_type`**
-    `= BasicRegex<CX>`
-* `using BasicMatch::`**`const_iterator`**
-    `= const char_type*`
-* `using BasicMatch::`**`const_reference`**
-    `= const char_type&`
-* `using BasicMatch::`**`difference_type`**
-    `= ptrdiff_t`
-* `using BasicMatch::`**`iterator`**
-    `= [string::const_iterator if CX is void, otherwise UtfIterator<CX>]`
-* `using BasicMatch::`**`reference`**
-    `= const value_type&`
-* `using BasicMatch::`**`value_type`**
-    `= [char if CX is void, otherwise char32_t]`
+* `using BasicMatch::`**`char_type`** `= [char if CX is void, otherwise CX]`
+* `using BasicMatch::`**`cx_type`** `= CX`
+* `using BasicMatch::`**`string_type`** `= basic_string<char_type>`
+* `using BasicMatch::`**`regex_type`** `= BasicRegex<CX>`
+* `using BasicMatch::`**`const_iterator`** `= const char_type*`
+* `using BasicMatch::`**`const_reference`** `= const char_type&`
+* `using BasicMatch::`**`difference_type`** `= ptrdiff_t`
+* `using BasicMatch::`**`iterator`** `= [string::const_iterator if CX is void, otherwise UtfIterator<CX>]`
+* `using BasicMatch::`**`reference`** `= const value_type&`
+* `using BasicMatch::`**`value_type`** `= [char if CX is void, otherwise char32_t]`
 
 Member types.
 
@@ -558,8 +516,7 @@ efficient if the same formatting operation is going to be applied many times.
 
 * `using BasicRegexFormat::`**`char_type`** `= [char if CX is void, otherwise CX]`
 * `using BasicRegexFormat::`**`cx_type`** `= CX`
-* `using BasicRegexFormat::`**`string_type`**
-    `= basic_string<char_type>`
+* `using BasicRegexFormat::`**`string_type`** `= basic_string<char_type>`
 * `using BasicRegexFormat::`**`regex_type`** `= BasicRegex<CX>`
 * `using BasicRegexFormat::`**`match_type`** `= BasicMatch<CX>`
 
@@ -605,40 +562,26 @@ These functions query the construction parameters. The `pattern()` and
 
 Swap two objects.
 
-* `template <typename C> BasicRegexFormat<C>` **`regex_format`**
-    `(const basic_string<C>& pattern, const basic_string<C>& format, uint32_t flags = 0)`
-* `template <typename C> BasicRegexFormat<C>` **`regex_format`**
-    `(const basic_string<C>& pattern, const C* format, uint32_t flags = 0)`
-* `template <typename C> BasicRegexFormat<C>` **`regex_format`**
-    `(const C* pattern, const basic_string<C>& format, uint32_t flags = 0)`
-* `template <typename C> BasicRegexFormat<C>` **`regex_format`**
-    `(const C* pattern, const C* format, uint32_t flags = 0)`
+* `template <typename C> BasicRegexFormat<C>` **`regex_format`**`(const basic_string<C>& pattern, const basic_string<C>& format, uint32_t flags = 0)`
+* `template <typename C> BasicRegexFormat<C>` **`regex_format`**`(const basic_string<C>& pattern, const C* format, uint32_t flags = 0)`
+* `template <typename C> BasicRegexFormat<C>` **`regex_format`**`(const C* pattern, const basic_string<C>& format, uint32_t flags = 0)`
+* `template <typename C> BasicRegexFormat<C>` **`regex_format`**`(const C* pattern, const C* format, uint32_t flags = 0)`
 
 Convenience functions to construct a regex format object.
 
 ## Regex iterator classes ##
 
 * `template <typename CX> class` **`BasicMatchIterator`**
-    * `using BasicMatchIterator::`**`char_type`**
-        `= [char if CX is void, otherwise CX]`
-    * `using BasicMatchIterator::`**`cx_type`**
-        `= CX`
-    * `using BasicMatchIterator::`**`string_type`**
-        `= basic_string<char_type>`
-    * `using BasicMatchIterator::`**`regex_type`**
-        `= BasicRegex<CX>`
-    * `using BasicMatchIterator::`**`match_type`**
-        `= BasicMatch<CX>`
-    * `using BasicMatchIterator::`**`difference_type`**
-        `= ptrdiff_t`
-    * `using BasicMatchIterator::`**`iterator_category`**
-        `= std::`**`forward_iterator_tag`**
-    * `using BasicMatchIterator::`**`pointer`**
-        `= const match_type*`
-    * `using BasicMatchIterator::`**`reference`**
-        `= const match_type&`
-    * `using BasicMatchIterator::`**`value_type`**
-        `= match_type`
+    * `using BasicMatchIterator::`**`char_type`** `= [char if CX is void, otherwise CX]`
+    * `using BasicMatchIterator::`**`cx_type`** `= CX`
+    * `using BasicMatchIterator::`**`string_type`** `= basic_string<char_type>`
+    * `using BasicMatchIterator::`**`regex_type`** `= BasicRegex<CX>`
+    * `using BasicMatchIterator::`**`match_type`** `= BasicMatch<CX>`
+    * `using BasicMatchIterator::`**`difference_type`** `= ptrdiff_t`
+    * `using BasicMatchIterator::`**`iterator_category`** `= std::`**`forward_iterator_tag`**
+    * `using BasicMatchIterator::`**`pointer`** `= const match_type*`
+    * `using BasicMatchIterator::`**`reference`** `= const match_type&`
+    * `using BasicMatchIterator::`**`value_type`** `= match_type`
     * `BasicMatchIterator::`**`BasicMatchIterator`**`()`
     * `BasicMatchIterator::`**`BasicMatchIterator`**`(const regex_type& re, const string_type& text)`
     * _[standard iterator operations]_
@@ -653,28 +596,17 @@ for a given regex. These are normally returned by `BasicRegex::`**`grep`**`()` r
 than constructed directly by the user.
 
 * `template <typename CX> class` **`BasicSplitIterator`**
-    * `using BasicSplitIterator::`**`char_type`**
-        `= [char if CX is void, otherwise CX]`
-    * `using BasicSplitIterator::`**`cx_type`**
-        `= CX`
-    * `using BasicSplitIterator::`**`string_type`**
-        `= basic_string<char_type>`
-    * `using BasicSplitIterator::`**`regex_type`**
-        `= BasicRegex<CX>`
-    * `using BasicSplitIterator::`**`match_type`**
-        `= BasicMatch<CX>`
-    * `using BasicSplitIterator::`**`match_iterator`**
-        `= BasicMatchIterator<CX>`
-    * `using BasicSplitIterator::`**`difference_type`**
-        `= ptrdiff_t`
-    * `using BasicSplitIterator::`**`iterator_category`**
-        `= std::`**`forward_iterator_tag`**
-    * `using BasicSplitIterator::`**`pointer`**
-        `= const string_type*`
-    * `using BasicSplitIterator::`**`reference`**
-        `= const string_type&`
-    * `using BasicSplitIterator::`**`value_type`**
-        `= string_type`
+    * `using BasicSplitIterator::`**`char_type`** `= [char if CX is void, otherwise CX]`
+    * `using BasicSplitIterator::`**`cx_type`** `= CX`
+    * `using BasicSplitIterator::`**`string_type`** `= basic_string<char_type>`
+    * `using BasicSplitIterator::`**`regex_type`** `= BasicRegex<CX>`
+    * `using BasicSplitIterator::`**`match_type`** `= BasicMatch<CX>`
+    * `using BasicSplitIterator::`**`match_iterator`** `= BasicMatchIterator<CX>`
+    * `using BasicSplitIterator::`**`difference_type`** `= ptrdiff_t`
+    * `using BasicSplitIterator::`**`iterator_category`** `= std::`**`forward_iterator_tag`**
+    * `using BasicSplitIterator::`**`pointer`** `= const string_type*`
+    * `using BasicSplitIterator::`**`reference`** `= const string_type&`
+    * `using BasicSplitIterator::`**`value_type`** `= string_type`
     * `BasicSplitIterator::`**`BasicSplitIterator`**`()`
     * `BasicSplitIterator::`**`BasicSplitIterator`**`(const regex_type& re, const string_type& text)`
     * _[standard iterator operations]_
@@ -690,10 +622,8 @@ the user.
 
 ## Utility functions ##
 
-* `template <typename C> basic_string<C>` **`regex_escape`**
-    `(const basic_string<C>& str)`
-* `template <typename C> basic_string<C>` **`regex_escape`**
-    `(const C* str)`
+* `template <typename C> basic_string<C>` **`regex_escape`**`(const basic_string<C>& str)`
+* `template <typename C> basic_string<C>` **`regex_escape`**`(const C* str)`
 
 These return a copy of the argument string, modified by inserting escape
 characters where necessary to produce a pattern that will exactly match the

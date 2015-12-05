@@ -1,119 +1,92 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8"/>
-	<title>Unicorn Library: Non-Unicode Encodings</title>
-	<link type="text/css" rel="stylesheet" href="style.css"/>
+    <meta charset="utf-8"/>
+    <title>Unicorn Library: Non-Unicode Encodings</title>
+    <link type="text/css" rel="stylesheet" href="style.css"/>
 </head>
-<body>
-
-<h1 id="unicornlibrary:non-unicodeencodings"><a href="index.html">Unicorn Library</a>: Non-Unicode Encodings</h1>
-
-<h4 id="unicodelibraryforcbyrosssmith">Unicode library for C++ by Ross Smith</h4>
-
-<h4 id="includeunicornmbcs.hpp"><code>#include &quot;unicorn/mbcs.hpp&quot;</code></h4>
-
+<h2 id="unicorn-library-non-unicode-encodings"><a href="index.html">Unicorn Library</a>: Non-Unicode Encodings</h2>
+<p><em>Unicode library for C++ by Ross Smith</em></p>
+<ul>
+<li><code>#include "unicorn/mbcs.hpp"</code></li>
+</ul>
 <p>This module defines functions for conversion between UTF and non-Unicode
 encodings, as well as between internal and external UTF encodings with a
 specific byte order.</p>
-
-<h2 id="contents">Contents</h2>
-
+<h3 id="contents">Contents</h3>
+<div class="toc">
 <ul>
+<li><a href="#unicorn-library-non-unicode-encodings">Unicorn Library: Non-Unicode Encodings</a><ul>
+<li><a href="#contents">Contents</a></li>
 <li><a href="#exceptions">Exceptions</a></li>
-<li><a href="#conversionfunctions">Conversion functions</a></li>
-<li><a href="#utilityfunctions">Utility functions</a></li>
+<li><a href="#conversion-functions">Conversion functions</a></li>
+<li><a href="#utility-functions">Utility functions</a></li>
 </ul>
-
-<h2 id="exceptions">Exceptions</h2>
-
+</li>
+</ul>
+</div>
+<h3 id="exceptions">Exceptions</h3>
 <ul>
-<li><code>class</code> <strong><code>UnknownEncoding</code></strong><code>: public std::</code><strong><code>runtime_error</code></strong>
-
-<ul>
+<li><code>class</code> <strong><code>UnknownEncoding</code></strong><code>: public std::</code><strong><code>runtime_error</code></strong><ul>
 <li><code>UnknownEncoding::</code><strong><code>UnknownEncoding</code></strong><code>()</code></li>
 <li><code>explicit UnknownEncoding::</code><strong><code>UnknownEncoding</code></strong><code>(const u8string&amp; encoding, const u8string&amp; details = {})</code></li>
 <li><code>explicit UnknownEncoding::</code><strong><code>UnknownEncoding</code></strong><code>(uint32_t encoding, const u8string&amp; details = {})</code></li>
 <li><code>const char* UnknownEncoding::</code><strong><code>encoding</code></strong><code>() const noexcept</code></li>
-</ul></li>
 </ul>
-
+</li>
+</ul>
 <p>Exception thrown to report an unknown encoding name or number.</p>
-
-<h2 id="conversionfunctions">Conversion functions</h2>
-
+<h3 id="conversion-functions">Conversion functions</h3>
 <ul>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>import_string</code></strong>
-<code>(const string&amp; src, basic_string&lt;C&gt;&amp; dst)</code></li>
-<li><code>template &lt;typename C, typename C2&gt; void</code> <strong><code>import_string</code></strong>
-<code>(const string&amp; src, basic_string&lt;C&gt;&amp; dst, const basic_string&lt;C2&gt;&amp; enc, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C, typename C2&gt; void</code> <strong><code>import_string</code></strong>
-<code>(const string&amp; src, basic_string&lt;C&gt;&amp; dst, const C2* enc, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>import_string</code></strong>
-<code>(const string&amp; src, basic_string&lt;C&gt;&amp; dst, uint32_t enc, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>export_string</code></strong>
-<code>(const basic_string&lt;C&gt;&amp; src, string&amp; dst)</code></li>
-<li><code>template &lt;typename C, typename C2&gt; void</code> <strong><code>export_string</code></strong>
-<code>(const basic_string&lt;C&gt;&amp; src, string&amp; dst, const basic_string&lt;C2&gt;&amp; enc, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C, typename C2&gt; void</code> <strong><code>export_string</code></strong>
-<code>(const basic_string&lt;C&gt;&amp; src, string&amp; dst, const C2* enc, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>export_string</code></strong>
-<code>(const basic_string&lt;C&gt;&amp; src, string&amp; dst, uint32_t enc, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; void</code> <strong><code>import_string</code></strong><code>(const string&amp; src, basic_string&lt;C&gt;&amp; dst)</code></li>
+<li><code>template &lt;typename C, typename C2&gt; void</code> <strong><code>import_string</code></strong><code>(const string&amp; src, basic_string&lt;C&gt;&amp; dst, const basic_string&lt;C2&gt;&amp; enc, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C, typename C2&gt; void</code> <strong><code>import_string</code></strong><code>(const string&amp; src, basic_string&lt;C&gt;&amp; dst, const C2* enc, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; void</code> <strong><code>import_string</code></strong><code>(const string&amp; src, basic_string&lt;C&gt;&amp; dst, uint32_t enc, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; void</code> <strong><code>export_string</code></strong><code>(const basic_string&lt;C&gt;&amp; src, string&amp; dst)</code></li>
+<li><code>template &lt;typename C, typename C2&gt; void</code> <strong><code>export_string</code></strong><code>(const basic_string&lt;C&gt;&amp; src, string&amp; dst, const basic_string&lt;C2&gt;&amp; enc, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C, typename C2&gt; void</code> <strong><code>export_string</code></strong><code>(const basic_string&lt;C&gt;&amp; src, string&amp; dst, const C2* enc, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; void</code> <strong><code>export_string</code></strong><code>(const basic_string&lt;C&gt;&amp; src, string&amp; dst, uint32_t enc, uint32_t flags = 0)</code></li>
 </ul>
-
 <p>These functions convert from an external multibyte encoding to Unicode
 (<code>import_string()</code>), and from Unicode to an external multibyte encoding
-(<code>export_string()</code>). They work by calling the operating system&#8217;s native code
+(<code>export_string()</code>). They work by calling the operating system's native code
 conversion API, <code>iconv()</code> on Unix or <code>MultiByteToWideChar()</code> and
 <code>WideCharToMultiByte()</code> on Windows.</p>
-
-<p>Encodings can be identified either by name or by a Windows &#8220;code page&#8221; number.
+<p>Encodings can be identified either by name or by a Windows "code page" number.
 Either kind of identifier can be used on any system; a built-in lookup table
 is used to convert to the form required by the native API. Besides the normal
 names and numbers associated with standard encodings, the following special
 values can be used:</p>
-
 <ul>
-<li><code>&quot;char&quot;</code> = Use the current locale&#8217;s default multibyte character encoding.</li>
-<li><code>&quot;wchar_t&quot;</code> = Use the operating system&#8217;s default wide character encoding.</li>
-<li><code>&quot;utf&quot;</code> = Inspect the string and try to guess the UTF encoding.</li>
+<li><code>"char"</code> = Use the current locale's default multibyte character encoding.</li>
+<li><code>"wchar_t"</code> = Use the operating system's default wide character encoding.</li>
+<li><code>"utf"</code> = Inspect the string and try to guess the UTF encoding.</li>
 </ul>
-
 <p>The default local encoding is used if no encoding is specified.</p>
-
 <p>An unrecognised encoding name or number will cause an <code>UnknownEncoding</code>
 exception to be thrown. The code that parses encoding names allows a good deal
 of leeway for variations in punctuation and capitalization, but since we are
 relying on system APIs for the actual conversion, no promises can be made
 about any particular encoding (other than the UTF encodings) being correctly
 recognised and handled.</p>
-
 <p>The <code>flags</code> argument can be <code>err_replace</code> (the default) or <code>err_throw</code> (these
 are defined in <a href="utf.html"><code>unicorn/utf</code></a>). If <code>err_replace</code> is selected,
 invalid data in the input string will be replaced with a system-defined
 replacement character (not necessarily <code>U+FFFD</code>); if <code>err_throw</code> is selected,
 invalid data will cause an <code>EncodingError</code> exception to be thrown, if this is
 detectable (see below).</p>
-
 <p>Ignoring invalid encoding is not allowed here; if any MBCS function that takes
 a <code>flags</code> argument is passed the <code>err_ignore</code> flags, it will throw
-<code>std::</code><strong><code>invalid_argument</code></strong>.</p>
-
+<code>std::invalid_argument</code>.</p>
 <p>These functions necessarily inherit some of the limitations of the underlying
 native APIs. In particular, the Windows APIs do not reliably report encoding
 errors; although the wrapper functions make a good faith attempt to respect
 the error handling flags, in some cases the underlying conversion function
 will go ahead and replace invalid data without reporting an error.</p>
-
-<h2 id="utilityfunctions">Utility functions</h2>
-
+<h3 id="utility-functions">Utility functions</h3>
 <ul>
-<li><code>u8string</code> <strong><code>local_encoding</code></strong>
-<code>(const u8string&amp; default_encoding = &quot;utf-8&quot;)</code></li>
+<li><code>u8string</code> <strong><code>local_encoding</code></strong><code>(const u8string&amp; default_encoding = "utf-8")</code></li>
 </ul>
-
 <p>Returns the encoding of the current default locale. The default value will be
-returned if no encoding information can be obtained from the operating system.</p>
-
-</body>
+returned if no encoding information can be obtained from the operating system.</p></body>
 </html>

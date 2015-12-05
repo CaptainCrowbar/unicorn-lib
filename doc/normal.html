@@ -1,42 +1,34 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8"/>
-	<title>Unicorn Library: String Normalization</title>
-	<link type="text/css" rel="stylesheet" href="style.css"/>
+    <meta charset="utf-8"/>
+    <title>Unicorn Library: String Normalization</title>
+    <link type="text/css" rel="stylesheet" href="style.css"/>
 </head>
-<body>
-
-<h1 id="unicornlibrary:stringnormalization"><a href="index.html">Unicorn Library</a>: String Normalization</h1>
-
-<h4 id="unicodelibraryforcbyrosssmith">Unicode library for C++ by Ross Smith</h4>
-
-<h4 id="includeunicornnormal.hpp"><code>#include &quot;unicorn/normal.hpp&quot;</code></h4>
-
+<h2 id="unicorn-library-string-normalization"><a href="index.html">Unicorn Library</a>: String Normalization</h2>
+<p><em>Unicode library for C++ by Ross Smith</em></p>
+<ul>
+<li><code>#include "unicorn/normal.hpp"</code></li>
+</ul>
 <p>This is a small module (really just one function), with the specific purpose
 of converting Unicode strings into the four standard normalization forms.</p>
-
-<h2 id="normalizationfunctions">Normalization functions</h2>
-
+<h3 id="normalization-functions">Normalization functions</h3>
 <ul>
-<li><code>enum NormalizationForm</code>
-
-<ul>
-<li><code>NFC, NFD, NFKC, NFKD</code></li>
-</ul></li>
+<li><code>enum</code> <strong><code>NormalizationForm</code></strong><ul>
+<li><strong><code>NFC</code></strong></li>
+<li><strong><code>NFD</code></strong></li>
+<li><strong><code>NFKC</code></strong></li>
+<li><strong><code>NFKD</code></strong></li>
 </ul>
-
+</li>
+</ul>
 <p>The standard Unicode normalization forms.</p>
-
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>normalize</code></strong><code>(const basic_string&lt;C&gt;&amp; src, NormalizationForm form)</code></li>
-<li><code>template &lt;typename C&gt; void</code> *<em><code>normalize_in</code></em>*<code>(basic_string&lt;C&gt;&amp; src, NormalizationForm form)</code></li>
+<li><code>template &lt;typename C&gt; void</code> <strong><code>normalize_in</code></strong><code>(basic_string&lt;C&gt;&amp; src, NormalizationForm form)</code></li>
 </ul>
-
 <p>Convert a string to one of the normalized forms. The <code>normalize()</code> function
 returns the normalized string, while <code>normalize_in()</code> updates the source
 string in place. As usual, these functions assume valid Unicode input, and
-will emit garbage if the input contains invalid UTF encoding.</p>
-
-</body>
+will emit garbage if the input contains invalid UTF encoding.</p></body>
 </html>

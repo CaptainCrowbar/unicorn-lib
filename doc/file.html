@@ -1,44 +1,43 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8"/>
-	<title>Unicorn Library: File System</title>
-	<link type="text/css" rel="stylesheet" href="style.css"/>
+    <meta charset="utf-8"/>
+    <title>Unicorn Library: File System</title>
+    <link type="text/css" rel="stylesheet" href="style.css"/>
 </head>
-<body>
-
-<h1 id="unicornlibrary:filesystem"><a href="index.html">Unicorn Library</a>: File System</h1>
-
-<h4 id="unicodelibraryforcbyrosssmith">Unicode library for C++ by Ross Smith</h4>
-
-<h4 id="includeunicornfile.hpp"><code>#include &quot;unicorn/file.hpp&quot;</code></h4>
-
+<h2 id="unicorn-library-file-system"><a href="index.html">Unicorn Library</a>: File System</h2>
+<p><em>Unicode library for C++ by Ross Smith</em></p>
+<ul>
+<li><code>#include "unicorn/file.hpp"</code></li>
+</ul>
 <p>This module provides a very minimal set of file system operations, such as
 file renaming and deletion, directory search, and so on.</p>
-
-<h2 id="contents">Contents</h2>
-
+<h3 id="contents">Contents</h3>
+<div class="toc">
 <ul>
+<li><a href="#unicorn-library-file-system">Unicorn Library: File System</a><ul>
+<li><a href="#contents">Contents</a></li>
 <li><a href="#introduction">Introduction</a></li>
 <li><a href="#constants">Constants</a></li>
-<li><a href="#systemdependencies">System dependencies</a></li>
-<li><a href="#filenamefunctions">File name functions</a></li>
-<li><a href="#filesystemqueryfunctions">File system query functions</a></li>
-<li><a href="#filesystemmodifyingfunctions">File system modifying functions</a></li>
-<li><a href="#directoryiterators">Directory iterators</a></li>
+<li><a href="#system-dependencies">System dependencies</a></li>
+<li><a href="#file-name-functions">File name functions</a></li>
+<li><a href="#file-system-query-functions">File system query functions</a></li>
+<li><a href="#file-system-modifying-functions">File system modifying functions</a></li>
+<li><a href="#directory-iterators">Directory iterators</a></li>
 </ul>
-
-<h2 id="introduction">Introduction</h2>
-
+</li>
+</ul>
+</div>
+<h3 id="introduction">Introduction</h3>
 <p>File handling in Unicode always has the problem that the actual file names on
 most systems are not guaranteed to be valid Unicode. On most Unix systems, a
 file name is an arbitrary sequence of bytes, with no restrictions other than
 excluding the null and slash characters; while file names on systems such as
-Linux are usually expected to be encoded in UTF&#8211;8 when they contain non-ASCII
+Linux are usually expected to be encoded in UTF-8 when they contain non-ASCII
 characters, this is not enforced in any way. On Microsoft Windows, using the
-NTFS file system, file names are nominally UTF&#8211;16 (with a short list of
+NTFS file system, file names are nominally UTF-16 (with a short list of
 disallowed characters), but not all of the Win32 wide character API functions
-that deal with files check for valid encoding; it&#8217;s not hard to create a file
+that deal with files check for valid encoding; it's not hard to create a file
 whose name is an arbitrary sequence of 16-bit integers. The HFS+ file system
 used by Apple on Mac OS X and iOS appears to be the only widely used file
 system that actually does enforce valid Unicode names at the file system
@@ -46,7 +45,6 @@ level, although it then proceeds to complicate matters by using a proprietary
 normalization scheme that does not match any of the four standard ones (and
 even on a Mac you need to be careful in the presence of remote file systems
 that may be on a different OS).</p>
-
 <p>To make it possible to deal with this situation, this module uses the
 <code>NativeString</code> type from the <a href="core.html"><code>unicorn/core</code></a> module, which is
 <code>string</code> on Unix systems and <code>wstring</code> on Windows. Like most of the rest of
@@ -58,239 +56,173 @@ names using the usual character replacement rule, which may result in
 unexpected behaviour if there are any files on your system with non-Unicode
 names. (On Windows, although <code>wstring</code> is used as the native filename type,
 <code>u16string</code> names will also be passed through without sanitization.)</p>
-
 <p>In short, stick to the <code>NativeString</code> versions of the functions here if you
 need reliable handling of all filenames, including those containing invalid
 Unicode; use other encodings only if you expect all the files you deal with to
-have valid Unicode names, and you don&#8217;t mind if non-Unicode names are slightly
-mangled, or if you&#8217;re only targeting Mac/iOS and don&#8217;t need to worry about
+have valid Unicode names, and you don't mind if non-Unicode names are slightly
+mangled, or if you're only targeting Mac/iOS and don't need to worry about
 other operating systems.</p>
-
 <p>The examples in the documentation below mostly use Unix-style file names for
 simplicity; the equivalent code on Windows will make the obvious substitutions
-of backslashes for slashes, and drive roots such as <code>&quot;C:\&quot;</code> for <code>&quot;/&quot;</code>.</p>
-
-<p>The term &#8220;leaf name&#8221; is used here to mean the name of an individual file
+of backslashes for slashes, and drive roots such as <code>"C:\"</code> for <code>"/"</code>.</p>
+<p>The term "leaf name" is used here to mean the name of an individual file
 within a directory, with no directory path prefix (for example, the leaf name
-of <code>&quot;/foo/bar/hello.txt&quot;</code> is <code>&quot;hello.txt&quot;</code>).</p>
-
-<h2 id="constants">Constants</h2>
-
+of <code>"/foo/bar/hello.txt"</code> is <code>"hello.txt"</code>).</p>
+<h3 id="constants">Constants</h3>
 <table>
-<colgroup>
-<col style="text-align:left;"/>
-<col style="text-align:left;"/>
-</colgroup>
-
 <thead>
 <tr>
-	<th style="text-align:left;">Flag</th>
-	<th style="text-align:left;">Description</th>
+<th>Flag</th>
+<th>Description</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
-	<td style="text-align:left;"><strong><code>fs_all</code></strong></td>
-	<td style="text-align:left;">Include hidden files</td>
+<td><strong><code>fs_all</code></strong></td>
+<td>Include hidden files</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><strong><code>fs_dotdot</code></strong></td>
-	<td style="text-align:left;">Include . and ..</td>
+<td><strong><code>fs_dotdot</code></strong></td>
+<td>Include . and ..</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><strong><code>fs_fullname</code></strong></td>
-	<td style="text-align:left;">Return full file names</td>
+<td><strong><code>fs_fullname</code></strong></td>
+<td>Return full file names</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><strong><code>fs_recurse</code></strong></td>
-	<td style="text-align:left;">Recursive directory operations</td>
+<td><strong><code>fs_recurse</code></strong></td>
+<td>Recursive directory operations</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><strong><code>fs_unicode</code></strong></td>
-	<td style="text-align:left;">Skip files with non-Unicode names</td>
+<td><strong><code>fs_unicode</code></strong></td>
+<td>Skip files with non-Unicode names</td>
 </tr>
 </tbody>
 </table>
-
-<h2 id="systemdependencies">System dependencies</h2>
-
+<p>Flags recognised by some of the functions in this module.</p>
+<h3 id="system-dependencies">System dependencies</h3>
 <ul>
 <li><code>constexpr char</code> <strong><code>file_delimiter</code></strong> <code>= ['/' on Unix, '\\' on Windows]</code></li>
 </ul>
-
 <p>The standard delimiter for directory paths.</p>
-
 <ul>
-<li><code>template &lt;typename C1, typename C2&gt; void</code> <strong><code>recode_filename</code></strong>
-<code>(const basic_string&lt;C1&gt;&amp; src, basic_string&lt;C2&gt;&amp; dst)</code></li>
-<li><code>template &lt;typename C2, typename C1&gt; basic_string&lt;C2&gt;</code> <strong><code>recode_filename</code></strong>
-<code>(const basic_string&lt;C1&gt;&amp; src)</code></li>
+<li><code>template &lt;typename C1, typename C2&gt; void</code> <strong><code>recode_filename</code></strong><code>(const basic_string&lt;C1&gt;&amp; src, basic_string&lt;C2&gt;&amp; dst)</code></li>
+<li><code>template &lt;typename C2, typename C1&gt; basic_string&lt;C2&gt;</code> <strong><code>recode_filename</code></strong><code>(const basic_string&lt;C1&gt;&amp; src)</code></li>
 </ul>
-
 <p>These convert a file name from one UTF encoding to another, using the
 <code>recode()</code> functions from <a href="utf.html"><code>unicorn/utf</code></a> with the <code>err_replace</code>
 option, except that, if both the source and destination strings are the
-operating system&#8217;s native encoding, the string will simply be copied verbatim
+operating system's native encoding, the string will simply be copied verbatim
 without checking for valid Unicode.</p>
-
-<h2 id="filenamefunctions">File name functions</h2>
-
+<h3 id="file-name-functions">File name functions</h3>
 <p>These functions operate purely on file name strings; they do not make any
 contact with the actual file system, and will give the same results regardless
 of whether or not a file actually exists. Where relevant, these functions are
 aware of the standard double slash convention for network paths <span
-class="nobr">(<code>&quot;//server/path...&quot;</code>),</span> and the Windows versions are aware
-of UNC paths <span class="nobr">(<code>&quot;\\?\path...&quot;</code>).</span></p>
-
+class="nobr">(<code>"//server/path..."</code>),</span> and the Windows versions are aware
+of UNC paths <span class="nobr">(<code>"\\?\path..."</code>).</span></p>
 <ul>
-<li><code>template &lt;typename C&gt; bool</code> <strong><code>file_is_absolute</code></strong>
-<code>(const basic_string&lt;C&gt;&amp; file)</code></li>
-<li><code>template &lt;typename C&gt; bool</code> <strong><code>file_is_relative</code></strong>
-<code>(const basic_string&lt;C&gt;&amp; file)</code></li>
-<li><code>template &lt;typename C&gt; bool</code> <strong><code>file_is_drive_absolute</code></strong>
-<code>(const basic_string&lt;C&gt;&amp; file)</code></li>
-<li><code>template &lt;typename C&gt; bool</code> <strong><code>file_is_drive_relative</code></strong>
-<code>(const basic_string&lt;C&gt;&amp; file)</code></li>
+<li><code>template &lt;typename C&gt; bool</code> <strong><code>file_is_absolute</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
+<li><code>template &lt;typename C&gt; bool</code> <strong><code>file_is_relative</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
+<li><code>template &lt;typename C&gt; bool</code> <strong><code>file_is_drive_absolute</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
+<li><code>template &lt;typename C&gt; bool</code> <strong><code>file_is_drive_relative</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
 </ul>
-
 <p>These indicate whether a file name is absolute or relative; exactly one of
 them will be true for any file name (an empty string is considered to be a
 relative name).</p>
-
-<p>On Windows, two extra functions identify &#8220;drive relative&#8221; paths that are
+<p>On Windows, two extra functions identify "drive relative" paths that are
 relative to the current directory on a specific drive <span
-class="nobr">(<code>&quot;C:path...&quot;</code>),</span> and &#8220;drive absolute&#8221; paths that are
+class="nobr">(<code>"C:path..."</code>),</span> and "drive absolute" paths that are
 absolute with respect to an unspecified current drive <span
-class="nobr">(<code>&quot;\path...&quot;</code>).</span> Both of these functions are always false
+class="nobr">(<code>"\path..."</code>).</span> Both of these functions are always false
 on Unix.</p>
-
 <ul>
-<li><code>template &lt;typename C&gt; bool</code> <strong><code>file_is_root</code></strong>
-<code>(const basic_string&lt;C&gt;&amp; file)</code></li>
+<li><code>template &lt;typename C&gt; bool</code> <strong><code>file_is_root</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
 </ul>
-
 <p>True if the file name refers to the root of a directory tree.</p>
-
 <ul>
-<li><code>template &lt;typename C, typename... Args&gt; basic_string&lt;C&gt;</code> <strong><code>file_path</code></strong>
-<code>(const basic_string&lt;C&gt;&amp; file, Args... args)</code></li>
-<li><code>template &lt;typename C, typename... Args&gt; basic_string&lt;C&gt;</code> <strong><code>file_path</code></strong>
-<code>(const C* file, Args... args)</code></li>
+<li><code>template &lt;typename C, typename... Args&gt; basic_string&lt;C&gt;</code> <strong><code>file_path</code></strong><code>(const basic_string&lt;C&gt;&amp; file, Args... args)</code></li>
+<li><code>template &lt;typename C, typename... Args&gt; basic_string&lt;C&gt;</code> <strong><code>file_path</code></strong><code>(const C* file, Args... args)</code></li>
 </ul>
-
 <p>Assembles a directory path from a series of path elements or relative paths.
 If any argument is an absolute path, this is taken as the root of the final
 path, ignoring any preceding arguments. (Drive relative and drive absolute
 paths on Windows are treated as absolute in this context.)</p>
-
 <p>Examples:</p>
-
-<pre><code>file_path(&quot;foo&quot;, &quot;bar&quot;, &quot;hello.txt&quot;) == &quot;foo/bar/hello.txt&quot;
-file_path(&quot;/foo&quot;, &quot;/bar&quot;, &quot;hello.txt&quot;) == &quot;/bar/hello.txt&quot;
+<pre><code>file_path("foo", "bar", "hello.txt") == "foo/bar/hello.txt"
+file_path("/foo", "/bar", "hello.txt") == "/bar/hello.txt"
 </code></pre>
-
 <ul>
-<li><code>template &lt;typename C&gt; std::pair&lt;basic_string&lt;C&gt;, basic_string&lt;C&gt;&gt;</code> <strong><code>split_path</code></strong>
-<code>(const basic_string&lt;C&gt;&amp; file, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; std::pair&lt;basic_string&lt;C&gt;, basic_string&lt;C&gt;&gt;</code> <strong><code>split_file</code></strong>
-<code>(const basic_string&lt;C&gt;&amp; file)</code></li>
+<li><code>template &lt;typename C&gt; std::pair&lt;basic_string&lt;C&gt;, basic_string&lt;C&gt;&gt;</code> <strong><code>split_path</code></strong><code>(const basic_string&lt;C&gt;&amp; file, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; std::pair&lt;basic_string&lt;C&gt;, basic_string&lt;C&gt;&gt;</code> <strong><code>split_file</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
 </ul>
-
 <p>These functions break down a file name into its constituent parts. The
 <code>split_path()</code> function breaks the full name into directory and leaf names;
-for example, if the original file name is <code>&quot;/foo/bar/hello.txt&quot;</code>, the
-directory name is <code>&quot;/foo/bar&quot;</code> and the leaf name is <code>&quot;hello.txt&quot;</code>. If the file
-name refers to the file system root (e.g. <code>&quot;/&quot;</code>), the directory is the full
+for example, if the original file name is <code>"/foo/bar/hello.txt"</code>, the
+directory name is <code>"/foo/bar"</code> and the leaf name is <code>"hello.txt"</code>. If the file
+name refers to the file system root (e.g. <code>"/"</code>), the directory is the full
 file name and the leaf name is empty.</p>
-
 <p>By default, the delimiter between the directory and leaf names is discarded,
 unless the directory is a root name that requires the delimiter suffix for
 correct identification; if the <code>fs_fullname</code> flag is set, the delimiter (if
 any) will always be kept at the end of the directory part. This is the only
 flag recognised.</p>
-
 <p>The <code>split_file()</code> function breaks the leaf name into a base and extension
 (discarding the directory part); for example, if the original file name is
-<code>&quot;foo/bar/hello.txt&quot;</code>, the base name is <code>&quot;hello&quot;</code> and the extension is
-<code>&quot;.txt&quot;</code>. The extension starts with the last dot in the leaf name, excluding
+<code>"foo/bar/hello.txt"</code>, the base name is <code>"hello"</code> and the extension is
+<code>".txt"</code>. The extension starts with the last dot in the leaf name, excluding
 its first character; if the name does not contain a dot, or if the only dot is
 at the beginning, the base name is the full leaf name and the extension is
 empty.</p>
-
 <p>Examples:</p>
-
-<pre><code>split_path(&quot;/foo/bar/hello.txt&quot;) == {&quot;/foo/bar&quot;, &quot;hello.txt&quot;}
-split_file(&quot;/foo/bar/hello.txt&quot;) == {&quot;hello&quot;, &quot;.txt&quot;}
-split_file(&quot;.hello&quot;) == {&quot;.hello&quot;, &quot;&quot;}
+<pre><code>split_path("/foo/bar/hello.txt") == {"/foo/bar", "hello.txt"}
+split_file("/foo/bar/hello.txt") == {"hello", ".txt"}
+split_file(".hello") == {".hello", ""}
 </code></pre>
-
-<h2 id="filesystemqueryfunctions">File system query functions</h2>
-
+<h3 id="file-system-query-functions">File system query functions</h3>
 <p>These functions perform read-only operations on the file system.</p>
-
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>current_directory</code></strong><code>()</code></li>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>current_directory</code></strong>
-<code>(basic_string&lt;C&gt;&amp; dir)</code></li>
+<li><code>template &lt;typename C&gt; void</code> <strong><code>current_directory</code></strong><code>(basic_string&lt;C&gt;&amp; dir)</code></li>
 </ul>
-
 <p>These query the current working directory of the calling process. The first
 version requires the character type to be explicitly specified. These may
 throw <code>std::</code><strong><code>system_error</code></strong> in some unusual cases of failure, usually involving
 access permission problems.</p>
-
 <ul>
-<li><code>template &lt;typename C&gt; bool</code> <strong><code>file_exists</code></strong>
-<code>(const basic_string&lt;C&gt;&amp; file) noexcept</code></li>
+<li><code>template &lt;typename C&gt; bool</code> <strong><code>file_exists</code></strong><code>(const basic_string&lt;C&gt;&amp; file) noexcept</code></li>
 </ul>
-
 <p>Query whether a file exists. This may give a false negative if the file exists
 but is not accessible to the calling process.</p>
-
 <ul>
-<li><code>template &lt;typename C&gt; bool</code> <strong><code>file_is_directory</code></strong>
-<code>(const basic_string&lt;C&gt;&amp; file) noexcept</code></li>
+<li><code>template &lt;typename C&gt; bool</code> <strong><code>file_is_directory</code></strong><code>(const basic_string&lt;C&gt;&amp; file) noexcept</code></li>
 </ul>
-
 <p>Query whether a file is a directory. This will return <code>false</code> if the file does
 not exist; it may give a false negative if the directory exists but is not
 accessible to the calling process.</p>
-
 <ul>
-<li><code>template &lt;typename C&gt; bool</code> <strong><code>file_is_hidden</code></strong>
-<code>(const basic_string&lt;C&gt;&amp; file) noexcept</code></li>
+<li><code>template &lt;typename C&gt; bool</code> <strong><code>file_is_hidden</code></strong><code>(const basic_string&lt;C&gt;&amp; file) noexcept</code></li>
 </ul>
-
 <p>True if the file is normally hidden. This will return <code>false</code> if the file does
 not exist or is not accessible to the calling process. On Unix this is based
 on the file name (a file is hidden if its name starts with a dot), but on
 Windows this is a metadata property.</p>
-
 <ul>
-<li><code>template &lt;typename C&gt; bool</code> <strong><code>file_is_symlink</code></strong>
-<code>(const basic_string&lt;C&gt;&amp; file) noexcept</code></li>
+<li><code>template &lt;typename C&gt; bool</code> <strong><code>file_is_symlink</code></strong><code>(const basic_string&lt;C&gt;&amp; file) noexcept</code></li>
 </ul>
-
 <p>True if the file is a symbolic link.</p>
-
 <ul>
-<li><code>template &lt;typename C&gt; uintmax_t</code> <strong><code>file_size</code></strong>
-<code>(const basic_string&lt;C&gt;&amp; file, uint32_t flags = 0) noexcept</code></li>
+<li><code>template &lt;typename C&gt; uintmax_t</code> <strong><code>file_size</code></strong><code>(const basic_string&lt;C&gt;&amp; file, uint32_t flags = 0) noexcept</code></li>
 </ul>
-
 <p>Returns the size of the file in bytes. This will return zero if the file does
-not exist, or if it can&#8217;t be accessed for any other reason. If the file is a
+not exist, or if it can't be accessed for any other reason. If the file is a
 directory, by default only the size of the directory entry itself (which may
 be zero on some systems) is returned; if the <code>fs_recurse</code> flag is supplied,
-the directory&#8217;s contents will be recursively scanned (symbolic links are not
+the directory's contents will be recursively scanned (symbolic links are not
 followed).</p>
-
 <ul>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>resolve_symlink</code></strong>
-<code>(const basic_string&lt;C&gt;&amp; file)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>resolve_symlink</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
 </ul>
-
 <p>Returns the file pointed to by a symlink. If the argument names a file that
 does not exist or is not a symlink, this will simply return the argument
 unchanged. This will throw <code>std::</code><strong><code>system_error</code></strong> if anything goes wrong, such as
@@ -298,17 +230,12 @@ a permission failure or a symlink loop. On Windows, resolving a symlink
 requires opening the target file, so this will fail if the target file does
 not exist (presumably the symlink still contains a path but there does not
 appear to be any way to retrieve it).</p>
-
-<h2 id="filesystemmodifyingfunctions">File system modifying functions</h2>
-
+<h3 id="file-system-modifying-functions">File system modifying functions</h3>
 <p>These functions perform operations that require write access to the file
 system.</p>
-
 <ul>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>make_directory</code></strong>
-<code>(const basic_string&lt;C&gt;&amp; dir, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; void</code> <strong><code>make_directory</code></strong><code>(const basic_string&lt;C&gt;&amp; dir, uint32_t flags = 0)</code></li>
 </ul>
-
 <p>Create a directory (with default permissions). If the <code>fs_recurse</code> flag is
 set, this will recursively create any missing parent directories (like <code>mkdir
 -p</code>). It will do nothing if the directory already exists. It will throw
@@ -316,24 +243,18 @@ set, this will recursively create any missing parent directories (like <code>mkd
 if the directory path is not a legal filename, if the parent directory does
 not exist and the <code>recurse</code> flag was not set, or if the caller does not have
 permission to create the directory.</p>
-
 <ul>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>remove_file</code></strong>
-<code>(const basic_string&lt;C&gt;&amp; file, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; void</code> <strong><code>remove_file</code></strong><code>(const basic_string&lt;C&gt;&amp; file, uint32_t flags = 0)</code></li>
 </ul>
-
 <p>Delete a file or directory. If the <code>fs_recurse</code> flag is set, directories will
 be deleted recursively (like <code>rm -rf</code>; this will not follow symbolic links).
 This will do nothing if the named file does not exist to begin with. It will
 throw <code>std::</code><strong><code>system_error</code></strong> if the directory path is not a legal filename, if
 the name refers to a nonempty directory and the <code>recurse</code> flag was not set, or
 if the caller does not have permission to delete the file.</p>
-
 <ul>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>rename_file</code></strong>
-<code>(const basic_string&lt;C&gt;&amp; src, const basic_string&lt;C&gt;&amp; dst)</code></li>
+<li><code>template &lt;typename C&gt; void</code> <strong><code>rename_file</code></strong><code>(const basic_string&lt;C&gt;&amp; src, const basic_string&lt;C&gt;&amp; dst)</code></li>
 </ul>
-
 <p>Rename a file or directory. This will throw <code>std::</code><strong><code>system_error</code></strong> if either
 argument is not a legal filename, if the caller does not have permission to
 perform the operation, or under other OS-specific circumstances. This function
@@ -342,88 +263,65 @@ will share any system specific limitations and variations; behaviour when the
 destination file already exists is system dependent (this may overwrite the
 file or throw an exception), and on most systems the call will fail if the
 source and destination are on different physical file systems.</p>
-
-<h2 id="directoryiterators">Directory iterators</h2>
-
+<h3 id="directory-iterators">Directory iterators</h3>
 <ul>
-<li><code>template &lt;typename C&gt; class</code> <strong><code>DirectoryIterator</code></strong>
-
-<ul>
-<li><code>using DirectoryIterator::</code><strong><code>difference_type</code></strong>
-<code>= ptrdiff_t</code></li>
-<li><code>using DirectoryIterator::</code><strong><code>iterator_category</code></strong>
-<code>= std::</code><strong><code>input_iterator_tag</code></strong></li>
-<li><code>using DirectoryIterator::</code><strong><code>value_type</code></strong>
-<code>= basic_string&lt;C&gt;</code></li>
-<li><code>using DirectoryIterator::</code><strong><code>pointer</code></strong>
-<code>= const value_type*</code></li>
-<li><code>using DirectoryIterator::</code><strong><code>reference</code></strong>
-<code>= const value_type&amp;</code></li>
+<li><code>template &lt;typename C&gt; class</code> <strong><code>DirectoryIterator</code></strong><ul>
+<li><code>using DirectoryIterator::</code><strong><code>difference_type</code></strong> <code>= ptrdiff_t</code></li>
+<li><code>using DirectoryIterator::</code><strong><code>iterator_category</code></strong> <code>= std::</code><strong><code>input_iterator_tag</code></strong></li>
+<li><code>using DirectoryIterator::</code><strong><code>value_type</code></strong> <code>= basic_string&lt;C&gt;</code></li>
+<li><code>using DirectoryIterator::</code><strong><code>pointer</code></strong> <code>= const value_type*</code></li>
+<li><code>using DirectoryIterator::</code><strong><code>reference</code></strong> <code>= const value_type&amp;</code></li>
 <li><code>DirectoryIterator::</code><strong><code>DirectoryIterator</code></strong><code>()</code></li>
 <li><code>explicit DirectoryIterator::</code><strong><code>DirectoryIterator</code></strong><code>(const value_type&amp; dir, uint32_t flags = 0)</code></li>
 <li><em>[standard iterator operations]</em></li>
-</ul></li>
+</ul>
+</li>
 <li><code>template &lt;typename C&gt; Irange&lt;DirectoryIterator&lt;C&gt;&gt;</code> <strong><code>directory</code></strong><code>(const basic_string&lt;C&gt;&amp; dir, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename C&gt; Irange&lt;DirectoryIterator&lt;C&gt;&gt;</code> <strong><code>directory</code></strong><code>(const C* dir, uint32_t flags = 0)</code></li>
 </ul>
-
 <p>The following flags are recognised:</p>
-
 <table>
-<colgroup>
-<col style="text-align:left;"/>
-<col style="text-align:left;"/>
-</colgroup>
-
 <thead>
 <tr>
-	<th style="text-align:left;">Flag</th>
-	<th style="text-align:left;">Description</th>
+<th>Flag</th>
+<th>Description</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
-	<td style="text-align:left;"><strong><code>fs_all</code></strong></td>
-	<td style="text-align:left;">Include hidden files</td>
+<td><strong><code>fs_all</code></strong></td>
+<td>Include hidden files</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><strong><code>fs_dotdot</code></strong></td>
-	<td style="text-align:left;">Include . and ..</td>
+<td><strong><code>fs_dotdot</code></strong></td>
+<td>Include . and ..</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><strong><code>fs_fullname</code></strong></td>
-	<td style="text-align:left;">Return full file names</td>
+<td><strong><code>fs_fullname</code></strong></td>
+<td>Return full file names</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><strong><code>fs_unicode</code></strong></td>
-	<td style="text-align:left;">Skip files with non-Unicode names</td>
+<td><strong><code>fs_unicode</code></strong></td>
+<td>Skip files with non-Unicode names</td>
 </tr>
 </tbody>
 </table>
-
 <p>An iterator over the files in a directory. Normally you should call the
 <code>directory()</code> function to get an iterator range, rather than explicitly
 construct a <code>DirectoryIterator</code>.</p>
-
 <p>If the name passed to the constructor, or to the <code>directory()</code> function,
 refers to a file that does not exist or is not a directory, it will simply be
 treated as an empty directory.</p>
-
-<p>By default, an iterator dereferences to a file&#8217;s leaf name; if the
+<p>By default, an iterator dereferences to a file's leaf name; if the
 <code>fs_fullname</code> option is used, the full path is reported instead, including the
 directory (this is based on the name passed to the constructor, and will not
 be a fully qualified absolute path if the original name was not).</p>
-
 <p>If the <code>fs_unicode</code> flag is supplied, and the original directory name was
 invalid UTF, no files will be returned.</p>
-
 <p>The order in which files are returned is unspecified; do not rely on them
 being returned in the same order as the <code>ls</code> or <code>dir</code> command, or on the order
 remaining the same on separate iterations over the same directory. Behaviour
-is also unspecified if a directory&#8217;s contents change while a
+is also unspecified if a directory's contents change while a
 <code>DirectoryIterator</code> is scanning it; the change may or may not be visible to
-the caller.</p>
-
-</body>
+the caller.</p></body>
 </html>

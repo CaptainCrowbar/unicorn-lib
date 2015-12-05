@@ -1,29 +1,15 @@
-Title: Unicorn Library: Character Properties
-CSS: style.css
-
 # [Unicorn Library](index.html): Character Properties #
 
-#### Unicode library for C++ by Ross Smith ####
+_Unicode library for C++ by Ross Smith_
 
-#### `#include "unicorn/character.hpp"` ####
+* `#include "unicorn/character.hpp"`
 
 This module contains functions and constants relating to Unicode characters
 and their basic properties.
 
 ## Contents ##
 
-* [Constants][]
-* [Basic character functions][]
-* [General category][]
-* [Boolean properties][]
-* [Bidirectional properties][]
-* [Block properties][]
-* [Case folding properties][]
-* [Character names][]
-* [Decomposition properties][]
-* [Enumeration properties][]
-* [Numeric properties][]
-* [Script properties][]
+[TOC]
 
 ## Constants ##
 
@@ -78,26 +64,16 @@ Formats a code point in the conventional `U+XXXX` notation.
 
 These match only the corresponding ASCII characters.
 
-* `constexpr bool` **`char_is_ascii`**
-    `(char32_t c) noexcept`
-* `constexpr bool` **`char_is_latin1`**
-    `(char32_t c) noexcept`
-* `constexpr bool` **`char_is_bmp`**
-    `(char32_t c) noexcept`
-* `constexpr bool` **`char_is_astral`**
-    `(char32_t c) noexcept`
-* `constexpr bool` **`char_is_unicode`**
-    `(char32_t c) noexcept`
-* `constexpr bool` **`char_is_surrogate`**
-    `(char32_t c) noexcept`
-* `constexpr bool` **`char_is_high_surrogate`**
-    `(char32_t c) noexcept`
-* `constexpr bool` **`char_is_low_surrogate`**
-    `(char32_t c) noexcept`
-* `constexpr bool` **`char_is_noncharacter`**
-    `(char32_t c) noexcept`
-* `constexpr bool` **`char_is_private_use`**
-    `(char32_t c) noexcept`
+* `constexpr bool` **`char_is_ascii`**`(char32_t c) noexcept`
+* `constexpr bool` **`char_is_latin1`**`(char32_t c) noexcept`
+* `constexpr bool` **`char_is_bmp`**`(char32_t c) noexcept`
+* `constexpr bool` **`char_is_astral`**`(char32_t c) noexcept`
+* `constexpr bool` **`char_is_unicode`**`(char32_t c) noexcept`
+* `constexpr bool` **`char_is_surrogate`**`(char32_t c) noexcept`
+* `constexpr bool` **`char_is_high_surrogate`**`(char32_t c) noexcept`
+* `constexpr bool` **`char_is_low_surrogate`**`(char32_t c) noexcept`
+* `constexpr bool` **`char_is_noncharacter`**`(char32_t c) noexcept`
+* `constexpr bool` **`char_is_private_use`**`(char32_t c) noexcept`
 
 Basic character classification. These are properties that are related to
 simple ranges of code points, without requiring reference to the full Unicode
@@ -184,12 +160,9 @@ These check for a character's membership in a broad general category. (The
 miscellaneous categories not listed here are covered elsewhere in this
 module.)
 
-* `std::function<bool(char32_t)>` **`gc_predicate`**
-    `(uint16_t cat)`
-* `std::function<bool(char32_t)>` **`gc_predicate`**
-    `(const u8string& cat)`
-* `std::function<bool(char32_t)>` **`gc_predicate`**
-    `(const char* cat)`
+* `std::function<bool(char32_t)>` **`gc_predicate`**`(uint16_t cat)`
+* `std::function<bool(char32_t)>` **`gc_predicate`**`(const u8string& cat)`
+* `std::function<bool(char32_t)>` **`gc_predicate`**`(const char* cat)`
 
 These return function objects that can be used to test a character for
 membership in one or more categories. The versions that take a string can
@@ -199,50 +172,31 @@ connector punctuation, or dash punctuation. Following the convention suggested
 by the Unicode standard, the special category `"LC"` or `"L&"` tests for a
 cased letter, i.e. equivalent to `"Lltu"`.
 
-* `u8string` **`decode_gc`**
-    `(uint16_t cat)`
-* `constexpr uint16_t` **`encode_gc`**
-    `(char c1, char c2) noexcept`
-* `constexpr uint16_t` **`encode_gc`**
-    `(const char* cat) noexcept`
-* `uint16_t` **`encode_gc`**
-    `(const u8string& cat) noexcept`
+* `u8string` **`decode_gc`**`(uint16_t cat)`
+* `constexpr uint16_t` **`encode_gc`**`(char c1, char c2) noexcept`
+* `constexpr uint16_t` **`encode_gc`**`(const char* cat) noexcept`
+* `uint16_t` **`encode_gc`**`(const u8string& cat) noexcept`
 
 These convert between a GC abbreviation (passed as either a pair of letters or
 a string) and its integer code.
 
 ## Boolean properties ##
 
-* `bool` **`char_is_assigned`**
-    `(char32_t c) noexcept`
-* `bool` **`char_is_unassigned`**
-    `(char32_t c) noexcept`
-* `bool` **`char_is_white_space`**
-    `(char32_t c) noexcept`
-* `bool` **`char_is_line_break`**
-    `(char32_t c) noexcept`
-* `bool` **`char_is_inline_space`**
-    `(char32_t c) noexcept`
-* `bool` **`char_is_id_start`**
-    `(char32_t c) noexcept`
-* `bool` **`char_is_id_nonstart`**
-    `(char32_t c) noexcept`
-* `bool` **`char_is_id_continue`**
-    `(char32_t c) noexcept`
-* `bool` **`char_is_xid_start`**
-    `(char32_t c) noexcept`
-* `bool` **`char_is_xid_nonstart`**
-    `(char32_t c) noexcept`
-* `bool` **`char_is_xid_continue`**
-    `(char32_t c) noexcept`
-* `bool` **`char_is_pattern_syntax`**
-    `(char32_t c) noexcept`
-* `bool` **`char_is_pattern_white_space`**
-    `(char32_t c) noexcept`
-* `bool` **`char_is_default_ignorable`**
-    `(char32_t c) noexcept`
-* `bool` **`char_is_soft_dotted`**
-    `(char32_t c) noexcept`
+* `bool` **`char_is_assigned`**`(char32_t c) noexcept`
+* `bool` **`char_is_unassigned`**`(char32_t c) noexcept`
+* `bool` **`char_is_white_space`**`(char32_t c) noexcept`
+* `bool` **`char_is_line_break`**`(char32_t c) noexcept`
+* `bool` **`char_is_inline_space`**`(char32_t c) noexcept`
+* `bool` **`char_is_id_start`**`(char32_t c) noexcept`
+* `bool` **`char_is_id_nonstart`**`(char32_t c) noexcept`
+* `bool` **`char_is_id_continue`**`(char32_t c) noexcept`
+* `bool` **`char_is_xid_start`**`(char32_t c) noexcept`
+* `bool` **`char_is_xid_nonstart`**`(char32_t c) noexcept`
+* `bool` **`char_is_xid_continue`**`(char32_t c) noexcept`
+* `bool` **`char_is_pattern_syntax`**`(char32_t c) noexcept`
+* `bool` **`char_is_pattern_white_space`**`(char32_t c) noexcept`
+* `bool` **`char_is_default_ignorable`**`(char32_t c) noexcept`
+* `bool` **`char_is_soft_dotted`**`(char32_t c) noexcept`
 
 Various boolean tests, mostly corresponding to standard Unicode character
 properties. The `char_is_inline_space()` function tests for whitespace
@@ -250,23 +204,17 @@ characters that are not line breaks.
 
 ## Bidirectional properties ##
 
-* `Bidi_Class` **`bidi_class`**
-    `(char32_t c) noexcept`
-* `bool` **`char_is_bidi_mirrored`**
-    `(char32_t c) noexcept`
-* `char32_t` **`bidi_mirroring_glyph`**
-    `(char32_t c) noexcept`
-* `char32_t` **`bidi_paired_bracket`**
-    `(char32_t c) noexcept`
-* `char` **`bidi_paired_bracket_type`**
-    `(char32_t c) noexcept`
+* `Bidi_Class` **`bidi_class`**`(char32_t c) noexcept`
+* `bool` **`char_is_bidi_mirrored`**`(char32_t c) noexcept`
+* `char32_t` **`bidi_mirroring_glyph`**`(char32_t c) noexcept`
+* `char32_t` **`bidi_paired_bracket`**`(char32_t c) noexcept`
+* `char` **`bidi_paired_bracket_type`**`(char32_t c) noexcept`
 
 Properties relevant to the Unicode bidirectional algorithm.
 
 ## Block properties ##
 
-* `u8string` **`char_block`**
-    `(char32_t c)`
+* `u8string` **`char_block`**`(char32_t c)`
 
 Returns the name of the block to which a character belongs, or an empty string
 if it is not part of any block.
@@ -282,35 +230,22 @@ blocks (in code point order).
 
 ## Case folding properties ##
 
-* `bool` **`char_is_cased`**
-    `(char32_t c) noexcept`
-* `bool` **`char_is_case_ignorable`**
-    `(char32_t c) noexcept`
-* `bool` **`char_is_uppercase`**
-    `(char32_t c) noexcept`
-* `bool` **`char_is_lowercase`**
-    `(char32_t c) noexcept`
-* `bool` **`char_is_titlecase`**
-    `(char32_t c) noexcept`
+* `bool` **`char_is_cased`**`(char32_t c) noexcept`
+* `bool` **`char_is_case_ignorable`**`(char32_t c) noexcept`
+* `bool` **`char_is_uppercase`**`(char32_t c) noexcept`
+* `bool` **`char_is_lowercase`**`(char32_t c) noexcept`
+* `bool` **`char_is_titlecase`**`(char32_t c) noexcept`
 
 Boolean Unicode properties related to case conversion.
 
-* `char32_t` **`char_to_simple_uppercase`**
-    `(char32_t c) noexcept`
-* `char32_t` **`char_to_simple_lowercase`**
-    `(char32_t c) noexcept`
-* `char32_t` **`char_to_simple_titlecase`**
-    `(char32_t c) noexcept`
-* `char32_t` **`char_to_simple_casefold`**
-    `(char32_t c) noexcept`
-* `size_t` **`char_to_full_uppercase`**
-    `(char32_t c, char32_t* dst) noexcept`
-* `size_t` **`char_to_full_lowercase`**
-    `(char32_t c, char32_t* dst) noexcept`
-* `size_t` **`char_to_full_titlecase`**
-    `(char32_t c, char32_t* dst) noexcept`
-* `size_t` **`char_to_full_casefold`**
-    `(char32_t c, char32_t* dst) noexcept`
+* `char32_t` **`char_to_simple_uppercase`**`(char32_t c) noexcept`
+* `char32_t` **`char_to_simple_lowercase`**`(char32_t c) noexcept`
+* `char32_t` **`char_to_simple_titlecase`**`(char32_t c) noexcept`
+* `char32_t` **`char_to_simple_casefold`**`(char32_t c) noexcept`
+* `size_t` **`char_to_full_uppercase`**`(char32_t c, char32_t* dst) noexcept`
+* `size_t` **`char_to_full_lowercase`**`(char32_t c, char32_t* dst) noexcept`
+* `size_t` **`char_to_full_titlecase`**`(char32_t c, char32_t* dst) noexcept`
+* `size_t` **`char_to_full_casefold`**`(char32_t c, char32_t* dst) noexcept`
 
 Single-character case conversion functions. The simple case mapping functions
 cover only one-to-one case conversions, while the full case mapping functions
@@ -327,8 +262,7 @@ library).
 
 ## Character names ##
 
-* `u8string` **`char_name`**
-    `(char32_t c, uint32_t flags = 0)`
+* `u8string` **`char_name`**`(char32_t c, uint32_t flags = 0)`
 
 Flag                 | Description
 ----                 | -----------
@@ -349,21 +283,17 @@ something goes wrong while loading the table.
 
 ## Decomposition properties ##
 
-* `int` **`combining_class`**
-    `(char32_t c) noexcept`
+* `int` **`combining_class`**`(char32_t c) noexcept`
 
 Returns the character's canonical combining class.
 
-* `char32_t` **`canonical_composition`**
-    `(char32_t c1, char32_t c2) noexcept`
+* `char32_t` **`canonical_composition`**`(char32_t c1, char32_t c2) noexcept`
 
 Returns the canonical composition of the two characters, or zero if the two
 characters do not combine.
 
-* `size_t` **`canonical_decomposition`**
-    `(char32_t c, char32_t* dst) noexcept`
-* `size_t` **`compatibility_decomposition`**
-    `(char32_t c, char32_t* dst) noexcept`
+* `size_t` **`canonical_decomposition`**`(char32_t c, char32_t* dst) noexcept`
+* `size_t` **`compatibility_decomposition`**`(char32_t c, char32_t* dst) noexcept`
 
 These generate the canonical or compatibility decomposition of a character
 (`compatibility_decomposition()` will also return canonical decompositions).
@@ -403,62 +333,38 @@ Enumeration property values. The spelling of the class and value names follows
 their spelling in the Unicode standard, which is not entirely consistent about
 naming conventions.
 
-* `East_Asian_Width` **`east_asian_width`**
-    `(char32_t c) noexcept`
-* `Grapheme_Cluster_Break` **`grapheme_cluster_break`**
-    `(char32_t c) noexcept`
-* `Hangul_Syllable_Type` **`hangul_syllable_type`**
-    `(char32_t c) noexcept`
-* `Indic_Positional_Category` **`indic_positional_category`**
-    `(char32_t c) noexcept`
-* `Indic_Syllabic_Category` **`indic_syllabic_category`**
-    `(char32_t c) noexcept`
-* `Joining_Group` **`joining_group`**
-    `(char32_t c) noexcept`
-* `Joining_Type` **`joining_type`**
-    `(char32_t c) noexcept`
-* `Line_Break` **`line_break`**
-    `(char32_t c) noexcept`
-* `Numeric_Type` **`numeric_type`**
-    `(char32_t c) noexcept`
-* `Sentence_Break` **`sentence_break`**
-    `(char32_t c) noexcept`
-* `Word_Break` **`word_break`**
-    `(char32_t c) noexcept`
+* `East_Asian_Width` **`east_asian_width`**`(char32_t c) noexcept`
+* `Grapheme_Cluster_Break` **`grapheme_cluster_break`**`(char32_t c) noexcept`
+* `Hangul_Syllable_Type` **`hangul_syllable_type`**`(char32_t c) noexcept`
+* `Indic_Positional_Category` **`indic_positional_category`**`(char32_t c) noexcept`
+* `Indic_Syllabic_Category` **`indic_syllabic_category`**`(char32_t c) noexcept`
+* `Joining_Group` **`joining_group`**`(char32_t c) noexcept`
+* `Joining_Type` **`joining_type`**`(char32_t c) noexcept`
+* `Line_Break` **`line_break`**`(char32_t c) noexcept`
+* `Numeric_Type` **`numeric_type`**`(char32_t c) noexcept`
+* `Sentence_Break` **`sentence_break`**`(char32_t c) noexcept`
+* `Word_Break` **`word_break`**`(char32_t c) noexcept`
 
 Functions returning the properties of a character.
 
-* `u8string` **`property_value`**
-    `(Bidi_Class val)`
-* `u8string` **`property_value`**
-    `(East_Asian_Width val)`
-* `u8string` **`property_value`**
-    `(Grapheme_Cluster_Break val)`
-* `u8string` **`property_value`**
-    `(Hangul_Syllable_Type val)`
-* `u8string` **`property_value`**
-    `(Indic_Positional_Category val)`
-* `u8string` **`property_value`**
-    `(Indic_Syllabic_Category val)`
-* `u8string` **`property_value`**
-    `(Joining_Group val)`
-* `u8string` **`property_value`**
-    `(Joining_Type val)`
-* `u8string` **`property_value`**
-    `(Line_Break val)`
-* `u8string` **`property_value`**
-    `(Numeric_Type val)`
-* `u8string` **`property_value`**
-    `(Sentence_Break val)`
-* `u8string` **`property_value`**
-    `(Word_Break val)`
+* `u8string` **`property_value`**`(Bidi_Class val)`
+* `u8string` **`property_value`**`(East_Asian_Width val)`
+* `u8string` **`property_value`**`(Grapheme_Cluster_Break val)`
+* `u8string` **`property_value`**`(Hangul_Syllable_Type val)`
+* `u8string` **`property_value`**`(Indic_Positional_Category val)`
+* `u8string` **`property_value`**`(Indic_Syllabic_Category val)`
+* `u8string` **`property_value`**`(Joining_Group val)`
+* `u8string` **`property_value`**`(Joining_Type val)`
+* `u8string` **`property_value`**`(Line_Break val)`
+* `u8string` **`property_value`**`(Numeric_Type val)`
+* `u8string` **`property_value`**`(Sentence_Break val)`
+* `u8string` **`property_value`**`(Word_Break val)`
 
 Functions converting an enumerated property value into a string for display.
 
 ## Numeric properties ##
 
-* `std::pair<long long, long long>` **`numeric_value`**
-    `(char32_t c)`
+* `std::pair<long long, long long>` **`numeric_value`**`(char32_t c)`
 
 Returns the numeric value of a character, as a pair containg the numerator and
 denominator of the value. The denominator will always be positive. If the
@@ -466,10 +372,8 @@ character is not numeric, the numeric value will be zero (expressed as `0/1`).
 
 ## Script properties ##
 
-* `u8string` **`char_script`**
-    `(char32_t c)`
-* `vector<u8string>` **`char_script_list`**
-    `(char32_t c)`
+* `u8string` **`char_script`**`(char32_t c)`
+* `vector<u8string>` **`char_script_list`**`(char32_t c)`
 
 These return the principal script associated with a character, or a list of
 scripts (in unspecified order) for characters that are commonly used with

@@ -1,11 +1,8 @@
-Title: Unicorn Library: Input and Output
-CSS: style.css
-
 # [Unicorn Library](index.html): Input and Output #
 
-#### Unicode library for C++ by Ross Smith ####
+_Unicode library for C++ by Ross Smith_
 
-#### `#include "unicorn/io.hpp"` ####
+* `#include "unicorn/io.hpp"`
 
 The functions and classes in this module provided line oriented input and
 output, with automatic conversion between Unicode and external legacy
@@ -15,14 +12,12 @@ encodings, as well as other conveniences such as normalization of line breaks.
 
 ## Contents ##
 
-* [File input iterator][]
-* [File output iterator][]
+[TOC]
 
 ## File input iterator ##
 
 * `class` **`FileReader`**
-    * `using FileReader::`**`difference_type`**
-        `= ptrdiff_t`
+    * `using FileReader::`**`difference_type`** `= ptrdiff_t`
     * `using FileReader::`**`iterator_category`** `= std::`**`input_iterator_tag`**
     * `using FileReader::`**`pointer`** `= const u8string*`
     * `using FileReader::`**`reference`** `= const u8string&`
@@ -55,16 +50,11 @@ Flag               | Description
 
 TODO
 
-* `template <typename C> Irange<FileReader>` **`read_lines`**
-    `(const basic_string<C>& file, uint32_t flags = 0)`
-* `template <typename C1, typename C2> Irange<FileReader>` **`read_lines`**
-    `(const basic_string<C1>& file, uint32_t flags, const basic_string<C2>& enc)`
-* `template <typename C> Irange<FileReader>` **`read_lines`**
-    `(const basic_string<C>& file, uint32_t flags, uint32_t enc)`
-* `template <typename C1, typename C2, typename C3> Irange<FileReader>` **`read_lines`**
-    `(const basic_string<C1>& file, uint32_t flags, const basic_string<C2>& enc, const basic_string<C3>& eol)`
-* `template <typename C1, typename C2> Irange<FileReader>` **`read_lines`**
-    `(const basic_string<C1>& file, uint32_t flags, uint32_t enc, const basic_string<C2>& eol)`
+* `template <typename C> Irange<FileReader>` **`read_lines`**`(const basic_string<C>& file, uint32_t flags = 0)`
+* `template <typename C1, typename C2> Irange<FileReader>` **`read_lines`**`(const basic_string<C1>& file, uint32_t flags, const basic_string<C2>& enc)`
+* `template <typename C> Irange<FileReader>` **`read_lines`**`(const basic_string<C>& file, uint32_t flags, uint32_t enc)`
+* `template <typename C1, typename C2, typename C3> Irange<FileReader>` **`read_lines`**`(const basic_string<C1>& file, uint32_t flags, const basic_string<C2>& enc, const basic_string<C3>& eol)`
+* `template <typename C1, typename C2> Irange<FileReader>` **`read_lines`**`(const basic_string<C1>& file, uint32_t flags, uint32_t enc, const basic_string<C2>& eol)`
 
 TODO
 

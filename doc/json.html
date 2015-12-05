@@ -1,85 +1,70 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8"/>
-	<title>Unicorn Library: JSON</title>
-	<link type="text/css" rel="stylesheet" href="style.css"/>
+    <meta charset="utf-8"/>
+    <title>Unicorn Library: JSON</title>
+    <link type="text/css" rel="stylesheet" href="style.css"/>
 </head>
-<body>
-
-<h1 id="unicornlibrary:json"><a href="index.html">Unicorn Library</a>: JSON</h1>
-
-<h4 id="unicodelibraryforcbyrosssmith">Unicode library for C++ by Ross Smith</h4>
-
-<h4 id="includeunicornjson.hpp"><code>#include &quot;unicorn/json.hpp&quot;</code></h4>
-
-<p>[TODO: DOCUMENTATION]</p>
-
-<h2 id="contents">Contents</h2>
-
+<h2 id="unicorn-library-json"><a href="index.html">Unicorn Library</a>: JSON</h2>
+<p><em>Unicode library for C++ by Ross Smith</em></p>
 <ul>
-<li><a href="#exceptions">Exceptions</a></li>
-<li><a href="#elementclass">Element class</a></li>
+<li><code>#include "unicorn/json.hpp"</code></li>
 </ul>
-
-<h2 id="exceptions">Exceptions</h2>
-
+<p>[TODO: DOCUMENTATION]</p>
+<h3 id="contents">Contents</h3>
+<div class="toc">
 <ul>
-<li><code>class</code> <strong><code>Exception</code></strong><code>: public std::</code><strong><code>runtime_error</code></strong>
-
+<li><a href="#unicorn-library-json">Unicorn Library: JSON</a><ul>
+<li><a href="#contents">Contents</a></li>
+<li><a href="#exceptions">Exceptions</a></li>
+<li><a href="#element-class">Element class</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h3 id="exceptions">Exceptions</h3>
 <ul>
+<li><code>class</code> <strong><code>Exception</code></strong><code>: public std::</code><strong><code>runtime_error</code></strong><ul>
 <li><code>explicit Exception::</code><strong><code>Exception</code></strong><code>(u8string message, size_t pos = npos)</code></li>
 <li><code>size_t Exception::</code><strong><code>pos</code></strong><code>() const noexcept</code></li>
-</ul></li>
-<li><code>class</code> <strong><code>BadJson</code></strong><code>: public Exception</code>
-
-<ul>
-<li><code>explicit BadJson::</code><strong><code>BadJson</code></strong><code>(size_t pos)</code></li>
-</ul></li>
-<li><code>class</code> <strong><code>EndOfFile</code></strong><code>: public Exception</code>
-
-<ul>
-<li><code>explicit EndOfFile::</code><strong><code>EndOfFile</code></strong><code>(size_t pos)</code></li>
-</ul></li>
-<li><code>class</code> <strong><code>WrongType</code></strong><code>: public Exception</code>
-
-<ul>
-<li><code>WrongType::</code><strong><code>WrongType</code></strong><code>()</code></li>
-</ul></li>
 </ul>
-
+</li>
+<li><code>class</code> <strong><code>BadJson</code></strong><code>: public Exception</code><ul>
+<li><code>explicit BadJson::</code><strong><code>BadJson</code></strong><code>(size_t pos)</code></li>
+</ul>
+</li>
+<li><code>class</code> <strong><code>EndOfFile</code></strong><code>: public Exception</code><ul>
+<li><code>explicit EndOfFile::</code><strong><code>EndOfFile</code></strong><code>(size_t pos)</code></li>
+</ul>
+</li>
+<li><code>class</code> <strong><code>WrongType</code></strong><code>: public Exception</code><ul>
+<li><code>WrongType::</code><strong><code>WrongType</code></strong><code>()</code></li>
+</ul>
+</li>
+</ul>
 <p>TODO</p>
-
-<h2 id="elementclass">Element class</h2>
-
+<h3 id="element-class">Element class</h3>
 <ul>
-<li><code>enum</code> <strong><code>ElementType</code></strong>
-
-<ul>
+<li><code>enum</code> <strong><code>ElementType</code></strong><ul>
 <li><strong><code>null</code></strong></li>
 <li><strong><code>boolean</code></strong></li>
 <li><strong><code>number</code></strong></li>
 <li><strong><code>string</code></strong></li>
 <li><strong><code>array</code></strong></li>
 <li><strong><code>object</code></strong></li>
-</ul></li>
 </ul>
-
+</li>
+</ul>
 <p>TODO</p>
-
 <ul>
 <li><code>class</code> <strong><code>Element</code></strong></li>
 </ul>
-
 <p>TODO</p>
-
 <ul>
 <li><code>using</code> <strong><code>Array</code></strong> <code>= std::vector&lt;Element&gt;</code></li>
 <li><code>using</code> <strong><code>Object</code></strong> <code>= std::map&lt;u8string, Element&gt;</code></li>
 </ul>
-
 <p>TODO</p>
-
 <ul>
 <li><code>Element::</code><strong><code>Element</code></strong><code>() noexcept</code></li>
 <li><code>Element::</code><strong><code>Element</code></strong><code>(std::nullptr_t) noexcept</code></li>
@@ -96,18 +81,14 @@
 <li><code>Element&amp; Element::</code><strong><code>operator=</code></strong><code>(const Element&amp; e)</code></li>
 <li><code>Element&amp; Element::</code><strong><code>operator=</code></strong><code>(Element&amp;&amp; e) noexcept</code></li>
 </ul>
-
 <p>TODO</p>
-
 <ul>
 <li><code>Element&amp; Element::</code><strong><code>operator[]</code></strong><code>(size_t key)</code></li>
 <li><code>const Element&amp; Element::</code><strong><code>operator[]</code></strong><code>(size_t key) const</code></li>
 <li><code>Element&amp; Element::</code><strong><code>operator[]</code></strong><code>(const u8string&amp; key)</code></li>
 <li><code>const Element&amp; Element::</code><strong><code>operator[]</code></strong><code>(const u8string&amp; key) const</code></li>
 </ul>
-
 <p>TODO</p>
-
 <ul>
 <li><code>bool&amp; Element::</code><strong><code>boolean</code></strong><code>()</code></li>
 <li><code>bool Element::</code><strong><code>boolean</code></strong><code>() const</code></li>
@@ -120,37 +101,26 @@
 <li><code>Object&amp; Element::</code><strong><code>object</code></strong><code>()</code></li>
 <li><code>const Object&amp; Element::</code><strong><code>object</code></strong><code>() const</code></li>
 </ul>
-
 <p>TODO</p>
-
 <ul>
 <li><code>void Element::</code><strong><code>layout</code></strong><code>(std::ostream&amp; out, size_t max_array = 0) const</code></li>
 <li><code>u8string Element::</code><strong><code>str</code></strong><code>() const</code></li>
 <li><code>void Element::</code><strong><code>write</code></strong><code>(u8string&amp; dst) const</code></li>
 <li><code>std::</code><strong><code>ostream</code></strong><code>&amp; operator&lt;&lt;(std::ostream&amp; out, const Element&amp; e)</code></li>
 </ul>
-
 <p>TODO</p>
-
 <ul>
 <li><code>ElementType Element::</code><strong><code>type</code></strong><code>() const noexcept</code></li>
 </ul>
-
 <p>TODO</p>
-
 <ul>
 <li><code>static Element Element::</code><strong><code>read</code></strong><code>(const u8string&amp; src)</code></li>
 <li><code>static Element Element::</code><strong><code>read</code></strong><code>(const u8string&amp; src, size_t&amp; pos)</code></li>
 </ul>
-
 <p>TODO</p>
-
 <ul>
 <li><code>bool</code> <strong><code>operator==</code></strong><code>(const Element&amp; lhs, const Element&amp; rhs) noexcept</code></li>
 <li><code>bool</code> <strong><code>operator!=</code></strong><code>(const Element&amp; lhs, const Element&amp; rhs) noexcept</code></li>
 </ul>
-
-<p>TODO</p>
-
-</body>
+<p>TODO</p></body>
 </html>

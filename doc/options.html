@@ -1,57 +1,48 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8"/>
-	<title>Unicorn Library: Command Line Options</title>
-	<link type="text/css" rel="stylesheet" href="style.css"/>
+    <meta charset="utf-8"/>
+    <title>Unicorn Library: Command Line Options</title>
+    <link type="text/css" rel="stylesheet" href="style.css"/>
 </head>
-<body>
-
-<h1 id="unicornlibrary:commandlineoptions"><a href="index.html">Unicorn Library</a>: Command Line Options</h1>
-
-<h4 id="unicodelibraryforcbyrosssmith">Unicode library for C++ by Ross Smith</h4>
-
-<h4 id="includeunicornoptions.hpp"><code>#include &quot;unicorn/options.hpp&quot;</code></h4>
-
+<h2 id="unicorn-library-command-line-options"><a href="index.html">Unicorn Library</a>: Command Line Options</h2>
+<p><em>Unicode library for C++ by Ross Smith</em></p>
+<ul>
+<li><code>#include "unicorn/options.hpp"</code></li>
+</ul>
 <p>The <code>Options</code> class defined in this module handles parsing of command line
 options, and automatic generation of help messages for the user. It provides
 some commonly expected command line features:</p>
-
 <ul>
-<li>Long option names prefixed with two hyphens, e.g. <code>&quot;--long-option&quot;</code>.</li>
-<li>Single letter abbreviations, e.g. <code>&quot;-x&quot;</code>.</li>
-<li>Combinations of abbreviated options, e.g. <code>&quot;-abc&quot; = &quot;-a -b -c&quot;</code>.</li>
-<li>Options can be followed by arguments, delimited by a space or an equals sign, e.g. <code>&quot;--name value&quot;</code> or <code>&quot;--name=value&quot;</code>.</li>
+<li>Long option names prefixed with two hyphens, e.g. <code>"--long-option"</code>.</li>
+<li>Single letter abbreviations, e.g. <code>"-x"</code>.</li>
+<li>Combinations of abbreviated options, e.g. <code>"-abc" = "-a -b -c"</code>.</li>
+<li>Options can be followed by arguments, delimited by a space or an equals sign, e.g. <code>"--name value"</code> or <code>"--name=value"</code>.</li>
 <li>Options can have default arguments.</li>
-<li>Options may take multiple arguments, e.g. <code>&quot;--option arg1 arg2 arg3&quot;</code>.</li>
-<li>A option&#8217;s arguments can be checked against a regular expression.</li>
+<li>Options may take multiple arguments, e.g. <code>"--option arg1 arg2 arg3"</code>.</li>
+<li>A option's arguments can be checked against a regular expression.</li>
 <li>Unattached arguments can be implicitly assigned to options.</li>
 <li>Sets of mutually exclusive options can be specified.</li>
-<li>An argument consisting only of two hyphens (<code>&quot;--&quot;</code>) marks the end of explicitly named options;
-any text following it is read as unattached arguments, even if it looks like an option.</li>
+<li>An argument consisting only of two hyphens (<code>"--"</code>) marks the end of explicitly named options;
+    any text following it is read as unattached arguments, even if it looks like an option.</li>
 </ul>
-
-<p>The member functions that set up the option specifications take UTF&#8211;8 strings
+<p>The member functions that set up the option specifications take UTF-8 strings
 (mostly because making keyword arguments work with variable string types would
 have complicated the interface too much). The option parsing functions,
 however, will accept an argument list in any Unicode encoding.</p>
-
 <p>Example:</p>
-
 <pre><code>int main(int argc, char** argv) {
-    Options opt(&quot;My Program 1.0&quot;);
-    opt.add(&quot;--alpha&quot;, &quot;The most important option&quot;, Options::abbrev=&quot;-a&quot;);
-    opt.add(&quot;--omega&quot;, &quot;The least important option&quot;);
-    opt.add(&quot;--number&quot;, &quot;How many roads to walk down&quot;, Options::abbrev=&quot;-n&quot;, Options::defval=&quot;42&quot;, Options::integer);
+    Options opt("My Program 1.0");
+    opt.add("--alpha", "The most important option", Options::abbrev="-a");
+    opt.add("--omega", "The least important option");
+    opt.add("--number", "How many roads to walk down", Options::abbrev="-n", Options::defval="42", Options::integer);
     if (opt.parse(argc, argv))
         return 0;
     // ... main program code goes here ...
 }
 </code></pre>
-
-<p>If this program is invoked with the <code>&quot;--help&quot;</code> option, it will display the
-following information on the standard output:</p>
-
+<p>If this program is invoked with the <code>--help</code> option (or <code>-h</code>), it will display
+the following information on the standard output:</p>
 <pre><code>My Program 1.0
 
 Options:
@@ -61,124 +52,108 @@ Options:
     --help, -h          = Show usage information
     --version, -v       = Show version information
 </code></pre>
-
-<h2 id="contents">Contents</h2>
-
+<h3 id="contents">Contents</h3>
+<div class="toc">
 <ul>
+<li><a href="#unicorn-library-command-line-options">Unicorn Library: Command Line Options</a><ul>
+<li><a href="#contents">Contents</a></li>
 <li><a href="#exceptions">Exceptions</a></li>
-<li><a href="#classoptions">Class Options</a></li>
+<li><a href="#class-options">Class Options</a></li>
 </ul>
-
-<h2 id="exceptions">Exceptions</h2>
-
+</li>
+</ul>
+</div>
+<h3 id="exceptions">Exceptions</h3>
 <ul>
-<li><code>class</code> <strong><code>CommandLineError</code></strong><code>: public std::runtime_error</code>
-
-<ul>
+<li><code>class</code> <strong><code>CommandLineError</code></strong><code>: public std::runtime_error</code><ul>
 <li><code>explicit CommandLineError::</code><strong><code>CommandLineError</code></strong><code>(const u8string&amp; details, const u8string&amp; arg = {}, const u8string&amp; arg2 = {})</code></li>
-</ul></li>
 </ul>
-
+</li>
+</ul>
 <p>Thrown by <code>Options::</code><strong><code>parse</code></strong><code>()</code> during argument parsing, to report that the
 command line arguments supplied by the user were not consistent with the
 option specification.</p>
-
 <ul>
-<li><code>class</code> <strong><code>OptionSpecError</code></strong><code>: public std::runtime_error</code>
-
-<ul>
+<li><code>class</code> <strong><code>OptionSpecError</code></strong><code>: public std::runtime_error</code><ul>
 <li><code>explicit OptionSpecError::</code><strong><code>OptionSpecError</code></strong><code>(const u8string&amp; option)</code></li>
 <li><code>OptionSpecError::</code><strong><code>OptionSpecError</code></strong><code>(const u8string&amp; details, const u8string&amp; option)</code></li>
-</ul></li>
 </ul>
-
+</li>
+</ul>
 <p>Thrown by <code>Options::</code><strong><code>add</code></strong><code>()</code> during the creation of an option specification, to
 report an invalid combination of properties.</p>
-
-<h2 id="classoptions">Class Options</h2>
-
+<h3 id="class-options">Class Options</h3>
 <table>
-<colgroup>
-<col style="text-align:left;"/>
-<col style="text-align:left;"/>
-<col style="text-align:left;"/>
-</colgroup>
-
 <thead>
 <tr>
-	<th style="text-align:left;">Keyword</th>
-	<th style="text-align:left;">Type</th>
-	<th style="text-align:left;">Description</th>
+<th>Keyword</th>
+<th>Type</th>
+<th>Description</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
-	<td style="text-align:left;"><code>Options::</code><strong><code>abbrev</code></strong></td>
-	<td style="text-align:left;"><code>u8string</code></td>
-	<td style="text-align:left;">A single letter abbreviation for the option (e.g. <code>&quot;-x&quot;</code>; the hyphen is optional).</td>
+<td><code>Options::</code><strong><code>abbrev</code></strong></td>
+<td><code>u8string</code></td>
+<td>A single letter abbreviation for the option (e.g. <code>"-x"</code>; the hyphen is optional).</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>Options::</code><strong><code>anon</code></strong></td>
-	<td style="text-align:left;"><code>bool</code></td>
-	<td style="text-align:left;">Anonymous arguments (not claimed by any other option) will be assigned to this option.</td>
+<td><code>Options::</code><strong><code>anon</code></strong></td>
+<td><code>bool</code></td>
+<td>Anonymous arguments (not claimed by any other option) will be assigned to this option.</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>Options::</code><strong><code>boolean</code></strong></td>
-	<td style="text-align:left;"><code>bool</code></td>
-	<td style="text-align:left;">This option is a boolean switch and does not take arguments.</td>
+<td><code>Options::</code><strong><code>boolean</code></strong></td>
+<td><code>bool</code></td>
+<td>This option is a boolean switch and does not take arguments.</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>Options::</code><strong><code>defval</code></strong></td>
-	<td style="text-align:left;"><code>u8string</code></td>
-	<td style="text-align:left;">Use this default value if the option is not supplied by the user.</td>
+<td><code>Options::</code><strong><code>defval</code></strong></td>
+<td><code>u8string</code></td>
+<td>Use this default value if the option is not supplied by the user.</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>Options::</code><strong><code>floating</code></strong></td>
-	<td style="text-align:left;"><code>bool</code></td>
-	<td style="text-align:left;">The argument value must be a floating point number.</td>
+<td><code>Options::</code><strong><code>floating</code></strong></td>
+<td><code>bool</code></td>
+<td>The argument value must be a floating point number.</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>Options::</code><strong><code>group</code></strong></td>
-	<td style="text-align:left;"><code>u8string</code></td>
-	<td style="text-align:left;">Assign the option to a mutual exclusion group; at most one option from a group is allowed.</td>
+<td><code>Options::</code><strong><code>group</code></strong></td>
+<td><code>u8string</code></td>
+<td>Assign the option to a mutual exclusion group; at most one option from a group is allowed.</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>Options::</code><strong><code>integer</code></strong></td>
-	<td style="text-align:left;"><code>bool</code></td>
-	<td style="text-align:left;">The argument value must be an integer.</td>
+<td><code>Options::</code><strong><code>integer</code></strong></td>
+<td><code>bool</code></td>
+<td>The argument value must be an integer.</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>Options::</code><strong><code>multiple</code></strong></td>
-	<td style="text-align:left;"><code>bool</code></td>
-	<td style="text-align:left;">This option may be followed by multiple arguments.</td>
+<td><code>Options::</code><strong><code>multiple</code></strong></td>
+<td><code>bool</code></td>
+<td>This option may be followed by multiple arguments.</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>Options::</code><strong><code>pattern</code></strong></td>
-	<td style="text-align:left;"><code>u8string</code></td>
-	<td style="text-align:left;">The argument value must match this regular expression.</td>
+<td><code>Options::</code><strong><code>pattern</code></strong></td>
+<td><code>u8string</code></td>
+<td>The argument value must match this regular expression.</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><code>Options::</code><strong><code>required</code></strong></td>
-	<td style="text-align:left;"><code>bool</code></td>
-	<td style="text-align:left;">This option is mandatory.</td>
+<td><code>Options::</code><strong><code>required</code></strong></td>
+<td><code>bool</code></td>
+<td>This option is mandatory.</td>
 </tr>
 </tbody>
 </table>
-
 <p>Keyword arguments for the <code>add()</code> function, described below.</p>
-
 <ul>
 <li><code>explicit Options::</code><strong><code>Options</code></strong><code>(const u8string&amp; info, const u8string&amp; head = {}, const u8string&amp; tail = {})</code></li>
 </ul>
-
 <p>Constructor to initialize an option specification. The <code>info</code> argument is a
 string containing the basic description of the program, typically something
-like <code>&quot;Foobar 1.0 - Does the stuff with the thing&quot;</code>; this will be returned if
-the user calls it with the <code>&quot;--version&quot;</code> option. The optional <code>head</code> and
+like <code>"Foobar 1.0 - Does the stuff with the thing"</code>; this will be returned if
+the user calls it with the <code>"--version"</code> option. The optional <code>head</code> and
 <code>tail</code> arguments are extra text that will be printed before and after the
-option list when the full <code>&quot;--help&quot;</code> option is invoked.</p>
-
+option list when the full <code>"--help"</code> option is invoked.</p>
 <ul>
 <li><code>Options::</code><strong><code>Options</code></strong><code>(const Options&amp; opt)</code></li>
 <li><code>Options::</code><strong><code>Options</code></strong><code>(Options&amp;&amp; opt) noexcept</code></li>
@@ -186,23 +161,18 @@ option list when the full <code>&quot;--help&quot;</code> option is invoked.</p>
 <li><code>Options&amp; Options::</code><strong><code>operator=</code></strong><code>(const Options&amp; opt)</code></li>
 <li><code>Options&amp; Options::</code><strong><code>operator=</code></strong><code>(Options&amp;&amp; opt) noexcept</code></li>
 </ul>
-
 <p>Other life cycle functions.</p>
-
 <ul>
 <li><code>template &lt;typename... Args&gt; void Options::</code><strong><code>add</code></strong><code>(const u8string&amp; name, const u8string&amp; info, const Args&amp;... args)</code></li>
 </ul>
-
 <p>Adds an option to the parser. The <code>name</code> argument is the full name of the
-option, which users can invoke with <code>&quot;--name&quot;</code> (the option name can be
+option, which users can invoke with <code>"--name"</code> (the option name can be
 supplied to the <code>add()</code> function with or without the leading hyphens). The
 <code>info</code> string is the description of the option that will be presented to the
 user when help is requested. These may be followed by optional keyword
 arguments, as listed above.</p>
-
 <p>The <code>add()</code> function will throw <code>OptionSpecError</code> if any of the following is
 true:</p>
-
 <ul>
 <li>The option name has less than two characters (not counting any leading hyphens).</li>
 <li>The info string is empty.</li>
@@ -213,34 +183,27 @@ true:</p>
 <li>The <code>defval</code> and <code>pattern</code> tags are both present, but the default value does not match the pattern.</li>
 <li>The name or abbreviation has already been used by an earlier entry.</li>
 </ul>
-
-<p>Do not explicitly add the standard <code>&quot;--help&quot;</code> and <code>&quot;--version&quot;</code> boolean
+<p>Do not explicitly add the standard <code>"--help"</code> and <code>"--version"</code> boolean
 options; these will be added automatically. They will be given the
-abbreviations <code>&quot;-h&quot;</code> and <code>&quot;-v&quot;</code> if these have not been claimed by other
+abbreviations <code>"-h"</code> and <code>"-v"</code> if these have not been claimed by other
 options.</p>
-
 <p>A program will normally construct an <code>Options</code> object and use multiple calls
 to <code>add()</code> to construct the option specification before calling <code>parse()</code> to
 parse the actual command line arguments. Once the arguments have been parsed,
 the <code>get()</code>, <code>get_list()</code>, and <code>has()</code> functions can be used to query them.</p>
-
 <ul>
 <li><code>void Options::</code><strong><code>autohelp</code></strong><code>() noexcept</code></li>
 </ul>
-
 <p>If this is set, calling the program with no arguments will be interpreted as a
-request for help (i.e. an empty argument list is equivalent to <code>&quot;--help&quot;</code>).</p>
-
+request for help (i.e. an empty argument list is equivalent to <code>"--help"</code>).</p>
 <ul>
 <li><code>u8string Options::</code><strong><code>help</code></strong><code>() const</code></li>
 <li><code>u8string Options::</code><strong><code>version</code></strong><code>() const</code></li>
 </ul>
-
-<p>These are the same texts that will be presented to the user by the <code>&quot;--help&quot;</code>
-and <code>&quot;--version&quot;</code> options. The <code>help()</code> text is constructed automatically by
+<p>These are the same texts that will be presented to the user by the <code>"--help"</code>
+and <code>"--version"</code> options. The <code>help()</code> text is constructed automatically by
 the <code>Options</code> object; the <code>version()</code> text is simply the original <code>info</code>
 string that was supplied to the <code>Options</code> constructor.</p>
-
 <ul>
 <li><code>template &lt;typename C&gt; bool Options::</code><strong><code>parse</code></strong><code>(const vector&lt;basic_string&lt;C&gt;&gt;&amp; args)</code></li>
 <li><code>template &lt;typename C&gt; bool Options::</code><strong><code>parse</code></strong><code>(const basic_string&lt;C&gt;&amp; args)</code></li>
@@ -249,60 +212,47 @@ string that was supplied to the <code>Options</code> constructor.</p>
 <li><code>template &lt;typename C, typename C2&gt; bool Options::</code><strong><code>parse</code></strong><code>(const basic_string&lt;C&gt;&amp; args, std::basic_ostream&lt;C2&gt;&amp; out, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename C, typename C2&gt; bool Options::</code><strong><code>parse</code></strong><code>(int argc, C** argv, std::basic_ostream&lt;C2&gt;&amp; out, uint32_t flags = 0)</code></li>
 </ul>
-
 <p>After the option specification has been constructed, call one of the <code>parse()</code>
 functions to parse the actual command line arguments. The arguments can be
 supplied as a vector of strings, as a single combined string that will be
 split apart during parsing, or as the standard <code>(argc,argv)</code> arguments from
-<code>main()</code> (or a similar source such as the UTF&#8211;16 <code>_wmain()</code> often used on
+<code>main()</code> (or a similar source such as the UTF-16 <code>_wmain()</code> often used on
 Windows). Normally the supplied argument list is assumed to start with the
 command name (which will be discarded); use the <code>opt_noprefix</code> flag to
 override this.</p>
-
 <p>If help or version information is requested, it will be written to the given
 output stream (<code>std::</code><strong><code>cout</code></strong> by default). The <code>parse()</code> function will return
 true if all requested processing has already been handled (i.e. if help or
 version information has been presented to the user); the caller should check
 the return value from <code>parse()</code> and end the program if it is true.</p>
-
 <p>The <code>flags</code> argument can be any combination of these:</p>
-
 <table>
-<colgroup>
-<col style="text-align:left;"/>
-<col style="text-align:left;"/>
-</colgroup>
-
 <thead>
 <tr>
-	<th style="text-align:left;">Flag</th>
-	<th style="text-align:left;">Description</th>
+<th>Flag</th>
+<th>Description</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
-	<td style="text-align:left;"><strong><code>opt_locale</code></strong></td>
-	<td style="text-align:left;">The argument list is in the local encoding</td>
+<td><strong><code>opt_locale</code></strong></td>
+<td>The argument list is in the local encoding</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><strong><code>opt_noprefix</code></strong></td>
-	<td style="text-align:left;">The first argument is not the command name</td>
+<td><strong><code>opt_noprefix</code></strong></td>
+<td>The first argument is not the command name</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><strong><code>opt_quoted</code></strong></td>
-	<td style="text-align:left;">Allow arguments to be quoted</td>
+<td><strong><code>opt_quoted</code></strong></td>
+<td>Allow arguments to be quoted</td>
 </tr>
 </tbody>
 </table>
-
 <p>The <code>opt_locale</code> flag is only relevant to 8 bit strings, which are assumed to
-be UTF&#8211;8 by default; the flag is ignored if the <code>C</code> type is not <code>char</code>, since
-16 or 32 bit strings are always assumed to be UTF&#8211;16/32.</p>
-
+be UTF-8 by default; the flag is ignored if the <code>C</code> type is not <code>char</code>, since
+16 or 32 bit strings are always assumed to be UTF-16/32.</p>
 <p>The <code>parse()</code> functions will throw <code>CommandLineError</code> if any of the following
 is true:</p>
-
 <ul>
 <li>A full or abbreviated option is supplied that is not in the spec.</li>
 <li>The same option appears more than once, but does not have the <code>multiple</code> flag.</li>
@@ -311,31 +261,23 @@ is true:</p>
 <li>A required option is missing.</li>
 <li>There are unattached arguments left over after all options have been satisfied.</li>
 </ul>
-
 <p>Behaviour is unspecified if <code>parse()</code> is called more than once on the same
 <code>Options</code> object.</p>
-
 <ul>
 <li><code>template &lt;typename T&gt; T Options::</code><strong><code>get</code></strong><code>(const u8string&amp; name) const</code></li>
 <li><code>template &lt;typename T&gt; vector&lt;T&gt; Options::</code><strong><code>get_list</code></strong><code>(const u8string&amp; name) const</code></li>
 <li><code>bool Options::</code><strong><code>has</code></strong><code>(const u8string&amp; name) const</code></li>
 </ul>
-
 <p>These return information about the options and arguments found in the command line.
 The option name can be supplied with or without leading hyphens. Only the full name is
 recognized here, not an abbreviation.</p>
-
 <p>The <code>get()</code> function returns the argument attached to an option, converted to
 the given type (which must be a string type or an arithmetic type; when
 converting to a number, characters after a valid number are ignored). If
 multiple arguments were supplied for the option, they are concatenated into a
 space delimited list first.</p>
-
 <p>The <code>get_list()</code> function returns multiple arguments as a vector. Its
 behaviour is otherwise the same as <code>get()</code>.</p>
-
 <p>The <code>has()</code> function simply indicates whether an option was present on the
-command line. This should be used to query boolean options.</p>
-
-</body>
+command line. This should be used to query boolean options.</p></body>
 </html>

@@ -1,6 +1,3 @@
-Title: Unicorn Library
-CSS: style.css
-
 # Unicorn Library #
 
 #### Unicode library for C++ by Ross Smith ####

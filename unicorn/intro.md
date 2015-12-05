@@ -1,6 +1,3 @@
-Title: Unicorn Library: Introduction
-CSS: style.css
-
 # [Unicorn Library](index.html): Introduction #
 
 #### Unicode library for C++ by Ross Smith ####
@@ -172,9 +169,9 @@ building the library and not modifying it, or if your changes don't require
 any tables to be rebuilt; all the precompiled tables are already included in
 the source tree.
 
-Rebuilding the documentation (`make doc`) requires
-[Multimarkdown](http://fletcherpenney.net/multimarkdown/) 4.5+ and Python
-3.2+. The scripts expect Python 3 to be callable as `python3`.
+Rebuilding the documentation (`make doc`) requires Python 3.4+ and the
+[Markdown module](https://pypi.python.org/pypi/Markdown). The scripts expect
+Python 3 to be callable as `python3`.
 
 Unicorn requires some other libraries to be linked with programs that use it;
 all of these should be present or easily installed on most systems:

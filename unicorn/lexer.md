@@ -1,11 +1,8 @@
-Title: Unicorn Library: Text Tokenization
-CSS: style.css
-
 # [Unicorn Library](index.html): Text Tokenization #
 
-#### Unicode library for C++ by Ross Smith ####
+_Unicode library for C++ by Ross Smith_
 
-#### `#include "unicorn/lexer.hpp"` ####
+* `#include "unicorn/lexer.hpp"`
 
 This module defined a simple lexer or tokenizer, which can split text up into
 tokens (optionally discarding unwanted tokens such as whitespace or comments)
@@ -20,10 +17,7 @@ for details.
 
 ## Contents ##
 
-* [Exceptions][]
-* [Token structure][]
-* [Token iterator][]
-* [Lexer class][]
+[TOC]
 
 ## Exceptions ##
 
@@ -38,8 +32,7 @@ TODO
 
 * `template <typename C> struct` **`BasicToken`**
     * `using BasicToken::`**`char_type`** `= C`
-    * `using BasicToken::`**`string_type`**
-        `= basic_string<C>`
+    * `using BasicToken::`**`string_type`** `= basic_string<C>`
     * `const string_type* BasicToken::`**`text`**
     * `size_t BasicToken::`**`offset`**
     * `size_t BasicToken::`**`count`**
@@ -55,20 +48,13 @@ TODO
 ## Token iterator ##
 
 * `template <typename CX> class` **`BasicTokenIterator`**
-    * `using BasicTokenIterator::`**`char_type`**
-        `= [char if CX is void, otherwise CX]`
-    * `using BasicTokenIterator::`**`string_type`**
-        `= basic_string<char_type>`
-    * `using BasicTokenIterator::`**`difference_type`**
-        `= ptrdiff_t`
-    * `using BasicTokenIterator::`**`iterator_category`**
-        `= std::`**`forward_iterator_tag`**
-    * `using BasicTokenIterator::`**`pointer`**
-        `= const BasicToken<char_type>*`
-    * `using BasicTokenIterator::`**`reference`**
-        `= const BasicToken<char_type>&`
-    * `using BasicTokenIterator::`**`value_type`**
-        `= BasicToken<char_type>`
+    * `using BasicTokenIterator::`**`char_type`** `= [char if CX is void, otherwise CX]`
+    * `using BasicTokenIterator::`**`string_type`** `= basic_string<char_type>`
+    * `using BasicTokenIterator::`**`difference_type`** `= ptrdiff_t`
+    * `using BasicTokenIterator::`**`iterator_category`** `= std::`**`forward_iterator_tag`**
+    * `using BasicTokenIterator::`**`pointer`** `= const BasicToken<char_type>*`
+    * `using BasicTokenIterator::`**`reference`** `= const BasicToken<char_type>&`
+    * `using BasicTokenIterator::`**`value_type`** `= BasicToken<char_type>`
     * `BasicTokenIterator::`**`BasicTokenIterator`**`()`
     * _[standard iterator operations]_
 * `using` **`TokenIterator`** `= BasicTokenIterator<char>`
@@ -90,20 +76,13 @@ TODO
 
 TODO
 
-* `using BasicLexer::`**`char_type`**
-    `= [char if CX is void, otherwise CX]`
-* `using BasicLexer::`**`string_type`**
-    `= basic_string<char_type>`
-* `using BasicLexer::`**`regex_type`**
-    `= BasicRegex<CX>`
-* `using BasicLexer::`**`token_type`**
-    `= BasicToken<char_type>`
-* `using BasicLexer::`**`callback_type`**
-    `= std::function<size_t(const string_type&, size_t)>`
-* `using BasicLexer::`**`token_iterator`**
-    `= BasicTokenIterator<CX>`
-* `using BasicLexer::`**`token_range`**
-    `= Irange<token_iterator>`
+* `using BasicLexer::`**`char_type`** `= [char if CX is void, otherwise CX]`
+* `using BasicLexer::`**`string_type`** `= basic_string<char_type>`
+* `using BasicLexer::`**`regex_type`** `= BasicRegex<CX>`
+* `using BasicLexer::`**`token_type`** `= BasicToken<char_type>`
+* `using BasicLexer::`**`callback_type`** `= std::function<size_t(const string_type&, size_t)>`
+* `using BasicLexer::`**`token_iterator`** `= BasicTokenIterator<CX>`
+* `using BasicLexer::`**`token_range`** `= Irange<token_iterator>`
 
 TODO
 

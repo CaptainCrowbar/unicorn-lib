@@ -1,28 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8"/>
-	<title>Unicorn Library: Environment Variables</title>
-	<link type="text/css" rel="stylesheet" href="style.css"/>
+    <meta charset="utf-8"/>
+    <title>Unicorn Library: Environment Variables</title>
+    <link type="text/css" rel="stylesheet" href="style.css"/>
 </head>
-<body>
-
-<h1 id="unicornlibrary:environmentvariables"><a href="index.html">Unicorn Library</a>: Environment Variables</h1>
-
-<h4 id="unicodelibraryforcbyrosssmith">Unicode library for C++ by Ross Smith</h4>
-
-<h4 id="includeunicornenvironment.hpp"><code>#include &quot;unicorn/environment.hpp&quot;</code></h4>
-
-<h2 id="contents">Contents</h2>
-
+<h2 id="unicorn-library-environment-variables"><a href="index.html">Unicorn Library</a>: Environment Variables</h2>
+<p><em>Unicode library for C++ by Ross Smith</em></p>
 <ul>
+<li><code>#include "unicorn/environment.hpp"</code></li>
+</ul>
+<h3 id="contents">Contents</h3>
+<div class="toc">
+<ul>
+<li><a href="#unicorn-library-environment-variables">Unicorn Library: Environment Variables</a><ul>
+<li><a href="#contents">Contents</a></li>
 <li><a href="#introduction">Introduction</a></li>
 <li><a href="#functions">Functions</a></li>
-<li><a href="#classenvironment">Class Environment</a></li>
+<li><a href="#class-environment">Class Environment</a></li>
 </ul>
-
-<h2 id="introduction">Introduction</h2>
-
+</li>
+</ul>
+</div>
+<h3 id="introduction">Introduction</h3>
 <p>Operating systems store environment variables in a system dependent format,
 based on the string encoding supported by the native system call API. This
 means that environment variable names and values are stored as 16 bit strings
@@ -30,108 +30,76 @@ on Microsoft Windows, but as 8 bit strings on Unix systems. None of the native
 environment variable APIs make any attempt to enforce Unicode encoding forms;
 although normally intended to be interpreted as character data, the names and
 values are really arbitrary strings of 8 or 16 bit unsigned integers.</p>
-
 <p>The Unicorn environment variable API allows the caller to use their preferred
 UTF encoding, which means that some names and values may not be representable;
-for example, if you query a variable on Windows using a UTF&#8211;8 call, the actual
-value may not be valid UTF&#8211;16, and therefore not convertible to UTF&#8211;8 without
+for example, if you query a variable on Windows using a UTF-8 call, the actual
+value may not be valid UTF-16, and therefore not convertible to UTF-8 without
 loss of information. As a compromise solution to this problem, calls that
 match the native character size will, by default, simply copy strings without
 attempting any kind of Unicode sanitization.</p>
-
 <p>When using the functions in this module, keep in mind that, if you use the
 native character type and the default behaviour flag, strings returned from
 environment variable queries may not be valid Unicode. On the other hand, if
 you use a different character type or a different behaviour flag, you will
 always get valid Unicode strings, but they may lose some information if the
 original environment data was not in UTF form.</p>
-
 <p>This applies when writing environment strings too: if you set them using a
 call that matches the native character size, you can pass invalid UTF and it
 will simply be passed through to the underlying operating system API
 unchanged; but if your call requires an encoding conversion, UTF conversion
 follows the usual rules from the <a href="utf.html"><code>unicorn/utf</code></a> module.</p>
-
 <p>Whether environment variable names are case sensitive is also operating system
 dependent.</p>
-
 <p>System environment variable APIs are usually not threadsafe; all of the
 functions in this module ensure thread safety by locking a common global
 mutex.</p>
-
-<h2 id="functions">Functions</h2>
-
+<h3 id="functions">Functions</h3>
 <p>The <code>flags</code> argument passed to these functions must be one of the encoding
 conversion flags defined in <a href="utf.html"><code>unicorn/utf</code></a>. Behaviour is undefined
 if the <code>flags</code> argument is not one of these values.</p>
-
 <p>All of these functions can throw <code>EncodingError</code> if the <code>err_throw</code> flag is
 used and invalid UTF encoding is encountered (either in a string supplied by
 the caller, or in one returned from the environment), <code>std::</code><strong><code>invalid_argument</code></strong>
 if an environment variable name is empty or contains an equals sign, or
 <code>std::</code><strong><code>system_error</code></strong> if anything goes wrong with the underlying system API
 call.</p>
-
 <ul>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>get_env</code></strong>
-<code>(const basic_string&lt;C&gt;&amp; name, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>get_env</code></strong>
-<code>(const C* name, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>get_env</code></strong><code>(const basic_string&lt;C&gt;&amp; name, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>get_env</code></strong><code>(const C* name, uint32_t flags = 0)</code></li>
 </ul>
-
 <p>Query the value of an environment variable. This will return an empty string
 if the variable does not exist.</p>
-
 <ul>
-<li><code>template &lt;typename C&gt; bool</code> <strong><code>has_env</code></strong>
-<code>(const basic_string&lt;C&gt;&amp; name, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; bool</code> <strong><code>has_env</code></strong>
-<code>(const C* name, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; bool</code> <strong><code>has_env</code></strong><code>(const basic_string&lt;C&gt;&amp; name, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; bool</code> <strong><code>has_env</code></strong><code>(const C* name, uint32_t flags = 0)</code></li>
 </ul>
-
 <p>Query whether an environment variable exists. Windows, unlike Unix, does not
 always distinguish clearly between a variable that does not exist, and one
 that exists but whose value is an empty string; if a variable has been set to
 an empty value, this function may or may not report its existence on Windows.</p>
-
 <ul>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>set_env</code></strong>
-<code>(const basic_string&lt;C&gt;&amp; name, const basic_string&lt;C&gt;&amp; value, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>set_env</code></strong>
-<code>(const basic_string&lt;C&gt;&amp; name, const C* value, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>set_env</code></strong>
-<code>(const C* name, const basic_string&lt;C&gt;&amp; value, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>set_env</code></strong>
-<code>(const C* name, const C* value, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; void</code> <strong><code>set_env</code></strong><code>(const basic_string&lt;C&gt;&amp; name, const basic_string&lt;C&gt;&amp; value, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; void</code> <strong><code>set_env</code></strong><code>(const basic_string&lt;C&gt;&amp; name, const C* value, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; void</code> <strong><code>set_env</code></strong><code>(const C* name, const basic_string&lt;C&gt;&amp; value, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; void</code> <strong><code>set_env</code></strong><code>(const C* name, const C* value, uint32_t flags = 0)</code></li>
 </ul>
-
-<p>Set the value of a variable in the process&#8217;s environment block.</p>
-
+<p>Set the value of a variable in the process's environment block.</p>
 <ul>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>unset_env</code></strong>
-<code>(const basic_string&lt;C&gt;&amp; name, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>unset_env</code></strong>
-<code>(const C* name, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; void</code> <strong><code>unset_env</code></strong><code>(const basic_string&lt;C&gt;&amp; name, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; void</code> <strong><code>unset_env</code></strong><code>(const C* name, uint32_t flags = 0)</code></li>
 </ul>
-
-<p>Delete a variable from the process&#8217;s environment block.</p>
-
-<h2 id="classenvironment">Class Environment</h2>
-
+<p>Delete a variable from the process's environment block.</p>
+<h3 id="class-environment">Class Environment</h3>
 <ul>
 <li><code>class</code> <strong><code>Environment</code></strong></li>
 </ul>
-
 <p>A class that holds a complete environment block.</p>
-
 <ul>
 <li><code>class</code> <strong><code>Environment</code></strong><code>::iterator</code></li>
 </ul>
-
 <p>A read-only iterator over the name-value pairs stored in an <code>Environment</code>
 object. This is a forward iterator whose value type is
 <code>std::</code><strong><code>pair</code></strong><code>&lt;NativeString,NativeString&gt;</code>.</p>
-
 <ul>
 <li><code>Environment::</code><strong><code>Environment</code></strong><code>()</code></li>
 <li><code>explicit Environment::</code><strong><code>Environment</code></strong><code>(bool from_process)</code></li>
@@ -141,11 +109,9 @@ object. This is a forward iterator whose value type is
 <li><code>Environment&amp; Environment::</code><strong><code>operator=</code></strong><code>(const Environment&amp; env)</code></li>
 <li><code>Environment&amp; Environment::</code><strong><code>operator=</code></strong><code>(Environment&amp;&amp; env) noexcept</code></li>
 </ul>
-
 <p>Life cycle operations. If the <code>from_process</code> flag is set, the constructor will
 copy the environment data from the calling process; otherwise, the newly
 constructed <code>Environment</code> object will be empty.</p>
-
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt; Environment::</code><strong><code>operator[]</code></strong><code>(const basic_string&lt;C&gt;&amp; name)</code></li>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt; Environment::</code><strong><code>operator[]</code></strong><code>(const C* name)</code></li>
@@ -160,51 +126,36 @@ constructed <code>Environment</code> object will be empty.</p>
 <li><code>template &lt;typename C&gt; void Environment::</code><strong><code>unset</code></strong><code>(const basic_string&lt;C&gt;&amp; name, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename C&gt; void Environment::</code><strong><code>unset</code></strong><code>(const C* name, uint32_t flags = 0)</code></li>
 </ul>
-
 <p>These perform the same operations as the corresponding environment variable
 functions described above (<code>operator[]</code> is a synonym for <code>get()</code>), and will
 throw the same exceptions.</p>
-
 <ul>
 <li><code>Environment::iterator Environment::</code><strong><code>begin</code></strong><code>() const</code></li>
 <li><code>Environment::iterator Environment::</code><strong><code>end</code></strong><code>() const</code></li>
 </ul>
-
 <p>Iterators over the name-value pairs stored in an <code>Environment</code> object.</p>
-
 <ul>
 <li><code>void Environment::</code><strong><code>clear</code></strong><code>()</code></li>
 </ul>
-
 <p>Clears all data from the environment block.</p>
-
 <ul>
 <li><code>bool Environment::</code><strong><code>empty</code></strong><code>() const noexcept</code></li>
 </ul>
-
 <p>True if the environment block contains no data.</p>
-
 <ul>
 <li><code>void Environment::</code><strong><code>load</code></strong><code>()</code></li>
 </ul>
-
-<p>Loads the <code>Environment</code> object&#8217;s data from the calling process&#8217;s environment
+<p>Loads the <code>Environment</code> object's data from the calling process's environment
 block. Any existing data in the <code>Environment</code> object is discarded.</p>
-
 <ul>
 <li><code>NativeCharacter** Environment::</code><strong><code>ptr</code></strong><code>()</code></li>
 </ul>
-
 <p>Collects the environment block into a single data block in the standard format
 (suitable for passing to process spawning functions, for example), and returns
 a pointer to it. The returned pointer is invalidated by any operation that may
 modify the <code>Environment</code> object (any call to a non-<code>const</code> function).</p>
-
 <ul>
 <li><code>size_t Environment::</code><strong><code>size</code></strong><code>() const noexcept</code></li>
 </ul>
-
-<p>Returns the number of entries (variables) in the environment block.</p>
-
-</body>
+<p>Returns the number of entries (variables) in the environment block.</p></body>
 </html>

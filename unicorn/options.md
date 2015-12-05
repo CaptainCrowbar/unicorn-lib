@@ -1,11 +1,8 @@
-Title: Unicorn Library: Command Line Options
-CSS: style.css
-
 # [Unicorn Library](index.html): Command Line Options #
 
-#### Unicode library for C++ by Ross Smith ####
+_Unicode library for C++ by Ross Smith_
 
-#### `#include "unicorn/options.hpp"` ####
+* `#include "unicorn/options.hpp"`
 
 The `Options` class defined in this module handles parsing of command line
 options, and automatic generation of help messages for the user. It provides
@@ -40,8 +37,8 @@ Example:
         // ... main program code goes here ...
     }
 
-If this program is invoked with the `"--help"` option, it will display the
-following information on the standard output:
+If this program is invoked with the `--help` option (or `-h`), it will display
+the following information on the standard output:
 
     My Program 1.0
 
@@ -54,8 +51,7 @@ following information on the standard output:
 
 ## Contents ##
 
-* [Exceptions][]
-* [Class Options][]
+[TOC]
 
 ## Exceptions ##
 
@@ -175,11 +171,11 @@ the return value from `parse()` and end the program if it is true.
 
 The `flags` argument can be any combination of these:
 
-Flag            | Description
-----            | -----------
-**`opt_locale`**  | The argument list is in the local encoding
+Flag                | Description
+----                | -----------
+**`opt_locale`**    | The argument list is in the local encoding
 **`opt_noprefix`**  | The first argument is not the command name
-**`opt_quoted`**  | Allow arguments to be quoted
+**`opt_quoted`**    | Allow arguments to be quoted
 
 The `opt_locale` flag is only relevant to 8 bit strings, which are assumed to
 be UTF-8 by default; the flag is ignored if the `C` type is not `char`, since

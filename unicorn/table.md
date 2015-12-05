@@ -1,11 +1,8 @@
-Title: Unicorn Library: Table Layout
-CSS: style.css
-
 # [Unicorn Library](index.html): Table Layout #
 
-#### Unicode library for C++ by Ross Smith ####
+_Unicode library for C++ by Ross Smith_
 
-#### `#include "unicorn/table.hpp"` ####
+* `#include "unicorn/table.hpp"`
 
 `Unicorn::`**`Table`** is a utility class for simple table layout in fixed width
 text, a task often useful in formatting the output from command line programs

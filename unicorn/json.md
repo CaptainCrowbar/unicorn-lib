@@ -1,18 +1,14 @@
-Title: Unicorn Library: JSON
-CSS: style.css
-
 # [Unicorn Library](index.html): JSON #
 
-#### Unicode library for C++ by Ross Smith ####
+_Unicode library for C++ by Ross Smith_
 
-#### `#include "unicorn/json.hpp"` ####
+* `#include "unicorn/json.hpp"`
 
 [TODO: DOCUMENTATION]
 
 ## Contents ##
 
-* [Exceptions][]
-* [Element class][]
+[TOC]
 
 ## Exceptions ##
 

@@ -1,20 +1,14 @@
-Title: Unicorn Library: Core Definitions
-CSS: style.css
-
 # [Unicorn Library](index.html): Core Definitions #
 
-#### Unicode library for C++ by Ross Smith ####
+_Unicode library for C++ by Ross Smith_
 
-#### `#include "unicorn/core.hpp"` ####
+* `#include "unicorn/core.hpp"`
 
 This module provides some common definitions used throughout the library.
 
 ## Contents ##
 
-* [Imports][]
-* [Exceptions][]
-* [Basic character types][]
-* [Version information][]
+[TOC]
 
 ## Imports ##
 

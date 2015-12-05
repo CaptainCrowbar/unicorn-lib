@@ -1,19 +1,19 @@
-Title: Unicorn Library: String Normalization
-CSS: style.css
-
 # [Unicorn Library](index.html): String Normalization #
 
-#### Unicode library for C++ by Ross Smith ####
+_Unicode library for C++ by Ross Smith_
 
-#### `#include "unicorn/normal.hpp"` ####
+* `#include "unicorn/normal.hpp"`
 
 This is a small module (really just one function), with the specific purpose
 of converting Unicode strings into the four standard normalization forms.
 
 ## Normalization functions ##
 
-* `enum NormalizationForm`
-    * `NFC, NFD, NFKC, NFKD`
+* `enum` **`NormalizationForm`**
+    * **`NFC`**
+    * **`NFD`**
+    * **`NFKC`**
+    * **`NFKD`**
 
 The standard Unicode normalization forms.
 

@@ -1,39 +1,34 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8"/>
-	<title>Unicorn Library: Input and Output</title>
-	<link type="text/css" rel="stylesheet" href="style.css"/>
+    <meta charset="utf-8"/>
+    <title>Unicorn Library: Input and Output</title>
+    <link type="text/css" rel="stylesheet" href="style.css"/>
 </head>
-<body>
-
-<h1 id="unicornlibrary:inputandoutput"><a href="index.html">Unicorn Library</a>: Input and Output</h1>
-
-<h4 id="unicodelibraryforcbyrosssmith">Unicode library for C++ by Ross Smith</h4>
-
-<h4 id="includeunicornio.hpp"><code>#include &quot;unicorn/io.hpp&quot;</code></h4>
-
+<h2 id="unicorn-library-input-and-output"><a href="index.html">Unicorn Library</a>: Input and Output</h2>
+<p><em>Unicode library for C++ by Ross Smith</em></p>
+<ul>
+<li><code>#include "unicorn/io.hpp"</code></li>
+</ul>
 <p>The functions and classes in this module provided line oriented input and
 output, with automatic conversion between Unicode and external legacy
 encodings, as well as other conveniences such as normalization of line breaks.</p>
-
 <p>[TODO: DOCUMENTATION]</p>
-
-<h2 id="contents">Contents</h2>
-
+<h3 id="contents">Contents</h3>
+<div class="toc">
 <ul>
-<li><a href="#fileinputiterator">File input iterator</a></li>
-<li><a href="#fileoutputiterator">File output iterator</a></li>
+<li><a href="#unicorn-library-input-and-output">Unicorn Library: Input and Output</a><ul>
+<li><a href="#contents">Contents</a></li>
+<li><a href="#file-input-iterator">File input iterator</a></li>
+<li><a href="#file-output-iterator">File output iterator</a></li>
 </ul>
-
-<h2 id="fileinputiterator">File input iterator</h2>
-
+</li>
+</ul>
+</div>
+<h3 id="file-input-iterator">File input iterator</h3>
 <ul>
-<li><code>class</code> <strong><code>FileReader</code></strong>
-
-<ul>
-<li><code>using FileReader::</code><strong><code>difference_type</code></strong>
-<code>= ptrdiff_t</code></li>
+<li><code>class</code> <strong><code>FileReader</code></strong><ul>
+<li><code>using FileReader::</code><strong><code>difference_type</code></strong> <code>= ptrdiff_t</code></li>
 <li><code>using FileReader::</code><strong><code>iterator_category</code></strong> <code>= std::</code><strong><code>input_iterator_tag</code></strong></li>
 <li><code>using FileReader::</code><strong><code>pointer</code></strong> <code>= const u8string*</code></li>
 <li><code>using FileReader::</code><strong><code>reference</code></strong> <code>= const u8string&amp;</code></li>
@@ -47,89 +42,69 @@ encodings, as well as other conveniences such as normalization of line breaks.</
 <li><code>template &lt;typename C1, typename C2&gt; FileReader::</code><strong><code>FileReader</code></strong><code>(const basic_string&lt;C1&gt;&amp; file, uint32_t flags, uint32_t enc, const basic_string&lt;C2&gt;&amp; eol)</code></li>
 <li><code>size_t FileReader::</code><strong><code>line</code></strong><code>() const noexcept</code></li>
 <li><em>[standard input iterator operations]</em></li>
-</ul></li>
 </ul>
-
+</li>
+</ul>
 <p>TODO</p>
-
 <table>
-<colgroup>
-<col style="text-align:left;"/>
-<col style="text-align:left;"/>
-</colgroup>
-
 <thead>
 <tr>
-	<th style="text-align:left;">Flag</th>
-	<th style="text-align:left;">Description</th>
+<th>Flag</th>
+<th>Description</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
-	<td style="text-align:left;"><strong><code>io_stdin</code></strong></td>
-	<td style="text-align:left;">Default to stdin</td>
+<td><strong><code>io_stdin</code></strong></td>
+<td>Default to stdin</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><strong><code>io_nofail</code></strong></td>
-	<td style="text-align:left;">Treat nonexistent file as empty</td>
+<td><strong><code>io_nofail</code></strong></td>
+<td>Treat nonexistent file as empty</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><strong><code>io_bom</code></strong></td>
-	<td style="text-align:left;">Strip leading BOM</td>
+<td><strong><code>io_bom</code></strong></td>
+<td>Strip leading BOM</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><strong><code>io_lf</code></strong></td>
-	<td style="text-align:left;">Convert all line breaks to LF</td>
+<td><strong><code>io_lf</code></strong></td>
+<td>Convert all line breaks to LF</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><strong><code>io_crlf</code></strong></td>
-	<td style="text-align:left;">Convert all line breaks to CR+LF</td>
+<td><strong><code>io_crlf</code></strong></td>
+<td>Convert all line breaks to CR+LF</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><strong><code>io_striplf</code></strong></td>
-	<td style="text-align:left;">Strip line breaks</td>
+<td><strong><code>io_striplf</code></strong></td>
+<td>Strip line breaks</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><strong><code>io_striptws</code></strong></td>
-	<td style="text-align:left;">Strip trailing whitespace</td>
+<td><strong><code>io_striptws</code></strong></td>
+<td>Strip trailing whitespace</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><strong><code>io_stripws</code></strong></td>
-	<td style="text-align:left;">Strip whitespace</td>
+<td><strong><code>io_stripws</code></strong></td>
+<td>Strip whitespace</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><strong><code>io_notempty</code></strong></td>
-	<td style="text-align:left;">Skip empty lines</td>
+<td><strong><code>io_notempty</code></strong></td>
+<td>Skip empty lines</td>
 </tr>
 </tbody>
 </table>
-
 <p>(May be combined with err_replace/throw)</p>
-
 <p>TODO</p>
-
 <ul>
-<li><code>template &lt;typename C&gt; Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong>
-<code>(const basic_string&lt;C&gt;&amp; file, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C1, typename C2&gt; Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong>
-<code>(const basic_string&lt;C1&gt;&amp; file, uint32_t flags, const basic_string&lt;C2&gt;&amp; enc)</code></li>
-<li><code>template &lt;typename C&gt; Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong>
-<code>(const basic_string&lt;C&gt;&amp; file, uint32_t flags, uint32_t enc)</code></li>
-<li><code>template &lt;typename C1, typename C2, typename C3&gt; Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong>
-<code>(const basic_string&lt;C1&gt;&amp; file, uint32_t flags, const basic_string&lt;C2&gt;&amp; enc, const basic_string&lt;C3&gt;&amp; eol)</code></li>
-<li><code>template &lt;typename C1, typename C2&gt; Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong>
-<code>(const basic_string&lt;C1&gt;&amp; file, uint32_t flags, uint32_t enc, const basic_string&lt;C2&gt;&amp; eol)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const basic_string&lt;C&gt;&amp; file, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C1, typename C2&gt; Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const basic_string&lt;C1&gt;&amp; file, uint32_t flags, const basic_string&lt;C2&gt;&amp; enc)</code></li>
+<li><code>template &lt;typename C&gt; Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const basic_string&lt;C&gt;&amp; file, uint32_t flags, uint32_t enc)</code></li>
+<li><code>template &lt;typename C1, typename C2, typename C3&gt; Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const basic_string&lt;C1&gt;&amp; file, uint32_t flags, const basic_string&lt;C2&gt;&amp; enc, const basic_string&lt;C3&gt;&amp; eol)</code></li>
+<li><code>template &lt;typename C1, typename C2&gt; Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const basic_string&lt;C1&gt;&amp; file, uint32_t flags, uint32_t enc, const basic_string&lt;C2&gt;&amp; eol)</code></li>
 </ul>
-
 <p>TODO</p>
-
-<h2 id="fileoutputiterator">File output iterator</h2>
-
+<h3 id="file-output-iterator">File output iterator</h3>
 <ul>
-<li><code>class</code> <strong><code>FileWriter</code></strong>
-
-<ul>
+<li><code>class</code> <strong><code>FileWriter</code></strong><ul>
 <li><code>using FileWriter::</code><strong><code>difference_type</code></strong> <code>= void</code></li>
 <li><code>using FileWriter::</code><strong><code>iterator_category</code></strong> <code>= std::</code><strong><code>output_iterator_tag</code></strong></li>
 <li><code>using FileWriter::</code><strong><code>pointer</code></strong> <code>= void</code></li>
@@ -142,75 +117,64 @@ encodings, as well as other conveniences such as normalization of line breaks.</
 <li><code>template &lt;typename C&gt; FileWriter::</code><strong><code>FileWriter</code></strong><code>(const basic_string&lt;C&gt;&amp; file, uint32_t flags, uint32_t enc)</code></li>
 <li><code>void FileWriter::</code><strong><code>flush</code></strong><code>()</code></li>
 <li><em>[standard output iterator operations]</em></li>
-</ul></li>
 </ul>
-
+</li>
+</ul>
 <p>TODO</p>
-
 <table>
-<colgroup>
-<col style="text-align:left;"/>
-<col style="text-align:left;"/>
-</colgroup>
-
 <thead>
 <tr>
-	<th style="text-align:left;">Flag</th>
-	<th style="text-align:left;">Description</th>
+<th>Flag</th>
+<th>Description</th>
 </tr>
 </thead>
-
 <tbody>
 <tr>
-	<td style="text-align:left;"><strong><code>io_stdout</code></strong></td>
-	<td style="text-align:left;">Default to stdout</td>
+<td><strong><code>io_stdout</code></strong></td>
+<td>Default to stdout</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><strong><code>io_stderr</code></strong></td>
-	<td style="text-align:left;">Default to stderr</td>
+<td><strong><code>io_stderr</code></strong></td>
+<td>Default to stderr</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><strong><code>io_append</code></strong></td>
-	<td style="text-align:left;">Append to file</td>
+<td><strong><code>io_append</code></strong></td>
+<td>Append to file</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><strong><code>io_bom</code></strong></td>
-	<td style="text-align:left;">Insert leading BOM if not already there</td>
+<td><strong><code>io_bom</code></strong></td>
+<td>Insert leading BOM if not already there</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><strong><code>io_lf</code></strong></td>
-	<td style="text-align:left;">Convert all line breaks to LF</td>
+<td><strong><code>io_lf</code></strong></td>
+<td>Convert all line breaks to LF</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><strong><code>io_crlf</code></strong></td>
-	<td style="text-align:left;">Convert all line breaks to CR+LF</td>
+<td><strong><code>io_crlf</code></strong></td>
+<td>Convert all line breaks to CR+LF</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><strong><code>io_writeline</code></strong></td>
-	<td style="text-align:left;">Write LF after every write</td>
+<td><strong><code>io_writeline</code></strong></td>
+<td>Write LF after every write</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><strong><code>io_autoline</code></strong></td>
-	<td style="text-align:left;">Write LF if not already there</td>
+<td><strong><code>io_autoline</code></strong></td>
+<td>Write LF if not already there</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><strong><code>io_linebuf</code></strong></td>
-	<td style="text-align:left;">Line buffered output</td>
+<td><strong><code>io_linebuf</code></strong></td>
+<td>Line buffered output</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><strong><code>io_unbuf</code></strong></td>
-	<td style="text-align:left;">Unbuffered output</td>
+<td><strong><code>io_unbuf</code></strong></td>
+<td>Unbuffered output</td>
 </tr>
 <tr>
-	<td style="text-align:left;"><strong><code>io_mutex</code></strong></td>
-	<td style="text-align:left;">Hold per-file mutex while writing</td>
+<td><strong><code>io_mutex</code></strong></td>
+<td>Hold per-file mutex while writing</td>
 </tr>
 </tbody>
 </table>
-
 <p>(May be combined with err_replace/throw)</p>
-
-<p>TODO</p>
-
-</body>
+<p>TODO</p></body>
 </html>

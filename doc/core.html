@@ -1,123 +1,97 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8"/>
-	<title>Unicorn Library: Core Definitions</title>
-	<link type="text/css" rel="stylesheet" href="style.css"/>
+    <meta charset="utf-8"/>
+    <title>Unicorn Library: Core Definitions</title>
+    <link type="text/css" rel="stylesheet" href="style.css"/>
 </head>
-<body>
-
-<h1 id="unicornlibrary:coredefinitions"><a href="index.html">Unicorn Library</a>: Core Definitions</h1>
-
-<h4 id="unicodelibraryforcbyrosssmith">Unicode library for C++ by Ross Smith</h4>
-
-<h4 id="includeunicorncore.hpp"><code>#include &quot;unicorn/core.hpp&quot;</code></h4>
-
-<p>This module provides some common definitions used throughout the library.</p>
-
-<h2 id="contents">Contents</h2>
-
+<h2 id="unicorn-library-core-definitions"><a href="index.html">Unicorn Library</a>: Core Definitions</h2>
+<p><em>Unicode library for C++ by Ross Smith</em></p>
 <ul>
+<li><code>#include "unicorn/core.hpp"</code></li>
+</ul>
+<p>This module provides some common definitions used throughout the library.</p>
+<h3 id="contents">Contents</h3>
+<div class="toc">
+<ul>
+<li><a href="#unicorn-library-core-definitions">Unicorn Library: Core Definitions</a><ul>
+<li><a href="#contents">Contents</a></li>
 <li><a href="#imports">Imports</a></li>
 <li><a href="#exceptions">Exceptions</a></li>
-<li><a href="#basiccharactertypes">Basic character types</a></li>
-<li><a href="#versioninformation">Version information</a></li>
+<li><a href="#basic-character-types">Basic character types</a></li>
+<li><a href="#version-information">Version information</a></li>
 </ul>
-
-<h2 id="imports">Imports</h2>
-
+</li>
+</ul>
+</div>
+<h3 id="imports">Imports</h3>
 <ul>
 <li><code>using namespace Prion</code></li>
-<li><code>namespace Unicorn::Literals</code>
-
-<ul>
+<li><code>namespace Unicorn::Literals</code><ul>
 <li><code>using namespace Prion::Literals</code></li>
-</ul></li>
 </ul>
-
+</li>
+</ul>
 <p>Everything in the Prion library is imported.</p>
-
-<h2 id="exceptions">Exceptions</h2>
-
+<h3 id="exceptions">Exceptions</h3>
 <ul>
 <li><code>class</code> <strong><code>InitializationError</code></strong><code>: public std::runtime_error</code></li>
 </ul>
-
 <p>An abstract base class for internal errors that may happen while loading the
 Unicode tables used by certain functions. Functions that can throw exceptions
 derived from this are individually documented.</p>
-
 <ul>
-<li><code>class</code> <strong><code>EncodingError</code></strong><code>: public std::runtime_error</code>
-
-<ul>
+<li><code>class</code> <strong><code>EncodingError</code></strong><code>: public std::runtime_error</code><ul>
 <li><code>EncodingError::</code><strong><code>EncodingError</code></strong><code>()</code></li>
 <li><code>explicit EncodingError::</code><strong><code>EncodingError</code></strong><code>(const u8string&amp; encoding, size_t offset = 0, char32_t c = 0)</code></li>
 <li><code>template &lt;typename C&gt; EncodingError::</code><strong><code>EncodingError</code></strong><code>(const u8string&amp; encoding, size_t offset, const C* ptr, size_t n = 1)</code></li>
 <li><code>const char* EncodingError::</code><strong><code>encoding</code></strong><code>() noexcept const</code></li>
 <li><code>size_t EncodingError::</code><strong><code>offset</code></strong><code>() const noexcept</code></li>
-</ul></li>
 </ul>
-
+</li>
+</ul>
 <p>An exception thrown to indicate a text encoding error encountered when
 converting a string from one encoding to another, or when checking an encoded
 string for validity. The offset of the offending data within the source string
 (when available) can be retrieved through the <code>offset()</code> method. If possible,
 a hexadecimal representation of the offending data will be included in the
 error message.</p>
-
-<h2 id="basiccharactertypes">Basic character types</h2>
-
+<h3 id="basic-character-types">Basic character types</h3>
 <ul>
 <li><code>#define</code> <strong><code>UNICORN_NATIVE_WCHAR</code></strong> <code>1</code></li>
 </ul>
-
-<p>Defined if the operating system&#8217;s native API uses wide character strings (this
+<p>Defined if the operating system's native API uses wide character strings (this
 is currently defined only for native Windows builds).</p>
-
 <ul>
 <li><code>#define</code> <strong><code>UNICORN_WCHAR_UTF16</code></strong> <code>1</code></li>
 <li><code>#define</code> <strong><code>UNICORN_WCHAR_UTF32</code></strong> <code>1</code></li>
 </ul>
-
-<p>One of these is defined to indicate which UTF encoding the system&#8217;s <code>wstring</code>
+<p>One of these is defined to indicate which UTF encoding the system's <code>wstring</code>
 class uses.</p>
-
 <ul>
-<li><code>template &lt;typename C&gt; struct</code> <strong><code>IsCharacterType</code></strong>
-
-<ul>
+<li><code>template &lt;typename C&gt; struct</code> <strong><code>IsCharacterType</code></strong><ul>
 <li><code>static constexpr bool IsCharacterType::</code><strong><code>value</code></strong></li>
-</ul></li>
 </ul>
-
+</li>
+</ul>
 <p>The <code>value</code> flag is true if <code>C</code> is one of the character types recognized by
 the Unicorn library (<code>char</code>, <code>char16_t</code>, <code>char32_t</code>, or <code>wchar_t</code>).</p>
-
 <ul>
 <li><code>using</code> <strong><code>NativeCharacter</code></strong> <code>= [char on Unix, wchar_t on Windows]</code></li>
 <li><code>using</code> <strong><code>NativeString</code></strong> <code>= [string on Unix, wstring on Windows]</code></li>
 </ul>
-
-<p>These are the character and string types used in the operating system&#8217;s native
+<p>These are the character and string types used in the operating system's native
 ABI.</p>
-
 <ul>
 <li><code>using</code> <strong><code>WcharEquivalent</code></strong> <code>= [char16_t or char32_t]</code></li>
 <li><code>using</code> <strong><code>WstringEquivalent</code></strong> <code>= [u16string or u32string]</code></li>
 </ul>
-
-<p>These are defined to match the UTF encoding of the system&#8217;s <code>wstring</code> class.</p>
-
-<h2 id="versioninformation">Version information</h2>
-
+<p>These are defined to match the UTF encoding of the system's <code>wstring</code> class.</p>
+<h3 id="version-information">Version information</h3>
 <ul>
 <li><code>Version</code> <strong><code>unicorn_version</code></strong><code>() noexcept</code></li>
 <li><code>Version</code> <strong><code>unicode_version</code></strong><code>() noexcept</code></li>
 </ul>
-
 <p>These return the version of the Unicorn library and the supported version of
-the Unicode standard.</p>
-
-</body>
+the Unicode standard.</p></body>
 </html>

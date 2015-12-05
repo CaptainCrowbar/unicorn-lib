@@ -1,11 +1,8 @@
-Title: Unicorn Library: String Formatting
-CSS: style.css
-
 # [Unicorn Library](index.html): String Formatting #
 
-#### Unicode library for C++ by Ross Smith ####
+_Unicode library for C++ by Ross Smith_
 
-#### `#include "unicorn/format.hpp"` ####
+* `#include "unicorn/format.hpp"`
 
 This module provides facilities for formatting various kinds of data as
 Unicode strings, in a manner similar to `printf()` in C, `str.format()` in
@@ -28,18 +25,7 @@ for details.
 
 ## Contents ##
 
-* [Basic formatting functions][]
-* [Formatter class][]
-* [Formatter literals][]
-* [Formatting for specific types][]
-    * [Global flags][]
-    * [Boolean formatting][]
-    * [Integer formatting][]
-    * [Floating point formatting][]
-    * [Character and string formatting][]
-    * [Time and date formatting][]
-    * [UUID formatting][]
-    * [Version number formatting][]
+[TOC]
 
 ## Basic formatting functions ##
 
@@ -84,18 +70,12 @@ TODO
 
 TODO
 
-* `template <typename T, typename C> void` **`format_type`**
-    `(const T& t, basic_string<C>& dst, uint64_t flags = 0, int prec = -1, size_t width = 0, char32_t pad = U' ')`
-* `template <typename T, typename C> void` **`format_type`**
-    `(const T& t, basic_string<C>& dst, const basic_string<C>& flags)`
-* `template <typename T, typename C> void` **`format_type`**
-    `(const T& t, basic_string<C>& dst, const C* flags)`
-* `template <typename C, typename T> basic_string<C>` **`format_as`**
-    `(const T& t, uint64_t flags = 0, int prec = -1, size_t width = 0, char32_t pad = U' ')`
-* `template <typename C, typename T> basic_string<C>` **`format_as`**
-    `(const T& t, const basic_string<C>& flags)`
-* `template <typename C, typename T> basic_string<C>` **`format_as`**
-    `(const T& t, const C* flags)`
+* `template <typename T, typename C> void` **`format_type`**`(const T& t, basic_string<C>& dst, uint64_t flags = 0, int prec = -1, size_t width = 0, char32_t pad = U' ')`
+* `template <typename T, typename C> void` **`format_type`**`(const T& t, basic_string<C>& dst, const basic_string<C>& flags)`
+* `template <typename T, typename C> void` **`format_type`**`(const T& t, basic_string<C>& dst, const C* flags)`
+* `template <typename C, typename T> basic_string<C>` **`format_as`**`(const T& t, uint64_t flags = 0, int prec = -1, size_t width = 0, char32_t pad = U' ')`
+* `template <typename C, typename T> basic_string<C>` **`format_as`**`(const T& t, const basic_string<C>& flags)`
+* `template <typename C, typename T> basic_string<C>` **`format_as`**`(const T& t, const C* flags)`
 
 TODO
 
@@ -103,8 +83,7 @@ TODO
 
 * `template <typename C> class` **`BasicFormat`**
     * `using BasicFormat::`**`char_type`** `= C`
-    * `using BasicFormat::`**`string_type`**
-        `= basic_string<C>`
+    * `using BasicFormat::`**`string_type`** `= basic_string<C>`
     * `BasicFormat::`**`BasicFormat`**`()`
     * `explicit BasicFormat::`**`BasicFormat`**`(const string_type& format)`
     * `BasicFormat::`**`BasicFormat`**`(const BasicFormat& f)`
@@ -131,14 +110,10 @@ TODO
 ## Formatter literals ##
 
 * `namespace Literals`
-    * `Format` **`operator"" _fmt`**
-        `(const char* ptr, size_t len)`
-    * `Format16` **`operator"" _fmt`**
-        `(const char16_t* ptr, size_t len)`
-    * `Format32` **`operator"" _fmt`**
-        `(const char32_t* ptr, size_t len)`
-    * `WideFormat` **`operator"" _fmt`**
-        `(const wchar_t* ptr, size_t len)`
+    * `Format` **`operator"" _fmt`**`(const char* ptr, size_t len)`
+    * `Format16` **`operator"" _fmt`**`(const char16_t* ptr, size_t len)`
+    * `Format32` **`operator"" _fmt`**`(const char32_t* ptr, size_t len)`
+    * `WideFormat` **`operator"" _fmt`**`(const wchar_t* ptr, size_t len)`
 
 TODO
 

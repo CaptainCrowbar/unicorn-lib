@@ -1,17 +1,12 @@
-Title: Unicorn Library: Environment Variables
-CSS: style.css
-
 # [Unicorn Library](index.html): Environment Variables #
 
-#### Unicode library for C++ by Ross Smith ####
+_Unicode library for C++ by Ross Smith_
 
-#### `#include "unicorn/environment.hpp"` ####
+* `#include "unicorn/environment.hpp"`
 
 ## Contents ##
 
-* [Introduction][]
-* [Functions][]
-* [Class Environment][]
+[TOC]
 
 ## Introduction ##
 
@@ -64,39 +59,29 @@ if an environment variable name is empty or contains an equals sign, or
 `std::`**`system_error`** if anything goes wrong with the underlying system API
 call.
 
-* `template <typename C> basic_string<C>` **`get_env`**
-    `(const basic_string<C>& name, uint32_t flags = 0)`
-* `template <typename C> basic_string<C>` **`get_env`**
-    `(const C* name, uint32_t flags = 0)`
+* `template <typename C> basic_string<C>` **`get_env`**`(const basic_string<C>& name, uint32_t flags = 0)`
+* `template <typename C> basic_string<C>` **`get_env`**`(const C* name, uint32_t flags = 0)`
 
 Query the value of an environment variable. This will return an empty string
 if the variable does not exist.
 
-* `template <typename C> bool` **`has_env`**
-    `(const basic_string<C>& name, uint32_t flags = 0)`
-* `template <typename C> bool` **`has_env`**
-    `(const C* name, uint32_t flags = 0)`
+* `template <typename C> bool` **`has_env`**`(const basic_string<C>& name, uint32_t flags = 0)`
+* `template <typename C> bool` **`has_env`**`(const C* name, uint32_t flags = 0)`
 
 Query whether an environment variable exists. Windows, unlike Unix, does not
 always distinguish clearly between a variable that does not exist, and one
 that exists but whose value is an empty string; if a variable has been set to
 an empty value, this function may or may not report its existence on Windows.
 
-* `template <typename C> void` **`set_env`**
-    `(const basic_string<C>& name, const basic_string<C>& value, uint32_t flags = 0)`
-* `template <typename C> void` **`set_env`**
-    `(const basic_string<C>& name, const C* value, uint32_t flags = 0)`
-* `template <typename C> void` **`set_env`**
-    `(const C* name, const basic_string<C>& value, uint32_t flags = 0)`
-* `template <typename C> void` **`set_env`**
-    `(const C* name, const C* value, uint32_t flags = 0)`
+* `template <typename C> void` **`set_env`**`(const basic_string<C>& name, const basic_string<C>& value, uint32_t flags = 0)`
+* `template <typename C> void` **`set_env`**`(const basic_string<C>& name, const C* value, uint32_t flags = 0)`
+* `template <typename C> void` **`set_env`**`(const C* name, const basic_string<C>& value, uint32_t flags = 0)`
+* `template <typename C> void` **`set_env`**`(const C* name, const C* value, uint32_t flags = 0)`
 
 Set the value of a variable in the process's environment block.
 
-* `template <typename C> void` **`unset_env`**
-    `(const basic_string<C>& name, uint32_t flags = 0)`
-* `template <typename C> void` **`unset_env`**
-    `(const C* name, uint32_t flags = 0)`
+* `template <typename C> void` **`unset_env`**`(const basic_string<C>& name, uint32_t flags = 0)`
+* `template <typename C> void` **`unset_env`**`(const C* name, uint32_t flags = 0)`
 
 Delete a variable from the process's environment block.
 
