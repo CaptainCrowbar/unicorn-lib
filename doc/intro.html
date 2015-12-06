@@ -6,13 +6,13 @@
     <link type="text/css" rel="stylesheet" href="style.css"/>
 </head>
 <body>
-<h2 id="unicorn-library-introduction"><a href="index.html">Unicorn Library</a>: Introduction</h2>
-<h5 id="unicode-library-for-c-by-ross-smith">Unicode library for C++ by Ross Smith</h5>
+<h1 id="unicorn-library-introduction"><a href="index.html">Unicorn Library</a>: Introduction</h1>
+<h4 id="unicode-library-for-c-by-ross-smith">Unicode library for C++ by Ross Smith</h4>
 <p>Please keep in mind that the Unicorn documentation does not attempt to be a
 <a href="http://unicode.org/">Unicode</a> tutorial; the reader is assumed to be familiar
 with the basic concepts and terminology involved. I recommend reading the
 Unicorn documentation with a copy of the Unicode standard on hand.</p>
-<h3 id="contents">Contents</h3>
+<h2 id="contents">Contents</h2>
 <ul>
 <li>[Compatibility][]</li>
 <li>[Design philosophy][]</li>
@@ -21,7 +21,7 @@ Unicorn documentation with a copy of the Unicode standard on hand.</p>
 <li>[Building Unicorn][]</li>
 <li>[Using Unicorn][]</li>
 </ul>
-<h3 id="compatibility">Compatibility</h3>
+<h2 id="compatibility">Compatibility</h2>
 <p>Unicorn is written in C++14; you will need an up-to-date C++ compiler,
 probably a recent version of Clang or GCC. I developed it mainly on Mac OS X,
 currently using Clang 7.0. All test builds are made using strict compilation
@@ -35,7 +35,7 @@ Studio. VS 2015 probably has sufficiently good C++11/14 support, but does not
 yet support UTF-8 source code; Microsoft developers have told me they're
 trying to get this fixed, though, so I hope to be able to port Unicorn to MSVC
 in the future.</p>
-<h3 id="design-philosophy">Design philosophy</h3>
+<h2 id="design-philosophy">Design philosophy</h2>
 <p>The Unicorn library is still in a fairly early form. The code is primarily
 striving to be correct, with performance a secondary consideration; aggressive
 optimization can come later.</p>
@@ -70,7 +70,7 @@ found in the <a href="mbcs.html"><code>unicorn/mbcs</code></a> and <a href="io.h
 have already been validated. The documentation for the
 <a href="utf.html"><code>unicorn/utf</code></a> module explains the details of how the handling of
 invalid encoding is controlled.</p>
-<h3 id="coding-conventions">Coding conventions</h3>
+<h2 id="coding-conventions">Coding conventions</h2>
 <p>In the context of Unicode and other text encodings, the word "character" is
 often used confusingly with any number of different meanings. In the Unicorn
 documentation, <strong>character</strong> is normally used to mean one Unicode scalar
@@ -113,7 +113,7 @@ parameter name makes it sufficiently clear). When a parameter type is named
 above.</p>
 <p>The abbreviations <code>src</code> and <code>dst</code> are frequently used for source and
 destination objects (i.e. input and output parameters).</p>
-<h3 id="exception-safety">Exception safety</h3>
+<h2 id="exception-safety">Exception safety</h2>
 <p>The <code>noexcept</code> qualifier is used as much as possible to indicate functions
 that will never throw exceptions (in the absence of undefined behaviour).</p>
 <p>In a library primarily concerned with string manipulation, almost any
@@ -133,7 +133,7 @@ function's description. If a function is not marked <code>noexcept</code>, but i
 documentation does not explicitly mention any exceptions, then it may throw
 <code>std::bad_alloc</code>, and possibly <code>Unicorn::EncodingError</code> if it implicitly does
 a checked encoding connversion, but will not throw anything else.</p>
-<h3 id="building-unicorn">Building Unicorn</h3>
+<h2 id="building-unicorn">Building Unicorn</h2>
 <p>A makefile is included, although it may not be as portable as I would like.
 Building Unicorn using your preferred build tool should be simple enough. To
 build the library, compile all the <code>.cpp</code> files whose names don't include the
@@ -167,7 +167,7 @@ and/or <code>UNICORN_PCRE32</code>. These defines are only needed when building 
 Unicorn library itself, not when building code that uses it. The supplied
 makefile will attempt to detect which versions are available and set these
 automatically. Note that the 8-bit PCRE library is always required.</p>
-<h3 id="using-unicorn">Using Unicorn</h3>
+<h2 id="using-unicorn">Using Unicorn</h2>
 <p>You can import the whole library using <code>#include "unicorn/library.hpp"</code>, or
 include the individual modules that you need. Link with <code>-lunicorn</code>, and with
 the other required libraries described above.</p>

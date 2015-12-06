@@ -6,7 +6,7 @@
     <link type="text/css" rel="stylesheet" href="style.css"/>
 </head>
 <body>
-<h2 id="unicorn-library-text-segmentation"><a href="index.html">Unicorn Library</a>: Text Segmentation</h2>
+<h1 id="unicorn-library-text-segmentation"><a href="index.html">Unicorn Library</a>: Text Segmentation</h1>
 <p><em>Unicode library for C++ by Ross Smith</em></p>
 <ul>
 <li><code>#include "unicorn/segment.hpp"</code></li>
@@ -19,7 +19,7 @@ Segmentation</a>.</p>
 pair of <a href="unicorn/utf.html">UTF iterators</a>, bracketing the text segment of
 interest. As usual, the <code>u_str()</code> function can be used to copy the actual
 substring if this is needed.</p>
-<h3 id="contents">Contents</h3>
+<h2 id="contents">Contents</h2>
 <div class="toc">
 <ul>
 <li><a href="#unicorn-library-text-segmentation">Unicorn Library: Text Segmentation</a><ul>
@@ -33,7 +33,7 @@ substring if this is needed.</p>
 </li>
 </ul>
 </div>
-<h3 id="grapheme-cluster-boundaries">Grapheme cluster boundaries</h3>
+<h2 id="grapheme-cluster-boundaries">Grapheme cluster boundaries</h2>
 <ul>
 <li><code>template &lt;typename C&gt; class</code> <strong><code>GraphemeIterator</code></strong><ul>
 <li><code>using GraphemeIterator::</code><strong><code>utf_iterator</code></strong> <code>= UtfIterator&lt;C&gt;</code></li>
@@ -52,7 +52,7 @@ substring if this is needed.</p>
 </ul>
 <p>A forward iterator over the grapheme clusters (user-perceived characters) in a
 Unicode string.</p>
-<h3 id="word-boundaries">Word boundaries</h3>
+<h2 id="word-boundaries">Word boundaries</h2>
 <ul>
 <li><code>template &lt;typename C&gt; class</code> <strong><code>WordIterator</code></strong><ul>
 <li><code>using WordIterator::</code><strong><code>utf_iterator</code></strong> <code>= UtfIterator&lt;C&gt;</code></li>
@@ -96,7 +96,7 @@ words containing at least one alphanumeric character.</p>
 </tr>
 </tbody>
 </table>
-<h3 id="sentence-boundaries">Sentence boundaries</h3>
+<h2 id="sentence-boundaries">Sentence boundaries</h2>
 <ul>
 <li><code>template &lt;typename C&gt; class</code> <strong><code>SentenceIterator</code></strong><ul>
 <li><code>using SentenceIterator::</code><strong><code>utf_iterator</code></strong> <code>= UtfIterator&lt;C&gt;</code></li>
@@ -115,7 +115,7 @@ words containing at least one alphanumeric character.</p>
 </ul>
 <p>A forward iterator over the sentences in a Unicode string (as defined by
 UAX29).</p>
-<h3 id="line-boundaries">Line boundaries</h3>
+<h2 id="line-boundaries">Line boundaries</h2>
 <ul>
 <li><code>template &lt;typename C&gt; class</code> <strong><code>LineIterator</code></strong><ul>
 <li><code>using LineIterator::</code><strong><code>utf_iterator</code></strong> <code>= UtfIterator&lt;C&gt;</code></li>
@@ -156,7 +156,7 @@ set, the line break is excluded from the segment.</p>
 </tr>
 </tbody>
 </table>
-<h3 id="paragraph-boundaries">Paragraph boundaries</h3>
+<h2 id="paragraph-boundaries">Paragraph boundaries</h2>
 <ul>
 <li><code>template &lt;typename C&gt; class</code> <strong><code>ParagraphIterator</code></strong><ul>
 <li><code>using ParagraphIterator::</code><strong><code>utf_iterator</code></strong> <code>= UtfIterator&lt;C&gt;</code></li>

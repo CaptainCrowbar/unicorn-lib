@@ -6,14 +6,14 @@
     <link type="text/css" rel="stylesheet" href="style.css"/>
 </head>
 <body>
-<h2 id="unicorn-library-string-operations"><a href="index.html">Unicorn Library</a>: String Operations</h2>
+<h1 id="unicorn-library-string-operations"><a href="index.html">Unicorn Library</a>: String Operations</h1>
 <p><em>Unicode library for C++ by Ross Smith</em></p>
 <ul>
 <li><code>#include "unicorn/string.hpp"</code></li>
 </ul>
 <p>This module contains assorted functions related to strings that don't belong
 in other modules with a more specific focus.</p>
-<h3 id="contents">Contents</h3>
+<h2 id="contents">Contents</h2>
 <div class="toc">
 <ul>
 <li><a href="#unicorn-library-string-operations">Unicorn Library: String Operations</a><ul>
@@ -30,7 +30,7 @@ in other modules with a more specific focus.</p>
 </li>
 </ul>
 </div>
-<h3 id="introduction">Introduction</h3>
+<h2 id="introduction">Introduction</h2>
 <p>Not all of these functions are directly related to Unicode; some, such as the
 <code>str_starts_with()</code> and <code>str_ends_with()</code> tests or the <code>str_replace()</code>
 function, simply operate on the string as a sequence of code units, without
@@ -71,7 +71,7 @@ will need to normalise your strings first (see
 character pointer, a null pointer is always treated as equivalent to an empty
 string. (When it takes a pointer and size, the size is ignored if the pointer
 is null.)</p>
-<h3 id="string-size-functions">String size functions</h3>
+<h2 id="string-size-functions">String size functions</h2>
 <p>Most functions that need to calculate the size of a string, in this module and
 others, accept one of the following flags to indicate which definition of
 "size" the caller wants:</p>
@@ -132,7 +132,7 @@ will be returned (or <code>npos</code> for <code>str_find_offset()</code>). If t
 adjusted to exactly the specified value (because one of the East Asian width
 options was selected and wide characters are present), the first valid
 position after the requested point will be returned.</p>
-<h3 id="other-string-properties">Other string properties</h3>
+<h2 id="other-string-properties">Other string properties</h2>
 <ul>
 <li><code>template &lt;typename C&gt; char32_t</code> <strong><code>str_char_at</code></strong><code>(const basic_string&lt;C&gt;&amp; str, size_t index) noexcept</code></li>
 </ul>
@@ -155,7 +155,7 @@ empty.</p>
 <li><code>template &lt;typename C&gt; bool</code> <strong><code>str_ends_with</code></strong><code>(const basic_string&lt;C&gt;&amp; str, const C* suffix) noexcept</code></li>
 </ul>
 <p>These return true if the string starts or ends with the specified substring.</p>
-<h3 id="string-algorithms">String algorithms</h3>
+<h2 id="string-algorithms">String algorithms</h2>
 <ul>
 <li><code>template &lt;typename C&gt; size_t</code> <strong><code>str_common</code></strong><code>(const basic_string&lt;C&gt;&amp; s1, const basic_string&lt;C&gt;&amp; s2, size_t start = 0) noexcept</code></li>
 <li><code>template &lt;typename C&gt; size_t</code> <strong><code>str_common_utf</code></strong><code>(const basic_string&lt;C&gt;&amp; s1, const basic_string&lt;C&gt;&amp; s2, size_t start = 0) noexcept</code></li>
@@ -257,7 +257,7 @@ an end iterator if it was not found.</p>
 string if no such character was found. Optionally an endpoint other than the
 end of the string can be supplied. The return value is the number of
 characters skipped.</p>
-<h3 id="string-manipulation-functions">String manipulation functions</h3>
+<h2 id="string-manipulation-functions">String manipulation functions</h2>
 <ul>
 <li><code>template &lt;typename C, typename C2&gt; void</code> <strong><code>str_append</code></strong><code>(basic_string&lt;C&gt;&amp; str, const basic_string&lt;C2&gt;&amp; suffix)</code></li>
 <li><code>template &lt;typename C, typename C2&gt; void</code> <strong><code>str_append</code></strong><code>(basic_string&lt;C&gt;&amp; str, const Irange&lt;UtfIterator&lt;C2&gt;&gt;&amp; suffix)</code></li>
@@ -608,7 +608,7 @@ allow it to violate the right margin. If the <code>wrap_enforce</code> flag is s
 will cause the function to throw <code>std::</code><strong><code>length_error</code></strong> instead.</p>
 <p>If the <code>wrap_preserve</code> flag is set, any paragraphs that start with an indented
 line are left in their original format.</p>
-<h3 id="case-mapping-functions">Case mapping functions</h3>
+<h2 id="case-mapping-functions">Case mapping functions</h2>
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_uppercase</code></strong><code>(const basic_string&lt;C&gt;&amp; str)</code></li>
 <li><code>template &lt;typename C&gt; void</code> <strong><code>str_uppercase_in</code></strong><code>(basic_string&lt;C&gt;&amp; str)</code></li>
@@ -645,7 +645,7 @@ on the argument strings before comparison; using these functions is usually
 more efficient for a small number of comparisons, while calling <code>casefold()</code>
 and saving the case folded form of the string will be more efficient if the
 same string is going to be compared frequently.</p>
-<h3 id="escaping-and-quoting-functions">Escaping and quoting functions</h3>
+<h2 id="escaping-and-quoting-functions">Escaping and quoting functions</h2>
 <table>
 <thead>
 <tr>
@@ -748,7 +748,7 @@ the string.</p>
 <p>These perform the reverse transformation to <code>str_quote()</code>, removing quote
 marks from the string, or from any quoted substrings within it, and then
 unescaping the resulting strings.</p>
-<h3 id="type-conversion-functions">Type conversion functions</h3>
+<h2 id="type-conversion-functions">Type conversion functions</h2>
 <ul>
 <li><code>template &lt;typename T, typename C&gt; UtfIterator&lt;C&gt;</code> <strong><code>str_to_int</code></strong><code>(T&amp; t, const basic_string&lt;C&gt;&amp; str, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename T, typename C&gt; UtfIterator&lt;C&gt;</code> <strong><code>str_to_int</code></strong><code>(T&amp; t, const UtfIterator&lt;C&gt;&amp; start, uint32_t flags = 0)</code></li>

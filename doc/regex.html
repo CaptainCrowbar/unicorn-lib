@@ -6,7 +6,7 @@
     <link type="text/css" rel="stylesheet" href="style.css"/>
 </head>
 <body>
-<h2 id="unicorn-library-regular-expressions"><a href="index.html">Unicorn Library</a>: Regular Expressions</h2>
+<h1 id="unicorn-library-regular-expressions"><a href="index.html">Unicorn Library</a>: Regular Expressions</h1>
 <p><em>Unicode library for C++ by Ross Smith</em></p>
 <ul>
 <li><code>#include "unicorn/regex.hpp"</code></li>
@@ -15,7 +15,7 @@
 and functions. It calls the widely available <a href="http://www.pcre.org/">PCRE</a>
 (Perl Compatible Regular Expressions) library. Refer to the PCRE documentation
 for details of the regular expression syntax.</p>
-<h3 id="contents">Contents</h3>
+<h2 id="contents">Contents</h2>
 <div class="toc">
 <ul>
 <li><a href="#unicorn-library-regular-expressions">Unicorn Library: Regular Expressions</a><ul>
@@ -35,7 +35,7 @@ for details of the regular expression syntax.</p>
 </li>
 </ul>
 </div>
-<h3 id="introduction">Introduction</h3>
+<h2 id="introduction">Introduction</h2>
 <p>The PCRE library can be built in three different forms: <code>libpcre</code>,
 <code>libpcre16</code>, and <code>libpcre32</code>, supporting UTF-8, UTF-16, and UTF-32 strings and
 regular expressions respectively. Ideally, you should have all three versions
@@ -64,7 +64,7 @@ byte even if the value is greater than <code>\x7f</code> (in a UTF-8 regex this 
 match a multibyte encoded character); the <code>\x{hex}</code> escape code can still be
 used, but it will be treated as a syntax error if the value is greater than
 <code>\x{ff}</code>.</p>
-<h3 id="unicornregex-vs-stdregex">Unicorn::Regex vs std::regex</h3>
+<h2 id="unicornregex-vs-stdregex">Unicorn::Regex vs std::regex</h2>
 <p>It would have been convenient to use standard C++11 regular expressions in
 Unicorn, in the same way as the standard string classes have been used instead
 of creating a new custom string class specific to Unicorn. Unfortunately, this
@@ -108,7 +108,7 @@ serious handicap in a library dedicated to Unicode support.</p>
 <p>For all of the above reasons, I felt I had no choice but to abandon standard
 C++ regexes, and base Unicorn's regular expressions on the widely used PCRE
 library instead.</p>
-<h3 id="regex-options">Regex options</h3>
+<h2 id="regex-options">Regex options</h2>
 <table>
 <thead>
 <tr>
@@ -263,7 +263,7 @@ supplied are inconsistent:</p>
 <p>If you use the <code>rx_noutfcheck</code> flag, be careful about sanitizing your strings:
 <strong>behaviour is undefined</strong> if this flag is present and any regex pattern,
 subject string, or format string is not valid Unicode.</p>
-<h3 id="formatting-syntax">Formatting syntax</h3>
+<h2 id="formatting-syntax">Formatting syntax</h2>
 <p>Formatting strings are used in the <code>format()</code> and <code>extract()</code> methods of
 <code>BasicRegex</code> and <code>BasicRegexFormat</code>, to generate a modified string by using a
 regex to match substrings in the original subject string, and then replacing
@@ -392,7 +392,7 @@ with byte mode regexes, only ASCII characters will be converted.</p>
 <p>If the format string contains <code>\x{HHH...}</code> escape codes, an <code>EncodingError</code>
 exception will be thrown if the hexadecimal number is not a valid Unicode
 scalar value or, for byte mode regexes, if it is greater than <code>0xff</code>.</p>
-<h3 id="supporting-types">Supporting types</h3>
+<h2 id="supporting-types">Supporting types</h2>
 <ul>
 <li><code>class</code> <strong><code>RegexError</code></strong><code>: public std::</code><strong><code>runtime_error</code></strong><ul>
 <li><code>RegexError::</code><strong><code>RegexError</code></strong><code>(const u8string&amp; pattern, int error, const u8string&amp; message)</code></li>
@@ -404,7 +404,7 @@ scalar value or, for byte mode regexes, if it is greater than <code>0xff</code>.
 </ul>
 <p>This is thrown from a regex constructor or matching function when the
 underlying PCRE call reports an error.</p>
-<h3 id="regular-expression-class">Regular expression class</h3>
+<h2 id="regular-expression-class">Regular expression class</h2>
 <ul>
 <li><code>template &lt;typename CX&gt; class</code> <strong><code>BasicRegex</code></strong></li>
 <li><code>using</code> <strong><code>Regex</code></strong> <code>= BasicRegex&lt;char&gt;</code></li>
@@ -560,7 +560,7 @@ unspecified whether or not they will compare equal.</p>
 </ul>
 <p>Regex literals. The versions with an <code>"_i"</code> suffix are case insensitive; apart
 from that, no options are supported.</p>
-<h3 id="regex-match-class">Regex match class</h3>
+<h2 id="regex-match-class">Regex match class</h2>
 <ul>
 <li><code>template &lt;typename CX&gt; class</code> <strong><code>BasicMatch</code></strong></li>
 <li><code>using</code> <strong><code>Match</code></strong> <code>= BasicMatch&lt;char&gt;</code></li>
@@ -664,7 +664,7 @@ match.</p>
 <li><code>template &lt;typename CX&gt; void</code> <strong><code>swap</code></strong><code>(BasicMatch&lt;CX&gt;&amp; lhs, BasicMatch&lt;CX&gt;&amp; rhs) noexcept</code></li>
 </ul>
 <p>Swap two match objects.</p>
-<h3 id="regex-formatting-class">Regex formatting class</h3>
+<h2 id="regex-formatting-class">Regex formatting class</h2>
 <ul>
 <li><code>template &lt;typename CX&gt; class</code> <strong><code>BasicRegexFormat</code></strong></li>
 <li><code>using</code> <strong><code>RegexFormat</code></strong> <code>= BasicRegexFormat&lt;char&gt;</code></li>
@@ -732,7 +732,7 @@ first <code>n</code> matches, discarding the unmatched text between them.
 <li><code>template &lt;typename C&gt; BasicRegexFormat&lt;C&gt;</code> <strong><code>regex_format</code></strong><code>(const C* pattern, const C* format, uint32_t flags = 0)</code></li>
 </ul>
 <p>Convenience functions to construct a regex format object.</p>
-<h3 id="regex-iterator-classes">Regex iterator classes</h3>
+<h2 id="regex-iterator-classes">Regex iterator classes</h2>
 <ul>
 <li><code>template &lt;typename CX&gt; class</code> <strong><code>BasicMatchIterator</code></strong><ul>
 <li><code>using BasicMatchIterator::</code><strong><code>char_type</code></strong> <code>= [char if CX is void, otherwise CX]</code></li>
@@ -786,7 +786,7 @@ than constructed directly by the user.</p>
 <p>An iterator over the substrings between matches for a given regex. These are
 normally returned by <code>BasicRegex::</code><strong><code>split</code></strong><code>()</code> rather than constructed directly by
 the user.</p>
-<h3 id="utility-functions">Utility functions</h3>
+<h2 id="utility-functions">Utility functions</h2>
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>regex_escape</code></strong><code>(const basic_string&lt;C&gt;&amp; str)</code></li>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>regex_escape</code></strong><code>(const C* str)</code></li>
@@ -796,7 +796,7 @@ characters where necessary to produce a pattern that will exactly match the
 original string and nothing else. (You can get the same effect by enclosing
 the text in <code>"\Q...\E"</code> delimiters, provided the text does not contain
 <code>"\E"</code>.)</p>
-<h3 id="version-information">Version information</h3>
+<h2 id="version-information">Version information</h2>
 <ul>
 <li><code>Version</code> <strong><code>regex_version</code></strong><code>() noexcept</code></li>
 </ul>

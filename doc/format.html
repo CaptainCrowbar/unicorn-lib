@@ -6,7 +6,7 @@
     <link type="text/css" rel="stylesheet" href="style.css"/>
 </head>
 <body>
-<h2 id="unicorn-library-string-formatting"><a href="index.html">Unicorn Library</a>: String Formatting</h2>
+<h1 id="unicorn-library-string-formatting"><a href="index.html">Unicorn Library</a>: String Formatting</h1>
 <p><em>Unicode library for C++ by Ross Smith</em></p>
 <ul>
 <li><code>#include "unicorn/format.hpp"</code></li>
@@ -26,7 +26,7 @@ calls the PCRE library. It will only work with encodings for which the
 corresponding PCRE library has been linked; see the regex module documentation
 for details.</p>
 <p>[TODO: DOCUMENTATION]</p>
-<h3 id="contents">Contents</h3>
+<h2 id="contents">Contents</h2>
 <div class="toc">
 <ul>
 <li><a href="#unicorn-library-string-formatting">Unicorn Library: String Formatting</a><ul>
@@ -49,7 +49,7 @@ for details.</p>
 </li>
 </ul>
 </div>
-<h3 id="basic-formatting-functions">Basic formatting functions</h3>
+<h2 id="basic-formatting-functions">Basic formatting functions</h2>
 <ul>
 <li><code>template &lt;typename T&gt; class</code> <strong><code>FormatType</code></strong><ul>
 <li><code>[string type]</code> <strong><code>operator()</code></strong><code>(T t, uint64_t flags, int prec) const</code></li>
@@ -102,7 +102,7 @@ for details.</p>
 <li><code>template &lt;typename C, typename T&gt; basic_string&lt;C&gt;</code> <strong><code>format_as</code></strong><code>(const T&amp; t, const C* flags)</code></li>
 </ul>
 <p>TODO</p>
-<h3 id="formatter-class">Formatter class</h3>
+<h2 id="formatter-class">Formatter class</h2>
 <ul>
 <li><code>template &lt;typename C&gt; class</code> <strong><code>BasicFormat</code></strong><ul>
 <li><code>using BasicFormat::</code><strong><code>char_type</code></strong> <code>= C</code></li>
@@ -131,7 +131,7 @@ for details.</p>
 <li><code>template &lt;typename C&gt; BasicFormat&lt;C&gt;</code> <strong><code>format</code></strong><code>(const C* fmt)</code></li>
 </ul>
 <p>TODO</p>
-<h3 id="formatter-literals">Formatter literals</h3>
+<h2 id="formatter-literals">Formatter literals</h2>
 <ul>
 <li><code>namespace Literals</code><ul>
 <li><code>Format</code> <strong><code>operator"" _fmt</code></strong><code>(const char* ptr, size_t len)</code></li>
@@ -142,8 +142,8 @@ for details.</p>
 </li>
 </ul>
 <p>TODO</p>
-<h3 id="formatting-for-specific-types">Formatting for specific types</h3>
-<h4 id="global-flags">Global flags</h4>
+<h2 id="formatting-for-specific-types">Formatting for specific types</h2>
+<h3 id="global-flags">Global flags</h3>
 <table>
 <thead>
 <tr>
@@ -206,7 +206,7 @@ for details.</p>
 </tbody>
 </table>
 <p>TODO</p>
-<h4 id="boolean-formatting">Boolean formatting</h4>
+<h3 id="boolean-formatting">Boolean formatting</h3>
 <table>
 <thead>
 <tr>
@@ -234,7 +234,7 @@ for details.</p>
 </tbody>
 </table>
 <p>TODO</p>
-<h4 id="integer-formatting">Integer formatting</h4>
+<h3 id="integer-formatting">Integer formatting</h3>
 <table>
 <thead>
 <tr>
@@ -277,7 +277,7 @@ for details.</p>
 </tbody>
 </table>
 <p>TODO</p>
-<h4 id="floating-point-formatting">Floating point formatting</h4>
+<h3 id="floating-point-formatting">Floating point formatting</h3>
 <table>
 <thead>
 <tr>
@@ -330,7 +330,7 @@ for details.</p>
 </tbody>
 </table>
 <p>TODO</p>
-<h4 id="character-and-string-formatting">Character and string formatting</h4>
+<h3 id="character-and-string-formatting">Character and string formatting</h3>
 <table>
 <thead>
 <tr>
@@ -383,7 +383,7 @@ for details.</p>
 </tbody>
 </table>
 <p>TODO</p>
-<h4 id="time-and-date-formatting">Time and date formatting</h4>
+<h3 id="time-and-date-formatting">Time and date formatting</h3>
 <table>
 <thead>
 <tr>
@@ -411,8 +411,8 @@ for details.</p>
 </tbody>
 </table>
 <p>TODO</p>
-<h4 id="uuid-formatting">UUID formatting</h4>
+<h3 id="uuid-formatting">UUID formatting</h3>
 <p>No type-specific flags are defined.</p>
-<h4 id="version-number-formatting">Version number formatting</h4>
+<h3 id="version-number-formatting">Version number formatting</h3>
 <p>No type-specific flags are defined.</p></body>
 </html>

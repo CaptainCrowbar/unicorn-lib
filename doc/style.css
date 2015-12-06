@@ -9,23 +9,16 @@ body {
     padding-bottom:    1em;
 }
 
-h1, h2 {
+h1 {
     border-top:      1px solid #444;
     color:           #666;
+    font-size:       200%;
     padding-bottom:  0.25em;
     padding-top:     0.5em;
     text-align:      left;
 }
 
-h1 {
-    font-size:       250%;
-}
-
 h2 {
-    font-size:       200%;
-}
-
-h3 {
     border-top:      1px solid #444;
     color:           #666;
     font-size:       150%;
@@ -35,13 +28,13 @@ h3 {
     text-align:      left;
 }
 
-h4 {
+h3 {
     color:       #666;
     font-size:   125%;
     text-align:  left;
 }
 
-h5 {
+h4 {
     font-size:    100%;
     font-style:   italic;
     font-weight:  normal;

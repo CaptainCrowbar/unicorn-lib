@@ -6,13 +6,13 @@
     <link type="text/css" rel="stylesheet" href="style.css"/>
 </head>
 <body>
-<h2 id="unicorn-library-core-definitions"><a href="index.html">Unicorn Library</a>: Core Definitions</h2>
+<h1 id="unicorn-library-core-definitions"><a href="index.html">Unicorn Library</a>: Core Definitions</h1>
 <p><em>Unicode library for C++ by Ross Smith</em></p>
 <ul>
 <li><code>#include "unicorn/core.hpp"</code></li>
 </ul>
 <p>This module provides some common definitions used throughout the library.</p>
-<h3 id="contents">Contents</h3>
+<h2 id="contents">Contents</h2>
 <div class="toc">
 <ul>
 <li><a href="#unicorn-library-core-definitions">Unicorn Library: Core Definitions</a><ul>
@@ -25,7 +25,7 @@
 </li>
 </ul>
 </div>
-<h3 id="imports">Imports</h3>
+<h2 id="imports">Imports</h2>
 <ul>
 <li><code>using namespace Prion</code></li>
 <li><code>namespace Unicorn::Literals</code><ul>
@@ -34,7 +34,7 @@
 </li>
 </ul>
 <p>Everything in the Prion library is imported.</p>
-<h3 id="exceptions">Exceptions</h3>
+<h2 id="exceptions">Exceptions</h2>
 <ul>
 <li><code>class</code> <strong><code>InitializationError</code></strong><code>: public std::runtime_error</code></li>
 </ul>
@@ -57,7 +57,7 @@ string for validity. The offset of the offending data within the source string
 (when available) can be retrieved through the <code>offset()</code> method. If possible,
 a hexadecimal representation of the offending data will be included in the
 error message.</p>
-<h3 id="basic-character-types">Basic character types</h3>
+<h2 id="basic-character-types">Basic character types</h2>
 <ul>
 <li><code>#define</code> <strong><code>UNICORN_NATIVE_WCHAR</code></strong> <code>1</code></li>
 </ul>
@@ -88,7 +88,7 @@ ABI.</p>
 <li><code>using</code> <strong><code>WstringEquivalent</code></strong> <code>= [u16string or u32string]</code></li>
 </ul>
 <p>These are defined to match the UTF encoding of the system's <code>wstring</code> class.</p>
-<h3 id="version-information">Version information</h3>
+<h2 id="version-information">Version information</h2>
 <ul>
 <li><code>Version</code> <strong><code>unicorn_version</code></strong><code>() noexcept</code></li>
 <li><code>Version</code> <strong><code>unicode_version</code></strong><code>() noexcept</code></li>

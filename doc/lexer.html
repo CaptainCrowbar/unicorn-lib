@@ -6,7 +6,7 @@
     <link type="text/css" rel="stylesheet" href="style.css"/>
 </head>
 <body>
-<h2 id="unicorn-library-text-tokenization"><a href="index.html">Unicorn Library</a>: Text Tokenization</h2>
+<h1 id="unicorn-library-text-tokenization"><a href="index.html">Unicorn Library</a>: Text Tokenization</h1>
 <p><em>Unicode library for C++ by Ross Smith</em></p>
 <ul>
 <li><code>#include "unicorn/lexer.hpp"</code></li>
@@ -19,7 +19,7 @@ calls the PCRE library. It will only work with encodings for which the
 corresponding PCRE library has been linked; see the regex module documentation
 for details.</p>
 <p>[TODO: DOCUMENTATION]</p>
-<h3 id="contents">Contents</h3>
+<h2 id="contents">Contents</h2>
 <div class="toc">
 <ul>
 <li><a href="#unicorn-library-text-tokenization">Unicorn Library: Text Tokenization</a><ul>
@@ -32,7 +32,7 @@ for details.</p>
 </li>
 </ul>
 </div>
-<h3 id="exceptions">Exceptions</h3>
+<h2 id="exceptions">Exceptions</h2>
 <ul>
 <li><code>class</code> <strong><code>SyntaxError</code></strong><code>: public std::runtime_error</code><ul>
 <li><code>SyntaxError::</code><strong><code>SyntaxError</code></strong><code>(const u8string&amp; text, size_t offset, const u8string&amp; message = "Syntax error")</code></li>
@@ -42,7 +42,7 @@ for details.</p>
 </li>
 </ul>
 <p>TODO</p>
-<h3 id="token-structure">Token structure</h3>
+<h2 id="token-structure">Token structure</h2>
 <ul>
 <li><code>template &lt;typename C&gt; struct</code> <strong><code>BasicToken</code></strong><ul>
 <li><code>using BasicToken::</code><strong><code>char_type</code></strong> <code>= C</code></li>
@@ -60,7 +60,7 @@ for details.</p>
 <li><code>using</code> <strong><code>WideToken</code></strong> <code>= BasicToken&lt;wchar_t&gt;</code></li>
 </ul>
 <p>TODO</p>
-<h3 id="token-iterator">Token iterator</h3>
+<h2 id="token-iterator">Token iterator</h2>
 <ul>
 <li><code>template &lt;typename CX&gt; class</code> <strong><code>BasicTokenIterator</code></strong><ul>
 <li><code>using BasicTokenIterator::</code><strong><code>char_type</code></strong> <code>= [char if CX is void, otherwise CX]</code></li>
@@ -81,7 +81,7 @@ for details.</p>
 <li><code>using</code> <strong><code>ByteTokenIterator</code></strong> <code>= BasicTokenIterator&lt;void&gt;</code></li>
 </ul>
 <p>TODO</p>
-<h3 id="lexer-class">Lexer class</h3>
+<h2 id="lexer-class">Lexer class</h2>
 <ul>
 <li><code>template &lt;typename CX&gt; class</code> <strong><code>BasicLexer</code></strong></li>
 <li><code>using</code> <strong><code>Lexer</code></strong> <code>= BasicLexer&lt;char&gt;</code></li>

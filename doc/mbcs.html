@@ -6,7 +6,7 @@
     <link type="text/css" rel="stylesheet" href="style.css"/>
 </head>
 <body>
-<h2 id="unicorn-library-non-unicode-encodings"><a href="index.html">Unicorn Library</a>: Non-Unicode Encodings</h2>
+<h1 id="unicorn-library-non-unicode-encodings"><a href="index.html">Unicorn Library</a>: Non-Unicode Encodings</h1>
 <p><em>Unicode library for C++ by Ross Smith</em></p>
 <ul>
 <li><code>#include "unicorn/mbcs.hpp"</code></li>
@@ -14,7 +14,7 @@
 <p>This module defines functions for conversion between UTF and non-Unicode
 encodings, as well as between internal and external UTF encodings with a
 specific byte order.</p>
-<h3 id="contents">Contents</h3>
+<h2 id="contents">Contents</h2>
 <div class="toc">
 <ul>
 <li><a href="#unicorn-library-non-unicode-encodings">Unicorn Library: Non-Unicode Encodings</a><ul>
@@ -26,7 +26,7 @@ specific byte order.</p>
 </li>
 </ul>
 </div>
-<h3 id="exceptions">Exceptions</h3>
+<h2 id="exceptions">Exceptions</h2>
 <ul>
 <li><code>class</code> <strong><code>UnknownEncoding</code></strong><code>: public std::</code><strong><code>runtime_error</code></strong><ul>
 <li><code>UnknownEncoding::</code><strong><code>UnknownEncoding</code></strong><code>()</code></li>
@@ -37,7 +37,7 @@ specific byte order.</p>
 </li>
 </ul>
 <p>Exception thrown to report an unknown encoding name or number.</p>
-<h3 id="conversion-functions">Conversion functions</h3>
+<h2 id="conversion-functions">Conversion functions</h2>
 <ul>
 <li><code>template &lt;typename C&gt; void</code> <strong><code>import_string</code></strong><code>(const string&amp; src, basic_string&lt;C&gt;&amp; dst)</code></li>
 <li><code>template &lt;typename C, typename C2&gt; void</code> <strong><code>import_string</code></strong><code>(const string&amp; src, basic_string&lt;C&gt;&amp; dst, const basic_string&lt;C2&gt;&amp; enc, uint32_t flags = 0)</code></li>
@@ -84,7 +84,7 @@ native APIs. In particular, the Windows APIs do not reliably report encoding
 errors; although the wrapper functions make a good faith attempt to respect
 the error handling flags, in some cases the underlying conversion function
 will go ahead and replace invalid data without reporting an error.</p>
-<h3 id="utility-functions">Utility functions</h3>
+<h2 id="utility-functions">Utility functions</h2>
 <ul>
 <li><code>u8string</code> <strong><code>local_encoding</code></strong><code>(const u8string&amp; default_encoding = "utf-8")</code></li>
 </ul>

@@ -6,14 +6,14 @@
     <link type="text/css" rel="stylesheet" href="style.css"/>
 </head>
 <body>
-<h2 id="unicorn-library-file-system"><a href="index.html">Unicorn Library</a>: File System</h2>
+<h1 id="unicorn-library-file-system"><a href="index.html">Unicorn Library</a>: File System</h1>
 <p><em>Unicode library for C++ by Ross Smith</em></p>
 <ul>
 <li><code>#include "unicorn/file.hpp"</code></li>
 </ul>
 <p>This module provides a very minimal set of file system operations, such as
 file renaming and deletion, directory search, and so on.</p>
-<h3 id="contents">Contents</h3>
+<h2 id="contents">Contents</h2>
 <div class="toc">
 <ul>
 <li><a href="#unicorn-library-file-system">Unicorn Library: File System</a><ul>
@@ -29,7 +29,7 @@ file renaming and deletion, directory search, and so on.</p>
 </li>
 </ul>
 </div>
-<h3 id="introduction">Introduction</h3>
+<h2 id="introduction">Introduction</h2>
 <p>File handling in Unicode always has the problem that the actual file names on
 most systems are not guaranteed to be valid Unicode. On most Unix systems, a
 file name is an arbitrary sequence of bytes, with no restrictions other than
@@ -69,7 +69,7 @@ of backslashes for slashes, and drive roots such as <code>"C:\"</code> for <code
 <p>The term "leaf name" is used here to mean the name of an individual file
 within a directory, with no directory path prefix (for example, the leaf name
 of <code>"/foo/bar/hello.txt"</code> is <code>"hello.txt"</code>).</p>
-<h3 id="constants">Constants</h3>
+<h2 id="constants">Constants</h2>
 <table>
 <thead>
 <tr>
@@ -101,7 +101,7 @@ of <code>"/foo/bar/hello.txt"</code> is <code>"hello.txt"</code>).</p>
 </tbody>
 </table>
 <p>Flags recognised by some of the functions in this module.</p>
-<h3 id="system-dependencies">System dependencies</h3>
+<h2 id="system-dependencies">System dependencies</h2>
 <ul>
 <li><code>constexpr char</code> <strong><code>file_delimiter</code></strong> <code>= ['/' on Unix, '\\' on Windows]</code></li>
 </ul>
@@ -115,7 +115,7 @@ of <code>"/foo/bar/hello.txt"</code> is <code>"hello.txt"</code>).</p>
 option, except that, if both the source and destination strings are the
 operating system's native encoding, the string will simply be copied verbatim
 without checking for valid Unicode.</p>
-<h3 id="file-name-functions">File name functions</h3>
+<h2 id="file-name-functions">File name functions</h2>
 <p>These functions operate purely on file name strings; they do not make any
 contact with the actual file system, and will give the same results regardless
 of whether or not a file actually exists. Where relevant, these functions are
@@ -180,7 +180,7 @@ empty.</p>
 split_file("/foo/bar/hello.txt") == {"hello", ".txt"}
 split_file(".hello") == {".hello", ""}
 </code></pre>
-<h3 id="file-system-query-functions">File system query functions</h3>
+<h2 id="file-system-query-functions">File system query functions</h2>
 <p>These functions perform read-only operations on the file system.</p>
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>current_directory</code></strong><code>()</code></li>
@@ -231,7 +231,7 @@ a permission failure or a symlink loop. On Windows, resolving a symlink
 requires opening the target file, so this will fail if the target file does
 not exist (presumably the symlink still contains a path but there does not
 appear to be any way to retrieve it).</p>
-<h3 id="file-system-modifying-functions">File system modifying functions</h3>
+<h2 id="file-system-modifying-functions">File system modifying functions</h2>
 <p>These functions perform operations that require write access to the file
 system.</p>
 <ul>
@@ -264,7 +264,7 @@ will share any system specific limitations and variations; behaviour when the
 destination file already exists is system dependent (this may overwrite the
 file or throw an exception), and on most systems the call will fail if the
 source and destination are on different physical file systems.</p>
-<h3 id="directory-iterators">Directory iterators</h3>
+<h2 id="directory-iterators">Directory iterators</h2>
 <ul>
 <li><code>template &lt;typename C&gt; class</code> <strong><code>DirectoryIterator</code></strong><ul>
 <li><code>using DirectoryIterator::</code><strong><code>difference_type</code></strong> <code>= ptrdiff_t</code></li>

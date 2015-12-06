@@ -6,12 +6,12 @@
     <link type="text/css" rel="stylesheet" href="style.css"/>
 </head>
 <body>
-<h2 id="unicorn-library-environment-variables"><a href="index.html">Unicorn Library</a>: Environment Variables</h2>
+<h1 id="unicorn-library-environment-variables"><a href="index.html">Unicorn Library</a>: Environment Variables</h1>
 <p><em>Unicode library for C++ by Ross Smith</em></p>
 <ul>
 <li><code>#include "unicorn/environment.hpp"</code></li>
 </ul>
-<h3 id="contents">Contents</h3>
+<h2 id="contents">Contents</h2>
 <div class="toc">
 <ul>
 <li><a href="#unicorn-library-environment-variables">Unicorn Library: Environment Variables</a><ul>
@@ -23,7 +23,7 @@
 </li>
 </ul>
 </div>
-<h3 id="introduction">Introduction</h3>
+<h2 id="introduction">Introduction</h2>
 <p>Operating systems store environment variables in a system dependent format,
 based on the string encoding supported by the native system call API. This
 means that environment variable names and values are stored as 16 bit strings
@@ -54,7 +54,7 @@ dependent.</p>
 <p>System environment variable APIs are usually not threadsafe; all of the
 functions in this module ensure thread safety by locking a common global
 mutex.</p>
-<h3 id="functions">Functions</h3>
+<h2 id="functions">Functions</h2>
 <p>The <code>flags</code> argument passed to these functions must be one of the encoding
 conversion flags defined in <a href="utf.html"><code>unicorn/utf</code></a>. Behaviour is undefined
 if the <code>flags</code> argument is not one of these values.</p>
@@ -90,7 +90,7 @@ an empty value, this function may or may not report its existence on Windows.</p
 <li><code>template &lt;typename C&gt; void</code> <strong><code>unset_env</code></strong><code>(const C* name, uint32_t flags = 0)</code></li>
 </ul>
 <p>Delete a variable from the process's environment block.</p>
-<h3 id="class-environment">Class Environment</h3>
+<h2 id="class-environment">Class Environment</h2>
 <ul>
 <li><code>class</code> <strong><code>Environment</code></strong></li>
 </ul>

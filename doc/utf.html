@@ -6,7 +6,7 @@
     <link type="text/css" rel="stylesheet" href="style.css"/>
 </head>
 <body>
-<h2 id="unicorn-library-utf-encodings"><a href="index.html">Unicorn Library</a>: UTF Encodings</h2>
+<h1 id="unicorn-library-utf-encodings"><a href="index.html">Unicorn Library</a>: UTF Encodings</h1>
 <p><em>Unicode library for C++ by Ross Smith</em></p>
 <ul>
 <li><code>#include "unicorn/utf.hpp"</code></li>
@@ -17,7 +17,7 @@ and UTF-32. Encoded strings are stored in any of the standard C++ string
 classes, with the encoding defined by the size of the code units: <code>string</code> (or
 <code>u8string</code>) holds UTF-8, <code>u16string</code> holds UTF-16, and <code>u32string</code> holds
 UTF-32; <code>wstring</code> may hold either UTF-16 or UTF-32, depending on the compiler.</p>
-<h3 id="contents">Contents</h3>
+<h2 id="contents">Contents</h2>
 <div class="toc">
 <ul>
 <li><a href="#unicorn-library-utf-encodings">Unicorn Library: UTF Encodings</a><ul>
@@ -32,7 +32,7 @@ UTF-32; <code>wstring</code> may hold either UTF-16 or UTF-32, depending on the 
 </li>
 </ul>
 </div>
-<h3 id="constants">Constants</h3>
+<h2 id="constants">Constants</h2>
 <table>
 <thead>
 <tr>
@@ -78,7 +78,7 @@ validity, only at the point of input and output. Unlike the UTF conversion
 functions in this module, the functions in <a href="mbcs.html"><code>unicorn/mbcs</code></a> that
 convert between Unicode and other encodings default to <code>err_replace</code>, and do
 not accept the <code>err_ignore</code> option.</p>
-<h3 id="utility-functions">Utility functions</h3>
+<h2 id="utility-functions">Utility functions</h2>
 <ul>
 <li><code>template &lt;typename C&gt; unsigned</code> <strong><code>code_units</code></strong><code>(char32_t c)</code></li>
 </ul>
@@ -93,7 +93,7 @@ UTF encoding implied by the character type <code>C</code>.</p>
 </ul>
 <p>These give the properties of individual code units. Exactly one of the first
 four functions will be true for any value of <code>C</code>.</p>
-<h3 id="utf-decoding-iterator">UTF decoding iterator</h3>
+<h2 id="utf-decoding-iterator">UTF decoding iterator</h2>
 <ul>
 <li><code>template &lt;typename C&gt; class</code> <strong><code>UtfIterator</code></strong><ul>
 <li><code>using UtfIterator::</code><strong><code>code_unit</code></strong> <code>= C</code></li>
@@ -181,7 +181,7 @@ errors.</p>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>u_str</code></strong><code>(const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; range)</code></li>
 </ul>
 <p>These return a copy of the substring between two iterators.</p>
-<h3 id="utf-encoding-iterator">UTF encoding iterator</h3>
+<h2 id="utf-encoding-iterator">UTF encoding iterator</h2>
 <ul>
 <li><code>template &lt;typename C&gt; class</code> <strong><code>UtfWriter</code></strong><ul>
 <li><code>using UtfWriter::</code><strong><code>code_unit</code></strong> <code>= C</code></li>
@@ -219,7 +219,7 @@ same way as for <code>UtfIterator</code>.</p>
 <li><code>template &lt;typename C&gt; UtfWriter&lt;C&gt;</code> <strong><code>utf_writer</code></strong><code>(basic_string&lt;C&gt;&amp; dst, uint32_t flags = 0) noexcept</code></li>
 </ul>
 <p>Returns an encoding iterator writing to the given destination string.</p>
-<h3 id="utf-conversion-functions">UTF conversion functions</h3>
+<h2 id="utf-conversion-functions">UTF conversion functions</h2>
 <ul>
 <li><code>template &lt;typename C1, typename C2&gt; void</code> <strong><code>recode</code></strong><code>(const basic_string&lt;C1&gt;&amp; src, basic_string&lt;C2&gt;&amp; dst, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename C1, typename C2&gt; void</code> <strong><code>recode</code></strong><code>(const basic_string&lt;C1&gt;&amp; src, size_t offset, basic_string&lt;C2&gt;&amp; dst, uint32_t flags = 0)</code></li>
@@ -246,7 +246,7 @@ will contain the successfully converted part of the string before the error.</p>
 <li><code>template &lt;typename C&gt; NativeString</code> <strong><code>to_native</code></strong><code>(const basic_string&lt;C&gt;&amp; src, uint32_t flags = 0)</code></li>
 </ul>
 <p>These are just shorthand for the corresponding invocation of <code>recode()</code>.</p>
-<h3 id="utf-validation-functions">UTF validation functions</h3>
+<h2 id="utf-validation-functions">UTF validation functions</h2>
 <ul>
 <li><code>template &lt;typename C&gt; void</code> <strong><code>sanitize</code></strong><code>(basic_string&lt;C&gt;&amp; str)</code></li>
 </ul>
