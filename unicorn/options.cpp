@@ -82,9 +82,12 @@ namespace Unicorn {
             u8string prefix;
             if (opt.is_anon)
                 prefix += "[";
-            prefix += "--$1"_fmt(opt.name);
+            prefix += "--";
+            if (opt.is_boolean && opt.defval == "1")
+                prefix += "no-";
+            prefix += opt.name;
             if (! opt.abbrev.empty())
-                prefix += ", -$1"_fmt(opt.abbrev);
+                prefix += ", -"s + opt.abbrev;
             if (opt.is_anon)
                 prefix += "]";
             if (! opt.is_boolean) {
@@ -100,7 +103,7 @@ namespace Unicorn {
             u8string suffix = opt.info, extra;
             if (opt.is_required) {
                 extra = "required";
-            } else if (! opt.defval.empty() && opt.info.find("default") == npos) {
+            } else if (! opt.defval.empty() && ! opt.is_boolean && opt.info.find("default") == npos) {
                 extra = "default ";
                 if (match_integer.match(opt.defval) || match_float.match(opt.defval))
                     extra += opt.defval;
@@ -138,6 +141,7 @@ namespace Unicorn {
         str_trim_in(opt.name, "-");
         if (str_length(opt.name) < 2)
             throw OptionSpecError(tag);
+        bool neg = opt.name.substr(0, 3) == "no-";
         str_trim_in(opt.info);
         if (opt.info.empty())
             throw OptionSpecError(tag);
@@ -146,6 +150,7 @@ namespace Unicorn {
                 || (! opt.abbrev.empty() && ! char_is_alphanumeric(*utf_begin(opt.abbrev)))
                 || (opt.is_boolean && (opt.is_anon || opt.is_multiple || opt.is_required || ! opt.pattern.empty()))
                 || ((opt.is_boolean || opt.is_required) && ! opt.defval.empty())
+                || (neg && (! opt.is_boolean || ! opt.abbrev.empty()))
                 || (opt.is_required && ! opt.group.empty())
                 || (int(opt.is_integer) + int(opt.is_uinteger) + int(opt.is_float) + int(! opt.pattern.empty()) > 1))
             throw OptionSpecError(tag);
@@ -157,6 +162,10 @@ namespace Unicorn {
             opt.pattern = match_float;
         if (! opt.defval.empty() && ! opt.pattern.empty() && ! opt.pattern.match(opt.defval))
             throw OptionSpecError(tag);
+        if (neg) {
+            opt.name.erase(0, 3);
+            opt.defval = "1";
+        }
         if (find_index(opt.name) != npos || find_index(opt.abbrev) != npos)
             throw OptionSpecError("Duplicate option spec", tag);
         opts.push_back(opt);
@@ -164,6 +173,8 @@ namespace Unicorn {
 
     size_t Options::find_index(u8string name, bool found) const {
         str_trim_in(name, "-");
+        if (name.substr(0, 3) == "no-")
+            name.erase(0, 3);
         if (name.empty())
             return npos;
         auto i = std::find_if(opts.begin(), opts.end(),
@@ -275,35 +286,43 @@ namespace Unicorn {
     }
 
     void Options::extract_named_options(string_list& args) {
-        size_t i = 0;
-        while (i < args.size()) {
-            if (arg_type(args[i]) != is_long_option) {
-                ++i;
+        size_t a = 0;
+        while (a < args.size()) {
+            if (arg_type(args[a]) != is_long_option) {
+                ++a;
                 continue;
             }
-            size_t o = find_index(args[i]);
+            size_t o = find_index(args[a]);
             if (o == npos)
-                throw CommandLineError("Unknown option", args[i]);
+                throw CommandLineError("Unknown option", args[a]);
             auto& opt(opts[o]);
             if (opt.found && ! opt.is_multiple)
-                throw CommandLineError("Duplicate option", args[i]);
+                throw CommandLineError("Duplicate option", args[a]);
             if (! opt.group.empty())
                 for (auto& opt2: opts)
                     if (&opt2 != &opt && opt2.group == opt.group && opt2.found)
-                        throw CommandLineError("Incompatible options", "--" + opt2.name, args[i]);
+                        throw CommandLineError("Incompatible options", "--" + opt2.name, args[a]);
             opt.found = true;
-            size_t n = 1, max_n = 1;
-            if (opt.is_multiple)
-                max_n = args.size() - i;
-            else if (! opt.is_boolean)
-                max_n = std::min(size_t(2), args.size() - i);
-            for (; n < max_n && arg_type(args[i + n]) == is_argument; ++n) {
-                auto& arg(args[i + n]);
-                if (! opt.pattern.empty() && (opt.is_required || ! arg.empty()) && ! opt.pattern.match(arg))
-                    throw CommandLineError("Invalid argument to option", args[i], arg);
-                opt.values.push_back(arg);
+            if (opt.is_boolean) {
+                if (args[a].substr(0, 5) == "--no-")
+                    opt.values.push_back("0");
+                else
+                    opt.values.push_back("1");
+                args.erase(args.begin() + a);
+            } else {
+                size_t n = 1, max_n = 1;
+                if (opt.is_multiple)
+                    max_n = args.size() - a;
+                else
+                    max_n = std::min(size_t(2), args.size() - a);
+                for (; n < max_n && arg_type(args[a + n]) == is_argument; ++n) {
+                    auto& arg(args[a + n]);
+                    if (! opt.pattern.empty() && (opt.is_required || ! arg.empty()) && ! opt.pattern.match(arg))
+                        throw CommandLineError("Invalid argument to option", args[a], arg);
+                    opt.values.push_back(arg);
+                }
+                args.erase(args.begin() + a, args.begin() + a + n);
             }
-            args.erase(args.begin() + i, args.begin() + i + n);
         }
     }
 
@@ -334,12 +353,9 @@ namespace Unicorn {
     }
 
     void Options::supply_defaults() {
-        for (auto& opt: opts) {
-            if (opt.found && opt.is_boolean)
-                opt.values.push_back("1");
+        for (auto& opt: opts)
             if (opt.values.empty() && ! opt.defval.empty())
                 opt.values.push_back(opt.defval);
-        }
     }
 
     u8string Options::arg_convert(const string& str, uint32_t flags) {

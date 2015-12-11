@@ -10,11 +10,12 @@ using namespace Unicorn;
 
 namespace {
 
-    std::ostringstream dummy;
+    std::ostringstream nowhere;
 
     void check_basic_options(Options& opt1) {
 
-        Options opt2 = opt1;
+        opt1 = Options("App version 1.0", "Intro", "Outro");
+        Options opt2("Blank");
         u8string cmdline;
 
         TEST_EQUAL(opt1.version(), "App version 1.0");
@@ -55,7 +56,7 @@ namespace {
             TRY(opt2 = opt1);
             cmdline = "app";
             std::ostringstream out;
-            TEST(! opt2.parse(cmdline, dummy));
+            TEST(! opt2.parse(cmdline, nowhere));
             TEST_EQUAL(out.str(), "");
             TEST(! opt2.has("alpha"));
             TEST_EQUAL(opt2.get<u8string>("alpha"), "ABC");
@@ -65,7 +66,7 @@ namespace {
 
         TRY(opt2 = opt1);
         cmdline = "app --alpha xyz -n 999";
-        TEST(! opt2.parse(cmdline, dummy));
+        TEST(! opt2.parse(cmdline, nowhere));
         TEST(opt2.has("alpha"));
         TEST_EQUAL(opt2.get<u8string>("alpha"), "xyz");
         TEST(opt2.has("number"));
@@ -73,7 +74,7 @@ namespace {
 
         TRY(opt2 = opt1);
         cmdline = "app --alpha=xyz -n=999";
-        TEST(! opt2.parse(cmdline, dummy));
+        TEST(! opt2.parse(cmdline, nowhere));
         TEST(opt2.has("alpha"));
         TEST_EQUAL(opt2.get<u8string>("alpha"), "xyz");
         TEST(opt2.has("number"));
@@ -81,7 +82,7 @@ namespace {
 
         TRY(opt2 = opt1);
         cmdline = "app --alpha -n";
-        TEST(! opt2.parse(cmdline, dummy));
+        TEST(! opt2.parse(cmdline, nowhere));
         TEST(opt2.has("alpha"));
         TEST_EQUAL(opt2.get<u8string>("alpha"), "ABC");
         TEST(opt2.has("number"));
@@ -93,7 +94,7 @@ namespace {
 
         TRY(opt2 = opt1);
         cmdline = "app -a xyz -n 999";
-        TEST(! opt2.parse(cmdline, dummy, opt_quoted));
+        TEST(! opt2.parse(cmdline, nowhere, opt_quoted));
         TEST(opt2.has("alpha"));
         TEST_EQUAL(opt2.get<u8string>("alpha"), "xyz");
         TEST(opt2.has("number"));
@@ -101,7 +102,7 @@ namespace {
 
         TRY(opt2 = opt1);
         cmdline = "app -a \"xyz\" -n \"999\"";
-        TEST(! opt2.parse(cmdline, dummy, opt_quoted));
+        TEST(! opt2.parse(cmdline, nowhere, opt_quoted));
         TEST(opt2.has("alpha"));
         TEST_EQUAL(opt2.get<u8string>("alpha"), "xyz");
         TEST(opt2.has("number"));
@@ -109,51 +110,68 @@ namespace {
 
         TRY(opt2 = opt1);
         cmdline = "app -a \"uvw xyz\"";
-        TEST(! opt2.parse(cmdline, dummy, opt_quoted));
+        TEST(! opt2.parse(cmdline, nowhere, opt_quoted));
         TEST(opt2.has("alpha"));
         TEST_EQUAL(opt2.get<u8string>("alpha"), "uvw xyz");
 
         TRY(opt2 = opt1);
         cmdline = "app -a \"\"\"uvw\"\" \"\"xyz\"\"\"";
-        TEST(! opt2.parse(cmdline, dummy, opt_quoted));
+        TEST(! opt2.parse(cmdline, nowhere, opt_quoted));
         TEST(opt2.has("alpha"));
         TEST_EQUAL(opt2.get<u8string>("alpha"), "\"uvw\" \"xyz\"");
 
     }
 
-    void check_switch_options(Options& opt1) {
+    void check_boolean_options(Options& opt1) {
 
-        Options opt2 = opt1;
+        Options opt2("Blank");
         u8string cmdline;
 
-        TRY(opt1.add("switch", "Switch option", Options::boolean, Options::abbrev="s"));
+        TRY(opt1.add("--foo", "Positive option", Options::boolean, Options::abbrev="f"));
+        TRY(opt1.add("--no-bar", "Negative option", Options::boolean));
 
         TRY(opt2 = opt1);
         cmdline = "app";
-        TEST(! opt2.parse(cmdline, dummy));
-        TEST(! opt2.has("switch"));
-        TEST(! opt2.get<bool>("switch"));
-        TEST_EQUAL(opt2.get<u8string>("switch"), "");
+        TEST(! opt2.parse(cmdline, nowhere));
+        TEST(! opt2.has("foo"));
+        TEST(! opt2.has("bar"));
+        TEST(! opt2.get<bool>("foo"));
+        TEST(opt2.get<bool>("bar"));
+        TEST_EQUAL(opt2.get<u8string>("foo"), "");
+        TEST_EQUAL(opt2.get<u8string>("bar"), "1");
 
         TRY(opt2 = opt1);
-        cmdline = "app --switch";
-        TEST(! opt2.parse(cmdline, dummy));
-        TEST(opt2.has("switch"));
-        TEST(opt2.get<bool>("switch"));
-        TEST_EQUAL(opt2.get<u8string>("switch"), "1");
+        cmdline = "app --foo --bar";
+        TEST(! opt2.parse(cmdline, nowhere));
+        TEST(opt2.has("foo"));
+        TEST(opt2.has("bar"));
+        TEST(opt2.get<bool>("foo"));
+        TEST(opt2.get<bool>("bar"));
+        TEST_EQUAL(opt2.get<u8string>("foo"), "1");
+        TEST_EQUAL(opt2.get<u8string>("bar"), "1");
 
         TRY(opt2 = opt1);
-        cmdline = "app -s";
-        TEST(! opt2.parse(cmdline, dummy));
-        TEST(opt2.has("switch"));
-        TEST(opt2.get<bool>("switch"));
-        TEST_EQUAL(opt2.get<u8string>("switch"), "1");
+        cmdline = "app --no-foo --no-bar";
+        TEST(! opt2.parse(cmdline, nowhere));
+        TEST(opt2.has("foo"));
+        TEST(opt2.has("bar"));
+        TEST(! opt2.get<bool>("foo"));
+        TEST(! opt2.get<bool>("bar"));
+        TEST_EQUAL(opt2.get<u8string>("foo"), "0");
+        TEST_EQUAL(opt2.get<u8string>("bar"), "0");
+
+        TRY(opt2 = opt1);
+        cmdline = "app -f";
+        TEST(! opt2.parse(cmdline, nowhere));
+        TEST(opt2.has("foo"));
+        TEST(opt2.get<bool>("foo"));
+        TEST_EQUAL(opt2.get<u8string>("foo"), "1");
 
     }
 
     void check_multiple_options(Options& opt1) {
 
-        Options opt2 = opt1;
+        Options opt2("Blank");
         u8string cmdline;
         vector<u8string> sv;
 
@@ -161,7 +179,7 @@ namespace {
 
         TRY(opt2 = opt1);
         cmdline = "app";
-        TEST(! opt2.parse(cmdline, dummy));
+        TEST(! opt2.parse(cmdline, nowhere));
         TEST(! opt2.has("list"));
         TEST_EQUAL(opt2.get<u8string>("list"), "");
         TRY(sv = opt2.get_list<u8string>("list"));
@@ -169,7 +187,7 @@ namespace {
 
         TRY(opt2 = opt1);
         cmdline = "app --list abc";
-        TEST(! opt2.parse(cmdline, dummy));
+        TEST(! opt2.parse(cmdline, nowhere));
         TEST(opt2.has("list"));
         TEST_EQUAL(opt2.get<u8string>("list"), "abc");
         TRY(sv = opt2.get_list<u8string>("list"));
@@ -178,7 +196,7 @@ namespace {
 
         TRY(opt2 = opt1);
         cmdline = "app --list abc def ghi";
-        TEST(! opt2.parse(cmdline, dummy));
+        TEST(! opt2.parse(cmdline, nowhere));
         TEST(opt2.has("list"));
         TEST_EQUAL(opt2.get<u8string>("list"), "abc def ghi");
         TRY(sv = opt2.get_list<u8string>("list"));
@@ -189,7 +207,7 @@ namespace {
 
     void check_required_options(Options& opt1) {
 
-        Options opt2 = opt1;
+        Options opt2("Blank");
         u8string cmdline;
 
         TRY(opt1.add("required", "Required option", Options::required, Options::abbrev="r"));
@@ -200,7 +218,7 @@ namespace {
 
         TRY(opt2 = opt1);
         cmdline = "app --required abc";
-        TEST(! opt2.parse(cmdline, dummy));
+        TEST(! opt2.parse(cmdline, nowhere));
         TEST(opt2.has("required"));
         TEST_EQUAL(opt2.get<u8string>("required"), "abc");
 
@@ -212,41 +230,9 @@ namespace {
 
     }
 
-    void check_automatic_help(Options& opt1) {
-
-        Options opt2 = opt1;
-        u8string cmdline;
-
-        TRY(opt1.autohelp());
-
-        TRY(opt2 = opt1);
-        cmdline = "app";
-        std::ostringstream out;
-        TEST(opt2.parse(cmdline, out));
-        TEST_EQUAL(out.str(),
-            "\n"
-            "App version 1.0\n"
-            "\n"
-            "Intro\n"
-            "\n"
-            "Options:\n"
-            "    --alpha, -a <arg>     = Alpha option (default \"ABC\")\n"
-            "    --number, -n <arg>    = Number option (default 123)\n"
-            "    --switch, -s          = Switch option\n"
-            "    --list, -l <arg> ...  = List option\n"
-            "    --required, -r <arg>  = Required option (required)\n"
-            "    --help, -h            = Show usage information\n"
-            "    --version, -v         = Show version information\n"
-            "\n"
-            "Outro\n"
-            "\n"
-        );
-
-    }
-
     void check_anonymous_arguments(Options& opt1) {
 
-        Options opt2 = opt1;
+        Options opt2("Blank");
         u8string cmdline;
         vector<u8string> sv;
 
@@ -254,13 +240,13 @@ namespace {
 
         TRY(opt2 = opt1);
         cmdline = "app --required abc";
-        TEST(! opt2.parse(cmdline, dummy));
+        TEST(! opt2.parse(cmdline, nowhere));
         TEST(! opt2.has("head"));
         TEST_EQUAL(opt2.get<u8string>("head"), "");
 
         TRY(opt2 = opt1);
         cmdline = "app --required abc def";
-        TEST(! opt2.parse(cmdline, dummy));
+        TEST(! opt2.parse(cmdline, nowhere));
         TEST(opt2.has("head"));
         TEST_EQUAL(opt2.get<u8string>("head"), "def");
 
@@ -272,7 +258,7 @@ namespace {
 
         TRY(opt2 = opt1);
         cmdline = "app --required abc";
-        TEST(! opt2.parse(cmdline, dummy));
+        TEST(! opt2.parse(cmdline, nowhere));
         TEST(! opt2.has("head"));
         TEST_EQUAL(opt2.get<u8string>("head"), "");
         TEST(! opt2.has("tail"));
@@ -282,7 +268,7 @@ namespace {
 
         TRY(opt2 = opt1);
         cmdline = "app --required abc def";
-        TEST(! opt2.parse(cmdline, dummy));
+        TEST(! opt2.parse(cmdline, nowhere));
         TEST(opt2.has("head"));
         TEST_EQUAL(opt2.get<u8string>("head"), "def");
         TEST(! opt2.has("tail"));
@@ -292,7 +278,7 @@ namespace {
 
         TRY(opt2 = opt1);
         cmdline = "app --required abc def ghi";
-        TEST(! opt2.parse(cmdline, dummy));
+        TEST(! opt2.parse(cmdline, nowhere));
         TEST(opt2.has("head"));
         TEST_EQUAL(opt2.get<u8string>("head"), "def");
         TEST(opt2.has("tail"));
@@ -303,7 +289,7 @@ namespace {
 
         TRY(opt2 = opt1);
         cmdline = "app --required abc def ghi jkl";
-        TEST(! opt2.parse(cmdline, dummy));
+        TEST(! opt2.parse(cmdline, nowhere));
         TEST(opt2.has("head"));
         TEST_EQUAL(opt2.get<u8string>("head"), "def");
         TEST(opt2.has("tail"));
@@ -311,38 +297,6 @@ namespace {
         TRY(sv = opt2.get_list<u8string>("tail"));
         TEST_EQUAL(sv.size(), 2);
         TEST_EQUAL(to_str(sv), "[ghi,jkl]");
-
-    }
-
-    void check_help_text(Options& opt1) {
-
-        Options opt2 = opt1;
-        u8string cmdline;
-
-        TRY(opt2 = opt1);
-        cmdline = "app";
-        std::ostringstream out;
-        TEST(opt2.parse(cmdline, out));
-        TEST_EQUAL(out.str(),
-            "\n"
-            "App version 1.0\n"
-            "\n"
-            "Intro\n"
-            "\n"
-            "Options:\n"
-            "    --alpha, -a <arg>     = Alpha option (default \"ABC\")\n"
-            "    --number, -n <arg>    = Number option (default 123)\n"
-            "    --switch, -s          = Switch option\n"
-            "    --list, -l <arg> ...  = List option\n"
-            "    --required, -r <arg>  = Required option (required)\n"
-            "    [--head] <arg>        = First anonymous argument\n"
-            "    [--tail] <arg> ...    = Other anonymous arguments\n"
-            "    --help, -h            = Show usage information\n"
-            "    --version, -v         = Show version information\n"
-            "\n"
-            "Outro\n"
-            "\n"
-        );
 
     }
 
@@ -354,12 +308,12 @@ namespace {
         TRY(opt1.add("group2a", "Group 2 a", Options::group="eccles"));
         TRY(opt1.add("group2b", "Group 2 b", Options::group="eccles"));
 
-        Options opt2 = opt1;
+        Options opt2("Blank");
         u8string cmdline;
 
         TRY(opt2 = opt1);
         cmdline = "app --group1a abc";
-        TEST(! opt2.parse(cmdline, dummy));
+        TEST(! opt2.parse(cmdline, nowhere));
         TEST_EQUAL(opt2.get<u8string>("group1a"), "abc");
 
         TRY(opt2 = opt1);
@@ -368,7 +322,7 @@ namespace {
 
         TRY(opt2 = opt1);
         cmdline = "app --group1a abc --group2a def";
-        TEST(! opt2.parse(cmdline, dummy));
+        TEST(! opt2.parse(cmdline, nowhere));
         TEST_EQUAL(opt2.get<u8string>("group1a"), "abc");
         TEST_EQUAL(opt2.get<u8string>("group2a"), "def");
 
@@ -381,12 +335,12 @@ namespace {
         TRY(opt1.add("number", "Number", Options::defval="42", Options::pattern="\\d+"));
         TEST_THROW_MATCH(opt1.add("word", "Word", Options::defval="*", Options::pattern="\\w+"), OptionSpecError, ": \"word\"$");
 
-        Options opt2 = opt1;
+        Options opt2("Blank");
         u8string cmdline;
 
         TRY(opt2 = opt1);
         cmdline = "app --alpha abc --number 123";
-        TEST(! opt2.parse(cmdline, dummy));
+        TEST(! opt2.parse(cmdline, nowhere));
         TEST_EQUAL(opt2.get<u8string>("alpha"), "abc");
         TEST_EQUAL(opt2.get<int>("number"), 123);
 
@@ -405,14 +359,14 @@ namespace {
 
         TRY(opt2 = opt1);
         cmdline = "app";
-        TEST(! opt2.parse(cmdline, dummy));
+        TEST(! opt2.parse(cmdline, nowhere));
         TEST_EQUAL(opt2.get<int>("int"), 0);
         TEST_EQUAL(opt2.get<unsigned>("uint"), 0);
         TEST_EQUAL(opt2.get<float>("float"), 0);
 
         TRY(opt2 = opt1);
         cmdline = "app --int -42 --uint 42 --float 1.234e5";
-        TEST(! opt2.parse(cmdline, dummy));
+        TEST(! opt2.parse(cmdline, nowhere));
         TEST_EQUAL(opt2.get<int>("int"), -42);
         TEST_EQUAL(opt2.get<unsigned>("uint"), 42);
         TEST_EQUAL(opt2.get<float>("float"), 123400);
@@ -435,15 +389,79 @@ namespace {
 
         TRY(opt2 = opt1);
         cmdline = "app -s hello 42";
-        TEST(! opt2.parse(cmdline, dummy));
+        TEST(! opt2.parse(cmdline, nowhere));
         TEST_EQUAL(opt2.get<int>("int"), 42);
         TEST_EQUAL(opt2.get<u8string>("str"), "hello");
 
         TRY(opt2 = opt1);
         cmdline = "app 42 -s hello";
-        TEST(! opt2.parse(cmdline, dummy));
+        TEST(! opt2.parse(cmdline, nowhere));
         TEST_EQUAL(opt2.get<int>("int"), 42);
         TEST_EQUAL(opt2.get<u8string>("str"), "hello");
+
+    }
+
+    void check_help(Options& opt1) {
+
+        Options opt2("Blank");
+        u8string cmdline;
+
+        {
+            TRY(opt2 = opt1);
+            cmdline = "app --help";
+            std::ostringstream out;
+            TEST(opt2.parse(cmdline, out));
+            TEST_EQUAL(out.str(),
+                "\n"
+                "App version 1.0\n"
+                "\n"
+                "Intro\n"
+                "\n"
+                "Options:\n"
+                "    --alpha, -a <arg>     = Alpha option (default \"ABC\")\n"
+                "    --number, -n <arg>    = Number option (default 123)\n"
+                "    --foo, -f             = Positive option\n"
+                "    --no-bar              = Negative option\n"
+                "    --list, -l <arg> ...  = List option\n"
+                "    --required, -r <arg>  = Required option (required)\n"
+                "    [--head] <arg>        = First anonymous argument\n"
+                "    [--tail] <arg> ...    = Other anonymous arguments\n"
+                "    --help, -h            = Show usage information\n"
+                "    --version, -v         = Show version information\n"
+                "\n"
+                "Outro\n"
+                "\n"
+            );
+        }
+
+        {
+            TRY(opt2 = opt1);
+            TRY(opt2.autohelp());
+            cmdline = "app";
+            std::ostringstream out;
+            TEST(opt2.parse(cmdline, out));
+            TEST_EQUAL(out.str(),
+                "\n"
+                "App version 1.0\n"
+                "\n"
+                "Intro\n"
+                "\n"
+                "Options:\n"
+                "    --alpha, -a <arg>     = Alpha option (default \"ABC\")\n"
+                "    --number, -n <arg>    = Number option (default 123)\n"
+                "    --foo, -f             = Positive option\n"
+                "    --no-bar              = Negative option\n"
+                "    --list, -l <arg> ...  = List option\n"
+                "    --required, -r <arg>  = Required option (required)\n"
+                "    [--head] <arg>        = First anonymous argument\n"
+                "    [--tail] <arg> ...    = Other anonymous arguments\n"
+                "    --help, -h            = Show usage information\n"
+                "    --version, -v         = Show version information\n"
+                "\n"
+                "Outro\n"
+                "\n"
+            );
+        }
 
     }
 
@@ -451,16 +469,15 @@ namespace {
 
 TEST_MODULE(unicorn, options) {
 
-    Options opt1("App version 1.0", "Intro", "Outro");
+    Options opt1("Blank");
 
     check_basic_options(opt1);
-    check_switch_options(opt1);
+    check_boolean_options(opt1);
     check_multiple_options(opt1);
     check_required_options(opt1);
-    check_automatic_help(opt1);
     check_anonymous_arguments(opt1);
-    check_help_text(opt1);
     check_group_options();
     check_argument_patterns();
+    check_help(opt1);
 
 }

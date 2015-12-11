@@ -113,12 +113,17 @@ supplied to the `add()` function with or without the leading hyphens). The
 user when help is requested. These may be followed by optional keyword
 arguments, as listed above.
 
+Boolean options can be supplied in negated form, by giving a name starting
+with `"--no-"` or `"no-"`. This creates a boolean option whose default value
+is `true`.
+
 The `add()` function will throw `OptionSpecError` if any of the following is
 true:
 
 * The option name has less than two characters (not counting any leading hyphens).
 * The info string is empty.
 * An abbreviation is supplied that is longer than one character (not counting a leading hyphen), or is not alphanumeric.
+* An option starting with `"--no-"` is not boolean or has an abbreviation.
 * The `boolean` tag is combined with `anon`, `defval`, `multiple`, `pattern`, or `required`.
 * The `required` tag is combined with `defval` or `group`.
 * More than one of `float`, `integer`, `pattern`, and `uinteger` is supplied.
@@ -164,6 +169,9 @@ Windows). Normally the supplied argument list is assumed to start with the
 command name (which will be discarded); use the `opt_noprefix` flag to
 override this.
 
+Boolean options will be recognised in normal or negated form (e.g. `"--magic"`
+vs `"--no-magic"`).
+
 If help or version information is requested, it will be written to the given
 output stream (`std::`**`cout`** by default). The `parse()` function will return
 true if all requested processing has already been handled (i.e. if help or
@@ -207,10 +215,11 @@ The `get()` function returns the argument attached to an option, converted to
 the given type (which must be a string type or an arithmetic type; when
 converting to a number, characters after a valid number are ignored). If
 multiple arguments were supplied for the option, they are concatenated into a
-space delimited list first.
+space delimited list first. If the option was not present on the command line,
+its default value is used.
 
 The `get_list()` function returns multiple arguments as a vector. Its
 behaviour is otherwise the same as `get()`.
 
 The `has()` function simply indicates whether an option was present on the
-command line. This should be used to query boolean options.
+command line.

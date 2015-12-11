@@ -177,12 +177,16 @@ supplied to the <code>add()</code> function with or without the leading hyphens)
 <code>info</code> string is the description of the option that will be presented to the
 user when help is requested. These may be followed by optional keyword
 arguments, as listed above.</p>
+<p>Boolean options can be supplied in negated form, by giving a name starting
+with <code>"--no-"</code> or <code>"no-"</code>. This creates a boolean option whose default value
+is <code>true</code>.</p>
 <p>The <code>add()</code> function will throw <code>OptionSpecError</code> if any of the following is
 true:</p>
 <ul>
 <li>The option name has less than two characters (not counting any leading hyphens).</li>
 <li>The info string is empty.</li>
 <li>An abbreviation is supplied that is longer than one character (not counting a leading hyphen), or is not alphanumeric.</li>
+<li>An option starting with <code>"--no-"</code> is not boolean or has an abbreviation.</li>
 <li>The <code>boolean</code> tag is combined with <code>anon</code>, <code>defval</code>, <code>multiple</code>, <code>pattern</code>, or <code>required</code>.</li>
 <li>The <code>required</code> tag is combined with <code>defval</code> or <code>group</code>.</li>
 <li>More than one of <code>float</code>, <code>integer</code>, <code>pattern</code>, and <code>uinteger</code> is supplied.</li>
@@ -226,6 +230,8 @@ split apart during parsing, or as the standard <code>(argc,argv)</code> argument
 Windows). Normally the supplied argument list is assumed to start with the
 command name (which will be discarded); use the <code>opt_noprefix</code> flag to
 override this.</p>
+<p>Boolean options will be recognised in normal or negated form (e.g. <code>"--magic"</code>
+vs <code>"--no-magic"</code>).</p>
 <p>If help or version information is requested, it will be written to the given
 output stream (<code>std::</code><strong><code>cout</code></strong> by default). The <code>parse()</code> function will return
 true if all requested processing has already been handled (i.e. if help or
@@ -281,9 +287,10 @@ recognized here, not an abbreviation.</p>
 the given type (which must be a string type or an arithmetic type; when
 converting to a number, characters after a valid number are ignored). If
 multiple arguments were supplied for the option, they are concatenated into a
-space delimited list first.</p>
+space delimited list first. If the option was not present on the command line,
+its default value is used.</p>
 <p>The <code>get_list()</code> function returns multiple arguments as a vector. Its
 behaviour is otherwise the same as <code>get()</code>.</p>
 <p>The <code>has()</code> function simply indicates whether an option was present on the
-command line. This should be used to query boolean options.</p></body>
+command line.</p></body>
 </html>
