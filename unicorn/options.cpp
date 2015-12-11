@@ -147,8 +147,7 @@ namespace Unicorn {
                 || (opt.is_boolean && (opt.is_anon || opt.is_multiple || opt.is_required || ! opt.pattern.empty()))
                 || ((opt.is_boolean || opt.is_required) && ! opt.defval.empty())
                 || (opt.is_required && ! opt.group.empty())
-                || (int(opt.is_integer) + int(opt.is_uinteger) + int(opt.is_float) > 1)
-                || ((opt.is_float || opt.is_integer) > 0 && ! opt.pattern.empty()))
+                || (int(opt.is_integer) + int(opt.is_uinteger) + int(opt.is_float) + int(! opt.pattern.empty()) > 1))
             throw OptionSpecError(tag);
         if (opt.is_integer)
             opt.pattern = match_integer;

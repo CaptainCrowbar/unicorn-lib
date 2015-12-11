@@ -143,6 +143,11 @@ report an invalid combination of properties.</p>
 <td><code>bool</code></td>
 <td>This option is mandatory.</td>
 </tr>
+<tr>
+<td><code>Options::</code><strong><code>uinteger</code></strong></td>
+<td><code>bool</code></td>
+<td>The argument value must be an unsigned integer.</td>
+</tr>
 </tbody>
 </table>
 <p>Keyword arguments for the <code>add()</code> function, described below.</p>
@@ -180,7 +185,7 @@ true:</p>
 <li>An abbreviation is supplied that is longer than one character (not counting a leading hyphen), or is not alphanumeric.</li>
 <li>The <code>boolean</code> tag is combined with <code>anon</code>, <code>defval</code>, <code>multiple</code>, <code>pattern</code>, or <code>required</code>.</li>
 <li>The <code>required</code> tag is combined with <code>defval</code> or <code>group</code>.</li>
-<li>More than one of <code>float</code>, <code>integer</code>, and <code>pattern</code> is supplied.</li>
+<li>More than one of <code>float</code>, <code>integer</code>, <code>pattern</code>, and <code>uinteger</code> is supplied.</li>
 <li>The <code>defval</code> and <code>pattern</code> tags are both present, but the default value does not match the pattern.</li>
 <li>The name or abbreviation has already been used by an earlier entry.</li>
 </ul>

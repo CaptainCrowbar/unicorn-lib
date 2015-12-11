@@ -83,6 +83,7 @@ Keyword                    | Type        | Description
 `Options::`**`multiple`**  | `bool`      | This option may be followed by multiple arguments.
 `Options::`**`pattern`**   | `u8string`  | The argument value must match this regular expression.
 `Options::`**`required`**  | `bool`      | This option is mandatory.
+`Options::`**`uinteger`**  | `bool`      | The argument value must be an unsigned integer.
 
 Keyword arguments for the `add()` function, described below.
 
@@ -120,7 +121,7 @@ true:
 * An abbreviation is supplied that is longer than one character (not counting a leading hyphen), or is not alphanumeric.
 * The `boolean` tag is combined with `anon`, `defval`, `multiple`, `pattern`, or `required`.
 * The `required` tag is combined with `defval` or `group`.
-* More than one of `float`, `integer`, and `pattern` is supplied.
+* More than one of `float`, `integer`, `pattern`, and `uinteger` is supplied.
 * The `defval` and `pattern` tags are both present, but the default value does not match the pattern.
 * The name or abbreviation has already been used by an earlier entry.
 
