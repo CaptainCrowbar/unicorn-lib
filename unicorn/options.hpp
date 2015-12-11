@@ -70,8 +70,9 @@ namespace Unicorn {
         static constexpr Kwarg<bool>
             anon = {},      // Assign anonymous arguments to this option
             boolean = {},   // Boolean option
-            floating = {},     // Argument must be a floating point number
             integer = {},   // Argument must be an integer
+            uinteger = {},  // Argument must be an unsigned integer
+            floating = {},  // Argument must be a floating point number
             multiple = {},  // Option may have multiple arguments
             required = {};  // Option is required
         static constexpr Kwarg<u8string>
@@ -113,8 +114,9 @@ namespace Unicorn {
             bool found = false;
             bool is_anon = false;
             bool is_boolean = false;
-            bool is_float = false;
             bool is_integer = false;
+            bool is_uinteger = false;
+            bool is_float = false;
             bool is_multiple = false;
             bool is_required = false;
         };
@@ -154,8 +156,9 @@ namespace Unicorn {
         opt.info = info;
         kwget(anon, opt.is_anon, args...);
         kwget(boolean, opt.is_boolean, args...);
-        kwget(floating, opt.is_float, args...);
         kwget(integer, opt.is_integer, args...);
+        kwget(uinteger, opt.is_uinteger, args...);
+        kwget(floating, opt.is_float, args...);
         kwget(multiple, opt.is_multiple, args...);
         kwget(required, opt.is_required, args...);
         kwget(abbrev, opt.abbrev, args...);

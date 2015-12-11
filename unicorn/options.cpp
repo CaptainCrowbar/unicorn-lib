@@ -11,6 +11,7 @@ namespace Unicorn {
     namespace {
 
         const auto match_integer = "[+-]?\\d+"_re;
+        const auto match_uinteger = "\\d+"_re;
         const auto match_float = "[+-]?(\\d+(\\.\\d*)?|\\.\\d+)(e[+-]?\\d+)?"_re_i;
 
         enum ArgType {
@@ -60,8 +61,9 @@ namespace Unicorn {
 
     constexpr Kwarg<bool> Options::anon;
     constexpr Kwarg<bool> Options::boolean;
-    constexpr Kwarg<bool> Options::floating;
     constexpr Kwarg<bool> Options::integer;
+    constexpr Kwarg<bool> Options::uinteger;
+    constexpr Kwarg<bool> Options::floating;
     constexpr Kwarg<bool> Options::multiple;
     constexpr Kwarg<bool> Options::required;
     constexpr Kwarg<u8string> Options::abbrev;
@@ -87,7 +89,7 @@ namespace Unicorn {
                 prefix += "]";
             if (! opt.is_boolean) {
                 prefix += " <";
-                if (opt.is_float || opt.is_integer)
+                if (opt.is_integer || opt.is_uinteger || opt.is_float)
                     prefix += "num";
                 else
                     prefix += "arg";
@@ -145,11 +147,13 @@ namespace Unicorn {
                 || (opt.is_boolean && (opt.is_anon || opt.is_multiple || opt.is_required || ! opt.pattern.empty()))
                 || ((opt.is_boolean || opt.is_required) && ! opt.defval.empty())
                 || (opt.is_required && ! opt.group.empty())
-                || (opt.is_float && opt.is_integer)
+                || (int(opt.is_integer) + int(opt.is_uinteger) + int(opt.is_float) > 1)
                 || ((opt.is_float || opt.is_integer) > 0 && ! opt.pattern.empty()))
             throw OptionSpecError(tag);
         if (opt.is_integer)
             opt.pattern = match_integer;
+        else if (opt.is_uinteger)
+            opt.pattern = match_uinteger;
         else if (opt.is_float)
             opt.pattern = match_float;
         if (! opt.defval.empty() && ! opt.pattern.empty() && ! opt.pattern.match(opt.defval))

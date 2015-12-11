@@ -400,23 +400,30 @@ namespace {
 
         opt1 = Options("App");
         TRY(opt1.add("int", "Integer", Options::integer, Options::abbrev="i"));
+        TRY(opt1.add("uint", "Unsigned integer", Options::uinteger, Options::abbrev="u"));
         TRY(opt1.add("float", "Float", Options::floating, Options::abbrev="f"));
 
         TRY(opt2 = opt1);
         cmdline = "app";
         TEST(! opt2.parse(cmdline, dummy));
         TEST_EQUAL(opt2.get<int>("int"), 0);
+        TEST_EQUAL(opt2.get<unsigned>("uint"), 0);
         TEST_EQUAL(opt2.get<float>("float"), 0);
 
         TRY(opt2 = opt1);
-        cmdline = "app --int 42 --float 1.234e5";
+        cmdline = "app --int -42 --uint 42 --float 1.234e5";
         TEST(! opt2.parse(cmdline, dummy));
-        TEST_EQUAL(opt2.get<int>("int"), 42);
+        TEST_EQUAL(opt2.get<int>("int"), -42);
+        TEST_EQUAL(opt2.get<unsigned>("uint"), 42);
         TEST_EQUAL(opt2.get<float>("float"), 123400);
 
         TRY(opt2 = opt1);
         cmdline = "app --int 1234.5";
         TEST_THROW_MATCH(opt2.parse(cmdline), CommandLineError, ": \"--int\", \"1234.5\"$");
+
+        TRY(opt2 = opt1);
+        cmdline = "app --uint -1234";
+        TEST_THROW_MATCH(opt2.parse(cmdline), CommandLineError, ": \"--uint\", \"-1234\"$");
 
         TRY(opt2 = opt1);
         cmdline = "app --float 0x1234";
