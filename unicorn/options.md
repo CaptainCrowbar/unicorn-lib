@@ -170,7 +170,9 @@ command name (which will be discarded); use the `opt_noprefix` flag to
 override this.
 
 Boolean options will be recognised in normal or negated form (e.g. `"--magic"`
-vs `"--no-magic"`).
+vs `"--no-magic"`). Integer options will accept hexadecimal options prefixed
+with `"0x"`; integer or float options will accept values tagged with SI prefix
+abbreviations (e.g. `"50k"` or `"2.5M"`).
 
 If help or version information is requested, it will be written to the given
 output stream (`std::`**`cout`** by default). The `parse()` function will return

@@ -372,6 +372,26 @@ namespace {
         TEST_EQUAL(opt2.get<float>("float"), 123400);
 
         TRY(opt2 = opt1);
+        cmdline = "app --int 0x42";
+        TEST(! opt2.parse(cmdline, nowhere));
+        TEST_EQUAL(opt2.get<int>("int"), 66);
+
+        TRY(opt2 = opt1);
+        cmdline = "app --int 24k";
+        TEST(! opt2.parse(cmdline, nowhere));
+        TEST_EQUAL(opt2.get<int>("int"), 24000);
+
+        TRY(opt2 = opt1);
+        cmdline = "app --int 2.5MB";
+        TEST(! opt2.parse(cmdline, nowhere));
+        TEST_EQUAL(opt2.get<int>("int"), 2500000);
+
+        TRY(opt2 = opt1);
+        cmdline = "app --float 2.5MB";
+        TEST(! opt2.parse(cmdline, nowhere));
+        TEST_EQUAL(opt2.get<float>("float"), 2500000);
+
+        TRY(opt2 = opt1);
         cmdline = "app --int 1234.5";
         TEST_THROW_MATCH(opt2.parse(cmdline), CommandLineError, ": \"--int\", \"1234.5\"$");
 

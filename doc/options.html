@@ -231,7 +231,9 @@ Windows). Normally the supplied argument list is assumed to start with the
 command name (which will be discarded); use the <code>opt_noprefix</code> flag to
 override this.</p>
 <p>Boolean options will be recognised in normal or negated form (e.g. <code>"--magic"</code>
-vs <code>"--no-magic"</code>).</p>
+vs <code>"--no-magic"</code>). Integer options will accept hexadecimal options prefixed
+with <code>"0x"</code>; integer or float options will accept values tagged with SI prefix
+abbreviations (e.g. <code>"50k"</code> or <code>"2.5M"</code>).</p>
 <p>If help or version information is requested, it will be written to the given
 output stream (<code>std::</code><strong><code>cout</code></strong> by default). The <code>parse()</code> function will return
 true if all requested processing has already been handled (i.e. if help or

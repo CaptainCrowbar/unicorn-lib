@@ -10,9 +10,9 @@ namespace Unicorn {
 
     namespace {
 
-        const auto match_integer = "[+-]?\\d+"_re;
-        const auto match_uinteger = "\\d+"_re;
-        const auto match_float = "[+-]?(\\d+(\\.\\d*)?|\\.\\d+)(e[+-]?\\d+)?"_re_i;
+        const auto match_integer = "0x[[:xdigit:]]+|[+-]?\\d+((\\.\\d+)? ?[kmgtpezy]\\w*)?"_re_i;
+        const auto match_uinteger = "0x[[:xdigit:]]+|\\d+((\\.\\d+)? ?[kmgtpezy]\\w*)?"_re_i;
+        const auto match_float = "[+-]?(\\d+(\\.\\d*)?|\\.\\d+)(e[+-]?\\d+)?( ?[kmgtpezy]\\w*)?"_re_i;
 
         enum ArgType {
             is_argument = 'a',

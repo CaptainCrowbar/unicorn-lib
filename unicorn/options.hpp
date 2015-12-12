@@ -35,24 +35,26 @@ namespace Unicorn {
         template <typename T, bool FP = std::is_floating_point<T>::value>
         struct ArgConv {
             T operator()(const u8string& s) const {
-                return static_cast<T>(s);
+                return s.empty() ? T() : static_cast<T>(s);
             }
         };
 
         template <typename T>
         struct ArgConv<T, true> {
             T operator()(const u8string& s) const {
-                return str_to_float<T>(s);
+                return s.empty() ? T(0) : from_si<T>(s);
             }
         };
 
         template <typename T>
         struct ArgConv<T, false> {
             T operator()(const u8string& s) const {
-                if (s.size() >= 3 && s[0] == '0' && (s[1] == 'X' || s[1] == 'x'))
+                if (s.empty())
+                    return T(0);
+                else if (s.size() >= 3 && s[0] == '0' && (s[1] == 'X' || s[1] == 'x'))
                     return hex_to_int<T>(utf_iterator(s, 2));
                 else
-                    return str_to_int<T>(s);
+                    return from_si<T>(s);
             }
         };
 
