@@ -336,7 +336,7 @@ assumed.</p>
 <p>Pad or truncate a string to a specific length; the character argument <code>c</code> is
 used for padding (converted to the appropriate encoding). The <code>str_fix_left()</code>
 function anchors the string on the left and pads or truncates on the right;
-this is similar to <code>basic_string::</code><strong><code>resize</code></strong><code>()</code>, except that the flags determine
+this is similar to <code>basic_string::resize()</code>, except that the flags determine
 how the length of the string is measured. The <code>str_fix_right()</code> function
 anchors the string on the right and pads or truncates on the left. If the
 string can't be adjusted to exactly the specified size (because one of the
@@ -360,12 +360,11 @@ result will be one unit longer than the requested length.</p>
 </ul>
 <p>These insert a copy of the source string into the destination string, either
 at a specified location or replacing a specified substring. The effect is
-similar to the <code>basic_string::</code><strong><code>insert</code></strong><code>()</code> and <code>replace()</code> methods, except that
+similar to the <code>basic_string::insert()</code> and <code>replace()</code> methods, except that
 positions within the string are specified by UTF iterators instead of ordinary
-string iterators or offsets. The <code>str_insert()</code> functions return the modified
-string; the <code>str_insert_in()</code> functions update the destination string in place
-and return a pair of iterators delimiting the newly inserted replacement
-string within the updated <code>dst</code>.</p>
+string iterators or offsets. The <code>str_insert_in()</code> functions return a pair of
+iterators delimiting the newly inserted replacement string within the updated
+<code>dst</code>.</p>
 <ul>
 <li><code>template &lt;typename FwdRange&gt; basic_string&lt;[character type]&gt;</code> <strong><code>str_join</code></strong><code>(const FwdRange&amp; r)</code></li>
 <li><code>template &lt;typename FwdRange, typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_join</code></strong><code>(const FwdRange&amp; r, const basic_string&lt;C&gt;&amp; delim)</code></li>
@@ -416,8 +415,8 @@ found.</p>
 <li><code>template &lt;typename C, typename Pred&gt; void</code> <strong><code>str_remove_in_if</code></strong><code>(basic_string&lt;C&gt;&amp; str, Pred p)</code></li>
 <li><code>template &lt;typename C, typename Pred&gt; void</code> <strong><code>str_remove_in_if_not</code></strong><code>(basic_string&lt;C&gt;&amp; str, Pred p)</code></li>
 </ul>
-<p>These remove a specific character, all characters in a set, or characters
-matching (or not matching) a condition from the string.</p>
+<p>These remove all occurrences of a specific character, all characters in a set,
+or characters matching (or not matching) a condition from the string.</p>
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_repeat</code></strong><code>(const basic_string&lt;C&gt;&amp; str, size_t n)</code></li>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_repeat</code></strong><code>(const C* str, size_t n)</code></li>
@@ -479,13 +478,13 @@ one character. In all cases, the original string will be left unchanged if
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_substring</code></strong><code>(const basic_string&lt;C&gt;&amp; str, size_t offset, size_t count = npos)</code></li>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>utf_substring</code></strong><code>(const basic_string&lt;C&gt;&amp; str, size_t index, size_t length = npos, uint32_t flags = 0)</code></li>
 </ul>
-<p>These return a substring of the original string. The <code>str_substring()</code> function
-returns the same string as <code>basic_string::</code><strong><code>substr</code></strong><code>()</code>, except that an offset out
-of bounds will yield an empty string instead of undefined behaviour;
-<code>utf_substring()</code> does the same thing, except that the position and length of
-the substring are measured according according to the <code>flags</code> argument instead
-of by code units (the flags are the same as for <code>str_length()</code>, defaulting to
-characters).</p>
+<p>These return a substring of the original string. The <code>str_substring()</code>
+function returns the same string as <code>basic_string::substr()</code>, except that an
+offset out of bounds will yield an empty string instead of undefined
+behaviour; <code>utf_substring()</code> does the same thing, except that the position and
+length of the substring are measured according according to the <code>flags</code>
+argument instead of by code units (the flags are the same as for
+<code>str_length()</code>, defaulting to characters).</p>
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_translate</code></strong><code>(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; target, const basic_string&lt;C&gt;&amp; sub)</code></li>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_translate</code></strong><code>(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; target, const C* sub)</code></li>
@@ -544,12 +543,10 @@ returns <code>true</code> if the character should be trimmed. (Note that the pre
 always takes a Unicode character, i.e. a <code>char32_t</code>, regardless of the code
 unit type, <code>C</code>.)</p>
 <ul>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_unify_lines</code></strong><code>(const basic_string&lt;C&gt;&amp; str)</code></li>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_unify_lines</code></strong><code>(const basic_string&lt;C&gt;&amp; str, char32_t newline)</code></li>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_unify_lines</code></strong><code>(const basic_string&lt;C&gt;&amp; str, char32_t newline = U'\n')</code></li>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_unify_lines</code></strong><code>(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; newline)</code></li>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_unify_lines</code></strong><code>(const basic_string&lt;C&gt;&amp; str, const C* newline)</code></li>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>str_unify_lines_in</code></strong><code>(basic_string&lt;C&gt;&amp; str)</code></li>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>str_unify_lines_in</code></strong><code>(basic_string&lt;C&gt;&amp; str, char32_t newline)</code></li>
+<li><code>template &lt;typename C&gt; void</code> <strong><code>str_unify_lines_in</code></strong><code>(basic_string&lt;C&gt;&amp; str, char32_t newline = U'\n')</code></li>
 <li><code>template &lt;typename C&gt; void</code> <strong><code>str_unify_lines_in</code></strong><code>(basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; newline)</code></li>
 <li><code>template &lt;typename C&gt; void</code> <strong><code>str_unify_lines_in</code></strong><code>(basic_string&lt;C&gt;&amp; str, const C* newline)</code></li>
 </ul>
@@ -570,7 +567,7 @@ Unicode line or paragraph breaking character is recognised and replaced; the
 <tbody>
 <tr>
 <td><strong><code>wrap_crlf</code></strong></td>
-<td>Use CR+LF for line breaks (default LF)</td>
+<td>Use CR+LF for line breaks (default is LF)</td>
 </tr>
 <tr>
 <td><strong><code>wrap_enforce</code></strong></td>
@@ -594,7 +591,7 @@ variable; the terminal width is assumed to be 80 characters if <code>COLUMNS</co
 undefined or invalid. The <code>margin1</code> and <code>margin2</code> arguments determine the
 number of spaces used to indent the first and subsequent lines, respectively,
 of a paragraph (the width includes the indentation). If <code>margin2=npos</code>,
-<code>margin1</code> is used for all lines. The function will throw <code>std::</code><strong><code>length_error</code></strong>
+<code>margin1</code> is used for all lines. The function will throw <code>std::length_error</code>
 if either margin is greater than or equal to the width.</p>
 <p>Any line breaking already present in the input text is discarded, except for
 the special behaviour described for <code>wrap_preserve</code> below.</p>
@@ -605,7 +602,7 @@ length are respected.</p>
 <code>CR+LF</code> to be used instead.</p>
 <p>If a single word is too long to fit on one line, the default behaviour is to
 allow it to violate the right margin. If the <code>wrap_enforce</code> flag is set, this
-will cause the function to throw <code>std::</code><strong><code>length_error</code></strong> instead.</p>
+will cause the function to throw <code>std::length_error</code> instead.</p>
 <p>If the <code>wrap_preserve</code> flag is set, any paragraphs that start with an indented
 line are left in their original format.</p>
 <h2 id="case-mapping-functions">Case mapping functions</h2>
@@ -668,7 +665,7 @@ same string is going to be compared frequently.</p>
 </tr>
 <tr>
 <td><code>esc_punct</code></td>
-<td>Escape ASCII punctuation</td>
+<td>Escape all ASCII punctuation</td>
 </tr>
 </tbody>
 </table>
@@ -775,8 +772,8 @@ whitespace.</p>
 <p>The only flag recognised is <code>err_throw</code>. By default, a value out of range for
 the return type will be clamped to the nearest end of its valid range, and the
 result will be zero if the string does not contain a valid number. If
-<code>err_throw</code> is set, an invalid number will throw <code>std::</code><strong><code>invalid_argument</code></strong>, and
-a result out of range will throw <code>std::</code><strong><code>range_error</code></strong>. In the versions that take
+<code>err_throw</code> is set, an invalid number will throw <code>std::invalid_argument</code>, and
+a result out of range will throw <code>std::range_error</code>. In the versions that take
 the result as a reference argument, this will be left unchanged if an
 exception is thrown.</p></body>
 </html>
