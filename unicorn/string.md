@@ -670,8 +670,8 @@ hexadecimal code does not represent a valid Unicode scalar value.
 * `template <typename C> basic_string<C>` **`str_quote`**`(const basic_string<C>& str, uint32_t flags = 0, char32_t quote = '\"')`
 * `template <typename C> void` **`str_quote_in`**`(basic_string<C>& str, uint32_t flags = 0, char32_t quote = '\"')`
 
-These perform the same operation as `str_escape()`, but also add quotes around
-the string.
+These perform much the same operation as `str_escape()`. Quote marks are added
+around the string, and internal quotes are escaped.
 
 * `template <typename C> basic_string<C>` **`str_unquote`**`(const basic_string<C>& str, char32_t quote = '\"')`
 * `template <typename C> void` **`str_unquote_in`**`(basic_string<C>& str, char32_t quote = '\"')`
