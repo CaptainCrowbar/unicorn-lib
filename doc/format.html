@@ -51,52 +51,27 @@ for details.</p>
 </div>
 <h2 id="basic-formatting-functions">Basic formatting functions</h2>
 <ul>
-<li><code>template &lt;typename T&gt; class</code> <strong><code>FormatType</code></strong><ul>
-<li><code>[string type]</code> <strong><code>operator()</code></strong><code>(T t, uint64_t flags, int prec) const</code></li>
+<li><code>template &lt;typename T&gt; u8string</code> <strong><code>format_type</code></strong><code>(const T&amp; t, uint64_t flags, int prec)</code></li>
+<li><em>Library defined specializations for</em><ul>
+<li><code>bool</code></li>
+<li><code>char</code>, <code>char16_t</code>, <code>char32_t</code>, <code>wchar_t</code></li>
+<li><code>signed char</code>, <code>unsigned char</code></li>
+<li><code>short</code>, <code>unsigned short</code></li>
+<li><code>int</code>, <code>unsigned</code></li>
+<li><code>long</code>, <code>unsigned long</code></li>
+<li><code>long long</code>, <code>unsigned long long</code></li>
+<li><code>int128_t</code>, <code>uint128_t</code></li>
+<li><code>float</code>, <code>double</code>, <code>long double</code></li>
+<li><code>C*</code>, <code>const C*</code>, <code>basic_string&lt;C&gt;</code></li>
+<li><code>std::chrono::duration&lt;R</code>, <code>P&gt;</code></li>
+<li><code>std::chrono::system_clock::time_point</code></li>
+<li><code>Uuid</code></li>
+<li><code>Version</code></li>
 </ul>
 </li>
 </ul>
 <p>TODO</p>
 <ul>
-<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;bool&gt;</code></li>
-<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;signed char&gt;</code></li>
-<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;unsigned char&gt;</code></li>
-<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;short&gt;</code></li>
-<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;unsigned short&gt;</code></li>
-<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;int&gt;</code></li>
-<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;unsigned&gt;</code></li>
-<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;long&gt;</code></li>
-<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;unsigned long&gt;</code></li>
-<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;long long&gt;</code></li>
-<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;unsigned long long&gt;</code></li>
-<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;int128_t&gt;</code></li>
-<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;uint128_t&gt;</code></li>
-<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;float&gt;</code></li>
-<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;double&gt;</code></li>
-<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;long double&gt;</code></li>
-<li><code>template &lt;typename C&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;basic_string&lt;C&gt;&gt;</code></li>
-<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;char*&gt;</code></li>
-<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;char16_t*&gt;</code></li>
-<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;char32_t*&gt;</code></li>
-<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;wchar_t*&gt;</code></li>
-<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;const char*&gt;</code></li>
-<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;const char16_t*&gt;</code></li>
-<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;const char32_t*&gt;</code></li>
-<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;const wchar_t*&gt;</code></li>
-<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;char&gt;</code></li>
-<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;char16_t&gt;</code></li>
-<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;char32_t&gt;</code></li>
-<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;wchar_t&gt;</code></li>
-<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;std::chrono::system_clock::time_point&gt;</code></li>
-<li><code>template &lt;typename R, typename P&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;std::chrono::duration&lt;R, P&gt;&gt;</code></li>
-<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;Uuid&gt;</code></li>
-<li><code>template &lt;&gt; class</code> <strong><code>FormatType</code></strong><code>&lt;Version&gt;</code></li>
-</ul>
-<p>TODO</p>
-<ul>
-<li><code>template &lt;typename T, typename C&gt; void</code> <strong><code>format_type</code></strong><code>(const T&amp; t, basic_string&lt;C&gt;&amp; dst, uint64_t flags = 0, int prec = -1, size_t width = 0, char32_t pad = U' ')</code></li>
-<li><code>template &lt;typename T, typename C&gt; void</code> <strong><code>format_type</code></strong><code>(const T&amp; t, basic_string&lt;C&gt;&amp; dst, const basic_string&lt;C&gt;&amp; flags)</code></li>
-<li><code>template &lt;typename T, typename C&gt; void</code> <strong><code>format_type</code></strong><code>(const T&amp; t, basic_string&lt;C&gt;&amp; dst, const C* flags)</code></li>
 <li><code>template &lt;typename C, typename T&gt; basic_string&lt;C&gt;</code> <strong><code>format_as</code></strong><code>(const T&amp; t, uint64_t flags = 0, int prec = -1, size_t width = 0, char32_t pad = U' ')</code></li>
 <li><code>template &lt;typename C, typename T&gt; basic_string&lt;C&gt;</code> <strong><code>format_as</code></strong><code>(const T&amp; t, const basic_string&lt;C&gt;&amp; flags)</code></li>
 <li><code>template &lt;typename C, typename T&gt; basic_string&lt;C&gt;</code> <strong><code>format_as</code></strong><code>(const T&amp; t, const C* flags)</code></li>

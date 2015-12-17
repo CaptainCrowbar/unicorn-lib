@@ -15,19 +15,6 @@
 
 namespace Unicorn {
 
-    // Forward declarations
-
-    template <typename T> class FormatType;
-
-    template <typename T, typename C>
-        void format_type(const T& t, basic_string<C>& dst, uint64_t flags = 0, int prec = -1, size_t width = 0, char32_t pad = U' ');
-    template <typename T, typename C> void format_type(const T& t, basic_string<C>& dst, const basic_string<C>& flags);
-    template <typename T, typename C> void format_type(const T& t, basic_string<C>& dst, const C* flags);
-    template <typename C, typename T>
-        basic_string<C> format_as(const T& t, uint64_t flags = 0, int prec = -1, size_t width = 0, char32_t pad = U' ');
-    template <typename C, typename T> basic_string<C> format_as(const T& t, const basic_string<C>& flags);
-    template <typename C, typename T> basic_string<C> format_as(const T& t, const C* flags);
-
     // Formatting behaviour flags
 
     UNICORN_DEFINE_FLAG_64(formatting,      fx_left,      52);   // (<) Left align                  all  --    --   --     --    --      --
@@ -68,48 +55,14 @@ namespace Unicorn {
         constexpr uint64_t fx_toplevel_flags = fx_length_flags | fx_left | fx_centre | fx_right | fx_lower | fx_title | fx_upper;
         constexpr uint64_t fx_global_flags = fx_length_flags | fx_toplevel_flags;
 
-        // Alignment and padding
-
-        template <typename C>
-        void format_align(basic_string<C> src, basic_string<C>& dst, uint64_t flags, size_t width, char32_t pad) {
-            exclusive_flags(flags, fx_left | fx_centre | fx_right, "formatting");
-            exclusive_flags(flags, fx_lower | fx_title | fx_upper, "formatting");
-            if (flags & fx_lower)
-                str_lowercase_in(src);
-            else if (flags & fx_title)
-                str_titlecase_in(src);
-            else if (flags & fx_upper)
-                str_uppercase_in(src);
-            size_t len = str_length(src, flags & fx_length_flags);
-            if (width <= len) {
-                dst += src;
-                return;
-            }
-            size_t extra = width - len;
-            if (flags & fx_right)
-                str_append_chars(dst, extra, pad);
-            else if (flags & fx_centre)
-                str_append_chars(dst, extra / 2, pad);
-            dst += src;
-            if (flags & fx_left)
-                str_append_chars(dst, extra, pad);
-            else if (flags & fx_centre)
-                str_append_chars(dst, (extra + 1) / 2, pad);
-        }
-
-        void translate_flags(const u8string& str, uint64_t& flags, int& prec, size_t& width, char32_t& pad);
-
         // Formatting for specific types
 
-        u8string format_boolean(bool t, uint64_t flags);
-        u8string format_integer(uint128_t t, uint64_t flags, int prec);
-        u8string format_integer_roman(uint32_t n);
-        u8string format_floating(long double t, uint64_t flags, int prec);
-        u8string format_string(const u8string& t, uint64_t flags, int prec);
-        u8string format_timepoint(std::chrono::system_clock::time_point t, uint64_t flags, int prec);
+        void translate_flags(const u8string& str, uint64_t& flags, int& prec, size_t& width, char32_t& pad);
+        u8string format_float(long double t, uint64_t flags, int prec);
+        u8string format_roman(uint32_t n);
 
         template <typename T>
-        u8string format_integer_radix(T t, int base, int prec) {
+        u8string format_radix(T t, int base, int prec) {
             // Argument will never be negative
             u8string s;
             auto b = static_cast<T>(base);
@@ -123,111 +76,117 @@ namespace Unicorn {
             return s;
         }
 
-        struct FormatBoolean {
-            u8string operator()(bool t, uint64_t flags, int /*prec*/) const { return format_boolean(t, flags); }
-        };
-
         template <typename T>
-        struct FormatInteger {
-            u8string operator()(T t, uint64_t flags, int prec) const {
-                if ((flags & (fx_digits | fx_exp | fx_fixed | fx_general | fx_prob | fx_stripz))
-                        && ! (flags & (fx_binary | fx_decimal | fx_hex | fx_roman)))
-                    return format_floating(t, flags, prec);
-                allow_flags(flags, fx_global_flags | fx_binary | fx_decimal | fx_hex | fx_roman | fx_sign | fx_signz, "formatting");
-                exclusive_flags(flags, fx_binary | fx_decimal | fx_hex | fx_roman, "formatting");
-                exclusive_flags(flags, fx_sign | fx_signz, "formatting");
-                char sign = 0;
-                if (t > static_cast<T>(0)) {
-                    if (flags & (fx_sign | fx_signz))
-                        sign = '+';
-                } else if (t == static_cast<T>(0)) {
-                    if (flags & fx_sign)
-                        sign = '+';
-                } else {
-                    t = - t;
-                    sign = '-';
-                }
-                u8string s;
-                if (flags & fx_binary)
-                    s = format_integer_radix(t, 2, prec);
-                else if (flags & fx_roman)
-                    s = format_integer_roman(uint32_t(t));
-                else if (flags & fx_hex)
-                    s = format_integer_radix(t, 16, prec);
-                else
-                    s = format_integer_radix(t, 10, prec);
-                if (sign)
-                    s.insert(s.begin(), sign);
-                return s;
+        u8string format_int(T t, uint64_t flags, int prec) {
+            if ((flags & (fx_digits | fx_exp | fx_fixed | fx_general | fx_prob | fx_stripz))
+                    && ! (flags & (fx_binary | fx_decimal | fx_hex | fx_roman)))
+                return format_float(t, flags, prec);
+            exclusive_flags(flags, fx_binary | fx_decimal | fx_hex | fx_roman, "formatting");
+            exclusive_flags(flags, fx_sign | fx_signz, "formatting");
+            char sign = 0;
+            if (t > static_cast<T>(0)) {
+                if (flags & (fx_sign | fx_signz))
+                    sign = '+';
+            } else if (t == static_cast<T>(0)) {
+                if (flags & fx_sign)
+                    sign = '+';
+            } else {
+                t = - t;
+                sign = '-';
             }
-        };
+            u8string s;
+            if (flags & fx_binary)
+                s = format_radix(t, 2, prec);
+            else if (flags & fx_roman)
+                s = format_roman(uint32_t(t));
+            else if (flags & fx_hex)
+                s = format_radix(t, 16, prec);
+            else
+                s = format_radix(t, 10, prec);
+            if (sign)
+                s.insert(s.begin(), sign);
+            return s;
+        }
 
-        template <typename T>
-        struct FormatFloatingPoint {
-            u8string operator()(T t, uint64_t flags, int prec) const {
-                return format_floating(t, flags, prec);
-            }
-        };
+        // Alignment and padding
 
         template <typename C>
-        struct FormatString {
-            u8string operator()(const basic_string<C>& t, uint64_t flags, int prec) const {
-                return format_string(to_utf8(t), flags, prec);
-            }
-        };
+        basic_string<C> format_align(basic_string<C> src, uint64_t flags, size_t width, char32_t pad) {
+            exclusive_flags(flags, fx_left | fx_centre | fx_right, "formatting");
+            exclusive_flags(flags, fx_lower | fx_title | fx_upper, "formatting");
+            if (flags & fx_lower)
+                str_lowercase_in(src);
+            else if (flags & fx_title)
+                str_titlecase_in(src);
+            else if (flags & fx_upper)
+                str_uppercase_in(src);
+            size_t len = str_length(src, flags & fx_length_flags);
+            if (width <= len)
+                return src;
+            size_t extra = width - len;
+            basic_string<C> dst;
+            if (flags & fx_right)
+                str_append_chars(dst, extra, pad);
+            else if (flags & fx_centre)
+                str_append_chars(dst, extra / 2, pad);
+            dst += src;
+            if (flags & fx_left)
+                str_append_chars(dst, extra, pad);
+            else if (flags & fx_centre)
+                str_append_chars(dst, (extra + 1) / 2, pad);
+            return dst;
+        }
 
-        template <typename C>
-        struct FormatCharacterPointer {
-            u8string operator()(const C* t, uint64_t flags, int prec) const {
-                return format_string(to_utf8(cstr(t)), flags, prec);
-            }
-        };
+    }
 
-        template <typename C>
-        struct FormatCharacter {
-            u8string operator()(C t, uint64_t flags, int prec) const {
-                return format_string(str_char<char>(t), flags, prec);
-            }
-        };
+    // Basic formattng functions
 
-        struct FormatDate {
-            u8string operator()(std::chrono::system_clock::time_point tp, uint64_t flags, int prec) const {
-                return format_timepoint(tp, flags, prec);
-            }
-        };
+    template <typename T> u8string format_type(const T& t, uint64_t flags, int prec);
 
-        template <typename R, typename P>
-        struct FormatTime {
-            u8string operator()(std::chrono::duration<R, P> t, uint64_t /*flags*/, int prec) const {
-                return format_time(t, prec);
-            }
-        };
+    u8string format_type(bool t, uint64_t flags, int /*prec*/);
+    u8string format_type(const u8string& t, uint64_t flags, int prec);
+    u8string format_type(std::chrono::system_clock::time_point t, uint64_t flags, int prec);
 
-        struct FormatUuid {
-            u8string operator()(const Uuid& t, uint64_t flags, int /*prec*/) const {
-                allow_flags(flags, fx_global_flags, "formatting");
-                return t.str();
-            }
-        };
+    template <typename C> inline u8string format_type(const basic_string<C>& t, uint64_t flags, int prec)
+        { return format_type(to_utf8(t), flags, prec); }
+    template <typename C> inline u8string format_type(C* t, uint64_t flags, int prec)
+        { return format_type(cstr(t), flags, prec); }
+    template <typename C> inline u8string format_type(const C* t, uint64_t flags, int prec)
+        { return format_type(cstr(t), flags, prec); }
+    template <typename R, typename P> inline u8string format_type(std::chrono::duration<R, P> t, uint64_t /*flags*/, int prec)
+        { return format_time(t, prec); }
 
-        struct FormatVersion {
-            u8string operator()(const Version& t, uint64_t flags, int prec) const {
-                allow_flags(flags, fx_global_flags, "formatting");
-                return prec >= 0 ? t.str(prec) : t.str();
-            }
-        };
+    inline u8string format_type(char t, uint64_t flags, int prec)                { return format_type(str_char<char>(t), flags, prec); }
+    inline u8string format_type(char16_t t, uint64_t flags, int prec)            { return format_type(str_char<char>(t), flags, prec); }
+    inline u8string format_type(char32_t t, uint64_t flags, int prec)            { return format_type(str_char<char>(t), flags, prec); }
+    inline u8string format_type(wchar_t t, uint64_t flags, int prec)             { return format_type(str_char<char>(t), flags, prec); }
+    inline u8string format_type(signed char t, uint64_t flags, int prec)         { return UnicornDetail::format_int(t, flags, prec); }
+    inline u8string format_type(unsigned char t, uint64_t flags, int prec)       { return UnicornDetail::format_int(t, flags, prec); }
+    inline u8string format_type(short t, uint64_t flags, int prec)               { return UnicornDetail::format_int(t, flags, prec); }
+    inline u8string format_type(unsigned short t, uint64_t flags, int prec)      { return UnicornDetail::format_int(t, flags, prec); }
+    inline u8string format_type(int t, uint64_t flags, int prec)                 { return UnicornDetail::format_int(t, flags, prec); }
+    inline u8string format_type(unsigned t, uint64_t flags, int prec)            { return UnicornDetail::format_int(t, flags, prec); }
+    inline u8string format_type(long t, uint64_t flags, int prec)                { return UnicornDetail::format_int(t, flags, prec); }
+    inline u8string format_type(unsigned long t, uint64_t flags, int prec)       { return UnicornDetail::format_int(t, flags, prec); }
+    inline u8string format_type(long long t, uint64_t flags, int prec)           { return UnicornDetail::format_int(t, flags, prec); }
+    inline u8string format_type(unsigned long long t, uint64_t flags, int prec)  { return UnicornDetail::format_int(t, flags, prec); }
+    inline u8string format_type(int128_t t, uint64_t flags, int prec)            { return UnicornDetail::format_int(t, flags, prec); }
+    inline u8string format_type(uint128_t t, uint64_t flags, int prec)           { return UnicornDetail::format_int(t, flags, prec); }
+    inline u8string format_type(float t, uint64_t flags, int prec)               { return UnicornDetail::format_float(t, flags, prec); }
+    inline u8string format_type(double t, uint64_t flags, int prec)              { return UnicornDetail::format_float(t, flags, prec); }
+    inline u8string format_type(long double t, uint64_t flags, int prec)         { return UnicornDetail::format_float(t, flags, prec); }
+    inline u8string format_type(Uuid t, uint64_t /*flags*/, int /*prec*/)        { return t.str(); }
+    inline u8string format_type(Version t, uint64_t /*flags*/, int prec)         { return prec >= 0 ? t.str(prec) : t.str(); }
 
-        // Formatting for range types
+    namespace UnicornDetail {
 
         template <typename R, typename I = decltype(std::begin(std::declval<R>())),
             typename V = typename std::iterator_traits<I>::value_type>
         struct FormatRange {
             u8string operator()(const R& r, uint64_t flags, int prec) const {
                 u8string s;
-                for (auto& v: r) {
-                    s += format_as<char>(v, flags, prec);
-                    s += ',';
-                }
+                for (auto& x: r)
+                    s += format_type(x, flags, prec) + ',';
                 if (! s.empty())
                     s.pop_back();
                 return s;
@@ -245,103 +204,44 @@ namespace Unicorn {
             }
         };
 
-        template <typename T>
-        struct FormatObject<T, true>:
-        FormatRange<T> {};
+        template <typename T> struct FormatObject<T, true>: FormatRange<T> {};
 
         template <typename T1, typename T2>
         struct FormatObject<std::pair<T1, T2>, false> {
             u8string operator()(const std::pair<T1, T2>& p, uint64_t flags, int prec) const {
-                u8string s = format_as<char>(p.first, flags, prec);
-                s += ':';
-                s += format_as<char>(p.second, flags, prec);
-                return s;
+                return format_type(p.first, flags, prec) + ':' + format_type(p.second, flags, prec);
             }
         };
 
     }
 
-    // Generic formatting function object
-
-    template <typename T> class FormatType: public UnicornDetail::FormatObject<T> {};
-    template <> class FormatType<bool>: public UnicornDetail::FormatBoolean {};
-    template <> class FormatType<signed char>: public UnicornDetail::FormatInteger<signed char> {};
-    template <> class FormatType<unsigned char>: public UnicornDetail::FormatInteger<unsigned char> {};
-    template <> class FormatType<short>: public UnicornDetail::FormatInteger<short> {};
-    template <> class FormatType<unsigned short>: public UnicornDetail::FormatInteger<unsigned short> {};
-    template <> class FormatType<int>: public UnicornDetail::FormatInteger<int> {};
-    template <> class FormatType<unsigned>: public UnicornDetail::FormatInteger<unsigned> {};
-    template <> class FormatType<long>: public UnicornDetail::FormatInteger<long> {};
-    template <> class FormatType<unsigned long>: public UnicornDetail::FormatInteger<unsigned long> {};
-    template <> class FormatType<long long>: public UnicornDetail::FormatInteger<long long> {};
-    template <> class FormatType<unsigned long long>: public UnicornDetail::FormatInteger<unsigned long long> {};
-    template <> class FormatType<int128_t>: public UnicornDetail::FormatInteger<int128_t> {};
-    template <> class FormatType<uint128_t>: public UnicornDetail::FormatInteger<uint128_t> {};
-    template <> class FormatType<float>: public UnicornDetail::FormatFloatingPoint<float> {};
-    template <> class FormatType<double>: public UnicornDetail::FormatFloatingPoint<double> {};
-    template <> class FormatType<long double>: public UnicornDetail::FormatFloatingPoint<long double> {};
-    template <typename C> class FormatType<basic_string<C>>: public UnicornDetail::FormatString<C> {};
-    template <> class FormatType<char*>: public UnicornDetail::FormatCharacterPointer<char> {};
-    template <> class FormatType<char16_t*>: public UnicornDetail::FormatCharacterPointer<char16_t> {};
-    template <> class FormatType<char32_t*>: public UnicornDetail::FormatCharacterPointer<char32_t> {};
-    template <> class FormatType<wchar_t*>: public UnicornDetail::FormatCharacterPointer<wchar_t> {};
-    template <> class FormatType<const char*>: public UnicornDetail::FormatCharacterPointer<char> {};
-    template <> class FormatType<const char16_t*>: public UnicornDetail::FormatCharacterPointer<char16_t> {};
-    template <> class FormatType<const char32_t*>: public UnicornDetail::FormatCharacterPointer<char32_t> {};
-    template <> class FormatType<const wchar_t*>: public UnicornDetail::FormatCharacterPointer<wchar_t> {};
-    template <> class FormatType<char>: public UnicornDetail::FormatCharacter<char> {};
-    template <> class FormatType<char16_t>: public UnicornDetail::FormatCharacter<char16_t> {};
-    template <> class FormatType<char32_t>: public UnicornDetail::FormatCharacter<char32_t> {};
-    template <> class FormatType<wchar_t>: public UnicornDetail::FormatCharacter<wchar_t> {};
-    template <> class FormatType<std::chrono::system_clock::time_point>: public UnicornDetail::FormatDate {};
-    template <typename R, typename P> class FormatType<std::chrono::duration<R, P>>: public UnicornDetail::FormatTime<R, P> {};
-    template <> class FormatType<Uuid>: public UnicornDetail::FormatUuid {};
-    template <> class FormatType<Version>: public UnicornDetail::FormatVersion {};
-
-    // Basic formatting functions
-
-    template <typename T, typename C>
-    void format_type(const T& t, basic_string<C>& dst, uint64_t flags, int prec, size_t width, char32_t pad) {
-        using namespace UnicornDetail;
-        auto s = FormatType<std::decay_t<T>>()(t, flags & ~ fx_toplevel_flags, prec);
-        format_align(recode<C>(s), dst, flags & fx_global_flags, width, pad);
+    template <typename T>
+    inline u8string format_type(const T& t, uint64_t flags, int prec) {
+        return UnicornDetail::FormatObject<std::decay_t<T>>()(t, flags, prec);
     }
 
-    template <typename T, typename C>
-    void format_type(const T& t, basic_string<C>& dst, const basic_string<C>& flags) {
+    template <typename C, typename T>
+    basic_string<C> format_as(const T& t, uint64_t flags = 0, int prec = -1, size_t width = 0, char32_t pad = U' ') {
+        using namespace UnicornDetail;
+        auto s = format_type(t, flags, prec);
+        basic_string<C> dst;
+        return format_align(recode<C>(s), flags & fx_global_flags, width, pad);
+    }
+
+    template <typename C, typename T>
+    basic_string<C> format_as(const T& t, const basic_string<C>& flags) {
         using namespace UnicornDetail;
         uint64_t f = 0;
         int prec = 0;
         size_t width = 0;
         char32_t pad = U' ';
         translate_flags(to_utf8(flags), f, prec, width, pad);
-        format_type(t, dst, f, prec, width, pad);
-    }
-
-    template <typename T, typename C>
-    void format_type(const T& t, basic_string<C>& dst, const C* flags) {
-        format_type(t, dst, cstr(flags));
-    }
-
-    template <typename C, typename T>
-    basic_string<C> format_as(const T& t, uint64_t flags, int prec, size_t width, char32_t pad) {
-        basic_string<C> dst;
-        format_type(t, dst, flags, prec, width, pad);
-        return dst;
-    }
-
-    template <typename C, typename T>
-    basic_string<C> format_as(const T& t, const basic_string<C>& flags) {
-        basic_string<C> dst;
-        format_type(t, dst, flags);
-        return dst;
+        return format_as<C, T>(t, f, prec, width, pad);
     }
 
     template <typename C, typename T>
     basic_string<C> format_as(const T& t, const C* flags) {
-        basic_string<C> dst;
-        format_type(t, dst, flags);
-        return dst;
+        return format_as<C, T>(t, cstr(flags));
     }
 
     // Formatter class
@@ -439,9 +339,13 @@ namespace Unicorn {
     template <typename C>
     template <typename T, typename... Args>
     void BasicFormat<C>::apply(string_list& list, int index, const T& t, const Args&... args) const {
-        for (size_t i = 0; i < seq.size(); ++i)
-            if (seq[i].index == index)
-                format_type(t, list[i], seq[i].flags, seq[i].prec, seq[i].width, seq[i].pad);
+        using namespace UnicornDetail;
+        for (size_t i = 0; i < seq.size(); ++i) {
+            if (seq[i].index == index) {
+                auto s = format_type(t, seq[i].flags, seq[i].prec);
+                list[i] = format_align(recode<C>(s), seq[i].flags & fx_global_flags, seq[i].width, seq[i].pad);
+            }
+        }
         apply(list, index + 1, args...);
     }
 

@@ -3,49 +3,17 @@
 #include <cmath>
 #include <cstdio>
 
+using namespace Unicorn::Literals;
 using namespace std::chrono;
 using namespace std::literals;
-using namespace Unicorn::Literals;
 
 namespace Unicorn {
 
     namespace UnicornDetail {
 
-        // Alignment and padding
-
-        void translate_flags(const u8string& str, uint64_t& flags, int& prec, size_t& width, char32_t& pad) {
-            flags = 0;
-            prec = -1;
-            width = 0;
-            pad = U' ';
-            auto i = utf_begin(str), end = utf_end(str);
-            while (i != end) {
-                if (*i == U'<' || *i == U'=' || *i == U'>') {
-                    if (*i == U'<')
-                        flags |= fx_left;
-                    else if (*i == U'=')
-                        flags |= fx_centre;
-                    else
-                        flags |= fx_right;
-                    ++i;
-                    if (i != end && ! char_is_digit(*i))
-                        pad = *i++;
-                    if (i != end && char_is_digit(*i))
-                        i = str_to_int<size_t>(width, i);
-                } else if (char_is_ascii(*i) && ascii_isalpha(char(*i))) {
-                    flags |= letter_to_flag(*i++);
-                } else if (char_is_digit(*i)) {
-                    i = str_to_int<int>(prec, i);
-                } else {
-                    ++i;
-                }
-            }
-        }
-
         namespace {
 
-            // Floating point formatting helper functions
-            // (These will always be called with x>=0 and prec>=0)
+            // These will always be called with x>=0 and prec>=0
 
             u8string float_print(const char* format, long double x, int prec) {
                 vector<char> buf(32);
@@ -149,8 +117,6 @@ namespace Unicorn {
                 return float_digits(x, prec);
             }
 
-            // String and character formatting helper functions
-
             u8string string_escape(const u8string& s, uint64_t mode) {
                 u8string result;
                 result.reserve(s.size() + 2);
@@ -176,10 +142,10 @@ namespace Unicorn {
                                 result.append(s, i.offset(), i.count());
                             } else if (*i <= 0xff) {
                                 result += "\\x";
-                                result += format_integer_radix(*i, 16, 2);
+                                result += format_radix(*i, 16, 2);
                             } else {
                                 result += "\\x{";
-                                result += format_integer_radix(*i, 16, 1);
+                                result += format_radix(*i, 16, 1);
                                 result += '}';
                             }
                             break;
@@ -196,7 +162,7 @@ namespace Unicorn {
                     prec = defprec;
                 u8string result;
                 for (auto c: s) {
-                    result += format_integer_radix(char_to_uint(c), base, prec);
+                    result += format_radix(char_to_uint(c), base, prec);
                     result += ' ';
                 }
                 if (! result.empty())
@@ -206,43 +172,37 @@ namespace Unicorn {
 
         }
 
-        // Formatting for specific types
-
-        u8string format_boolean(bool t, uint64_t flags) {
-            allow_flags(flags, fx_global_flags | fx_binary | fx_tf | fx_yesno, "formatting");
-            exclusive_flags(flags, fx_binary | fx_tf | fx_yesno, "formatting");
-            if (flags & fx_binary)
-                return t ? "1" : "0";
-            else if (flags & fx_yesno)
-                return t ? "yes" : "no";
-            else
-                return t ? "true" : "false";
-        }
-
-        u8string format_integer_roman(uint32_t n) {
-            struct char_value { const char* str; unsigned num; };
-            static const char_value table[] {
-                { "M", 1000 },
-                { "CM", 900 }, { "D", 500 }, { "CD", 400 }, { "C", 100 },
-                { "XC", 90 }, { "L", 50 }, { "XL", 40 }, { "X", 10 },
-                { "IX", 9 }, { "V", 5 }, { "IV", 4 }, { "I", 1 },
-            };
-            if (n == 0)
-                return "0";
-            u8string s;
-            for (auto& t: table) {
-                auto q = n / t.num;
-                n %= t.num;
-                for (unsigned long long i = 0; i < q; ++i)
-                    s += t.str;
+        void translate_flags(const u8string& str, uint64_t& flags, int& prec, size_t& width, char32_t& pad) {
+            flags = 0;
+            prec = -1;
+            width = 0;
+            pad = U' ';
+            auto i = utf_begin(str), end = utf_end(str);
+            while (i != end) {
+                if (*i == U'<' || *i == U'=' || *i == U'>') {
+                    if (*i == U'<')
+                        flags |= fx_left;
+                    else if (*i == U'=')
+                        flags |= fx_centre;
+                    else
+                        flags |= fx_right;
+                    ++i;
+                    if (i != end && ! char_is_digit(*i))
+                        pad = *i++;
+                    if (i != end && char_is_digit(*i))
+                        i = str_to_int<size_t>(width, i);
+                } else if (char_is_ascii(*i) && ascii_isalpha(char(*i))) {
+                    flags |= letter_to_flag(*i++);
+                } else if (char_is_digit(*i)) {
+                    i = str_to_int<int>(prec, i);
+                } else {
+                    ++i;
+                }
             }
-            return s;
         }
 
-        u8string format_floating(long double t, uint64_t flags, int prec) {
+        u8string format_float(long double t, uint64_t flags, int prec) {
             using std::fabs;
-            allow_flags(flags, fx_global_flags | fx_digits | fx_exp | fx_fixed | fx_general
-                | fx_prob | fx_sign | fx_signz | fx_stripz, "formatting");
             exclusive_flags(flags, fx_digits | fx_exp | fx_fixed | fx_general | fx_prob, "formatting");
             exclusive_flags(flags, fx_sign | fx_signz, "formatting");
             if (prec < 0)
@@ -268,46 +228,76 @@ namespace Unicorn {
             return s;
         }
 
-        u8string format_string(const u8string& t, uint64_t flags, int prec) {
-            allow_flags(flags, fx_global_flags | fx_ascii | fx_ascquote | fx_decimal | fx_escape
-                | fx_hex | fx_hex8 | fx_hex16 | fx_quote, "formatting");
-            exclusive_flags(flags, fx_ascii | fx_ascquote  | fx_escape | fx_decimal | fx_hex
-                    | fx_hex8 | fx_hex16 | fx_quote, "formatting");
-            if (flags & fx_quote)
-                return string_escape(t, fx_quote);
-            else if (flags & fx_ascquote)
-                return string_escape(t, fx_quote | fx_ascii);
-            else if (flags & fx_escape)
-                return string_escape(t, 0);
-            else if (flags & fx_ascii)
-                return string_escape(t, fx_ascii);
-            else if (flags & fx_decimal)
-                return string_values(utf_range(t), 10, prec, 1);
-            else if (flags & fx_hex8)
-                return string_values(t, 16, prec, 2);
-            else if (flags & fx_hex16)
-                return string_values(to_utf16(t), 16, prec, 4);
-            else if (flags & fx_hex)
-                return string_values(utf_range(t), 16, prec, 1);
-            else
-                return t;
-        }
-
-        u8string format_timepoint(system_clock::time_point t, uint64_t flags, int prec) {
-            allow_flags(flags, fx_global_flags | fx_iso | fx_common | fx_local, "formatting");
-            exclusive_flags(flags, fx_iso | fx_common, "formatting");
-            auto zone = flags & fx_local ? local_date : utc_date;
-            if (flags & fx_common)
-                return format_date(t, "%c"s, zone);
-            auto result = format_date(t, prec, zone);
-            if (flags & fx_iso) {
-                auto pos = result.find(' ');
-                if (pos != npos)
-                    result[pos] = 'T';
+        u8string format_roman(uint32_t n) {
+            struct char_value { const char* str; unsigned num; };
+            static const char_value table[] {
+                { "M", 1000 },
+                { "CM", 900 }, { "D", 500 }, { "CD", 400 }, { "C", 100 },
+                { "XC", 90 }, { "L", 50 }, { "XL", 40 }, { "X", 10 },
+                { "IX", 9 }, { "V", 5 }, { "IV", 4 }, { "I", 1 },
+            };
+            if (n == 0)
+                return "0";
+            u8string s;
+            for (auto& t: table) {
+                auto q = n / t.num;
+                n %= t.num;
+                for (unsigned long long i = 0; i < q; ++i)
+                    s += t.str;
             }
-            return result;
+            return s;
         }
 
+    }
+
+    u8string format_type(bool t, uint64_t flags, int /*prec*/) {
+        using namespace UnicornDetail;
+        exclusive_flags(flags, fx_binary | fx_tf | fx_yesno, "formatting");
+        if (flags & fx_binary)
+            return t ? "1" : "0";
+        else if (flags & fx_yesno)
+            return t ? "yes" : "no";
+        else
+            return t ? "true" : "false";
+    }
+
+    u8string format_type(const u8string& t, uint64_t flags, int prec) {
+        using namespace UnicornDetail;
+        exclusive_flags(flags, fx_ascii | fx_ascquote  | fx_escape | fx_decimal | fx_hex
+            | fx_hex8 | fx_hex16 | fx_quote, "formatting");
+        if (flags & fx_quote)
+            return string_escape(t, fx_quote);
+        else if (flags & fx_ascquote)
+            return string_escape(t, fx_quote | fx_ascii);
+        else if (flags & fx_escape)
+            return string_escape(t, 0);
+        else if (flags & fx_ascii)
+            return string_escape(t, fx_ascii);
+        else if (flags & fx_decimal)
+            return string_values(utf_range(t), 10, prec, 1);
+        else if (flags & fx_hex8)
+            return string_values(t, 16, prec, 2);
+        else if (flags & fx_hex16)
+            return string_values(to_utf16(t), 16, prec, 4);
+        else if (flags & fx_hex)
+            return string_values(utf_range(t), 16, prec, 1);
+        else
+            return t;
+    }
+
+    u8string format_type(system_clock::time_point t, uint64_t flags, int prec) {
+        using namespace UnicornDetail;
+        exclusive_flags(flags, fx_iso | fx_common, "formatting");
+        auto zone = flags & fx_local ? local_date : utc_date;
+        if (flags & fx_common)
+            return format_date(t, "%c"s, zone);
+        auto result = format_date(t, prec, zone);
+        if (flags & fx_iso) {
+            auto pos = result.find(' ');
+            if (pos != npos)
+                result[pos] = 'T';
+        }
+        return result;
     }
 
 }

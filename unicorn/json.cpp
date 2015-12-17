@@ -416,7 +416,7 @@ namespace Unicorn {
 
         void Element::write_number(u8string& dst) const {
             static const int precision = std::numeric_limits<double>::max_digits10;
-            format_type(rep.number, dst, fx_stripz, precision);
+            dst += format_type(rep.number, fx_stripz, precision);
         }
 
         void Element::write_string(u8string& dst) const {

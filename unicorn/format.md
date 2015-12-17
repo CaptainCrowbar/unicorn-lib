@@ -29,50 +29,25 @@ for details.
 
 ## Basic formatting functions ##
 
-* `template <typename T> class` **`FormatType`**
-    * `[string type]` **`operator()`**`(T t, uint64_t flags, int prec) const`
+* `template <typename T> u8string` **`format_type`**`(const T& t, uint64_t flags, int prec)`
+* _Library defined specializations for_
+    * `bool`
+    * `char`, `char16_t`, `char32_t`, `wchar_t`
+    * `signed char`, `unsigned char`
+    * `short`, `unsigned short`
+    * `int`, `unsigned`
+    * `long`, `unsigned long`
+    * `long long`, `unsigned long long`
+    * `int128_t`, `uint128_t`
+    * `float`, `double`, `long double`
+    * `C*`, `const C*`, `basic_string<C>`
+    * `std::chrono::duration<R`, ` P>`
+    * `std::chrono::system_clock::time_point`
+    * `Uuid`
+    * `Version`
 
 TODO
 
-* `template <> class` **`FormatType`**`<bool>`
-* `template <> class` **`FormatType`**`<signed char>`
-* `template <> class` **`FormatType`**`<unsigned char>`
-* `template <> class` **`FormatType`**`<short>`
-* `template <> class` **`FormatType`**`<unsigned short>`
-* `template <> class` **`FormatType`**`<int>`
-* `template <> class` **`FormatType`**`<unsigned>`
-* `template <> class` **`FormatType`**`<long>`
-* `template <> class` **`FormatType`**`<unsigned long>`
-* `template <> class` **`FormatType`**`<long long>`
-* `template <> class` **`FormatType`**`<unsigned long long>`
-* `template <> class` **`FormatType`**`<int128_t>`
-* `template <> class` **`FormatType`**`<uint128_t>`
-* `template <> class` **`FormatType`**`<float>`
-* `template <> class` **`FormatType`**`<double>`
-* `template <> class` **`FormatType`**`<long double>`
-* `template <typename C> class` **`FormatType`**`<basic_string<C>>`
-* `template <> class` **`FormatType`**`<char*>`
-* `template <> class` **`FormatType`**`<char16_t*>`
-* `template <> class` **`FormatType`**`<char32_t*>`
-* `template <> class` **`FormatType`**`<wchar_t*>`
-* `template <> class` **`FormatType`**`<const char*>`
-* `template <> class` **`FormatType`**`<const char16_t*>`
-* `template <> class` **`FormatType`**`<const char32_t*>`
-* `template <> class` **`FormatType`**`<const wchar_t*>`
-* `template <> class` **`FormatType`**`<char>`
-* `template <> class` **`FormatType`**`<char16_t>`
-* `template <> class` **`FormatType`**`<char32_t>`
-* `template <> class` **`FormatType`**`<wchar_t>`
-* `template <> class` **`FormatType`**`<std::chrono::system_clock::time_point>`
-* `template <typename R, typename P> class` **`FormatType`**`<std::chrono::duration<R, P>>`
-* `template <> class` **`FormatType`**`<Uuid>`
-* `template <> class` **`FormatType`**`<Version>`
-
-TODO
-
-* `template <typename T, typename C> void` **`format_type`**`(const T& t, basic_string<C>& dst, uint64_t flags = 0, int prec = -1, size_t width = 0, char32_t pad = U' ')`
-* `template <typename T, typename C> void` **`format_type`**`(const T& t, basic_string<C>& dst, const basic_string<C>& flags)`
-* `template <typename T, typename C> void` **`format_type`**`(const T& t, basic_string<C>& dst, const C* flags)`
 * `template <typename C, typename T> basic_string<C>` **`format_as`**`(const T& t, uint64_t flags = 0, int prec = -1, size_t width = 0, char32_t pad = U' ')`
 * `template <typename C, typename T> basic_string<C>` **`format_as`**`(const T& t, const basic_string<C>& flags)`
 * `template <typename C, typename T> basic_string<C>` **`format_as`**`(const T& t, const C* flags)`
