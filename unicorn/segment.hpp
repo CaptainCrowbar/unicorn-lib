@@ -12,14 +12,14 @@ namespace Unicorn {
 
     // Constants
 
-    UNICORN_DEFINE_FLAG(text segmentation, unicode_words, 0);    // Report all UAX29 words (default)
-    UNICORN_DEFINE_FLAG(text segmentation, graphic_words, 1);    // Report only words with graphic characters
-    UNICORN_DEFINE_FLAG(text segmentation, alpha_words, 2);      // Report only words with alphanumeric characters
-    UNICORN_DEFINE_FLAG(text segmentation, keep_breaks, 3);      // Include line/para terminators in results (default)
-    UNICORN_DEFINE_FLAG(text segmentation, strip_breaks, 4);     // Do not include line/para terminators
-    UNICORN_DEFINE_FLAG(text segmentation, multiline_paras, 5);  // Divide into paragraphs using multiple breaks (default)
-    UNICORN_DEFINE_FLAG(text segmentation, line_paras, 6);       // Divide into paragraphs using any line break
-    UNICORN_DEFINE_FLAG(text segmentation, unicode_paras, 7);    // Divide into paragraphs using only PS
+    constexpr uint32_t unicode_words    = 1ul << 0;  // Report all UAX29 words (default)
+    constexpr uint32_t graphic_words    = 1ul << 1;  // Report only words with graphic characters
+    constexpr uint32_t alpha_words      = 1ul << 2;  // Report only words with alphanumeric characters
+    constexpr uint32_t keep_breaks      = 1ul << 3;  // Include line/para terminators in results (default)
+    constexpr uint32_t strip_breaks     = 1ul << 4;  // Do not include line/para terminators
+    constexpr uint32_t multiline_paras  = 1ul << 5;  // Divide into paragraphs using multiple breaks (default)
+    constexpr uint32_t line_paras       = 1ul << 6;  // Divide into paragraphs using any line break
+    constexpr uint32_t unicode_paras    = 1ul << 7;  // Divide into paragraphs using only PS
 
     // Common base template for grapheme, word, and sentence iterators
 
@@ -121,8 +121,8 @@ namespace Unicorn {
 
     template <typename C> Irange<WordIterator<C>>
     word_range(const UtfIterator<C>& i, const UtfIterator<C>& j, uint32_t flags = 0) {
-        UnicornDetail::allow_flags(flags, unicode_words | graphic_words | alpha_words, "text segmentation");
-        UnicornDetail::exclusive_flags(flags, unicode_words | graphic_words | alpha_words, "text segmentation");
+        if (bits_set(flags & (unicode_words | graphic_words | alpha_words)) > 1)
+            throw std::invalid_argument("Inconsistent word breaking flags");
         return {{i, j, flags}, {j, j, flags}};
     }
 
@@ -273,8 +273,8 @@ namespace Unicorn {
     template <typename C>
     Irange<BlockSegmentIterator<C>> line_range(const UtfIterator<C>& i, const UtfIterator<C>& j, uint32_t flags = 0) {
         using namespace UnicornDetail;
-        UnicornDetail::allow_flags(flags, keep_breaks | strip_breaks, "text segmentation");
-        UnicornDetail::exclusive_flags(flags, keep_breaks | strip_breaks, "text segmentation");
+        if (bits_set(flags & (keep_breaks | strip_breaks)) > 1)
+            throw std::invalid_argument("Inconsistent line breaking flags");
         return {{i, j, flags, find_end_of_line}, {j, j, flags, find_end_of_line}};
     }
 
@@ -295,9 +295,9 @@ namespace Unicorn {
     template <typename C>
     Irange<BlockSegmentIterator<C>> paragraph_range(const UtfIterator<C>& i, const UtfIterator<C>& j, uint32_t flags = 0) {
         using namespace UnicornDetail;
-        UnicornDetail::allow_flags(flags, keep_breaks | strip_breaks | multiline_paras | line_paras | unicode_paras, "text segmentation");
-        UnicornDetail::exclusive_flags(flags, keep_breaks | strip_breaks, "text segmentation");
-        UnicornDetail::exclusive_flags(flags, multiline_paras | line_paras | unicode_paras, "text segmentation");
+        if (bits_set(flags & (keep_breaks | strip_breaks)) > 1
+                || bits_set(flags & (multiline_paras | line_paras | unicode_paras)) > 1)
+            throw std::invalid_argument("Inconsistent paragraph breaking flags");
         FindBlockFunction<C> f;
         if (flags & unicode_paras)
             f = find_unicode_para;

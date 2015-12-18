@@ -18,10 +18,10 @@ namespace Unicorn {
     // flags are linked to upper case letters for use with unicorn/format, so
     // they have bit positions in the 0-25 range.
 
-    UNICORN_DEFINE_FLAG_LETTER(string length, character_units, 'C');  // Measure string in characters (default)
-    UNICORN_DEFINE_FLAG_LETTER(string length, grapheme_units, 'G');   // Measure string in grapheme clusters
-    UNICORN_DEFINE_FLAG_LETTER(string length, narrow_context, 'N');   // East Asian width, defaulting to narrow
-    UNICORN_DEFINE_FLAG_LETTER(string length, wide_context, 'W');     // East Asian width, defaulting to wide
+    constexpr uint32_t character_units  = letter_to_mask('C');  // Measure string in characters (default)
+    constexpr uint32_t grapheme_units   = letter_to_mask('G');  // Measure string in grapheme clusters
+    constexpr uint32_t narrow_context   = letter_to_mask('N');  // East Asian width, defaulting to narrow
+    constexpr uint32_t wide_context     = letter_to_mask('W');  // East Asian width, defaulting to wide
 
     namespace UnicornDetail {
 
@@ -29,10 +29,11 @@ namespace Unicorn {
         constexpr auto all_length_flags = character_units | grapheme_units | east_asian_flags;
 
         inline void check_length_flags(uint32_t& flags) {
-            allow_flags(flags, all_length_flags, "string length");
-            exclusive_flags(flags, character_units | grapheme_units, "string length");
-            exclusive_flags(flags, character_units | east_asian_flags, "string length");
-            default_flags(flags, all_length_flags, character_units);
+            if (bits_set(flags & (character_units | grapheme_units)) > 1
+                    || bits_set(flags & (character_units | east_asian_flags)) > 1)
+                throw std::invalid_argument("Inconsistent string length flags");
+            if (bits_set(flags & all_length_flags) == 0)
+                flags |= character_units;
         }
 
         class EastAsianCount {

@@ -15,9 +15,9 @@ namespace Unicorn {
     // Remember that any other set of flags that might be combined with these
     // needs to skip the bits that are already spoken for.
 
-    UNICORN_DEFINE_FLAG(encoding, err_ignore, 0);   // Assume valid UTF input
-    UNICORN_DEFINE_FLAG(encoding, err_replace, 1);  // Replace invalid UTF with U+FFFD
-    UNICORN_DEFINE_FLAG(encoding, err_throw, 2);    // Throw EncodingError on invalid UTF
+    constexpr uint32_t err_ignore   = 1ul << 0;  // Assume valid UTF input
+    constexpr uint32_t err_replace  = 1ul << 1;  // Replace invalid UTF with U+FFFD
+    constexpr uint32_t err_throw    = 1ul << 2;  // Throw EncodingError on invalid UTF
 
     constexpr auto err_flags = err_ignore | err_replace | err_throw;
 
@@ -183,10 +183,10 @@ namespace Unicorn {
         using string_type = basic_string<C>;
         UtfIterator() noexcept { static const string_type dummy; sptr = &dummy; }
         explicit UtfIterator(const string_type& src): sptr(&src)
-            { UnicornDetail::default_flags(fset, err_flags, err_ignore); ++*this; }
+            { if (bits_set(fset & err_flags) == 0) fset |= err_ignore; ++*this; }
         UtfIterator(const string_type& src, size_t offset, uint32_t flags = 0):
             sptr(&src), ofs(std::min(offset, src.size())), fset(flags)
-            { UnicornDetail::default_flags(fset, err_flags, err_ignore); ++*this; }
+            { if (bits_set(fset & err_flags) == 0) fset |= err_ignore; ++*this; }
         const char32_t& operator*() const noexcept { return u; }
         UtfIterator& operator++();
         UtfIterator& operator--();
@@ -307,9 +307,9 @@ namespace Unicorn {
         using string_type = basic_string<C>;
         UtfWriter() noexcept {}
         explicit UtfWriter(string_type& dst) noexcept:
-            sptr(&dst) { UnicornDetail::default_flags(fset, err_flags, err_ignore); }
+            sptr(&dst) { if (bits_set(fset & err_flags) == 0) fset |= err_ignore; }
         UtfWriter(string_type& dst, uint32_t flags) noexcept:
-            sptr(&dst), fset(flags) { UnicornDetail::default_flags(fset, err_flags, err_ignore); }
+            sptr(&dst), fset(flags) { if (bits_set(fset & err_flags) == 0) fset |= err_ignore; }
         UtfWriter& operator=(char32_t u);
         bool valid() const noexcept { return ok; }
     private:
@@ -361,9 +361,10 @@ namespace Unicorn {
         template <typename C1, typename C2>
         struct Recode {
             void operator()(const C1* src, size_t n, basic_string<C2>& dst, uint32_t flags) const {
-                UnicornDetail::default_flags(flags, err_flags, err_ignore);
                 if (! src)
                     return;
+                if (bits_set(flags & err_flags) == 0)
+                    flags |= err_ignore;
                 size_t pos = 0;
                 char32_t u = 0;
                 C2 buf[UtfEncoding<C2>::max_units];
@@ -384,9 +385,10 @@ namespace Unicorn {
         template <typename C1>
         struct Recode<C1, char32_t> {
             void operator()(const C1* src, size_t n, u32string& dst, uint32_t flags) const {
-                UnicornDetail::default_flags(flags, err_flags, err_ignore);
                 if (! src)
                     return;
+                if (bits_set(flags & err_flags) == 0)
+                    flags |= err_ignore;
                 size_t pos = 0;
                 char32_t u = 0;
                 if (flags & err_ignore) {
@@ -412,9 +414,10 @@ namespace Unicorn {
         template <typename C2>
         struct Recode<char32_t, C2> {
             void operator()(const char32_t* src, size_t n, basic_string<C2>& dst, uint32_t flags) const {
-                UnicornDetail::default_flags(flags, err_flags, err_ignore);
                 if (! src)
                     return;
+                if (bits_set(flags & err_flags) == 0)
+                    flags |= err_ignore;
                 char32_t u = 0;
                 C2 buf[UtfEncoding<C2>::max_units];
                 for (size_t pos = 0; pos < n; ++pos) {
@@ -435,9 +438,10 @@ namespace Unicorn {
         template <typename C>
         struct Recode<C, C> {
             void operator()(const C* src, size_t n, basic_string<C>& dst, uint32_t flags) const {
-                UnicornDetail::default_flags(flags, err_flags, err_ignore);
                 if (! src)
                     return;
+                if (bits_set(flags & err_flags) == 0)
+                    flags |= err_ignore;
                 size_t pos = 0;
                 char32_t u = 0;
                 C buf[UtfEncoding<C>::max_units];
@@ -467,9 +471,10 @@ namespace Unicorn {
         template <>
         struct Recode<char32_t, char32_t> {
             void operator()(const char32_t* src, size_t n, u32string& dst, uint32_t flags) const {
-                UnicornDetail::default_flags(flags, err_flags, err_ignore);
                 if (! src)
                     return;
+                if (bits_set(flags & err_flags) == 0)
+                    flags |= err_ignore;
                 for (size_t pos = 0; pos < n; ++pos) {
                     if (n == npos && src[pos] == 0)
                         break;

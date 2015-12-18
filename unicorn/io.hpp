@@ -18,29 +18,29 @@ namespace Unicorn {
 
     // Common reader and writer flags
 
-    UNICORN_DEFINE_FLAG(file io, io_bom,   3);  // Strip or insert a BOM
-    UNICORN_DEFINE_FLAG(file io, io_lf,    4);  // Convert all line breaks to LF
-    UNICORN_DEFINE_FLAG(file io, io_crlf,  5);  // Convert all line breaks to CR+LF
+    constexpr uint32_t io_bom        = 1ul << 3;   // Strip or insert a BOM
+    constexpr uint32_t io_lf         = 1ul << 4;   // Convert all line breaks to LF
+    constexpr uint32_t io_crlf       = 1ul << 5;   // Convert all line breaks to CR+LF
 
     // Reader flags
 
-    UNICORN_DEFINE_FLAG(file io, io_stdin,     6);   // Default to stdin
-    UNICORN_DEFINE_FLAG(file io, io_nofail,    7);   // Treat nonexistent file as empty
-    UNICORN_DEFINE_FLAG(file io, io_striplf,   8);   // Strip line breaks
-    UNICORN_DEFINE_FLAG(file io, io_striptws,  9);   // Strip trailing whitespace
-    UNICORN_DEFINE_FLAG(file io, io_stripws,   10);  // Strip whitespace
-    UNICORN_DEFINE_FLAG(file io, io_notempty,  11);  // Skip empty lines
+    constexpr uint32_t io_stdin      = 1ul << 6;   // Default to stdin
+    constexpr uint32_t io_nofail     = 1ul << 7;   // Treat nonexistent file as empty
+    constexpr uint32_t io_striplf    = 1ul << 8;   // Strip line breaks
+    constexpr uint32_t io_striptws   = 1ul << 9;   // Strip trailing whitespace
+    constexpr uint32_t io_stripws    = 1ul << 10;  // Strip whitespace
+    constexpr uint32_t io_notempty   = 1ul << 11;  // Skip empty lines
 
     // Writer flags
 
-    UNICORN_DEFINE_FLAG(file io, io_stdout,     12);  // Default to stdout
-    UNICORN_DEFINE_FLAG(file io, io_stderr,     13);  // Default to stderr
-    UNICORN_DEFINE_FLAG(file io, io_append,     14);  // Append to file
-    UNICORN_DEFINE_FLAG(file io, io_linebuf,    15);  // Line buffered output
-    UNICORN_DEFINE_FLAG(file io, io_unbuf,      16);  // Unbuffered output
-    UNICORN_DEFINE_FLAG(file io, io_writeline,  17);  // Write LF after every write
-    UNICORN_DEFINE_FLAG(file io, io_autoline,   18);  // Write LF if not already there
-    UNICORN_DEFINE_FLAG(file io, io_mutex,      19);  // Hold per-file mutex while writing
+    constexpr uint32_t io_stdout     = 1ul << 12;  // Default to stdout
+    constexpr uint32_t io_stderr     = 1ul << 13;  // Default to stderr
+    constexpr uint32_t io_append     = 1ul << 14;  // Append to file
+    constexpr uint32_t io_linebuf    = 1ul << 15;  // Line buffered output
+    constexpr uint32_t io_unbuf      = 1ul << 16;  // Unbuffered output
+    constexpr uint32_t io_writeline  = 1ul << 17;  // Write LF after every write
+    constexpr uint32_t io_autoline   = 1ul << 18;  // Write LF if not already there
+    constexpr uint32_t io_mutex      = 1ul << 19;  // Hold per-file mutex while writing
 
     // File input iterator
 

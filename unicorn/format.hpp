@@ -17,35 +17,35 @@ namespace Unicorn {
 
     // Formatting behaviour flags
 
-    UNICORN_DEFINE_FLAG_64(formatting,      fx_left,      52);   // (<) Left align                  all  --    --   --     --    --      --
-    UNICORN_DEFINE_FLAG_64(formatting,      fx_centre,    53);   // (=) Centre align                all  --    --   --     --    --      --
-    UNICORN_DEFINE_FLAG_64(formatting,      fx_right,     54);   // (>) Right align                 all  --    --   --     --    --      --
-    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_upper,     'U');  // Convert to upper case           all  --    --   --     --    --      --
-    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_lower,     'L');  // Convert to lower case           all  --    --   --     --    --      --
-    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_title,     'T');  // Convert to title case           all  --    --   --     --    --      --
-    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_tf,        't');  // Write as true/false             --   bool  --   --     --    --      --
-    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_yesno,     'y');  // Write as yes/no                 --   bool  --   --     --    --      --
-    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_binary,    'b');  // Binary number                   --   bool  int  --     --    --      --
-    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_decimal,   'n');  // Decimal number                  --   --    int  --     char  string  --
-    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_hex,       'x');  // Hexadecimal number              --   --    int  --     char  string  --
-    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_roman,     'r');  // Roman numerals                  --   --    int  --     --    --      --
-    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_sign,      's');  // Always show a sign              --   --    int  float  --    --      --
-    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_signz,     'S');  // Always show a sign unless zero  --   --    int  float  --    --      --
-    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_digits,    'd');  // Fixed significant figures       --   --    --   float  --    --      --
-    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_exp,       'e');  // Scientific notation             --   --    --   float  --    --      --
-    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_fixed,     'f');  // Fixed point notation            --   --    --   float  --    --      --
-    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_general,   'g');  // Use the shorter of d or e       --   --    --   float  --    --      --
-    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_prob,      'p');  // Probability format              --   --    --   float  --    --      --
-    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_stripz,    'z');  // Strip trailing zeros            --   --    --   float  --    --      --
-    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_ascii,     'a');  // Escape if not printable ASCII   --   --    --   --     char  string  --
-    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_escape,    'c');  // Escape if C0/C1 control         --   --    --   --     char  string  --
-    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_quote,     'q');  // Quote string, escape C0/C1      --   --    --   --     char  string  --
-    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_ascquote,  'o');  // Quote string, escape non-ASCII  --   --    --   --     char  string  --
-    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_hex8,      'u');  // Hex UTF-8 bytes                 --   --    --   --     char  string  --
-    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_hex16,     'v');  // Hex UTF-16 code units           --   --    --   --     char  string  --
-    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_iso,       't');  // ISO 8601 with T delimiter       --   --    --   --     --    --      date
-    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_common,    'c');  // Local standard format           --   --    --   --     --    --      date
-    UNICORN_DEFINE_FLAG_LETTER(formatting,  fx_local,     'l');  // Local time zone                 --   --    --   --     --    --      date
+    constexpr uint64_t fx_left      = 1ull << 52;           // (<) Left align                  all  --    --   --     --    --      --
+    constexpr uint64_t fx_centre    = 1ull << 53;           // (=) Centre align                all  --    --   --     --    --      --
+    constexpr uint64_t fx_right     = 1ull << 54;           // (>) Right align                 all  --    --   --     --    --      --
+    constexpr uint64_t fx_upper     = letter_to_mask('U');  // Convert to upper case           all  --    --   --     --    --      --
+    constexpr uint64_t fx_lower     = letter_to_mask('L');  // Convert to lower case           all  --    --   --     --    --      --
+    constexpr uint64_t fx_title     = letter_to_mask('T');  // Convert to title case           all  --    --   --     --    --      --
+    constexpr uint64_t fx_tf        = letter_to_mask('t');  // Write as true/false             --   bool  --   --     --    --      --
+    constexpr uint64_t fx_yesno     = letter_to_mask('y');  // Write as yes/no                 --   bool  --   --     --    --      --
+    constexpr uint64_t fx_binary    = letter_to_mask('b');  // Binary number                   --   bool  int  --     --    --      --
+    constexpr uint64_t fx_decimal   = letter_to_mask('n');  // Decimal number                  --   --    int  --     char  string  --
+    constexpr uint64_t fx_hex       = letter_to_mask('x');  // Hexadecimal number              --   --    int  --     char  string  --
+    constexpr uint64_t fx_roman     = letter_to_mask('r');  // Roman numerals                  --   --    int  --     --    --      --
+    constexpr uint64_t fx_sign      = letter_to_mask('s');  // Always show a sign              --   --    int  float  --    --      --
+    constexpr uint64_t fx_signz     = letter_to_mask('S');  // Always show a sign unless zero  --   --    int  float  --    --      --
+    constexpr uint64_t fx_digits    = letter_to_mask('d');  // Fixed significant figures       --   --    --   float  --    --      --
+    constexpr uint64_t fx_exp       = letter_to_mask('e');  // Scientific notation             --   --    --   float  --    --      --
+    constexpr uint64_t fx_fixed     = letter_to_mask('f');  // Fixed point notation            --   --    --   float  --    --      --
+    constexpr uint64_t fx_general   = letter_to_mask('g');  // Use the shorter of d or e       --   --    --   float  --    --      --
+    constexpr uint64_t fx_prob      = letter_to_mask('p');  // Probability format              --   --    --   float  --    --      --
+    constexpr uint64_t fx_stripz    = letter_to_mask('z');  // Strip trailing zeros            --   --    --   float  --    --      --
+    constexpr uint64_t fx_ascii     = letter_to_mask('a');  // Escape if not printable ASCII   --   --    --   --     char  string  --
+    constexpr uint64_t fx_escape    = letter_to_mask('c');  // Escape if C0/C1 control         --   --    --   --     char  string  --
+    constexpr uint64_t fx_quote     = letter_to_mask('q');  // Quote string, escape C0/C1      --   --    --   --     char  string  --
+    constexpr uint64_t fx_ascquote  = letter_to_mask('o');  // Quote string, escape non-ASCII  --   --    --   --     char  string  --
+    constexpr uint64_t fx_hex8      = letter_to_mask('u');  // Hex UTF-8 bytes                 --   --    --   --     char  string  --
+    constexpr uint64_t fx_hex16     = letter_to_mask('v');  // Hex UTF-16 code units           --   --    --   --     char  string  --
+    constexpr uint64_t fx_iso       = letter_to_mask('t');  // ISO 8601 with T delimiter       --   --    --   --     --    --      date
+    constexpr uint64_t fx_common    = letter_to_mask('c');  // Local standard format           --   --    --   --     --    --      date
+    constexpr uint64_t fx_local     = letter_to_mask('l');  // Local time zone                 --   --    --   --     --    --      date
 
     namespace UnicornDetail {
 
@@ -78,11 +78,13 @@ namespace Unicorn {
 
         template <typename T>
         u8string format_int(T t, uint64_t flags, int prec) {
-            if ((flags & (fx_digits | fx_exp | fx_fixed | fx_general | fx_prob | fx_stripz))
-                    && ! (flags & (fx_binary | fx_decimal | fx_hex | fx_roman)))
+            static constexpr auto float_flags = fx_digits | fx_exp | fx_fixed | fx_general | fx_prob | fx_stripz;
+            static constexpr auto int_flags = fx_binary | fx_decimal | fx_hex | fx_roman;
+            static constexpr auto sign_flags = fx_sign | fx_signz;
+            if ((flags & float_flags) && ! (flags & int_flags))
                 return format_float(t, flags, prec);
-            exclusive_flags(flags, fx_binary | fx_decimal | fx_hex | fx_roman, "formatting");
-            exclusive_flags(flags, fx_sign | fx_signz, "formatting");
+            if (bits_set(flags & int_flags) > 1 || bits_set(flags & sign_flags) > 1)
+                throw std::invalid_argument("Inconsistent integer formatting flags");
             char sign = 0;
             if (t > static_cast<T>(0)) {
                 if (flags & (fx_sign | fx_signz))
@@ -112,8 +114,10 @@ namespace Unicorn {
 
         template <typename C>
         basic_string<C> format_align(basic_string<C> src, uint64_t flags, size_t width, char32_t pad) {
-            exclusive_flags(flags, fx_left | fx_centre | fx_right, "formatting");
-            exclusive_flags(flags, fx_lower | fx_title | fx_upper, "formatting");
+            if (bits_set(flags & (fx_left | fx_centre | fx_right)) > 1)
+                throw std::invalid_argument("Inconsistent formatting alignment flags");
+            if (bits_set(flags & (fx_lower | fx_title | fx_upper)) > 1)
+                throw std::invalid_argument("Inconsistent formatting case conversion flags");
             if (flags & fx_lower)
                 str_lowercase_in(src);
             else if (flags & fx_title)

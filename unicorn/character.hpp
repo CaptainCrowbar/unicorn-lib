@@ -179,9 +179,9 @@ namespace Unicorn {
 
     // Character names
 
-    UNICORN_DEFINE_FLAG(character name, code_labels, 0);
-    UNICORN_DEFINE_FLAG(character name, control_names, 1);
-    UNICORN_DEFINE_FLAG(character name, updated_names, 2);
+    constexpr uint32_t code_labels    = 1ul << 0;
+    constexpr uint32_t control_names  = 1ul << 1;
+    constexpr uint32_t updated_names  = 1ul << 2;
 
     u8string char_name(char32_t c, uint32_t flags = 0);
 

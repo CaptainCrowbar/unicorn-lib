@@ -11,39 +11,6 @@ namespace Unicorn {
     using namespace Prion;
     namespace Literals { using namespace Prion::Literals; }
 
-    namespace UnicornDetail {
-
-        // Flag manipulation functions and macros
-
-        struct RecordFlag {
-            RecordFlag(const u8string& context, const  u8string& name, uint64_t value);
-        };
-
-        #define UNICORN_DEFINE_FLAG(context, name, bitnum) \
-            constexpr uint32_t name = 1ul << (bitnum); \
-            const ::Unicorn::UnicornDetail::RecordFlag name ## _ ## init(# context, # name, 1ul << (bitnum));
-
-        #define UNICORN_DEFINE_FLAG_64(context, name, bitnum) \
-            constexpr uint64_t name = 1ull << (bitnum); \
-            const ::Unicorn::UnicornDetail::RecordFlag name ## _ ## init(# context, # name, 1ull << (bitnum));
-
-        #define UNICORN_DEFINE_FLAG_LETTER(context, name, letter) \
-            UNICORN_DEFINE_FLAG_64(context, name, ::Unicorn::UnicornDetail::letter_to_flag_index(letter))
-
-        u8string flag_name(const u8string& context, uint64_t flag);
-        u8string flag_names(const u8string& context, uint64_t flags);
-        constexpr int letter_to_flag_index(char c) { return c >= 'A' && c <= 'Z' ? c - 'A' : c >= 'a' && c <= 'z' ? c - 'a' + 26 : 0; }
-        constexpr uint64_t letter_to_flag(char c) { return 1ull << letter_to_flag_index(c); }
-        // Check that `flags` contains no bits not in `allow`
-        void allow_flags(uint64_t flags, uint64_t allow, const u8string& context);
-        // Check that `flags` contains no more than one bit from `exclusive`
-        void exclusive_flags(uint64_t flags, uint64_t exclusive, const u8string& context);
-        // If `flags` contains no bits from `group`, insert `defval`
-        template <typename T> void default_flags(T& flags, uint64_t group, uint64_t defval) noexcept
-            { if ((flags & group) == 0) flags |= defval; }
-
-    }
-
     // Exceptions
 
     class InitializationError:

@@ -17,9 +17,9 @@
 
 namespace Unicorn {
 
-    UNICORN_DEFINE_FLAG(word wrapping, wrap_crlf, 26);      // Use CR+LF for line breaks (default LF)
-    UNICORN_DEFINE_FLAG(word wrapping, wrap_enforce, 27);   // Enforce right margin strictly
-    UNICORN_DEFINE_FLAG(word wrapping, wrap_preserve, 28);  // Preserve layout on already indented lines
+    constexpr uint32_t wrap_crlf      = 1ul << 26;  // Use CR+LF for line breaks (default LF)
+    constexpr uint32_t wrap_enforce   = 1ul << 27;  // Enforce right margin strictly
+    constexpr uint32_t wrap_preserve  = 1ul << 28;  // Preserve layout on already indented lines
 
     namespace UnicornDetail {
 
@@ -1300,7 +1300,6 @@ namespace Unicorn {
     basic_string<C> str_wrap(const basic_string<C>& str, uint32_t flags = 0, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos) {
         using namespace UnicornDetail;
         using string_type = basic_string<C>;
-        UnicornDetail::allow_flags(flags, wrap_crlf | wrap_enforce | wrap_preserve | all_length_flags, "word wrapping");
         if (width == 0 || width == npos) {
             auto columns = decnum(cstr(getenv("COLUMNS")));
             if (columns < 3)

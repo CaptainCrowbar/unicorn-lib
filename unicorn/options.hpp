@@ -26,9 +26,9 @@ namespace Unicorn {
         OptionSpecError(const u8string& details, const u8string& option);
     };
 
-    UNICORN_DEFINE_FLAG(command line parsing, opt_locale, 0);    // Argument list is in local encoding
-    UNICORN_DEFINE_FLAG(command line parsing, opt_noprefix, 1);  // First argument is not the command name
-    UNICORN_DEFINE_FLAG(command line parsing, opt_quoted, 2);    // Allow arguments to be quoted
+    constexpr uint32_t opt_locale    = 1ul << 0;  // Argument list is in local encoding
+    constexpr uint32_t opt_noprefix  = 1ul << 1;  // First argument is not the command name
+    constexpr uint32_t opt_quoted    = 1ul << 2;  // Allow arguments to be quoted
 
     namespace UnicornDetail {
 
@@ -145,8 +145,6 @@ namespace Unicorn {
         template <typename C> static u8string arg_convert(const basic_string<C>& str, uint32_t /*flags*/)
             { return to_utf8(str); }
         static u8string arg_convert(const string& str, uint32_t flags);
-        static void check_flags(uint32_t flags)
-            { UnicornDetail::allow_flags(flags, opt_locale | opt_noprefix | opt_quoted, "command line parsing"); }
         static void unquote(const u8string& src, string_list& dst);
     };
 
@@ -181,7 +179,6 @@ namespace Unicorn {
 
     template <typename C, typename C2>
     bool Options::parse(const vector<basic_string<C>>& args, std::basic_ostream<C2>& out, uint32_t flags) {
-        check_flags(flags);
         string_list u8vec;
         std::transform(args.begin(), args.end(), append(u8vec),
             [=] (const basic_string<C>& s) { return arg_convert(s, flags); });
@@ -192,7 +189,6 @@ namespace Unicorn {
 
     template <typename C, typename C2>
     bool Options::parse(const basic_string<C>& args, std::basic_ostream<C2>& out, uint32_t flags) {
-        check_flags(flags);
         auto u8args = arg_convert(args, flags);
         string_list vec;
         if (flags & opt_quoted) {
@@ -208,7 +204,6 @@ namespace Unicorn {
 
     template <typename C, typename C2>
     bool Options::parse(int argc, C** argv, std::basic_ostream<C2>& out, uint32_t flags) {
-        check_flags(flags);
         vector<basic_string<C>> args(argv, argv + argc);
         if (flags & opt_quoted)
             return parse(str_join(args, str_char<C>(U' ')), out, flags);

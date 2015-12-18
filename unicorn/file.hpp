@@ -15,11 +15,11 @@ namespace Unicorn {
 
     // Constants
 
-    UNICORN_DEFINE_FLAG(file system, fs_all,       0);  // Include hidden files
-    UNICORN_DEFINE_FLAG(file system, fs_dotdot,    1);  // Include . and ..
-    UNICORN_DEFINE_FLAG(file system, fs_fullname,  2);  // Return full file names
-    UNICORN_DEFINE_FLAG(file system, fs_recurse,   3);  // Recursive directory operations
-    UNICORN_DEFINE_FLAG(file system, fs_unicode,   4);  // Skip files with non-Unicode names
+    constexpr uint32_t fs_all       = 1ul << 0;  // Include hidden files
+    constexpr uint32_t fs_dotdot    = 1ul << 1;  // Include . and ..
+    constexpr uint32_t fs_fullname  = 1ul << 2;  // Return full file names
+    constexpr uint32_t fs_recurse   = 1ul << 3;  // Recursive directory operations
+    constexpr uint32_t fs_unicode   = 1ul << 4;  // Skip files with non-Unicode names
 
     // System dependencies
 

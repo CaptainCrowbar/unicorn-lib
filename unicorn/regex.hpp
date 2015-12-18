@@ -287,29 +287,29 @@ namespace Unicorn {
 
     // Regex options
 
-    UNICORN_DEFINE_FLAG(regex, rx_caseless, 0);          // Case insensitive matching                        PCRE_CASELESS
-    UNICORN_DEFINE_FLAG(regex, rx_dfa, 1);               // Use the alternative DFA algorithm                pcre_dfa_exec()
-    UNICORN_DEFINE_FLAG(regex, rx_dollarnewline, 2);     // $ may match line break at end                    ~PCRE_DOLLAR_ENDONLY
-    UNICORN_DEFINE_FLAG(regex, rx_dotinline, 3);         // . does not match newlines                        ~PCRE_DOTALL
-    UNICORN_DEFINE_FLAG(regex, rx_extended, 4);          // Free-form mode (ignore whitespace and comments)  PCRE_EXTENDED
-    UNICORN_DEFINE_FLAG(regex, rx_firstline, 5);         // Must match in first line                         PCRE_FIRSTLINE
-    UNICORN_DEFINE_FLAG(regex, rx_multiline, 6);         // Multiline mode (^ and $ match BOL/EOL)           PCRE_MULTILINE
-    UNICORN_DEFINE_FLAG(regex, rx_newlineanycrlf, 7);    // Line break is any of CR, LF, CRLF                PCRE_NEWLINE_ANYCRLF
-    UNICORN_DEFINE_FLAG(regex, rx_newlinecr, 8);         // Line break is CR only                            PCRE_NEWLINE_CR
-    UNICORN_DEFINE_FLAG(regex, rx_newlinecrlf, 9);       // Line break is CRLF only                          PCRE_NEWLINE_CRLF
-    UNICORN_DEFINE_FLAG(regex, rx_newlinelf, 10);        // Line break is LF only                            PCRE_NEWLINE_LF
-    UNICORN_DEFINE_FLAG(regex, rx_noautocapture, 11);    // No automatic captures                            PCRE_NO_AUTO_CAPTURE
-    UNICORN_DEFINE_FLAG(regex, rx_nostartoptimize, 12);  // No startup optimization                          PCRE_NO_START_OPTIMIZE
-    UNICORN_DEFINE_FLAG(regex, rx_notbol, 13);           // Start of text is not a line break                PCRE_NOTBOL
-    UNICORN_DEFINE_FLAG(regex, rx_notempty, 14);         // Do not match an empty string                     PCRE_NOTEMPTY
-    UNICORN_DEFINE_FLAG(regex, rx_notemptyatstart, 15);  // Match an empty string only at the start          PCRE_NOTEMPTY_ATSTART
-    UNICORN_DEFINE_FLAG(regex, rx_noteol, 16);           // End of text is not a line break                  PCRE_NOTEOL
-    UNICORN_DEFINE_FLAG(regex, rx_noutfcheck, 17);       // Skip UTF validity checks                         PCRE_NO_UTF{8,16,32}_CHECK
-    UNICORN_DEFINE_FLAG(regex, rx_optimize, 18);         // Take extra effort to optimize the regex          PCRE_STUDY_JIT_COMPILE
-    UNICORN_DEFINE_FLAG(regex, rx_partialhard, 19);      // Hard partial matching (prefer over full match)   PCRE_PARTIAL_HARD
-    UNICORN_DEFINE_FLAG(regex, rx_partialsoft, 20);      // Soft partial matching (only if no full match)    PCRE_PARTIAL_SOFT
-    UNICORN_DEFINE_FLAG(regex, rx_prefershort, 21);      // Non-greedy quantifiers, or shorter DFA matches   PCRE_UNGREEDY,PCRE_DFA_SHORTEST
-    UNICORN_DEFINE_FLAG(regex, rx_ucp, 22);              // Use Unicode properties in escape charsets        PCRE_UCP
+    constexpr uint32_t rx_caseless         = 1ul << 0;   // Case insensitive matching                        PCRE_CASELESS
+    constexpr uint32_t rx_dfa              = 1ul << 1;   // Use the alternative DFA algorithm                pcre_dfa_exec()
+    constexpr uint32_t rx_dollarnewline    = 1ul << 2;   // $ may match line break at end                    ~PCRE_DOLLAR_ENDONLY
+    constexpr uint32_t rx_dotinline        = 1ul << 3;   // . does not match newlines                        ~PCRE_DOTALL
+    constexpr uint32_t rx_extended         = 1ul << 4;   // Free-form mode (ignore whitespace and comments)  PCRE_EXTENDED
+    constexpr uint32_t rx_firstline        = 1ul << 5;   // Must match in first line                         PCRE_FIRSTLINE
+    constexpr uint32_t rx_multiline        = 1ul << 6;   // Multiline mode (^ and $ match BOL/EOL)           PCRE_MULTILINE
+    constexpr uint32_t rx_newlineanycrlf   = 1ul << 7;   // Line break is any of CR, LF, CRLF                PCRE_NEWLINE_ANYCRLF
+    constexpr uint32_t rx_newlinecr        = 1ul << 8;   // Line break is CR only                            PCRE_NEWLINE_CR
+    constexpr uint32_t rx_newlinecrlf      = 1ul << 9;   // Line break is CRLF only                          PCRE_NEWLINE_CRLF
+    constexpr uint32_t rx_newlinelf        = 1ul << 10;  // Line break is LF only                            PCRE_NEWLINE_LF
+    constexpr uint32_t rx_noautocapture    = 1ul << 11;  // No automatic captures                            PCRE_NO_AUTO_CAPTURE
+    constexpr uint32_t rx_nostartoptimize  = 1ul << 12;  // No startup optimization                          PCRE_NO_START_OPTIMIZE
+    constexpr uint32_t rx_notbol           = 1ul << 13;  // Start of text is not a line break                PCRE_NOTBOL
+    constexpr uint32_t rx_notempty         = 1ul << 14;  // Do not match an empty string                     PCRE_NOTEMPTY
+    constexpr uint32_t rx_notemptyatstart  = 1ul << 15;  // Match an empty string only at the start          PCRE_NOTEMPTY_ATSTART
+    constexpr uint32_t rx_noteol           = 1ul << 16;  // End of text is not a line break                  PCRE_NOTEOL
+    constexpr uint32_t rx_noutfcheck       = 1ul << 17;  // Skip UTF validity checks                         PCRE_NO_UTF{8,16,32}_CHECK
+    constexpr uint32_t rx_optimize         = 1ul << 18;  // Take extra effort to optimize the regex          PCRE_STUDY_JIT_COMPILE
+    constexpr uint32_t rx_partialhard      = 1ul << 19;  // Hard partial matching (prefer over full match)   PCRE_PARTIAL_HARD
+    constexpr uint32_t rx_partialsoft      = 1ul << 20;  // Soft partial matching (only if no full match)    PCRE_PARTIAL_SOFT
+    constexpr uint32_t rx_prefershort      = 1ul << 21;  // Non-greedy quantifiers, or shorter DFA matches   PCRE_UNGREEDY,PCRE_DFA_SHORTEST
+    constexpr uint32_t rx_ucp              = 1ul << 22;  // Use Unicode properties in escape charsets        PCRE_UCP
 
     // Exceptions
 

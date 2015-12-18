@@ -17,10 +17,10 @@
 
 namespace Unicorn {
 
-    UNICORN_DEFINE_FLAG(string escaping, esc_ascii,   0);  // Escape all non-ASCII characters
-    UNICORN_DEFINE_FLAG(string escaping, esc_nostdc,  1);  // Do not use standard C symbols such as `\n`
-    UNICORN_DEFINE_FLAG(string escaping, esc_pcre,    2);  // Use `\x{...}` instead of `\u` and `\U` (implies `esc_nonascii`)
-    UNICORN_DEFINE_FLAG(string escaping, esc_punct,   3);  // Escape ASCII punctuation
+    constexpr uint32_t esc_ascii   = 1ul << 0;  // Escape all non-ASCII characters
+    constexpr uint32_t esc_nostdc  = 1ul << 1;  // Do not use standard C symbols such as `\n`
+    constexpr uint32_t esc_pcre    = 1ul << 2;  // Use `\x{...}` instead of `\u` and `\U` (implies `esc_nonascii`)
+    constexpr uint32_t esc_punct   = 1ul << 3;  // Escape ASCII punctuation
 
     namespace UnicornDetail {
 
