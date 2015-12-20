@@ -8,8 +8,8 @@
 #include <string>
 #include <vector>
 
-using namespace std::literals;
 using namespace Unicorn;
+using namespace std::literals;
 
 namespace {
 
@@ -384,8 +384,8 @@ namespace {
         TRY(rf = RegexFormat("\\w", "\\0"));
         s = "Hello";  TEST_EQUAL(rf(s), "\0\0\0\0\0"s);
 
-        TRY(rf = RegexFormat("\\w+", "\\e"));
-        s = "Hello world";  TEST_EQUAL(rf(s), "\x1b \x1b");
+        TRY(rf = RegexFormat("\\w+", "\\0\\a\\b\\t\\n\\v\\f\\r\\e"));
+        s = "Hello world";  TEST_EQUAL(rf(s), "\0\a\b\t\n\v\f\r\x1b \0\a\b\t\n\v\f\r\x1b"s);
 
         TRY(rf = RegexFormat("\\w+", "(\\Q\\1$1\\E)"));
         s = "Hello";  TEST_EQUAL(rf(s), "(\\1$1)");

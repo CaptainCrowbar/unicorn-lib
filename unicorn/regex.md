@@ -187,6 +187,13 @@ Code                              | Description
 `$_`                              | The complete subject string
 `\xHH`, `\x{HHH...}`              | Unicode character, identified by hexadecimal code point
 `\0`                              | Null character (`\x00`)
+`\a`                              | Alert character (`\x07`)
+`\b`                              | Backspace character (`\x08`)
+`\t`                              | Horizontal tab character (`\x09`)
+`\n`                              | Line feed character (`\x0a`)
+`\v`                              | Vertical tab character (`\x0b`)
+`\f`                              | Form feed character (`\x0c`)
+`\r`                              | Carriage return character (`\x0d`)
 `\e`                              | Escape character (`\x1b`)
 `\l`                              | Convert the next character to lower case
 `\u`                              | Convert the next character to upper case

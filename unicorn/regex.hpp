@@ -206,6 +206,13 @@ namespace Unicorn {
         char32_t decode_escape(C c) {
             switch (c) {
                 case PRI_CHAR('0', C):  return U'\0';
+                case PRI_CHAR('a', C):  return U'\a';
+                case PRI_CHAR('b', C):  return U'\b';
+                case PRI_CHAR('t', C):  return U'\t';
+                case PRI_CHAR('n', C):  return U'\n';
+                case PRI_CHAR('v', C):  return U'\v';
+                case PRI_CHAR('f', C):  return U'\f';
+                case PRI_CHAR('r', C):  return U'\r';
                 case PRI_CHAR('e', C):  return 0x1b;
                 default:                return char_to_uint(c);
             }
@@ -677,7 +684,7 @@ namespace Unicorn {
             R"(|(?:\$([-+<>\[\]`'_])))"                      // (7) Substring ($-,$+,$<,$>,$[,$],$`,$',$_)
             R"(|(?:\\x([[:xdigit:]]{2})))"                   // (8) Escape code (\xHH)
             R"(|(?:\\x\{([[:xdigit:]]+)\}))"                 // (9) Escape code (\x{HHH...})
-            R"(|(?:\\([0e])))"                               // (10) Escape code
+            R"(|(?:\\([0abtnvfre])))"                        // (10) Escape code
             R"(|(?:\\([ELTUlu])))"                           // (11) Escape code
             R"(|(?:\\Q((?:[^\\]|\\(?:[^E]|$))*)(?:\\E|$)))"  // (12) Literal text
             R"(|(?:[\\$](.)))";                              // (13) Unknown
