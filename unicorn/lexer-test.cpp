@@ -295,11 +295,13 @@ namespace {
 
     void check_byte_lexer() {
 
-        ByteLexer lex;
-        ByteLexer::token_iterator it;
-        ByteLexer::token_range range;
+        Lexer lex;
+        Lexer::token_iterator it;
+        Lexer::token_range range;
         string s;
         vector<string> v;
+
+        TRY(lex = Lexer(rx_byte));
 
         TRY(lex.match(0, "\\s+"));
         TRY(lex.match(0, "#[^\\n]*"));

@@ -37,7 +37,8 @@ namespace {
         TEST_EQUAL(r.flags(), 0);
 
         TEST(! m.matched());
-        TEST_EQUAL(u_str(m.begin(), m.end()), "");
+        TEST_EQUAL(u8string(m.s_begin(), m.s_end()), "");
+        TEST_EQUAL(u_str(m.u_begin(), m.u_end()), "");
 
         TRY(r = Regex("[a-z]+"));
         TEST(! r.empty());
@@ -57,9 +58,12 @@ namespace {
         TEST_EQUAL(m.str(), "ello");
         TEST_EQUAL(m.str(0), "ello");
         TEST_EQUAL(m.str(1), "");
-        TEST_EQUAL(u_str(m.begin(), m.end()), "ello");
-        TEST_EQUAL(u_str(m.begin(0), m.end(0)), "ello");
-        TEST_EQUAL(u_str(m.begin(1), m.end(1)), "");
+        TEST_EQUAL(u8string(m.s_begin(), m.s_end()), "ello");
+        TEST_EQUAL(u8string(m.s_begin(0), m.s_end(0)), "ello");
+        TEST_EQUAL(u8string(m.s_begin(1), m.s_end(1)), "");
+        TEST_EQUAL(u_str(m.u_begin(), m.u_end()), "ello");
+        TEST_EQUAL(u_str(m.u_begin(0), m.u_end(0)), "ello");
+        TEST_EQUAL(u_str(m.u_begin(1), m.u_end(1)), "");
         s = "42";
         TRY(m = r.search(s));
         TEST(! m.matched());
@@ -71,7 +75,8 @@ namespace {
         TEST_EQUAL(m.endpos(), npos);
         TEST_EQUAL(m.count(), 0);
         TEST_EQUAL(m.str(), "");
-        TEST_EQUAL(u_str(m.begin(), m.end()), "");
+        TEST_EQUAL(u8string(m.s_begin(), m.s_end()), "");
+        TEST_EQUAL(u_str(m.u_begin(), m.u_end()), "");
 
         TRY(r = Regex("[a-z]+", rx_dfa));
         TEST_EQUAL(r.groups(), 1);
@@ -184,20 +189,24 @@ namespace {
         TEST_EQUAL(m.str(), "Hello world");
         TEST_EQUAL(m.str(0), "Hello world");
         TEST_EQUAL(m[0], "Hello world");
-        TEST_EQUAL(u_str(m.begin(), m.end()), "Hello world");
-        TEST_EQUAL(u_str(m.begin(0), m.end(0)), "Hello world");
+        TEST_EQUAL(u8string(m.s_begin(), m.s_end()), "Hello world");
+        TEST_EQUAL(u8string(m.s_begin(0), m.s_end(0)), "Hello world");
+        TEST_EQUAL(u_str(m.u_begin(), m.u_end()), "Hello world");
+        TEST_EQUAL(u_str(m.u_begin(0), m.u_end(0)), "Hello world");
         TEST_EQUAL(m.offset(1), 0);
         TEST_EQUAL(m.endpos(1), 5);
         TEST_EQUAL(m.count(1), 5);
         TEST_EQUAL(m.str(1), "Hello");
         TEST_EQUAL(m[1], "Hello");
-        TEST_EQUAL(u_str(m.begin(1), m.end(1)), "Hello");
+        TEST_EQUAL(u8string(m.s_begin(1), m.s_end(1)), "Hello");
+        TEST_EQUAL(u_str(m.u_begin(1), m.u_end(1)), "Hello");
         TEST_EQUAL(m.offset(2), 6);
         TEST_EQUAL(m.endpos(2), 11);
         TEST_EQUAL(m.count(2), 5);
         TEST_EQUAL(m.str(2), "world");
         TEST_EQUAL(m[2], "world");
-        TEST_EQUAL(u_str(m.begin(2), m.end(2)), "world");
+        TEST_EQUAL(u8string(m.s_begin(2), m.s_end(2)), "world");
+        TEST_EQUAL(u_str(m.u_begin(2), m.u_end(2)), "world");
         TEST(m.matched(0));
         TEST(m.matched(1));
         TEST(m.matched(2));
@@ -577,16 +586,16 @@ namespace {
 
     void check_byte_regex() {
 
-        ByteRegex r;
-        ByteMatch m;
+        Regex r;
+        Match m;
         string s1, s2, s3;
 
         s1 = "(Hello world)";
-        TRY(r = ByteRegex("\\b[a-z]+\\b"));
+        TRY(r = Regex("\\b[a-z]+\\b", rx_byte));
         TRY(m = r(s1));
         TEST(m);
         TEST_EQUAL(m.str(), "world");
-        TRY(r = ByteRegex("[a-z]+", rx_caseless));
+        TRY(r = Regex("[a-z]+", rx_byte | rx_caseless));
 
         TRY(m = r.search(s1, 0));   TEST(m.matched());    TEST_EQUAL(m.offset(), 1);     TEST_EQUAL(m.str(), "Hello");
         TRY(m = r.search(s1, 1));   TEST(m.matched());    TEST_EQUAL(m.offset(), 1);     TEST_EQUAL(m.str(), "Hello");
@@ -605,52 +614,52 @@ namespace {
         TRY(m = r.search(s1, 14));  TEST(! m.matched());  TEST_EQUAL(m.offset(), npos);  TEST_EQUAL(m.str(), "");
         TRY(m = r.search(s1, 15));  TEST(! m.matched());  TEST_EQUAL(m.offset(), npos);  TEST_EQUAL(m.str(), "");
 
-        Irange<ByteMatchIterator> mr;
+        Irange<MatchIterator> mr;
         vector<string> v;
 
-        TRY(r = ByteRegex("\\w+"));
+        TRY(r = Regex("\\w+", rx_byte));
         TRY(mr = r.grep(s1));
         TEST_EQUAL(range_count(mr), 2);
         TRY(std::copy(mr.begin(), mr.end(), overwrite(v)));
         TEST_EQUAL(Test::format_range(v), "[Hello,world]");
 
-        Irange<ByteSplitIterator> sr;
+        Irange<SplitIterator> sr;
 
-        TRY(r = ByteRegex("[ ()]+"));
+        TRY(r = Regex("[ ()]+", rx_byte));
         TRY(sr = r.split(s1));
         TEST_EQUAL(range_count(sr), 4);
         TRY(std::copy(sr.begin(), sr.end(), overwrite(v)));
         TEST_EQUAL(Test::format_range(v), "[,Hello,world,]");
 
-        ByteRegexFormat rf;
+        RegexFormat rf;
 
-        TRY(rf = ByteRegexFormat("\\w+", "=$0="));
+        TRY(rf = RegexFormat("\\w+", "=$0=", rx_byte));
         TRY(s2 = rf(s1));
         TEST_EQUAL(s2, "(=Hello= =world=)");
-        TRY(rf = ByteRegexFormat("\\w+", "\\xff"));
+        TRY(rf = RegexFormat("\\w+", "\\xff", rx_byte));
         TRY(s2 = rf(s1));
         TEST_EQUAL(s2, "(\xff \xff)");
-        TRY(rf = ByteRegexFormat("\\w+", "\\U$0\\E"));
+        TRY(rf = RegexFormat("\\w+", "\\U$0\\E", rx_byte));
         TRY(s2 = rf(s1));
         TEST_EQUAL(s2, "(HELLO WORLD)");
-        TRY(rf = ByteRegexFormat("\\w+", "\\L$0\\E"));
+        TRY(rf = RegexFormat("\\w+", "\\L$0\\E", rx_byte));
         s1 = "AEIOU \xc1\xc9\xcd\xd3\xda";
         TRY(s2 = rf(s1));
         TEST_EQUAL(s2, "aeiou \xc1\xc9\xcd\xd3\xda");
-        TEST_THROW(ByteRegexFormat("\\w", "\\x{100}"), EncodingError);
+        TEST_THROW(RegexFormat("\\w", "\\x{100}", rx_byte), EncodingError);
 
         Regex x;
         RegexFormat xf;
         size_t n1, n2;
 
-        TRY(r = ByteRegex("[\\x80-\\xff]"));
+        TRY(r = Regex("[\\x80-\\xff]", rx_byte));
         TRY(x = Regex("[\\x80-\\xff]"));
         s1 = u8"Hello §¶ ΣΠ";
         TRY(n1 = r.count(s1));
         TRY(n2 = x.count(s1));
         TEST_EQUAL(n1, 8);
         TEST_EQUAL(n2, 2);
-        TRY(rf = ByteRegexFormat(r, "*"));
+        TRY(rf = RegexFormat(r, "*"));
         TRY(xf = RegexFormat(x, "*"));
         TRY(s2 = rf(s1));
         TRY(s3 = xf(s1));
@@ -667,7 +676,6 @@ namespace {
         Regex16 r16;
         Regex32 r32;
         WideRegex wr;
-        ByteRegex br;
 
         TRY(r = "[a-z]+"_re);       TEST(r.match("hello"));     TEST(! r.match("HELLO"));     TEST(! r.match("12345"));
         TRY(r = "[a-z]+"_re_i);     TEST(r.match("hello"));     TEST(r.match("HELLO"));       TEST(! r.match("12345"));
@@ -677,8 +685,6 @@ namespace {
         TRY(r32 = U"[a-z]+"_re_i);  TEST(r32.match(U"hello"));  TEST(r32.match(U"HELLO"));    TEST(! r32.match(U"12345"));
         TRY(wr = L"[a-z]+"_re);     TEST(wr.match(L"hello"));   TEST(! wr.match(L"HELLO"));   TEST(! wr.match(L"12345"));
         TRY(wr = L"[a-z]+"_re_i);   TEST(wr.match(L"hello"));   TEST(wr.match(L"HELLO"));     TEST(! wr.match(L"12345"));
-        TRY(br = "[a-z]+"_re_b);    TEST(br.match("hello"));    TEST(! br.match("HELLO"));    TEST(! br.match("12345"));
-        TRY(br = "[a-z]+"_re_bi);   TEST(br.match("hello"));    TEST(br.match("HELLO"));      TEST(! br.match("12345"));
 
     }
 

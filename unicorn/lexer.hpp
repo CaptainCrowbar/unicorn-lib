@@ -16,16 +16,14 @@ namespace Unicorn {
 
     // Forward declarations
 
-    template <typename CX> class BasicLexer;
-    template <typename CX> struct BasicToken;
-    template <typename CX> class BasicTokenIterator;
+    template <typename C> class BasicLexer;
+    template <typename C> struct BasicToken;
+    template <typename C> class BasicTokenIterator;
     class SyntaxError;
 
     using Lexer = BasicLexer<char>;
     using Token = BasicToken<char>;
     using TokenIterator = BasicTokenIterator<char>;
-    using ByteLexer = BasicLexer<void>;
-    using ByteTokenIterator = BasicTokenIterator<void>;
 
     #if defined(UNICORN_PCRE16)
         using Lexer16 = BasicLexer<char16_t>;
@@ -88,24 +86,24 @@ namespace Unicorn {
 
     // Token iterator
 
-    template <typename CX>
+    template <typename C>
     class BasicTokenIterator:
-    public ForwardIterator<BasicTokenIterator<CX>, const BasicToken<typename UnicornDetail::CharType<CX>::type>> {
+    public ForwardIterator<BasicTokenIterator<C>, const BasicToken<char>> {
     public:
-        using char_type = typename UnicornDetail::CharType<CX>::type;
-        using string_type = basic_string<char_type>;
-        const BasicToken<char_type>& operator*() const noexcept { return token; }
+        using char_type = C;
+        using string_type = basic_string<C>;
+        const BasicToken<C>& operator*() const noexcept { return token; }
         BasicTokenIterator& operator++();
         bool operator==(const BasicTokenIterator& rhs) const noexcept
             { return token.offset == rhs.token.offset; }
     private:
-        friend class BasicLexer<CX>;
-        const BasicLexer<CX>* lex = nullptr;
-        BasicToken<char_type> token {nullptr, 0, 0, 0};
+        friend class BasicLexer<C>;
+        const BasicLexer<C>* lex = nullptr;
+        BasicToken<C> token {nullptr, 0, 0, 0};
     };
 
-    template <typename CX>
-    BasicTokenIterator<CX>& BasicTokenIterator<CX>::operator++() {
+    template <typename C>
+    BasicTokenIterator<C>& BasicTokenIterator<C>::operator++() {
         if (! lex || ! token.text)
             return *this;
         while (token.offset < token.text->size()) {
@@ -114,8 +112,11 @@ namespace Unicorn {
             token.tag = 0;
             if (token.offset >= token.text->size())
                 break;
-            auto it = UnicornDetail::SubjectIterator<CX>::make_iterator(*token.text, token.offset);
-            auto u = char_to_uint(*it);
+            char32_t u;
+            if (lex->dflags & rx_byte)
+                u = char_to_uint((*token.text)[token.offset]);
+            else
+                u = *UtfIterator<C>(*token.text, token.offset);
             auto elements = &lex->lexemes;
             if (u < lex->prefix_table.size())
                 elements = &lex->prefix_table[u];
@@ -136,28 +137,29 @@ namespace Unicorn {
 
     // Lexer class
 
-    template <typename CX>
+    template <typename C>
     class BasicLexer {
     public:
-        using char_type = typename UnicornDetail::CharType<CX>::type;
-        using string_type = basic_string<char_type>;
-        using regex_type = BasicRegex<CX>;
-        using token_type = BasicToken<char_type>;
+        using char_type = C;
+        using string_type = basic_string<C>;
+        using regex_type = BasicRegex<C>;
+        using token_type = BasicToken<C>;
         using callback_type = std::function<size_t(const string_type&, size_t)>;
-        using token_iterator = BasicTokenIterator<CX>;
+        using token_iterator = BasicTokenIterator<C>;
         using token_range = Irange<token_iterator>;
-        BasicLexer(): lexemes(), prefix_table(prefix_count) {}
+        BasicLexer(): lexemes(), prefix_table(prefix_count), dflags(0) {}
+        explicit BasicLexer(uint32_t flags): lexemes(), prefix_table(prefix_count), dflags(flags) {}
         token_range operator()(const string_type& text) const { return lex(text); }
         token_range lex(const string_type& text) const;
         void call(int tag, const callback_type& call);
         void exact(int tag, const string_type& pattern);
-        void exact(int tag, const char_type* pattern) { exact(tag, cstr(pattern)); }
+        void exact(int tag, const C* pattern) { exact(tag, cstr(pattern)); }
         void match(int tag, const regex_type& pattern) { add_match(tag, pattern); }
-        void match(int tag, const string_type& pattern, uint32_t flags = 0) { add_match(tag, regex_type(pattern, flags)); }
-        void match(int tag, const char_type* pattern, uint32_t flags = 0) { add_match(tag, regex_type(pattern, flags)); }
+        void match(int tag, const string_type& pattern, uint32_t flags = 0) { add_match(tag, regex_type(pattern, flags | dflags)); }
+        void match(int tag, const C* pattern, uint32_t flags = 0) { add_match(tag, regex_type(pattern, flags | dflags)); }
     private:
-        friend class BasicTokenIterator<CX>;
-        static constexpr size_t prefix_count = std::is_same<CX, void>::value ? 256 : 128;
+        friend class BasicTokenIterator<C>;
+        static constexpr size_t prefix_count = std::is_same<C, void>::value ? 256 : 128;
         struct element {
             int tag;
             callback_type call;
@@ -166,12 +168,13 @@ namespace Unicorn {
         using element_table = vector<element_list>;
         element_list lexemes;
         element_table prefix_table;
+        uint32_t dflags;
         void add_exact(int tag, const string_type& pattern);
         void add_match(int tag, regex_type pattern);
     };
 
-    template <typename CX>
-    typename BasicLexer<CX>::token_range BasicLexer<CX>::lex(const string_type& text) const {
+    template <typename C>
+    typename BasicLexer<C>::token_range BasicLexer<C>::lex(const string_type& text) const {
         token_range result;
         result.first.lex = result.second.lex = this;
         result.first.token.text = result.second.token.text = &text;
@@ -183,8 +186,8 @@ namespace Unicorn {
         return result;
     }
 
-    template <typename CX>
-    void BasicLexer<CX>::call(int tag, const callback_type& call) {
+    template <typename C>
+    void BasicLexer<C>::call(int tag, const callback_type& call) {
         if (! call)
             return;
         lexemes.push_back(element{tag, call});
@@ -192,8 +195,8 @@ namespace Unicorn {
             p.push_back(lexemes.back());
     }
 
-    template <typename CX>
-    void BasicLexer<CX>::exact(int tag, const string_type& pattern) {
+    template <typename C>
+    void BasicLexer<C>::exact(int tag, const string_type& pattern) {
         if (pattern.empty())
             return;
         auto call = [pattern] (const string_type& text, size_t offset) -> size_t {
@@ -209,8 +212,8 @@ namespace Unicorn {
             prefix_table[u].push_back(lexemes.back());
     }
 
-    template <typename CX>
-    void BasicLexer<CX>::add_match(int tag, regex_type pattern) {
+    template <typename C>
+    void BasicLexer<C>::add_match(int tag, regex_type pattern) {
         if (pattern.empty())
             return;
         uint32_t new_flags = (pattern.flags() | rx_notempty | rx_partialsoft) & ~ rx_partialhard;

@@ -22,22 +22,17 @@ namespace Unicorn {
 
     // Class forward declarations and aliases
 
-    template <typename CX> class BasicMatch;
-    template <typename CX> class BasicMatchIterator;
-    template <typename CX> class BasicRegex;
-    template <typename CX> class BasicRegexFormat;
-    template <typename CX> class BasicSplitIterator;
+    template <typename C> class BasicMatch;
+    template <typename C> class BasicMatchIterator;
+    template <typename C> class BasicRegex;
+    template <typename C> class BasicRegexFormat;
+    template <typename C> class BasicSplitIterator;
 
     using Match = BasicMatch<char>;
     using MatchIterator = BasicMatchIterator<char>;
     using Regex = BasicRegex<char>;
     using RegexFormat = BasicRegexFormat<char>;
     using SplitIterator = BasicSplitIterator<char>;
-    using ByteMatch = BasicMatch<void>;
-    using ByteMatchIterator = BasicMatchIterator<void>;
-    using ByteRegex = BasicRegex<void>;
-    using ByteRegexFormat = BasicRegexFormat<void>;
-    using ByteSplitIterator = BasicSplitIterator<void>;
 
     #if defined(UNICORN_PCRE16)
         using Match16 = BasicMatch<char16_t>;
@@ -159,84 +154,52 @@ namespace Unicorn {
             std::swap(m1.text, m2.text);
         }
 
-        template <typename CX>
-        struct SubjectIterator {
-            using iterator = UtfIterator<CX>;
-            static iterator make_iterator(const basic_string<CX>& text, size_t offset) noexcept { return utf_iterator(text, offset); }
-        };
-
-        template <>
-        struct SubjectIterator<void> {
-            using iterator = typename string::const_iterator;
-            static iterator make_iterator(const string& text, size_t offset) noexcept { return text.begin() + offset; }
-        };
-
         // Type-specific implementation wrapper functions
 
         size_t count_groups(const PcreRef<char>& p) noexcept;
         size_t named_group(const PcreRef<char>& p, const string& name) noexcept;
-        void init_regex(RegexInfo<char>& r, const string& pattern, uint32_t flags, bool unicode);
+        void init_regex(RegexInfo<char>& r, const string& pattern, uint32_t flags);
         void init_match(MatchInfo<char>& m, const RegexInfo<char>& r, const string& text);
         void next_match(MatchInfo<char>& m, const string& pattern, size_t start, int anchors);
 
         #if defined(UNICORN_PCRE16)
             size_t count_groups(const PcreRef<char16_t>& p) noexcept;
             size_t named_group(const PcreRef<char16_t>& p, const u16string& name) noexcept;
-            void init_regex(RegexInfo<char16_t>& r, const u16string& pattern, uint32_t flags, bool unicode);
+            void init_regex(RegexInfo<char16_t>& r, const u16string& pattern, uint32_t flags);
             void init_match(MatchInfo<char16_t>& m, const RegexInfo<char16_t>& r, const u16string& text);
-            void next_match(MatchInfo<char16_t>& m, const string& pattern, size_t start, int anchors);
+            void next_match(MatchInfo<char16_t>& m, const u16string& pattern, size_t start, int anchors);
         #endif
 
         #if defined(UNICORN_PCRE32)
             size_t count_groups(const PcreRef<char32_t>& p) noexcept;
             size_t named_group(const PcreRef<char32_t>& p, const u32string& name) noexcept;
-            void init_regex(RegexInfo<char32_t>& r, const u32string& pattern, uint32_t flags, bool unicode);
+            void init_regex(RegexInfo<char32_t>& r, const u32string& pattern, uint32_t flags);
             void init_match(MatchInfo<char32_t>& m, const RegexInfo<char32_t>& r, const u32string& text);
-            void next_match(MatchInfo<char32_t>& m, const string& pattern, size_t start, int anchors);
+            void next_match(MatchInfo<char32_t>& m, const u32string& pattern, size_t start, int anchors);
         #endif
 
         #if defined(UNICORN_PCRE_WCHAR)
             size_t count_groups(const PcreRef<wchar_t>& p) noexcept;
             size_t named_group(const PcreRef<wchar_t>& p, const wstring& name) noexcept;
-            void init_regex(RegexInfo<wchar_t>& r, const wstring& pattern, uint32_t flags, bool unicode);
+            void init_regex(RegexInfo<wchar_t>& r, const wstring& pattern, uint32_t flags);
             void init_match(MatchInfo<wchar_t>& m, const RegexInfo<wchar_t>& r, const wstring& text);
-            void next_match(MatchInfo<wchar_t>& m, const string& pattern, size_t start, int anchors);
+            void next_match(MatchInfo<wchar_t>& m, const wstring& pattern, size_t start, int anchors);
         #endif
 
         // Helper functions
 
-        template <typename CX>
-        struct CharType {
-            using type = CX;
-            static constexpr bool is_utf = true;
-            static constexpr auto make_lower = &str_lowercase<CX>;
-            static constexpr auto make_title = &str_titlecase<CX>;
-            static constexpr auto make_upper = &str_uppercase<CX>;
+        template <typename C>
+        struct CaseConvert {
+            static basic_string<C> lower(const basic_string<C>& str, bool /*asc*/) { return str_lowercase(str); }
+            static basic_string<C> title(const basic_string<C>& str, bool /*asc*/) { return str_titlecase(str); }
+            static basic_string<C> upper(const basic_string<C>& str, bool /*asc*/) { return str_uppercase(str); }
         };
 
         template <>
-        struct CharType<void> {
-            using type = char;
-            static constexpr bool is_utf = false;
-            static constexpr auto make_lower = &ascii_lowercase;
-            static constexpr auto make_title = &ascii_titlecase;
-            static constexpr auto make_upper = &ascii_uppercase;
-        };
-
-        template <typename CX>
-        struct MakeUtf8 {
-            using string_type = basic_string<CX>;
-            u8string operator()(const string_type& pattern) const { return to_utf8(pattern); }
-        };
-
-        template <>
-        struct MakeUtf8<void> {
-            using string_type = string;
-            u8string operator()(const string& pattern) const {
-                u32string p32;
-                std::transform(pattern.begin(), pattern.end(), append(p32), [] (char c) { return uint8_t(c); });
-                return to_utf8(p32);
-            }
+        struct CaseConvert<char> {
+            static string lower(const string& str, bool asc) { return asc ? ascii_lowercase(str) : str_lowercase(str); }
+            static string title(const string& str, bool asc) { return asc ? ascii_titlecase(str) : str_titlecase(str); }
+            static string upper(const string& str, bool asc) { return asc ? ascii_uppercase(str) : str_uppercase(str); }
         };
 
         template <typename C>
@@ -250,66 +213,55 @@ namespace Unicorn {
 
         // Regex search function helpers
 
-        template <typename Regex, typename Match, typename CX>
+        template <typename Regex, typename Match, typename C>
         struct RegexHelper {
-            using utf_iterator = UtfIterator<CX>;
-            Match anchor(const basic_string<CX>& text, size_t offset = 0) const
+            using utf_iterator = UtfIterator<C>;
+            Match anchor(const basic_string<C>& text, size_t offset = 0) const
                 { return static_cast<const Regex*>(this)->exec(text, offset, 1); }
             Match anchor(const utf_iterator& start) const
                 { return anchor(start.source(), start.offset()); }
-            Match match(const basic_string<CX>& text, size_t offset = 0) const
+            Match match(const basic_string<C>& text, size_t offset = 0) const
                 { return static_cast<const Regex*>(this)->exec(text, offset, 2); }
             Match match(const utf_iterator& start) const
                 { return match(start.source(), start.offset()); }
-            Match search(const basic_string<CX>& text, size_t offset = 0) const
+            Match search(const basic_string<C>& text, size_t offset = 0) const
                 { return static_cast<const Regex*>(this)->exec(text, offset, 0); }
             Match search(const utf_iterator& start) const
                 { return search(start.source(), start.offset()); }
-            Match operator()(const basic_string<CX>& text, size_t offset = 0) const
+            Match operator()(const basic_string<C>& text, size_t offset = 0) const
                 { return search(text, offset); }
             Match operator()(const utf_iterator& start) const
                 { return search(start.source(), start.offset()); }
-        };
-
-        template <typename Regex, typename Match>
-        struct RegexHelper<Regex, Match, void> {
-            Match anchor(const string& text, size_t offset = 0) const
-                { return static_cast<const Regex*>(this)->exec(text, offset, 1); }
-            Match match(const string& text, size_t offset = 0) const
-                { return static_cast<const Regex*>(this)->exec(text, offset, 2); }
-            Match search(const string& text, size_t offset = 0) const
-                { return static_cast<const Regex*>(this)->exec(text, offset, 0); }
-            Match operator()(const string& text, size_t offset = 0) const
-                { return search(text, offset); }
         };
 
     }
 
     // Regex options
 
-    constexpr uint32_t rx_caseless         = 1ul << 0;   // Case insensitive matching                        PCRE_CASELESS
-    constexpr uint32_t rx_dfa              = 1ul << 1;   // Use the alternative DFA algorithm                pcre_dfa_exec()
-    constexpr uint32_t rx_dollarnewline    = 1ul << 2;   // $ may match line break at end                    ~PCRE_DOLLAR_ENDONLY
-    constexpr uint32_t rx_dotinline        = 1ul << 3;   // . does not match newlines                        ~PCRE_DOTALL
-    constexpr uint32_t rx_extended         = 1ul << 4;   // Free-form mode (ignore whitespace and comments)  PCRE_EXTENDED
-    constexpr uint32_t rx_firstline        = 1ul << 5;   // Must match in first line                         PCRE_FIRSTLINE
-    constexpr uint32_t rx_multiline        = 1ul << 6;   // Multiline mode (^ and $ match BOL/EOL)           PCRE_MULTILINE
-    constexpr uint32_t rx_newlineanycrlf   = 1ul << 7;   // Line break is any of CR, LF, CRLF                PCRE_NEWLINE_ANYCRLF
-    constexpr uint32_t rx_newlinecr        = 1ul << 8;   // Line break is CR only                            PCRE_NEWLINE_CR
-    constexpr uint32_t rx_newlinecrlf      = 1ul << 9;   // Line break is CRLF only                          PCRE_NEWLINE_CRLF
-    constexpr uint32_t rx_newlinelf        = 1ul << 10;  // Line break is LF only                            PCRE_NEWLINE_LF
-    constexpr uint32_t rx_noautocapture    = 1ul << 11;  // No automatic captures                            PCRE_NO_AUTO_CAPTURE
-    constexpr uint32_t rx_nostartoptimize  = 1ul << 12;  // No startup optimization                          PCRE_NO_START_OPTIMIZE
-    constexpr uint32_t rx_notbol           = 1ul << 13;  // Start of text is not a line break                PCRE_NOTBOL
-    constexpr uint32_t rx_notempty         = 1ul << 14;  // Do not match an empty string                     PCRE_NOTEMPTY
-    constexpr uint32_t rx_notemptyatstart  = 1ul << 15;  // Match an empty string only at the start          PCRE_NOTEMPTY_ATSTART
-    constexpr uint32_t rx_noteol           = 1ul << 16;  // End of text is not a line break                  PCRE_NOTEOL
-    constexpr uint32_t rx_noutfcheck       = 1ul << 17;  // Skip UTF validity checks                         PCRE_NO_UTF{8,16,32}_CHECK
-    constexpr uint32_t rx_optimize         = 1ul << 18;  // Take extra effort to optimize the regex          PCRE_STUDY_JIT_COMPILE
-    constexpr uint32_t rx_partialhard      = 1ul << 19;  // Hard partial matching (prefer over full match)   PCRE_PARTIAL_HARD
-    constexpr uint32_t rx_partialsoft      = 1ul << 20;  // Soft partial matching (only if no full match)    PCRE_PARTIAL_SOFT
-    constexpr uint32_t rx_prefershort      = 1ul << 21;  // Non-greedy quantifiers, or shorter DFA matches   PCRE_UNGREEDY,PCRE_DFA_SHORTEST
-    constexpr uint32_t rx_ucp              = 1ul << 22;  // Use Unicode properties in escape charsets        PCRE_UCP
+    constexpr uint32_t rx_byte             = 1ul << 0;   // Byte mode matching                               ~PCRE_UTF8
+    constexpr uint32_t rx_caseless         = 1ul << 1;   // Case insensitive matching                        PCRE_CASELESS
+    constexpr uint32_t rx_dfa              = 1ul << 2;   // Use the alternative DFA algorithm                pcre_dfa_exec()
+    constexpr uint32_t rx_dollarnewline    = 1ul << 3;   // $ may match line break at end                    ~PCRE_DOLLAR_ENDONLY
+    constexpr uint32_t rx_dotinline        = 1ul << 4;   // . does not match newlines                        ~PCRE_DOTALL
+    constexpr uint32_t rx_extended         = 1ul << 5;   // Free-form mode (ignore whitespace and comments)  PCRE_EXTENDED
+    constexpr uint32_t rx_firstline        = 1ul << 6;   // Must match in first line                         PCRE_FIRSTLINE
+    constexpr uint32_t rx_multiline        = 1ul << 7;   // Multiline mode (^ and $ match BOL/EOL)           PCRE_MULTILINE
+    constexpr uint32_t rx_newlineanycrlf   = 1ul << 8;   // Line break is any of CR, LF, CRLF                PCRE_NEWLINE_ANYCRLF
+    constexpr uint32_t rx_newlinecr        = 1ul << 9;   // Line break is CR only                            PCRE_NEWLINE_CR
+    constexpr uint32_t rx_newlinecrlf      = 1ul << 10;  // Line break is CRLF only                          PCRE_NEWLINE_CRLF
+    constexpr uint32_t rx_newlinelf        = 1ul << 11;  // Line break is LF only                            PCRE_NEWLINE_LF
+    constexpr uint32_t rx_noautocapture    = 1ul << 12;  // No automatic captures                            PCRE_NO_AUTO_CAPTURE
+    constexpr uint32_t rx_nostartoptimize  = 1ul << 13;  // No startup optimization                          PCRE_NO_START_OPTIMIZE
+    constexpr uint32_t rx_notbol           = 1ul << 14;  // Start of text is not a line break                PCRE_NOTBOL
+    constexpr uint32_t rx_notempty         = 1ul << 15;  // Do not match an empty string                     PCRE_NOTEMPTY
+    constexpr uint32_t rx_notemptyatstart  = 1ul << 16;  // Match an empty string only at the start          PCRE_NOTEMPTY_ATSTART
+    constexpr uint32_t rx_noteol           = 1ul << 17;  // End of text is not a line break                  PCRE_NOTEOL
+    constexpr uint32_t rx_noutfcheck       = 1ul << 18;  // Skip UTF validity checks                         PCRE_NO_UTF8_CHECK
+    constexpr uint32_t rx_optimize         = 1ul << 19;  // Take extra effort to optimize the regex          PCRE_STUDY_JIT_COMPILE
+    constexpr uint32_t rx_partialhard      = 1ul << 20;  // Hard partial matching (prefer over full match)   PCRE_PARTIAL_HARD
+    constexpr uint32_t rx_partialsoft      = 1ul << 21;  // Soft partial matching (only if no full match)    PCRE_PARTIAL_SOFT
+    constexpr uint32_t rx_prefershort      = 1ul << 22;  // Non-greedy quantifiers, or shorter DFA matches   PCRE_UNGREEDY,PCRE_DFA_SHORTEST
+    constexpr uint32_t rx_ucp              = 1ul << 23;  // Use Unicode properties in escape charsets        PCRE_UCP
 
     // Exceptions
 
@@ -332,28 +284,21 @@ namespace Unicorn {
 
     // Regex match class
 
-    template <typename CX>
+    template <typename C>
     class BasicMatch:
-    private UnicornDetail::MatchInfo<typename UnicornDetail::CharType<CX>::type> {
+    private UnicornDetail::MatchInfo<C> {
     public:
-        using char_type = typename UnicornDetail::CharType<CX>::type;
-        using cx_type = CX;
-        using string_type = basic_string<char_type>;
-        using regex_type = BasicRegex<CX>;
-        using const_iterator = const char_type*;
-        using const_reference = const char_type&;
-        using difference_type = ptrdiff_t;
-        using iterator = typename UnicornDetail::SubjectIterator<CX>::iterator;
-        using reference = typename std::iterator_traits<iterator>::reference;
-        using value_type = typename std::iterator_traits<iterator>::value_type;
+        using char_type = C;
+        using regex_type = BasicRegex<C>;
+        using string_type = basic_string<C>;
+        using string_iterator = typename string_type::const_iterator;
+        using utf_iterator = UtfIterator<C>;
         string_type operator[](size_t i) const { return str(i); }
         operator string_type() const { return str(); }
         explicit operator bool() const noexcept { return matched(); }
         bool operator!() const noexcept { return ! matched(); }
-        iterator begin(size_t i = 0) const noexcept;
         size_t count(size_t i = 0) const noexcept { return match_size(*this, i); }
         bool empty() const noexcept { return ! *this || this->ofs[0] == this->ofs[1]; }
-        iterator end(size_t i = 0) const noexcept;
         size_t endpos(size_t i = 0) const noexcept { return is_group(*this, i) ? this->ofs[2 * i + 1] : npos; }
         string_type first() const;
         bool full_or_partial() const noexcept { return matched() || partial(); }
@@ -363,32 +308,22 @@ namespace Unicorn {
         string_type named(const string_type& name) const { return this->ref ? str(named_group(this->ref, name)) : string_type(); }
         size_t offset(size_t i = 0) const noexcept { return is_group(*this, i) ? this->ofs[2 * i] : npos; }
         bool partial() const noexcept { return this->status == -12; } // PCRE_ERROR_PARTIAL
+        Irange<string_iterator> s(size_t i = 0) const noexcept { return {s_begin(i), s_end(i)}; }
+        string_iterator s_begin(size_t i = 0) const noexcept;
+        string_iterator s_end(size_t i = 0) const noexcept;
         string_type str(size_t i = 0) const;
         void swap(BasicMatch& m) noexcept { swap_info(m); }
+        Irange<utf_iterator> u(size_t i = 0) const noexcept { return {u_begin(i), u_end(i)}; }
+        utf_iterator u_begin(size_t i = 0) const noexcept;
+        utf_iterator u_end(size_t i = 0) const noexcept;
     private:
-        friend class BasicMatchIterator<CX>;
-        friend class BasicRegex<CX>;
-        friend class BasicSplitIterator<CX>;
+        friend class BasicMatchIterator<C>;
+        friend class BasicRegex<C>;
+        friend class BasicSplitIterator<C>;
     };
 
-    template <typename CX>
-    typename BasicMatch<CX>::iterator BasicMatch<CX>::begin(size_t i) const noexcept {
-        if (this->text && is_group(*this, i))
-            return UnicornDetail::SubjectIterator<CX>::make_iterator(*this->text, offset(i));
-        else
-            return {};
-    }
-
-    template <typename CX>
-    typename BasicMatch<CX>::iterator BasicMatch<CX>::end(size_t i) const noexcept {
-        if (this->text && is_group(*this, i))
-            return UnicornDetail::SubjectIterator<CX>::make_iterator(*this->text, endpos(i));
-        else
-            return {};
-    }
-
-    template <typename CX>
-    typename BasicMatch<CX>::string_type BasicMatch<CX>::first() const {
+    template <typename C>
+    typename BasicMatch<C>::string_type BasicMatch<C>::first() const {
         if (! matched() || ! this->text)
             return {};
         size_t n = groups();
@@ -398,8 +333,8 @@ namespace Unicorn {
         return {};
     }
 
-    template <typename CX>
-    typename BasicMatch<CX>::string_type BasicMatch<CX>::last() const {
+    template <typename C>
+    typename BasicMatch<C>::string_type BasicMatch<C>::last() const {
         if (! matched() || ! this->text)
             return {};
         size_t n = groups();
@@ -409,8 +344,24 @@ namespace Unicorn {
         return {};
     }
 
-    template <typename CX>
-    typename BasicMatch<CX>::string_type BasicMatch<CX>::str(size_t i) const {
+    template <typename C>
+    typename BasicMatch<C>::string_iterator BasicMatch<C>::s_begin(size_t i) const noexcept {
+        if (this->text && is_group(*this, i))
+            return this->text->begin() + offset(i);
+        else
+            return {};
+    }
+
+    template <typename C>
+    typename BasicMatch<C>::string_iterator BasicMatch<C>::s_end(size_t i) const noexcept {
+        if (this->text && is_group(*this, i))
+            return this->text->begin() + endpos(i);
+        else
+            return {};
+    }
+
+    template <typename C>
+    typename BasicMatch<C>::string_type BasicMatch<C>::str(size_t i) const {
         if (this->text && is_group(*this, i))
             return this->text->substr(this->ofs[2 * i],
                 this->ofs[2 * i + 1] - this->ofs[2 * i]);
@@ -418,37 +369,50 @@ namespace Unicorn {
             return {};
     }
 
-    template <typename CX>
-    void swap(BasicMatch<CX>& lhs, BasicMatch<CX>& rhs) noexcept {
+    template <typename C>
+    typename BasicMatch<C>::utf_iterator BasicMatch<C>::u_begin(size_t i) const noexcept {
+        if (this->text && is_group(*this, i))
+            return utf_iterator(*this->text, offset(i));
+        else
+            return {};
+    }
+
+    template <typename C>
+    typename BasicMatch<C>::utf_iterator BasicMatch<C>::u_end(size_t i) const noexcept {
+        if (this->text && is_group(*this, i))
+            return utf_iterator(*this->text, endpos(i));
+        else
+            return {};
+    }
+
+    template <typename C>
+    void swap(BasicMatch<C>& lhs, BasicMatch<C>& rhs) noexcept {
         lhs.swap(rhs);
     }
 
     // Regular expression class
 
-    template <typename CX>
+    template <typename C>
     class BasicRegex:
-    public UnicornDetail::RegexHelper<BasicRegex<CX>, BasicMatch<CX>, CX>,
-    public LessThanComparable<BasicRegex<CX>>,
-    private UnicornDetail::RegexInfo<typename UnicornDetail::CharType<CX>::type> {
-    private:
-        using subject_iterator = UnicornDetail::SubjectIterator<CX>;
+    public UnicornDetail::RegexHelper<BasicRegex<C>, BasicMatch<C>, C>,
+    public LessThanComparable<BasicRegex<C>>,
+    private UnicornDetail::RegexInfo<C> {
     public:
-        using char_type = typename UnicornDetail::CharType<CX>::type;
-        using cx_type = CX;
-        using string_type = basic_string<char_type>;
-        using match_type = BasicMatch<CX>;
-        using match_iterator = BasicMatchIterator<CX>;
+        using char_type = C;
+        using match_type = BasicMatch<C>;
+        using match_iterator = BasicMatchIterator<C>;
         using match_range = Irange<match_iterator>;
-        using split_iterator = BasicSplitIterator<CX>;
+        using split_iterator = BasicSplitIterator<C>;
         using split_range = Irange<split_iterator>;
-        BasicRegex() { init_regex(*this, {}, {}, is_utf); }
-        explicit BasicRegex(const string_type& pattern, uint32_t flags = 0) { init_regex(*this, pattern, flags, is_utf); }
+        using string_type = basic_string<C>;
+        BasicRegex() { init_regex(*this, {}, {}); }
+        explicit BasicRegex(const string_type& pattern, uint32_t flags = 0) { init_regex(*this, pattern, flags); }
         size_t count(const string_type& text) const;
         bool empty() const noexcept { return this->pat.empty(); }
         string_type extract(const string_type& fmt, const string_type& text, size_t n = npos) const
-            { return BasicRegexFormat<CX>(*this, fmt).extract(text, n); }
+            { return BasicRegexFormat<C>(*this, fmt).extract(text, n); }
         string_type format(const string_type& fmt, const string_type& text, size_t n = npos) const
-            { return BasicRegexFormat<CX>(*this, fmt).format(text, n); }
+            { return BasicRegexFormat<C>(*this, fmt).format(text, n); }
         match_range grep(const string_type& text) const { return {{*this, text}, {}}; }
         size_t groups() const noexcept { return UnicornDetail::count_groups(this->ref); }
         size_t named(const string_type& name) const noexcept { return UnicornDetail::named_group(this->ref, name); }
@@ -461,21 +425,19 @@ namespace Unicorn {
         friend bool operator<(const BasicRegex& lhs, const BasicRegex& rhs) noexcept
             { return lhs.pat == rhs.pat ? lhs.fset < rhs.fset : lhs.pat < rhs.pat; }
     private:
-        friend class BasicMatchIterator<CX>;
-        friend class BasicMatch<CX>;
-        friend struct UnicornDetail::RegexHelper<BasicRegex, match_type, CX>;
-        static constexpr bool is_utf = UnicornDetail::CharType<CX>::is_utf;
+        friend class BasicMatchIterator<C>;
+        friend class BasicMatch<C>;
+        friend struct UnicornDetail::RegexHelper<BasicRegex, match_type, C>;
         match_type exec(const string_type& text, size_t offset, int anchors) const;
-        u8string utf8_pattern() const { return UnicornDetail::MakeUtf8<CX>()(this->pat); }
     };
 
-    template <typename CX>
-    size_t BasicRegex<CX>::count(const string_type& text) const {
+    template <typename C>
+    size_t BasicRegex<C>::count(const string_type& text) const {
         match_type m;
         init_match(m, *this, text);
         size_t n = 0, ofs = 0;
         for (;;) {
-            next_match(m, utf8_pattern(), ofs, 0);
+            next_match(m, pattern(), ofs, 0);
             if (! m)
                 break;
             ++n;
@@ -484,11 +446,11 @@ namespace Unicorn {
         return n;
     }
 
-    template <typename CX>
-    BasicMatch<CX> BasicRegex<CX>::exec(const string_type& text, size_t offset, int anchors) const {
+    template <typename C>
+    BasicMatch<C> BasicRegex<C>::exec(const string_type& text, size_t offset, int anchors) const {
         match_type m;
         init_match(m, *this, text);
-        next_match(m, utf8_pattern(), offset, anchors);
+        next_match(m, pattern(), offset, anchors);
         return m;
     }
 
@@ -502,14 +464,15 @@ namespace Unicorn {
         return BasicRegex<C>(cstr(pattern), flags);
     }
 
-    template <typename CX>
-    void swap(BasicRegex<CX>& lhs, BasicRegex<CX>& rhs) noexcept {
+    template <typename C>
+    void swap(BasicRegex<C>& lhs, BasicRegex<C>& rhs) noexcept {
         lhs.swap(rhs);
     }
 
     namespace Literals {
 
         inline auto operator"" _re(const char* ptr, size_t len) { return Regex(cstr(ptr, len)); }
+        inline auto operator"" _re_b(const char* ptr, size_t len) { return Regex(cstr(ptr, len), rx_byte); }
         inline auto operator"" _re_i(const char* ptr, size_t len) { return Regex(cstr(ptr, len), rx_caseless); }
         inline auto operator"" _re(const char16_t* ptr, size_t len) { return Regex16(cstr(ptr, len)); }
         inline auto operator"" _re_i(const char16_t* ptr, size_t len) { return Regex16(cstr(ptr, len), rx_caseless); }
@@ -517,21 +480,18 @@ namespace Unicorn {
         inline auto operator"" _re_i(const char32_t* ptr, size_t len) { return Regex32(cstr(ptr, len), rx_caseless); }
         inline auto operator"" _re(const wchar_t* ptr, size_t len) { return WideRegex(cstr(ptr, len)); }
         inline auto operator"" _re_i(const wchar_t* ptr, size_t len) { return WideRegex(cstr(ptr, len), rx_caseless); }
-        inline auto operator"" _re_b(const char* ptr, size_t len) { return ByteRegex(cstr(ptr, len)); }
-        inline auto operator"" _re_bi(const char* ptr, size_t len) { return ByteRegex(cstr(ptr, len), rx_caseless); }
 
     }
 
     // Regex formatting class
 
-    template <typename CX>
+    template <typename C>
     class BasicRegexFormat {
     public:
-        using char_type = typename UnicornDetail::CharType<CX>::type;
-        using cx_type = CX;
-        using string_type = basic_string<char_type>;
-        using regex_type = BasicRegex<CX>;
-        using match_type = BasicMatch<CX>;
+        using char_type = C;
+        using match_type = BasicMatch<C>;
+        using regex_type = BasicRegex<C>;
+        using string_type = basic_string<C>;
         BasicRegexFormat() = default;
         BasicRegexFormat(const regex_type& pattern, const string_type& format): fmt(format), reg(pattern), seq() { parse(); }
         BasicRegexFormat(const string_type& pattern, const string_type& format, uint32_t flags = 0):
@@ -545,7 +505,6 @@ namespace Unicorn {
         regex_type regex() const { return reg; }
         void swap(BasicRegexFormat& r) noexcept;
     private:
-        static constexpr bool is_utf = UnicornDetail::CharType<CX>::is_utf;
         // Index field in element record indicates what to substitute
         // If index>=0, this is a numbered capture group
         enum tag_type {
@@ -584,15 +543,15 @@ namespace Unicorn {
         void parse();
     };
 
-    template <typename CX>
-    void BasicRegexFormat<CX>::swap(BasicRegexFormat<CX>& r) noexcept {
+    template <typename C>
+    void BasicRegexFormat<C>::swap(BasicRegexFormat<C>& r) noexcept {
         fmt.swap(r.fmt);
         reg.swap(r.reg);
         seq.swap(r.seq);
     }
 
-    template <typename CX>
-    void BasicRegexFormat<CX>::add_literal(const string_type& text) {
+    template <typename C>
+    void BasicRegexFormat<C>::add_literal(const string_type& text) {
         if (! text.empty()) {
             if (seq.empty() || seq.back().index != literal)
                 seq.push_back({literal, text});
@@ -601,42 +560,43 @@ namespace Unicorn {
         }
     }
 
-    template <typename CX>
-    void BasicRegexFormat<CX>::add_literal(const string_type& text, size_t offset, size_t count) {
+    template <typename C>
+    void BasicRegexFormat<C>::add_literal(const string_type& text, size_t offset, size_t count) {
         if (offset < text.size() && count > 0)
             add_literal(text.substr(offset, count));
     }
 
-    template <typename CX>
-    void BasicRegexFormat<CX>::add_literal(char32_t u) {
+    template <typename C>
+    void BasicRegexFormat<C>::add_literal(char32_t u) {
         if (seq.empty() || seq.back().index != literal)
             seq.push_back({literal, {}});
-        if (is_utf) {
-            if (! char_is_unicode(u))
-                throw EncodingError("Unicode", 0, u);
-            str_append_char(seq.back().text, u);
-        } else {
+        if (reg.flags() & rx_byte) {
             if (u > 0xff)
                 throw EncodingError("byte", 0, u);
             seq.back().text += char_type(u);
+        } else {
+            if (! char_is_unicode(u))
+                throw EncodingError("Unicode", 0, u);
+            str_append_char(seq.back().text, u);
         }
     }
 
-    template <typename CX>
-    typename BasicRegexFormat<CX>::string_type
-    BasicRegexFormat<CX>::apply(const string_type& text, size_t n, bool full) const {
+    template <typename C>
+    typename BasicRegexFormat<C>::string_type
+    BasicRegexFormat<C>::apply(const string_type& text, size_t n, bool full) const {
         using namespace UnicornDetail;
         string_type block, dst;
         string_type* current = &dst;
         int block_flag = 0, char_flag = 0;
+        bool ascii = (reg.flags() & rx_byte) != 0;
         auto end_block = [&] {
             if (current == &dst)
                 return;
             switch (block_flag) {
-                case lower: dst += CharType<CX>::make_lower(block); break;
-                case title: dst += CharType<CX>::make_title(block); break;
-                case upper: dst += CharType<CX>::make_upper(block); break;
-                default: dst += block; break;
+                case lower:  dst += UnicornDetail::CaseConvert<C>::lower(block, ascii); break;
+                case title:  dst += UnicornDetail::CaseConvert<C>::title(block, ascii); break;
+                case upper:  dst += UnicornDetail::CaseConvert<C>::upper(block, ascii); break;
+                default:     dst += block; break;
             }
             block.clear();
             block_flag = 0;
@@ -682,11 +642,11 @@ namespace Unicorn {
                 if (char_flag) {
                     auto it = utf_begin(fragment);
                     char32_t buf[max_case_decomposition];
-                    if (is_utf) {
+                    if (ascii) {
+                        *current += char_flag == lower1 ? ascii_tolower(*it) : ascii_toupper(*it);
+                    } else {
                         size_t nbuf(char_flag == lower1 ? char_to_full_lowercase(*it, buf) : char_to_full_uppercase(*it, buf));
                         str_append(*current, buf, nbuf);
-                    } else {
-                        *current += char_flag == lower1 ? ascii_tolower(*it) : ascii_toupper(*it);
                     }
                     ++it;
                     current->append(fragment, it.offset(), npos);
@@ -704,8 +664,8 @@ namespace Unicorn {
         return dst;
     }
 
-    template <typename CX>
-    void BasicRegexFormat<CX>::parse() {
+    template <typename C>
+    void BasicRegexFormat<C>::parse() {
         using namespace UnicornDetail;
         static const u8string pattern_ascii =
             R"((\$[0&]))"                                    // (1) Match ($0,$&)
@@ -781,35 +741,34 @@ namespace Unicorn {
         return {cstr(pattern), cstr(format), flags};
     }
 
-    template <typename CX>
-    void swap(BasicRegexFormat<CX>& lhs, BasicRegexFormat<CX>& rhs) noexcept {
+    template <typename C>
+    void swap(BasicRegexFormat<C>& lhs, BasicRegexFormat<C>& rhs) noexcept {
         lhs.swap(rhs);
     }
 
     // Iterator over regex matches
 
-    template <typename CX>
+    template <typename C>
     class BasicMatchIterator:
-    public ForwardIterator<BasicMatchIterator<CX>, const BasicMatch<CX>> {
+    public ForwardIterator<BasicMatchIterator<C>, const BasicMatch<C>> {
     public:
-        using char_type = typename UnicornDetail::CharType<CX>::type;
-        using cx_type = CX;
-        using string_type = basic_string<char_type>;
-        using regex_type = BasicRegex<CX>;
-        using match_type = BasicMatch<CX>;
+        using char_type = C;
+        using match_type = BasicMatch<C>;
+        using regex_type = BasicRegex<C>;
+        using string_type = basic_string<C>;
         BasicMatchIterator() = default;
-        BasicMatchIterator(const regex_type& re, const string_type& text): mat(re.search(text)), pat(re.utf8_pattern()) {}
+        BasicMatchIterator(const regex_type& re, const string_type& text): mat(re.search(text)), pat(re.pattern()) {}
         const match_type& operator*() const noexcept { return mat; }
         BasicMatchIterator& operator++();
         friend bool operator==(const BasicMatchIterator& lhs, const BasicMatchIterator& rhs) noexcept
             { return bool(lhs.mat) == bool(rhs.mat) && (! lhs.mat || lhs.mat.offset() == rhs.mat.offset()); }
     private:
         match_type mat;
-        string pat;
+        string_type pat;
     };
 
-    template <typename CX>
-    BasicMatchIterator<CX>& BasicMatchIterator<CX>::operator++() {
+    template <typename C>
+    BasicMatchIterator<C>& BasicMatchIterator<C>::operator++() {
         if (mat)
             next_match(mat, pat, mat.offset() + std::max(mat.count(), size_t(1)), 0);
         return *this;
@@ -817,16 +776,15 @@ namespace Unicorn {
 
     // Iterator over substrings between matches
 
-    template <typename CX>
+    template <typename C>
     class BasicSplitIterator:
-    public ForwardIterator<BasicSplitIterator<CX>, const basic_string<typename UnicornDetail::CharType<CX>::type>> {
+    public ForwardIterator<BasicSplitIterator<C>, const basic_string<C>> {
     public:
-        using char_type = typename UnicornDetail::CharType<CX>::type;
-        using cx_type = CX;
-        using string_type = basic_string<char_type>;
-        using regex_type = BasicRegex<CX>;
-        using match_type = BasicMatch<CX>;
-        using match_iterator = BasicMatchIterator<CX>;
+        using char_type = C;
+        using match_iterator = BasicMatchIterator<C>;
+        using match_type = BasicMatch<C>;
+        using regex_type = BasicRegex<C>;
+        using string_type = basic_string<C>;
         BasicSplitIterator() = default;
         BasicSplitIterator(const regex_type& re, const string_type& text): iter(re, text), start(0), value() { update(); }
         const string_type& operator*() const noexcept { return value; }
@@ -840,16 +798,16 @@ namespace Unicorn {
         void update();
     };
 
-    template <typename CX>
-    BasicSplitIterator<CX>& BasicSplitIterator<CX>::operator++() {
+    template <typename C>
+    BasicSplitIterator<C>& BasicSplitIterator<C>::operator++() {
         start = *iter ? iter->endpos() : npos;
         ++iter;
         update();
         return *this;
     }
 
-    template <typename CX>
-    void BasicSplitIterator<CX>::update() {
+    template <typename C>
+    void BasicSplitIterator<C>::update() {
         if (! iter->text || start >= iter->text->size())
             value.clear();
         else if (*iter)

@@ -62,14 +62,14 @@ for details.</p>
 <p>TODO</p>
 <h2 id="token-iterator">Token iterator</h2>
 <ul>
-<li><code>template &lt;typename CX&gt; class</code> <strong><code>BasicTokenIterator</code></strong><ul>
-<li><code>using BasicTokenIterator::</code><strong><code>char_type</code></strong> <code>= [char if CX is void, otherwise CX]</code></li>
-<li><code>using BasicTokenIterator::</code><strong><code>string_type</code></strong> <code>= basic_string&lt;char_type&gt;</code></li>
+<li><code>template &lt;typename C&gt; class</code> <strong><code>BasicTokenIterator</code></strong><ul>
+<li><code>using BasicTokenIterator::</code><strong><code>char_type</code></strong> <code>= C</code></li>
 <li><code>using BasicTokenIterator::</code><strong><code>difference_type</code></strong> <code>= ptrdiff_t</code></li>
-<li><code>using BasicTokenIterator::</code><strong><code>iterator_category</code></strong> <code>= std::</code><strong><code>forward_iterator_tag</code></strong></li>
-<li><code>using BasicTokenIterator::</code><strong><code>pointer</code></strong> <code>= const BasicToken&lt;char_type&gt;*</code></li>
-<li><code>using BasicTokenIterator::</code><strong><code>reference</code></strong> <code>= const BasicToken&lt;char_type&gt;&amp;</code></li>
-<li><code>using BasicTokenIterator::</code><strong><code>value_type</code></strong> <code>= BasicToken&lt;char_type&gt;</code></li>
+<li><code>using BasicTokenIterator::</code><strong><code>iterator_category</code></strong> <code>= std::forward_iterator_tag</code></li>
+<li><code>using BasicTokenIterator::</code><strong><code>pointer</code></strong> <code>= const BasicToken&lt;C&gt;*</code></li>
+<li><code>using BasicTokenIterator::</code><strong><code>reference</code></strong> <code>= const BasicToken&lt;C&gt;&amp;</code></li>
+<li><code>using BasicTokenIterator::</code><strong><code>string_type</code></strong> <code>= basic_string&lt;C&gt;</code></li>
+<li><code>using BasicTokenIterator::</code><strong><code>value_type</code></strong> <code>= BasicToken&lt;C&gt;</code></li>
 <li><code>BasicTokenIterator::</code><strong><code>BasicTokenIterator</code></strong><code>()</code></li>
 <li><em>[standard iterator operations]</em></li>
 </ul>
@@ -78,27 +78,25 @@ for details.</p>
 <li><code>using</code> <strong><code>TokenIterator16</code></strong> <code>= BasicTokenIterator&lt;char16_t&gt;</code></li>
 <li><code>using</code> <strong><code>TokenIterator32</code></strong> <code>= BasicTokenIterator&lt;char32_t&gt;</code></li>
 <li><code>using</code> <strong><code>WideTokenIterator</code></strong> <code>= BasicTokenIterator&lt;wchar_t&gt;</code></li>
-<li><code>using</code> <strong><code>ByteTokenIterator</code></strong> <code>= BasicTokenIterator&lt;void&gt;</code></li>
 </ul>
 <p>TODO</p>
 <h2 id="lexer-class">Lexer class</h2>
 <ul>
-<li><code>template &lt;typename CX&gt; class</code> <strong><code>BasicLexer</code></strong></li>
+<li><code>template &lt;typename C&gt; class</code> <strong><code>BasicLexer</code></strong></li>
 <li><code>using</code> <strong><code>Lexer</code></strong> <code>= BasicLexer&lt;char&gt;</code></li>
 <li><code>using</code> <strong><code>Lexer16</code></strong> <code>= BasicLexer&lt;char16_t&gt;</code></li>
 <li><code>using</code> <strong><code>Lexer32</code></strong> <code>= BasicLexer&lt;char32_t&gt;</code></li>
 <li><code>using</code> <strong><code>WideLexer</code></strong> <code>= BasicLexer&lt;wchar_t&gt;</code></li>
-<li><code>using</code> <strong><code>ByteLexer</code></strong> <code>= BasicLexer&lt;void&gt;</code></li>
 </ul>
 <p>TODO</p>
 <ul>
-<li><code>using BasicLexer::</code><strong><code>char_type</code></strong> <code>= [char if CX is void, otherwise CX]</code></li>
-<li><code>using BasicLexer::</code><strong><code>string_type</code></strong> <code>= basic_string&lt;char_type&gt;</code></li>
-<li><code>using BasicLexer::</code><strong><code>regex_type</code></strong> <code>= BasicRegex&lt;CX&gt;</code></li>
-<li><code>using BasicLexer::</code><strong><code>token_type</code></strong> <code>= BasicToken&lt;char_type&gt;</code></li>
 <li><code>using BasicLexer::</code><strong><code>callback_type</code></strong> <code>= std::function&lt;size_t(const string_type&amp;, size_t)&gt;</code></li>
-<li><code>using BasicLexer::</code><strong><code>token_iterator</code></strong> <code>= BasicTokenIterator&lt;CX&gt;</code></li>
+<li><code>using BasicLexer::</code><strong><code>char_type</code></strong> <code>= C</code></li>
+<li><code>using BasicLexer::</code><strong><code>regex_type</code></strong> <code>= BasicRegex&lt;C&gt;</code></li>
+<li><code>using BasicLexer::</code><strong><code>string_type</code></strong> <code>= basic_string&lt;C&gt;</code></li>
+<li><code>using BasicLexer::</code><strong><code>token_iterator</code></strong> <code>= BasicTokenIterator&lt;C&gt;</code></li>
 <li><code>using BasicLexer::</code><strong><code>token_range</code></strong> <code>= Irange&lt;token_iterator&gt;</code></li>
+<li><code>using BasicLexer::</code><strong><code>token_type</code></strong> <code>= BasicToken&lt;C&gt;</code></li>
 </ul>
 <p>TODO</p>
 <ul>
@@ -118,10 +116,10 @@ for details.</p>
 <ul>
 <li><code>void BasicLexer::</code><strong><code>call</code></strong><code>(int tag, const callback_type&amp; call)</code></li>
 <li><code>void BasicLexer::</code><strong><code>exact</code></strong><code>(int tag, const string_type&amp; pattern)</code></li>
-<li><code>void BasicLexer::</code><strong><code>exact</code></strong><code>(int tag, const char_type* pattern)</code></li>
+<li><code>void BasicLexer::</code><strong><code>exact</code></strong><code>(int tag, const C* pattern)</code></li>
 <li><code>void BasicLexer::</code><strong><code>match</code></strong><code>(int tag, const regex_type&amp; pattern)</code></li>
 <li><code>void BasicLexer::</code><strong><code>match</code></strong><code>(int tag, const string_type&amp; pattern, uint32_t flags = 0)</code></li>
-<li><code>void BasicLexer::</code><strong><code>match</code></strong><code>(int tag, const char_type* pattern, uint32_t flags = 0)</code></li>
+<li><code>void BasicLexer::</code><strong><code>match</code></strong><code>(int tag, const C* pattern, uint32_t flags = 0)</code></li>
 </ul>
 <p>TODO</p></body>
 </html>

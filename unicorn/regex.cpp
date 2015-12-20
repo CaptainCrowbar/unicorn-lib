@@ -172,7 +172,7 @@ namespace Unicorn {
             // Implementations of regex algorithms
 
             template <typename C>
-            void init_regex_impl(RegexInfo<C>& r, const typename PcreTraits<C>::string_type& pattern, uint32_t flags, bool unicode) {
+            void init_regex_impl(RegexInfo<C>& r, const typename PcreTraits<C>::string_type& pattern, uint32_t flags) {
                 using pcre_traits = PcreTraits<C>;
                 if (bits_set(flags & (rx_newlineanycrlf | rx_newlinecr | rx_newlinecrlf | rx_newlinelf)) > 1
                         || bits_set(flags & (rx_notempty | rx_notemptyatstart)) > 1
@@ -181,7 +181,7 @@ namespace Unicorn {
                 r.pat = pattern;
                 r.fset = flags;
                 int cflags = PCRE_EXTRA, sflags = 0;
-                if (unicode)
+                if (! (flags & rx_byte))
                     cflags |= PCRE_UTF8;
                 if (flags & rx_newlineanycrlf)
                     cflags |= PCRE_BSR_ANYCRLF | PCRE_NEWLINE_ANYCRLF;
@@ -216,7 +216,7 @@ namespace Unicorn {
                     cflags |= PCRE_NO_AUTO_CAPTURE;
                 if (flags & rx_nostartoptimize)
                     cflags |= PCRE_NO_START_OPTIMIZE;
-                if (flags & rx_noutfcheck)
+                if ((flags & rx_noutfcheck) && ! (flags & rx_byte))
                     cflags |= PCRE_NO_UTF8_CHECK;
                 if (flags & rx_prefershort)
                     cflags |= PCRE_UNGREEDY;
@@ -229,7 +229,7 @@ namespace Unicorn {
                 if (! pc) {
                     if (error == 21)
                         throw std::bad_alloc();
-                    else if (unicode)
+                    else
                         throw RegexError(to_utf8(pattern), error, cstr(errptr));
                 }
                 auto ex = pcre_traits::study(pc, sflags, &errptr);
@@ -265,7 +265,7 @@ namespace Unicorn {
             }
 
             template <typename C>
-            void next_match_impl(MatchInfo<C>& m, const string& pattern, size_t start, int anchors) {
+            void next_match_impl(MatchInfo<C>& m, const basic_string<C>& pattern, size_t start, int anchors) {
                 using pcre_traits = PcreTraits<C>;
                 m.status = PCRE_ERROR_NOMATCH;
                 if (! m.ref || start > m.text->size())
@@ -302,7 +302,7 @@ namespace Unicorn {
                 if (m.status == PCRE_ERROR_NOMEMORY)
                     throw std::bad_alloc();
                 if (m.status < 0 && m.status != PCRE_ERROR_NOMATCH && m.status != PCRE_ERROR_PARTIAL)
-                    throw RegexError(pattern, m.status, {});
+                    throw RegexError(to_utf8(pattern), m.status, {});
             }
 
         }
@@ -315,8 +315,8 @@ namespace Unicorn {
             { return count_groups_impl<char>(p.pcre()); }
         size_t named_group(const PcreRef<char>& p, const string& name) noexcept
             { return named_group_impl(p.pcre(), name); }
-        void init_regex(RegexInfo<char>& r, const string& pattern, uint32_t flags, bool unicode)
-            { init_regex_impl(r, pattern, flags, unicode); }
+        void init_regex(RegexInfo<char>& r, const string& pattern, uint32_t flags)
+            { init_regex_impl(r, pattern, flags); }
         void init_match(MatchInfo<char>& m, const RegexInfo<char>& r, const string& text)
             { init_match_impl(m, r, text); }
         void next_match(MatchInfo<char>& m, const string& pattern, size_t start, int anchors)
@@ -329,11 +329,11 @@ namespace Unicorn {
                 { return count_groups_impl<char16_t>(p.pcre()); }
             size_t named_group(const PcreRef<char16_t>& p, const u16string& name) noexcept
                 { return named_group_impl(p.pcre(), name); }
-            void init_regex(RegexInfo<char16_t>& r, const u16string& pattern, uint32_t flags, bool unicode)
-                { init_regex_impl(r, pattern, flags, unicode); }
+            void init_regex(RegexInfo<char16_t>& r, const u16string& pattern, uint32_t flags)
+                { init_regex_impl(r, pattern, flags); }
             void init_match(MatchInfo<char16_t>& m, const RegexInfo<char16_t>& r, const u16string& text)
                 { init_match_impl(m, r, text); }
-            void next_match(MatchInfo<char16_t>& m, const string& pattern, size_t start, int anchors)
+            void next_match(MatchInfo<char16_t>& m, const u16string& pattern, size_t start, int anchors)
                 { next_match_impl(m, pattern, start, anchors); }
         #endif
 
@@ -344,11 +344,11 @@ namespace Unicorn {
                 { return count_groups_impl<char32_t>(p.pcre()); }
             size_t named_group(const PcreRef<char32_t>& p, const u32string& name) noexcept
                 { return named_group_impl(p.pcre(), name); }
-            void init_regex(RegexInfo<char32_t>& r, const u32string& pattern, uint32_t flags, bool unicode)
-                { init_regex_impl(r, pattern, flags, unicode); }
+            void init_regex(RegexInfo<char32_t>& r, const u32string& pattern, uint32_t flags)
+                { init_regex_impl(r, pattern, flags); }
             void init_match(MatchInfo<char32_t>& m, const RegexInfo<char32_t>& r, const u32string& text)
                 { init_match_impl(m, r, text); }
-            void next_match(MatchInfo<char32_t>& m, const string& pattern, size_t start, int anchors)
+            void next_match(MatchInfo<char32_t>& m, const u32string& pattern, size_t start, int anchors)
                 { next_match_impl(m, pattern, start, anchors); }
         #endif
 
@@ -359,11 +359,11 @@ namespace Unicorn {
                 { return count_groups_impl<wchar_t>(p.pcre()); }
             size_t named_group(const PcreRef<wchar_t>& p, const wstring& name) noexcept
                 { return named_group_impl(p.pcre(), name); }
-            void init_regex(RegexInfo<wchar_t>& r, const wstring& pattern, uint32_t flags, bool unicode)
-                { init_regex_impl(r, pattern, flags, unicode); }
+            void init_regex(RegexInfo<wchar_t>& r, const wstring& pattern, uint32_t flags)
+                { init_regex_impl(r, pattern, flags); }
             void init_match(MatchInfo<wchar_t>& m, const RegexInfo<wchar_t>& r, const wstring& text)
                 { init_match_impl(m, r, text); }
-            void next_match(MatchInfo<wchar_t>& m, const string& pattern, size_t start, int anchors)
+            void next_match(MatchInfo<wchar_t>& m, const wstring& pattern, size_t start, int anchors)
                 { next_match_impl(m, pattern, start, anchors); }
         #endif
 
@@ -404,7 +404,7 @@ namespace Unicorn {
 
         Version check_regex_unicode_version() noexcept {
             static const Regex unassigned("\\p{Cn}");
-            Version v {0,0,0};
+            Version v;
             auto& table = UnicornDetail::unicode_version_table().table;
             for (auto& entry: table) {
                 if (unassigned.match(str_char<char>(entry.second)))

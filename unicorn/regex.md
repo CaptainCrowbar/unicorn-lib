@@ -102,6 +102,7 @@ library instead.
 
 Flag                      | Description                                                                    | PCRE equivalent
 ----                      | -----------                                                                    | ---------------
+**`rx_byte`**             | Match in byte mode instead of Unicode                                          | `~PCRE_UTF8`
 **`rx_caseless`**         | Matching is case insensitive                                                   | `PCRE_CASELESS`
 **`rx_dfa`**              | Use the alternative DFA matching algorithm                                     | `pcre_dfa_exec()`
 **`rx_dollarnewline`**    | `$` may match line breaks preceding the end of the string                      | `~PCRE_DOLLAR_ENDONLY`
@@ -119,7 +120,7 @@ Flag                      | Description                                         
 **`rx_notempty`**         | Do not match an empty string                                                   | `PCRE_NOTEMPTY`
 **`rx_notemptyatstart`**  | Do not match an empty string at the start of the subject string                | `PCRE_NOTEMPTY_ATSTART`
 **`rx_noteol`**           | Do not match `$` at the end of the subject string                              | `PCRE_NOTEOL`
-**`rx_noutfcheck`**       | Skip UTF validity checks                                                       | `PCRE_NO_UTF{8,16,32}_CHECK`
+**`rx_noutfcheck`**       | Skip UTF validity checks (ignored in byte mode)                                | `PCRE_NO_UTF8_CHECK`
 **`rx_optimize`**         | Optimize the regex using PCRE's JIT compiler                                   | `PCRE_STUDY_JIT_COMPILE`
 **`rx_partialhard`**      | Hard partial matching; prefer a partial match to a full match                  | `PCRE_PARTIAL_HARD`
 **`rx_partialsoft`**      | Soft partial matching; prefer a full match to a partial match                  | `PCRE_PARTIAL_SOFT`
@@ -150,13 +151,14 @@ implicitly construct a regex, will throw `std::`**`invalid_argument`** if the fl
 supplied are inconsistent:
 
 * At most one of `rx_newlineanycrlf`, `rx_newlinecr`, `rx_newlinecrlf`, and `rx_newlinelf` may be used.
+* `rx_byte` can only be used with 8-bit strings.
+* `rx_byte` and `rx_ucp` may not be combined.
 * `rx_notempty` and `rx_notemptyatstart` may not be combined.
 * `rx_partialhard` and `rx_partialsoft` may not be combined.
-* `rx_noutfcheck` and `rx_ucp` may not be used with a byte mode regex.
 
-If you use the `rx_noutfcheck` flag, be careful about sanitizing your strings:
-**behaviour is undefined** if this flag is present and any regex pattern,
-subject string, or format string is not valid Unicode.
+**Caution:** If you use the `rx_noutfcheck` flag, be careful about sanitizing
+your strings; behaviour is undefined if this flag is present and any regex
+pattern, subject string, or format string is not valid Unicode.
 
 ## Formatting syntax ##
 
@@ -220,8 +222,8 @@ If a `$` or `\` escape prefix is followed by an unrecognised second character,
 the escape character is discarded and the second character is copied literally
 into the output string.
 
-When the case conversion codes (`\l`, `\u`, `\L`, `\T`, and `\U`) are used
-with byte mode regexes, only ASCII characters will be converted.
+When the case conversion codes (`\[luLTU]`) are used with byte mode regexes,
+only ASCII characters will be converted.
 
 If the format string contains `\x{HHH...}` escape codes, an `EncodingError`
 exception will be thrown if the hexadecimal number is not a valid Unicode
@@ -240,30 +242,24 @@ underlying PCRE call reports an error.
 
 ## Regular expression class ##
 
-* `template <typename CX> class` **`BasicRegex`**
+* `template <typename C> class` **`BasicRegex`**
 * `using` **`Regex`** `= BasicRegex<char>`
 * `using` **`Regex16`** `= BasicRegex<char16_t>`
 * `using` **`Regex32`** `= BasicRegex<char32_t>`
 * `using` **`WideRegex`** `= BasicRegex<wchar_t>`
-* `using` **`ByteRegex`** `= BasicRegex<void>`
 
 The generic regular expression class, and aliases for each of the possible
-instantiations. In this and all other templates in this module, the template
-argument `CX` can be any of the four standard character types, or `void`. When
-`void` is used, the resulting regex works on single byte strings (i.e the
-character and string types are `char` and `std::`**`string`**, the same as if the
-template argument had been `char`), but matches using PCRE's byte mode instead
-of UTF-8 mode.
+instantiations.
 
-* `using BasicRegex::`**`char_type`** `= [char if CX is void, otherwise CX]`
-* `using BasicRegex::`**`cx_type`** `= CX`
-* `using BasicRegex::`**`string_type`** `= basic_string<char_type>`
-* `using BasicRegex::`**`match_type`** `= BasicMatch<CX>`
-* `using BasicRegex::`**`match_iterator`** `= BasicMatchIterator<CX>`
+* `using BasicRegex::`**`char_type`** `= C`
+* `using BasicRegex::`**`string_type`** `= basic_string<C>`
+* `using BasicRegex::`**`match_type`** `= BasicMatch<C>`
+* `using BasicRegex::`**`match_iterator`** `= BasicMatchIterator<C>`
 * `using BasicRegex::`**`match_range`** `= Irange<match_iterator>`
-* `using BasicRegex::`**`split_iterator`** `= BasicSplitIterator<CX>`
+* `using BasicRegex::`**`split_iterator`** `= BasicSplitIterator<C>`
 * `using BasicRegex::`**`split_range`** `= Irange<split_iterator>`
-* `using BasicRegex::`**`utf_iterator`** `= UtfIterator<CX> [not defined if CX is void]`
+* `using BasicRegex::`**`string_iterator`** `= basic_string<C>::const_iterator`
+* `using BasicRegex::`**`utf_iterator`** `= UtfIterator<C>`
 
 Member types.
 
@@ -282,13 +278,13 @@ from an empty pattern. The second constructor will throw
 flags are interpreted.
 
 * `BasicRegex::match_type BasicRegex::`**`anchor`**`(const string_type& text, size_t offset = 0) const`
-* `BasicRegex::match_type BasicRegex::`**`anchor`**`(const utf_iterator& start) const [not defined if CX is void]`
+* `BasicRegex::match_type BasicRegex::`**`anchor`**`(const utf_iterator& start) const`
 * `BasicRegex::match_type BasicRegex::`**`match`**`(const string_type& text, size_t offset = 0) const`
-* `BasicRegex::match_type BasicRegex::`**`match`**`(const utf_iterator& start) const [not defined if CX is void]`
+* `BasicRegex::match_type BasicRegex::`**`match`**`(const utf_iterator& start) const`
 * `BasicRegex::match_type BasicRegex::`**`search`**`(const string_type& text, size_t offset = 0) const`
-* `BasicRegex::match_type BasicRegex::`**`search`**`(const utf_iterator& start) const [not defined if CX is void]`
+* `BasicRegex::match_type BasicRegex::`**`search`**`(const utf_iterator& start) const`
 * `BasicRegex::match_type BasicRegex::`**`operator()`**`(const string_type& text, size_t offset = 0) const`
-* `BasicRegex::match_type BasicRegex::`**`operator()`**`(const utf_iterator& start) const [not defined if CX is void]`
+* `BasicRegex::match_type BasicRegex::`**`operator()`**`(const utf_iterator& start) const`
 
 These are the regex matching functions. The `search()` functions return a
 successful match if the pattern matches anywhere in the subject string;
@@ -298,21 +294,23 @@ operators are equivalent to `search()`.
 
 These functions can accept a starting offset into the subject string as either
 an integer (interpreted as an offset in code units), or a UTF iterator for
-Unicode regexes (these overloads are not defined for byte regexes). The
-subject string itself is not explicitly required in the second version, since
-it can be obtained from the iterator. When a nonzero offset is passed, or an
-iterator that does not point to the beginning of the string, the search begins
-at the specified point in the string, but the text preceding it will still be
-taken into account in lookbehind assertions.
+Unicode regexes. The subject string itself is not explicitly required in the
+second version, since it can be obtained from the iterator. When a nonzero
+offset is passed, or an iterator that does not point to the beginning of the
+string, the search begins at the specified point in the string, but the text
+preceding it will still be taken into account in lookbehind assertions.
 
 All of these will throw `RegexError` if anything goes wrong (this will be rare
 in practise since most errors will have been caught when the regex was
 constructed, but a few kinds of regex error are not detected by PCRE until
 execution time).
 
+**Caution:** Behaviour is undefined if you use the UTF iterator versions of
+these functions with a byte mode regex.
+
 * `size_t BasicRegex::`**`count`**`(const string_type& text) const`
 
-Return the number of non-overlapping matches found in the text.
+Returns the number of non-overlapping matches found in the text.
 
 * `bool BasicRegex::`**`empty`**`() const noexcept`
 
@@ -341,8 +339,8 @@ captures, plus one for the complete match).
 
 * `size_t BasicRegex::`**`named`**`(const string_type& name) const noexcept`
 
-If the regex includes any named captures, this returns the group index
-(1-based) corresponding to the given name. It will return zero if there is no
+If the regex includes any named captures, this returns the group index (1
+based) corresponding to the given name. It will return zero if there is no
 capture by that name (or if the regex does not use named captures).
 
 * `BasicRegex::string_type BasicRegex::`**`pattern`**`() const`
@@ -358,7 +356,7 @@ string using regex matches as delimiters. Refer to the `BasicSplitIterator`
 class (below) for further details.
 
 * `void BasicRegex::`**`swap`**`(BasicRegex& r) noexcept`
-* `template <typename CX> void` **`swap`**`(BasicRegex<CX>& lhs, BasicRegex<CX>& rhs) noexcept`
+* `template <typename C> void` **`swap`**`(BasicRegex<C>& lhs, BasicRegex<C>& rhs) noexcept`
 
 Swap two regex objects.
 
@@ -382,6 +380,7 @@ Convenience functions to construct a regex object.
 
 * `namespace` **`Literals`**
     * `Regex` **`operator"" _re`**`(const char* ptr, size_t len)`
+    * `Regex` **`operator"" _re_b`**`(const char* ptr, size_t len)`
     * `Regex` **`operator"" _re_i`**`(const char* ptr, size_t len)`
     * `Regex16` **`operator"" _re`**`(const char16_t* ptr, size_t len)`
     * `Regex16` **`operator"" _re_i`**`(const char16_t* ptr, size_t len)`
@@ -389,15 +388,14 @@ Convenience functions to construct a regex object.
     * `Regex32` **`operator"" _re_i`**`(const char32_t* ptr, size_t len)`
     * `WideRegex` **`operator"" _re`**`(const wchar_t* ptr, size_t len)`
     * `WideRegex` **`operator"" _re_i`**`(const wchar_t* ptr, size_t len)`
-    * `ByteRegex` **`operator"" _re_b`**`(const char* ptr, size_t len)`
-    * `ByteRegex` **`operator"" _re_bi`**`(const char* ptr, size_t len)`
 
-Regex literals. The versions with an `"_i"` suffix are case insensitive; apart
-from that, no options are supported.
+Regex literals. The versions with suffix `"_b"` are byte mode, and those with
+`"_i"` are case insensitive; these are the only options supported by the
+literals.
 
 ## Regex match class ##
 
-* `template <typename CX> class` **`BasicMatch`**
+* `template <typename C> class` **`BasicMatch`**
 * `using` **`Match`** `= BasicMatch<char>`
 * `using` **`Match16`** `= BasicMatch<char16_t>`
 * `using` **`Match32`** `= BasicMatch<char32_t>`
@@ -407,16 +405,11 @@ from that, no options are supported.
 This template class is returned by regex matching functions, reporting the
 result of the matching attempt.
 
-* `using BasicMatch::`**`char_type`** `= [char if CX is void, otherwise CX]`
-* `using BasicMatch::`**`cx_type`** `= CX`
-* `using BasicMatch::`**`string_type`** `= basic_string<char_type>`
-* `using BasicMatch::`**`regex_type`** `= BasicRegex<CX>`
-* `using BasicMatch::`**`const_iterator`** `= const char_type*`
-* `using BasicMatch::`**`const_reference`** `= const char_type&`
-* `using BasicMatch::`**`difference_type`** `= ptrdiff_t`
-* `using BasicMatch::`**`iterator`** `= [string::const_iterator if CX is void, otherwise UtfIterator<CX>]`
-* `using BasicMatch::`**`reference`** `= const value_type&`
-* `using BasicMatch::`**`value_type`** `= [char if CX is void, otherwise char32_t]`
+* `using BasicMatch::`**`char_type`** `= C`
+* `using BasicMatch::`**`regex_type`** `= BasicRegex<C>`
+* `using BasicMatch::`**`string_type`** `= basic_string<C>`
+* `using BasicMatch::`**`string_iterator`** `= string_type::const_iterator`
+* `using BasicMatch::`**`utf_iterator`** `= UtfIterator<C>`
 
 Member types.
 
@@ -429,16 +422,6 @@ Member types.
 
 Life cycle functions. Normally a match object will be returned by a regex
 matching function rather than directly constructed by the user.
-
-* `BasicMatch::iterator BasicMatch::`**`begin`**`(size_t i = 0) const noexcept`
-* `BasicMatch::iterator BasicMatch::`**`end`**`(size_t i = 0) const noexcept`
-
-These return UTF iterators over the characters within a match. The default
-versions return iterators bracketing the complete match; if the index argument
-is positive, the iterators mark the corresponding numbered capture group. If
-the index corresponds to a group that was not matched, or if the match itself
-was unsuccessful, `begin()` and `end()` will return the same iterator (its
-value is otherwise unspecified).
 
 * `bool BasicMatch::`**`empty`**`() const noexcept`
 
@@ -483,6 +466,25 @@ from the start of the subject string. If the match was unsuccessful, or if the
 index refers to a group that does not exist in the regex or was not included
 in the match, the two offsets will both be `npos` and the size will be zero.
 
+* `Irange<BasicMatch::string_iterator> BasicMatch::`**`s`**`(size_t i = 0) const noexcept`
+* `BasicMatch::string_iterator BasicMatch::`**`s_begin`**`(size_t i = 0) const noexcept`
+* `BasicMatch::string_iterator BasicMatch::`**`s_end`**`(size_t i = 0) const noexcept`
+* `Irange<BasicMatch::utf_iterator> BasicMatch::`**`u`**`(size_t i = 0) const noexcept`
+* `BasicMatch::utf_iterator BasicMatch::`**`u_begin`**`(size_t i = 0) const noexcept`
+* `BasicMatch::utf_iterator BasicMatch::`**`u_end`**`(size_t i = 0) const noexcept`
+
+These return iterators (string or UTF) over the characters within a match. The
+default versions return iterators bracketing the complete match; if the index
+argument is not zero, the iterators mark the corresponding numbered capture
+group. If the index corresponds to a group that was not matched, or if the
+match itself was unsuccessful, `begin()` and `end()` will return the same
+iterator (its value is otherwise unspecified).
+
+**Caution:** If the match was returned by a byte-mode regex, be careful to
+always use the string iterators and not the UTF iterators, which are not
+meaningful when the string is not being interpreted as UTF-8. Behaviour is
+undefined in this situation.
+
 * `BasicMatch::string_type BasicMatch::`**`str`**`(size_t i = 0) const`
 * `BasicMatch::string_type BasicMatch::`**`named`**`(const string_type& name) const`
 * `BasicMatch::string_type BasicMatch::`**`operator[]`**`(size_t i) const`
@@ -496,13 +498,13 @@ conversion operator is equivalent to `str(0)`, which returns the complete
 match.
 
 * `void BasicMatch::`**`swap`**`(BasicMatch& m) noexcept`
-* `template <typename CX> void` **`swap`**`(BasicMatch<CX>& lhs, BasicMatch<CX>& rhs) noexcept`
+* `template <typename C> void` **`swap`**`(BasicMatch<C>& lhs, BasicMatch<C>& rhs) noexcept`
 
 Swap two match objects.
 
 ## Regex formatting class ##
 
-* `template <typename CX> class` **`BasicRegexFormat`**
+* `template <typename C> class` **`BasicRegexFormat`**
 * `using` **`RegexFormat`** `= BasicRegexFormat<char>`
 * `using` **`RegexFormat16`** `= BasicRegexFormat<char16_t>`
 * `using` **`RegexFormat32`** `= BasicRegexFormat<char32_t>`
@@ -514,11 +516,10 @@ operations equivalent to the `BasicRegex::`**`format`**`()` function, but compil
 the format string only once by constructing a regex format object will be more
 efficient if the same formatting operation is going to be applied many times.
 
-* `using BasicRegexFormat::`**`char_type`** `= [char if CX is void, otherwise CX]`
-* `using BasicRegexFormat::`**`cx_type`** `= CX`
-* `using BasicRegexFormat::`**`string_type`** `= basic_string<char_type>`
-* `using BasicRegexFormat::`**`regex_type`** `= BasicRegex<CX>`
-* `using BasicRegexFormat::`**`match_type`** `= BasicMatch<CX>`
+* `using BasicRegexFormat::`**`char_type`** `= C`
+* `using BasicRegexFormat::`**`match_type`** `= BasicMatch<C>`
+* `using BasicRegexFormat::`**`regex_type`** `= BasicRegex<C>`
+* `using BasicRegexFormat::`**`string_type`** `= basic_string<C>`
 
 Member types.
 
@@ -558,7 +559,7 @@ These functions query the construction parameters. The `pattern()` and
 `regex().flags()`.
 
 * `void BasicRegexFormat::`**`swap`**`(BasicRegexFormat& r) noexcept`
-* `template <typename CX> void` **`swap`**`(BasicRegexFormat<CX>& lhs, BasicRegexFormat<CX>& rhs) noexcept`
+* `template <typename C> void` **`swap`**`(BasicRegexFormat<C>& lhs, BasicRegexFormat<C>& rhs) noexcept`
 
 Swap two objects.
 
@@ -571,16 +572,15 @@ Convenience functions to construct a regex format object.
 
 ## Regex iterator classes ##
 
-* `template <typename CX> class` **`BasicMatchIterator`**
-    * `using BasicMatchIterator::`**`char_type`** `= [char if CX is void, otherwise CX]`
-    * `using BasicMatchIterator::`**`cx_type`** `= CX`
-    * `using BasicMatchIterator::`**`string_type`** `= basic_string<char_type>`
-    * `using BasicMatchIterator::`**`regex_type`** `= BasicRegex<CX>`
-    * `using BasicMatchIterator::`**`match_type`** `= BasicMatch<CX>`
+* `template <typename C> class` **`BasicMatchIterator`**
+    * `using BasicMatchIterator::`**`char_type`** `= C`
     * `using BasicMatchIterator::`**`difference_type`** `= ptrdiff_t`
-    * `using BasicMatchIterator::`**`iterator_category`** `= std::`**`forward_iterator_tag`**
+    * `using BasicMatchIterator::`**`iterator_category`** `= std::forward_iterator_tag`
+    * `using BasicMatchIterator::`**`match_type`** `= BasicMatch<C>`
     * `using BasicMatchIterator::`**`pointer`** `= const match_type*`
     * `using BasicMatchIterator::`**`reference`** `= const match_type&`
+    * `using BasicMatchIterator::`**`regex_type`** `= BasicRegex<C>`
+    * `using BasicMatchIterator::`**`string_type`** `= basic_string<C>`
     * `using BasicMatchIterator::`**`value_type`** `= match_type`
     * `BasicMatchIterator::`**`BasicMatchIterator`**`()`
     * `BasicMatchIterator::`**`BasicMatchIterator`**`(const regex_type& re, const string_type& text)`
@@ -595,17 +595,16 @@ An iterator over the (non-overlapping) matches found within a subject string
 for a given regex. These are normally returned by `BasicRegex::`**`grep`**`()` rather
 than constructed directly by the user.
 
-* `template <typename CX> class` **`BasicSplitIterator`**
-    * `using BasicSplitIterator::`**`char_type`** `= [char if CX is void, otherwise CX]`
-    * `using BasicSplitIterator::`**`cx_type`** `= CX`
-    * `using BasicSplitIterator::`**`string_type`** `= basic_string<char_type>`
-    * `using BasicSplitIterator::`**`regex_type`** `= BasicRegex<CX>`
-    * `using BasicSplitIterator::`**`match_type`** `= BasicMatch<CX>`
-    * `using BasicSplitIterator::`**`match_iterator`** `= BasicMatchIterator<CX>`
+* `template <typename C> class` **`BasicSplitIterator`**
+    * `using BasicSplitIterator::`**`char_type`** `= C`
     * `using BasicSplitIterator::`**`difference_type`** `= ptrdiff_t`
-    * `using BasicSplitIterator::`**`iterator_category`** `= std::`**`forward_iterator_tag`**
+    * `using BasicSplitIterator::`**`iterator_category`** `= std::forward_iterator_tag`
+    * `using BasicSplitIterator::`**`match_iterator`** `= BasicMatchIterator<C>`
+    * `using BasicSplitIterator::`**`match_type`** `= BasicMatch<C>`
     * `using BasicSplitIterator::`**`pointer`** `= const string_type*`
     * `using BasicSplitIterator::`**`reference`** `= const string_type&`
+    * `using BasicSplitIterator::`**`regex_type`** `= BasicRegex<C>`
+    * `using BasicSplitIterator::`**`string_type`** `= basic_string<C>`
     * `using BasicSplitIterator::`**`value_type`** `= string_type`
     * `BasicSplitIterator::`**`BasicSplitIterator`**`()`
     * `BasicSplitIterator::`**`BasicSplitIterator`**`(const regex_type& re, const string_type& text)`
@@ -641,4 +640,4 @@ Returns the version of PCRE used to build this library.
 
 Returns the PCRE library's version of Unicode. Because the PCRE library is
 built separately, this is not guaranteed to be the same as the version used by
-the Unicorn library.
+the rest of the Unicorn library.
