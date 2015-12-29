@@ -23,7 +23,6 @@ namespace Unicorn {
 
         template <typename T, typename C>
         UtfIterator<C> convert_str_to_int(T& t, const UtfIterator<C>& start, uint32_t flags, int base) {
-            PRI_STATIC_ASSERT(std::is_integral<T>::value);
             static const auto dec_chars = recode<C>(u8string("+-0123456789"));
             static const auto hex_chars = recode<C>(u8string("+-0123456789ABCDEFabcdef"));
             const auto& src(start.source());
@@ -160,7 +159,6 @@ namespace Unicorn {
 
     template <typename T, typename C>
     UtfIterator<C> str_to_float(T& t, const UtfIterator<C>& start, uint32_t flags = 0) {
-        PRI_STATIC_ASSERT(std::is_floating_point<T>::value);
         using traits = UnicornDetail::FloatConversionTraits<T>;
         static const auto float_chars = recode<C>(u8string("+-.0123456789Ee"));
         static constexpr T max_value = std::numeric_limits<T>::max();
