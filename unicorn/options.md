@@ -175,7 +175,7 @@ with `"0x"`; integer or float options will accept values tagged with SI prefix
 abbreviations (e.g. `"50k"` or `"2.5M"`).
 
 If help or version information is requested, it will be written to the given
-output stream (`std::`**`cout`** by default). The `parse()` function will return
+output stream (`std::cout` by default). The `parse()` function will return
 true if all requested processing has already been handled (i.e. if help or
 version information has been presented to the user); the caller should check
 the return value from `parse()` and end the program if it is true.

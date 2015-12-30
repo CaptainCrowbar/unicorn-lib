@@ -81,7 +81,7 @@ first column or row.
 
 If the character is a control character (not listed above), whitespace, or an
 unassigned code point, the insertion operator will throw
-`std::`**`invalid_argument`**. Otherwise, the character is used to write a
+`std::invalid_argument`. Otherwise, the character is used to write a
 horizontal rule across the table, by repeating the character to match the
 width of each column.
 

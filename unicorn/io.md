@@ -18,7 +18,7 @@ encodings, as well as other conveniences such as normalization of line breaks.
 
 * `class` **`FileReader`**
     * `using FileReader::`**`difference_type`** `= ptrdiff_t`
-    * `using FileReader::`**`iterator_category`** `= std::`**`input_iterator_tag`**
+    * `using FileReader::`**`iterator_category`** `= std::input_iterator_tag`
     * `using FileReader::`**`pointer`** `= const u8string*`
     * `using FileReader::`**`reference`** `= const u8string&`
     * `using FileReader::`**`value_type`** `= u8string`
@@ -62,7 +62,7 @@ TODO
 
 * `class` **`FileWriter`**
     * `using FileWriter::`**`difference_type`** `= void`
-    * `using FileWriter::`**`iterator_category`** `= std::`**`output_iterator_tag`**
+    * `using FileWriter::`**`iterator_category`** `= std::output_iterator_tag`
     * `using FileWriter::`**`pointer`** `= void`
     * `using FileWriter::`**`reference`** `= void`
     * `using FileWriter::`**`value_type`** `= void`

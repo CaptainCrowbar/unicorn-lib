@@ -188,7 +188,7 @@ split_file(".hello") == {".hello", ""}
 </ul>
 <p>These query the current working directory of the calling process. The first
 version requires the character type to be explicitly specified. These may
-throw <code>std::</code><strong><code>system_error</code></strong> in some unusual cases of failure, usually involving
+throw <code>std::system_error</code> in some unusual cases of failure, usually involving
 access permission problems.</p>
 <ul>
 <li><code>template &lt;typename C&gt; bool</code> <strong><code>file_exists</code></strong><code>(const basic_string&lt;C&gt;&amp; file) noexcept</code></li>
@@ -226,7 +226,7 @@ followed).</p>
 </ul>
 <p>Returns the file pointed to by a symlink. If the argument names a file that
 does not exist or is not a symlink, this will simply return the argument
-unchanged. This will throw <code>std::</code><strong><code>system_error</code></strong> if anything goes wrong, such as
+unchanged. This will throw <code>std::system_error</code> if anything goes wrong, such as
 a permission failure or a symlink loop. On Windows, resolving a symlink
 requires opening the target file, so this will fail if the target file does
 not exist (presumably the symlink still contains a path but there does not
@@ -240,7 +240,7 @@ system.</p>
 <p>Create a directory (with default permissions). If the <code>fs_recurse</code> flag is
 set, this will recursively create any missing parent directories (like <code>mkdir
 -p</code>). It will do nothing if the directory already exists. It will throw
-<code>std::</code><strong><code>system_error</code></strong> if the named file already exists but is not a directory,
+<code>std::system_error</code> if the named file already exists but is not a directory,
 if the directory path is not a legal filename, if the parent directory does
 not exist and the <code>recurse</code> flag was not set, or if the caller does not have
 permission to create the directory.</p>
@@ -250,13 +250,13 @@ permission to create the directory.</p>
 <p>Delete a file or directory. If the <code>fs_recurse</code> flag is set, directories will
 be deleted recursively (like <code>rm -rf</code>; this will not follow symbolic links).
 This will do nothing if the named file does not exist to begin with. It will
-throw <code>std::</code><strong><code>system_error</code></strong> if the directory path is not a legal filename, if
+throw <code>std::system_error</code> if the directory path is not a legal filename, if
 the name refers to a nonempty directory and the <code>recurse</code> flag was not set, or
 if the caller does not have permission to delete the file.</p>
 <ul>
 <li><code>template &lt;typename C&gt; void</code> <strong><code>rename_file</code></strong><code>(const basic_string&lt;C&gt;&amp; src, const basic_string&lt;C&gt;&amp; dst)</code></li>
 </ul>
-<p>Rename a file or directory. This will throw <code>std::</code><strong><code>system_error</code></strong> if either
+<p>Rename a file or directory. This will throw <code>std::system_error</code> if either
 argument is not a legal filename, if the caller does not have permission to
 perform the operation, or under other OS-specific circumstances. This function
 is a thin wrapper around the underlying native file renaming functions, and
@@ -268,7 +268,7 @@ source and destination are on different physical file systems.</p>
 <ul>
 <li><code>template &lt;typename C&gt; class</code> <strong><code>DirectoryIterator</code></strong><ul>
 <li><code>using DirectoryIterator::</code><strong><code>difference_type</code></strong> <code>= ptrdiff_t</code></li>
-<li><code>using DirectoryIterator::</code><strong><code>iterator_category</code></strong> <code>= std::</code><strong><code>input_iterator_tag</code></strong></li>
+<li><code>using DirectoryIterator::</code><strong><code>iterator_category</code></strong> <code>= std::input_iterator_tag</code></li>
 <li><code>using DirectoryIterator::</code><strong><code>value_type</code></strong> <code>= basic_string&lt;C&gt;</code></li>
 <li><code>using DirectoryIterator::</code><strong><code>pointer</code></strong> <code>= const value_type*</code></li>
 <li><code>using DirectoryIterator::</code><strong><code>reference</code></strong> <code>= const value_type&amp;</code></li>

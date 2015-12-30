@@ -165,7 +165,7 @@ These functions perform read-only operations on the file system.
 
 These query the current working directory of the calling process. The first
 version requires the character type to be explicitly specified. These may
-throw `std::`**`system_error`** in some unusual cases of failure, usually involving
+throw `std::system_error` in some unusual cases of failure, usually involving
 access permission problems.
 
 * `template <typename C> bool` **`file_exists`**`(const basic_string<C>& file) noexcept`
@@ -203,7 +203,7 @@ followed).
 
 Returns the file pointed to by a symlink. If the argument names a file that
 does not exist or is not a symlink, this will simply return the argument
-unchanged. This will throw `std::`**`system_error`** if anything goes wrong, such as
+unchanged. This will throw `std::system_error` if anything goes wrong, such as
 a permission failure or a symlink loop. On Windows, resolving a symlink
 requires opening the target file, so this will fail if the target file does
 not exist (presumably the symlink still contains a path but there does not
@@ -219,7 +219,7 @@ system.
 Create a directory (with default permissions). If the `fs_recurse` flag is
 set, this will recursively create any missing parent directories (like `mkdir
 -p`). It will do nothing if the directory already exists. It will throw
-`std::`**`system_error`** if the named file already exists but is not a directory,
+`std::system_error` if the named file already exists but is not a directory,
 if the directory path is not a legal filename, if the parent directory does
 not exist and the `recurse` flag was not set, or if the caller does not have
 permission to create the directory.
@@ -229,13 +229,13 @@ permission to create the directory.
 Delete a file or directory. If the `fs_recurse` flag is set, directories will
 be deleted recursively (like `rm -rf`; this will not follow symbolic links).
 This will do nothing if the named file does not exist to begin with. It will
-throw `std::`**`system_error`** if the directory path is not a legal filename, if
+throw `std::system_error` if the directory path is not a legal filename, if
 the name refers to a nonempty directory and the `recurse` flag was not set, or
 if the caller does not have permission to delete the file.
 
 * `template <typename C> void` **`rename_file`**`(const basic_string<C>& src, const basic_string<C>& dst)`
 
-Rename a file or directory. This will throw `std::`**`system_error`** if either
+Rename a file or directory. This will throw `std::system_error` if either
 argument is not a legal filename, if the caller does not have permission to
 perform the operation, or under other OS-specific circumstances. This function
 is a thin wrapper around the underlying native file renaming functions, and
@@ -248,7 +248,7 @@ source and destination are on different physical file systems.
 
 * `template <typename C> class` **`DirectoryIterator`**
     * `using DirectoryIterator::`**`difference_type`** `= ptrdiff_t`
-    * `using DirectoryIterator::`**`iterator_category`** `= std::`**`input_iterator_tag`**
+    * `using DirectoryIterator::`**`iterator_category`** `= std::input_iterator_tag`
     * `using DirectoryIterator::`**`value_type`** `= basic_string<C>`
     * `using DirectoryIterator::`**`pointer`** `= const value_type*`
     * `using DirectoryIterator::`**`reference`** `= const value_type&`

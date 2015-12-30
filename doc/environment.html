@@ -60,9 +60,9 @@ conversion flags defined in <a href="utf.html"><code>unicorn/utf</code></a>. Beh
 if the <code>flags</code> argument is not one of these values.</p>
 <p>All of these functions can throw <code>EncodingError</code> if the <code>err_throw</code> flag is
 used and invalid UTF encoding is encountered (either in a string supplied by
-the caller, or in one returned from the environment), <code>std::</code><strong><code>invalid_argument</code></strong>
+the caller, or in one returned from the environment), <code>std::invalid_argument</code>
 if an environment variable name is empty or contains an equals sign, or
-<code>std::</code><strong><code>system_error</code></strong> if anything goes wrong with the underlying system API
+<code>std::system_error</code> if anything goes wrong with the underlying system API
 call.</p>
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>get_env</code></strong><code>(const basic_string&lt;C&gt;&amp; name, uint32_t flags = 0)</code></li>
@@ -100,7 +100,7 @@ an empty value, this function may or may not report its existence on Windows.</p
 </ul>
 <p>A read-only iterator over the name-value pairs stored in an <code>Environment</code>
 object. This is a forward iterator whose value type is
-<code>std::</code><strong><code>pair</code></strong><code>&lt;NativeString,NativeString&gt;</code>.</p>
+<code>std::pair&lt;NativeString,NativeString&gt;</code>.</p>
 <ul>
 <li><code>Environment::</code><strong><code>Environment</code></strong><code>()</code></li>
 <li><code>explicit Environment::</code><strong><code>Environment</code></strong><code>(bool from_process)</code></li>

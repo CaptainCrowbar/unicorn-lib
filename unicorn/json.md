@@ -12,7 +12,7 @@ _Unicode library for C++ by Ross Smith_
 
 ## Exceptions ##
 
-* `class` **`Exception`**`: public std::`**`runtime_error`**
+* `class` **`Exception`**`: public std::runtime_error`
     * `explicit Exception::`**`Exception`**`(u8string message, size_t pos = npos)`
     * `size_t Exception::`**`pos`**`() const noexcept`
 * `class` **`BadJson`**`: public Exception`
@@ -85,7 +85,7 @@ TODO
 * `void Element::`**`layout`**`(std::ostream& out, size_t max_array = 0) const`
 * `u8string Element::`**`str`**`() const`
 * `void Element::`**`write`**`(u8string& dst) const`
-* `std::`**`ostream`**`& operator<<(std::ostream& out, const Element& e)`
+* `std::ostream&` **`operator<<`**`(std::ostream& out, const Element& e)`
 
 TODO
 

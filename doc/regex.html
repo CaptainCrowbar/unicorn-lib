@@ -55,7 +55,7 @@ which the corresponding PCRE library has been linked. (A few other modules
 also use regexes internally; these require only UTF-8 support, which is always
 available.)</p>
 <p>In addition to the four UTF-based regex classes, this module also supports
-byte oriented regexes, which simply treat a <code>std::</code><strong><code>string</code></strong> as a sequence of
+byte oriented regexes, which simply treat a <code>std::string</code> as a sequence of
 arbitrary bytes, with no assumptions about content encoding. Byte regexes work
 the same as UTF-8 regexes as far as possible, except that characters in the
 regex are matched against individual bytes instead of encoded characters. The
@@ -71,9 +71,9 @@ of creating a new custom string class specific to Unicorn. Unfortunately, this
 turns out to be impractical; for several reasons, standard regular expressions
 are inadequate for use with generalized Unicode strings.</p>
 <p>The most obvious reason is that standard C++ regexes are not actually required
-to support Unicode strings at all. Unlike <code>std::</code><strong><code>basic_string</code></strong>, for which
+to support Unicode strings at all. Unlike <code>std::basic_string</code>, for which
 specializations for 8, 16, and 32 bit characters are required to exist, only
-two specializations of <code>std::</code><strong><code>basic_regex</code></strong> are mandated, for <code>char</code> (the
+two specializations of <code>std::basic_regex</code> are mandated, for <code>char</code> (the
 system's native multibyte encoding, which may or may not be UTF-8, but see
 below for a caveat on this) and <code>wchar_t</code> (the system's wide character
 encoding, which can reasonably be expected to be either UTF-16 or UTF-32, but
@@ -83,7 +83,7 @@ on to support one of the three UTF encodings, and we don't know which one.</p>
 actually require the wide character encoding to be UTF-16 or 32. It is on all
 systems I know of, though, and the Unicorn library explicitly does not support
 systems on which it is not one of those.)</p>
-<p>An implementation is allowed to instantiate <code>std::</code><strong><code>basic_regex</code></strong> for other
+<p>An implementation is allowed to instantiate <code>std::basic_regex</code> for other
 character types, but in practise most do not, and in any case even an
 implementation that supplied specializations for all four character types
 would still not be reliably usable with UTF-8 (since the plain <code>char</code> encoding
@@ -97,10 +97,10 @@ represented by more than one code unit in UTF-8/16). This still allows literal
 matching of multi-unit UTF-8/16 characters (the encoding will be the same in
 the regex and the subject string, so they will match unit for unit), but makes
 it impossible to match multi-unit characters to non-literal regex elements;
-for example, <code>std::</code><strong><code>regex</code></strong><code>(".")</code> will not match <code>u8"€"</code> (even if the system
+for example, <code>std::regex(".")</code> will not match <code>u8"€"</code> (even if the system
 encoding is UTF-8). For the same reason, it is impossible to specify a
 character range that includes multibyte characters (e.g.
-<code>std::</code><strong><code>regex</code></strong><code>(u8"[À-ÿ]")</code> will not do what you probably expected).</p>
+<code>std::regex(u8"[À-ÿ]")</code> will not do what you probably expected).</p>
 <p>Finally, standard regexes don't support the <code>\p{...}</code> and <code>\P{...}</code> character
 classes, which match on Unicode properties. This may be a minor obstacle
 compared to either of the above showstoppers, but even by itself it would be a
@@ -257,7 +257,7 @@ CR+LF, <code>U+0085 NEXT LINE</code>, <code>U+2028 LINE SEPARATOR</code>, and <c
 SEPARATOR</code>; the last three are not recognised in byte mode), corresponding to
 the <code>PCRE_NEWLINE_ANY</code> and <code>PCRE_BSR_UNICODE</code> flags.</p>
 <p>All regex constructors, and any functions that take a pattern and flags and
-implicitly construct a regex, will throw <code>std::</code><strong><code>invalid_argument</code></strong> if the flags
+implicitly construct a regex, will throw <code>std::invalid_argument</code> if the flags
 supplied are inconsistent:</p>
 <ul>
 <li>At most one of <code>rx_newlineanycrlf</code>, <code>rx_newlinecr</code>, <code>rx_newlinecrlf</code>, and <code>rx_newlinelf</code> may be used.</li>
@@ -428,7 +428,7 @@ exception will be thrown if the hexadecimal number is not a valid Unicode
 scalar value or, for byte mode regexes, if it is greater than <code>0xff</code>.</p>
 <h2 id="supporting-types">Supporting types</h2>
 <ul>
-<li><code>class</code> <strong><code>RegexError</code></strong><code>: public std::</code><strong><code>runtime_error</code></strong><ul>
+<li><code>class</code> <strong><code>RegexError</code></strong><code>: public std::runtime_error</code><ul>
 <li><code>RegexError::</code><strong><code>RegexError</code></strong><code>(int error, const u8string&amp; pattern, const u8string&amp; message = "")</code></li>
 <li><code>int RegexError::</code><strong><code>error</code></strong><code>() const noexcept</code></li>
 <li><code>const char* RegexError::</code><strong><code>pattern</code></strong><code>() const noexcept</code></li>

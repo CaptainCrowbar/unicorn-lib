@@ -54,9 +54,9 @@ if the `flags` argument is not one of these values.
 
 All of these functions can throw `EncodingError` if the `err_throw` flag is
 used and invalid UTF encoding is encountered (either in a string supplied by
-the caller, or in one returned from the environment), `std::`**`invalid_argument`**
+the caller, or in one returned from the environment), `std::invalid_argument`
 if an environment variable name is empty or contains an equals sign, or
-`std::`**`system_error`** if anything goes wrong with the underlying system API
+`std::system_error` if anything goes wrong with the underlying system API
 call.
 
 * `template <typename C> basic_string<C>` **`get_env`**`(const basic_string<C>& name, uint32_t flags = 0)`
@@ -95,7 +95,7 @@ A class that holds a complete environment block.
 
 A read-only iterator over the name-value pairs stored in an `Environment`
 object. This is a forward iterator whose value type is
-`std::`**`pair`**`<NativeString,NativeString>`.
+`std::pair<NativeString,NativeString>`.
 
 * `Environment::`**`Environment`**`()`
 * `explicit Environment::`**`Environment`**`(bool from_process)`

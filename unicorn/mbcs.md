@@ -14,7 +14,7 @@ specific byte order.
 
 ## Exceptions ##
 
-* `class` **`UnknownEncoding`**`: public std::`**`runtime_error`**
+* `class` **`UnknownEncoding`**`: public std::runtime_error`
     * `UnknownEncoding::`**`UnknownEncoding`**`()`
     * `explicit UnknownEncoding::`**`UnknownEncoding`**`(const u8string& encoding, const u8string& details = {})`
     * `explicit UnknownEncoding::`**`UnknownEncoding`**`(uint32_t encoding, const u8string& details = {})`
