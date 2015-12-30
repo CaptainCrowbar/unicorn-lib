@@ -275,17 +275,14 @@ namespace Unicorn {
     class RegexError:
     public std::runtime_error {
     public:
-        RegexError(const u8string& pattern, int error, const u8string& message):
-            std::runtime_error(assemble(pattern, error, message)), pat(make_shared<u8string>(pattern)),
-            err(error), msg(make_shared<u8string>(message)) {}
-        const char* pattern() const noexcept { return pat->data(); }
+        RegexError(int error, const u8string& pattern, const u8string& message = {}):
+            std::runtime_error(assemble(error, pattern, message)), err(error), pat(make_shared<u8string>(pattern)) {}
         int error() const noexcept { return err; }
-        const char* message() const noexcept { return msg->data(); }
+        const char* pattern() const noexcept { return pat->data(); }
     private:
-        shared_ptr<u8string> pat;
         int err;
-        shared_ptr<u8string> msg;
-        static u8string assemble(const u8string& pattern, int error, u8string message);
+        shared_ptr<u8string> pat;
+        static u8string assemble(int error, const u8string& pattern, const u8string& message);
         static u8string translate(int error);
     };
 

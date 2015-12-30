@@ -239,10 +239,9 @@ scalar value or, for byte mode regexes, if it is greater than `0xff`.
 ## Supporting types ##
 
 * `class` **`RegexError`**`: public std::`**`runtime_error`**
-    * `RegexError::`**`RegexError`**`(const u8string& pattern, int error, const u8string& message)`
-    * `const char* RegexError::`**`pattern`**`() const noexcept`
+    * `RegexError::`**`RegexError`**`(int error, const u8string& pattern, const u8string& message = "")`
     * `int RegexError::`**`error`**`() const noexcept`
-    * `const char* RegexError::`**`message`**`() const noexcept`
+    * `const char* RegexError::`**`pattern`**`() const noexcept`
 
 This is thrown from a regex constructor or matching function when the
 underlying PCRE call reports an error.

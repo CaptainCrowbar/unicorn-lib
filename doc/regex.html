@@ -429,10 +429,9 @@ scalar value or, for byte mode regexes, if it is greater than <code>0xff</code>.
 <h2 id="supporting-types">Supporting types</h2>
 <ul>
 <li><code>class</code> <strong><code>RegexError</code></strong><code>: public std::</code><strong><code>runtime_error</code></strong><ul>
-<li><code>RegexError::</code><strong><code>RegexError</code></strong><code>(const u8string&amp; pattern, int error, const u8string&amp; message)</code></li>
-<li><code>const char* RegexError::</code><strong><code>pattern</code></strong><code>() const noexcept</code></li>
+<li><code>RegexError::</code><strong><code>RegexError</code></strong><code>(int error, const u8string&amp; pattern, const u8string&amp; message = "")</code></li>
 <li><code>int RegexError::</code><strong><code>error</code></strong><code>() const noexcept</code></li>
-<li><code>const char* RegexError::</code><strong><code>message</code></strong><code>() const noexcept</code></li>
+<li><code>const char* RegexError::</code><strong><code>pattern</code></strong><code>() const noexcept</code></li>
 </ul>
 </li>
 </ul>

@@ -11,6 +11,7 @@ namespace Unicorn {
         // PCRE error messages
 
         const char* const error_table[] {
+            "",
             "No match",                                  // PCRE_ERROR_NOMATCH         = -1
             "Null pointer",                              // PCRE_ERROR_NULL            = -2
             "Bad option",                                // PCRE_ERROR_BADOPTION       = -3
@@ -230,7 +231,7 @@ namespace Unicorn {
                     if (error == 21)
                         throw std::bad_alloc();
                     else
-                        throw RegexError(to_utf8(pattern), error, cstr(errptr));
+                        throw RegexError(error, to_utf8(pattern), cstr(errptr));
                 }
                 auto ex = pcre_traits::study(pc, sflags, &errptr);
                 r.ref = {pc, ex};
@@ -302,7 +303,7 @@ namespace Unicorn {
                 if (m.status == PCRE_ERROR_NOMEMORY)
                     throw std::bad_alloc();
                 if (m.status < 0 && m.status != PCRE_ERROR_NOMATCH && m.status != PCRE_ERROR_PARTIAL)
-                    throw RegexError(to_utf8(pattern), m.status, {});
+                    throw RegexError(m.status, to_utf8(pattern));
             }
 
         }
@@ -371,29 +372,18 @@ namespace Unicorn {
 
     // Exceptions
 
-    u8string RegexError::assemble(const u8string& pattern, int error, u8string message) {
-        u8string s = "Regex error ";
-        s += dec(error);
-        if (message.empty())
-            message = translate(error);
-        if (! message.empty()) {
-            s += " (";
-            s += message;
-            s += ")";
-        }
-        if (! pattern.empty()) {
-            s += ", pattern: ";
-            s += pattern;
-        }
-        return s;
+    u8string RegexError::assemble(int error, const u8string& pattern, const u8string& message) {
+        u8string text = "Regex error " + dec(error);
+        u8string errmsg = message.empty() ? translate(error) : message;
+        if (! errmsg.empty())
+            text += ": " + errmsg;
+        text += "; pattern: " + quote(pattern, true);
+        return text;
     }
 
     u8string RegexError::translate(int error) {
-        if (error >= 0)
-            return {};
-        int index = - error - 1;
-        if (index < int(range_count(error_table)))
-            return error_table[index];
+        if (error < 0 && error > - int(range_count(error_table)))
+            return error_table[- error];
         else
             return {};
     }
