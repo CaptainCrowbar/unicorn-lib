@@ -244,10 +244,11 @@ library instead.</p>
 correspond directly to PCRE flags, but note that all flags must be specified
 when the regex is constructed (unlike PCRE, where some flags can be set at
 execution time).</p>
-<p>Note that two of the flags (<code>rx_dollarnewline</code> and <code>rx_dotinline</code>) have the
-reverse sense to the corresponding PCRE flags (<code>PCRE_DOLLAR_ENDONLY</code> and
-<code>PCRE_DOTALL</code>, respectively). This is simply because I felt that the reversed
-state was the more natural default in these cases.</p>
+<p>Note that some of the flags (<code>rx_byte</code>, <code>rx_dollarnewline</code>, and
+<code>rx_dotinline</code>) have the reverse sense to the corresponding PCRE flags
+(<code>PCRE_UTF8</code>, <code>PCRE_DOLLAR_ENDONLY</code>, and <code>PCRE_DOTALL</code>, respectively). This is
+simply because I felt that the reversed state was the more natural default in
+these cases.</p>
 <p>The four line breaking flags (<code>rx_newlineanycrlf</code>, <code>rx_newlinecr</code>,
 <code>rx_newlinecrlf</code>, and <code>rx_newlinelf</code>) also affect the behaviour of the <code>\R</code>
 escape code, which matches any of CR, LF, or CR+LF if any of these flags are

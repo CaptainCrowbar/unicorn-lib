@@ -132,10 +132,11 @@ correspond directly to PCRE flags, but note that all flags must be specified
 when the regex is constructed (unlike PCRE, where some flags can be set at
 execution time).
 
-Note that two of the flags (`rx_dollarnewline` and `rx_dotinline`) have the
-reverse sense to the corresponding PCRE flags (`PCRE_DOLLAR_ENDONLY` and
-`PCRE_DOTALL`, respectively). This is simply because I felt that the reversed
-state was the more natural default in these cases.
+Note that some of the flags (`rx_byte`, `rx_dollarnewline`, and
+`rx_dotinline`) have the reverse sense to the corresponding PCRE flags
+(`PCRE_UTF8`, `PCRE_DOLLAR_ENDONLY`, and `PCRE_DOTALL`, respectively). This is
+simply because I felt that the reversed state was the more natural default in
+these cases.
 
 The four line breaking flags (`rx_newlineanycrlf`, `rx_newlinecr`,
 `rx_newlinecrlf`, and `rx_newlinelf`) also affect the behaviour of the `\R`
