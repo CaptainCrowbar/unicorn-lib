@@ -98,7 +98,7 @@ TODO
 
 TODO
 
-* `void BasicLexer::`**`call`**`(int tag, const callback_type& call)`
+* `void BasicLexer::`**`custom`**`(int tag, const callback_type& call, const string_type& prefixes = {})`
 * `void BasicLexer::`**`exact`**`(int tag, const string_type& pattern)`
 * `void BasicLexer::`**`exact`**`(int tag, const C* pattern)`
 * `void BasicLexer::`**`match`**`(int tag, const regex_type& pattern)`

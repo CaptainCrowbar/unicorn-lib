@@ -1,13 +1,16 @@
 #include "unicorn/core.hpp"
 #include "unicorn/lexer.hpp"
+#include "unicorn/regex.hpp"
 #include "prion/unit-test.hpp"
 #include <algorithm>
 #include <iterator>
+#include <stdexcept>
 #include <vector>
 #include <string>
 
-using namespace std::literals;
 using namespace Unicorn;
+using namespace Unicorn::Literals;
+using namespace std::literals;
 
 namespace {
 
@@ -86,7 +89,7 @@ namespace {
         TRY(std::copy(range.begin(), range.end(), overwrite(v)));
         TEST_EQUAL(Test::format_range(v), "[Hello,world,2,+,2,=,4,<magic>,Goodbye]");
 
-        TRY(lex.call(5, [] (const u8string& str, size_t pos) -> size_t {
+        TRY(lex.custom(5, [] (const u8string& str, size_t pos) -> size_t {
             if (pos >= str.size() || str[pos] != '(')
                 return 0;
             int depth = 1;
@@ -113,6 +116,18 @@ namespace {
         TRY(range = lex(s));
         TRY(it = range.begin());
         TEST_THROW_EQUAL(++it, SyntaxError, "Syntax error at offset 5: Unexpected \"@\"");
+
+        TRY(lex = {});
+        TRY(lex.match(1, "abc"));
+        TEST_THROW(lex.match(2, "abc", rx_byte), std::invalid_argument);
+        TRY(lex.match(3, "abc"_re));
+        TEST_THROW(lex.match(4, "abc"_re_b), std::invalid_argument);
+
+        TRY(lex = Lexer(rx_byte));
+        TRY(lex.match(1, "abc"));
+        TRY(lex.match(2, "abc", rx_byte));
+        TEST_THROW(lex.match(3, "abc"_re), std::invalid_argument);
+        TRY(lex.match(4, "abc"_re_b));
 
     }
 
@@ -143,7 +158,7 @@ namespace {
             TRY(std::copy(range.begin(), range.end(), overwrite(v)));
             TEST_EQUAL(Test::format_range(v), "[Hello,world,2,+,2,=,4,<magic>,Goodbye]");
 
-            TRY(lex.call(5, [] (const u16string& str, size_t pos) -> size_t {
+            TRY(lex.custom(5, [] (const u16string& str, size_t pos) -> size_t {
                 if (pos >= str.size() || str[pos] != u'(')
                     return 0;
                 int depth = 1;
@@ -202,7 +217,7 @@ namespace {
             TRY(std::copy(range.begin(), range.end(), overwrite(v)));
             TEST_EQUAL(Test::format_range(v), "[Hello,world,2,+,2,=,4,<magic>,Goodbye]");
 
-            TRY(lex.call(5, [] (const u32string& str, size_t pos) -> size_t {
+            TRY(lex.custom(5, [] (const u32string& str, size_t pos) -> size_t {
                 if (pos >= str.size() || str[pos] != U'(')
                     return 0;
                 int depth = 1;
@@ -261,7 +276,7 @@ namespace {
             TRY(std::copy(range.begin(), range.end(), overwrite(v)));
             TEST_EQUAL(Test::format_range(v), "[Hello,world,2,+,2,=,4,<magic>,Goodbye]");
 
-            TRY(lex.call(5, [] (const wstring& str, size_t pos) -> size_t {
+            TRY(lex.custom(5, [] (const wstring& str, size_t pos) -> size_t {
                 if (pos >= str.size() || str[pos] != L'(')
                     return 0;
                 int depth = 1;
@@ -320,7 +335,7 @@ namespace {
         TRY(std::copy(range.begin(), range.end(), overwrite(v)));
         TEST_EQUAL(Test::format_range(v), "[Hello,world,2,+,2,=,4,<magic>,Goodbye]");
 
-        TRY(lex.call(5, [] (const string& str, size_t pos) -> size_t {
+        TRY(lex.custom(5, [] (const string& str, size_t pos) -> size_t {
             if (pos >= str.size() || str[pos] != '(')
                 return 0;
             int depth = 1;

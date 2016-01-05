@@ -113,7 +113,7 @@ namespace Unicorn {
             if (token.offset >= token.text->size())
                 break;
             char32_t u;
-            if (lex->dflags & rx_byte)
+            if (lex->mask & rx_byte)
                 u = char_to_uint((*token.text)[token.offset]);
             else
                 u = *UtfIterator<C>(*token.text, token.offset);
@@ -147,19 +147,19 @@ namespace Unicorn {
         using callback_type = std::function<size_t(const string_type&, size_t)>;
         using token_iterator = BasicTokenIterator<C>;
         using token_range = Irange<token_iterator>;
-        BasicLexer(): lexemes(), prefix_table(prefix_count), dflags(0) {}
-        explicit BasicLexer(uint32_t flags): lexemes(), prefix_table(prefix_count), dflags(flags) {}
+        BasicLexer(): BasicLexer(0) {}
+        explicit BasicLexer(uint32_t flags):
+            lexemes(), prefix_table(flags & rx_byte ? 256 : 128), mask((flags | rx_notempty | rx_partialsoft) & ~ rx_partialhard) {}
         token_range operator()(const string_type& text) const { return lex(text); }
         token_range lex(const string_type& text) const;
-        void call(int tag, const callback_type& call);
+        void custom(int tag, const callback_type& call, const string_type& prefixes = {});
         void exact(int tag, const string_type& pattern);
         void exact(int tag, const C* pattern) { exact(tag, cstr(pattern)); }
         void match(int tag, const regex_type& pattern) { add_match(tag, pattern); }
-        void match(int tag, const string_type& pattern, uint32_t flags = 0) { add_match(tag, regex_type(pattern, flags | dflags)); }
-        void match(int tag, const C* pattern, uint32_t flags = 0) { add_match(tag, regex_type(pattern, flags | dflags)); }
+        void match(int tag, const string_type& pattern, uint32_t flags = 0) { add_match(tag, regex_type(pattern, fix_flags(flags))); }
+        void match(int tag, const C* pattern, uint32_t flags = 0) { add_match(tag, regex_type(pattern, fix_flags(flags))); }
     private:
         friend class BasicTokenIterator<C>;
-        static constexpr size_t prefix_count = std::is_same<C, void>::value ? 256 : 128;
         struct element {
             int tag;
             callback_type call;
@@ -168,9 +168,11 @@ namespace Unicorn {
         using element_table = vector<element_list>;
         element_list lexemes;
         element_table prefix_table;
-        uint32_t dflags;
+        uint32_t mask;
         void add_exact(int tag, const string_type& pattern);
         void add_match(int tag, regex_type pattern);
+        bool byte_mode() const noexcept { return mask & rx_byte; }
+        uint32_t fix_flags(uint32_t flags) const noexcept { return (flags | mask) & ~ rx_partialhard; }
     };
 
     template <typename C>
@@ -187,12 +189,19 @@ namespace Unicorn {
     }
 
     template <typename C>
-    void BasicLexer<C>::call(int tag, const callback_type& call) {
+    void BasicLexer<C>::custom(int tag, const callback_type& call, const string_type& prefixes) {
         if (! call)
             return;
-        lexemes.push_back(element{tag, call});
-        for (auto& p: prefix_table)
-            p.push_back(lexemes.back());
+        element e = {tag, call};
+        lexemes.push_back(e);
+        if (prefixes.empty()) {
+            for (auto& p: prefix_table)
+                p.push_back(e);
+        } else {
+            for (char32_t c: utf_range(prefixes))
+                if (c < prefix_table.size())
+                    prefix_table[c].push_back(e);
+        }
     }
 
     template <typename C>
@@ -206,26 +215,31 @@ namespace Unicorn {
             else
                 return 0;
         };
-        lexemes.push_back(element{tag, call});
+        element e = {tag, call};
+        lexemes.push_back(e);
         auto u = char_to_uint(pattern[0]);
-        if (u < prefix_count)
-            prefix_table[u].push_back(lexemes.back());
+        if (u < prefix_table.size())
+            prefix_table[u].push_back(e);
     }
 
     template <typename C>
     void BasicLexer<C>::add_match(int tag, regex_type pattern) {
         if (pattern.empty())
             return;
-        uint32_t new_flags = (pattern.flags() | rx_notempty | rx_partialsoft) & ~ rx_partialhard;
+        bool byte_pattern = pattern.flags() & rx_byte;
+        if (byte_pattern != byte_mode())
+            throw std::invalid_argument("Mixed Unicode and byte patterns in lexer");
+        uint32_t new_flags = fix_flags(pattern.flags());
         if (new_flags != pattern.flags())
             pattern = regex_type(pattern.pattern(), new_flags);
         auto call = [pattern] (const string_type& text, size_t offset) { return pattern.anchor(text, offset).count(); };
-        lexemes.push_back(element{tag, call});
-        string_type s(1, 0);
-        for (size_t i = 0; i < prefix_count; ++i) {
-            s[0] = char_type(i);
+        element e = {tag, call};
+        lexemes.push_back(e);
+        string_type s;
+        for (size_t i = 0; i < prefix_table.size(); ++i) {
+            s = str_char<C>(i);
             if (pattern.anchor(s).full_or_partial())
-                prefix_table[i].push_back(lexemes.back());
+                prefix_table[i].push_back(e);
         }
     }
 
