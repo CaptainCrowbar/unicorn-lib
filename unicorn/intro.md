@@ -139,18 +139,21 @@ this is so ubiquitous it is not usually mentioned in the documentation for
 individual functions.
 
 Functions that take a callback function as an argument will propagate any
-exceptions thrown by that function.
+exceptions thrown by the callback.
 
 Functions that accept UTF iterator arguments (see the
 [`unicorn/utf`](utf.html) module) can throw `EncodingError` if invalid Unicode
 is encountered and the appropriate error handling flag was selected when the
 iterators were created.
 
+If a function is documented as throwing a specific exception class, it may
+actually throw a class derived from that one.
+
 Any other exceptions that a function might throw are described in that
 function's description. If a function is not marked `noexcept`, but its
 documentation does not explicitly mention any exceptions, then it may throw
 `std::bad_alloc`, and possibly `Unicorn::EncodingError` if it implicitly does
-a checked encoding connversion, but will not throw anything else.
+a checked encoding conversion, but will not throw anything else.
 
 ## Building Unicorn ##
 

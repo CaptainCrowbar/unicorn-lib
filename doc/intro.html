@@ -123,16 +123,18 @@ function not marked <code>noexcept</code> may throw a <code>std::bad_alloc</code
 this is so ubiquitous it is not usually mentioned in the documentation for
 individual functions.</p>
 <p>Functions that take a callback function as an argument will propagate any
-exceptions thrown by that function.</p>
+exceptions thrown by the callback.</p>
 <p>Functions that accept UTF iterator arguments (see the
 <a href="utf.html"><code>unicorn/utf</code></a> module) can throw <code>EncodingError</code> if invalid Unicode
 is encountered and the appropriate error handling flag was selected when the
 iterators were created.</p>
+<p>If a function is documented as throwing a specific exception class, it may
+actually throw a class derived from that one.</p>
 <p>Any other exceptions that a function might throw are described in that
 function's description. If a function is not marked <code>noexcept</code>, but its
 documentation does not explicitly mention any exceptions, then it may throw
 <code>std::bad_alloc</code>, and possibly <code>Unicorn::EncodingError</code> if it implicitly does
-a checked encoding connversion, but will not throw anything else.</p>
+a checked encoding conversion, but will not throw anything else.</p>
 <h2 id="building-unicorn">Building Unicorn</h2>
 <p>A makefile is included, although it may not be as portable as I would like.
 Building Unicorn using your preferred build tool should be simple enough. To
