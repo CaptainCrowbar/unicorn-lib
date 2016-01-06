@@ -179,9 +179,11 @@ namespace Unicorn {
 
     // Character names
 
-    constexpr uint32_t code_labels    = 1ul << 0;
-    constexpr uint32_t control_names  = 1ul << 1;
-    constexpr uint32_t updated_names  = 1ul << 2;
+    constexpr uint32_t cn_control  = 1u << 0;
+    constexpr uint32_t cn_label    = 1u << 1;
+    constexpr uint32_t cn_lower    = 1u << 2;
+    constexpr uint32_t cn_prefix   = 1u << 3;
+    constexpr uint32_t cn_update   = 1u << 4;
 
     u8string char_name(char32_t c, uint32_t flags = 0);
 

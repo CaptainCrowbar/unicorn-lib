@@ -345,10 +345,45 @@ namespace Unicorn {
             return i == map.end() ? dummy : i->second;
         }
 
+        bool is_unified_ideograph(char32_t c) noexcept {
+            return (c >= 0x3400 && c <= 0x4dbf) || (c >= 0x4e00 && c <= 0x9fff)
+                || (c >= 0x20000 && c <= 0x2a6df) || (c >= 0x2a700 && c <= 0x2b81f);
+        }
+
+        bool is_compatibility_ideograph(char32_t c) noexcept {
+            return (c >= 0xf900 && c <= 0xfaff) || (c >= 0x2f800 && c <= 0x2fa1f);
+        }
+
+        u8string hangul_name(char32_t c) {
+            // Based on code in section 3.12 of the Unicode Standard
+            static constexpr uint32_t s_base = 0xac00,
+                l_count = 19, v_count = 21, t_count = 28,
+                n_count = v_count * t_count, s_count = l_count * n_count;
+            static constexpr const char* jamo_l_table[] {
+                "G", "GG", "N", "D", "DD", "R", "M", "B", "BB",
+                "S", "SS", "", "J", "JJ", "C", "K", "T", "P", "H"
+            };
+            static constexpr const char* jamo_v_table[] {
+                "A", "AE", "YA", "YAE", "EO", "E", "YEO", "YE", "O",
+                "WA", "WAE", "OE", "YO", "U", "WEO", "WE", "WI",
+                "YU", "EU", "YI", "I"
+            };
+            static constexpr const char* jamo_t_table[] {
+                "", "G", "GG", "GS", "N", "NJ", "NH", "D", "L", "LG", "LM",
+                "LB", "LS", "LT", "LP", "LH", "M", "B", "BS",
+                "S", "SS", "NG", "J", "C", "K", "T", "P", "H"
+            };
+            if (c < s_base || c - s_base >= s_count)
+                return {};
+            auto s_index = c - s_base;
+            auto l_index = s_index / n_count;
+            auto v_index = (s_index % n_count) / t_count;
+            auto t_index = s_index % t_count;
+            return "HANGUL SYLLABLE "s + jamo_l_table[l_index]
+                + jamo_v_table[v_index] + jamo_t_table[t_index];
+        }
+
         const char* control_character_name(char32_t c) {
-            // This table is hardcoded rather than generated from the UCD,
-            // because some judgement was required for characters that are
-            // given a choice of aliases in the UCD tables.
             switch (c) {
                 case 0x00: return "NULL";
                 case 0x01: return "START OF HEADING";
@@ -357,20 +392,20 @@ namespace Unicorn {
                 case 0x04: return "END OF TRANSMISSION";
                 case 0x05: return "ENQUIRY";
                 case 0x06: return "ACKNOWLEDGE";
-                case 0x07: return "ALERT";
+                case 0x07: return "ALERT"; // BELL is spoken for (U+1F514)
                 case 0x08: return "BACKSPACE";
-                case 0x09: return "CHARACTER TABULATION";
+                case 0x09: return "HORIZONTAL TABULATION";
                 case 0x0a: return "LINE FEED";
-                case 0x0b: return "LINE TABULATION";
+                case 0x0b: return "VERTICAL TABULATION";
                 case 0x0c: return "FORM FEED";
                 case 0x0d: return "CARRIAGE RETURN";
                 case 0x0e: return "SHIFT OUT";
                 case 0x0f: return "SHIFT IN";
                 case 0x10: return "DATA LINK ESCAPE";
-                case 0x11: return "DEVICE CONTROL ONE";
-                case 0x12: return "DEVICE CONTROL TWO";
-                case 0x13: return "DEVICE CONTROL THREE";
-                case 0x14: return "DEVICE CONTROL FOUR";
+                case 0x11: return "DEVICE CONTROL 1";
+                case 0x12: return "DEVICE CONTROL 2";
+                case 0x13: return "DEVICE CONTROL 3";
+                case 0x14: return "DEVICE CONTROL 4";
                 case 0x15: return "NEGATIVE ACKNOWLEDGE";
                 case 0x16: return "SYNCHRONOUS IDLE";
                 case 0x17: return "END OF TRANSMISSION BLOCK";
@@ -378,10 +413,10 @@ namespace Unicorn {
                 case 0x19: return "END OF MEDIUM";
                 case 0x1a: return "SUBSTITUTE";
                 case 0x1b: return "ESCAPE";
-                case 0x1c: return "INFORMATION SEPARATOR FOUR";
-                case 0x1d: return "INFORMATION SEPARATOR THREE";
-                case 0x1e: return "INFORMATION SEPARATOR TWO";
-                case 0x1f: return "INFORMATION SEPARATOR ONE";
+                case 0x1c: return "FIELD SEPARATOR";
+                case 0x1d: return "GROUP SEPARATOR";
+                case 0x1e: return "RECORD SEPARATOR";
+                case 0x1f: return "UNIT SEPARATOR";
                 case 0x7f: return "DELETE";
                 case 0x80: return "PADDING CHARACTER";
                 case 0x81: return "HIGH OCTET PRESET";
@@ -397,11 +432,11 @@ namespace Unicorn {
                 case 0x8b: return "PARTIAL LINE FORWARD";
                 case 0x8c: return "PARTIAL LINE BACKWARD";
                 case 0x8d: return "REVERSE LINE FEED";
-                case 0x8e: return "SINGLE SHIFT TWO";
-                case 0x8f: return "SINGLE SHIFT THREE";
+                case 0x8e: return "SINGLE SHIFT 2";
+                case 0x8f: return "SINGLE SHIFT 3";
                 case 0x90: return "DEVICE CONTROL STRING";
-                case 0x91: return "PRIVATE USE ONE";
-                case 0x92: return "PRIVATE USE TWO";
+                case 0x91: return "PRIVATE USE 1";
+                case 0x92: return "PRIVATE USE 2";
                 case 0x93: return "SET TRANSMIT STATE";
                 case 0x94: return "CANCEL CHARACTER";
                 case 0x95: return "MESSAGE WAITING";
@@ -419,62 +454,35 @@ namespace Unicorn {
             }
         }
 
-        u8string hangul_name(char32_t c) {
-            // Based on code in section 3.12 of the Unicode Standard
-            static constexpr uint32_t sbase = 0xac00,
-                lcount = 19, vcount = 21, tcount = 28,
-                ncount = vcount * tcount, scount = lcount * ncount;
-            static constexpr const char* jamo_l_table[] {
-                "G", "GG", "N", "D", "DD", "R", "M", "B", "BB",
-                "S", "SS", "", "J", "JJ", "C", "K", "T", "P", "H"
-            };
-            static constexpr const char* jamo_v_table[] {
-                "A", "AE", "YA", "YAE", "EO", "E", "YEO", "YE", "O",
-                "WA", "WAE", "OE", "YO", "U", "WEO", "WE", "WI",
-                "YU", "EU", "YI", "I"
-            };
-            static constexpr const char* jamo_t_table[] {
-                "", "G", "GG", "GS", "N", "NJ", "NH", "D", "L", "LG", "LM",
-                "LB", "LS", "LT", "LP", "LH", "M", "B", "BS",
-                "S", "SS", "NG", "J", "C", "K", "T", "P", "H"
-            };
-            if (c < sbase || c - sbase >= scount)
-                return {};
-            auto sindex = c - sbase;
-            auto lindex = sindex / ncount;
-            auto vindex = (sindex % ncount) / tcount;
-            auto tindex = sindex % tcount;
-            return "HANGUL SYLLABLE "s + jamo_l_table[lindex]
-                + jamo_v_table[vindex] + jamo_t_table[tindex];
-        }
-
     }
 
     u8string char_name(char32_t c, uint32_t flags) {
         using namespace UnicornDetail;
-        if (flags & control_names) {
+        static const CharacterNameMap map;
+        u8string name;
+        if (flags & cn_control) {
             auto name_ptr = control_character_name(c);
             if (name_ptr)
-                return name_ptr;
+                name = name_ptr;
         }
-        if (flags & updated_names) {
+        if (name.empty() && (flags & cn_update)) {
             auto name_ptr = table_lookup(corrected_names_table, c, static_cast<const char*>(nullptr));
             if (name_ptr)
-                return name_ptr;
+                name = name_ptr;
         }
-        static const CharacterNameMap map;
-        auto name = map[c];
-        if (! name.empty())
-            return name;
-        if ((c >= 0x3400 && c <= 0x4dbf) || (c >= 0x4e00 && c <= 0x9fff)
-                || (c >= 0x20000 && c <= 0x2a6df) || (c >= 0x2a700 && c <= 0x2b81f))
-            return "CJK UNIFIED IDEOGRAPH-" + ascii_uppercase(hex(c, 4));
-        if ((c >= 0xf900 && c <= 0xfaff) || (c >= 0x2f800 && c <= 0x2fa1f))
-            return "CJK COMPATIBILITY IDEOGRAPH-" + ascii_uppercase(hex(c, 4));
-        name = hangul_name(c);
-        if (! name.empty())
-            return name;
-        if (flags & code_labels) {
+        if (name.empty())
+            name = map[c];
+        if (name.empty()) {
+            if (is_unified_ideograph(c))
+                name = "CJK UNIFIED IDEOGRAPH-" + ascii_uppercase(hex(c, 4));
+            else if (is_compatibility_ideograph(c))
+                name = "CJK COMPATIBILITY IDEOGRAPH-" + ascii_uppercase(hex(c, 4));
+            else
+                name = hangul_name(c);
+        }
+        if (flags & cn_lower)
+            name = ascii_lowercase(name);
+        if (name.empty() && (flags & cn_label)) {
             auto gc = char_general_category(c);
             if (gc == GC::Cc)
                 name = "<control-";
@@ -486,11 +494,20 @@ namespace Unicorn {
                 name = "<noncharacter-";
             else
                 name = "<reserved-";
-            name += ascii_uppercase(hex(c, 4));
+            if (flags & cn_lower)
+                name += hex(c, 4);
+            else
+                name += ascii_uppercase(hex(c, 4));
             name += '>';
-            return name;
         }
-        return {};
+        if (flags & cn_prefix) {
+            u8string prefix = char_as_hex(c);
+            if (name.empty())
+                name = prefix;
+            else
+                name = prefix + ' ' + name;
+        }
+        return name;
     }
 
     // Decomposition properties

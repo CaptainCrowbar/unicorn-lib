@@ -1106,37 +1106,49 @@ namespace {
         TEST_EQUAL(char_name(0xfffd), "REPLACEMENT CHARACTER");
         TEST_EQUAL(char_name(0xe01ef), "VARIATION SELECTOR-256");
 
+        TEST_EQUAL(char_name(0, cn_lower), "");
+        TEST_EQUAL(char_name('A', cn_lower), "latin capital letter a");
+        TEST_EQUAL(char_name(0x20ac, cn_lower), "euro sign");
+
+        TEST_EQUAL(char_name(0, cn_prefix), "U+0000");
+        TEST_EQUAL(char_name('A', cn_prefix), "U+0041 LATIN CAPITAL LETTER A");
+        TEST_EQUAL(char_name(0x20ac, cn_prefix), "U+20AC EURO SIGN");
+
+        TEST_EQUAL(char_name(0, cn_lower | cn_prefix), "U+0000");
+        TEST_EQUAL(char_name('A', cn_lower | cn_prefix), "U+0041 latin capital letter a");
+        TEST_EQUAL(char_name(0x20ac, cn_lower | cn_prefix), "U+20AC euro sign");
+
         TEST_EQUAL(char_name(0x1a2), "LATIN CAPITAL LETTER OI");
-        TEST_EQUAL(char_name(0x1a2, updated_names), "LATIN CAPITAL LETTER GHA");
+        TEST_EQUAL(char_name(0x1a2, cn_update), "LATIN CAPITAL LETTER GHA");
         TEST_EQUAL(char_name(0x1d0c5), "BYZANTINE MUSICAL SYMBOL FHTORA SKLIRON CHROMA VASIS");
-        TEST_EQUAL(char_name(0x1d0c5, updated_names), "BYZANTINE MUSICAL SYMBOL FTHORA SKLIRON CHROMA VASIS");
+        TEST_EQUAL(char_name(0x1d0c5, cn_update), "BYZANTINE MUSICAL SYMBOL FTHORA SKLIRON CHROMA VASIS");
 
         TEST_EQUAL(char_name(0), "");
         TEST_EQUAL(char_name(0xa), "");
         TEST_EQUAL(char_name(0x7f), "");
         TEST_EQUAL(char_name(0x9f), "");
-        TEST_EQUAL(char_name(0, control_names), "NULL");
-        TEST_EQUAL(char_name(0xa, control_names), "LINE FEED");
-        TEST_EQUAL(char_name(0x7f, control_names), "DELETE");
-        TEST_EQUAL(char_name(0x9f, control_names), "APPLICATION PROGRAM COMMAND");
-        TEST_EQUAL(char_name(0, code_labels), "<control-0000>");
-        TEST_EQUAL(char_name(0xa, code_labels), "<control-000A>");
-        TEST_EQUAL(char_name(0x7f, code_labels), "<control-007F>");
-        TEST_EQUAL(char_name(0x9f, code_labels), "<control-009F>");
+        TEST_EQUAL(char_name(0, cn_control), "NULL");
+        TEST_EQUAL(char_name(0xa, cn_control), "LINE FEED");
+        TEST_EQUAL(char_name(0x7f, cn_control), "DELETE");
+        TEST_EQUAL(char_name(0x9f, cn_control), "APPLICATION PROGRAM COMMAND");
+        TEST_EQUAL(char_name(0, cn_label), "<control-0000>");
+        TEST_EQUAL(char_name(0xa, cn_label), "<control-000A>");
+        TEST_EQUAL(char_name(0x7f, cn_label), "<control-007F>");
+        TEST_EQUAL(char_name(0x9f, cn_label), "<control-009F>");
 
         TEST_EQUAL(char_name(0x20ff), "");
         TEST_EQUAL(char_name(0xd800), "");
         TEST_EQUAL(char_name(0xe000), "");
         TEST_EQUAL(char_name(0xfdd0), "");
         TEST_EQUAL(char_name(0x110000), "");
-        TEST_EQUAL(char_name(0x20ff, code_labels), "<reserved-20FF>");
-        TEST_EQUAL(char_name(0xd800, code_labels), "<surrogate-D800>");
-        TEST_EQUAL(char_name(0xe000, code_labels), "<private-use-E000>");
-        TEST_EQUAL(char_name(0xfdd0, code_labels), "<noncharacter-FDD0>");
-        TEST_EQUAL(char_name(0x110000, code_labels), "<noncharacter-110000>");
+        TEST_EQUAL(char_name(0x20ff, cn_label), "<reserved-20FF>");
+        TEST_EQUAL(char_name(0xd800, cn_label), "<surrogate-D800>");
+        TEST_EQUAL(char_name(0xe000, cn_label), "<private-use-E000>");
+        TEST_EQUAL(char_name(0xfdd0, cn_label), "<noncharacter-FDD0>");
+        TEST_EQUAL(char_name(0x110000, cn_label), "<noncharacter-110000>");
 
         for (char32_t c = 0; c <= 0x10ffff; ++c)
-            TEST_COMPARE(char_name(c, control_names | code_labels), !=, "");
+            TEST_COMPARE(char_name(c, cn_control | cn_label), !=, "");
 
     }
 

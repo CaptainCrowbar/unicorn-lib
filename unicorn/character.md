@@ -264,22 +264,23 @@ library).
 
 * `u8string` **`char_name`**`(char32_t c, uint32_t flags = 0)`
 
-Flag                 | Description
-----                 | -----------
-**`code_labels`**    | Generate the standard code point label for characters that do not have an official name
-**`control_names`**  | Use the common ASCII or ISO 8859 names for control characters
-**`updated_names`**  | Where the official name was in error and a correction has been published, use that instead
+Flag              | Description
+----              | -----------
+**`cn_control`**  | Use the common ASCII or ISO 8859 names for control characters
+**`cn_label`**    | Generate the standard code point label for characters that do not have an official name
+**`cn_lower`**    | Return name in lower case (excluding `U+XXXX` prefix if present)
+**`cn_prefix`**   | Prefix name with code point in `U+XXXX` format
+**`cn_update`**   | Where the official name was in error and a suggested correction has been published, use that instead
 
 Returns the name of a character. By default, only the official Unicode name is
 returned; an empty string is returned if the character does not have an
 official name. The `flags` argument can contain a bitwise-OR combination of
-any of the three options. If both `code_labels` and `control_names` are
-present, `control_names` takes precedence for characters that qualify for
-both.
+any of the three options. If both `cn_control` and `cn_label` are present,
+`cn_control` takes precedence for characters that qualify for both.
 
-The character name table is stored in compressed form to save space. A call to
-`char_name()` may throw an exception derived from `InitializationError` if
-something goes wrong while loading the table.
+The character name table is stored in compressed form to save space. The first
+call to `char_name()` may throw `InitializationError` if something goes wrong
+while loading the table.
 
 ## Decomposition properties ##
 
