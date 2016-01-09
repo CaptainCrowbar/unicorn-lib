@@ -71,17 +71,6 @@ build/$(TARGET)/io.o: unicorn/io.cpp unicorn/io.hpp unicorn/core.hpp \
   unicorn/string-conversion.hpp unicorn/string-escape.hpp \
   unicorn/string-manip.hpp unicorn/format.hpp unicorn/regex.hpp \
   unicorn/mbcs.hpp
-build/$(TARGET)/json-test.o: unicorn/json-test.cpp unicorn/core.hpp \
-  $(LIBROOT)/prion-lib/prion/core.hpp unicorn/json.hpp \
-  $(LIBROOT)/prion-lib/prion/unit-test.hpp
-build/$(TARGET)/json.o: unicorn/json.cpp unicorn/json.hpp unicorn/core.hpp \
-  $(LIBROOT)/prion-lib/prion/core.hpp unicorn/format.hpp unicorn/character.hpp \
-  unicorn/property-values.hpp unicorn/regex.hpp unicorn/string.hpp \
-  unicorn/string-algorithm.hpp unicorn/string-forward.hpp \
-  unicorn/utf.hpp unicorn/string-property.hpp unicorn/string-size.hpp \
-  unicorn/string-case.hpp unicorn/segment.hpp \
-  unicorn/string-conversion.hpp unicorn/string-escape.hpp \
-  unicorn/string-manip.hpp
 build/$(TARGET)/lexer-test.o: unicorn/lexer-test.cpp unicorn/core.hpp \
   $(LIBROOT)/prion-lib/prion/core.hpp unicorn/lexer.hpp unicorn/character.hpp \
   unicorn/property-values.hpp unicorn/regex.hpp unicorn/string.hpp \

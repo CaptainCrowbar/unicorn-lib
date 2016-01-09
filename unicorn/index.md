@@ -35,7 +35,6 @@ The Unicorn library depends on the utilities and unit testing framework in my
 * **Text formatting and parsing**
     * [`"unicorn/segment.hpp"`](segment.html) -- Breaking text up into characters, words, sentences, lines, and paragraphs.
     * [`"unicorn/format.hpp"`](format.html) -- Formatting various kinds of data as Unicode strings.
-    * [`"unicorn/json.hpp"`](json.html) -- JSON generation and parsing.
     * [`"unicorn/lexer.hpp"`](lexer.html) -- Breaking text up into tokens by user-defined rules.
     * [`"unicorn/table.hpp"`](table.html) -- Table layout for fixed-width text.
 * **Interfacing with the outside world**
