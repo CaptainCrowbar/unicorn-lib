@@ -114,6 +114,23 @@ namespace Unicorn {
 
             namespace {
 
+                constexpr int fail_exists = EEXIST;
+                constexpr int fail_no_parent = ENOENT;
+
+                int mkdir_helper(const string& dir) {
+                    errno = 0;
+                    mkdir(dir.data(), 0777);
+                    return errno;
+                }
+
+                void make_symlink_helper(const string& file, const string& link) {
+                    if (symlink(file.data(), link.data()) == 0)
+                        return;
+                    int error = errno;
+                    u8string note = quote_file(link) + " -> " + quote_file(file);
+                    throw std::system_error(error, std::generic_category(), note);
+                }
+
                 void remove_file_helper(const string& file) {
                     int rc = std::remove(file.data());
                     int error = errno;
@@ -121,24 +138,6 @@ namespace Unicorn {
                         throw std::system_error(error, std::generic_category(), quote_file(file));
                 }
 
-            }
-
-            void native_make_directory(const string& dir, uint32_t flags) {
-                if (mkdir(dir.data(), 0777) == 0)
-                    return;
-                int error = errno;
-                if (error == EEXIST && native_file_is_directory(dir))
-                    return;
-                if ((flags & fs_recurse) == 0 || error != ENOENT || dir.empty())
-                    throw std::system_error(error, std::generic_category(), quote_file(dir));
-                auto parent = split_path(dir).first;
-                if (parent == dir)
-                    throw std::system_error(error, std::generic_category(), quote_file(dir));
-                native_make_directory(parent, fs_recurse);
-                if (mkdir(dir.data(), 0777) != 0) {
-                    int error = errno;
-                    throw std::system_error(error, std::generic_category(), quote_file(dir));
-                }
             }
 
             void native_rename_file(const string& src, const string& dst) {
@@ -302,6 +301,26 @@ namespace Unicorn {
 
             namespace {
 
+                constexpr int fail_exists = ERROR_ALREADY_EXISTS;
+                constexpr int fail_no_parent = ERROR_PATH_NOT_FOUND;
+
+                int mkdir_helper(const wstring& dir) {
+                    SetLastError(0);
+                    CreateDirectoryW(dir.c_str(), nullptr);
+                    return GetLastError();
+                }
+
+                void make_symlink_helper(const wstring& file, const wstring& link) {
+                    if (! (flags & fs_overwrite) && native_file_exists(link))
+                        throw std::system_error(ERROR_ALREADY_EXISTS, windows_category(), quote_file(link));
+                    DWORD flags = native_file_is_directory(file) ? SYMBOLIC_LINK_FLAG_DIRECTORY : 0;
+                    if (CreateSymbolicLinkW(link.data(), file.data(), flags))
+                        return;
+                    auto error = GetLastError();
+                    u8string note = quote_file(link) + " -> " + quote_file(file);
+                    throw std::system_error(error, windows_category(), note);
+                }
+
                 void remove_file_helper(const wstring& file) {
                     bool dir = file_is_directory(file), ok;
                     if (dir)
@@ -310,26 +329,7 @@ namespace Unicorn {
                         ok = DeleteFileW(file.data());
                     auto error = GetLastError();
                     if (! ok && error != ERROR_FILE_NOT_FOUND)
-                        throw std::system_error(error, std::generic_category(), quote_file(file));
-                }
-
-            }
-
-            void native_make_directory(const wstring& dir, uint32_t flags) {
-                if (CreateDirectoryW(dir.c_str(), nullptr))
-                    return;
-                auto error = GetLastError();
-                if (error == ERROR_ALREADY_EXISTS && native_file_is_directory(dir))
-                    return;
-                if ((flags & fs_recurse) == 0 || error != ERROR_PATH_NOT_FOUND || dir.empty())
-                    throw std::system_error(error, windows_category(), quote_file(dir));
-                auto parent = split_path(dir).first;
-                if (parent == dir)
-                    throw std::system_error(error, windows_category(), quote_file(dir));
-                native_make_directory(parent, flags);
-                if (! CreateDirectoryW(dir.c_str(), nullptr)) {
-                    error = GetLastError();
-                    throw std::system_error(error, windows_category(), quote_file(dir));
+                        throw std::system_error(error, windows_category(), quote_file(file));
                 }
 
             }
@@ -389,6 +389,43 @@ namespace Unicorn {
         #endif
 
         // File system modifying functions
+
+        void native_make_directory(const string& dir, uint32_t flags) {
+            int error = mkdir_helper(dir);
+            if (error == 0)
+                return;
+            if (error == fail_exists) {
+                if (native_file_is_directory(dir))
+                    return;
+                if (flags & fs_overwrite) {
+                    native_remove_file(dir, 0);
+                    error = 0;
+                }
+            } else if (error == fail_no_parent && (flags & fs_recurse) && ! dir.empty()) {
+                auto parent = split_path(dir).first;
+                if (parent != dir) {
+                    native_make_directory(parent, flags);
+                    error = 0;
+                }
+            }
+            if (error == 0)
+                error = mkdir_helper(dir);
+            if (error != 0)
+                throw std::system_error(error, std::generic_category(), quote_file(dir));
+        }
+
+        void native_make_symlink(const NativeString& file, const NativeString& link, uint32_t flags) {
+            if (native_file_is_symlink(link)) {
+                try {
+                    if (native_resolve_symlink(link) == file)
+                        return;
+                }
+                catch (const std::system_error&) {}
+            }
+            if ((flags & fs_overwrite) && native_file_exists(link))
+                native_remove_file(link, flags);
+            make_symlink_helper(file, link);
+        }
 
         void native_remove_file(const NativeString& file, uint32_t flags) {
             if ((flags & fs_recurse) && native_file_is_directory(file) && ! native_file_is_symlink(file))

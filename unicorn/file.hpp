@@ -15,11 +15,12 @@ namespace Unicorn {
 
     // Constants
 
-    constexpr uint32_t fs_all       = 1ul << 0;  // Include hidden files
-    constexpr uint32_t fs_dotdot    = 1ul << 1;  // Include . and ..
-    constexpr uint32_t fs_fullname  = 1ul << 2;  // Return full file names
-    constexpr uint32_t fs_recurse   = 1ul << 3;  // Recursive directory operations
-    constexpr uint32_t fs_unicode   = 1ul << 4;  // Skip files with non-Unicode names
+    constexpr uint32_t fs_all        = 1ul << 0;  // Include hidden files
+    constexpr uint32_t fs_dotdot     = 1ul << 1;  // Include . and ..
+    constexpr uint32_t fs_fullname   = 1ul << 2;  // Return full file names
+    constexpr uint32_t fs_overwrite  = 1ul << 3;  // Delete existing file if necessary
+    constexpr uint32_t fs_recurse    = 1ul << 4;  // Recursive directory operations
+    constexpr uint32_t fs_unicode    = 1ul << 5;  // Skip files with non-Unicode names
 
     // System dependencies
 
@@ -268,6 +269,7 @@ namespace Unicorn {
     namespace UnicornDetail {
 
         void native_make_directory(const NativeString& dir, uint32_t flags);
+        void native_make_symlink(const NativeString& file, const NativeString& link, uint32_t flags);
         void native_remove_file(const NativeString& file, uint32_t flags);
         void native_rename_file(const NativeString& src, const NativeString& dst);
 
@@ -277,6 +279,12 @@ namespace Unicorn {
     void make_directory(const basic_string<C>& dir, uint32_t flags = 0) {
         using namespace UnicornDetail;
         native_make_directory(native_file(dir), flags);
+    }
+
+    template <typename C>
+    void make_symlink(const basic_string<C>& file, const basic_string<C>& link, uint32_t flags = 0) {
+        using namespace UnicornDetail;
+        native_make_symlink(native_file(file), native_file(link), flags);
     }
 
     template <typename C>

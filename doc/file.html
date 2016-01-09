@@ -91,6 +91,10 @@ of <code>"/foo/bar/hello.txt"</code> is <code>"hello.txt"</code>).</p>
 <td>Return full file names</td>
 </tr>
 <tr>
+<td><strong><code>fs_overwrite</code></strong></td>
+<td>Delete existing file if necessary</td>
+</tr>
+<tr>
 <td><strong><code>fs_recurse</code></strong></td>
 <td>Recursive directory operations</td>
 </tr>
@@ -237,13 +241,26 @@ system.</p>
 <ul>
 <li><code>template &lt;typename C&gt; void</code> <strong><code>make_directory</code></strong><code>(const basic_string&lt;C&gt;&amp; dir, uint32_t flags = 0)</code></li>
 </ul>
-<p>Create a directory (with default permissions). If the <code>fs_recurse</code> flag is
-set, this will recursively create any missing parent directories (like <code>mkdir
--p</code>). It will do nothing if the directory already exists. It will throw
-<code>std::system_error</code> if the named file already exists but is not a directory,
-if the directory path is not a legal filename, if the parent directory does
-not exist and the <code>recurse</code> flag was not set, or if the caller does not have
-permission to create the directory.</p>
+<p>Create a directory (with default permissions). It will do nothing if the
+directory already exists. If the <code>fs_recurse</code> flag is set, this will
+recursively create any missing parent directories (similar to <code>mkdir -p</code>). If
+the <code>fs_overwrite</code> flag is set, and a file of the same name exists but is not
+a directory, the existing file will be replaced.</p>
+<p>This will throw <code>std::system_error</code> if the named file already exists but is
+not a directory, and either the <code>fs_overwrite</code> flag is not used or an attempt
+to delete the existing file fails, if the directory path is not a legal
+filename, if the parent directory does not exist and the <code>recurse</code> flag was
+not set, or if the caller does not have permission to create the directory.</p>
+<ul>
+<li><code>template &lt;typename C&gt; void</code> <strong><code>make_symlink</code></strong><code>(const basic_string&lt;C&gt;&amp; file, const basic_string&lt;C&gt;&amp; link, uint32_t flags = 0)</code></li>
+</ul>
+<p>Creates a symlink named <code>link</code> pointing to <code>file</code>. This will do nothing if the
+symlink already exists. If the <code>fs_overwrite</code> flag is set, this will delete
+any existing file with the same name as the new link; if the existing file is
+a non-empty directory, it will only be replaced if the <code>fs_recurse</code> flag is
+also set. This will throw <code>std::system_error</code> if the symlink cannot be
+created, or if a file or directory of the same name as <code>link</code> already exists
+but the necessary flags were not supplied.</p>
 <ul>
 <li><code>template &lt;typename C&gt; void</code> <strong><code>remove_file</code></strong><code>(const basic_string&lt;C&gt;&amp; file, uint32_t flags = 0)</code></li>
 </ul>
@@ -251,19 +268,20 @@ permission to create the directory.</p>
 be deleted recursively (like <code>rm -rf</code>; this will not follow symbolic links).
 This will do nothing if the named file does not exist to begin with. It will
 throw <code>std::system_error</code> if the directory path is not a legal filename, if
-the name refers to a nonempty directory and the <code>recurse</code> flag was not set, or
-if the caller does not have permission to delete the file.</p>
+the name refers to a nonempty directory and the <code>fs_recurse</code> flag was not set,
+or if the caller does not have permission to delete the file.</p>
 <ul>
 <li><code>template &lt;typename C&gt; void</code> <strong><code>rename_file</code></strong><code>(const basic_string&lt;C&gt;&amp; src, const basic_string&lt;C&gt;&amp; dst)</code></li>
 </ul>
 <p>Rename a file or directory. This will throw <code>std::system_error</code> if either
 argument is not a legal filename, if the caller does not have permission to
-perform the operation, or under other OS-specific circumstances. This function
-is a thin wrapper around the underlying native file renaming functions, and
-will share any system specific limitations and variations; behaviour when the
-destination file already exists is system dependent (this may overwrite the
-file or throw an exception), and on most systems the call will fail if the
-source and destination are on different physical file systems.</p>
+perform the operation, or under other OS-specific circumstances.</p>
+<p>This function is a thin wrapper around the underlying native file renaming
+functions, and will share any system specific limitations and variations;
+behaviour when the destination file already exists is system dependent (this
+may overwrite the file or throw an exception), and on most systems the call
+will fail if the source and destination are on different physical file
+systems.</p>
 <h2 id="directory-iterators">Directory iterators</h2>
 <ul>
 <li><code>template &lt;typename C&gt; class</code> <strong><code>DirectoryIterator</code></strong><ul>
