@@ -21,7 +21,8 @@ in other modules with a more specific focus.</p>
 <li><a href="#introduction">Introduction</a></li>
 <li><a href="#string-size-functions">String size functions</a></li>
 <li><a href="#other-string-properties">Other string properties</a></li>
-<li><a href="#string-algorithms">String algorithms</a></li>
+<li><a href="#string-comparison">String comparison</a></li>
+<li><a href="#other-string-algorithms">Other string algorithms</a></li>
 <li><a href="#string-manipulation-functions">String manipulation functions</a></li>
 <li><a href="#case-mapping-functions">Case mapping functions</a></li>
 <li><a href="#escaping-and-quoting-functions">Escaping and quoting functions</a></li>
@@ -155,20 +156,7 @@ empty.</p>
 <li><code>template &lt;typename C&gt; bool</code> <strong><code>str_ends_with</code></strong><code>(const basic_string&lt;C&gt;&amp; str, const C* suffix) noexcept</code></li>
 </ul>
 <p>These return true if the string starts or ends with the specified substring.</p>
-<h2 id="string-algorithms">String algorithms</h2>
-<ul>
-<li><code>template &lt;typename C&gt; size_t</code> <strong><code>str_common</code></strong><code>(const basic_string&lt;C&gt;&amp; s1, const basic_string&lt;C&gt;&amp; s2, size_t start = 0) noexcept</code></li>
-<li><code>template &lt;typename C&gt; size_t</code> <strong><code>str_common_utf</code></strong><code>(const basic_string&lt;C&gt;&amp; s1, const basic_string&lt;C&gt;&amp; s2, size_t start = 0) noexcept</code></li>
-</ul>
-<p>These return the count of code units in the longest common prefix of two
-strings, optionally starting at a given offset (or, equivalently, the offset,
-relative to <code>start</code>, of the first difference between the strings). The
-<code>str_common()</code> function simply finds the longest common prefix of code units
-without regard to encoding, while <code>str_common_utf()</code> finds the longest common
-prefix of whole encoded characters (the returned count is still in code
-units); this means it will return a smaller value than <code>str_common()</code> if the
-offset found by <code>str_common()</code> is partway through an encoded character. Both
-functions will return zero if <code>start</code> is past the end of either string.</p>
+<h2 id="string-comparison">String comparison</h2>
 <ul>
 <li><code>struct</code> <strong><code>StringCompare</code></strong><ul>
 <li><code>template &lt;typename C&gt; bool StringCompare::</code><strong><code>operator()</code></strong><code>(const basic_string&lt;C&gt;&amp; lhs, const basic_string&lt;C&gt;&amp; rhs) const noexcept</code></li>
@@ -188,6 +176,54 @@ more complicated to preserve the expected order (in UTF-16, unlike UTF-8 and
 <p>This compares strings in the same way as <code>string_compare()</code> above, but returns
 1, 0, or -1 to indicate that the first string is greater than, equal to, or
 less than the second one, respectively.</p>
+<ul>
+<li><code>struct</code> <strong><code>IcaseEqual</code></strong><ul>
+<li><code>template &lt;typename C&gt; bool IcaseEqual::</code><strong><code>operator()</code></strong><code>(const basic_string&lt;C&gt;&amp; lhs, const basic_string&lt;C&gt;&amp; rhs) const noexcept</code></li>
+</ul>
+</li>
+<li><code>struct</code> <strong><code>IcaseCompare</code></strong><ul>
+<li><code>template &lt;typename C&gt; bool IcaseCompare::</code><strong><code>operator()</code></strong><code>(const basic_string&lt;C&gt;&amp; lhs, const basic_string&lt;C&gt;&amp; rhs) const noexcept</code></li>
+</ul>
+</li>
+<li><code>constexpr IcaseEqual</code> <strong><code>str_icase_equal</code></strong></li>
+<li><code>constexpr IcaseCompare</code> <strong><code>str_icase_compare</code></strong></li>
+</ul>
+<p>Function objects that perform case insensitive string comparison, with
+equality or less-than semantics. These are equivalent to calling
+<code>str_casefold()</code> on the argument strings before comparison; using these
+functions is usually more efficient for a small number of comparisons, while
+calling <code>str_casefold()</code> and saving the case folded form of the string will be
+more efficient if the same string is going to be compared frequently.</p>
+<ul>
+<li><code>struct</code> <strong><code>NaturalCompare</code></strong><ul>
+<li><code>template &lt;typename C&gt; bool NaturalCompare::</code><strong><code>operator()</code></strong><code>(const basic_string&lt;C&gt;&amp; lhs, const basic_string&lt;C&gt;&amp; rhs) const noexcept</code></li>
+</ul>
+</li>
+<li><code>constexpr NaturalCompare</code> <strong><code>str_natural_compare</code></strong></li>
+</ul>
+<p>This attempts to perform a "natural" (human friendly) comparison between two
+strings. It treats numbers (currently only ASCII digits are recognised) as
+discrete string elements to be sorted numerically (e.g. <code>"abc99"</code> will sort
+before <code>"abc100"</code>; leading zeros are not significant), and ignores case and
+punctuation (significant characters are defined as general categories <code>L</code>
+[letters], <code>M</code> [marks], <code>N</code> [numbers], and <code>S</code> [symbols]). If two strings are
+equal according to these criteria, but are not exactly byte for byte
+identical, a simple lexicographical comparison by code point is used as a tie
+breaker.</p>
+<h2 id="other-string-algorithms">Other string algorithms</h2>
+<ul>
+<li><code>template &lt;typename C&gt; size_t</code> <strong><code>str_common</code></strong><code>(const basic_string&lt;C&gt;&amp; s1, const basic_string&lt;C&gt;&amp; s2, size_t start = 0) noexcept</code></li>
+<li><code>template &lt;typename C&gt; size_t</code> <strong><code>str_common_utf</code></strong><code>(const basic_string&lt;C&gt;&amp; s1, const basic_string&lt;C&gt;&amp; s2, size_t start = 0) noexcept</code></li>
+</ul>
+<p>These return the count of code units in the longest common prefix of two
+strings, optionally starting at a given offset (or, equivalently, the offset,
+relative to <code>start</code>, of the first difference between the strings). The
+<code>str_common()</code> function simply finds the longest common prefix of code units
+without regard to encoding, while <code>str_common_utf()</code> finds the longest common
+prefix of whole encoded characters (the returned count is still in code
+units); this means it will return a smaller value than <code>str_common()</code> if the
+offset found by <code>str_common()</code> is partway through an encoded character. Both
+functions will return zero if <code>start</code> is past the end of either string.</p>
 <ul>
 <li><code>template &lt;typename C&gt; bool</code> <strong><code>str_expect</code></strong><code>(UtfIterator&lt;C&gt;&amp; i, const basic_string&lt;C&gt;&amp; prefix)</code></li>
 <li><code>template &lt;typename C&gt; bool</code> <strong><code>str_expect</code></strong><code>(UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; end, const basic_string&lt;C&gt;&amp; prefix)</code></li>
@@ -624,24 +660,6 @@ necessarily be the same length as the original string (measured either in code
 units or characters). These functions only perform the default case mappings
 recommended by the Unicode standard; they do not make any attempt at
 localisation.</p>
-<ul>
-<li><code>struct</code> <strong><code>IcaseEqual</code></strong><ul>
-<li><code>template &lt;typename C&gt; bool IcaseEqual::</code><strong><code>operator()</code></strong><code>(const basic_string&lt;C&gt;&amp; lhs, const basic_string&lt;C&gt;&amp; rhs) const noexcept</code></li>
-</ul>
-</li>
-<li><code>struct</code> <strong><code>IcaseCompare</code></strong><ul>
-<li><code>template &lt;typename C&gt; bool IcaseCompare::</code><strong><code>operator()</code></strong><code>(const basic_string&lt;C&gt;&amp; lhs, const basic_string&lt;C&gt;&amp; rhs) const noexcept</code></li>
-</ul>
-</li>
-<li><code>constexpr IcaseEqual</code> <strong><code>str_icase_equal</code></strong></li>
-<li><code>constexpr IcaseCompare</code> <strong><code>str_icase_compare</code></strong></li>
-</ul>
-<p>Function objects that perform case insensitive string comparison, with
-equality or less-than semantics. These are equivalent to calling <code>casefold()</code>
-on the argument strings before comparison; using these functions is usually
-more efficient for a small number of comparisons, while calling <code>casefold()</code>
-and saving the case folded form of the string will be more efficient if the
-same string is going to be compared frequently.</p>
 <h2 id="escaping-and-quoting-functions">Escaping and quoting functions</h2>
 <table>
 <thead>

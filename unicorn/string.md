@@ -130,20 +130,7 @@ True if the string contains any East Asian characters.
 
 These return true if the string starts or ends with the specified substring.
 
-## String algorithms ##
-
-* `template <typename C> size_t` **`str_common`**`(const basic_string<C>& s1, const basic_string<C>& s2, size_t start = 0) noexcept`
-* `template <typename C> size_t` **`str_common_utf`**`(const basic_string<C>& s1, const basic_string<C>& s2, size_t start = 0) noexcept`
-
-These return the count of code units in the longest common prefix of two
-strings, optionally starting at a given offset (or, equivalently, the offset,
-relative to `start`, of the first difference between the strings). The
-`str_common()` function simply finds the longest common prefix of code units
-without regard to encoding, while `str_common_utf()` finds the longest common
-prefix of whole encoded characters (the returned count is still in code
-units); this means it will return a smaller value than `str_common()` if the
-offset found by `str_common()` is partway through an encoded character. Both
-functions will return zero if `start` is past the end of either string.
+## String comparison ##
 
 * `struct` **`StringCompare`**
     * `template <typename C> bool StringCompare::`**`operator()`**`(const basic_string<C>& lhs, const basic_string<C>& rhs) const noexcept`
@@ -162,6 +149,48 @@ This compares strings in the same way as `string_compare()` above, but returns
 1, 0, or -1 to indicate that the first string is greater than, equal to, or
 less than the second one, respectively.
 
+* `struct` **`IcaseEqual`**
+    * `template <typename C> bool IcaseEqual::`**`operator()`**`(const basic_string<C>& lhs, const basic_string<C>& rhs) const noexcept`
+* `struct` **`IcaseCompare`**
+    * `template <typename C> bool IcaseCompare::`**`operator()`**`(const basic_string<C>& lhs, const basic_string<C>& rhs) const noexcept`
+* `constexpr IcaseEqual` **`str_icase_equal`**
+* `constexpr IcaseCompare` **`str_icase_compare`**
+
+Function objects that perform case insensitive string comparison, with
+equality or less-than semantics. These are equivalent to calling
+`str_casefold()` on the argument strings before comparison; using these
+functions is usually more efficient for a small number of comparisons, while
+calling `str_casefold()` and saving the case folded form of the string will be
+more efficient if the same string is going to be compared frequently.
+
+* `struct` **`NaturalCompare`**
+    * `template <typename C> bool NaturalCompare::`**`operator()`**`(const basic_string<C>& lhs, const basic_string<C>& rhs) const noexcept`
+* `constexpr NaturalCompare` **`str_natural_compare`**
+
+This attempts to perform a "natural" (human friendly) comparison between two
+strings. It treats numbers (currently only ASCII digits are recognised) as
+discrete string elements to be sorted numerically (e.g. `"abc99"` will sort
+before `"abc100"`; leading zeros are not significant), and ignores case and
+punctuation (significant characters are defined as general categories `L`
+[letters], `M` [marks], `N` [numbers], and `S` [symbols]). If two strings are
+equal according to these criteria, but are not exactly byte for byte
+identical, a simple lexicographical comparison by code point is used as a tie
+breaker.
+
+## Other string algorithms ##
+
+* `template <typename C> size_t` **`str_common`**`(const basic_string<C>& s1, const basic_string<C>& s2, size_t start = 0) noexcept`
+* `template <typename C> size_t` **`str_common_utf`**`(const basic_string<C>& s1, const basic_string<C>& s2, size_t start = 0) noexcept`
+
+These return the count of code units in the longest common prefix of two
+strings, optionally starting at a given offset (or, equivalently, the offset,
+relative to `start`, of the first difference between the strings). The
+`str_common()` function simply finds the longest common prefix of code units
+without regard to encoding, while `str_common_utf()` finds the longest common
+prefix of whole encoded characters (the returned count is still in code
+units); this means it will return a smaller value than `str_common()` if the
+offset found by `str_common()` is partway through an encoded character. Both
+functions will return zero if `start` is past the end of either string.
 
 * `template <typename C> bool` **`str_expect`**`(UtfIterator<C>& i, const basic_string<C>& prefix)`
 * `template <typename C> bool` **`str_expect`**`(UtfIterator<C>& i, const UtfIterator<C>& end, const basic_string<C>& prefix)`
@@ -591,20 +620,6 @@ necessarily be the same length as the original string (measured either in code
 units or characters). These functions only perform the default case mappings
 recommended by the Unicode standard; they do not make any attempt at
 localisation.
-
-* `struct` **`IcaseEqual`**
-    * `template <typename C> bool IcaseEqual::`**`operator()`**`(const basic_string<C>& lhs, const basic_string<C>& rhs) const noexcept`
-* `struct` **`IcaseCompare`**
-    * `template <typename C> bool IcaseCompare::`**`operator()`**`(const basic_string<C>& lhs, const basic_string<C>& rhs) const noexcept`
-* `constexpr IcaseEqual` **`str_icase_equal`**
-* `constexpr IcaseCompare` **`str_icase_compare`**
-
-Function objects that perform case insensitive string comparison, with
-equality or less-than semantics. These are equivalent to calling `casefold()`
-on the argument strings before comparison; using these functions is usually
-more efficient for a small number of comparisons, while calling `casefold()`
-and saving the case folded form of the string will be more efficient if the
-same string is going to be compared frequently.
 
 ## Escaping and quoting functions ##
 

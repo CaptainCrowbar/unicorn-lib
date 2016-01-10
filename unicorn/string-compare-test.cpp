@@ -198,6 +198,36 @@ namespace {
 
     }
 
+    void check_natural_compare() {
+
+        u8string s0 = "";
+        u8string s1 = "abc 123";
+        u8string s2 = "abc 45";
+        u8string s3 = "ABC 67";
+        u8string s4 = "abc 000123";
+        u8string s5 = "abc 123 xyz";
+        u8string s6 = "abc 123 456";
+        u8string s7 = "+abc 123";
+
+        TEST(! str_natural_compare(s0, s0));
+        TEST(! str_natural_compare(s1, s1));
+        TEST(str_natural_compare(s0, s1));
+        TEST(! str_natural_compare(s1, s0));
+        TEST(! str_natural_compare(s1, s2));
+        TEST(str_natural_compare(s2, s1));
+        TEST(str_natural_compare(s2, s3));
+        TEST(! str_natural_compare(s3, s2));
+        TEST(str_natural_compare(s2, s4));
+        TEST(! str_natural_compare(s4, s2));
+        TEST(str_natural_compare(s1, s5));
+        TEST(! str_natural_compare(s5, s1));
+        TEST(str_natural_compare(s1, s6));
+        TEST(! str_natural_compare(s6, s1));
+        TEST(! str_natural_compare(s1, s7));
+        TEST(str_natural_compare(s7, s1));
+
+    }
+
 }
 
 TEST_MODULE(unicorn, string_compare) {
@@ -205,5 +235,6 @@ TEST_MODULE(unicorn, string_compare) {
     check_compare();
     check_compare_3way();
     check_icase_compare();
+    check_natural_compare();
 
 }
