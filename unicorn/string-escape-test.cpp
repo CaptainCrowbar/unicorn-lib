@@ -1,6 +1,5 @@
+#include "unicorn/string-escape.hpp"
 #include "unicorn/core.hpp"
-#include "unicorn/string.hpp"
-#include "unicorn/string-escape.hpp" // TODO
 #include "prion/unit-test.hpp"
 #include <string>
 

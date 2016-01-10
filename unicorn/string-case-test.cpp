@@ -1,6 +1,6 @@
+#include "unicorn/string-case.hpp"
 #include "unicorn/core.hpp"
 #include "unicorn/character.hpp"
-#include "unicorn/string.hpp"
 #include "unicorn/utf.hpp"
 #include "prion/unit-test.hpp"
 #include <string>
@@ -162,129 +162,10 @@ namespace {
 
     }
 
-    void check_case_comparisons() {
-
-        TEST(! str_icase_compare(u8""s, u8""s));
-        TEST(! str_icase_compare(u8"hello"s, u8"hello"s));
-        TEST(! str_icase_compare(u8"Hello"s, u8"hello"s));
-        TEST(! str_icase_compare(u8"hello"s, u8"Hello"s));
-        TEST(! str_icase_compare(u8"HELLO"s, u8"hello"s));
-        TEST(! str_icase_compare(u8"hello"s, u8"HELLO"s));
-        TEST(str_icase_compare(u8""s, u8"hello"s));
-        TEST(! str_icase_compare(u8"hello"s, u8""s));
-        TEST(str_icase_compare(u8"hello"s, u8"WORLD"s));
-        TEST(str_icase_compare(u8"HELLO"s, u8"world"s));
-        TEST(! str_icase_compare(u8"world"s, u8"HELLO"s));
-        TEST(! str_icase_compare(u8"WORLD"s, u8"hello"s));
-        TEST(str_icase_compare(u8"hello"s, u8"HELLO WORLD"s));
-        TEST(str_icase_compare(u8"HELLO"s, u8"hello world"s));
-        TEST(! str_icase_compare(u8"hello world"s, u8"HELLO"s));
-        TEST(! str_icase_compare(u8"HELLO WORLD"s, u8"hello"s));
-        TEST(str_icase_compare(u8"hello world"s, u8"HELLO!WORLD"s));
-        TEST(str_icase_compare(u8"HELLO WORLD"s, u8"hello!world"s));
-
-        TEST(! str_icase_compare(u""s, u""s));
-        TEST(! str_icase_compare(u"hello"s, u"hello"s));
-        TEST(! str_icase_compare(u"Hello"s, u"hello"s));
-        TEST(! str_icase_compare(u"hello"s, u"Hello"s));
-        TEST(! str_icase_compare(u"HELLO"s, u"hello"s));
-        TEST(! str_icase_compare(u"hello"s, u"HELLO"s));
-        TEST(str_icase_compare(u""s, u"hello"s));
-        TEST(! str_icase_compare(u"hello"s, u""s));
-        TEST(str_icase_compare(u"hello"s, u"WORLD"s));
-        TEST(str_icase_compare(u"HELLO"s, u"world"s));
-        TEST(! str_icase_compare(u"world"s, u"HELLO"s));
-        TEST(! str_icase_compare(u"WORLD"s, u"hello"s));
-        TEST(str_icase_compare(u"hello"s, u"HELLO WORLD"s));
-        TEST(str_icase_compare(u"HELLO"s, u"hello world"s));
-        TEST(! str_icase_compare(u"hello world"s, u"HELLO"s));
-        TEST(! str_icase_compare(u"HELLO WORLD"s, u"hello"s));
-        TEST(str_icase_compare(u"hello world"s, u"HELLO!WORLD"s));
-        TEST(str_icase_compare(u"HELLO WORLD"s, u"hello!world"s));
-
-        TEST(! str_icase_compare(U""s, U""s));
-        TEST(! str_icase_compare(U"hello"s, U"hello"s));
-        TEST(! str_icase_compare(U"Hello"s, U"hello"s));
-        TEST(! str_icase_compare(U"hello"s, U"Hello"s));
-        TEST(! str_icase_compare(U"HELLO"s, U"hello"s));
-        TEST(! str_icase_compare(U"hello"s, U"HELLO"s));
-        TEST(str_icase_compare(U""s, U"hello"s));
-        TEST(! str_icase_compare(U"hello"s, U""s));
-        TEST(str_icase_compare(U"hello"s, U"WORLD"s));
-        TEST(str_icase_compare(U"HELLO"s, U"world"s));
-        TEST(! str_icase_compare(U"world"s, U"HELLO"s));
-        TEST(! str_icase_compare(U"WORLD"s, U"hello"s));
-        TEST(str_icase_compare(U"hello"s, U"HELLO WORLD"s));
-        TEST(str_icase_compare(U"HELLO"s, U"hello world"s));
-        TEST(! str_icase_compare(U"hello world"s, U"HELLO"s));
-        TEST(! str_icase_compare(U"HELLO WORLD"s, U"hello"s));
-        TEST(str_icase_compare(U"hello world"s, U"HELLO!WORLD"s));
-        TEST(str_icase_compare(U"HELLO WORLD"s, U"hello!world"s));
-
-        TEST(str_icase_equal(u8""s, u8""s));
-        TEST(str_icase_equal(u8"hello"s, u8"hello"s));
-        TEST(str_icase_equal(u8"Hello"s, u8"hello"s));
-        TEST(str_icase_equal(u8"hello"s, u8"Hello"s));
-        TEST(str_icase_equal(u8"HELLO"s, u8"hello"s));
-        TEST(str_icase_equal(u8"hello"s, u8"HELLO"s));
-        TEST(! str_icase_equal(u8""s, u8"hello"s));
-        TEST(! str_icase_equal(u8"hello"s, u8""s));
-        TEST(! str_icase_equal(u8"hello"s, u8"WORLD"s));
-        TEST(! str_icase_equal(u8"HELLO"s, u8"world"s));
-        TEST(! str_icase_equal(u8"world"s, u8"HELLO"s));
-        TEST(! str_icase_equal(u8"WORLD"s, u8"hello"s));
-        TEST(! str_icase_equal(u8"hello"s, u8"HELLO WORLD"s));
-        TEST(! str_icase_equal(u8"HELLO"s, u8"hello world"s));
-        TEST(! str_icase_equal(u8"hello world"s, u8"HELLO"s));
-        TEST(! str_icase_equal(u8"HELLO WORLD"s, u8"hello"s));
-        TEST(! str_icase_equal(u8"hello world"s, u8"HELLO!WORLD"s));
-        TEST(! str_icase_equal(u8"HELLO WORLD"s, u8"hello!world"s));
-
-        TEST(str_icase_equal(u""s, u""s));
-        TEST(str_icase_equal(u"hello"s, u"hello"s));
-        TEST(str_icase_equal(u"Hello"s, u"hello"s));
-        TEST(str_icase_equal(u"hello"s, u"Hello"s));
-        TEST(str_icase_equal(u"HELLO"s, u"hello"s));
-        TEST(str_icase_equal(u"hello"s, u"HELLO"s));
-        TEST(! str_icase_equal(u""s, u"hello"s));
-        TEST(! str_icase_equal(u"hello"s, u""s));
-        TEST(! str_icase_equal(u"hello"s, u"WORLD"s));
-        TEST(! str_icase_equal(u"HELLO"s, u"world"s));
-        TEST(! str_icase_equal(u"world"s, u"HELLO"s));
-        TEST(! str_icase_equal(u"WORLD"s, u"hello"s));
-        TEST(! str_icase_equal(u"hello"s, u"HELLO WORLD"s));
-        TEST(! str_icase_equal(u"HELLO"s, u"hello world"s));
-        TEST(! str_icase_equal(u"hello world"s, u"HELLO"s));
-        TEST(! str_icase_equal(u"HELLO WORLD"s, u"hello"s));
-        TEST(! str_icase_equal(u"hello world"s, u"HELLO!WORLD"s));
-        TEST(! str_icase_equal(u"HELLO WORLD"s, u"hello!world"s));
-
-        TEST(str_icase_equal(U""s, U""s));
-        TEST(str_icase_equal(U"hello"s, U"hello"s));
-        TEST(str_icase_equal(U"Hello"s, U"hello"s));
-        TEST(str_icase_equal(U"hello"s, U"Hello"s));
-        TEST(str_icase_equal(U"HELLO"s, U"hello"s));
-        TEST(str_icase_equal(U"hello"s, U"HELLO"s));
-        TEST(! str_icase_equal(U""s, U"hello"s));
-        TEST(! str_icase_equal(U"hello"s, U""s));
-        TEST(! str_icase_equal(U"hello"s, U"WORLD"s));
-        TEST(! str_icase_equal(U"HELLO"s, U"world"s));
-        TEST(! str_icase_equal(U"world"s, U"HELLO"s));
-        TEST(! str_icase_equal(U"WORLD"s, U"hello"s));
-        TEST(! str_icase_equal(U"hello"s, U"HELLO WORLD"s));
-        TEST(! str_icase_equal(U"HELLO"s, U"hello world"s));
-        TEST(! str_icase_equal(U"hello world"s, U"HELLO"s));
-        TEST(! str_icase_equal(U"HELLO WORLD"s, U"hello"s));
-        TEST(! str_icase_equal(U"hello world"s, U"HELLO!WORLD"s));
-        TEST(! str_icase_equal(U"HELLO WORLD"s, U"hello!world"s));
-
-    }
-
 }
 
 TEST_MODULE(unicorn, string_case) {
 
     check_case_conversions();
-    check_case_comparisons();
 
 }

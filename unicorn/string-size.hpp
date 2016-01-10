@@ -4,6 +4,7 @@
 
 #include "unicorn/core.hpp"
 #include "unicorn/character.hpp"
+#include "unicorn/segment.hpp"
 #include "unicorn/string-forward.hpp"
 #include "unicorn/utf.hpp"
 #include <algorithm>

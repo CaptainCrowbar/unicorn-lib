@@ -1,6 +1,6 @@
+#include "unicorn/string-size.hpp"
 #include "unicorn/core.hpp"
 #include "unicorn/character.hpp"
-#include "unicorn/string.hpp"
 #include "unicorn/utf.hpp"
 #include "prion/unit-test.hpp"
 #include <string>

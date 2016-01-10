@@ -1,6 +1,6 @@
+#include "unicorn/string-algorithm.hpp"
 #include "unicorn/core.hpp"
 #include "unicorn/character.hpp"
-#include "unicorn/string.hpp"
 #include "unicorn/utf.hpp"
 #include "prion/unit-test.hpp"
 #include <iterator>
@@ -55,74 +55,6 @@ namespace {
 
         TRY(n = str_common(x8, y8));      TEST_EQUAL(n, 5);
         TRY(n = str_common_utf(x8, y8));  TEST_EQUAL(n, 4);
-
-    }
-
-    void check_compare() {
-
-        TEST(! str_compare(u""s, u""s));
-        TEST(str_compare(u""s, u"Hello"s));
-        TEST(! str_compare(u"Hello"s, u""s));
-        TEST(! str_compare(u"Hello"s, u"Hello"s));
-        TEST(str_compare(u"Hello"s, u"world"s));
-        TEST(! str_compare(u"world"s, u"Hello"s));
-        TEST(! str_compare(u"Hello world"s, u"Hello"s));
-        TEST(str_compare(u"Hello"s, u"Hello world"s));
-
-        std::mt19937 mt(42);
-        std::uniform_int_distribution<size_t> lengths(1, 10);
-        std::uniform_int_distribution<char32_t> chars(0, 0x10ffff);
-
-        auto make_string = [&] {
-            auto n = lengths(mt);
-            u32string s;
-            while (s.size() < n) {
-                auto c = chars(mt);
-                if (char_is_unicode(c))
-                    s += c;
-            }
-            return s;
-        };
-
-        for (int i = 0; i < 1000; ++i) {
-            auto u32a = make_string(), u32b = make_string();
-            auto u16a = to_utf16(u32a), u16b = to_utf16(u32b);
-            auto u8a = to_utf8(u32a), u8b = to_utf8(u32b);
-            TEST_EQUAL(str_compare(u16a, u16b), str_compare(u32a, u32b));
-            TEST_EQUAL(str_compare(u8a, u8b), str_compare(u32a, u32b));
-        }
-
-        int rc;
-
-        TRY(rc = str_compare_3way(""s, ""s));                TEST_EQUAL(rc, 0);
-        TRY(rc = str_compare_3way("Hello"s, ""s));           TEST_EQUAL(rc, 1);
-        TRY(rc = str_compare_3way(""s, "Hello"s));           TEST_EQUAL(rc, -1);
-        TRY(rc = str_compare_3way("Hello"s, "Hello"s));      TEST_EQUAL(rc, 0);
-        TRY(rc = str_compare_3way("Hello"s, "Hellfire"s));   TEST_EQUAL(rc, 1);
-        TRY(rc = str_compare_3way("Hellfire"s, "Hello"s));   TEST_EQUAL(rc, -1);
-        TRY(rc = str_compare_3way(u8"αβγδε"s, u8"αβγδε"s));  TEST_EQUAL(rc, 0);
-        TRY(rc = str_compare_3way(u8"αβδε"s, u8"αβγδ"s));    TEST_EQUAL(rc, 1);
-        TRY(rc = str_compare_3way(u8"αβγδ"s, u8"αβδε"s));    TEST_EQUAL(rc, -1);
-
-        TRY(rc = str_compare_3way(u""s, u""s));               TEST_EQUAL(rc, 0);
-        TRY(rc = str_compare_3way(u"Hello"s, u""s));          TEST_EQUAL(rc, 1);
-        TRY(rc = str_compare_3way(u""s, u"Hello"s));          TEST_EQUAL(rc, -1);
-        TRY(rc = str_compare_3way(u"Hello"s, u"Hello"s));     TEST_EQUAL(rc, 0);
-        TRY(rc = str_compare_3way(u"Hello"s, u"Hellfire"s));  TEST_EQUAL(rc, 1);
-        TRY(rc = str_compare_3way(u"Hellfire"s, u"Hello"s));  TEST_EQUAL(rc, -1);
-        TRY(rc = str_compare_3way(u"αβγδε"s, u"αβγδε"s));     TEST_EQUAL(rc, 0);
-        TRY(rc = str_compare_3way(u"αβδε"s, u"αβγδ"s));       TEST_EQUAL(rc, 1);
-        TRY(rc = str_compare_3way(u"αβγδ"s, u"αβδε"s));       TEST_EQUAL(rc, -1);
-
-        TRY(rc = str_compare_3way(U""s, U""s));               TEST_EQUAL(rc, 0);
-        TRY(rc = str_compare_3way(U"Hello"s, U""s));          TEST_EQUAL(rc, 1);
-        TRY(rc = str_compare_3way(U""s, U"Hello"s));          TEST_EQUAL(rc, -1);
-        TRY(rc = str_compare_3way(U"Hello"s, U"Hello"s));     TEST_EQUAL(rc, 0);
-        TRY(rc = str_compare_3way(U"Hello"s, U"Hellfire"s));  TEST_EQUAL(rc, 1);
-        TRY(rc = str_compare_3way(U"Hellfire"s, U"Hello"s));  TEST_EQUAL(rc, -1);
-        TRY(rc = str_compare_3way(U"αβγδε"s, U"αβγδε"s));     TEST_EQUAL(rc, 0);
-        TRY(rc = str_compare_3way(U"αβδε"s, U"αβγδ"s));       TEST_EQUAL(rc, 1);
-        TRY(rc = str_compare_3way(U"αβγδ"s, U"αβδε"s));       TEST_EQUAL(rc, -1);
 
     }
 
@@ -420,7 +352,6 @@ namespace {
 TEST_MODULE(unicorn, string_algorithm) {
 
     check_common();
-    check_compare();
     check_expect();
     check_find_char();
     check_find_first();

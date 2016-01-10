@@ -36,33 +36,6 @@ namespace Unicorn {
         return pos - start;
     }
 
-    struct StringCompare {
-        template <typename C>
-        bool operator()(const basic_string<C>& lhs, const basic_string<C>& rhs) const noexcept {
-            if (sizeof(C) == 2) {
-                auto ur1 = utf_range(lhs), ur2 = utf_range(rhs);
-                return std::lexicographical_compare(ur1.begin(), ur1.end(), ur2.begin(), ur2.end());
-            } else {
-                return lhs < rhs;
-            }
-        }
-    };
-
-    constexpr StringCompare str_compare {};
-
-    template <typename C>
-    int str_compare_3way(const basic_string<C>& lhs, const basic_string<C>& rhs) {
-        size_t common = str_common_utf(lhs, rhs);
-        if (common == lhs.size() && common == rhs.size())
-            return 0;
-        else if (common == rhs.size())
-            return 1;
-        else if (common == lhs.size())
-            return -1;
-        char32_t u1 = *utf_iterator(lhs, common), u2 = *utf_iterator(rhs, common);
-        return u1 > u2 ? 1 : -1;
-    }
-
     template <typename C>
     bool str_expect(UtfIterator<C>& i, const UtfIterator<C>& end, const basic_string<C>& prefix) {
         size_t psize = prefix.size();
