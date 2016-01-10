@@ -123,7 +123,7 @@ namespace Unicorn {
                     return errno;
                 }
 
-                void make_symlink_helper(const string& file, const string& link) {
+                void make_symlink_helper(const string& file, const string& link, uint32_t /*flags*/) {
                     if (symlink(file.data(), link.data()) == 0)
                         return;
                     int error = errno;
@@ -310,11 +310,11 @@ namespace Unicorn {
                     return GetLastError();
                 }
 
-                void make_symlink_helper(const wstring& file, const wstring& link) {
+                void make_symlink_helper(const wstring& file, const wstring& link, uint32_t flags) {
                     if (! (flags & fs_overwrite) && native_file_exists(link))
                         throw std::system_error(ERROR_ALREADY_EXISTS, windows_category(), quote_file(link));
-                    DWORD flags = native_file_is_directory(file) ? SYMBOLIC_LINK_FLAG_DIRECTORY : 0;
-                    if (CreateSymbolicLinkW(link.data(), file.data(), flags))
+                    DWORD wflags = native_file_is_directory(file) ? SYMBOLIC_LINK_FLAG_DIRECTORY : 0;
+                    if (CreateSymbolicLinkW(link.data(), file.data(), wflags))
                         return;
                     auto error = GetLastError();
                     u8string note = quote_file(link) + " -> " + quote_file(file);
@@ -390,7 +390,7 @@ namespace Unicorn {
 
         // File system modifying functions
 
-        void native_make_directory(const string& dir, uint32_t flags) {
+        void native_make_directory(const NativeString& dir, uint32_t flags) {
             int error = mkdir_helper(dir);
             if (error == 0)
                 return;
@@ -424,7 +424,7 @@ namespace Unicorn {
             }
             if ((flags & fs_overwrite) && native_file_exists(link))
                 native_remove_file(link, flags);
-            make_symlink_helper(file, link);
+            make_symlink_helper(file, link, flags);
         }
 
         void native_remove_file(const NativeString& file, uint32_t flags) {
