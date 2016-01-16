@@ -483,17 +483,21 @@ namespace Unicorn {
         if (flags & cn_lower)
             name = ascii_lowercase(name);
         if (name.empty() && (flags & cn_label)) {
-            auto gc = char_general_category(c);
-            if (gc == GC::Cc)
-                name = "<control-";
-            else if (gc == GC::Co)
-                name = "<private-use-";
-            else if (gc == GC::Cs)
-                name = "<surrogate-";
-            else if (char_is_noncharacter(c))
+            if (c <= last_unicode_char) {
+                auto gc = char_general_category(c);
+                if (gc == GC::Cc)
+                    name = "<control-";
+                else if (gc == GC::Co)
+                    name = "<private-use-";
+                else if (gc == GC::Cs)
+                    name = "<surrogate-";
+                else if (char_is_noncharacter(c))
+                    name = "<noncharacter-";
+                else
+                    name = "<reserved-";
+            } else {
                 name = "<noncharacter-";
-            else
-                name = "<reserved-";
+            }
             if (flags & cn_lower)
                 name += hex(c, 4);
             else

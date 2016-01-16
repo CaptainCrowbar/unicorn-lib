@@ -56,9 +56,7 @@ namespace Unicorn {
     constexpr bool char_is_high_surrogate(char32_t c) noexcept { return c >= first_high_surrogate_char && c <= last_high_surrogate_char; }
     constexpr bool char_is_low_surrogate(char32_t c) noexcept { return c >= first_low_surrogate_char && c <= last_low_surrogate_char; }
     constexpr bool char_is_noncharacter(char32_t c) noexcept
-        { return (c >= first_noncharacter && c <= last_noncharacter)
-            || (c >= first_surrogate_char && c <= last_surrogate_char)
-            || ((c & 0xfffe) == 0xfffe) || c > last_unicode_char; }
+        { return (c >= first_noncharacter && c <= last_noncharacter) || (c & 0xfffe) == 0xfffe; }
     constexpr bool char_is_private_use(char32_t c) noexcept
         { return (c >= first_private_use_char && c <= last_private_use_char)
             || (c >= first_private_use_char_a && c <= last_private_use_char_a)

@@ -86,11 +86,11 @@ complete decomposition process has been applied.</p>
 </ul>
 <p>These match only the corresponding ASCII characters.</p>
 <ul>
+<li><code>constexpr bool</code> <strong><code>char_is_unicode</code></strong><code>(char32_t c) noexcept</code></li>
 <li><code>constexpr bool</code> <strong><code>char_is_ascii</code></strong><code>(char32_t c) noexcept</code></li>
 <li><code>constexpr bool</code> <strong><code>char_is_latin1</code></strong><code>(char32_t c) noexcept</code></li>
 <li><code>constexpr bool</code> <strong><code>char_is_bmp</code></strong><code>(char32_t c) noexcept</code></li>
 <li><code>constexpr bool</code> <strong><code>char_is_astral</code></strong><code>(char32_t c) noexcept</code></li>
-<li><code>constexpr bool</code> <strong><code>char_is_unicode</code></strong><code>(char32_t c) noexcept</code></li>
 <li><code>constexpr bool</code> <strong><code>char_is_surrogate</code></strong><code>(char32_t c) noexcept</code></li>
 <li><code>constexpr bool</code> <strong><code>char_is_high_surrogate</code></strong><code>(char32_t c) noexcept</code></li>
 <li><code>constexpr bool</code> <strong><code>char_is_low_surrogate</code></strong><code>(char32_t c) noexcept</code></li>
@@ -100,6 +100,9 @@ complete decomposition process has been applied.</p>
 <p>Basic character classification. These are properties that are related to
 simple ranges of code points, without requiring reference to the full Unicode
 property tables.</p>
+<p>The <code>char_is_noncharacter()</code> function only returns true for the Unicode scalar
+values that are explicitly designated as noncharacters, not for implicit
+noncharacters such as surrogates.</p>
 <ul>
 <li><code>template &lt;typename C&gt; constexpr uint32_t</code> <strong><code>char_to_uint</code></strong><code>(C c) noexcept</code></li>
 </ul>

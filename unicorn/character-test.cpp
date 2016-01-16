@@ -139,10 +139,6 @@ namespace {
 
         TEST(! char_is_noncharacter(0));
         TEST(! char_is_noncharacter(U'A'));
-        TEST(! char_is_noncharacter(0xd7ff));
-        TEST(char_is_noncharacter(0xd800));
-        TEST(char_is_noncharacter(0xdfff));
-        TEST(! char_is_noncharacter(0xe000));
         TEST(! char_is_noncharacter(0xfdcf));
         TEST(char_is_noncharacter(0xfdd0));
         TEST(char_is_noncharacter(0xfdef));
@@ -158,7 +154,6 @@ namespace {
         TEST(! char_is_noncharacter(0x10fffd));
         TEST(char_is_noncharacter(0x10fffe));
         TEST(char_is_noncharacter(0x10ffff));
-        TEST(char_is_noncharacter(0x110000));
 
         TEST_EQUAL(char_to_uint('\0'), 0);
         TEST_EQUAL(char_to_uint('A'), 65);

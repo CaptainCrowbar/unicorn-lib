@@ -64,11 +64,11 @@ Formats a code point in the conventional `U+XXXX` notation.
 
 These match only the corresponding ASCII characters.
 
+* `constexpr bool` **`char_is_unicode`**`(char32_t c) noexcept`
 * `constexpr bool` **`char_is_ascii`**`(char32_t c) noexcept`
 * `constexpr bool` **`char_is_latin1`**`(char32_t c) noexcept`
 * `constexpr bool` **`char_is_bmp`**`(char32_t c) noexcept`
 * `constexpr bool` **`char_is_astral`**`(char32_t c) noexcept`
-* `constexpr bool` **`char_is_unicode`**`(char32_t c) noexcept`
 * `constexpr bool` **`char_is_surrogate`**`(char32_t c) noexcept`
 * `constexpr bool` **`char_is_high_surrogate`**`(char32_t c) noexcept`
 * `constexpr bool` **`char_is_low_surrogate`**`(char32_t c) noexcept`
@@ -78,6 +78,10 @@ These match only the corresponding ASCII characters.
 Basic character classification. These are properties that are related to
 simple ranges of code points, without requiring reference to the full Unicode
 property tables.
+
+The `char_is_noncharacter()` function only returns true for the Unicode scalar
+values that are explicitly designated as noncharacters, not for implicit
+noncharacters such as surrogates.
 
 * `template <typename C> constexpr uint32_t` **`char_to_uint`**`(C c) noexcept`
 
