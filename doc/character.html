@@ -115,11 +115,11 @@ them directly to an unsigned integer will give the wrong answer.</p>
 <p>The General Category property is commonly presented as a two-letter
 abbreviation. To avoid too many allocations of short strings, functions in
 this library that use GC represent it as a 16-bit integer, which simply
-contains the ASCII code points of the two letters. (These are static
-<code>uint16_t</code> constants in a namespace, instead of an <code>enum class</code>, to make
-integer comparisons simple.)</p>
+contains the ASCII code points of the two letters. (These are declared in a
+namespace, instead of an <code>enum class</code>, to make integer comparisons easier.)</p>
 <ul>
 <li><code>namespace</code> <strong><code>GC</code></strong><ul>
+<li><code>enum</code> <strong><code>GC</code></strong><code>: uint16_t</code><ul>
 <li><em>Miscellaneous</em><ul>
 <li><strong><code>Cc</code></strong> <em>[control]</em></li>
 <li><strong><code>Cf</code></strong> <em>[format]</em></li>
@@ -173,6 +173,9 @@ integer comparisons simple.)</p>
 </li>
 </ul>
 </li>
+<li><code>std::ostream&amp;</code> <strong><code>operator&lt;&lt;</code></strong><code>(std::ostream&amp; o, GC cat)</code></li>
+</ul>
+</li>
 </ul>
 <p>Constants corresponding to the standard GC values. All of these are <code>static
 constexpr uint16_t</code>.</p>
@@ -221,8 +224,7 @@ a string) and its integer code.</p>
 <ul>
 <li><code>const char*</code> <strong><code>gc_name</code></strong><code>(uint16_t cat) noexcept</code></li>
 </ul>
-<p>Returns the description of the general category (as in the list above), or an
-empty string if the argument is invalid.</p>
+<p>Returns the description of the general category, as shown in the list above.</p>
 <h2 id="boolean-properties">Boolean properties</h2>
 <ul>
 <li><code>bool</code> <strong><code>char_is_assigned</code></strong><code>(char32_t c) noexcept</code></li>
@@ -419,6 +421,22 @@ or zero if the character does not have a decomposition of the relevant type.</p>
 their spelling in the Unicode standard, which is not entirely consistent about
 naming conventions.</p>
 <ul>
+<li><code>std::ostream&amp;</code> <strong><code>operator&lt;&lt;</code></strong><code>(std::ostream&amp; o, Bidi_Class x)</code></li>
+<li><code>std::ostream&amp;</code> <strong><code>operator&lt;&lt;</code></strong><code>(std::ostream&amp; o, East_Asian_Width x)</code></li>
+<li><code>std::ostream&amp;</code> <strong><code>operator&lt;&lt;</code></strong><code>(std::ostream&amp; o, Grapheme_Cluster_Break x)</code></li>
+<li><code>std::ostream&amp;</code> <strong><code>operator&lt;&lt;</code></strong><code>(std::ostream&amp; o, Hangul_Syllable_Type x)</code></li>
+<li><code>std::ostream&amp;</code> <strong><code>operator&lt;&lt;</code></strong><code>(std::ostream&amp; o, Indic_Positional_Category x)</code></li>
+<li><code>std::ostream&amp;</code> <strong><code>operator&lt;&lt;</code></strong><code>(std::ostream&amp; o, Indic_Syllabic_Category x)</code></li>
+<li><code>std::ostream&amp;</code> <strong><code>operator&lt;&lt;</code></strong><code>(std::ostream&amp; o, Joining_Group x)</code></li>
+<li><code>std::ostream&amp;</code> <strong><code>operator&lt;&lt;</code></strong><code>(std::ostream&amp; o, Joining_Type x)</code></li>
+<li><code>std::ostream&amp;</code> <strong><code>operator&lt;&lt;</code></strong><code>(std::ostream&amp; o, Line_Break x)</code></li>
+<li><code>std::ostream&amp;</code> <strong><code>operator&lt;&lt;</code></strong><code>(std::ostream&amp; o, Numeric_Type x)</code></li>
+<li><code>std::ostream&amp;</code> <strong><code>operator&lt;&lt;</code></strong><code>(std::ostream&amp; o, Sentence_Break x)</code></li>
+<li><code>std::ostream&amp;</code> <strong><code>operator&lt;&lt;</code></strong><code>(std::ostream&amp; o, Word_Break x)</code></li>
+</ul>
+<p>Output operators convert an enumerated property value into a string for
+display.</p>
+<ul>
 <li><code>East_Asian_Width</code> <strong><code>east_asian_width</code></strong><code>(char32_t c) noexcept</code></li>
 <li><code>Grapheme_Cluster_Break</code> <strong><code>grapheme_cluster_break</code></strong><code>(char32_t c) noexcept</code></li>
 <li><code>Hangul_Syllable_Type</code> <strong><code>hangul_syllable_type</code></strong><code>(char32_t c) noexcept</code></li>
@@ -432,21 +450,6 @@ naming conventions.</p>
 <li><code>Word_Break</code> <strong><code>word_break</code></strong><code>(char32_t c) noexcept</code></li>
 </ul>
 <p>Functions returning the properties of a character.</p>
-<ul>
-<li><code>u8string</code> <strong><code>property_value</code></strong><code>(Bidi_Class val)</code></li>
-<li><code>u8string</code> <strong><code>property_value</code></strong><code>(East_Asian_Width val)</code></li>
-<li><code>u8string</code> <strong><code>property_value</code></strong><code>(Grapheme_Cluster_Break val)</code></li>
-<li><code>u8string</code> <strong><code>property_value</code></strong><code>(Hangul_Syllable_Type val)</code></li>
-<li><code>u8string</code> <strong><code>property_value</code></strong><code>(Indic_Positional_Category val)</code></li>
-<li><code>u8string</code> <strong><code>property_value</code></strong><code>(Indic_Syllabic_Category val)</code></li>
-<li><code>u8string</code> <strong><code>property_value</code></strong><code>(Joining_Group val)</code></li>
-<li><code>u8string</code> <strong><code>property_value</code></strong><code>(Joining_Type val)</code></li>
-<li><code>u8string</code> <strong><code>property_value</code></strong><code>(Line_Break val)</code></li>
-<li><code>u8string</code> <strong><code>property_value</code></strong><code>(Numeric_Type val)</code></li>
-<li><code>u8string</code> <strong><code>property_value</code></strong><code>(Sentence_Break val)</code></li>
-<li><code>u8string</code> <strong><code>property_value</code></strong><code>(Word_Break val)</code></li>
-</ul>
-<p>Functions converting an enumerated property value into a string for display.</p>
 <h2 id="numeric-properties">Numeric properties</h2>
 <ul>
 <li><code>std::pair&lt;long long, long long&gt;</code> <strong><code>numeric_value</code></strong><code>(char32_t c)</code></li>

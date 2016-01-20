@@ -637,377 +637,339 @@ namespace Unicorn {
         return sparse_table_lookup(UnicornDetail::word_break_table, c);
     }
 
-    // The casts to int in the property_value() functions are to work around a
-    // bug in Clang's unreachable code warning
-    // (http://llvm.org/bugs/show_bug.cgi?id=10444)
+    #define PROPHEAD using T = decltype(x); switch (x) {
+    #define PROPCASE(x) case T::x: o << # x; break;
+    #define PROPTAIL default: o << int(x); break; } return o;
 
-    #define PROPVAL(val) case int(enum_type::val): return # val
-
-    u8string property_value(Bidi_Class val) {
-        using enum_type = decltype(val);
-        auto x = int(val);
-        switch (x) {
-            PROPVAL(AL);
-            PROPVAL(AN);
-            PROPVAL(B);
-            PROPVAL(BN);
-            PROPVAL(CS);
-            PROPVAL(EN);
-            PROPVAL(ES);
-            PROPVAL(ET);
-            PROPVAL(FSI);
-            PROPVAL(L);
-            PROPVAL(LRE);
-            PROPVAL(LRI);
-            PROPVAL(LRO);
-            PROPVAL(NSM);
-            PROPVAL(ON);
-            PROPVAL(PDF);
-            PROPVAL(PDI);
-            PROPVAL(R);
-            PROPVAL(RLE);
-            PROPVAL(RLI);
-            PROPVAL(RLO);
-            PROPVAL(S);
-            PROPVAL(WS);
-            default: return dec(x);
-        }
+    std::ostream& operator<<(std::ostream& o, Bidi_Class x) {
+        PROPHEAD
+        PROPCASE(AL)
+        PROPCASE(AN)
+        PROPCASE(B)
+        PROPCASE(BN)
+        PROPCASE(CS)
+        PROPCASE(EN)
+        PROPCASE(ES)
+        PROPCASE(ET)
+        PROPCASE(FSI)
+        PROPCASE(L)
+        PROPCASE(LRE)
+        PROPCASE(LRI)
+        PROPCASE(LRO)
+        PROPCASE(NSM)
+        PROPCASE(ON)
+        PROPCASE(PDF)
+        PROPCASE(PDI)
+        PROPCASE(R)
+        PROPCASE(RLE)
+        PROPCASE(RLI)
+        PROPCASE(RLO)
+        PROPCASE(S)
+        PROPCASE(WS)
+        PROPTAIL
     }
 
-    u8string property_value(East_Asian_Width val) {
-        using enum_type = decltype(val);
-        auto x = int(val);
-        switch (x) {
-            PROPVAL(N);
-            PROPVAL(A);
-            PROPVAL(F);
-            PROPVAL(H);
-            PROPVAL(Na);
-            PROPVAL(W);
-            default: return dec(x);
-        }
+    std::ostream& operator<<(std::ostream& o, East_Asian_Width x) {
+        PROPHEAD
+        PROPCASE(N)
+        PROPCASE(A)
+        PROPCASE(F)
+        PROPCASE(H)
+        PROPCASE(Na)
+        PROPCASE(W)
+        PROPTAIL
     }
 
-    u8string property_value(Grapheme_Cluster_Break val) {
-        using enum_type = decltype(val);
-        auto x = int(val);
-        switch (x) {
-            PROPVAL(Other);
-            PROPVAL(Control);
-            PROPVAL(CR);
-            PROPVAL(EOT);
-            PROPVAL(Extend);
-            PROPVAL(L);
-            PROPVAL(LF);
-            PROPVAL(LV);
-            PROPVAL(LVT);
-            PROPVAL(Prepend);
-            PROPVAL(Regional_Indicator);
-            PROPVAL(SOT);
-            PROPVAL(SpacingMark);
-            PROPVAL(T);
-            PROPVAL(V);
-            default: return dec(x);
-        }
+    std::ostream& operator<<(std::ostream& o, Grapheme_Cluster_Break x) {
+        PROPHEAD
+        PROPCASE(Other)
+        PROPCASE(Control)
+        PROPCASE(CR)
+        PROPCASE(EOT)
+        PROPCASE(Extend)
+        PROPCASE(L)
+        PROPCASE(LF)
+        PROPCASE(LV)
+        PROPCASE(LVT)
+        PROPCASE(Prepend)
+        PROPCASE(Regional_Indicator)
+        PROPCASE(SOT)
+        PROPCASE(SpacingMark)
+        PROPCASE(T)
+        PROPCASE(V)
+        PROPTAIL
     }
 
-    u8string property_value(Hangul_Syllable_Type val) {
-        using enum_type = decltype(val);
-        auto x = int(val);
-        switch (x) {
-            PROPVAL(NA);
-            PROPVAL(L);
-            PROPVAL(LV);
-            PROPVAL(LVT);
-            PROPVAL(T);
-            PROPVAL(V);
-            default: return dec(x);
-        }
+    std::ostream& operator<<(std::ostream& o, Hangul_Syllable_Type x) {
+        PROPHEAD
+        PROPCASE(NA)
+        PROPCASE(L)
+        PROPCASE(LV)
+        PROPCASE(LVT)
+        PROPCASE(T)
+        PROPCASE(V)
+        PROPTAIL
     }
 
-    u8string property_value(Indic_Positional_Category val) {
-        using enum_type = decltype(val);
-        auto x = int(val);
-        switch (x) {
-            PROPVAL(NA);
-            PROPVAL(Bottom);
-            PROPVAL(Bottom_And_Right);
-            PROPVAL(Left);
-            PROPVAL(Left_And_Right);
-            PROPVAL(Overstruck);
-            PROPVAL(Right);
-            PROPVAL(Top);
-            PROPVAL(Top_And_Bottom);
-            PROPVAL(Top_And_Bottom_And_Right);
-            PROPVAL(Top_And_Left);
-            PROPVAL(Top_And_Left_And_Right);
-            PROPVAL(Top_And_Right);
-            PROPVAL(Visual_Order_Left);
-            default: return dec(x);
-        }
+    std::ostream& operator<<(std::ostream& o, Indic_Positional_Category x) {
+        PROPHEAD
+        PROPCASE(NA)
+        PROPCASE(Bottom)
+        PROPCASE(Bottom_And_Right)
+        PROPCASE(Left)
+        PROPCASE(Left_And_Right)
+        PROPCASE(Overstruck)
+        PROPCASE(Right)
+        PROPCASE(Top)
+        PROPCASE(Top_And_Bottom)
+        PROPCASE(Top_And_Bottom_And_Right)
+        PROPCASE(Top_And_Left)
+        PROPCASE(Top_And_Left_And_Right)
+        PROPCASE(Top_And_Right)
+        PROPCASE(Visual_Order_Left)
+        PROPTAIL
     }
 
-    u8string property_value(Indic_Syllabic_Category val) {
-        using enum_type = decltype(val);
-        auto x = int(val);
-        switch (x) {
-            PROPVAL(Other);
-            PROPVAL(Avagraha);
-            PROPVAL(Bindu);
-            PROPVAL(Brahmi_Joining_Number);
-            PROPVAL(Cantillation_Mark);
-            PROPVAL(Consonant);
-            PROPVAL(Consonant_Dead);
-            PROPVAL(Consonant_Final);
-            PROPVAL(Consonant_Head_Letter);
-            PROPVAL(Consonant_Killer);
-            PROPVAL(Consonant_Medial);
-            PROPVAL(Consonant_Placeholder);
-            PROPVAL(Consonant_Preceding_Repha);
-            PROPVAL(Consonant_Prefixed);
-            PROPVAL(Consonant_Subjoined);
-            PROPVAL(Consonant_Succeeding_Repha);
-            PROPVAL(Consonant_With_Stacker);
-            PROPVAL(Gemination_Mark);
-            PROPVAL(Invisible_Stacker);
-            PROPVAL(Joiner);
-            PROPVAL(Modifying_Letter);
-            PROPVAL(Non_Joiner);
-            PROPVAL(Nukta);
-            PROPVAL(Number);
-            PROPVAL(Number_Joiner);
-            PROPVAL(Pure_Killer);
-            PROPVAL(Register_Shifter);
-            PROPVAL(Syllable_Modifier);
-            PROPVAL(Tone_Letter);
-            PROPVAL(Tone_Mark);
-            PROPVAL(Virama);
-            PROPVAL(Visarga);
-            PROPVAL(Vowel);
-            PROPVAL(Vowel_Dependent);
-            PROPVAL(Vowel_Independent);
-            default: return dec(x);
-        }
+    std::ostream& operator<<(std::ostream& o, Indic_Syllabic_Category x) {
+        PROPHEAD
+        PROPCASE(Other)
+        PROPCASE(Avagraha)
+        PROPCASE(Bindu)
+        PROPCASE(Brahmi_Joining_Number)
+        PROPCASE(Cantillation_Mark)
+        PROPCASE(Consonant)
+        PROPCASE(Consonant_Dead)
+        PROPCASE(Consonant_Final)
+        PROPCASE(Consonant_Head_Letter)
+        PROPCASE(Consonant_Killer)
+        PROPCASE(Consonant_Medial)
+        PROPCASE(Consonant_Placeholder)
+        PROPCASE(Consonant_Preceding_Repha)
+        PROPCASE(Consonant_Prefixed)
+        PROPCASE(Consonant_Subjoined)
+        PROPCASE(Consonant_Succeeding_Repha)
+        PROPCASE(Consonant_With_Stacker)
+        PROPCASE(Gemination_Mark)
+        PROPCASE(Invisible_Stacker)
+        PROPCASE(Joiner)
+        PROPCASE(Modifying_Letter)
+        PROPCASE(Non_Joiner)
+        PROPCASE(Nukta)
+        PROPCASE(Number)
+        PROPCASE(Number_Joiner)
+        PROPCASE(Pure_Killer)
+        PROPCASE(Register_Shifter)
+        PROPCASE(Syllable_Modifier)
+        PROPCASE(Tone_Letter)
+        PROPCASE(Tone_Mark)
+        PROPCASE(Virama)
+        PROPCASE(Visarga)
+        PROPCASE(Vowel)
+        PROPCASE(Vowel_Dependent)
+        PROPCASE(Vowel_Independent)
+        PROPTAIL
     }
 
-    u8string property_value(Joining_Group val) {
-        using enum_type = decltype(val);
-        auto x = int(val);
-        switch (x) {
-            PROPVAL(No_Joining_Group);
-            PROPVAL(Ain);
-            PROPVAL(Alaph);
-            PROPVAL(Alef);
-            PROPVAL(Beh);
-            PROPVAL(Beth);
-            PROPVAL(Burushaski_Yeh_Barree);
-            PROPVAL(Dal);
-            PROPVAL(Dalath_Rish);
-            PROPVAL(E);
-            PROPVAL(Farsi_Yeh);
-            PROPVAL(Fe);
-            PROPVAL(Feh);
-            PROPVAL(Final_Semkath);
-            PROPVAL(Gaf);
-            PROPVAL(Gamal);
-            PROPVAL(Hah);
-            PROPVAL(He);
-            PROPVAL(Heh);
-            PROPVAL(Heh_Goal);
-            PROPVAL(Heth);
-            PROPVAL(Kaf);
-            PROPVAL(Kaph);
-            PROPVAL(Khaph);
-            PROPVAL(Knotted_Heh);
-            PROPVAL(Lam);
-            PROPVAL(Lamadh);
-            PROPVAL(Manichaean_Aleph);
-            PROPVAL(Manichaean_Ayin);
-            PROPVAL(Manichaean_Beth);
-            PROPVAL(Manichaean_Daleth);
-            PROPVAL(Manichaean_Dhamedh);
-            PROPVAL(Manichaean_Five);
-            PROPVAL(Manichaean_Gimel);
-            PROPVAL(Manichaean_Heth);
-            PROPVAL(Manichaean_Hundred);
-            PROPVAL(Manichaean_Kaph);
-            PROPVAL(Manichaean_Lamedh);
-            PROPVAL(Manichaean_Mem);
-            PROPVAL(Manichaean_Nun);
-            PROPVAL(Manichaean_One);
-            PROPVAL(Manichaean_Pe);
-            PROPVAL(Manichaean_Qoph);
-            PROPVAL(Manichaean_Resh);
-            PROPVAL(Manichaean_Sadhe);
-            PROPVAL(Manichaean_Samekh);
-            PROPVAL(Manichaean_Taw);
-            PROPVAL(Manichaean_Ten);
-            PROPVAL(Manichaean_Teth);
-            PROPVAL(Manichaean_Thamedh);
-            PROPVAL(Manichaean_Twenty);
-            PROPVAL(Manichaean_Waw);
-            PROPVAL(Manichaean_Yodh);
-            PROPVAL(Manichaean_Zayin);
-            PROPVAL(Meem);
-            PROPVAL(Mim);
-            PROPVAL(Noon);
-            PROPVAL(Nun);
-            PROPVAL(Nya);
-            PROPVAL(Pe);
-            PROPVAL(Qaf);
-            PROPVAL(Qaph);
-            PROPVAL(Reh);
-            PROPVAL(Reversed_Pe);
-            PROPVAL(Rohingya_Yeh);
-            PROPVAL(Sad);
-            PROPVAL(Sadhe);
-            PROPVAL(Seen);
-            PROPVAL(Semkath);
-            PROPVAL(Shin);
-            PROPVAL(Straight_Waw);
-            PROPVAL(Swash_Kaf);
-            PROPVAL(Syriac_Waw);
-            PROPVAL(Tah);
-            PROPVAL(Taw);
-            PROPVAL(Teh_Marbuta);
-            PROPVAL(Teh_Marbuta_Goal);
-            PROPVAL(Teth);
-            PROPVAL(Waw);
-            PROPVAL(Yeh);
-            PROPVAL(Yeh_Barree);
-            PROPVAL(Yeh_With_Tail);
-            PROPVAL(Yudh);
-            PROPVAL(Yudh_He);
-            PROPVAL(Zain);
-            PROPVAL(Zhain);
-            default: return dec(x);
-        }
+    std::ostream& operator<<(std::ostream& o, Joining_Group x) {
+        PROPHEAD
+        PROPCASE(No_Joining_Group)
+        PROPCASE(Ain)
+        PROPCASE(Alaph)
+        PROPCASE(Alef)
+        PROPCASE(Beh)
+        PROPCASE(Beth)
+        PROPCASE(Burushaski_Yeh_Barree)
+        PROPCASE(Dal)
+        PROPCASE(Dalath_Rish)
+        PROPCASE(E)
+        PROPCASE(Farsi_Yeh)
+        PROPCASE(Fe)
+        PROPCASE(Feh)
+        PROPCASE(Final_Semkath)
+        PROPCASE(Gaf)
+        PROPCASE(Gamal)
+        PROPCASE(Hah)
+        PROPCASE(He)
+        PROPCASE(Heh)
+        PROPCASE(Heh_Goal)
+        PROPCASE(Heth)
+        PROPCASE(Kaf)
+        PROPCASE(Kaph)
+        PROPCASE(Khaph)
+        PROPCASE(Knotted_Heh)
+        PROPCASE(Lam)
+        PROPCASE(Lamadh)
+        PROPCASE(Manichaean_Aleph)
+        PROPCASE(Manichaean_Ayin)
+        PROPCASE(Manichaean_Beth)
+        PROPCASE(Manichaean_Daleth)
+        PROPCASE(Manichaean_Dhamedh)
+        PROPCASE(Manichaean_Five)
+        PROPCASE(Manichaean_Gimel)
+        PROPCASE(Manichaean_Heth)
+        PROPCASE(Manichaean_Hundred)
+        PROPCASE(Manichaean_Kaph)
+        PROPCASE(Manichaean_Lamedh)
+        PROPCASE(Manichaean_Mem)
+        PROPCASE(Manichaean_Nun)
+        PROPCASE(Manichaean_One)
+        PROPCASE(Manichaean_Pe)
+        PROPCASE(Manichaean_Qoph)
+        PROPCASE(Manichaean_Resh)
+        PROPCASE(Manichaean_Sadhe)
+        PROPCASE(Manichaean_Samekh)
+        PROPCASE(Manichaean_Taw)
+        PROPCASE(Manichaean_Ten)
+        PROPCASE(Manichaean_Teth)
+        PROPCASE(Manichaean_Thamedh)
+        PROPCASE(Manichaean_Twenty)
+        PROPCASE(Manichaean_Waw)
+        PROPCASE(Manichaean_Yodh)
+        PROPCASE(Manichaean_Zayin)
+        PROPCASE(Meem)
+        PROPCASE(Mim)
+        PROPCASE(Noon)
+        PROPCASE(Nun)
+        PROPCASE(Nya)
+        PROPCASE(Pe)
+        PROPCASE(Qaf)
+        PROPCASE(Qaph)
+        PROPCASE(Reh)
+        PROPCASE(Reversed_Pe)
+        PROPCASE(Rohingya_Yeh)
+        PROPCASE(Sad)
+        PROPCASE(Sadhe)
+        PROPCASE(Seen)
+        PROPCASE(Semkath)
+        PROPCASE(Shin)
+        PROPCASE(Straight_Waw)
+        PROPCASE(Swash_Kaf)
+        PROPCASE(Syriac_Waw)
+        PROPCASE(Tah)
+        PROPCASE(Taw)
+        PROPCASE(Teh_Marbuta)
+        PROPCASE(Teh_Marbuta_Goal)
+        PROPCASE(Teth)
+        PROPCASE(Waw)
+        PROPCASE(Yeh)
+        PROPCASE(Yeh_Barree)
+        PROPCASE(Yeh_With_Tail)
+        PROPCASE(Yudh)
+        PROPCASE(Yudh_He)
+        PROPCASE(Zain)
+        PROPCASE(Zhain)
+        PROPTAIL
     }
 
-    u8string property_value(Joining_Type val) {
-        using enum_type = decltype(val);
-        auto x = int(val);
-        switch (x) {
-            PROPVAL(Dual_Joining);
-            PROPVAL(Join_Causing);
-            PROPVAL(Left_Joining);
-            PROPVAL(Non_Joining);
-            PROPVAL(Right_Joining);
-            PROPVAL(Transparent);
-            default: return dec(x);
-        }
+    std::ostream& operator<<(std::ostream& o, Joining_Type x) {
+        PROPHEAD
+        PROPCASE(Dual_Joining)
+        PROPCASE(Join_Causing)
+        PROPCASE(Left_Joining)
+        PROPCASE(Non_Joining)
+        PROPCASE(Right_Joining)
+        PROPCASE(Transparent)
+        PROPTAIL
     }
 
-    u8string property_value(Line_Break val) {
-        using enum_type = decltype(val);
-        auto x = int(val);
-        switch (x) {
-            PROPVAL(XX);
-            PROPVAL(AI);
-            PROPVAL(AL);
-            PROPVAL(B2);
-            PROPVAL(BA);
-            PROPVAL(BB);
-            PROPVAL(BK);
-            PROPVAL(CB);
-            PROPVAL(CJ);
-            PROPVAL(CL);
-            PROPVAL(CM);
-            PROPVAL(CP);
-            PROPVAL(CR);
-            PROPVAL(EX);
-            PROPVAL(GL);
-            PROPVAL(H2);
-            PROPVAL(H3);
-            PROPVAL(HL);
-            PROPVAL(HY);
-            PROPVAL(ID);
-            PROPVAL(IN);
-            PROPVAL(IS);
-            PROPVAL(JL);
-            PROPVAL(JT);
-            PROPVAL(JV);
-            PROPVAL(LF);
-            PROPVAL(NL);
-            PROPVAL(NS);
-            PROPVAL(NU);
-            PROPVAL(OP);
-            PROPVAL(PO);
-            PROPVAL(PR);
-            PROPVAL(QU);
-            PROPVAL(RI);
-            PROPVAL(SA);
-            PROPVAL(SG);
-            PROPVAL(SP);
-            PROPVAL(SY);
-            PROPVAL(WJ);
-            PROPVAL(ZW);
-            default: return dec(x);
-        }
+    std::ostream& operator<<(std::ostream& o, Line_Break x) {
+        PROPHEAD
+        PROPCASE(XX)
+        PROPCASE(AI)
+        PROPCASE(AL)
+        PROPCASE(B2)
+        PROPCASE(BA)
+        PROPCASE(BB)
+        PROPCASE(BK)
+        PROPCASE(CB)
+        PROPCASE(CJ)
+        PROPCASE(CL)
+        PROPCASE(CM)
+        PROPCASE(CP)
+        PROPCASE(CR)
+        PROPCASE(EX)
+        PROPCASE(GL)
+        PROPCASE(H2)
+        PROPCASE(H3)
+        PROPCASE(HL)
+        PROPCASE(HY)
+        PROPCASE(ID)
+        PROPCASE(IN)
+        PROPCASE(IS)
+        PROPCASE(JL)
+        PROPCASE(JT)
+        PROPCASE(JV)
+        PROPCASE(LF)
+        PROPCASE(NL)
+        PROPCASE(NS)
+        PROPCASE(NU)
+        PROPCASE(OP)
+        PROPCASE(PO)
+        PROPCASE(PR)
+        PROPCASE(QU)
+        PROPCASE(RI)
+        PROPCASE(SA)
+        PROPCASE(SG)
+        PROPCASE(SP)
+        PROPCASE(SY)
+        PROPCASE(WJ)
+        PROPCASE(ZW)
+        PROPTAIL
     }
 
-    u8string property_value(Numeric_Type val) {
-        using enum_type = decltype(val);
-        auto x = int(val);
-        switch (x) {
-            PROPVAL(None);
-            PROPVAL(Decimal);
-            PROPVAL(Digit);
-            PROPVAL(Numeric);
-            default: return dec(x);
-        }
+    std::ostream& operator<<(std::ostream& o, Numeric_Type x) {
+        PROPHEAD
+        PROPCASE(None)
+        PROPCASE(Decimal)
+        PROPCASE(Digit)
+        PROPCASE(Numeric)
+        PROPTAIL
     }
 
-    u8string property_value(Sentence_Break val) {
-        using enum_type = decltype(val);
-        auto x = int(val);
-        switch (x) {
-            PROPVAL(Other);
-            PROPVAL(ATerm);
-            PROPVAL(Close);
-            PROPVAL(CR);
-            PROPVAL(EOT);
-            PROPVAL(Extend);
-            PROPVAL(Format);
-            PROPVAL(LF);
-            PROPVAL(Lower);
-            PROPVAL(Numeric);
-            PROPVAL(OLetter);
-            PROPVAL(SContinue);
-            PROPVAL(Sep);
-            PROPVAL(SOT);
-            PROPVAL(Sp);
-            PROPVAL(STerm);
-            PROPVAL(Upper);
-            default: return dec(x);
-        }
+    std::ostream& operator<<(std::ostream& o, Sentence_Break x) {
+        PROPHEAD
+        PROPCASE(Other)
+        PROPCASE(ATerm)
+        PROPCASE(Close)
+        PROPCASE(CR)
+        PROPCASE(EOT)
+        PROPCASE(Extend)
+        PROPCASE(Format)
+        PROPCASE(LF)
+        PROPCASE(Lower)
+        PROPCASE(Numeric)
+        PROPCASE(OLetter)
+        PROPCASE(SContinue)
+        PROPCASE(Sep)
+        PROPCASE(SOT)
+        PROPCASE(Sp)
+        PROPCASE(STerm)
+        PROPCASE(Upper)
+        PROPTAIL
     }
 
-    u8string property_value(Word_Break val) {
-        using enum_type = decltype(val);
-        auto x = int(val);
-        switch (x) {
-            PROPVAL(Other);
-            PROPVAL(ALetter);
-            PROPVAL(CR);
-            PROPVAL(Double_Quote);
-            PROPVAL(EOT);
-            PROPVAL(Extend);
-            PROPVAL(ExtendNumLet);
-            PROPVAL(Format);
-            PROPVAL(Hebrew_Letter);
-            PROPVAL(Katakana);
-            PROPVAL(LF);
-            PROPVAL(MidLetter);
-            PROPVAL(MidNum);
-            PROPVAL(MidNumLet);
-            PROPVAL(Newline);
-            PROPVAL(Numeric);
-            PROPVAL(Regional_Indicator);
-            PROPVAL(Single_Quote);
-            PROPVAL(SOT);
-            default: return dec(x);
-        }
+    std::ostream& operator<<(std::ostream& o, Word_Break x) {
+        PROPHEAD
+        PROPCASE(Other)
+        PROPCASE(ALetter)
+        PROPCASE(CR)
+        PROPCASE(Double_Quote)
+        PROPCASE(EOT)
+        PROPCASE(Extend)
+        PROPCASE(ExtendNumLet)
+        PROPCASE(Format)
+        PROPCASE(Hebrew_Letter)
+        PROPCASE(Katakana)
+        PROPCASE(LF)
+        PROPCASE(MidLetter)
+        PROPCASE(MidNum)
+        PROPCASE(MidNumLet)
+        PROPCASE(Newline)
+        PROPCASE(Numeric)
+        PROPCASE(Regional_Indicator)
+        PROPCASE(Single_Quote)
+        PROPCASE(SOT)
+        PROPTAIL
     }
 
     // Numeric properties

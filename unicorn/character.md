@@ -96,48 +96,49 @@ them directly to an unsigned integer will give the wrong answer.
 The General Category property is commonly presented as a two-letter
 abbreviation. To avoid too many allocations of short strings, functions in
 this library that use GC represent it as a 16-bit integer, which simply
-contains the ASCII code points of the two letters. (These are static
-`uint16_t` constants in a namespace, instead of an `enum class`, to make
-integer comparisons simple.)
+contains the ASCII code points of the two letters. (These are declared in a
+namespace, instead of an `enum class`, to make integer comparisons easier.)
 
 * `namespace` **`GC`**
-    * _Miscellaneous_
-        * **`Cc`** _[control]_
-        * **`Cf`** _[format]_
-        * **`Cn`** _[unassigned]_
-        * **`Co`** _[private use]_
-        * **`Cs`** _[surrogate]_
-    * _Letters_
-        * **`Ll`** _[lowercase letter]_
-        * **`Lm`** _[modifier letter]_
-        * **`Lo`** _[other letter]_
-        * **`Lt`** _[titlecase letter]_
-        * **`Lu`** _[uppercase letter]_
-    * _Marks_
-        * **`Mc`** _[spacing mark]_
-        * **`Me`** _[enclosing mark]_
-        * **`Mn`** _[nonspacing mark]_
-    * _Numbers_
-        * **`Nd`** _[decimal number]_
-        * **`Nl`** _[letter number]_
-        * **`No`** _[other number]_
-    * _Punctuation_
-        * **`Pc`** _[connector punctuation]_
-        * **`Pd`** _[dash punctuation]_
-        * **`Pe`** _[close punctuation]_
-        * **`Pf`** _[final punctuation]_
-        * **`Pi`** _[initial punctuation]_
-        * **`Po`** _[other punctuation]_
-        * **`Ps`** _[open punctuation]_
-    * _Symbols_
-        * **`Sc`** _[currency symbol]_
-        * **`Sk`** _[modifier symbol]_
-        * **`Sm`** _[math symbol]_
-        * **`So`** _[other symbol]_
-    * _Separators_
-        * **`Zl`** _[line separator]_
-        * **`Zp`** _[paragraph separator]_
-        * **`Zs`** _[space separator]_
+    * `enum` **`GC`**`: uint16_t`
+        * _Miscellaneous_
+            * **`Cc`** _[control]_
+            * **`Cf`** _[format]_
+            * **`Cn`** _[unassigned]_
+            * **`Co`** _[private use]_
+            * **`Cs`** _[surrogate]_
+        * _Letters_
+            * **`Ll`** _[lowercase letter]_
+            * **`Lm`** _[modifier letter]_
+            * **`Lo`** _[other letter]_
+            * **`Lt`** _[titlecase letter]_
+            * **`Lu`** _[uppercase letter]_
+        * _Marks_
+            * **`Mc`** _[spacing mark]_
+            * **`Me`** _[enclosing mark]_
+            * **`Mn`** _[nonspacing mark]_
+        * _Numbers_
+            * **`Nd`** _[decimal number]_
+            * **`Nl`** _[letter number]_
+            * **`No`** _[other number]_
+        * _Punctuation_
+            * **`Pc`** _[connector punctuation]_
+            * **`Pd`** _[dash punctuation]_
+            * **`Pe`** _[close punctuation]_
+            * **`Pf`** _[final punctuation]_
+            * **`Pi`** _[initial punctuation]_
+            * **`Po`** _[other punctuation]_
+            * **`Ps`** _[open punctuation]_
+        * _Symbols_
+            * **`Sc`** _[currency symbol]_
+            * **`Sk`** _[modifier symbol]_
+            * **`Sm`** _[math symbol]_
+            * **`So`** _[other symbol]_
+        * _Separators_
+            * **`Zl`** _[line separator]_
+            * **`Zp`** _[paragraph separator]_
+            * **`Zs`** _[space separator]_
+    * `std::ostream&` **`operator<<`**`(std::ostream& o, GC cat)`
 
 Constants corresponding to the standard GC values. All of these are `static
 constexpr uint16_t`.
@@ -186,8 +187,7 @@ a string) and its integer code.
 
 * `const char*` **`gc_name`**`(uint16_t cat) noexcept`
 
-Returns the description of the general category (as in the list above), or an
-empty string if the argument is invalid.
+Returns the description of the general category, as shown in the list above.
 
 ## Boolean properties ##
 
@@ -345,6 +345,22 @@ Enumeration property values. The spelling of the class and value names follows
 their spelling in the Unicode standard, which is not entirely consistent about
 naming conventions.
 
+* `std::ostream&` **`operator<<`**`(std::ostream& o, Bidi_Class x)`
+* `std::ostream&` **`operator<<`**`(std::ostream& o, East_Asian_Width x)`
+* `std::ostream&` **`operator<<`**`(std::ostream& o, Grapheme_Cluster_Break x)`
+* `std::ostream&` **`operator<<`**`(std::ostream& o, Hangul_Syllable_Type x)`
+* `std::ostream&` **`operator<<`**`(std::ostream& o, Indic_Positional_Category x)`
+* `std::ostream&` **`operator<<`**`(std::ostream& o, Indic_Syllabic_Category x)`
+* `std::ostream&` **`operator<<`**`(std::ostream& o, Joining_Group x)`
+* `std::ostream&` **`operator<<`**`(std::ostream& o, Joining_Type x)`
+* `std::ostream&` **`operator<<`**`(std::ostream& o, Line_Break x)`
+* `std::ostream&` **`operator<<`**`(std::ostream& o, Numeric_Type x)`
+* `std::ostream&` **`operator<<`**`(std::ostream& o, Sentence_Break x)`
+* `std::ostream&` **`operator<<`**`(std::ostream& o, Word_Break x)`
+
+Output operators convert an enumerated property value into a string for
+display.
+
 * `East_Asian_Width` **`east_asian_width`**`(char32_t c) noexcept`
 * `Grapheme_Cluster_Break` **`grapheme_cluster_break`**`(char32_t c) noexcept`
 * `Hangul_Syllable_Type` **`hangul_syllable_type`**`(char32_t c) noexcept`
@@ -358,21 +374,6 @@ naming conventions.
 * `Word_Break` **`word_break`**`(char32_t c) noexcept`
 
 Functions returning the properties of a character.
-
-* `u8string` **`property_value`**`(Bidi_Class val)`
-* `u8string` **`property_value`**`(East_Asian_Width val)`
-* `u8string` **`property_value`**`(Grapheme_Cluster_Break val)`
-* `u8string` **`property_value`**`(Hangul_Syllable_Type val)`
-* `u8string` **`property_value`**`(Indic_Positional_Category val)`
-* `u8string` **`property_value`**`(Indic_Syllabic_Category val)`
-* `u8string` **`property_value`**`(Joining_Group val)`
-* `u8string` **`property_value`**`(Joining_Type val)`
-* `u8string` **`property_value`**`(Line_Break val)`
-* `u8string` **`property_value`**`(Numeric_Type val)`
-* `u8string` **`property_value`**`(Sentence_Break val)`
-* `u8string` **`property_value`**`(Word_Break val)`
-
-Functions converting an enumerated property value into a string for display.
 
 ## Numeric properties ##
 

@@ -14,6 +14,7 @@ of converting Unicode strings into the four standard normalization forms.
     * **`NFD`**
     * **`NFKC`**
     * **`NFKD`**
+* `std::ostream&` **`operator<<`**`(std::ostream& o, NormalizationForm n)`
 
 The standard Unicode normalization forms.
 

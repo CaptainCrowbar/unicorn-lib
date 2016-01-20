@@ -73,36 +73,40 @@ namespace Unicorn {
 
     namespace GC {
 
-        constexpr uint16_t Cc = encode_gc("Cc");  // Other: Control
-        constexpr uint16_t Cf = encode_gc("Cf");  // Other: Format
-        constexpr uint16_t Cn = encode_gc("Cn");  // Other: Unassigned
-        constexpr uint16_t Co = encode_gc("Co");  // Other: Private use
-        constexpr uint16_t Cs = encode_gc("Cs");  // Other: Surrogate
-        constexpr uint16_t Ll = encode_gc("Ll");  // Letter: Lowercase letter
-        constexpr uint16_t Lm = encode_gc("Lm");  // Letter: Modifier letter
-        constexpr uint16_t Lo = encode_gc("Lo");  // Letter: Other letter
-        constexpr uint16_t Lt = encode_gc("Lt");  // Letter: Titlecase letter
-        constexpr uint16_t Lu = encode_gc("Lu");  // Letter: Uppercase letter
-        constexpr uint16_t Mc = encode_gc("Mc");  // Mark: Spacing mark
-        constexpr uint16_t Me = encode_gc("Me");  // Mark: Enclosing mark
-        constexpr uint16_t Mn = encode_gc("Mn");  // Mark: Nonspacing mark
-        constexpr uint16_t Nd = encode_gc("Nd");  // Number: Decimal number
-        constexpr uint16_t Nl = encode_gc("Nl");  // Number: Letter number
-        constexpr uint16_t No = encode_gc("No");  // Number: Other number
-        constexpr uint16_t Pc = encode_gc("Pc");  // Punctuation: Connector punctuation
-        constexpr uint16_t Pd = encode_gc("Pd");  // Punctuation: Dash punctuation
-        constexpr uint16_t Pe = encode_gc("Pe");  // Punctuation: Close punctuation
-        constexpr uint16_t Pf = encode_gc("Pf");  // Punctuation: Final punctuation
-        constexpr uint16_t Pi = encode_gc("Pi");  // Punctuation: Initial punctuation
-        constexpr uint16_t Po = encode_gc("Po");  // Punctuation: Other punctuation
-        constexpr uint16_t Ps = encode_gc("Ps");  // Punctuation: Open punctuation
-        constexpr uint16_t Sc = encode_gc("Sc");  // Symbol: Currency symbol
-        constexpr uint16_t Sk = encode_gc("Sk");  // Symbol: Modifier symbol
-        constexpr uint16_t Sm = encode_gc("Sm");  // Symbol: Math symbol
-        constexpr uint16_t So = encode_gc("So");  // Symbol: Other symbol
-        constexpr uint16_t Zl = encode_gc("Zl");  // Separator: Line separator
-        constexpr uint16_t Zp = encode_gc("Zp");  // Separator: Paragraph separator
-        constexpr uint16_t Zs = encode_gc("Zs");  // Separator: Space separator
+        enum GC: uint16_t {
+            Cc = encode_gc("Cc"),  // Other: Control
+            Cf = encode_gc("Cf"),  // Other: Format
+            Cn = encode_gc("Cn"),  // Other: Unassigned
+            Co = encode_gc("Co"),  // Other: Private use
+            Cs = encode_gc("Cs"),  // Other: Surrogate
+            Ll = encode_gc("Ll"),  // Letter: Lowercase letter
+            Lm = encode_gc("Lm"),  // Letter: Modifier letter
+            Lo = encode_gc("Lo"),  // Letter: Other letter
+            Lt = encode_gc("Lt"),  // Letter: Titlecase letter
+            Lu = encode_gc("Lu"),  // Letter: Uppercase letter
+            Mc = encode_gc("Mc"),  // Mark: Spacing mark
+            Me = encode_gc("Me"),  // Mark: Enclosing mark
+            Mn = encode_gc("Mn"),  // Mark: Nonspacing mark
+            Nd = encode_gc("Nd"),  // Number: Decimal number
+            Nl = encode_gc("Nl"),  // Number: Letter number
+            No = encode_gc("No"),  // Number: Other number
+            Pc = encode_gc("Pc"),  // Punctuation: Connector punctuation
+            Pd = encode_gc("Pd"),  // Punctuation: Dash punctuation
+            Pe = encode_gc("Pe"),  // Punctuation: Close punctuation
+            Pf = encode_gc("Pf"),  // Punctuation: Final punctuation
+            Pi = encode_gc("Pi"),  // Punctuation: Initial punctuation
+            Po = encode_gc("Po"),  // Punctuation: Other punctuation
+            Ps = encode_gc("Ps"),  // Punctuation: Open punctuation
+            Sc = encode_gc("Sc"),  // Symbol: Currency symbol
+            Sk = encode_gc("Sk"),  // Symbol: Modifier symbol
+            Sm = encode_gc("Sm"),  // Symbol: Math symbol
+            So = encode_gc("So"),  // Symbol: Other symbol
+            Zl = encode_gc("Zl"),  // Separator: Line separator
+            Zp = encode_gc("Zp"),  // Separator: Paragraph separator
+            Zs = encode_gc("Zs"),  // Separator: Space separator
+        };
+
+        inline std::ostream& operator<<(std::ostream& o, GC cat) { return o << decode_gc(cat); }
 
     }
 
@@ -195,6 +199,18 @@ namespace Unicorn {
 
     // Enumeration properties
 
+    std::ostream& operator<<(std::ostream& o, Bidi_Class x);
+    std::ostream& operator<<(std::ostream& o, East_Asian_Width x);
+    std::ostream& operator<<(std::ostream& o, Grapheme_Cluster_Break x);
+    std::ostream& operator<<(std::ostream& o, Hangul_Syllable_Type x);
+    std::ostream& operator<<(std::ostream& o, Indic_Positional_Category x);
+    std::ostream& operator<<(std::ostream& o, Indic_Syllabic_Category x);
+    std::ostream& operator<<(std::ostream& o, Joining_Group x);
+    std::ostream& operator<<(std::ostream& o, Joining_Type x);
+    std::ostream& operator<<(std::ostream& o, Line_Break x);
+    std::ostream& operator<<(std::ostream& o, Numeric_Type x);
+    std::ostream& operator<<(std::ostream& o, Sentence_Break x);
+    std::ostream& operator<<(std::ostream& o, Word_Break x);
     East_Asian_Width east_asian_width(char32_t c) noexcept;
     Grapheme_Cluster_Break grapheme_cluster_break(char32_t c) noexcept;
     Hangul_Syllable_Type hangul_syllable_type(char32_t c) noexcept;
@@ -206,18 +222,6 @@ namespace Unicorn {
     Numeric_Type numeric_type(char32_t c) noexcept;
     Sentence_Break sentence_break(char32_t c) noexcept;
     Word_Break word_break(char32_t c) noexcept;
-    u8string property_value(Bidi_Class val);
-    u8string property_value(East_Asian_Width val);
-    u8string property_value(Grapheme_Cluster_Break val);
-    u8string property_value(Hangul_Syllable_Type val);
-    u8string property_value(Indic_Positional_Category val);
-    u8string property_value(Indic_Syllabic_Category val);
-    u8string property_value(Joining_Group val);
-    u8string property_value(Joining_Type val);
-    u8string property_value(Line_Break val);
-    u8string property_value(Numeric_Type val);
-    u8string property_value(Sentence_Break val);
-    u8string property_value(Word_Break val);
 
     // Numeric properties
 

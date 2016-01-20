@@ -77,4 +77,15 @@ namespace Unicorn {
 
     }
 
+    std::ostream& operator<<(std::ostream& o, NormalizationForm n) {
+        switch (n) {
+            case NFC:   o << "NFC"; break;
+            case NFD:   o << "NFD"; break;
+            case NFKC:  o << "NFKC"; break;
+            case NFKD:  o << "NFKD"; break;
+            default:    o << int(n); break;
+        }
+        return o;
+    }
+
 }

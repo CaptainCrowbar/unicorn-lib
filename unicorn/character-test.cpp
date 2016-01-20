@@ -9,7 +9,7 @@
 using namespace std::literals;
 using namespace Unicorn;
 
-#define PROPTEST(type, value) TEST_EQUAL(property_value(type::value), # value)
+#define TEST_PROPERTY_STRING(type, value) TEST_EQUAL(to_str(type::value), # value)
 
 namespace {
 
@@ -187,6 +187,37 @@ namespace {
         TEST_EQUAL(encode_gc(""s), 0);
         TEST_EQUAL(encode_gc("Cn"s), 0x436e);
         TEST_EQUAL(encode_gc("Lu"s), 0x4c75);
+
+        TEST_EQUAL(to_str(GC::Cc), "Cc");
+        TEST_EQUAL(to_str(GC::Cf), "Cf");
+        TEST_EQUAL(to_str(GC::Cn), "Cn");
+        TEST_EQUAL(to_str(GC::Co), "Co");
+        TEST_EQUAL(to_str(GC::Cs), "Cs");
+        TEST_EQUAL(to_str(GC::Ll), "Ll");
+        TEST_EQUAL(to_str(GC::Lm), "Lm");
+        TEST_EQUAL(to_str(GC::Lo), "Lo");
+        TEST_EQUAL(to_str(GC::Lt), "Lt");
+        TEST_EQUAL(to_str(GC::Lu), "Lu");
+        TEST_EQUAL(to_str(GC::Mc), "Mc");
+        TEST_EQUAL(to_str(GC::Me), "Me");
+        TEST_EQUAL(to_str(GC::Mn), "Mn");
+        TEST_EQUAL(to_str(GC::Nd), "Nd");
+        TEST_EQUAL(to_str(GC::Nl), "Nl");
+        TEST_EQUAL(to_str(GC::No), "No");
+        TEST_EQUAL(to_str(GC::Pc), "Pc");
+        TEST_EQUAL(to_str(GC::Pd), "Pd");
+        TEST_EQUAL(to_str(GC::Pe), "Pe");
+        TEST_EQUAL(to_str(GC::Pf), "Pf");
+        TEST_EQUAL(to_str(GC::Pi), "Pi");
+        TEST_EQUAL(to_str(GC::Po), "Po");
+        TEST_EQUAL(to_str(GC::Ps), "Ps");
+        TEST_EQUAL(to_str(GC::Sc), "Sc");
+        TEST_EQUAL(to_str(GC::Sk), "Sk");
+        TEST_EQUAL(to_str(GC::Sm), "Sm");
+        TEST_EQUAL(to_str(GC::So), "So");
+        TEST_EQUAL(to_str(GC::Zl), "Zl");
+        TEST_EQUAL(to_str(GC::Zp), "Zp");
+        TEST_EQUAL(to_str(GC::Zs), "Zs");
 
         TEST_EQUAL(gc_name(GC::Cc), "control");
         TEST_EQUAL(gc_name(GC::Cf), "format");
@@ -759,162 +790,162 @@ namespace {
 
     void check_arabic_shaping_properties() {
 
-        PROPTEST(Joining_Type, Dual_Joining);
-        PROPTEST(Joining_Type, Join_Causing);
-        PROPTEST(Joining_Type, Left_Joining);
-        PROPTEST(Joining_Type, Non_Joining);
-        PROPTEST(Joining_Type, Right_Joining);
-        PROPTEST(Joining_Type, Transparent);
+        TEST_PROPERTY_STRING(Joining_Type, Dual_Joining);
+        TEST_PROPERTY_STRING(Joining_Type, Join_Causing);
+        TEST_PROPERTY_STRING(Joining_Type, Left_Joining);
+        TEST_PROPERTY_STRING(Joining_Type, Non_Joining);
+        TEST_PROPERTY_STRING(Joining_Type, Right_Joining);
+        TEST_PROPERTY_STRING(Joining_Type, Transparent);
 
-        PROPTEST(Joining_Group, No_Joining_Group);
-        PROPTEST(Joining_Group, Ain);
-        PROPTEST(Joining_Group, Alaph);
-        PROPTEST(Joining_Group, Alef);
-        PROPTEST(Joining_Group, Beh);
-        PROPTEST(Joining_Group, Beth);
-        PROPTEST(Joining_Group, Burushaski_Yeh_Barree);
-        PROPTEST(Joining_Group, Dalath_Rish);
-        PROPTEST(Joining_Group, Dal);
-        PROPTEST(Joining_Group, E);
-        PROPTEST(Joining_Group, Farsi_Yeh);
-        PROPTEST(Joining_Group, Feh);
-        PROPTEST(Joining_Group, Fe);
-        PROPTEST(Joining_Group, Final_Semkath);
-        PROPTEST(Joining_Group, Gaf);
-        PROPTEST(Joining_Group, Gamal);
-        PROPTEST(Joining_Group, Hah);
-        PROPTEST(Joining_Group, Heh_Goal);
-        PROPTEST(Joining_Group, Heh);
-        PROPTEST(Joining_Group, Heth);
-        PROPTEST(Joining_Group, He);
-        PROPTEST(Joining_Group, Kaf);
-        PROPTEST(Joining_Group, Kaph);
-        PROPTEST(Joining_Group, Khaph);
-        PROPTEST(Joining_Group, Knotted_Heh);
-        PROPTEST(Joining_Group, Lamadh);
-        PROPTEST(Joining_Group, Lam);
-        PROPTEST(Joining_Group, Meem);
-        PROPTEST(Joining_Group, Mim);
-        PROPTEST(Joining_Group, Noon);
-        PROPTEST(Joining_Group, Nun);
-        PROPTEST(Joining_Group, Nya);
-        PROPTEST(Joining_Group, Pe);
-        PROPTEST(Joining_Group, Qaf);
-        PROPTEST(Joining_Group, Qaph);
-        PROPTEST(Joining_Group, Reh);
-        PROPTEST(Joining_Group, Reversed_Pe);
-        PROPTEST(Joining_Group, Rohingya_Yeh);
-        PROPTEST(Joining_Group, Sadhe);
-        PROPTEST(Joining_Group, Sad);
-        PROPTEST(Joining_Group, Seen);
-        PROPTEST(Joining_Group, Semkath);
-        PROPTEST(Joining_Group, Shin);
-        PROPTEST(Joining_Group, Swash_Kaf);
-        PROPTEST(Joining_Group, Syriac_Waw);
-        PROPTEST(Joining_Group, Tah);
-        PROPTEST(Joining_Group, Taw);
-        PROPTEST(Joining_Group, Teh_Marbuta_Goal);
-        PROPTEST(Joining_Group, Teh_Marbuta);
-        PROPTEST(Joining_Group, Teth);
-        PROPTEST(Joining_Group, Waw);
-        PROPTEST(Joining_Group, Yeh_Barree);
-        PROPTEST(Joining_Group, Yeh_With_Tail);
-        PROPTEST(Joining_Group, Yeh);
-        PROPTEST(Joining_Group, Yudh_He);
-        PROPTEST(Joining_Group, Yudh);
-        PROPTEST(Joining_Group, Zain);
-        PROPTEST(Joining_Group, Zhain);
+        TEST_PROPERTY_STRING(Joining_Group, No_Joining_Group);
+        TEST_PROPERTY_STRING(Joining_Group, Ain);
+        TEST_PROPERTY_STRING(Joining_Group, Alaph);
+        TEST_PROPERTY_STRING(Joining_Group, Alef);
+        TEST_PROPERTY_STRING(Joining_Group, Beh);
+        TEST_PROPERTY_STRING(Joining_Group, Beth);
+        TEST_PROPERTY_STRING(Joining_Group, Burushaski_Yeh_Barree);
+        TEST_PROPERTY_STRING(Joining_Group, Dalath_Rish);
+        TEST_PROPERTY_STRING(Joining_Group, Dal);
+        TEST_PROPERTY_STRING(Joining_Group, E);
+        TEST_PROPERTY_STRING(Joining_Group, Farsi_Yeh);
+        TEST_PROPERTY_STRING(Joining_Group, Feh);
+        TEST_PROPERTY_STRING(Joining_Group, Fe);
+        TEST_PROPERTY_STRING(Joining_Group, Final_Semkath);
+        TEST_PROPERTY_STRING(Joining_Group, Gaf);
+        TEST_PROPERTY_STRING(Joining_Group, Gamal);
+        TEST_PROPERTY_STRING(Joining_Group, Hah);
+        TEST_PROPERTY_STRING(Joining_Group, Heh_Goal);
+        TEST_PROPERTY_STRING(Joining_Group, Heh);
+        TEST_PROPERTY_STRING(Joining_Group, Heth);
+        TEST_PROPERTY_STRING(Joining_Group, He);
+        TEST_PROPERTY_STRING(Joining_Group, Kaf);
+        TEST_PROPERTY_STRING(Joining_Group, Kaph);
+        TEST_PROPERTY_STRING(Joining_Group, Khaph);
+        TEST_PROPERTY_STRING(Joining_Group, Knotted_Heh);
+        TEST_PROPERTY_STRING(Joining_Group, Lamadh);
+        TEST_PROPERTY_STRING(Joining_Group, Lam);
+        TEST_PROPERTY_STRING(Joining_Group, Meem);
+        TEST_PROPERTY_STRING(Joining_Group, Mim);
+        TEST_PROPERTY_STRING(Joining_Group, Noon);
+        TEST_PROPERTY_STRING(Joining_Group, Nun);
+        TEST_PROPERTY_STRING(Joining_Group, Nya);
+        TEST_PROPERTY_STRING(Joining_Group, Pe);
+        TEST_PROPERTY_STRING(Joining_Group, Qaf);
+        TEST_PROPERTY_STRING(Joining_Group, Qaph);
+        TEST_PROPERTY_STRING(Joining_Group, Reh);
+        TEST_PROPERTY_STRING(Joining_Group, Reversed_Pe);
+        TEST_PROPERTY_STRING(Joining_Group, Rohingya_Yeh);
+        TEST_PROPERTY_STRING(Joining_Group, Sadhe);
+        TEST_PROPERTY_STRING(Joining_Group, Sad);
+        TEST_PROPERTY_STRING(Joining_Group, Seen);
+        TEST_PROPERTY_STRING(Joining_Group, Semkath);
+        TEST_PROPERTY_STRING(Joining_Group, Shin);
+        TEST_PROPERTY_STRING(Joining_Group, Swash_Kaf);
+        TEST_PROPERTY_STRING(Joining_Group, Syriac_Waw);
+        TEST_PROPERTY_STRING(Joining_Group, Tah);
+        TEST_PROPERTY_STRING(Joining_Group, Taw);
+        TEST_PROPERTY_STRING(Joining_Group, Teh_Marbuta_Goal);
+        TEST_PROPERTY_STRING(Joining_Group, Teh_Marbuta);
+        TEST_PROPERTY_STRING(Joining_Group, Teth);
+        TEST_PROPERTY_STRING(Joining_Group, Waw);
+        TEST_PROPERTY_STRING(Joining_Group, Yeh_Barree);
+        TEST_PROPERTY_STRING(Joining_Group, Yeh_With_Tail);
+        TEST_PROPERTY_STRING(Joining_Group, Yeh);
+        TEST_PROPERTY_STRING(Joining_Group, Yudh_He);
+        TEST_PROPERTY_STRING(Joining_Group, Yudh);
+        TEST_PROPERTY_STRING(Joining_Group, Zain);
+        TEST_PROPERTY_STRING(Joining_Group, Zhain);
 
-        TEST_EQUAL(property_value(joining_type(0x640)), "Join_Causing");   // tatweel
-        TEST_EQUAL(property_value(joining_type(0x620)), "Dual_Joining");   // dotless yeh with separate ring below
-        TEST_EQUAL(property_value(joining_type(0x622)), "Right_Joining");  // alef with madda above
-        TEST_EQUAL(property_value(joining_type(0x600)), "Non_Joining");    // arabic number sign
+        TEST_EQUAL(to_str(joining_type(0x640)), "Join_Causing");   // tatweel
+        TEST_EQUAL(to_str(joining_type(0x620)), "Dual_Joining");   // dotless yeh with separate ring below
+        TEST_EQUAL(to_str(joining_type(0x622)), "Right_Joining");  // alef with madda above
+        TEST_EQUAL(to_str(joining_type(0x600)), "Non_Joining");    // arabic number sign
 
-        TEST_EQUAL(property_value(joining_group(0x600)), "No_Joining_Group");  // arabic number sign
-        TEST_EQUAL(property_value(joining_group(0x639)), "Ain");               // ain
-        TEST_EQUAL(property_value(joining_group(0x622)), "Alef");              // alef with madda above
-        TEST_EQUAL(property_value(joining_group(0x628)), "Beh");               // beh
-        TEST_EQUAL(property_value(joining_group(0x62F)), "Dal");               // dal
-        TEST_EQUAL(property_value(joining_group(0x63D)), "Farsi_Yeh");         // farsi yeh with inverted v above
-        TEST_EQUAL(property_value(joining_group(0x641)), "Feh");               // feh
-        TEST_EQUAL(property_value(joining_group(0x63B)), "Gaf");               // keheh with 2 dots above
-        TEST_EQUAL(property_value(joining_group(0x62C)), "Hah");               // hah with dot below
-        TEST_EQUAL(property_value(joining_group(0x647)), "Heh");               // heh
-        TEST_EQUAL(property_value(joining_group(0x6C1)), "Heh_Goal");          // heh goal
-        TEST_EQUAL(property_value(joining_group(0x643)), "Kaf");               // kaf
-        TEST_EQUAL(property_value(joining_group(0x6BE)), "Knotted_Heh");       // knotted heh
-        TEST_EQUAL(property_value(joining_group(0x644)), "Lam");               // lam
-        TEST_EQUAL(property_value(joining_group(0x645)), "Meem");              // meem
-        TEST_EQUAL(property_value(joining_group(0x646)), "Noon");              // noon
-        TEST_EQUAL(property_value(joining_group(0x6BD)), "Nya");               // nya
-        TEST_EQUAL(property_value(joining_group(0x642)), "Qaf");               // qaf
-        TEST_EQUAL(property_value(joining_group(0x631)), "Reh");               // reh
-        TEST_EQUAL(property_value(joining_group(0x635)), "Sad");               // sad
-        TEST_EQUAL(property_value(joining_group(0x633)), "Seen");              // seen
-        TEST_EQUAL(property_value(joining_group(0x6AA)), "Swash_Kaf");         // swash kaf
-        TEST_EQUAL(property_value(joining_group(0x637)), "Tah");               // tah
-        TEST_EQUAL(property_value(joining_group(0x629)), "Teh_Marbuta");       // teh marbuta
-        TEST_EQUAL(property_value(joining_group(0x6C3)), "Teh_Marbuta_Goal");  // teh marbuta goal
-        TEST_EQUAL(property_value(joining_group(0x624)), "Waw");               // waw with hamza above
-        TEST_EQUAL(property_value(joining_group(0x620)), "Yeh");               // dotless yeh with separate ring below
-        TEST_EQUAL(property_value(joining_group(0x6D2)), "Yeh_Barree");        // yeh barree
-        TEST_EQUAL(property_value(joining_group(0x6CD)), "Yeh_With_Tail");     // yeh with tail
+        TEST_EQUAL(to_str(joining_group(0x600)), "No_Joining_Group");  // arabic number sign
+        TEST_EQUAL(to_str(joining_group(0x639)), "Ain");               // ain
+        TEST_EQUAL(to_str(joining_group(0x622)), "Alef");              // alef with madda above
+        TEST_EQUAL(to_str(joining_group(0x628)), "Beh");               // beh
+        TEST_EQUAL(to_str(joining_group(0x62F)), "Dal");               // dal
+        TEST_EQUAL(to_str(joining_group(0x63D)), "Farsi_Yeh");         // farsi yeh with inverted v above
+        TEST_EQUAL(to_str(joining_group(0x641)), "Feh");               // feh
+        TEST_EQUAL(to_str(joining_group(0x63B)), "Gaf");               // keheh with 2 dots above
+        TEST_EQUAL(to_str(joining_group(0x62C)), "Hah");               // hah with dot below
+        TEST_EQUAL(to_str(joining_group(0x647)), "Heh");               // heh
+        TEST_EQUAL(to_str(joining_group(0x6C1)), "Heh_Goal");          // heh goal
+        TEST_EQUAL(to_str(joining_group(0x643)), "Kaf");               // kaf
+        TEST_EQUAL(to_str(joining_group(0x6BE)), "Knotted_Heh");       // knotted heh
+        TEST_EQUAL(to_str(joining_group(0x644)), "Lam");               // lam
+        TEST_EQUAL(to_str(joining_group(0x645)), "Meem");              // meem
+        TEST_EQUAL(to_str(joining_group(0x646)), "Noon");              // noon
+        TEST_EQUAL(to_str(joining_group(0x6BD)), "Nya");               // nya
+        TEST_EQUAL(to_str(joining_group(0x642)), "Qaf");               // qaf
+        TEST_EQUAL(to_str(joining_group(0x631)), "Reh");               // reh
+        TEST_EQUAL(to_str(joining_group(0x635)), "Sad");               // sad
+        TEST_EQUAL(to_str(joining_group(0x633)), "Seen");              // seen
+        TEST_EQUAL(to_str(joining_group(0x6AA)), "Swash_Kaf");         // swash kaf
+        TEST_EQUAL(to_str(joining_group(0x637)), "Tah");               // tah
+        TEST_EQUAL(to_str(joining_group(0x629)), "Teh_Marbuta");       // teh marbuta
+        TEST_EQUAL(to_str(joining_group(0x6C3)), "Teh_Marbuta_Goal");  // teh marbuta goal
+        TEST_EQUAL(to_str(joining_group(0x624)), "Waw");               // waw with hamza above
+        TEST_EQUAL(to_str(joining_group(0x620)), "Yeh");               // dotless yeh with separate ring below
+        TEST_EQUAL(to_str(joining_group(0x6D2)), "Yeh_Barree");        // yeh barree
+        TEST_EQUAL(to_str(joining_group(0x6CD)), "Yeh_With_Tail");     // yeh with tail
 
     }
 
     void check_bidirectional_properties() {
 
-        PROPTEST(Bidi_Class, AL);
-        PROPTEST(Bidi_Class, AN);
-        PROPTEST(Bidi_Class, B);
-        PROPTEST(Bidi_Class, BN);
-        PROPTEST(Bidi_Class, CS);
-        PROPTEST(Bidi_Class, EN);
-        PROPTEST(Bidi_Class, ES);
-        PROPTEST(Bidi_Class, ET);
-        PROPTEST(Bidi_Class, FSI);
-        PROPTEST(Bidi_Class, L);
-        PROPTEST(Bidi_Class, LRE);
-        PROPTEST(Bidi_Class, LRI);
-        PROPTEST(Bidi_Class, LRO);
-        PROPTEST(Bidi_Class, NSM);
-        PROPTEST(Bidi_Class, ON);
-        PROPTEST(Bidi_Class, PDF);
-        PROPTEST(Bidi_Class, PDI);
-        PROPTEST(Bidi_Class, R);
-        PROPTEST(Bidi_Class, RLE);
-        PROPTEST(Bidi_Class, RLI);
-        PROPTEST(Bidi_Class, RLO);
-        PROPTEST(Bidi_Class, S);
-        PROPTEST(Bidi_Class, WS);
+        TEST_PROPERTY_STRING(Bidi_Class, AL);
+        TEST_PROPERTY_STRING(Bidi_Class, AN);
+        TEST_PROPERTY_STRING(Bidi_Class, B);
+        TEST_PROPERTY_STRING(Bidi_Class, BN);
+        TEST_PROPERTY_STRING(Bidi_Class, CS);
+        TEST_PROPERTY_STRING(Bidi_Class, EN);
+        TEST_PROPERTY_STRING(Bidi_Class, ES);
+        TEST_PROPERTY_STRING(Bidi_Class, ET);
+        TEST_PROPERTY_STRING(Bidi_Class, FSI);
+        TEST_PROPERTY_STRING(Bidi_Class, L);
+        TEST_PROPERTY_STRING(Bidi_Class, LRE);
+        TEST_PROPERTY_STRING(Bidi_Class, LRI);
+        TEST_PROPERTY_STRING(Bidi_Class, LRO);
+        TEST_PROPERTY_STRING(Bidi_Class, NSM);
+        TEST_PROPERTY_STRING(Bidi_Class, ON);
+        TEST_PROPERTY_STRING(Bidi_Class, PDF);
+        TEST_PROPERTY_STRING(Bidi_Class, PDI);
+        TEST_PROPERTY_STRING(Bidi_Class, R);
+        TEST_PROPERTY_STRING(Bidi_Class, RLE);
+        TEST_PROPERTY_STRING(Bidi_Class, RLI);
+        TEST_PROPERTY_STRING(Bidi_Class, RLO);
+        TEST_PROPERTY_STRING(Bidi_Class, S);
+        TEST_PROPERTY_STRING(Bidi_Class, WS);
 
-        TEST_EQUAL(property_value(bidi_class(0)), "BN");
-        TEST_EQUAL(property_value(bidi_class('\t')), "S");
-        TEST_EQUAL(property_value(bidi_class('\n')), "B");
-        TEST_EQUAL(property_value(bidi_class(' ')), "WS");
-        TEST_EQUAL(property_value(bidi_class('!')), "ON");
-        TEST_EQUAL(property_value(bidi_class('#')), "ET");
-        TEST_EQUAL(property_value(bidi_class('+')), "ES");
-        TEST_EQUAL(property_value(bidi_class(',')), "CS");
-        TEST_EQUAL(property_value(bidi_class('0')), "EN");
-        TEST_EQUAL(property_value(bidi_class('A')), "L");
-        TEST_EQUAL(property_value(bidi_class(0x300)), "NSM");
-        TEST_EQUAL(property_value(bidi_class(0x378)), "L");
-        TEST_EQUAL(property_value(bidi_class(0x590)), "R");
-        TEST_EQUAL(property_value(bidi_class(0x5de)), "R");
-        TEST_EQUAL(property_value(bidi_class(0x608)), "AL");
-        TEST_EQUAL(property_value(bidi_class(0x660)), "AN");
-        TEST_EQUAL(property_value(bidi_class(0x202a)), "LRE");
-        TEST_EQUAL(property_value(bidi_class(0x202b)), "RLE");
-        TEST_EQUAL(property_value(bidi_class(0x202c)), "PDF");
-        TEST_EQUAL(property_value(bidi_class(0x202d)), "LRO");
-        TEST_EQUAL(property_value(bidi_class(0x202e)), "RLO");
-        TEST_EQUAL(property_value(bidi_class(0x2066)), "LRI");
-        TEST_EQUAL(property_value(bidi_class(0x2067)), "RLI");
-        TEST_EQUAL(property_value(bidi_class(0x2068)), "FSI");
-        TEST_EQUAL(property_value(bidi_class(0x2069)), "PDI");
-        TEST_EQUAL(property_value(bidi_class(0x20bb)), "ET");
-        TEST_EQUAL(property_value(bidi_class(0x10ffff)), "BN");
+        TEST_EQUAL(to_str(bidi_class(0)), "BN");
+        TEST_EQUAL(to_str(bidi_class('\t')), "S");
+        TEST_EQUAL(to_str(bidi_class('\n')), "B");
+        TEST_EQUAL(to_str(bidi_class(' ')), "WS");
+        TEST_EQUAL(to_str(bidi_class('!')), "ON");
+        TEST_EQUAL(to_str(bidi_class('#')), "ET");
+        TEST_EQUAL(to_str(bidi_class('+')), "ES");
+        TEST_EQUAL(to_str(bidi_class(',')), "CS");
+        TEST_EQUAL(to_str(bidi_class('0')), "EN");
+        TEST_EQUAL(to_str(bidi_class('A')), "L");
+        TEST_EQUAL(to_str(bidi_class(0x300)), "NSM");
+        TEST_EQUAL(to_str(bidi_class(0x378)), "L");
+        TEST_EQUAL(to_str(bidi_class(0x590)), "R");
+        TEST_EQUAL(to_str(bidi_class(0x5de)), "R");
+        TEST_EQUAL(to_str(bidi_class(0x608)), "AL");
+        TEST_EQUAL(to_str(bidi_class(0x660)), "AN");
+        TEST_EQUAL(to_str(bidi_class(0x202a)), "LRE");
+        TEST_EQUAL(to_str(bidi_class(0x202b)), "RLE");
+        TEST_EQUAL(to_str(bidi_class(0x202c)), "PDF");
+        TEST_EQUAL(to_str(bidi_class(0x202d)), "LRO");
+        TEST_EQUAL(to_str(bidi_class(0x202e)), "RLO");
+        TEST_EQUAL(to_str(bidi_class(0x2066)), "LRI");
+        TEST_EQUAL(to_str(bidi_class(0x2067)), "RLI");
+        TEST_EQUAL(to_str(bidi_class(0x2068)), "FSI");
+        TEST_EQUAL(to_str(bidi_class(0x2069)), "PDI");
+        TEST_EQUAL(to_str(bidi_class(0x20bb)), "ET");
+        TEST_EQUAL(to_str(bidi_class(0x10ffff)), "BN");
 
         TEST(char_is_bidi_mirrored('('));
         TEST(char_is_bidi_mirrored(')'));
@@ -1235,323 +1266,323 @@ namespace {
 
     void check_enumeration_properties() {
 
-        PROPTEST(East_Asian_Width, N);
-        PROPTEST(East_Asian_Width, A);
-        PROPTEST(East_Asian_Width, F);
-        PROPTEST(East_Asian_Width, H);
-        PROPTEST(East_Asian_Width, Na);
-        PROPTEST(East_Asian_Width, W);
+        TEST_PROPERTY_STRING(East_Asian_Width, N);
+        TEST_PROPERTY_STRING(East_Asian_Width, A);
+        TEST_PROPERTY_STRING(East_Asian_Width, F);
+        TEST_PROPERTY_STRING(East_Asian_Width, H);
+        TEST_PROPERTY_STRING(East_Asian_Width, Na);
+        TEST_PROPERTY_STRING(East_Asian_Width, W);
 
-        PROPTEST(Grapheme_Cluster_Break, Other);
-        PROPTEST(Grapheme_Cluster_Break, Control);
-        PROPTEST(Grapheme_Cluster_Break, CR);
-        PROPTEST(Grapheme_Cluster_Break, EOT);
-        PROPTEST(Grapheme_Cluster_Break, Extend);
-        PROPTEST(Grapheme_Cluster_Break, L);
-        PROPTEST(Grapheme_Cluster_Break, LF);
-        PROPTEST(Grapheme_Cluster_Break, LV);
-        PROPTEST(Grapheme_Cluster_Break, LVT);
-        PROPTEST(Grapheme_Cluster_Break, Prepend);
-        PROPTEST(Grapheme_Cluster_Break, Regional_Indicator);
-        PROPTEST(Grapheme_Cluster_Break, SOT);
-        PROPTEST(Grapheme_Cluster_Break, SpacingMark);
-        PROPTEST(Grapheme_Cluster_Break, T);
-        PROPTEST(Grapheme_Cluster_Break, V);
+        TEST_PROPERTY_STRING(Grapheme_Cluster_Break, Other);
+        TEST_PROPERTY_STRING(Grapheme_Cluster_Break, Control);
+        TEST_PROPERTY_STRING(Grapheme_Cluster_Break, CR);
+        TEST_PROPERTY_STRING(Grapheme_Cluster_Break, EOT);
+        TEST_PROPERTY_STRING(Grapheme_Cluster_Break, Extend);
+        TEST_PROPERTY_STRING(Grapheme_Cluster_Break, L);
+        TEST_PROPERTY_STRING(Grapheme_Cluster_Break, LF);
+        TEST_PROPERTY_STRING(Grapheme_Cluster_Break, LV);
+        TEST_PROPERTY_STRING(Grapheme_Cluster_Break, LVT);
+        TEST_PROPERTY_STRING(Grapheme_Cluster_Break, Prepend);
+        TEST_PROPERTY_STRING(Grapheme_Cluster_Break, Regional_Indicator);
+        TEST_PROPERTY_STRING(Grapheme_Cluster_Break, SOT);
+        TEST_PROPERTY_STRING(Grapheme_Cluster_Break, SpacingMark);
+        TEST_PROPERTY_STRING(Grapheme_Cluster_Break, T);
+        TEST_PROPERTY_STRING(Grapheme_Cluster_Break, V);
 
-        PROPTEST(Hangul_Syllable_Type, NA);
-        PROPTEST(Hangul_Syllable_Type, L);
-        PROPTEST(Hangul_Syllable_Type, LV);
-        PROPTEST(Hangul_Syllable_Type, LVT);
-        PROPTEST(Hangul_Syllable_Type, T);
-        PROPTEST(Hangul_Syllable_Type, V);
+        TEST_PROPERTY_STRING(Hangul_Syllable_Type, NA);
+        TEST_PROPERTY_STRING(Hangul_Syllable_Type, L);
+        TEST_PROPERTY_STRING(Hangul_Syllable_Type, LV);
+        TEST_PROPERTY_STRING(Hangul_Syllable_Type, LVT);
+        TEST_PROPERTY_STRING(Hangul_Syllable_Type, T);
+        TEST_PROPERTY_STRING(Hangul_Syllable_Type, V);
 
-        PROPTEST(Indic_Positional_Category, NA);
-        PROPTEST(Indic_Positional_Category, Bottom);
-        PROPTEST(Indic_Positional_Category, Bottom_And_Right);
-        PROPTEST(Indic_Positional_Category, Left);
-        PROPTEST(Indic_Positional_Category, Left_And_Right);
-        PROPTEST(Indic_Positional_Category, Overstruck);
-        PROPTEST(Indic_Positional_Category, Right);
-        PROPTEST(Indic_Positional_Category, Top);
-        PROPTEST(Indic_Positional_Category, Top_And_Bottom);
-        PROPTEST(Indic_Positional_Category, Top_And_Bottom_And_Right);
-        PROPTEST(Indic_Positional_Category, Top_And_Left);
-        PROPTEST(Indic_Positional_Category, Top_And_Left_And_Right);
-        PROPTEST(Indic_Positional_Category, Top_And_Right);
-        PROPTEST(Indic_Positional_Category, Visual_Order_Left);
+        TEST_PROPERTY_STRING(Indic_Positional_Category, NA);
+        TEST_PROPERTY_STRING(Indic_Positional_Category, Bottom);
+        TEST_PROPERTY_STRING(Indic_Positional_Category, Bottom_And_Right);
+        TEST_PROPERTY_STRING(Indic_Positional_Category, Left);
+        TEST_PROPERTY_STRING(Indic_Positional_Category, Left_And_Right);
+        TEST_PROPERTY_STRING(Indic_Positional_Category, Overstruck);
+        TEST_PROPERTY_STRING(Indic_Positional_Category, Right);
+        TEST_PROPERTY_STRING(Indic_Positional_Category, Top);
+        TEST_PROPERTY_STRING(Indic_Positional_Category, Top_And_Bottom);
+        TEST_PROPERTY_STRING(Indic_Positional_Category, Top_And_Bottom_And_Right);
+        TEST_PROPERTY_STRING(Indic_Positional_Category, Top_And_Left);
+        TEST_PROPERTY_STRING(Indic_Positional_Category, Top_And_Left_And_Right);
+        TEST_PROPERTY_STRING(Indic_Positional_Category, Top_And_Right);
+        TEST_PROPERTY_STRING(Indic_Positional_Category, Visual_Order_Left);
 
-        PROPTEST(Indic_Syllabic_Category, Other);
-        PROPTEST(Indic_Syllabic_Category, Avagraha);
-        PROPTEST(Indic_Syllabic_Category, Bindu);
-        PROPTEST(Indic_Syllabic_Category, Brahmi_Joining_Number);
-        PROPTEST(Indic_Syllabic_Category, Cantillation_Mark);
-        PROPTEST(Indic_Syllabic_Category, Consonant);
-        PROPTEST(Indic_Syllabic_Category, Consonant_Dead);
-        PROPTEST(Indic_Syllabic_Category, Consonant_Final);
-        PROPTEST(Indic_Syllabic_Category, Consonant_Head_Letter);
-        PROPTEST(Indic_Syllabic_Category, Consonant_Medial);
-        PROPTEST(Indic_Syllabic_Category, Consonant_Placeholder);
-        PROPTEST(Indic_Syllabic_Category, Consonant_Preceding_Repha);
-        PROPTEST(Indic_Syllabic_Category, Consonant_Subjoined);
-        PROPTEST(Indic_Syllabic_Category, Consonant_Succeeding_Repha);
-        PROPTEST(Indic_Syllabic_Category, Gemination_Mark);
-        PROPTEST(Indic_Syllabic_Category, Invisible_Stacker);
-        PROPTEST(Indic_Syllabic_Category, Joiner);
-        PROPTEST(Indic_Syllabic_Category, Modifying_Letter);
-        PROPTEST(Indic_Syllabic_Category, Non_Joiner);
-        PROPTEST(Indic_Syllabic_Category, Nukta);
-        PROPTEST(Indic_Syllabic_Category, Number);
-        PROPTEST(Indic_Syllabic_Category, Number_Joiner);
-        PROPTEST(Indic_Syllabic_Category, Pure_Killer);
-        PROPTEST(Indic_Syllabic_Category, Register_Shifter);
-        PROPTEST(Indic_Syllabic_Category, Tone_Letter);
-        PROPTEST(Indic_Syllabic_Category, Tone_Mark);
-        PROPTEST(Indic_Syllabic_Category, Virama);
-        PROPTEST(Indic_Syllabic_Category, Visarga);
-        PROPTEST(Indic_Syllabic_Category, Vowel);
-        PROPTEST(Indic_Syllabic_Category, Vowel_Dependent);
-        PROPTEST(Indic_Syllabic_Category, Vowel_Independent);
+        TEST_PROPERTY_STRING(Indic_Syllabic_Category, Other);
+        TEST_PROPERTY_STRING(Indic_Syllabic_Category, Avagraha);
+        TEST_PROPERTY_STRING(Indic_Syllabic_Category, Bindu);
+        TEST_PROPERTY_STRING(Indic_Syllabic_Category, Brahmi_Joining_Number);
+        TEST_PROPERTY_STRING(Indic_Syllabic_Category, Cantillation_Mark);
+        TEST_PROPERTY_STRING(Indic_Syllabic_Category, Consonant);
+        TEST_PROPERTY_STRING(Indic_Syllabic_Category, Consonant_Dead);
+        TEST_PROPERTY_STRING(Indic_Syllabic_Category, Consonant_Final);
+        TEST_PROPERTY_STRING(Indic_Syllabic_Category, Consonant_Head_Letter);
+        TEST_PROPERTY_STRING(Indic_Syllabic_Category, Consonant_Medial);
+        TEST_PROPERTY_STRING(Indic_Syllabic_Category, Consonant_Placeholder);
+        TEST_PROPERTY_STRING(Indic_Syllabic_Category, Consonant_Preceding_Repha);
+        TEST_PROPERTY_STRING(Indic_Syllabic_Category, Consonant_Subjoined);
+        TEST_PROPERTY_STRING(Indic_Syllabic_Category, Consonant_Succeeding_Repha);
+        TEST_PROPERTY_STRING(Indic_Syllabic_Category, Gemination_Mark);
+        TEST_PROPERTY_STRING(Indic_Syllabic_Category, Invisible_Stacker);
+        TEST_PROPERTY_STRING(Indic_Syllabic_Category, Joiner);
+        TEST_PROPERTY_STRING(Indic_Syllabic_Category, Modifying_Letter);
+        TEST_PROPERTY_STRING(Indic_Syllabic_Category, Non_Joiner);
+        TEST_PROPERTY_STRING(Indic_Syllabic_Category, Nukta);
+        TEST_PROPERTY_STRING(Indic_Syllabic_Category, Number);
+        TEST_PROPERTY_STRING(Indic_Syllabic_Category, Number_Joiner);
+        TEST_PROPERTY_STRING(Indic_Syllabic_Category, Pure_Killer);
+        TEST_PROPERTY_STRING(Indic_Syllabic_Category, Register_Shifter);
+        TEST_PROPERTY_STRING(Indic_Syllabic_Category, Tone_Letter);
+        TEST_PROPERTY_STRING(Indic_Syllabic_Category, Tone_Mark);
+        TEST_PROPERTY_STRING(Indic_Syllabic_Category, Virama);
+        TEST_PROPERTY_STRING(Indic_Syllabic_Category, Visarga);
+        TEST_PROPERTY_STRING(Indic_Syllabic_Category, Vowel);
+        TEST_PROPERTY_STRING(Indic_Syllabic_Category, Vowel_Dependent);
+        TEST_PROPERTY_STRING(Indic_Syllabic_Category, Vowel_Independent);
 
-        PROPTEST(Line_Break, XX);
-        PROPTEST(Line_Break, AI);
-        PROPTEST(Line_Break, AL);
-        PROPTEST(Line_Break, B2);
-        PROPTEST(Line_Break, BA);
-        PROPTEST(Line_Break, BB);
-        PROPTEST(Line_Break, BK);
-        PROPTEST(Line_Break, CB);
-        PROPTEST(Line_Break, CJ);
-        PROPTEST(Line_Break, CL);
-        PROPTEST(Line_Break, CM);
-        PROPTEST(Line_Break, CP);
-        PROPTEST(Line_Break, CR);
-        PROPTEST(Line_Break, EX);
-        PROPTEST(Line_Break, GL);
-        PROPTEST(Line_Break, H2);
-        PROPTEST(Line_Break, H3);
-        PROPTEST(Line_Break, HL);
-        PROPTEST(Line_Break, HY);
-        PROPTEST(Line_Break, ID);
-        PROPTEST(Line_Break, IN);
-        PROPTEST(Line_Break, IS);
-        PROPTEST(Line_Break, JL);
-        PROPTEST(Line_Break, JT);
-        PROPTEST(Line_Break, JV);
-        PROPTEST(Line_Break, LF);
-        PROPTEST(Line_Break, NL);
-        PROPTEST(Line_Break, NS);
-        PROPTEST(Line_Break, NU);
-        PROPTEST(Line_Break, OP);
-        PROPTEST(Line_Break, PO);
-        PROPTEST(Line_Break, PR);
-        PROPTEST(Line_Break, QU);
-        PROPTEST(Line_Break, RI);
-        PROPTEST(Line_Break, SA);
-        PROPTEST(Line_Break, SG);
-        PROPTEST(Line_Break, SP);
-        PROPTEST(Line_Break, SY);
-        PROPTEST(Line_Break, WJ);
-        PROPTEST(Line_Break, ZW);
+        TEST_PROPERTY_STRING(Line_Break, XX);
+        TEST_PROPERTY_STRING(Line_Break, AI);
+        TEST_PROPERTY_STRING(Line_Break, AL);
+        TEST_PROPERTY_STRING(Line_Break, B2);
+        TEST_PROPERTY_STRING(Line_Break, BA);
+        TEST_PROPERTY_STRING(Line_Break, BB);
+        TEST_PROPERTY_STRING(Line_Break, BK);
+        TEST_PROPERTY_STRING(Line_Break, CB);
+        TEST_PROPERTY_STRING(Line_Break, CJ);
+        TEST_PROPERTY_STRING(Line_Break, CL);
+        TEST_PROPERTY_STRING(Line_Break, CM);
+        TEST_PROPERTY_STRING(Line_Break, CP);
+        TEST_PROPERTY_STRING(Line_Break, CR);
+        TEST_PROPERTY_STRING(Line_Break, EX);
+        TEST_PROPERTY_STRING(Line_Break, GL);
+        TEST_PROPERTY_STRING(Line_Break, H2);
+        TEST_PROPERTY_STRING(Line_Break, H3);
+        TEST_PROPERTY_STRING(Line_Break, HL);
+        TEST_PROPERTY_STRING(Line_Break, HY);
+        TEST_PROPERTY_STRING(Line_Break, ID);
+        TEST_PROPERTY_STRING(Line_Break, IN);
+        TEST_PROPERTY_STRING(Line_Break, IS);
+        TEST_PROPERTY_STRING(Line_Break, JL);
+        TEST_PROPERTY_STRING(Line_Break, JT);
+        TEST_PROPERTY_STRING(Line_Break, JV);
+        TEST_PROPERTY_STRING(Line_Break, LF);
+        TEST_PROPERTY_STRING(Line_Break, NL);
+        TEST_PROPERTY_STRING(Line_Break, NS);
+        TEST_PROPERTY_STRING(Line_Break, NU);
+        TEST_PROPERTY_STRING(Line_Break, OP);
+        TEST_PROPERTY_STRING(Line_Break, PO);
+        TEST_PROPERTY_STRING(Line_Break, PR);
+        TEST_PROPERTY_STRING(Line_Break, QU);
+        TEST_PROPERTY_STRING(Line_Break, RI);
+        TEST_PROPERTY_STRING(Line_Break, SA);
+        TEST_PROPERTY_STRING(Line_Break, SG);
+        TEST_PROPERTY_STRING(Line_Break, SP);
+        TEST_PROPERTY_STRING(Line_Break, SY);
+        TEST_PROPERTY_STRING(Line_Break, WJ);
+        TEST_PROPERTY_STRING(Line_Break, ZW);
 
-        PROPTEST(Numeric_Type, None);
-        PROPTEST(Numeric_Type, Decimal);
-        PROPTEST(Numeric_Type, Digit);
-        PROPTEST(Numeric_Type, Numeric);
+        TEST_PROPERTY_STRING(Numeric_Type, None);
+        TEST_PROPERTY_STRING(Numeric_Type, Decimal);
+        TEST_PROPERTY_STRING(Numeric_Type, Digit);
+        TEST_PROPERTY_STRING(Numeric_Type, Numeric);
 
-        PROPTEST(Sentence_Break, Other);
-        PROPTEST(Sentence_Break, ATerm);
-        PROPTEST(Sentence_Break, Close);
-        PROPTEST(Sentence_Break, CR);
-        PROPTEST(Sentence_Break, EOT);
-        PROPTEST(Sentence_Break, Extend);
-        PROPTEST(Sentence_Break, Format);
-        PROPTEST(Sentence_Break, LF);
-        PROPTEST(Sentence_Break, Lower);
-        PROPTEST(Sentence_Break, Numeric);
-        PROPTEST(Sentence_Break, OLetter);
-        PROPTEST(Sentence_Break, SContinue);
-        PROPTEST(Sentence_Break, Sep);
-        PROPTEST(Sentence_Break, SOT);
-        PROPTEST(Sentence_Break, Sp);
-        PROPTEST(Sentence_Break, STerm);
-        PROPTEST(Sentence_Break, Upper);
+        TEST_PROPERTY_STRING(Sentence_Break, Other);
+        TEST_PROPERTY_STRING(Sentence_Break, ATerm);
+        TEST_PROPERTY_STRING(Sentence_Break, Close);
+        TEST_PROPERTY_STRING(Sentence_Break, CR);
+        TEST_PROPERTY_STRING(Sentence_Break, EOT);
+        TEST_PROPERTY_STRING(Sentence_Break, Extend);
+        TEST_PROPERTY_STRING(Sentence_Break, Format);
+        TEST_PROPERTY_STRING(Sentence_Break, LF);
+        TEST_PROPERTY_STRING(Sentence_Break, Lower);
+        TEST_PROPERTY_STRING(Sentence_Break, Numeric);
+        TEST_PROPERTY_STRING(Sentence_Break, OLetter);
+        TEST_PROPERTY_STRING(Sentence_Break, SContinue);
+        TEST_PROPERTY_STRING(Sentence_Break, Sep);
+        TEST_PROPERTY_STRING(Sentence_Break, SOT);
+        TEST_PROPERTY_STRING(Sentence_Break, Sp);
+        TEST_PROPERTY_STRING(Sentence_Break, STerm);
+        TEST_PROPERTY_STRING(Sentence_Break, Upper);
 
-        PROPTEST(Word_Break, Other);
-        PROPTEST(Word_Break, ALetter);
-        PROPTEST(Word_Break, CR);
-        PROPTEST(Word_Break, Double_Quote);
-        PROPTEST(Word_Break, EOT);
-        PROPTEST(Word_Break, Extend);
-        PROPTEST(Word_Break, ExtendNumLet);
-        PROPTEST(Word_Break, Format);
-        PROPTEST(Word_Break, Hebrew_Letter);
-        PROPTEST(Word_Break, Katakana);
-        PROPTEST(Word_Break, LF);
-        PROPTEST(Word_Break, MidLetter);
-        PROPTEST(Word_Break, MidNum);
-        PROPTEST(Word_Break, MidNumLet);
-        PROPTEST(Word_Break, Newline);
-        PROPTEST(Word_Break, Numeric);
-        PROPTEST(Word_Break, Regional_Indicator);
-        PROPTEST(Word_Break, Single_Quote);
-        PROPTEST(Word_Break, SOT);
+        TEST_PROPERTY_STRING(Word_Break, Other);
+        TEST_PROPERTY_STRING(Word_Break, ALetter);
+        TEST_PROPERTY_STRING(Word_Break, CR);
+        TEST_PROPERTY_STRING(Word_Break, Double_Quote);
+        TEST_PROPERTY_STRING(Word_Break, EOT);
+        TEST_PROPERTY_STRING(Word_Break, Extend);
+        TEST_PROPERTY_STRING(Word_Break, ExtendNumLet);
+        TEST_PROPERTY_STRING(Word_Break, Format);
+        TEST_PROPERTY_STRING(Word_Break, Hebrew_Letter);
+        TEST_PROPERTY_STRING(Word_Break, Katakana);
+        TEST_PROPERTY_STRING(Word_Break, LF);
+        TEST_PROPERTY_STRING(Word_Break, MidLetter);
+        TEST_PROPERTY_STRING(Word_Break, MidNum);
+        TEST_PROPERTY_STRING(Word_Break, MidNumLet);
+        TEST_PROPERTY_STRING(Word_Break, Newline);
+        TEST_PROPERTY_STRING(Word_Break, Numeric);
+        TEST_PROPERTY_STRING(Word_Break, Regional_Indicator);
+        TEST_PROPERTY_STRING(Word_Break, Single_Quote);
+        TEST_PROPERTY_STRING(Word_Break, SOT);
 
-        TEST_EQUAL(property_value(east_asian_width(0)), "N");
-        TEST_EQUAL(property_value(east_asian_width(0xa1)), "A");
-        TEST_EQUAL(property_value(east_asian_width(0x3000)), "F");
-        TEST_EQUAL(property_value(east_asian_width(0x20a9)), "H");
-        TEST_EQUAL(property_value(east_asian_width(0x20)), "Na");
-        TEST_EQUAL(property_value(east_asian_width(0x1100)), "W");
+        TEST_EQUAL(to_str(east_asian_width(0)), "N");
+        TEST_EQUAL(to_str(east_asian_width(0xa1)), "A");
+        TEST_EQUAL(to_str(east_asian_width(0x3000)), "F");
+        TEST_EQUAL(to_str(east_asian_width(0x20a9)), "H");
+        TEST_EQUAL(to_str(east_asian_width(0x20)), "Na");
+        TEST_EQUAL(to_str(east_asian_width(0x1100)), "W");
 
-        TEST_EQUAL(property_value(grapheme_cluster_break(0x10ffff)), "Other");
-        TEST_EQUAL(property_value(grapheme_cluster_break(0xd)), "CR");
-        TEST_EQUAL(property_value(grapheme_cluster_break(0)), "Control");
-        TEST_EQUAL(property_value(grapheme_cluster_break(0x300)), "Extend");
-        TEST_EQUAL(property_value(grapheme_cluster_break(0x1100)), "L");
-        TEST_EQUAL(property_value(grapheme_cluster_break(0xa)), "LF");
-        TEST_EQUAL(property_value(grapheme_cluster_break(0xac00)), "LV");
-        TEST_EQUAL(property_value(grapheme_cluster_break(0xac01)), "LVT");
-        TEST_EQUAL(property_value(grapheme_cluster_break(0x1f1e6)), "Regional_Indicator");
-        TEST_EQUAL(property_value(grapheme_cluster_break(0x903)), "SpacingMark");
-        TEST_EQUAL(property_value(grapheme_cluster_break(0x11a8)), "T");
-        TEST_EQUAL(property_value(grapheme_cluster_break(0x1160)), "V");
+        TEST_EQUAL(to_str(grapheme_cluster_break(0x10ffff)), "Other");
+        TEST_EQUAL(to_str(grapheme_cluster_break(0xd)), "CR");
+        TEST_EQUAL(to_str(grapheme_cluster_break(0)), "Control");
+        TEST_EQUAL(to_str(grapheme_cluster_break(0x300)), "Extend");
+        TEST_EQUAL(to_str(grapheme_cluster_break(0x1100)), "L");
+        TEST_EQUAL(to_str(grapheme_cluster_break(0xa)), "LF");
+        TEST_EQUAL(to_str(grapheme_cluster_break(0xac00)), "LV");
+        TEST_EQUAL(to_str(grapheme_cluster_break(0xac01)), "LVT");
+        TEST_EQUAL(to_str(grapheme_cluster_break(0x1f1e6)), "Regional_Indicator");
+        TEST_EQUAL(to_str(grapheme_cluster_break(0x903)), "SpacingMark");
+        TEST_EQUAL(to_str(grapheme_cluster_break(0x11a8)), "T");
+        TEST_EQUAL(to_str(grapheme_cluster_break(0x1160)), "V");
 
-        TEST_EQUAL(property_value(hangul_syllable_type(0)), "NA");
-        TEST_EQUAL(property_value(hangul_syllable_type(0x1100)), "L");
-        TEST_EQUAL(property_value(hangul_syllable_type(0xac00)), "LV");
-        TEST_EQUAL(property_value(hangul_syllable_type(0xac01)), "LVT");
-        TEST_EQUAL(property_value(hangul_syllable_type(0x11a8)), "T");
-        TEST_EQUAL(property_value(hangul_syllable_type(0x1160)), "V");
+        TEST_EQUAL(to_str(hangul_syllable_type(0)), "NA");
+        TEST_EQUAL(to_str(hangul_syllable_type(0x1100)), "L");
+        TEST_EQUAL(to_str(hangul_syllable_type(0xac00)), "LV");
+        TEST_EQUAL(to_str(hangul_syllable_type(0xac01)), "LVT");
+        TEST_EQUAL(to_str(hangul_syllable_type(0x11a8)), "T");
+        TEST_EQUAL(to_str(hangul_syllable_type(0x1160)), "V");
 
-        TEST_EQUAL(property_value(indic_positional_category(0)), "NA");
-        TEST_EQUAL(property_value(indic_positional_category(0x941)), "Bottom");
-        TEST_EQUAL(property_value(indic_positional_category(0x1b3b)), "Bottom_And_Right");
-        TEST_EQUAL(property_value(indic_positional_category(0x93f)), "Left");
-        TEST_EQUAL(property_value(indic_positional_category(0x9cb)), "Left_And_Right");
-        TEST_EQUAL(property_value(indic_positional_category(0x10a01)), "Overstruck");
-        TEST_EQUAL(property_value(indic_positional_category(0x93b)), "Right");
-        TEST_EQUAL(property_value(indic_positional_category(0x93a)), "Top");
-        TEST_EQUAL(property_value(indic_positional_category(0xc48)), "Top_And_Bottom");
-        TEST_EQUAL(property_value(indic_positional_category(0x1b3d)), "Top_And_Bottom_And_Right");
-        TEST_EQUAL(property_value(indic_positional_category(0xb48)), "Top_And_Left");
-        TEST_EQUAL(property_value(indic_positional_category(0xb4c)), "Top_And_Left_And_Right");
-        TEST_EQUAL(property_value(indic_positional_category(0xac9)), "Top_And_Right");
-        TEST_EQUAL(property_value(indic_positional_category(0xe40)), "Visual_Order_Left");
+        TEST_EQUAL(to_str(indic_positional_category(0)), "NA");
+        TEST_EQUAL(to_str(indic_positional_category(0x941)), "Bottom");
+        TEST_EQUAL(to_str(indic_positional_category(0x1b3b)), "Bottom_And_Right");
+        TEST_EQUAL(to_str(indic_positional_category(0x93f)), "Left");
+        TEST_EQUAL(to_str(indic_positional_category(0x9cb)), "Left_And_Right");
+        TEST_EQUAL(to_str(indic_positional_category(0x10a01)), "Overstruck");
+        TEST_EQUAL(to_str(indic_positional_category(0x93b)), "Right");
+        TEST_EQUAL(to_str(indic_positional_category(0x93a)), "Top");
+        TEST_EQUAL(to_str(indic_positional_category(0xc48)), "Top_And_Bottom");
+        TEST_EQUAL(to_str(indic_positional_category(0x1b3d)), "Top_And_Bottom_And_Right");
+        TEST_EQUAL(to_str(indic_positional_category(0xb48)), "Top_And_Left");
+        TEST_EQUAL(to_str(indic_positional_category(0xb4c)), "Top_And_Left_And_Right");
+        TEST_EQUAL(to_str(indic_positional_category(0xac9)), "Top_And_Right");
+        TEST_EQUAL(to_str(indic_positional_category(0xe40)), "Visual_Order_Left");
 
-        TEST_EQUAL(property_value(indic_syllabic_category(0)), "Other");
-        TEST_EQUAL(property_value(indic_syllabic_category(0x93d)), "Avagraha");
-        TEST_EQUAL(property_value(indic_syllabic_category(0x900)), "Bindu");
-        TEST_EQUAL(property_value(indic_syllabic_category(0x11052)), "Brahmi_Joining_Number");
-        TEST_EQUAL(property_value(indic_syllabic_category(0xa8e0)), "Cantillation_Mark");
-        TEST_EQUAL(property_value(indic_syllabic_category(0x915)), "Consonant");
-        TEST_EQUAL(property_value(indic_syllabic_category(0x9ce)), "Consonant_Dead");
-        TEST_EQUAL(property_value(indic_syllabic_category(0x1930)), "Consonant_Final");
-        TEST_EQUAL(property_value(indic_syllabic_category(0xf88)), "Consonant_Head_Letter");
-        TEST_EQUAL(property_value(indic_syllabic_category(0xa75)), "Consonant_Medial");
-        TEST_EQUAL(property_value(indic_syllabic_category(0x2d)), "Consonant_Placeholder");
-        TEST_EQUAL(property_value(indic_syllabic_category(0xd4e)), "Consonant_Preceding_Repha");
-        TEST_EQUAL(property_value(indic_syllabic_category(0xf8d)), "Consonant_Subjoined");
-        TEST_EQUAL(property_value(indic_syllabic_category(0x17cc)), "Consonant_Succeeding_Repha");
-        TEST_EQUAL(property_value(indic_syllabic_category(0xa71)), "Gemination_Mark");
-        TEST_EQUAL(property_value(indic_syllabic_category(0x1039)), "Invisible_Stacker");
-        TEST_EQUAL(property_value(indic_syllabic_category(0x200d)), "Joiner");
-        TEST_EQUAL(property_value(indic_syllabic_category(0xb83)), "Modifying_Letter");
-        TEST_EQUAL(property_value(indic_syllabic_category(0x200c)), "Non_Joiner");
-        TEST_EQUAL(property_value(indic_syllabic_category(0x93c)), "Nukta");
-        TEST_EQUAL(property_value(indic_syllabic_category(0x30)), "Number");
-        TEST_EQUAL(property_value(indic_syllabic_category(0x1107f)), "Number_Joiner");
-        TEST_EQUAL(property_value(indic_syllabic_category(0xe3a)), "Pure_Killer");
-        TEST_EQUAL(property_value(indic_syllabic_category(0x17c9)), "Register_Shifter");
-        TEST_EQUAL(property_value(indic_syllabic_category(0x1970)), "Tone_Letter");
-        TEST_EQUAL(property_value(indic_syllabic_category(0x94d)), "Virama");
-        TEST_EQUAL(property_value(indic_syllabic_category(0x903)), "Visarga");
-        TEST_EQUAL(property_value(indic_syllabic_category(0x1963)), "Vowel");
-        TEST_EQUAL(property_value(indic_syllabic_category(0x93a)), "Vowel_Dependent");
-        TEST_EQUAL(property_value(indic_syllabic_category(0x904)), "Vowel_Independent");
+        TEST_EQUAL(to_str(indic_syllabic_category(0)), "Other");
+        TEST_EQUAL(to_str(indic_syllabic_category(0x93d)), "Avagraha");
+        TEST_EQUAL(to_str(indic_syllabic_category(0x900)), "Bindu");
+        TEST_EQUAL(to_str(indic_syllabic_category(0x11052)), "Brahmi_Joining_Number");
+        TEST_EQUAL(to_str(indic_syllabic_category(0xa8e0)), "Cantillation_Mark");
+        TEST_EQUAL(to_str(indic_syllabic_category(0x915)), "Consonant");
+        TEST_EQUAL(to_str(indic_syllabic_category(0x9ce)), "Consonant_Dead");
+        TEST_EQUAL(to_str(indic_syllabic_category(0x1930)), "Consonant_Final");
+        TEST_EQUAL(to_str(indic_syllabic_category(0xf88)), "Consonant_Head_Letter");
+        TEST_EQUAL(to_str(indic_syllabic_category(0xa75)), "Consonant_Medial");
+        TEST_EQUAL(to_str(indic_syllabic_category(0x2d)), "Consonant_Placeholder");
+        TEST_EQUAL(to_str(indic_syllabic_category(0xd4e)), "Consonant_Preceding_Repha");
+        TEST_EQUAL(to_str(indic_syllabic_category(0xf8d)), "Consonant_Subjoined");
+        TEST_EQUAL(to_str(indic_syllabic_category(0x17cc)), "Consonant_Succeeding_Repha");
+        TEST_EQUAL(to_str(indic_syllabic_category(0xa71)), "Gemination_Mark");
+        TEST_EQUAL(to_str(indic_syllabic_category(0x1039)), "Invisible_Stacker");
+        TEST_EQUAL(to_str(indic_syllabic_category(0x200d)), "Joiner");
+        TEST_EQUAL(to_str(indic_syllabic_category(0xb83)), "Modifying_Letter");
+        TEST_EQUAL(to_str(indic_syllabic_category(0x200c)), "Non_Joiner");
+        TEST_EQUAL(to_str(indic_syllabic_category(0x93c)), "Nukta");
+        TEST_EQUAL(to_str(indic_syllabic_category(0x30)), "Number");
+        TEST_EQUAL(to_str(indic_syllabic_category(0x1107f)), "Number_Joiner");
+        TEST_EQUAL(to_str(indic_syllabic_category(0xe3a)), "Pure_Killer");
+        TEST_EQUAL(to_str(indic_syllabic_category(0x17c9)), "Register_Shifter");
+        TEST_EQUAL(to_str(indic_syllabic_category(0x1970)), "Tone_Letter");
+        TEST_EQUAL(to_str(indic_syllabic_category(0x94d)), "Virama");
+        TEST_EQUAL(to_str(indic_syllabic_category(0x903)), "Visarga");
+        TEST_EQUAL(to_str(indic_syllabic_category(0x1963)), "Vowel");
+        TEST_EQUAL(to_str(indic_syllabic_category(0x93a)), "Vowel_Dependent");
+        TEST_EQUAL(to_str(indic_syllabic_category(0x904)), "Vowel_Independent");
 
-        TEST_EQUAL(property_value(line_break(0xe000)), "XX");
-        TEST_EQUAL(property_value(line_break(0x10ffff)), "XX");
-        TEST_EQUAL(property_value(line_break(0xa7)), "AI");
-        TEST_EQUAL(property_value(line_break(0x23)), "AL");
-        TEST_EQUAL(property_value(line_break(0x2014)), "B2");
-        TEST_EQUAL(property_value(line_break(0x9)), "BA");
-        TEST_EQUAL(property_value(line_break(0xb4)), "BB");
-        TEST_EQUAL(property_value(line_break(0xb)), "BK");
-        TEST_EQUAL(property_value(line_break(0xfffc)), "CB");
-        TEST_EQUAL(property_value(line_break(0x3041)), "CJ");
-        TEST_EQUAL(property_value(line_break(0x7d)), "CL");
-        TEST_EQUAL(property_value(line_break(0)), "CM");
-        TEST_EQUAL(property_value(line_break(0x29)), "CP");
-        TEST_EQUAL(property_value(line_break(0xd)), "CR");
-        TEST_EQUAL(property_value(line_break(0x21)), "EX");
-        TEST_EQUAL(property_value(line_break(0xa0)), "GL");
-        TEST_EQUAL(property_value(line_break(0xac00)), "H2");
-        TEST_EQUAL(property_value(line_break(0xac01)), "H3");
-        TEST_EQUAL(property_value(line_break(0x5d0)), "HL");
-        TEST_EQUAL(property_value(line_break(0x2d)), "HY");
-        TEST_EQUAL(property_value(line_break(0x231a)), "ID");
-        TEST_EQUAL(property_value(line_break(0x2024)), "IN");
-        TEST_EQUAL(property_value(line_break(0x2c)), "IS");
-        TEST_EQUAL(property_value(line_break(0x1100)), "JL");
-        TEST_EQUAL(property_value(line_break(0x11a8)), "JT");
-        TEST_EQUAL(property_value(line_break(0x1160)), "JV");
-        TEST_EQUAL(property_value(line_break(0xa)), "LF");
-        TEST_EQUAL(property_value(line_break(0x85)), "NL");
-        TEST_EQUAL(property_value(line_break(0x17d6)), "NS");
-        TEST_EQUAL(property_value(line_break(0x30)), "NU");
-        TEST_EQUAL(property_value(line_break(0x28)), "OP");
-        TEST_EQUAL(property_value(line_break(0x25)), "PO");
-        TEST_EQUAL(property_value(line_break(0x24)), "PR");
-        TEST_EQUAL(property_value(line_break(0x22)), "QU");
-        TEST_EQUAL(property_value(line_break(0x1f1e6)), "RI");
-        TEST_EQUAL(property_value(line_break(0xe01)), "SA");
-        TEST_EQUAL(property_value(line_break(0xd800)), "SG");
-        TEST_EQUAL(property_value(line_break(0x20)), "SP");
-        TEST_EQUAL(property_value(line_break(0x2f)), "SY");
-        TEST_EQUAL(property_value(line_break(0x2060)), "WJ");
-        TEST_EQUAL(property_value(line_break(0x200b)), "ZW");
+        TEST_EQUAL(to_str(line_break(0xe000)), "XX");
+        TEST_EQUAL(to_str(line_break(0x10ffff)), "XX");
+        TEST_EQUAL(to_str(line_break(0xa7)), "AI");
+        TEST_EQUAL(to_str(line_break(0x23)), "AL");
+        TEST_EQUAL(to_str(line_break(0x2014)), "B2");
+        TEST_EQUAL(to_str(line_break(0x9)), "BA");
+        TEST_EQUAL(to_str(line_break(0xb4)), "BB");
+        TEST_EQUAL(to_str(line_break(0xb)), "BK");
+        TEST_EQUAL(to_str(line_break(0xfffc)), "CB");
+        TEST_EQUAL(to_str(line_break(0x3041)), "CJ");
+        TEST_EQUAL(to_str(line_break(0x7d)), "CL");
+        TEST_EQUAL(to_str(line_break(0)), "CM");
+        TEST_EQUAL(to_str(line_break(0x29)), "CP");
+        TEST_EQUAL(to_str(line_break(0xd)), "CR");
+        TEST_EQUAL(to_str(line_break(0x21)), "EX");
+        TEST_EQUAL(to_str(line_break(0xa0)), "GL");
+        TEST_EQUAL(to_str(line_break(0xac00)), "H2");
+        TEST_EQUAL(to_str(line_break(0xac01)), "H3");
+        TEST_EQUAL(to_str(line_break(0x5d0)), "HL");
+        TEST_EQUAL(to_str(line_break(0x2d)), "HY");
+        TEST_EQUAL(to_str(line_break(0x231a)), "ID");
+        TEST_EQUAL(to_str(line_break(0x2024)), "IN");
+        TEST_EQUAL(to_str(line_break(0x2c)), "IS");
+        TEST_EQUAL(to_str(line_break(0x1100)), "JL");
+        TEST_EQUAL(to_str(line_break(0x11a8)), "JT");
+        TEST_EQUAL(to_str(line_break(0x1160)), "JV");
+        TEST_EQUAL(to_str(line_break(0xa)), "LF");
+        TEST_EQUAL(to_str(line_break(0x85)), "NL");
+        TEST_EQUAL(to_str(line_break(0x17d6)), "NS");
+        TEST_EQUAL(to_str(line_break(0x30)), "NU");
+        TEST_EQUAL(to_str(line_break(0x28)), "OP");
+        TEST_EQUAL(to_str(line_break(0x25)), "PO");
+        TEST_EQUAL(to_str(line_break(0x24)), "PR");
+        TEST_EQUAL(to_str(line_break(0x22)), "QU");
+        TEST_EQUAL(to_str(line_break(0x1f1e6)), "RI");
+        TEST_EQUAL(to_str(line_break(0xe01)), "SA");
+        TEST_EQUAL(to_str(line_break(0xd800)), "SG");
+        TEST_EQUAL(to_str(line_break(0x20)), "SP");
+        TEST_EQUAL(to_str(line_break(0x2f)), "SY");
+        TEST_EQUAL(to_str(line_break(0x2060)), "WJ");
+        TEST_EQUAL(to_str(line_break(0x200b)), "ZW");
 
-        TEST_EQUAL(property_value(numeric_type(0)), "None");
-        TEST_EQUAL(property_value(numeric_type('A')), "None");
-        TEST_EQUAL(property_value(numeric_type('0')), "Decimal");
-        TEST_EQUAL(property_value(numeric_type(0xb9)), "Digit");
-        TEST_EQUAL(property_value(numeric_type(0xbd)), "Numeric");
+        TEST_EQUAL(to_str(numeric_type(0)), "None");
+        TEST_EQUAL(to_str(numeric_type('A')), "None");
+        TEST_EQUAL(to_str(numeric_type('0')), "Decimal");
+        TEST_EQUAL(to_str(numeric_type(0xb9)), "Digit");
+        TEST_EQUAL(to_str(numeric_type(0xbd)), "Numeric");
 
-        TEST_EQUAL(property_value(sentence_break(0)), "Other");
-        TEST_EQUAL(property_value(sentence_break(0x10ffff)), "Other");
-        TEST_EQUAL(property_value(sentence_break(0x2e)), "ATerm");
-        TEST_EQUAL(property_value(sentence_break(0xd)), "CR");
-        TEST_EQUAL(property_value(sentence_break(0x22)), "Close");
-        TEST_EQUAL(property_value(sentence_break(0x300)), "Extend");
-        TEST_EQUAL(property_value(sentence_break(0xad)), "Format");
-        TEST_EQUAL(property_value(sentence_break(0xa)), "LF");
-        TEST_EQUAL(property_value(sentence_break(0x61)), "Lower");
-        TEST_EQUAL(property_value(sentence_break(0x30)), "Numeric");
-        TEST_EQUAL(property_value(sentence_break(0x1bb)), "OLetter");
-        TEST_EQUAL(property_value(sentence_break(0x2c)), "SContinue");
-        TEST_EQUAL(property_value(sentence_break(0x21)), "STerm");
-        TEST_EQUAL(property_value(sentence_break(0x85)), "Sep");
-        TEST_EQUAL(property_value(sentence_break(0x9)), "Sp");
-        TEST_EQUAL(property_value(sentence_break(0x41)), "Upper");
+        TEST_EQUAL(to_str(sentence_break(0)), "Other");
+        TEST_EQUAL(to_str(sentence_break(0x10ffff)), "Other");
+        TEST_EQUAL(to_str(sentence_break(0x2e)), "ATerm");
+        TEST_EQUAL(to_str(sentence_break(0xd)), "CR");
+        TEST_EQUAL(to_str(sentence_break(0x22)), "Close");
+        TEST_EQUAL(to_str(sentence_break(0x300)), "Extend");
+        TEST_EQUAL(to_str(sentence_break(0xad)), "Format");
+        TEST_EQUAL(to_str(sentence_break(0xa)), "LF");
+        TEST_EQUAL(to_str(sentence_break(0x61)), "Lower");
+        TEST_EQUAL(to_str(sentence_break(0x30)), "Numeric");
+        TEST_EQUAL(to_str(sentence_break(0x1bb)), "OLetter");
+        TEST_EQUAL(to_str(sentence_break(0x2c)), "SContinue");
+        TEST_EQUAL(to_str(sentence_break(0x21)), "STerm");
+        TEST_EQUAL(to_str(sentence_break(0x85)), "Sep");
+        TEST_EQUAL(to_str(sentence_break(0x9)), "Sp");
+        TEST_EQUAL(to_str(sentence_break(0x41)), "Upper");
 
-        TEST_EQUAL(property_value(word_break(0)), "Other");
-        TEST_EQUAL(property_value(word_break(0x10ffff)), "Other");
-        TEST_EQUAL(property_value(word_break(0x41)), "ALetter");
-        TEST_EQUAL(property_value(word_break(0xd)), "CR");
-        TEST_EQUAL(property_value(word_break(0x22)), "Double_Quote");
-        TEST_EQUAL(property_value(word_break(0x300)), "Extend");
-        TEST_EQUAL(property_value(word_break(0x5f)), "ExtendNumLet");
-        TEST_EQUAL(property_value(word_break(0xad)), "Format");
-        TEST_EQUAL(property_value(word_break(0x5d0)), "Hebrew_Letter");
-        TEST_EQUAL(property_value(word_break(0x3031)), "Katakana");
-        TEST_EQUAL(property_value(word_break(0xa)), "LF");
-        TEST_EQUAL(property_value(word_break(0x3a)), "MidLetter");
-        TEST_EQUAL(property_value(word_break(0x2c)), "MidNum");
-        TEST_EQUAL(property_value(word_break(0x2e)), "MidNumLet");
-        TEST_EQUAL(property_value(word_break(0xb)), "Newline");
-        TEST_EQUAL(property_value(word_break(0x30)), "Numeric");
-        TEST_EQUAL(property_value(word_break(0x1f1e6)), "Regional_Indicator");
-        TEST_EQUAL(property_value(word_break(0x27)), "Single_Quote");
+        TEST_EQUAL(to_str(word_break(0)), "Other");
+        TEST_EQUAL(to_str(word_break(0x10ffff)), "Other");
+        TEST_EQUAL(to_str(word_break(0x41)), "ALetter");
+        TEST_EQUAL(to_str(word_break(0xd)), "CR");
+        TEST_EQUAL(to_str(word_break(0x22)), "Double_Quote");
+        TEST_EQUAL(to_str(word_break(0x300)), "Extend");
+        TEST_EQUAL(to_str(word_break(0x5f)), "ExtendNumLet");
+        TEST_EQUAL(to_str(word_break(0xad)), "Format");
+        TEST_EQUAL(to_str(word_break(0x5d0)), "Hebrew_Letter");
+        TEST_EQUAL(to_str(word_break(0x3031)), "Katakana");
+        TEST_EQUAL(to_str(word_break(0xa)), "LF");
+        TEST_EQUAL(to_str(word_break(0x3a)), "MidLetter");
+        TEST_EQUAL(to_str(word_break(0x2c)), "MidNum");
+        TEST_EQUAL(to_str(word_break(0x2e)), "MidNumLet");
+        TEST_EQUAL(to_str(word_break(0xb)), "Newline");
+        TEST_EQUAL(to_str(word_break(0x30)), "Numeric");
+        TEST_EQUAL(to_str(word_break(0x1f1e6)), "Regional_Indicator");
+        TEST_EQUAL(to_str(word_break(0x27)), "Single_Quote");
 
     }
 

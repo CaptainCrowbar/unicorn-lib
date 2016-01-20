@@ -86,7 +86,7 @@ namespace {
             if (Test::test_failures() > prev_failures) {
                 FAIL(name + " " + dec(lnum) + ": " + line);
                 for (auto c: source32)
-                    std::cout << "\t" << hex(c) << " " << property_value(word_break(c)) << "\n";
+                    std::cout << "\t" << hex(c) << " " << word_break(c) << "\n";
                 break;
             }
         }
