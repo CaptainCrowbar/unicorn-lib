@@ -30,10 +30,10 @@ namespace Unicorn {
     constexpr char32_t byte_order_mark                = 0xfeff;          // Byte order mark
     constexpr char32_t replacement_char               = 0xfffd;          // Unicode replacement character
     constexpr char32_t last_bmp_char                  = 0xffff;          // End of basic multilingual plane
-    constexpr char32_t first_private_use_char_a       = 0xf0000;         // Beginning of supplementary private use area A
-    constexpr char32_t last_private_use_char_a        = 0xffffd;         // End of supplementary private use area A
-    constexpr char32_t first_private_use_char_b       = 0x100000;        // Beginning of supplementary private use area B
-    constexpr char32_t last_private_use_char_b        = 0x10fffd;        // End of supplementary private use area B
+    constexpr char32_t first_private_use_a_char       = 0xf0000;         // Beginning of supplementary private use area A
+    constexpr char32_t last_private_use_a_char        = 0xffffd;         // End of supplementary private use area A
+    constexpr char32_t first_private_use_b_char       = 0x100000;        // Beginning of supplementary private use area B
+    constexpr char32_t last_private_use_b_char        = 0x10fffd;        // End of supplementary private use area B
     constexpr char32_t last_unicode_char              = 0x10ffff;        // Highest possible Unicode code point
     constexpr const char* utf8_bom                    = "\xef\xbb\xbf";  // Byte order mark (U+FEFF) in UTF-8
     constexpr const char* utf8_replacement            = "\xef\xbf\xbd";  // Unicode replacement character (U+FFFD) in UTF-8
@@ -59,8 +59,8 @@ namespace Unicorn {
         { return (c >= first_noncharacter && c <= last_noncharacter) || (c & 0xfffe) == 0xfffe; }
     constexpr bool char_is_private_use(char32_t c) noexcept
         { return (c >= first_private_use_char && c <= last_private_use_char)
-            || (c >= first_private_use_char_a && c <= last_private_use_char_a)
-            || (c >= first_private_use_char_b && c <= last_private_use_char_b); }
+            || (c >= first_private_use_a_char && c <= last_private_use_a_char)
+            || (c >= first_private_use_b_char && c <= last_private_use_b_char); }
     template <typename C> constexpr uint32_t char_to_uint(C c) noexcept { return std::make_unsigned_t<C>(c); }
 
     // General category
