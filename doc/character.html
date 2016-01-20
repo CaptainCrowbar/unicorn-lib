@@ -242,8 +242,10 @@ empty string if the argument is invalid.</p>
 <li><code>bool</code> <strong><code>char_is_soft_dotted</code></strong><code>(char32_t c) noexcept</code></li>
 </ul>
 <p>Various boolean tests, mostly corresponding to standard Unicode character
-properties. The <code>char_is_inline_space()</code> function tests for whitespace
-characters that are not line breaks.</p>
+properties. The <code>char_is_line_break()</code> function is true for characters with
+line breaking property values <code>BK</code>, <code>CR</code>, <code>LF</code>, or <code>NL</code>; the
+<code>char_is_inline_space()</code> function is true for whitespace characters that are
+not line breaks.</p>
 <h2 id="bidirectional-properties">Bidirectional properties</h2>
 <ul>
 <li><code>Bidi_Class</code> <strong><code>bidi_class</code></strong><code>(char32_t c) noexcept</code></li>

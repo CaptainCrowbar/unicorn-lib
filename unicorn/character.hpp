@@ -127,7 +127,7 @@ namespace Unicorn {
     inline bool char_is_assigned(char32_t c) noexcept { return char_general_category(c) != GC::Cn; }
     inline bool char_is_unassigned(char32_t c) noexcept { return char_general_category(c) == GC::Cn; }
     bool char_is_white_space(char32_t c) noexcept;
-    inline bool char_is_line_break(char32_t c) noexcept { return c == '\n' || c == '\v' || c == '\f' || c == '\r'
+    inline bool char_is_line_break(char32_t c) noexcept { return c == U'\n' || c == U'\v' || c == U'\f' || c == U'\r'
         || c == 0x85 || c == line_separator_char || c == paragraph_separator_char; }
     inline bool char_is_inline_space(char32_t c) noexcept { return char_is_white_space(c) && ! char_is_line_break(c); }
     bool char_is_id_start(char32_t c) noexcept;

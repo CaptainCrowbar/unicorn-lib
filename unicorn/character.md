@@ -208,8 +208,10 @@ empty string if the argument is invalid.
 * `bool` **`char_is_soft_dotted`**`(char32_t c) noexcept`
 
 Various boolean tests, mostly corresponding to standard Unicode character
-properties. The `char_is_inline_space()` function tests for whitespace
-characters that are not line breaks.
+properties. The `char_is_line_break()` function is true for characters with
+line breaking property values `BK`, `CR`, `LF`, or `NL`; the
+`char_is_inline_space()` function is true for whitespace characters that are
+not line breaks.
 
 ## Bidirectional properties ##
 
