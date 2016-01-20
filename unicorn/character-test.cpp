@@ -6,8 +6,8 @@
 #include <string>
 #include <vector>
 
-using namespace std::literals;
 using namespace Unicorn;
+using namespace std::literals;
 
 #define TEST_PROPERTY_STRING(type, value) TEST_EQUAL(to_str(type::value), # value)
 
@@ -219,36 +219,36 @@ namespace {
         TEST_EQUAL(to_str(GC::Zp), "Zp");
         TEST_EQUAL(to_str(GC::Zs), "Zs");
 
-        TEST_EQUAL(gc_name(GC::Cc), "control");
-        TEST_EQUAL(gc_name(GC::Cf), "format");
-        TEST_EQUAL(gc_name(GC::Cn), "unassigned");
-        TEST_EQUAL(gc_name(GC::Co), "private use");
-        TEST_EQUAL(gc_name(GC::Cs), "surrogate");
-        TEST_EQUAL(gc_name(GC::Ll), "lowercase letter");
-        TEST_EQUAL(gc_name(GC::Lm), "modifier letter");
-        TEST_EQUAL(gc_name(GC::Lo), "other letter");
-        TEST_EQUAL(gc_name(GC::Lt), "titlecase letter");
-        TEST_EQUAL(gc_name(GC::Lu), "uppercase letter");
-        TEST_EQUAL(gc_name(GC::Mc), "spacing mark");
-        TEST_EQUAL(gc_name(GC::Me), "enclosing mark");
-        TEST_EQUAL(gc_name(GC::Mn), "nonspacing mark");
-        TEST_EQUAL(gc_name(GC::Nd), "decimal number");
-        TEST_EQUAL(gc_name(GC::Nl), "letter number");
-        TEST_EQUAL(gc_name(GC::No), "other number");
-        TEST_EQUAL(gc_name(GC::Pc), "connector punctuation");
-        TEST_EQUAL(gc_name(GC::Pd), "dash punctuation");
-        TEST_EQUAL(gc_name(GC::Pe), "close punctuation");
-        TEST_EQUAL(gc_name(GC::Pf), "final punctuation");
-        TEST_EQUAL(gc_name(GC::Pi), "initial punctuation");
-        TEST_EQUAL(gc_name(GC::Po), "other punctuation");
-        TEST_EQUAL(gc_name(GC::Ps), "open punctuation");
-        TEST_EQUAL(gc_name(GC::Sc), "currency symbol");
-        TEST_EQUAL(gc_name(GC::Sk), "modifier symbol");
-        TEST_EQUAL(gc_name(GC::Sm), "math symbol");
-        TEST_EQUAL(gc_name(GC::So), "other symbol");
-        TEST_EQUAL(gc_name(GC::Zl), "line separator");
-        TEST_EQUAL(gc_name(GC::Zp), "paragraph separator");
-        TEST_EQUAL(gc_name(GC::Zs), "space separator");
+        TEST_EQUAL(u8string(gc_name(GC::Cc)), "control"s);
+        TEST_EQUAL(u8string(gc_name(GC::Cf)), "format"s);
+        TEST_EQUAL(u8string(gc_name(GC::Cn)), "unassigned"s);
+        TEST_EQUAL(u8string(gc_name(GC::Co)), "private use"s);
+        TEST_EQUAL(u8string(gc_name(GC::Cs)), "surrogate"s);
+        TEST_EQUAL(u8string(gc_name(GC::Ll)), "lowercase letter"s);
+        TEST_EQUAL(u8string(gc_name(GC::Lm)), "modifier letter"s);
+        TEST_EQUAL(u8string(gc_name(GC::Lo)), "other letter"s);
+        TEST_EQUAL(u8string(gc_name(GC::Lt)), "titlecase letter"s);
+        TEST_EQUAL(u8string(gc_name(GC::Lu)), "uppercase letter"s);
+        TEST_EQUAL(u8string(gc_name(GC::Mc)), "spacing mark"s);
+        TEST_EQUAL(u8string(gc_name(GC::Me)), "enclosing mark"s);
+        TEST_EQUAL(u8string(gc_name(GC::Mn)), "nonspacing mark"s);
+        TEST_EQUAL(u8string(gc_name(GC::Nd)), "decimal number"s);
+        TEST_EQUAL(u8string(gc_name(GC::Nl)), "letter number"s);
+        TEST_EQUAL(u8string(gc_name(GC::No)), "other number"s);
+        TEST_EQUAL(u8string(gc_name(GC::Pc)), "connector punctuation"s);
+        TEST_EQUAL(u8string(gc_name(GC::Pd)), "dash punctuation"s);
+        TEST_EQUAL(u8string(gc_name(GC::Pe)), "close punctuation"s);
+        TEST_EQUAL(u8string(gc_name(GC::Pf)), "final punctuation"s);
+        TEST_EQUAL(u8string(gc_name(GC::Pi)), "initial punctuation"s);
+        TEST_EQUAL(u8string(gc_name(GC::Po)), "other punctuation"s);
+        TEST_EQUAL(u8string(gc_name(GC::Ps)), "open punctuation"s);
+        TEST_EQUAL(u8string(gc_name(GC::Sc)), "currency symbol"s);
+        TEST_EQUAL(u8string(gc_name(GC::Sk)), "modifier symbol"s);
+        TEST_EQUAL(u8string(gc_name(GC::Sm)), "math symbol"s);
+        TEST_EQUAL(u8string(gc_name(GC::So)), "other symbol"s);
+        TEST_EQUAL(u8string(gc_name(GC::Zl)), "line separator"s);
+        TEST_EQUAL(u8string(gc_name(GC::Zp)), "paragraph separator"s);
+        TEST_EQUAL(u8string(gc_name(GC::Zs)), "space separator"s);
 
         TEST_EQUAL(char_general_category(0), encode_gc("Cc"));
         TEST_EQUAL(char_general_category(0x9), encode_gc("Cc"));
