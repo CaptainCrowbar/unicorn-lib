@@ -5,6 +5,7 @@
 #include <string>
 
 using namespace Unicorn;
+using namespace std::literals;
 
 namespace {
 
@@ -146,6 +147,33 @@ namespace {
 
     }
 
+    void check_utf_strings() {
+
+        Table tab;
+        u8string s;
+
+        TRY(tab << 1 << u8"abcde" << u8"αβγδε" << '\n');
+        TRY(tab << 2 << u8"abcde"s << u8"αβγδε"s << '\n');
+        TRY(tab << 3 << u"abcde" << u"αβγδε" << '\n');
+        TRY(tab << 4 << u"abcde"s << u"αβγδε"s << '\n');
+        TRY(tab << 5 << U"abcde" << U"αβγδε" << '\n');
+        TRY(tab << 6 << U"abcde"s << U"αβγδε"s << '\n');
+        TRY(tab << 7 << L"abcde" << L"αβγδε" << '\n');
+        TRY(tab << 8 << L"abcde"s << L"αβγδε"s << '\n');
+        TRY(s = tab.str());
+        TEST_EQUAL(s,
+            u8"1  abcde  αβγδε\n"
+            u8"2  abcde  αβγδε\n"
+            u8"3  abcde  αβγδε\n"
+            u8"4  abcde  αβγδε\n"
+            u8"5  abcde  αβγδε\n"
+            u8"6  abcde  αβγδε\n"
+            u8"7  abcde  αβγδε\n"
+            u8"8  abcde  αβγδε\n"
+        );
+
+    }
+
     void check_example_from_docs() {
 
         Table tab;
@@ -176,6 +204,7 @@ TEST_MODULE(unicorn, table) {
 
     check_layout();
     check_unicode_length();
+    check_utf_strings();
     check_example_from_docs();
 
 }

@@ -16,11 +16,23 @@ namespace Unicorn {
         static constexpr Kwarg<size_t> margin = {}, spacing = {};
         static constexpr Kwarg<bool> unfill = {};
         Table(): formats(), cells(1) {}
-        template <typename T> Table& operator<<(const T& t);
-        Table& operator<<(char c) { character_code(char_to_uint(c)); return *this; }
-        Table& operator<<(char16_t c) { character_code(char_to_uint(c)); return *this; }
-        Table& operator<<(char32_t c) { character_code(c); return *this; }
-        Table& operator<<(wchar_t c) { character_code(char_to_uint(c)); return *this; }
+        template <typename T> Table& operator<<(const T& t) { add_cell(t); return *this; }
+        Table& operator<<(char t) { character_code(char_to_uint(t)); return *this; }
+        Table& operator<<(char16_t t) { character_code(char_to_uint(t)); return *this; }
+        Table& operator<<(char32_t t) { character_code(t); return *this; }
+        Table& operator<<(wchar_t t) { character_code(char_to_uint(t)); return *this; }
+        Table& operator<<(char* t) { add_str(cstr(t)); return *this; }
+        Table& operator<<(char16_t* t) { add_str(to_utf8(cstr(t))); return *this; }
+        Table& operator<<(char32_t* t) { add_str(to_utf8(cstr(t))); return *this; }
+        Table& operator<<(wchar_t* t) { add_str(to_utf8(cstr(t))); return *this; }
+        Table& operator<<(const char* t) { add_str(cstr(t)); return *this; }
+        Table& operator<<(const char16_t* t) { add_str(to_utf8(cstr(t))); return *this; }
+        Table& operator<<(const char32_t* t) { add_str(to_utf8(cstr(t))); return *this; }
+        Table& operator<<(const wchar_t* t) { add_str(to_utf8(cstr(t))); return *this; }
+        Table& operator<<(const u8string& t) { add_str(t); return *this; }
+        Table& operator<<(const u16string& t) { add_str(to_utf8(t)); return *this; }
+        Table& operator<<(const u32string& t) { add_str(to_utf8(t)); return *this; }
+        Table& operator<<(const wstring& t) { add_str(to_utf8(t)); return *this; }
         void clear() noexcept { cells.clear(); cells.resize(1); formats.clear(); }
         template <typename... FS> void format(const u8string& f, const FS&... fs) { format(f); format(fs...); }
         void format(const u8string& f) { formats.push_back(Unicorn::format(f)); }
@@ -38,23 +50,13 @@ namespace Unicorn {
         };
         vector<Format> formats;
         vector<vector<u8string>> cells;
+        template <typename T> void add_cell(const T& t);
+        void add_str(const u8string& t);
         void character_code(char32_t c);
         void force_break();
         template <typename... Args> static layout_spec parse_args(const Args&... args);
         void write_table(const layout_spec& spec, vector<u8string>& lines) const;
     };
-
-    template <typename T>
-    Table& Table::operator<<(const T& t) {
-        size_t index = cells.back().size();
-        u8string cell;
-        if (index < formats.size() && ! formats[index].format().empty())
-            cell = formats[index](t);
-        else
-            cell = to_str(t);
-        cells.back().push_back(str_trim(cell));
-        return *this;
-    }
 
     template <typename C, typename... Args>
     std::basic_string<C> Table::as_string(const Args&... args) const {
@@ -76,6 +78,17 @@ namespace Unicorn {
         write_table(spec, lines);
         for (auto& line: lines)
             out << recode<C>(line) << PRI_CHAR('\n', C);
+    }
+
+    template <typename T>
+    void Table::add_cell(const T& t) {
+        size_t index = cells.back().size();
+        u8string cell;
+        if (index < formats.size() && ! formats[index].format().empty())
+            cell = formats[index](t);
+        else
+            cell = to_str(t);
+        cells.back().push_back(str_trim(cell));
     }
 
     template <typename... Args>

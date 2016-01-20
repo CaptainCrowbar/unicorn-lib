@@ -14,6 +14,16 @@ namespace Unicorn {
     constexpr Kwarg<size_t> Table::margin, Table::spacing;
     constexpr Kwarg<bool> Table::unfill;
 
+    void Table::add_str(const u8string& t) {
+        size_t index = cells.back().size();
+        u8string cell;
+        if (index < formats.size() && ! formats[index].format().empty())
+            cell = formats[index](t);
+        else
+            cell = t;
+        cells.back().push_back(str_trim(cell));
+    }
+
     void Table::character_code(char32_t c) {
         switch (c) {
             case '\f': // eol + reset formats
