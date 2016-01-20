@@ -188,6 +188,37 @@ namespace {
         TEST_EQUAL(encode_gc("Cn"s), 0x436e);
         TEST_EQUAL(encode_gc("Lu"s), 0x4c75);
 
+        TEST_EQUAL(gc_name(GC::Cc), "control");
+        TEST_EQUAL(gc_name(GC::Cf), "format");
+        TEST_EQUAL(gc_name(GC::Cn), "unassigned");
+        TEST_EQUAL(gc_name(GC::Co), "private use");
+        TEST_EQUAL(gc_name(GC::Cs), "surrogate");
+        TEST_EQUAL(gc_name(GC::Ll), "lowercase letter");
+        TEST_EQUAL(gc_name(GC::Lm), "modifier letter");
+        TEST_EQUAL(gc_name(GC::Lo), "other letter");
+        TEST_EQUAL(gc_name(GC::Lt), "titlecase letter");
+        TEST_EQUAL(gc_name(GC::Lu), "uppercase letter");
+        TEST_EQUAL(gc_name(GC::Mc), "spacing mark");
+        TEST_EQUAL(gc_name(GC::Me), "enclosing mark");
+        TEST_EQUAL(gc_name(GC::Mn), "nonspacing mark");
+        TEST_EQUAL(gc_name(GC::Nd), "decimal number");
+        TEST_EQUAL(gc_name(GC::Nl), "letter number");
+        TEST_EQUAL(gc_name(GC::No), "other number");
+        TEST_EQUAL(gc_name(GC::Pc), "connector punctuation");
+        TEST_EQUAL(gc_name(GC::Pd), "dash punctuation");
+        TEST_EQUAL(gc_name(GC::Pe), "close punctuation");
+        TEST_EQUAL(gc_name(GC::Pf), "final punctuation");
+        TEST_EQUAL(gc_name(GC::Pi), "initial punctuation");
+        TEST_EQUAL(gc_name(GC::Po), "other punctuation");
+        TEST_EQUAL(gc_name(GC::Ps), "open punctuation");
+        TEST_EQUAL(gc_name(GC::Sc), "currency symbol");
+        TEST_EQUAL(gc_name(GC::Sk), "modifier symbol");
+        TEST_EQUAL(gc_name(GC::Sm), "math symbol");
+        TEST_EQUAL(gc_name(GC::So), "other symbol");
+        TEST_EQUAL(gc_name(GC::Zl), "line separator");
+        TEST_EQUAL(gc_name(GC::Zp), "paragraph separator");
+        TEST_EQUAL(gc_name(GC::Zs), "space separator");
+
         TEST_EQUAL(char_general_category(0), encode_gc("Cc"));
         TEST_EQUAL(char_general_category(0x9), encode_gc("Cc"));
         TEST_EQUAL(char_general_category(0xad), encode_gc("Cf"));

@@ -218,6 +218,11 @@ cased letter, i.e. equivalent to <code>"Lltu"</code>.</p>
 </ul>
 <p>These convert between a GC abbreviation (passed as either a pair of letters or
 a string) and its integer code.</p>
+<ul>
+<li><code>const char*</code> <strong><code>gc_name</code></strong><code>(uint16_t cat) noexcept</code></li>
+</ul>
+<p>Returns the description of the general category (as in the list above), or an
+empty string if the argument is invalid.</p>
 <h2 id="boolean-properties">Boolean properties</h2>
 <ul>
 <li><code>bool</code> <strong><code>char_is_assigned</code></strong><code>(char32_t c) noexcept</code></li>

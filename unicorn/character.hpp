@@ -69,6 +69,7 @@ namespace Unicorn {
     constexpr uint16_t encode_gc(char c1, char c2) noexcept { return uint16_t((uint16_t(uint8_t(c1)) << 8) + uint8_t(c2)); }
     constexpr uint16_t encode_gc(const char* cat) noexcept { return cat && *cat ? encode_gc(cat[0], cat[1]) : 0; }
     inline uint16_t encode_gc(const u8string& cat) noexcept { return encode_gc(cat.data()); }
+    const char* gc_name(uint16_t cat) noexcept;
 
     namespace GC {
 

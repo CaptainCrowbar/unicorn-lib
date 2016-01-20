@@ -184,6 +184,11 @@ cased letter, i.e. equivalent to `"Lltu"`.
 These convert between a GC abbreviation (passed as either a pair of letters or
 a string) and its integer code.
 
+* `const char*` **`gc_name`**`(uint16_t cat) noexcept`
+
+Returns the description of the general category (as in the list above), or an
+empty string if the argument is invalid.
+
 ## Boolean properties ##
 
 * `bool` **`char_is_assigned`**`(char32_t c) noexcept`

@@ -118,6 +118,42 @@ namespace Unicorn {
 
     }
 
+    const char* gc_name(uint16_t cat) noexcept {
+        switch (cat) {
+            case GC::Cc:  return "control";
+            case GC::Cf:  return "format";
+            case GC::Cn:  return "unassigned";
+            case GC::Co:  return "private use";
+            case GC::Cs:  return "surrogate";
+            case GC::Ll:  return "lowercase letter";
+            case GC::Lm:  return "modifier letter";
+            case GC::Lo:  return "other letter";
+            case GC::Lt:  return "titlecase letter";
+            case GC::Lu:  return "uppercase letter";
+            case GC::Mc:  return "spacing mark";
+            case GC::Me:  return "enclosing mark";
+            case GC::Mn:  return "nonspacing mark";
+            case GC::Nd:  return "decimal number";
+            case GC::Nl:  return "letter number";
+            case GC::No:  return "other number";
+            case GC::Pc:  return "connector punctuation";
+            case GC::Pd:  return "dash punctuation";
+            case GC::Pe:  return "close punctuation";
+            case GC::Pf:  return "final punctuation";
+            case GC::Pi:  return "initial punctuation";
+            case GC::Po:  return "other punctuation";
+            case GC::Ps:  return "open punctuation";
+            case GC::Sc:  return "currency symbol";
+            case GC::Sk:  return "modifier symbol";
+            case GC::Sm:  return "math symbol";
+            case GC::So:  return "other symbol";
+            case GC::Zl:  return "line separator";
+            case GC::Zp:  return "paragraph separator";
+            case GC::Zs:  return "space separator";
+            default:      return "";
+        }
+    }
+
     uint16_t char_general_category(char32_t c) noexcept {
         return sparse_table_lookup(UnicornDetail::general_category_table, c);
     }
