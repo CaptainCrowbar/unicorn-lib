@@ -211,7 +211,7 @@ namespace Unicorn {
         bool native_file_is_directory(const NativeString& file) noexcept;
         bool native_file_is_hidden(const NativeString& file) noexcept;
         bool native_file_is_symlink(const NativeString& file) noexcept;
-        uintmax_t native_file_size(const NativeString& file, uint32_t flags) noexcept;
+        uint64_t native_file_size(const NativeString& file, uint32_t flags) noexcept;
         NativeString native_resolve_symlink(const NativeString& file);
 
     }
@@ -253,7 +253,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    uintmax_t file_size(const basic_string<C>& file, uint32_t flags = 0) noexcept {
+    uint64_t file_size(const basic_string<C>& file, uint32_t flags = 0) noexcept {
         using namespace UnicornDetail;
         return native_file_size(native_file(file), flags);
     }

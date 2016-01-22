@@ -80,11 +80,11 @@ namespace Unicorn {
                 return lstat(file.data(), &s) == 0 && S_ISLNK(s.st_mode);
             }
 
-            uintmax_t native_file_size(const NativeString& file, uint32_t flags) noexcept {
+            uint64_t native_file_size(const NativeString& file, uint32_t flags) noexcept {
                 struct stat s;
                 if (lstat(file.data(), &s) != 0)
                     return 0;
-                uintmax_t bytes = s.st_size;
+                auto bytes = uint64_t(s.st_size);
                 if ((flags & fs_recurse) && S_ISDIR(s.st_mode))
                     for (auto& child: directory(file, fs_all | fs_fullname))
                         bytes += native_file_size(child, fs_recurse);
@@ -266,11 +266,11 @@ namespace Unicorn {
                 return sym;
             }
 
-            uintmax_t native_file_size(const NativeString& file, uint32_t flags) noexcept {
+            uint64_t native_file_size(const NativeString& file, uint32_t flags) noexcept {
                 WIN32_FILE_ATTRIBUTE_DATA info;
                 if (! GetFileAttributesEx(file.data(), GetFileExInfoStandard, &info))
                     return 0;
-                auto bytes = (uintmax_t(info.nFileSizeHigh) << 32) + uintmax_t(info.nFileSizeLow);
+                auto bytes = (uint64_t(info.nFileSizeHigh) << 32) + uint64_t(info.nFileSizeLow);
                 if (flags & fs_recurse)
                     for (auto& child: directory(file, fs_all | fs_fullname))
                         bytes += native_file_size(child, fs_recurse);

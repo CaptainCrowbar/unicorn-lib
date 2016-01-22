@@ -191,7 +191,7 @@ Windows this is a metadata property.
 
 True if the file is a symbolic link.
 
-* `template <typename C> uintmax_t` **`file_size`**`(const basic_string<C>& file, uint32_t flags = 0) noexcept`
+* `template <typename C> uint64_t` **`file_size`**`(const basic_string<C>& file, uint32_t flags = 0) noexcept`
 
 Returns the size of the file in bytes. This will return zero if the file does
 not exist, or if it can't be accessed for any other reason. If the file is a
