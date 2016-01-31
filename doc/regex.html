@@ -662,12 +662,12 @@ from the start of the subject string. If the match was unsuccessful, or if the
 index refers to a group that does not exist in the regex or was not included
 in the match, the two offsets will both be <code>npos</code> and the size will be zero.</p>
 <ul>
-<li><code>Irange&lt;BasicMatch::string_iterator&gt; BasicMatch::</code><strong><code>s</code></strong><code>(size_t i = 0) const noexcept</code></li>
 <li><code>BasicMatch::string_iterator BasicMatch::</code><strong><code>s_begin</code></strong><code>(size_t i = 0) const noexcept</code></li>
 <li><code>BasicMatch::string_iterator BasicMatch::</code><strong><code>s_end</code></strong><code>(size_t i = 0) const noexcept</code></li>
-<li><code>Irange&lt;BasicMatch::utf_iterator&gt; BasicMatch::</code><strong><code>u</code></strong><code>(size_t i = 0) const noexcept</code></li>
+<li><code>Irange&lt;BasicMatch::string_iterator&gt; BasicMatch::</code><strong><code>s_range</code></strong><code>(size_t i = 0) const noexcept</code></li>
 <li><code>BasicMatch::utf_iterator BasicMatch::</code><strong><code>u_begin</code></strong><code>(size_t i = 0) const noexcept</code></li>
 <li><code>BasicMatch::utf_iterator BasicMatch::</code><strong><code>u_end</code></strong><code>(size_t i = 0) const noexcept</code></li>
+<li><code>Irange&lt;BasicMatch::utf_iterator&gt; BasicMatch::</code><strong><code>u_range</code></strong><code>(size_t i = 0) const noexcept</code></li>
 </ul>
 <p>These return iterators (string or UTF) over the characters within a match. The
 default versions return iterators bracketing the complete match; if the index

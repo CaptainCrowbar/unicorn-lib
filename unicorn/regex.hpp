@@ -312,14 +312,14 @@ namespace Unicorn {
         string_type named(const string_type& name) const { return this->ref ? str(named_group(this->ref, name)) : string_type(); }
         size_t offset(size_t i = 0) const noexcept { return is_group(*this, i) ? this->ofs[2 * i] : npos; }
         bool partial() const noexcept { return this->status == -12; } // PCRE_ERROR_PARTIAL
-        Irange<string_iterator> s(size_t i = 0) const noexcept { return {s_begin(i), s_end(i)}; }
         string_iterator s_begin(size_t i = 0) const noexcept;
         string_iterator s_end(size_t i = 0) const noexcept;
+        Irange<string_iterator> s_range(size_t i = 0) const noexcept { return {s_begin(i), s_end(i)}; }
         string_type str(size_t i = 0) const;
         void swap(BasicMatch& m) noexcept { swap_info(m); }
-        Irange<utf_iterator> u(size_t i = 0) const noexcept { return {u_begin(i), u_end(i)}; }
         utf_iterator u_begin(size_t i = 0) const noexcept;
         utf_iterator u_end(size_t i = 0) const noexcept;
+        Irange<utf_iterator> u_range(size_t i = 0) const noexcept { return {u_begin(i), u_end(i)}; }
     private:
         friend class BasicMatchIterator<C>;
         friend class BasicRegex<C>;

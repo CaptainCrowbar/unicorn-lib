@@ -473,12 +473,12 @@ from the start of the subject string. If the match was unsuccessful, or if the
 index refers to a group that does not exist in the regex or was not included
 in the match, the two offsets will both be `npos` and the size will be zero.
 
-* `Irange<BasicMatch::string_iterator> BasicMatch::`**`s`**`(size_t i = 0) const noexcept`
 * `BasicMatch::string_iterator BasicMatch::`**`s_begin`**`(size_t i = 0) const noexcept`
 * `BasicMatch::string_iterator BasicMatch::`**`s_end`**`(size_t i = 0) const noexcept`
-* `Irange<BasicMatch::utf_iterator> BasicMatch::`**`u`**`(size_t i = 0) const noexcept`
+* `Irange<BasicMatch::string_iterator> BasicMatch::`**`s_range`**`(size_t i = 0) const noexcept`
 * `BasicMatch::utf_iterator BasicMatch::`**`u_begin`**`(size_t i = 0) const noexcept`
 * `BasicMatch::utf_iterator BasicMatch::`**`u_end`**`(size_t i = 0) const noexcept`
+* `Irange<BasicMatch::utf_iterator> BasicMatch::`**`u_range`**`(size_t i = 0) const noexcept`
 
 These return iterators (string or UTF) over the characters within a match. The
 default versions return iterators bracketing the complete match; if the index
