@@ -90,11 +90,11 @@ namespace {
 
         TRY(opt2 = opt1);
         cmdline = "app -a uvw xyz";
-        TEST_THROW_MATCH(opt2.parse(cmdline), CommandLineError, ": \"xyz\"$");
+        TEST_THROW_MATCH(opt2.parse(cmdline), Options::CommandError, ": \"xyz\"$");
 
         TRY(opt2 = opt1);
         cmdline = "app -a xyz -n 999";
-        TEST(! opt2.parse(cmdline, nowhere, opt_quoted));
+        TEST(! opt2.parse(cmdline, nowhere, Options::quoted));
         TEST(opt2.has("alpha"));
         TEST_EQUAL(opt2.get<u8string>("alpha"), "xyz");
         TEST(opt2.has("number"));
@@ -102,7 +102,7 @@ namespace {
 
         TRY(opt2 = opt1);
         cmdline = "app -a \"xyz\" -n \"999\"";
-        TEST(! opt2.parse(cmdline, nowhere, opt_quoted));
+        TEST(! opt2.parse(cmdline, nowhere, Options::quoted));
         TEST(opt2.has("alpha"));
         TEST_EQUAL(opt2.get<u8string>("alpha"), "xyz");
         TEST(opt2.has("number"));
@@ -110,13 +110,13 @@ namespace {
 
         TRY(opt2 = opt1);
         cmdline = "app -a \"uvw xyz\"";
-        TEST(! opt2.parse(cmdline, nowhere, opt_quoted));
+        TEST(! opt2.parse(cmdline, nowhere, Options::quoted));
         TEST(opt2.has("alpha"));
         TEST_EQUAL(opt2.get<u8string>("alpha"), "uvw xyz");
 
         TRY(opt2 = opt1);
         cmdline = "app -a \"\"\"uvw\"\" \"\"xyz\"\"\"";
-        TEST(! opt2.parse(cmdline, nowhere, opt_quoted));
+        TEST(! opt2.parse(cmdline, nowhere, Options::quoted));
         TEST(opt2.has("alpha"));
         TEST_EQUAL(opt2.get<u8string>("alpha"), "\"uvw\" \"xyz\"");
 
@@ -214,7 +214,7 @@ namespace {
 
         TRY(opt2 = opt1);
         cmdline = "app";
-        TEST_THROW_MATCH(opt2.parse(cmdline), CommandLineError, ": \"--required\"$");
+        TEST_THROW_MATCH(opt2.parse(cmdline), Options::CommandError, ": \"--required\"$");
 
         TRY(opt2 = opt1);
         cmdline = "app --required abc";
@@ -252,7 +252,7 @@ namespace {
 
         TRY(opt2 = opt1);
         cmdline = "app --required abc def ghi";
-        TEST_THROW_MATCH(opt2.parse(cmdline), CommandLineError, ": \"ghi\"$");
+        TEST_THROW_MATCH(opt2.parse(cmdline), Options::CommandError, ": \"ghi\"$");
 
         TRY(opt1.add("tail", "Other anonymous arguments", Options::anon, Options::multiple));
 
@@ -318,7 +318,7 @@ namespace {
 
         TRY(opt2 = opt1);
         cmdline = "app --group1a abc --group1b def";
-        TEST_THROW_MATCH(opt2.parse(cmdline), CommandLineError, ": \"--group1a\", \"--group1b\"$");
+        TEST_THROW_MATCH(opt2.parse(cmdline), Options::CommandError, ": \"--group1a\", \"--group1b\"$");
 
         TRY(opt2 = opt1);
         cmdline = "app --group1a abc --group2a def";
@@ -333,7 +333,7 @@ namespace {
         Options opt1("App");
         TRY(opt1.add("alpha", "Alpha", Options::defval="Hello", Options::pattern="[[:alpha:]]+"));
         TRY(opt1.add("number", "Number", Options::defval="42", Options::pattern="\\d+"));
-        TEST_THROW_MATCH(opt1.add("word", "Word", Options::defval="*", Options::pattern="\\w+"), OptionSpecError, ": \"word\"$");
+        TEST_THROW_MATCH(opt1.add("word", "Word", Options::defval="*", Options::pattern="\\w+"), Options::SpecError, ": \"word\"$");
 
         Options opt2("Blank");
         u8string cmdline;
@@ -346,11 +346,11 @@ namespace {
 
         TRY(opt2 = opt1);
         cmdline = "app --alpha 123";
-        TEST_THROW_MATCH(opt2.parse(cmdline), CommandLineError, ": \"--alpha\", \"123\"$");
+        TEST_THROW_MATCH(opt2.parse(cmdline), Options::CommandError, ": \"--alpha\", \"123\"$");
 
         TRY(opt2 = opt1);
         cmdline = "app --number abc";
-        TEST_THROW_MATCH(opt2.parse(cmdline), CommandLineError, ": \"--number\", \"abc\"$");
+        TEST_THROW_MATCH(opt2.parse(cmdline), Options::CommandError, ": \"--number\", \"abc\"$");
 
         opt1 = Options("App");
         TRY(opt1.add("int", "Integer", Options::integer, Options::abbrev="i"));
@@ -393,15 +393,15 @@ namespace {
 
         TRY(opt2 = opt1);
         cmdline = "app --int 1234.5";
-        TEST_THROW_MATCH(opt2.parse(cmdline), CommandLineError, ": \"--int\", \"1234.5\"$");
+        TEST_THROW_MATCH(opt2.parse(cmdline), Options::CommandError, ": \"--int\", \"1234.5\"$");
 
         TRY(opt2 = opt1);
         cmdline = "app --uint -1234";
-        TEST_THROW_MATCH(opt2.parse(cmdline), CommandLineError, ": \"--uint\", \"-1234\"$");
+        TEST_THROW_MATCH(opt2.parse(cmdline), Options::CommandError, ": \"--uint\", \"-1234\"$");
 
         TRY(opt2 = opt1);
         cmdline = "app --float 0x1234";
-        TEST_THROW_MATCH(opt2.parse(cmdline), CommandLineError, ": \"--float\", \"0x1234\"$");
+        TEST_THROW_MATCH(opt2.parse(cmdline), Options::CommandError, ": \"--float\", \"0x1234\"$");
 
         opt1 = Options("App");
         TRY(opt1.add("int", "Integer", Options::anon, Options::required, Options::abbrev="i"));

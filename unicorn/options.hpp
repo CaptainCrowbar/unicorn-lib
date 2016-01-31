@@ -13,23 +13,6 @@
 
 namespace Unicorn {
 
-    class CommandLineError:
-    public std::runtime_error {
-    public:
-        explicit CommandLineError(const u8string& details, const u8string& arg = {}, const u8string& arg2 = {});
-    };
-
-    class OptionSpecError:
-    public std::runtime_error {
-    public:
-        explicit OptionSpecError(const u8string& option);
-        OptionSpecError(const u8string& details, const u8string& option);
-    };
-
-    constexpr uint32_t opt_locale    = 1ul << 0;  // Argument list is in local encoding
-    constexpr uint32_t opt_noprefix  = 1ul << 1;  // First argument is not the command name
-    constexpr uint32_t opt_quoted    = 1ul << 2;  // Allow arguments to be quoted
-
     namespace UnicornDetail {
 
         template <typename T, bool FP = std::is_floating_point<T>::value>
@@ -69,6 +52,9 @@ namespace Unicorn {
 
     class Options {
     public:
+        static constexpr uint32_t locale = 1;    // Argument list is in local encoding
+        static constexpr uint32_t noprefix = 2;  // First argument is not the command name
+        static constexpr uint32_t quoted = 4;    // Allow arguments to be quoted
         static constexpr Kwarg<bool>
             anon = {},      // Assign anonymous arguments to this option
             boolean = {},   // Boolean option
@@ -82,6 +68,15 @@ namespace Unicorn {
             defval = {},    // Default value if not supplied
             group = {},     // Mutual exclusion group name
             pattern = {};   // Argument must match this regular expression
+        class CommandError: public std::runtime_error {
+        public:
+            explicit CommandError(const u8string& details, const u8string& arg = {}, const u8string& arg2 = {});
+        };
+        class SpecError: public std::runtime_error {
+        public:
+            explicit SpecError(const u8string& option);
+            SpecError(const u8string& details, const u8string& option);
+        };
         explicit Options(const u8string& info, const u8string& head = {}, const u8string& tail = {}):
             app_info(str_trim(info)), help_auto(false),
             help_head(str_trim(head)), help_tail(str_trim(tail)), opts() {}
@@ -191,9 +186,9 @@ namespace Unicorn {
     bool Options::parse(const basic_string<C>& args, std::basic_ostream<C2>& out, uint32_t flags) {
         auto u8args = arg_convert(args, flags);
         string_list vec;
-        if (flags & opt_quoted) {
+        if (flags & quoted) {
             unquote(u8args, vec);
-            flags &= ~ opt_quoted;
+            flags &= ~ quoted;
         } else {
             str_split(u8args, append(vec));
         }
@@ -205,7 +200,7 @@ namespace Unicorn {
     template <typename C, typename C2>
     bool Options::parse(int argc, C** argv, std::basic_ostream<C2>& out, uint32_t flags) {
         vector<basic_string<C>> args(argv, argv + argc);
-        if (flags & opt_quoted)
+        if (flags & quoted)
             return parse(str_join(args, str_char<C>(U' ')), out, flags);
         else
             return parse(args, out, flags);

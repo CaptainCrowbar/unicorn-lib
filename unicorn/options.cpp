@@ -28,7 +28,7 @@ namespace Unicorn {
             else if (arg.size() >= 3 && arg[1] == '-' && arg[2] != '-' && arg[2] != '=')
                 return is_long_option;
             else
-                throw CommandLineError("Argument not recognised", arg);
+                throw Options::CommandError("Argument not recognised", arg);
         }
 
         u8string cmd_error(const u8string& details, const u8string& arg, const u8string& arg2) {
@@ -46,19 +46,6 @@ namespace Unicorn {
 
     }
 
-    // Exceptions
-
-    CommandLineError::CommandLineError(const u8string& details, const u8string& arg, const u8string& arg2):
-    std::runtime_error(cmd_error(details, arg, arg2)) {}
-
-    OptionSpecError::OptionSpecError(const u8string& option):
-    std::runtime_error("Invalid option spec: $1q"_fmt(option)) {}
-
-    OptionSpecError::OptionSpecError(const u8string& details, const u8string& option):
-    std::runtime_error("$1: $2q"_fmt(details, option)) {}
-
-    // Options class
-
     constexpr Kwarg<bool> Options::anon;
     constexpr Kwarg<bool> Options::boolean;
     constexpr Kwarg<bool> Options::integer;
@@ -70,6 +57,15 @@ namespace Unicorn {
     constexpr Kwarg<u8string> Options::defval;
     constexpr Kwarg<u8string> Options::group;
     constexpr Kwarg<u8string> Options::pattern;
+
+    Options::CommandError::CommandError(const u8string& details, const u8string& arg, const u8string& arg2):
+    std::runtime_error(cmd_error(details, arg, arg2)) {}
+
+    Options::SpecError::SpecError(const u8string& option):
+    std::runtime_error("Invalid option spec: $1q"_fmt(option)) {}
+
+    Options::SpecError::SpecError(const u8string& details, const u8string& option):
+    std::runtime_error("$1: $2q"_fmt(details, option)) {}
 
     u8string Options::help() const {
         u8string text = "\n$1\n\n"_fmt(app_info);
@@ -140,11 +136,11 @@ namespace Unicorn {
         u8string tag = opt.name;
         str_trim_in(opt.name, "-");
         if (str_length(opt.name) < 2)
-            throw OptionSpecError(tag);
+            throw SpecError(tag);
         bool neg = opt.name.substr(0, 3) == "no-";
         str_trim_in(opt.info);
         if (opt.info.empty())
-            throw OptionSpecError(tag);
+            throw SpecError(tag);
         str_trim_in(opt.abbrev, "-");
         if (str_length(opt.abbrev) > 1
                 || (! opt.abbrev.empty() && ! char_is_alphanumeric(*utf_begin(opt.abbrev)))
@@ -153,7 +149,7 @@ namespace Unicorn {
                 || (neg && (! opt.is_boolean || ! opt.abbrev.empty()))
                 || (opt.is_required && ! opt.group.empty())
                 || (int(opt.is_integer) + int(opt.is_uinteger) + int(opt.is_float) + int(! opt.pattern.empty()) > 1))
-            throw OptionSpecError(tag);
+            throw SpecError(tag);
         if (opt.is_integer)
             opt.pattern = match_integer;
         else if (opt.is_uinteger)
@@ -161,13 +157,13 @@ namespace Unicorn {
         else if (opt.is_float)
             opt.pattern = match_float;
         if (! opt.defval.empty() && ! opt.pattern.empty() && ! opt.pattern.match(opt.defval))
-            throw OptionSpecError(tag);
+            throw SpecError(tag);
         if (neg) {
             opt.name.erase(0, 3);
             opt.defval = "1";
         }
         if (find_index(opt.name) != npos || find_index(opt.abbrev) != npos)
-            throw OptionSpecError("Duplicate option spec", tag);
+            throw SpecError("Duplicate option spec", tag);
         opts.push_back(opt);
     }
 
@@ -231,9 +227,9 @@ namespace Unicorn {
     }
 
     void Options::clean_up_arguments(string_list& args, uint32_t flags) {
-        if (! (flags & opt_noprefix) && ! args.empty())
+        if (! (flags & noprefix) && ! args.empty())
             args.erase(args.begin());
-        if (flags & opt_quoted)
+        if (flags & quoted)
             for (auto& arg: args)
                 if (arg.size() >= 2 && arg.front() == '\"' && arg.back() == '\"')
                     arg = arg.substr(1, arg.size() - 1);
@@ -275,7 +271,7 @@ namespace Unicorn {
                 for (auto u = std::next(utf_begin(arg)), uend = utf_end(arg); u != uend; ++u, ++j) {
                     size_t o = find_index(arg.substr(u.offset(), u.count()));
                     if (o == npos)
-                        throw CommandLineError("Unknown option", arg);
+                        throw CommandError("Unknown option", arg);
                     args.insert(args.begin() + i + j, "--" + opts[o].name);
                 }
                 i += j;
@@ -294,14 +290,14 @@ namespace Unicorn {
             }
             size_t o = find_index(args[a]);
             if (o == npos)
-                throw CommandLineError("Unknown option", args[a]);
+                throw CommandError("Unknown option", args[a]);
             auto& opt(opts[o]);
             if (opt.found && ! opt.is_multiple)
-                throw CommandLineError("Duplicate option", args[a]);
+                throw CommandError("Duplicate option", args[a]);
             if (! opt.group.empty())
                 for (auto& opt2: opts)
                     if (&opt2 != &opt && opt2.group == opt.group && opt2.found)
-                        throw CommandLineError("Incompatible options", "--" + opt2.name, args[a]);
+                        throw CommandError("Incompatible options", "--" + opt2.name, args[a]);
             opt.found = true;
             if (opt.is_boolean) {
                 if (args[a].substr(0, 5) == "--no-")
@@ -318,7 +314,7 @@ namespace Unicorn {
                 for (; n < max_n && arg_type(args[a + n]) == is_argument; ++n) {
                     auto& arg(args[a + n]);
                     if (! opt.pattern.empty() && (opt.is_required || ! arg.empty()) && ! opt.pattern.match(arg))
-                        throw CommandLineError("Invalid argument to option", args[a], arg);
+                        throw CommandError("Invalid argument to option", args[a], arg);
                     opt.values.push_back(arg);
                 }
                 args.erase(args.begin() + a, args.begin() + a + n);
@@ -343,13 +339,13 @@ namespace Unicorn {
             }
         }
         if (! args.empty())
-            throw CommandLineError("Unexpected argument", args[0]);
+            throw CommandError("Unexpected argument", args[0]);
     }
 
     void Options::check_required() {
         for (auto& opt: opts)
             if (opt.is_required && ! opt.found)
-                throw CommandLineError("Required option is missing", "--" + opt.name);
+                throw CommandError("Required option is missing", "--" + opt.name);
     }
 
     void Options::supply_defaults() {
@@ -359,7 +355,7 @@ namespace Unicorn {
     }
 
     u8string Options::arg_convert(const string& str, uint32_t flags) {
-        if (! (flags & opt_locale))
+        if (! (flags & locale))
             return str;
         u8string utf8;
         import_string(str, utf8, local_encoding());

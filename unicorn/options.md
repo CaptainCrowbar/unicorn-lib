@@ -49,33 +49,27 @@ the following information on the standard output:
         --help, -h          = Show usage information
         --version, -v       = Show version information
 
-## Contents ##
+## Options class ##
 
-[TOC]
+* `class Options::`**`CommandError`**`: public std::runtime_error`
+    * `explicit CommandError::`**`CommandError`**`(const u8string& details, const u8string& arg = {}, const u8string& arg2 = {})`
 
-## Exceptions ##
-
-* `class` **`CommandLineError`**`: public std::runtime_error`
-    * `explicit CommandLineError::`**`CommandLineError`**`(const u8string& details, const u8string& arg = {}, const u8string& arg2 = {})`
-
-Thrown by `Options::`**`parse`**`()` during argument parsing, to report that the
+Thrown by `Options::parse()` during argument parsing, to report that the
 command line arguments supplied by the user were not consistent with the
 option specification.
 
-* `class` **`OptionSpecError`**`: public std::runtime_error`
-    * `explicit OptionSpecError::`**`OptionSpecError`**`(const u8string& option)`
-    * `OptionSpecError::`**`OptionSpecError`**`(const u8string& details, const u8string& option)`
+* `class Options::`**`SpecError`**`: public std::runtime_error`
+    * `explicit SpecError::`**`SpecError`**`(const u8string& option)`
+    * `SpecError::`**`SpecError`**`(const u8string& details, const u8string& option)`
 
-Thrown by `Options::`**`add`**`()` during the creation of an option specification, to
+Thrown by `Options::add()` during the creation of an option specification, to
 report an invalid combination of properties.
-
-## Class Options ##
 
 * `explicit Options::`**`Options`**`(const u8string& info, const u8string& head = {}, const u8string& tail = {})`
 
 Constructor to initialize an option specification. The `info` argument is a
 string containing the basic description of the program, typically something
-like `"Foobar 1.0 - Does the stuff with the thing"`; this will be returned if
+like `"Foobar 1.0 - Goes ding when there's stuff"`; this will be returned if
 the user calls it with the `"--version"` option. The optional `head` and
 `tail` arguments are extra text that will be printed before and after the
 option list when the full `"--help"` option is invoked.
@@ -115,8 +109,7 @@ Boolean options can be supplied in negated form, by giving a name starting
 with `"--no-"` or `"no-"`. This creates a boolean option whose default value
 is `true`.
 
-The `add()` function will throw `OptionSpecError` if any of the following is
-true:
+The `add()` function will throw `SpecError` if any of the following is true:
 
 * The option name has less than two characters (not counting any leading hyphens).
 * The info string is empty.
@@ -164,7 +157,7 @@ supplied as a vector of strings, as a single combined string that will be
 split apart during parsing, or as the standard `(argc,argv)` arguments from
 `main()` (or a similar source such as the UTF-16 `_wmain()` often used on
 Windows). Normally the supplied argument list is assumed to start with the
-command name (which will be discarded); use the `opt_noprefix` flag to
+command name (which will be discarded); use the `Options::noprefix` flag to
 override this.
 
 Boolean options will be recognised in normal or negated form (e.g. `"--magic"`
@@ -180,18 +173,18 @@ the return value from `parse()` and end the program if it is true.
 
 The `flags` argument can be any combination of these:
 
-Flag                | Description
-----                | -----------
-**`opt_locale`**    | The argument list is in the local encoding
-**`opt_noprefix`**  | The first argument is not the command name
-**`opt_quoted`**    | Allow arguments to be quoted
+Flag                       | Description
+----                       | -----------
+`Options::`**`locale`**    | The argument list is in the local encoding
+`Options::`**`noprefix`**  | The first argument is not the command name
+`Options::`**`quoted`**    | Allow arguments to be quoted
 
-The `opt_locale` flag is only relevant to 8 bit strings, which are assumed to
-be UTF-8 by default; the flag is ignored if the `C` type is not `char`, since
-16 or 32 bit strings are always assumed to be UTF-16/32.
+The `Options::locale` flag is only relevant to 8 bit strings, which are
+assumed to be UTF-8 by default; the flag is ignored if the `C` type is not
+`char`, since 16 or 32 bit strings are always assumed to be UTF-16/32.
 
-The `parse()` functions will throw `CommandLineError` if any of the following
-is true:
+The `parse()` functions will throw `CommandError` if any of the following is
+true:
 
 * A full or abbreviated option is supplied that is not in the spec.
 * The same option appears more than once, but does not have the `multiple` flag.

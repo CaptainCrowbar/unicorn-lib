@@ -53,48 +53,36 @@ Options:
     --help, -h          = Show usage information
     --version, -v       = Show version information
 </code></pre>
-<h2 id="contents">Contents</h2>
-<div class="toc">
-<ul>
-<li><a href="#unicorn-library-command-line-options">Unicorn Library: Command Line Options</a><ul>
-<li><a href="#contents">Contents</a></li>
-<li><a href="#exceptions">Exceptions</a></li>
-<li><a href="#class-options">Class Options</a></li>
-</ul>
-</li>
-</ul>
-</div>
-<h2 id="exceptions">Exceptions</h2>
+<h2 id="options-class">Options class</h2>
 <div class="defns">
 <ul>
-<li><code>class</code> <strong><code>CommandLineError</code></strong><code>: public std::runtime_error</code><ul>
-<li><code>explicit CommandLineError::</code><strong><code>CommandLineError</code></strong><code>(const u8string&amp; details, const u8string&amp; arg = {}, const u8string&amp; arg2 = {})</code></li>
+<li><code>class Options::</code><strong><code>CommandError</code></strong><code>: public std::runtime_error</code><ul>
+<li><code>explicit CommandError::</code><strong><code>CommandError</code></strong><code>(const u8string&amp; details, const u8string&amp; arg = {}, const u8string&amp; arg2 = {})</code></li>
 </ul>
 </li>
 </ul>
-<p>Thrown by <code>Options::</code><strong><code>parse</code></strong><code>()</code> during argument parsing, to report that the
+<p>Thrown by <code>Options::parse()</code> during argument parsing, to report that the
 command line arguments supplied by the user were not consistent with the
 option specification.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>class</code> <strong><code>OptionSpecError</code></strong><code>: public std::runtime_error</code><ul>
-<li><code>explicit OptionSpecError::</code><strong><code>OptionSpecError</code></strong><code>(const u8string&amp; option)</code></li>
-<li><code>OptionSpecError::</code><strong><code>OptionSpecError</code></strong><code>(const u8string&amp; details, const u8string&amp; option)</code></li>
+<li><code>class Options::</code><strong><code>SpecError</code></strong><code>: public std::runtime_error</code><ul>
+<li><code>explicit SpecError::</code><strong><code>SpecError</code></strong><code>(const u8string&amp; option)</code></li>
+<li><code>SpecError::</code><strong><code>SpecError</code></strong><code>(const u8string&amp; details, const u8string&amp; option)</code></li>
 </ul>
 </li>
 </ul>
-<p>Thrown by <code>Options::</code><strong><code>add</code></strong><code>()</code> during the creation of an option specification, to
+<p>Thrown by <code>Options::add()</code> during the creation of an option specification, to
 report an invalid combination of properties.</p>
 </div>
-<h2 id="class-options">Class Options</h2>
 <div class="defns">
 <ul>
 <li><code>explicit Options::</code><strong><code>Options</code></strong><code>(const u8string&amp; info, const u8string&amp; head = {}, const u8string&amp; tail = {})</code></li>
 </ul>
 <p>Constructor to initialize an option specification. The <code>info</code> argument is a
 string containing the basic description of the program, typically something
-like <code>"Foobar 1.0 - Does the stuff with the thing"</code>; this will be returned if
+like <code>"Foobar 1.0 - Goes ding when there's stuff"</code>; this will be returned if
 the user calls it with the <code>"--version"</code> option. The optional <code>head</code> and
 <code>tail</code> arguments are extra text that will be printed before and after the
 option list when the full <code>"--help"</code> option is invoked.</p>
@@ -188,8 +176,7 @@ arguments, as listed below.</p>
 <p>Boolean options can be supplied in negated form, by giving a name starting
 with <code>"--no-"</code> or <code>"no-"</code>. This creates a boolean option whose default value
 is <code>true</code>.</p>
-<p>The <code>add()</code> function will throw <code>OptionSpecError</code> if any of the following is
-true:</p>
+<p>The <code>add()</code> function will throw <code>SpecError</code> if any of the following is true:</p>
 <ul>
 <li>The option name has less than two characters (not counting any leading hyphens).</li>
 <li>The info string is empty.</li>
@@ -242,7 +229,7 @@ supplied as a vector of strings, as a single combined string that will be
 split apart during parsing, or as the standard <code>(argc,argv)</code> arguments from
 <code>main()</code> (or a similar source such as the UTF-16 <code>_wmain()</code> often used on
 Windows). Normally the supplied argument list is assumed to start with the
-command name (which will be discarded); use the <code>opt_noprefix</code> flag to
+command name (which will be discarded); use the <code>Options::noprefix</code> flag to
 override this.</p>
 <p>Boolean options will be recognised in normal or negated form (e.g. <code>"--magic"</code>
 vs <code>"--no-magic"</code>). Integer options will accept hexadecimal options prefixed
@@ -263,24 +250,24 @@ the return value from <code>parse()</code> and end the program if it is true.</p
 </thead>
 <tbody>
 <tr>
-<td><strong><code>opt_locale</code></strong></td>
+<td><code>Options::</code><strong><code>locale</code></strong></td>
 <td>The argument list is in the local encoding</td>
 </tr>
 <tr>
-<td><strong><code>opt_noprefix</code></strong></td>
+<td><code>Options::</code><strong><code>noprefix</code></strong></td>
 <td>The first argument is not the command name</td>
 </tr>
 <tr>
-<td><strong><code>opt_quoted</code></strong></td>
+<td><code>Options::</code><strong><code>quoted</code></strong></td>
 <td>Allow arguments to be quoted</td>
 </tr>
 </tbody>
 </table>
-<p>The <code>opt_locale</code> flag is only relevant to 8 bit strings, which are assumed to
-be UTF-8 by default; the flag is ignored if the <code>C</code> type is not <code>char</code>, since
-16 or 32 bit strings are always assumed to be UTF-16/32.</p>
-<p>The <code>parse()</code> functions will throw <code>CommandLineError</code> if any of the following
-is true:</p>
+<p>The <code>Options::locale</code> flag is only relevant to 8 bit strings, which are
+assumed to be UTF-8 by default; the flag is ignored if the <code>C</code> type is not
+<code>char</code>, since 16 or 32 bit strings are always assumed to be UTF-16/32.</p>
+<p>The <code>parse()</code> functions will throw <code>CommandError</code> if any of the following is
+true:</p>
 <ul>
 <li>A full or abbreviated option is supplied that is not in the spec.</li>
 <li>The same option appears more than once, but does not have the <code>multiple</code> flag.</li>
