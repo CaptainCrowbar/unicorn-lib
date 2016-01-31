@@ -64,12 +64,15 @@ the caller, or in one returned from the environment), <code>std::invalid_argumen
 if an environment variable name is empty or contains an equals sign, or
 <code>std::system_error</code> if anything goes wrong with the underlying system API
 call.</p>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>get_env</code></strong><code>(const basic_string&lt;C&gt;&amp; name, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>get_env</code></strong><code>(const C* name, uint32_t flags = 0)</code></li>
 </ul>
 <p>Query the value of an environment variable. This will return an empty string
 if the variable does not exist.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; bool</code> <strong><code>has_env</code></strong><code>(const basic_string&lt;C&gt;&amp; name, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename C&gt; bool</code> <strong><code>has_env</code></strong><code>(const C* name, uint32_t flags = 0)</code></li>
@@ -78,6 +81,8 @@ if the variable does not exist.</p>
 always distinguish clearly between a variable that does not exist, and one
 that exists but whose value is an empty string; if a variable has been set to
 an empty value, this function may or may not report its existence on Windows.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; void</code> <strong><code>set_env</code></strong><code>(const basic_string&lt;C&gt;&amp; name, const basic_string&lt;C&gt;&amp; value, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename C&gt; void</code> <strong><code>set_env</code></strong><code>(const basic_string&lt;C&gt;&amp; name, const C* value, uint32_t flags = 0)</code></li>
@@ -85,22 +90,30 @@ an empty value, this function may or may not report its existence on Windows.</p
 <li><code>template &lt;typename C&gt; void</code> <strong><code>set_env</code></strong><code>(const C* name, const C* value, uint32_t flags = 0)</code></li>
 </ul>
 <p>Set the value of a variable in the process's environment block.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; void</code> <strong><code>unset_env</code></strong><code>(const basic_string&lt;C&gt;&amp; name, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename C&gt; void</code> <strong><code>unset_env</code></strong><code>(const C* name, uint32_t flags = 0)</code></li>
 </ul>
 <p>Delete a variable from the process's environment block.</p>
+</div>
 <h2 id="class-environment">Class Environment</h2>
+<div class="defns">
 <ul>
 <li><code>class</code> <strong><code>Environment</code></strong></li>
 </ul>
 <p>A class that holds a complete environment block.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>class</code> <strong><code>Environment</code></strong><code>::iterator</code></li>
 </ul>
 <p>A read-only iterator over the name-value pairs stored in an <code>Environment</code>
 object. This is a forward iterator whose value type is
 <code>std::pair&lt;NativeString,NativeString&gt;</code>.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>Environment::</code><strong><code>Environment</code></strong><code>()</code></li>
 <li><code>explicit Environment::</code><strong><code>Environment</code></strong><code>(bool from_process)</code></li>
@@ -113,6 +126,8 @@ object. This is a forward iterator whose value type is
 <p>Life cycle operations. If the <code>from_process</code> flag is set, the constructor will
 copy the environment data from the calling process; otherwise, the newly
 constructed <code>Environment</code> object will be empty.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt; Environment::</code><strong><code>operator[]</code></strong><code>(const basic_string&lt;C&gt;&amp; name)</code></li>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt; Environment::</code><strong><code>operator[]</code></strong><code>(const C* name)</code></li>
@@ -130,24 +145,34 @@ constructed <code>Environment</code> object will be empty.</p>
 <p>These perform the same operations as the corresponding environment variable
 functions described above (<code>operator[]</code> is a synonym for <code>get()</code>), and will
 throw the same exceptions.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>Environment::iterator Environment::</code><strong><code>begin</code></strong><code>() const</code></li>
 <li><code>Environment::iterator Environment::</code><strong><code>end</code></strong><code>() const</code></li>
 </ul>
 <p>Iterators over the name-value pairs stored in an <code>Environment</code> object.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>void Environment::</code><strong><code>clear</code></strong><code>()</code></li>
 </ul>
 <p>Clears all data from the environment block.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>bool Environment::</code><strong><code>empty</code></strong><code>() const noexcept</code></li>
 </ul>
 <p>True if the environment block contains no data.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>void Environment::</code><strong><code>load</code></strong><code>()</code></li>
 </ul>
 <p>Loads the <code>Environment</code> object's data from the calling process's environment
 block. Any existing data in the <code>Environment</code> object is discarded.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>NativeCharacter** Environment::</code><strong><code>ptr</code></strong><code>()</code></li>
 </ul>
@@ -155,6 +180,8 @@ block. Any existing data in the <code>Environment</code> object is discarded.</p
 (suitable for passing to process spawning functions, for example), and returns
 a pointer to it. The returned pointer is invalidated by any operation that may
 modify the <code>Environment</code> object (any call to a non-<code>const</code> function).</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>size_t Environment::</code><strong><code>size</code></strong><code>() const noexcept</code></li>
 </ul>

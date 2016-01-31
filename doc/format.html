@@ -50,6 +50,7 @@ for details.</p>
 </ul>
 </div>
 <h2 id="basic-formatting-functions">Basic formatting functions</h2>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename T&gt; u8string</code> <strong><code>format_type</code></strong><code>(const T&amp; t, uint64_t flags, int prec)</code></li>
 <li><em>Library defined specializations for</em><ul>
@@ -71,13 +72,17 @@ for details.</p>
 </li>
 </ul>
 <p>TODO</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C, typename T&gt; basic_string&lt;C&gt;</code> <strong><code>format_as</code></strong><code>(const T&amp; t, uint64_t flags = 0, int prec = -1, size_t width = 0, char32_t pad = U' ')</code></li>
 <li><code>template &lt;typename C, typename T&gt; basic_string&lt;C&gt;</code> <strong><code>format_as</code></strong><code>(const T&amp; t, const basic_string&lt;C&gt;&amp; flags)</code></li>
 <li><code>template &lt;typename C, typename T&gt; basic_string&lt;C&gt;</code> <strong><code>format_as</code></strong><code>(const T&amp; t, const C* flags)</code></li>
 </ul>
 <p>TODO</p>
+</div>
 <h2 id="formatter-class">Formatter class</h2>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; class</code> <strong><code>BasicFormat</code></strong><ul>
 <li><code>using BasicFormat::</code><strong><code>char_type</code></strong> <code>= C</code></li>
@@ -101,12 +106,16 @@ for details.</p>
 <li><code>using</code> <strong><code>WideFormat</code></strong> <code>= BasicFormat&lt;wchar_t&gt;</code></li>
 </ul>
 <p>TODO</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; BasicFormat&lt;C&gt;</code> <strong><code>format</code></strong><code>(const basic_string&lt;C&gt;&amp; fmt)</code></li>
 <li><code>template &lt;typename C&gt; BasicFormat&lt;C&gt;</code> <strong><code>format</code></strong><code>(const C* fmt)</code></li>
 </ul>
 <p>TODO</p>
+</div>
 <h2 id="formatter-literals">Formatter literals</h2>
+<div class="defns">
 <ul>
 <li><code>namespace Literals</code><ul>
 <li><code>Format</code> <strong><code>operator"" _fmt</code></strong><code>(const char* ptr, size_t len)</code></li>
@@ -117,8 +126,12 @@ for details.</p>
 </li>
 </ul>
 <p>TODO</p>
+</div>
 <h2 id="formatting-for-specific-types">Formatting for specific types</h2>
 <h3 id="global-flags">Global flags</h3>
+<div class="defns">
+<!-- DEFN -->
+
 <table>
 <thead>
 <tr>
@@ -181,7 +194,11 @@ for details.</p>
 </tbody>
 </table>
 <p>TODO</p>
+</div>
 <h3 id="boolean-formatting">Boolean formatting</h3>
+<div class="defns">
+<!-- DEFN -->
+
 <table>
 <thead>
 <tr>
@@ -209,7 +226,11 @@ for details.</p>
 </tbody>
 </table>
 <p>TODO</p>
+</div>
 <h3 id="integer-formatting">Integer formatting</h3>
+<div class="defns">
+<!-- DEFN -->
+
 <table>
 <thead>
 <tr>
@@ -252,7 +273,11 @@ for details.</p>
 </tbody>
 </table>
 <p>TODO</p>
+</div>
 <h3 id="floating-point-formatting">Floating point formatting</h3>
+<div class="defns">
+<!-- DEFN -->
+
 <table>
 <thead>
 <tr>
@@ -305,7 +330,11 @@ for details.</p>
 </tbody>
 </table>
 <p>TODO</p>
+</div>
 <h3 id="character-and-string-formatting">Character and string formatting</h3>
+<div class="defns">
+<!-- DEFN -->
+
 <table>
 <thead>
 <tr>
@@ -358,7 +387,11 @@ for details.</p>
 </tbody>
 </table>
 <p>TODO</p>
+</div>
 <h3 id="time-and-date-formatting">Time and date formatting</h3>
+<div class="defns">
+<!-- DEFN -->
+
 <table>
 <thead>
 <tr>
@@ -386,6 +419,7 @@ for details.</p>
 </tbody>
 </table>
 <p>TODO</p>
+</div>
 <h3 id="uuid-formatting">UUID formatting</h3>
 <p>No type-specific flags are defined.</p>
 <h3 id="version-number-formatting">Version number formatting</h3>

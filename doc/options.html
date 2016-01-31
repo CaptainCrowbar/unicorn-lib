@@ -65,6 +65,7 @@ Options:
 </ul>
 </div>
 <h2 id="exceptions">Exceptions</h2>
+<div class="defns">
 <ul>
 <li><code>class</code> <strong><code>CommandLineError</code></strong><code>: public std::runtime_error</code><ul>
 <li><code>explicit CommandLineError::</code><strong><code>CommandLineError</code></strong><code>(const u8string&amp; details, const u8string&amp; arg = {}, const u8string&amp; arg2 = {})</code></li>
@@ -74,6 +75,8 @@ Options:
 <p>Thrown by <code>Options::</code><strong><code>parse</code></strong><code>()</code> during argument parsing, to report that the
 command line arguments supplied by the user were not consistent with the
 option specification.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>class</code> <strong><code>OptionSpecError</code></strong><code>: public std::runtime_error</code><ul>
 <li><code>explicit OptionSpecError::</code><strong><code>OptionSpecError</code></strong><code>(const u8string&amp; option)</code></li>
@@ -83,7 +86,39 @@ option specification.</p>
 </ul>
 <p>Thrown by <code>Options::</code><strong><code>add</code></strong><code>()</code> during the creation of an option specification, to
 report an invalid combination of properties.</p>
+</div>
 <h2 id="class-options">Class Options</h2>
+<div class="defns">
+<ul>
+<li><code>explicit Options::</code><strong><code>Options</code></strong><code>(const u8string&amp; info, const u8string&amp; head = {}, const u8string&amp; tail = {})</code></li>
+</ul>
+<p>Constructor to initialize an option specification. The <code>info</code> argument is a
+string containing the basic description of the program, typically something
+like <code>"Foobar 1.0 - Does the stuff with the thing"</code>; this will be returned if
+the user calls it with the <code>"--version"</code> option. The optional <code>head</code> and
+<code>tail</code> arguments are extra text that will be printed before and after the
+option list when the full <code>"--help"</code> option is invoked.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>Options::</code><strong><code>Options</code></strong><code>(const Options&amp; opt)</code></li>
+<li><code>Options::</code><strong><code>Options</code></strong><code>(Options&amp;&amp; opt) noexcept</code></li>
+<li><code>Options::</code><strong><code>~Options</code></strong><code>() noexcept</code></li>
+<li><code>Options&amp; Options::</code><strong><code>operator=</code></strong><code>(const Options&amp; opt)</code></li>
+<li><code>Options&amp; Options::</code><strong><code>operator=</code></strong><code>(Options&amp;&amp; opt) noexcept</code></li>
+</ul>
+<p>Other life cycle functions.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>template &lt;typename... Args&gt; void Options::</code><strong><code>add</code></strong><code>(const u8string&amp; name, const u8string&amp; info, const Args&amp;... args)</code></li>
+</ul>
+<p>Adds an option to the parser. The <code>name</code> argument is the full name of the
+option, which users can invoke with <code>"--name"</code> (the option name can be
+supplied to the <code>add()</code> function with or without the leading hyphens). The
+<code>info</code> string is the description of the option that will be presented to the
+user when help is requested. These may be followed by optional keyword
+arguments, as listed below.</p>
 <table>
 <thead>
 <tr>
@@ -150,33 +185,6 @@ report an invalid combination of properties.</p>
 </tr>
 </tbody>
 </table>
-<p>Keyword arguments for the <code>add()</code> function, described below.</p>
-<ul>
-<li><code>explicit Options::</code><strong><code>Options</code></strong><code>(const u8string&amp; info, const u8string&amp; head = {}, const u8string&amp; tail = {})</code></li>
-</ul>
-<p>Constructor to initialize an option specification. The <code>info</code> argument is a
-string containing the basic description of the program, typically something
-like <code>"Foobar 1.0 - Does the stuff with the thing"</code>; this will be returned if
-the user calls it with the <code>"--version"</code> option. The optional <code>head</code> and
-<code>tail</code> arguments are extra text that will be printed before and after the
-option list when the full <code>"--help"</code> option is invoked.</p>
-<ul>
-<li><code>Options::</code><strong><code>Options</code></strong><code>(const Options&amp; opt)</code></li>
-<li><code>Options::</code><strong><code>Options</code></strong><code>(Options&amp;&amp; opt) noexcept</code></li>
-<li><code>Options::</code><strong><code>~Options</code></strong><code>() noexcept</code></li>
-<li><code>Options&amp; Options::</code><strong><code>operator=</code></strong><code>(const Options&amp; opt)</code></li>
-<li><code>Options&amp; Options::</code><strong><code>operator=</code></strong><code>(Options&amp;&amp; opt) noexcept</code></li>
-</ul>
-<p>Other life cycle functions.</p>
-<ul>
-<li><code>template &lt;typename... Args&gt; void Options::</code><strong><code>add</code></strong><code>(const u8string&amp; name, const u8string&amp; info, const Args&amp;... args)</code></li>
-</ul>
-<p>Adds an option to the parser. The <code>name</code> argument is the full name of the
-option, which users can invoke with <code>"--name"</code> (the option name can be
-supplied to the <code>add()</code> function with or without the leading hyphens). The
-<code>info</code> string is the description of the option that will be presented to the
-user when help is requested. These may be followed by optional keyword
-arguments, as listed above.</p>
 <p>Boolean options can be supplied in negated form, by giving a name starting
 with <code>"--no-"</code> or <code>"no-"</code>. This creates a boolean option whose default value
 is <code>true</code>.</p>
@@ -201,11 +209,15 @@ options.</p>
 to <code>add()</code> to construct the option specification before calling <code>parse()</code> to
 parse the actual command line arguments. Once the arguments have been parsed,
 the <code>get()</code>, <code>get_list()</code>, and <code>has()</code> functions can be used to query them.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>void Options::</code><strong><code>autohelp</code></strong><code>() noexcept</code></li>
 </ul>
 <p>If this is set, calling the program with no arguments will be interpreted as a
 request for help (i.e. an empty argument list is equivalent to <code>"--help"</code>).</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>u8string Options::</code><strong><code>help</code></strong><code>() const</code></li>
 <li><code>u8string Options::</code><strong><code>version</code></strong><code>() const</code></li>
@@ -214,6 +226,8 @@ request for help (i.e. an empty argument list is equivalent to <code>"--help"</c
 and <code>"--version"</code> options. The <code>help()</code> text is constructed automatically by
 the <code>Options</code> object; the <code>version()</code> text is simply the original <code>info</code>
 string that was supplied to the <code>Options</code> constructor.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; bool Options::</code><strong><code>parse</code></strong><code>(const vector&lt;basic_string&lt;C&gt;&gt;&amp; args)</code></li>
 <li><code>template &lt;typename C&gt; bool Options::</code><strong><code>parse</code></strong><code>(const basic_string&lt;C&gt;&amp; args)</code></li>
@@ -277,6 +291,8 @@ is true:</p>
 </ul>
 <p>Behaviour is unspecified if <code>parse()</code> is called more than once on the same
 <code>Options</code> object.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename T&gt; T Options::</code><strong><code>get</code></strong><code>(const u8string&amp; name) const</code></li>
 <li><code>template &lt;typename T&gt; vector&lt;T&gt; Options::</code><strong><code>get_list</code></strong><code>(const u8string&amp; name) const</code></li>

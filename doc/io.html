@@ -27,6 +27,7 @@ encodings, as well as other conveniences such as normalization of line breaks.</
 </ul>
 </div>
 <h2 id="file-input-iterator">File input iterator</h2>
+<div class="defns">
 <ul>
 <li><code>class</code> <strong><code>FileReader</code></strong><ul>
 <li><code>using FileReader::</code><strong><code>difference_type</code></strong> <code>= ptrdiff_t</code></li>
@@ -95,6 +96,8 @@ encodings, as well as other conveniences such as normalization of line breaks.</
 </table>
 <p>(May be combined with err_replace/throw)</p>
 <p>TODO</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const basic_string&lt;C&gt;&amp; file, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename C1, typename C2&gt; Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const basic_string&lt;C1&gt;&amp; file, uint32_t flags, const basic_string&lt;C2&gt;&amp; enc)</code></li>
@@ -103,7 +106,9 @@ encodings, as well as other conveniences such as normalization of line breaks.</
 <li><code>template &lt;typename C1, typename C2&gt; Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const basic_string&lt;C1&gt;&amp; file, uint32_t flags, uint32_t enc, const basic_string&lt;C2&gt;&amp; eol)</code></li>
 </ul>
 <p>TODO</p>
+</div>
 <h2 id="file-output-iterator">File output iterator</h2>
+<div class="defns">
 <ul>
 <li><code>class</code> <strong><code>FileWriter</code></strong><ul>
 <li><code>using FileWriter::</code><strong><code>difference_type</code></strong> <code>= void</code></li>

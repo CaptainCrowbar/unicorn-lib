@@ -71,22 +71,6 @@ report an invalid combination of properties.
 
 ## Class Options ##
 
-Keyword                    | Type        | Description
--------                    | ----        | -----------
-`Options::`**`abbrev`**    | `u8string`  | A single letter abbreviation for the option (e.g. `"-x"`; the hyphen is optional).
-`Options::`**`anon`**      | `bool`      | Anonymous arguments (not claimed by any other option) will be assigned to this option.
-`Options::`**`boolean`**   | `bool`      | This option is a boolean switch and does not take arguments.
-`Options::`**`defval`**    | `u8string`  | Use this default value if the option is not supplied by the user.
-`Options::`**`floating`**  | `bool`      | The argument value must be a floating point number.
-`Options::`**`group`**     | `u8string`  | Assign the option to a mutual exclusion group; at most one option from a group is allowed.
-`Options::`**`integer`**   | `bool`      | The argument value must be an integer.
-`Options::`**`multiple`**  | `bool`      | This option may be followed by multiple arguments.
-`Options::`**`pattern`**   | `u8string`  | The argument value must match this regular expression.
-`Options::`**`required`**  | `bool`      | This option is mandatory.
-`Options::`**`uinteger`**  | `bool`      | The argument value must be an unsigned integer.
-
-Keyword arguments for the `add()` function, described below.
-
 * `explicit Options::`**`Options`**`(const u8string& info, const u8string& head = {}, const u8string& tail = {})`
 
 Constructor to initialize an option specification. The `info` argument is a
@@ -111,7 +95,21 @@ option, which users can invoke with `"--name"` (the option name can be
 supplied to the `add()` function with or without the leading hyphens). The
 `info` string is the description of the option that will be presented to the
 user when help is requested. These may be followed by optional keyword
-arguments, as listed above.
+arguments, as listed below.
+
+Keyword                    | Type        | Description
+-------                    | ----        | -----------
+`Options::`**`abbrev`**    | `u8string`  | A single letter abbreviation for the option (e.g. `"-x"`; the hyphen is optional).
+`Options::`**`anon`**      | `bool`      | Anonymous arguments (not claimed by any other option) will be assigned to this option.
+`Options::`**`boolean`**   | `bool`      | This option is a boolean switch and does not take arguments.
+`Options::`**`defval`**    | `u8string`  | Use this default value if the option is not supplied by the user.
+`Options::`**`floating`**  | `bool`      | The argument value must be a floating point number.
+`Options::`**`group`**     | `u8string`  | Assign the option to a mutual exclusion group; at most one option from a group is allowed.
+`Options::`**`integer`**   | `bool`      | The argument value must be an integer.
+`Options::`**`multiple`**  | `bool`      | This option may be followed by multiple arguments.
+`Options::`**`pattern`**   | `u8string`  | The argument value must match this regular expression.
+`Options::`**`required`**  | `bool`      | This option is mandatory.
+`Options::`**`uinteger`**  | `bool`      | The argument value must be an unsigned integer.
 
 Boolean options can be supplied in negated form, by giving a name starting
 with `"--no-"` or `"no-"`. This creates a boolean option whose default value

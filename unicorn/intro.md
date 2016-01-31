@@ -1,6 +1,6 @@
 # [Unicorn Library](index.html): Introduction #
 
-#### Unicode library for C++ by Ross Smith ####
+_Unicode library for C++ by Ross Smith_
 
 Please keep in mind that the Unicorn documentation does not attempt to be a
 [Unicode](http://unicode.org/) tutorial; the reader is assumed to be familiar
@@ -9,12 +9,7 @@ Unicorn documentation with a copy of the Unicode standard on hand.
 
 ## Contents ##
 
-* [Compatibility][]
-* [Design philosophy][]
-* [Coding conventions][]
-* [Exception safety][]
-* [Building Unicorn][]
-* [Using Unicorn][]
+[TOC]
 
 ## Compatibility ##
 
@@ -23,10 +18,10 @@ probably a recent version of Clang or GCC. I developed it mainly on Mac OS X,
 currently using Clang 7.0. All test builds are made using strict compilation
 mode (`-Wall -Wextra -Werror`).
 
-Unicorn has also been tested with GCC 4.9 and 5.1 on Ubuntu GNU/Linux,
-[Cygwin](http://www.cygwin.com/) on Microsoft Windows, and native Windows
-using [Nuwen-Mingw](http://nuwen.net/mingw.html), although I can't promise
-that the most recent checkin will have been tested with all of those.
+Unicorn has also been tested with GCC versions from 4.9 to 5.3 on Ubuntu
+GNU/Linux, [Cygwin](http://www.cygwin.com/) on Microsoft Windows, and native
+Windows using [Nuwen-Mingw](http://nuwen.net/mingw.html), although I can't
+promise that the most recent checkin will have been tested with all of those.
 
 Currently, Unicorn will not work with any existing release of Microsoft Visual
 Studio. VS 2015 probably has sufficiently good C++11/14 support, but does not
@@ -167,7 +162,7 @@ If you want to make changes to the code, you may need to rebuild the Unicode
 character tables from the original data. You can do this by first running
 `scripts/download-ucd` to download the original tables from the Unicode
 website, then `scripts/make-tables` to generate the C++ tables used by Unicorn
-(this script requires Python 3.2+). This is not necessary if you're just
+(this script requires Python 3.4+). This is not necessary if you're just
 building the library and not modifying it, or if your changes don't require
 any tables to be rebuilt; all the precompiled tables are already included in
 the source tree.
@@ -204,5 +199,7 @@ Everything in the Unicorn library is in `namespace Unicorn` (or a subordinate
 namespace inside `Unicorn`). You can either qualify all calls with the
 `Unicorn::` prefix, or use `using namespace Unicorn`.
 
-Unicorn uses my minimal, header-only Prion utility library. Everything in
-`namespace Prion` is imported into `namespace Unicorn`.
+Unicorn uses my minimal, header-only Prion utility library. No special build
+actions are required beyond making sure the compiler can find the
+`"prion/core.hpp"` header. Everything in `namespace Prion` is imported into
+`namespace Unicorn`.

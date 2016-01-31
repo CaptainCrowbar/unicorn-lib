@@ -17,6 +17,8 @@ UTF-32; `wstring` may hold either UTF-16 or UTF-32, depending on the compiler.
 
 ## Constants ##
 
+<!-- DEFN -->
+
 Flag               | Description
 ----               | -----------
 **`err_ignore`**   | Assume valid UTF input

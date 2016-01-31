@@ -33,6 +33,7 @@ for details.</p>
 </ul>
 </div>
 <h2 id="exceptions">Exceptions</h2>
+<div class="defns">
 <ul>
 <li><code>class</code> <strong><code>SyntaxError</code></strong><code>: public std::runtime_error</code><ul>
 <li><code>SyntaxError::</code><strong><code>SyntaxError</code></strong><code>(const u8string&amp; text, size_t offset, const u8string&amp; message = "Syntax error")</code></li>
@@ -42,7 +43,9 @@ for details.</p>
 </li>
 </ul>
 <p>TODO</p>
+</div>
 <h2 id="token-structure">Token structure</h2>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; struct</code> <strong><code>BasicToken</code></strong><ul>
 <li><code>using BasicToken::</code><strong><code>char_type</code></strong> <code>= C</code></li>
@@ -60,7 +63,9 @@ for details.</p>
 <li><code>using</code> <strong><code>WideToken</code></strong> <code>= BasicToken&lt;wchar_t&gt;</code></li>
 </ul>
 <p>TODO</p>
+</div>
 <h2 id="token-iterator">Token iterator</h2>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; class</code> <strong><code>BasicTokenIterator</code></strong><ul>
 <li><code>using BasicTokenIterator::</code><strong><code>char_type</code></strong> <code>= C</code></li>
@@ -80,7 +85,9 @@ for details.</p>
 <li><code>using</code> <strong><code>WideTokenIterator</code></strong> <code>= BasicTokenIterator&lt;wchar_t&gt;</code></li>
 </ul>
 <p>TODO</p>
+</div>
 <h2 id="lexer-class">Lexer class</h2>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; class</code> <strong><code>BasicLexer</code></strong></li>
 <li><code>using</code> <strong><code>Lexer</code></strong> <code>= BasicLexer&lt;char&gt;</code></li>
@@ -89,6 +96,8 @@ for details.</p>
 <li><code>using</code> <strong><code>WideLexer</code></strong> <code>= BasicLexer&lt;wchar_t&gt;</code></li>
 </ul>
 <p>TODO</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>using BasicLexer::</code><strong><code>callback_type</code></strong> <code>= std::function&lt;size_t(const string_type&amp;, size_t)&gt;</code></li>
 <li><code>using BasicLexer::</code><strong><code>char_type</code></strong> <code>= C</code></li>
@@ -99,6 +108,8 @@ for details.</p>
 <li><code>using BasicLexer::</code><strong><code>token_type</code></strong> <code>= BasicToken&lt;C&gt;</code></li>
 </ul>
 <p>TODO</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>BasicLexer::</code><strong><code>BasicLexer</code></strong><code>()</code></li>
 <li><code>BasicLexer::</code><strong><code>BasicLexer</code></strong><code>(const BasicLexer&amp; lex)</code></li>
@@ -108,11 +119,15 @@ for details.</p>
 <li><code>BasicLexer&amp; BasicLexer::</code><strong><code>operator=</code></strong><code>(BasicLexer&amp;&amp; lex) noexcept</code></li>
 </ul>
 <p>TODO</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>BasicLexer::token_range BasicLexer::</code><strong><code>lex</code></strong><code>(const string_type&amp; text) const</code></li>
 <li><code>BasicLexer::token_range BasicLexer::</code><strong><code>operator()</code></strong><code>(const string_type&amp; text) const</code></li>
 </ul>
 <p>TODO</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>void BasicLexer::</code><strong><code>custom</code></strong><code>(int tag, const callback_type&amp; call, const string_type&amp; prefixes = {})</code></li>
 <li><code>void BasicLexer::</code><strong><code>exact</code></strong><code>(int tag, const string_type&amp; pattern)</code></li>

@@ -114,12 +114,15 @@ width characters are handled, defaulting to narrow (one unit) or wide (two
 units). The <code>grapheme_units</code> flag can be combined with either of the East
 Asian width options, giving a size based on the width of the base character of
 each grapheme cluster.</p>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; size_t</code> <strong><code>str_length</code></strong><code>(const basic_string&lt;C&gt;&amp; str, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename C&gt; size_t</code> <strong><code>str_length</code></strong><code>(const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; range, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename C&gt; size_t</code> <strong><code>str_length</code></strong><code>(const UtfIterator&lt;C&gt;&amp; begin, const UtfIterator&lt;C&gt;&amp; end, uint32_t flags = 0)</code></li>
 </ul>
 <p>Return the length of the string, measured according to the flags supplied.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt;</code> <strong><code>str_find_index</code></strong><code>(const basic_string&lt;C&gt;&amp; str, size_t pos, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt;</code> <strong><code>str_find_index</code></strong><code>(const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; range, size_t pos, uint32_t flags = 0)</code></li>
@@ -133,22 +136,30 @@ will be returned (or <code>npos</code> for <code>str_find_offset()</code>). If t
 adjusted to exactly the specified value (because one of the East Asian width
 options was selected and wide characters are present), the first valid
 position after the requested point will be returned.</p>
+</div>
 <h2 id="other-string-properties">Other string properties</h2>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; char32_t</code> <strong><code>str_char_at</code></strong><code>(const basic_string&lt;C&gt;&amp; str, size_t index) noexcept</code></li>
 </ul>
 <p>Returns the character at a specific index, or zero if the index is out of
 range.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; char32_t</code> <strong><code>str_first_char</code></strong><code>(const basic_string&lt;C&gt;&amp; str) noexcept</code></li>
 <li><code>template &lt;typename C&gt; char32_t</code> <strong><code>str_last_char</code></strong><code>(const basic_string&lt;C&gt;&amp; str) noexcept</code></li>
 </ul>
 <p>Return the first or last character in a string, or zero if the string is
 empty.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; bool</code> <strong><code>str_is_east_asian</code></strong><code>(const basic_string&lt;C&gt;&amp; str)</code></li>
 </ul>
 <p>True if the string contains any East Asian characters.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; bool</code> <strong><code>str_starts_with</code></strong><code>(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; prefix) noexcept</code></li>
 <li><code>template &lt;typename C&gt; bool</code> <strong><code>str_starts_with</code></strong><code>(const basic_string&lt;C&gt;&amp; str, const C* prefix) noexcept</code></li>
@@ -156,7 +167,9 @@ empty.</p>
 <li><code>template &lt;typename C&gt; bool</code> <strong><code>str_ends_with</code></strong><code>(const basic_string&lt;C&gt;&amp; str, const C* suffix) noexcept</code></li>
 </ul>
 <p>These return true if the string starts or ends with the specified substring.</p>
+</div>
 <h2 id="string-comparison">String comparison</h2>
+<div class="defns">
 <ul>
 <li><code>struct</code> <strong><code>StringCompare</code></strong><ul>
 <li><code>template &lt;typename C&gt; bool StringCompare::</code><strong><code>operator()</code></strong><code>(const basic_string&lt;C&gt;&amp; lhs, const basic_string&lt;C&gt;&amp; rhs) const noexcept</code></li>
@@ -170,12 +183,16 @@ regardless of encoding. For UTF-8 and UTF-32 this is just a trivial call to
 <code>basic_string</code>'s less-than operator, but for UTF-16 it needs to be slightly
 more complicated to preserve the expected order (in UTF-16, unlike UTF-8 and
 32, code unit order is not the same as code point order).</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; int</code> <strong><code>str_compare_3way</code></strong><code>(const basic_string&lt;C&gt;&amp; lhs, const basic_string&lt;C&gt;&amp; rhs)</code></li>
 </ul>
 <p>This compares strings in the same way as <code>string_compare()</code> above, but returns
 1, 0, or -1 to indicate that the first string is greater than, equal to, or
 less than the second one, respectively.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>struct</code> <strong><code>IcaseEqual</code></strong><ul>
 <li><code>template &lt;typename C&gt; bool IcaseEqual::</code><strong><code>operator()</code></strong><code>(const basic_string&lt;C&gt;&amp; lhs, const basic_string&lt;C&gt;&amp; rhs) const noexcept</code></li>
@@ -194,6 +211,8 @@ equality or less-than semantics. These are equivalent to calling
 functions is usually more efficient for a small number of comparisons, while
 calling <code>str_casefold()</code> and saving the case folded form of the string will be
 more efficient if the same string is going to be compared frequently.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>struct</code> <strong><code>NaturalCompare</code></strong><ul>
 <li><code>template &lt;typename C&gt; bool NaturalCompare::</code><strong><code>operator()</code></strong><code>(const basic_string&lt;C&gt;&amp; lhs, const basic_string&lt;C&gt;&amp; rhs) const noexcept</code></li>
@@ -210,7 +229,9 @@ punctuation (significant characters are defined as general categories <code>L</c
 equal according to these criteria, but are not exactly byte for byte
 identical, a simple lexicographical comparison by code point is used as a tie
 breaker.</p>
+</div>
 <h2 id="other-string-algorithms">Other string algorithms</h2>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; size_t</code> <strong><code>str_common</code></strong><code>(const basic_string&lt;C&gt;&amp; s1, const basic_string&lt;C&gt;&amp; s2, size_t start = 0) noexcept</code></li>
 <li><code>template &lt;typename C&gt; size_t</code> <strong><code>str_common_utf</code></strong><code>(const basic_string&lt;C&gt;&amp; s1, const basic_string&lt;C&gt;&amp; s2, size_t start = 0) noexcept</code></li>
@@ -224,6 +245,8 @@ prefix of whole encoded characters (the returned count is still in code
 units); this means it will return a smaller value than <code>str_common()</code> if the
 offset found by <code>str_common()</code> is partway through an encoded character. Both
 functions will return zero if <code>start</code> is past the end of either string.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; bool</code> <strong><code>str_expect</code></strong><code>(UtfIterator&lt;C&gt;&amp; i, const basic_string&lt;C&gt;&amp; prefix)</code></li>
 <li><code>template &lt;typename C&gt; bool</code> <strong><code>str_expect</code></strong><code>(UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; end, const basic_string&lt;C&gt;&amp; prefix)</code></li>
@@ -233,6 +256,8 @@ functions will return zero if <code>start</code> is past the end of either strin
 <code>i</code> unchanged and returns <code>false</code>. Optionally an endpoint other than the end
 of the string can be supplied. These will always return <code>false</code> if <code>prefix</code> is
 empty.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt;</code> <strong><code>str_find_char</code></strong><code>(const basic_string&lt;C&gt;&amp; str, char32_t c)</code></li>
 <li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt;</code> <strong><code>str_find_char</code></strong><code>(const UtfIterator&lt;C&gt;&amp; begin, const UtfIterator&lt;C&gt;&amp; end, char32_t c)</code></li>
@@ -243,6 +268,8 @@ empty.</p>
 </ul>
 <p>These return an iterator pointing to the first or last occurrence of the
 specified character, or an end iterator if it is not found.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt;</code> <strong><code>str_find_first_of</code></strong><code>(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; target)</code></li>
 <li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt;</code> <strong><code>str_find_first_of</code></strong><code>(const basic_string&lt;C&gt;&amp; str, const C* target)</code></li>
@@ -274,6 +301,8 @@ not in, the target list of characters. They return an end iterator if no
 matching character is found. (They are essentially the same as the similarly
 named member functions in standard strings, except that they work on
 characters instead of code units.)</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt;</code> <strong><code>str_search</code></strong><code>(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; target)</code></li>
 <li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt;</code> <strong><code>str_search</code></strong><code>(const basic_string&lt;C&gt;&amp; str, const C* target)</code></li>
@@ -285,6 +314,8 @@ characters instead of code units.)</p>
 <p>Find the first occurrence of the target substring in the subject range,
 returning an iterator pointing to the beginning of the located substring, or
 an end iterator if it was not found.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; size_t</code> <strong><code>str_skipws</code></strong><code>(UtfIterator&lt;C&gt;&amp; i)</code></li>
 <li><code>template &lt;typename C&gt; size_t</code> <strong><code>str_skipws</code></strong><code>(UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; end)</code></li>
@@ -293,7 +324,9 @@ an end iterator if it was not found.</p>
 string if no such character was found. Optionally an endpoint other than the
 end of the string can be supplied. The return value is the number of
 characters skipped.</p>
+</div>
 <h2 id="string-manipulation-functions">String manipulation functions</h2>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C, typename C2&gt; void</code> <strong><code>str_append</code></strong><code>(basic_string&lt;C&gt;&amp; str, const basic_string&lt;C2&gt;&amp; suffix)</code></li>
 <li><code>template &lt;typename C, typename C2&gt; void</code> <strong><code>str_append</code></strong><code>(basic_string&lt;C&gt;&amp; str, const Irange&lt;UtfIterator&lt;C2&gt;&gt;&amp; suffix)</code></li>
@@ -305,12 +338,16 @@ characters skipped.</p>
 </ul>
 <p>These append one or more characters to a Unicode string, performing any
 necessary encoding conversions.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_char</code></strong><code>(char32_t c)</code></li>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_chars</code></strong><code>(size_t n, char32_t c)</code></li>
 </ul>
 <p>Return a string containing <code>n</code> copies of the character, in the appropriate
 encoding.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C, typename... Strings&gt; basic_string&lt;C&gt;</code> <strong><code>str_concat</code></strong><code>(const basic_string&lt;C&gt;&amp; s, const Strings&amp;... ss)</code></li>
 <li><code>template &lt;typename C, typename... Strings&gt; basic_string&lt;C&gt;</code> <strong><code>str_concat</code></strong><code>(const C* s, const Strings&amp;... ss)</code></li>
@@ -322,6 +359,8 @@ different Unicode encodings. The <code>str_concat_with()</code> versions insert 
 delimiter between each pair of strings. The encoding type of the returned
 string matches that of the first argument (the delimiter in
 <code>str_concat_with()</code>).</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_drop_prefix</code></strong><code>(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; prefix)</code></li>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_drop_prefix</code></strong><code>(const basic_string&lt;C&gt;&amp; str, const C* prefix)</code></li>
@@ -334,6 +373,8 @@ string matches that of the first argument (the delimiter in
 </ul>
 <p>If the first argument string starts or ends with the given prefix or suffix,
 remove it; otherwise, just return the original string unchanged.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_erase_left</code></strong><code>(const basic_string&lt;C&gt;&amp; str, size_t length)</code></li>
 <li><code>template &lt;typename C&gt; void</code> <strong><code>str_erase_left_in</code></strong><code>(basic_string&lt;C&gt;&amp; str, size_t length) noexcept</code></li>
@@ -343,6 +384,8 @@ remove it; otherwise, just return the original string unchanged.</p>
 <p>Erase the specified number of Unicode characters from the beginning or end of
 the string. These will return an empty string if <code>length</code> is greater than the
 number of characters in <code>str</code>.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_expand_tabs</code></strong><code>(const basic_string&lt;C&gt;&amp; str)</code></li>
 <li><code>template &lt;typename C, typename IntList&gt; basic_string&lt;C&gt;</code> <strong><code>str_expand_tabs</code></strong><code>(const basic_string&lt;C&gt;&amp; str, const IntList&amp; tabs, uint32_t flags = 0)</code></li>
@@ -363,6 +406,8 @@ beyond the last one listed are needed, the difference between the last two tab
 stops is used to increment the last one (e.g. <code>{5,10,20}</code> will be expanded to
 <code>{5,10,20,30,40,...}</code>). An implicit tab stop at position zero is always
 assumed.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_fix_left</code></strong><code>(const basic_string&lt;C&gt;&amp; str, size_t length, char32_t c = U' ', uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename C&gt; void</code> <strong><code>str_fix_left_in</code></strong><code>(basic_string&lt;C&gt;&amp; str, size_t length, char32_t c = U' ', uint32_t flags = 0)</code></li>
@@ -378,6 +423,8 @@ anchors the string on the right and pads or truncates on the left. If the
 string can't be adjusted to exactly the specified size (because one of the
 East Asian width options was selected and wide characters are present), the
 result will be one unit longer than the requested length.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_insert</code></strong><code>(const UtfIterator&lt;C&gt;&amp; dst, const basic_string&lt;C&gt;&amp; src)</code></li>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_insert</code></strong><code>(const UtfIterator&lt;C&gt;&amp; dst, const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; src)</code></li>
@@ -401,6 +448,8 @@ positions within the string are specified by UTF iterators instead of ordinary
 string iterators or offsets. The <code>str_insert_in()</code> functions return a pair of
 iterators delimiting the newly inserted replacement string within the updated
 <code>dst</code>.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename FwdRange&gt; basic_string&lt;[character type]&gt;</code> <strong><code>str_join</code></strong><code>(const FwdRange&amp; r)</code></li>
 <li><code>template &lt;typename FwdRange, typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_join</code></strong><code>(const FwdRange&amp; r, const basic_string&lt;C&gt;&amp; delim)</code></li>
@@ -409,6 +458,8 @@ iterators delimiting the newly inserted replacement string within the updated
 <p>These concatenate a list of strings, optionally inserting a delimiter between
 each pair of strings. The character types of the string list and the delimiter
 must match.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_pad_left</code></strong><code>(const basic_string&lt;C&gt;&amp; str, size_t length, char32_t c = U' ', uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename C&gt; void</code> <strong><code>str_pad_left_in</code></strong><code>(basic_string&lt;C&gt;&amp; str, size_t length, char32_t c = U' ', uint32_t flags = 0)</code></li>
@@ -421,6 +472,8 @@ string will be returned unchanged if it is already equal to or longer than the
 required length. If the string can't be adjusted to exactly the specified size
 (because one of the East Asian width options was selected and wide characters
 are present), the result will be one unit longer than the requested length.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; bool</code> <strong><code>str_partition</code></strong><code>(const basic_string&lt;C&gt;&amp; str, basic_string&lt;C&gt;&amp; prefix, basic_string&lt;C&gt;&amp; suffix)</code></li>
 <li><code>template &lt;typename C&gt; bool</code> <strong><code>str_partition_at</code></strong><code>(const basic_string&lt;C&gt;&amp; str, basic_string&lt;C&gt;&amp; prefix, basic_string&lt;C&gt;&amp; suffix, const basic_string&lt;C&gt;&amp; delim)</code></li>
@@ -439,6 +492,8 @@ and <code>str_partition_by()</code> splits it at the first contiguous sequence o
 characters that are in the <code>delim</code> list. In <code>str_partition_at()</code> and
 <code>str_partition_by()</code>, an empty delimiter string will be treated as never being
 found.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_remove</code></strong><code>(const basic_string&lt;C&gt;&amp; str, char32_t c)</code></li>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_remove</code></strong><code>(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; chars)</code></li>
@@ -453,12 +508,16 @@ found.</p>
 </ul>
 <p>These remove all occurrences of a specific character, all characters in a set,
 or characters matching (or not matching) a condition from the string.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_repeat</code></strong><code>(const basic_string&lt;C&gt;&amp; str, size_t n)</code></li>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_repeat</code></strong><code>(const C* str, size_t n)</code></li>
 <li><code>template &lt;typename C&gt; void</code> <strong><code>str_repeat_in</code></strong><code>(basic_string&lt;C&gt;&amp; str, size_t n)</code></li>
 </ul>
 <p>Return a string formed by concatenating <code>n</code> copies of the original string.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_replace</code></strong><code>(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; target, const basic_string&lt;C&gt;&amp; sub, size_t n = npos)</code></li>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_replace</code></strong><code>(const basic_string&lt;C&gt;&amp; str, const C* target, const basic_string&lt;C&gt;&amp; sub, size_t n = npos)</code></li>
@@ -473,6 +532,8 @@ or characters matching (or not matching) a condition from the string.</p>
 substrings that match <code>target</code> replaced with <code>sub</code>. By default, all matches
 are replaced. The string will be returned unchanged if <code>target</code> is empty or
 <code>n=0</code>.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C, typename OutIter&gt; void</code> <strong><code>str_split</code></strong><code>(const basic_string&lt;C&gt;&amp; src, OutIter dst)</code></li>
 <li><code>template &lt;typename C, typename OutIter&gt; void</code> <strong><code>str_split_at</code></strong><code>(const basic_string&lt;C&gt;&amp; src, OutIter dst, const basic_string&lt;C&gt;&amp; delim)</code></li>
@@ -489,6 +550,8 @@ the string on each contiguous sequence of whitespace characters;
 in the <code>delim</code> list. Nothing will be written if the original source string is
 empty; if the delimiter string is empty (but the source string is not), a
 single string will be written.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_squeeze</code></strong><code>(const basic_string&lt;C&gt;&amp; str)</code></li>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_squeeze</code></strong><code>(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; chars)</code></li>
@@ -510,6 +573,8 @@ sequence of whitespace characters will be replaced with a single space. The
 trailing characters from <code>chars</code> are removed completely instead of reduced to
 one character. In all cases, the original string will be left unchanged if
 <code>chars</code> is empty.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_substring</code></strong><code>(const basic_string&lt;C&gt;&amp; str, size_t offset, size_t count = npos)</code></li>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>utf_substring</code></strong><code>(const basic_string&lt;C&gt;&amp; str, size_t index, size_t length = npos, uint32_t flags = 0)</code></li>
@@ -521,6 +586,8 @@ behaviour; <code>utf_substring()</code> does the same thing, except that the pos
 length of the substring are measured according according to the <code>flags</code>
 argument instead of by code units (the flags are the same as for
 <code>str_length()</code>, defaulting to characters).</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_translate</code></strong><code>(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; target, const basic_string&lt;C&gt;&amp; sub)</code></li>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_translate</code></strong><code>(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; target, const C* sub)</code></li>
@@ -539,6 +606,8 @@ string will be returned unchanged if either <code>target</code> or <code>sub</co
 the extra characters in <code>sub</code> are ignored. If the same character occurs more
 than once in <code>target</code>, only the first is used. (This function is similar to
 the Unix <code>tr</code> utility.)</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_trim</code></strong><code>(const basic_string&lt;C&gt;&amp; str)</code></li>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_trim</code></strong><code>(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; chars)</code></li>
@@ -578,6 +647,8 @@ unwanted characters, or a predicate function that takes a character and
 returns <code>true</code> if the character should be trimmed. (Note that the predicate
 always takes a Unicode character, i.e. a <code>char32_t</code>, regardless of the code
 unit type, <code>C</code>.)</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_unify_lines</code></strong><code>(const basic_string&lt;C&gt;&amp; str, char32_t newline = U'\n')</code></li>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_unify_lines</code></strong><code>(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; newline)</code></li>
@@ -589,6 +660,8 @@ unit type, <code>C</code>.)</p>
 <p>These convert all line breaks to the same form, a single <code>LF</code> by default. Any
 Unicode line or paragraph breaking character is recognised and replaced; the
 <code>CR+LF</code> sequence is also treated as a single line break.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_wrap</code></strong><code>(const basic_string&lt;C&gt;&amp; str, uint32_t flags = 0, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos)</code></li>
 <li><code>template &lt;typename C&gt; void</code> <strong><code>str_wrap_in</code></strong><code>(basic_string&lt;C&gt;&amp; str, uint32_t flags = 0, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos)</code></li>
@@ -641,7 +714,9 @@ allow it to violate the right margin. If the <code>wrap_enforce</code> flag is s
 will cause the function to throw <code>std::length_error</code> instead.</p>
 <p>If the <code>wrap_preserve</code> flag is set, any paragraphs that start with an indented
 line are left in their original format.</p>
+</div>
 <h2 id="case-mapping-functions">Case mapping functions</h2>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_uppercase</code></strong><code>(const basic_string&lt;C&gt;&amp; str)</code></li>
 <li><code>template &lt;typename C&gt; void</code> <strong><code>str_uppercase_in</code></strong><code>(basic_string&lt;C&gt;&amp; str)</code></li>
@@ -660,6 +735,7 @@ necessarily be the same length as the original string (measured either in code
 units or characters). These functions only perform the default case mappings
 recommended by the Unicode standard; they do not make any attempt at
 localisation.</p>
+</div>
 <h2 id="escaping-and-quoting-functions">Escaping and quoting functions</h2>
 <table>
 <thead>
@@ -688,6 +764,7 @@ localisation.</p>
 </tbody>
 </table>
 <p>Flags recognised by <code>str_escape()</code> and related functions.</p>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; u8string</code> <strong><code>str_encode_uri</code></strong><code>(const basic_string&lt;C&gt;&amp; str)</code></li>
 <li><code>template &lt;typename C&gt; u8string</code> <strong><code>str_encode_uri_component</code></strong><code>(const basic_string&lt;C&gt;&amp; str)</code></li>
@@ -725,6 +802,8 @@ be encoded. ASCII punctuation is selectively encoded:</p>
 <p>The URI encoding functions work with UTF-8 strings because an encoded URI can
 only be an ASCII string. These functions only apply percent encoding; they do
 not make any attempt to support IDNA domain names.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>u8string</code> <strong><code>str_unencode_uri</code></strong><code>(const u8string&amp; str)</code></li>
 <li><code>void</code> <strong><code>str_unencode_uri_in</code></strong><code>(u8string&amp; str)</code></li>
@@ -732,6 +811,8 @@ not make any attempt to support IDNA domain names.</p>
 <p>These perform the reverse transformation to <code>str_encode_uri()</code> and
 <code>str_encode_uri_component()</code>, replacing percent escape codes with the original
 characters.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_escape</code></strong><code>(const basic_string&lt;C&gt;&amp; str, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename C&gt; void</code> <strong><code>str_escape_in</code></strong><code>(basic_string&lt;C&gt;&amp; str, uint32_t flags = 0)</code></li>
@@ -741,6 +822,8 @@ backslash. Normally, only C0 and C1 control characters, plus the backslash
 itself, will be escaped, and conventional C codes such as <code>"\n"</code> will be used
 instead of <code>"\x..."</code> for the relevant control characters. These behaviour
 settings can be changed by using the flags listed above.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_unescape</code></strong><code>(const basic_string&lt;C&gt;&amp; str)</code></li>
 <li><code>template &lt;typename C&gt; void</code> <strong><code>str_unescape_in</code></strong><code>(basic_string&lt;C&gt;&amp; str)</code></li>
@@ -750,12 +833,16 @@ codes with the original characters. If a backslash is followed by a character
 not recognised as an escape code, the backslash will simply be discarded and
 the second character left unchanged. These will throw <code>EncodingError</code> if a
 hexadecimal code does not represent a valid Unicode scalar value.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_quote</code></strong><code>(const basic_string&lt;C&gt;&amp; str, uint32_t flags = 0, char32_t quote = '\"')</code></li>
 <li><code>template &lt;typename C&gt; void</code> <strong><code>str_quote_in</code></strong><code>(basic_string&lt;C&gt;&amp; str, uint32_t flags = 0, char32_t quote = '\"')</code></li>
 </ul>
 <p>These perform much the same operation as <code>str_escape()</code>. Quote marks are added
 around the string, and internal quotes are escaped.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_unquote</code></strong><code>(const basic_string&lt;C&gt;&amp; str, char32_t quote = '\"')</code></li>
 <li><code>template &lt;typename C&gt; void</code> <strong><code>str_unquote_in</code></strong><code>(basic_string&lt;C&gt;&amp; str, char32_t quote = '\"')</code></li>
@@ -763,7 +850,9 @@ around the string, and internal quotes are escaped.</p>
 <p>These perform the reverse transformation to <code>str_quote()</code>, removing quote
 marks from the string, or from any quoted substrings within it, and then
 unescaping the resulting strings.</p>
+</div>
 <h2 id="type-conversion-functions">Type conversion functions</h2>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename T, typename C&gt; UtfIterator&lt;C&gt;</code> <strong><code>str_to_int</code></strong><code>(T&amp; t, const basic_string&lt;C&gt;&amp; str, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename T, typename C&gt; UtfIterator&lt;C&gt;</code> <strong><code>str_to_int</code></strong><code>(T&amp; t, const UtfIterator&lt;C&gt;&amp; start, uint32_t flags = 0)</code></li>

@@ -33,6 +33,9 @@ UTF-32; <code>wstring</code> may hold either UTF-16 or UTF-32, depending on the 
 </ul>
 </div>
 <h2 id="constants">Constants</h2>
+<div class="defns">
+<!-- DEFN -->
+
 <table>
 <thead>
 <tr>
@@ -78,12 +81,16 @@ validity, only at the point of input and output. Unlike the UTF conversion
 functions in this module, the functions in <a href="mbcs.html"><code>unicorn/mbcs</code></a> that
 convert between Unicode and other encodings default to <code>err_replace</code>, and do
 not accept the <code>err_ignore</code> option.</p>
+</div>
 <h2 id="utility-functions">Utility functions</h2>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; unsigned</code> <strong><code>code_units</code></strong><code>(char32_t c)</code></li>
 </ul>
 <p>Returns the number of code units in the encoding of the character <code>c</code>, in the
 UTF encoding implied by the character type <code>C</code>.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; bool</code> <strong><code>is_single_unit</code></strong><code>(C c)</code> <em>-- This code unit represents a character by itself</em></li>
 <li><code>template &lt;typename C&gt; bool</code> <strong><code>is_start_unit</code></strong><code>(C c)</code> <em>-- This is the first code unit of a multi-unit character</em></li>
@@ -93,7 +100,9 @@ UTF encoding implied by the character type <code>C</code>.</p>
 </ul>
 <p>These give the properties of individual code units. Exactly one of the first
 four functions will be true for any value of <code>C</code>.</p>
+</div>
 <h2 id="utf-decoding-iterator">UTF decoding iterator</h2>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; class</code> <strong><code>UtfIterator</code></strong><ul>
 <li><code>using UtfIterator::</code><strong><code>code_unit</code></strong> <code>= C</code></li>
@@ -155,6 +164,8 @@ past-the-end iterator.</p>
 iterator, but if one of the non-default error handling options is selected, it
 will check for valid Unicode characters and treat invalid code points as
 errors.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>using</code> <strong><code>Utf8Iterator</code></strong> <code>= UtfIterator&lt;char&gt;</code></li>
 <li><code>using</code> <strong><code>Utf16Iterator</code></strong> <code>= UtfIterator&lt;char16_t&gt;</code></li>
@@ -166,22 +177,30 @@ errors.</p>
 <li><code>using</code> <strong><code>WcharRange</code></strong> <code>= Irange&lt;WcharIterator&gt;</code></li>
 </ul>
 <p>Convenience aliases for specific iterators and ranges.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt;</code> <strong><code>utf_begin</code></strong><code>(const basic_string&lt;C&gt;&amp; src, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt;</code> <strong><code>utf_end</code></strong><code>(const basic_string&lt;C&gt;&amp; src, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename C&gt; Irange&lt;UtfIterator&lt;C&gt;&gt;</code> <strong><code>utf_range</code></strong><code>(const basic_string&lt;C&gt;&amp; src, uint32_t flags = 0)</code></li>
 </ul>
 <p>These return iterators over an encoded string.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; UtfIterator&lt;C&gt;</code> <strong><code>utf_iterator</code></strong><code>(const basic_string&lt;C&gt;&amp; src, size_t offset, uint32_t flags = 0)</code></li>
 </ul>
 <p>Returns an iterator pointing to a specific offset in a string.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>u_str</code></strong><code>(const UtfIterator&lt;C&gt;&amp; i, const UtfIterator&lt;C&gt;&amp; j)</code></li>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>u_str</code></strong><code>(const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; range)</code></li>
 </ul>
 <p>These return a copy of the substring between two iterators.</p>
+</div>
 <h2 id="utf-encoding-iterator">UTF encoding iterator</h2>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; class</code> <strong><code>UtfWriter</code></strong><ul>
 <li><code>using UtfWriter::</code><strong><code>code_unit</code></strong> <code>= C</code></li>
@@ -208,6 +227,8 @@ write to the end of the modified string.</p>
 <p>If an exception is thrown, nothing will be written to the output string.
 Otherwise, the <code>flags</code> argument and the <code>valid()</code> function work in much the
 same way as for <code>UtfIterator</code>.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>using</code> <strong><code>Utf8Writer</code></strong> <code>= UtfWriter&lt;char&gt;</code></li>
 <li><code>using</code> <strong><code>Utf16Writer</code></strong> <code>= UtfWriter&lt;char16_t&gt;</code></li>
@@ -215,11 +236,15 @@ same way as for <code>UtfIterator</code>.</p>
 <li><code>using</code> <strong><code>WcharWriter</code></strong> <code>= UtfWriter&lt;wchar_t&gt;</code></li>
 </ul>
 <p>Convenience aliases for specific iterators.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; UtfWriter&lt;C&gt;</code> <strong><code>utf_writer</code></strong><code>(basic_string&lt;C&gt;&amp; dst, uint32_t flags = 0) noexcept</code></li>
 </ul>
 <p>Returns an encoding iterator writing to the given destination string.</p>
+</div>
 <h2 id="utf-conversion-functions">UTF conversion functions</h2>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C1, typename C2&gt; void</code> <strong><code>recode</code></strong><code>(const basic_string&lt;C1&gt;&amp; src, basic_string&lt;C2&gt;&amp; dst, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename C1, typename C2&gt; void</code> <strong><code>recode</code></strong><code>(const basic_string&lt;C1&gt;&amp; src, size_t offset, basic_string&lt;C2&gt;&amp; dst, uint32_t flags = 0)</code></li>
@@ -238,6 +263,8 @@ must be supplied explicitly as a template argument.</p>
 <p>The <code>flags</code> argument has its usual meaning. If the destination string was
 supplied by reference, after an exception is thrown the destination string
 will contain the successfully converted part of the string before the error.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; u8string</code> <strong><code>to_utf8</code></strong><code>(const basic_string&lt;C&gt;&amp; src, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename C&gt; u16string</code> <strong><code>to_utf16</code></strong><code>(const basic_string&lt;C&gt;&amp; src, uint32_t flags = 0)</code></li>
@@ -246,12 +273,16 @@ will contain the successfully converted part of the string before the error.</p>
 <li><code>template &lt;typename C&gt; NativeString</code> <strong><code>to_native</code></strong><code>(const basic_string&lt;C&gt;&amp; src, uint32_t flags = 0)</code></li>
 </ul>
 <p>These are just shorthand for the corresponding invocation of <code>recode()</code>.</p>
+</div>
 <h2 id="utf-validation-functions">UTF validation functions</h2>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; void</code> <strong><code>sanitize</code></strong><code>(basic_string&lt;C&gt;&amp; str)</code></li>
 </ul>
 <p>This ensures that the string is a valid UTF encoding, by replacing any invalid
 data with the <code>U+FFFD</code> replacement character.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; bool</code> <strong><code>valid_string</code></strong><code>(const basic_string&lt;C&gt;&amp; str)</code></li>
 <li><code>template &lt;typename C&gt; void</code> <strong><code>check_string</code></strong><code>(const basic_string&lt;C&gt;&amp; str)</code></li>
@@ -259,6 +290,8 @@ data with the <code>U+FFFD</code> replacement character.</p>
 <p>These check for valid encoding. If the string contains invalid UTF,
 <code>valid_string()</code> returns <code>false</code>, while <code>check_string()</code> throws
 <code>EncodingError</code>.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; size_t</code> <strong><code>valid_count</code></strong><code>(const basic_string&lt;C&gt;&amp; str) noexcept</code></li>
 </ul>

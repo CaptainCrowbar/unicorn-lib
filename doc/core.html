@@ -26,6 +26,7 @@
 </ul>
 </div>
 <h2 id="imports">Imports</h2>
+<div class="defns">
 <ul>
 <li><code>using namespace Prion</code></li>
 <li><code>namespace Unicorn::Literals</code><ul>
@@ -34,13 +35,17 @@
 </li>
 </ul>
 <p>Everything in the Prion library is imported.</p>
+</div>
 <h2 id="exceptions">Exceptions</h2>
+<div class="defns">
 <ul>
 <li><code>class</code> <strong><code>InitializationError</code></strong><code>: public std::runtime_error</code></li>
 </ul>
 <p>An abstract base class for internal errors that may happen while loading the
 Unicode tables used by certain functions. Functions that can throw exceptions
 derived from this are individually documented.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>class</code> <strong><code>EncodingError</code></strong><code>: public std::runtime_error</code><ul>
 <li><code>EncodingError::</code><strong><code>EncodingError</code></strong><code>()</code></li>
@@ -57,18 +62,24 @@ string for validity. The offset of the offending data within the source string
 (when available) can be retrieved through the <code>offset()</code> method. If possible,
 a hexadecimal representation of the offending data will be included in the
 error message.</p>
+</div>
 <h2 id="basic-character-types">Basic character types</h2>
+<div class="defns">
 <ul>
 <li><code>#define</code> <strong><code>UNICORN_NATIVE_WCHAR</code></strong> <code>1</code></li>
 </ul>
 <p>Defined if the operating system's native API uses wide character strings (this
 is currently defined only for native Windows builds).</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>#define</code> <strong><code>UNICORN_WCHAR_UTF16</code></strong> <code>1</code></li>
 <li><code>#define</code> <strong><code>UNICORN_WCHAR_UTF32</code></strong> <code>1</code></li>
 </ul>
 <p>One of these is defined to indicate which UTF encoding the system's <code>wstring</code>
 class uses.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; struct</code> <strong><code>IsCharacterType</code></strong><ul>
 <li><code>static constexpr bool IsCharacterType::</code><strong><code>value</code></strong></li>
@@ -77,18 +88,24 @@ class uses.</p>
 </ul>
 <p>The <code>value</code> flag is true if <code>C</code> is one of the character types recognized by
 the Unicorn library (<code>char</code>, <code>char16_t</code>, <code>char32_t</code>, or <code>wchar_t</code>).</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>using</code> <strong><code>NativeCharacter</code></strong> <code>= [char on Unix, wchar_t on Windows]</code></li>
 <li><code>using</code> <strong><code>NativeString</code></strong> <code>= [string on Unix, wstring on Windows]</code></li>
 </ul>
 <p>These are the character and string types used in the operating system's native
 ABI.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>using</code> <strong><code>WcharEquivalent</code></strong> <code>= [char16_t or char32_t]</code></li>
 <li><code>using</code> <strong><code>WstringEquivalent</code></strong> <code>= [u16string or u32string]</code></li>
 </ul>
 <p>These are defined to match the UTF encoding of the system's <code>wstring</code> class.</p>
+</div>
 <h2 id="version-information">Version information</h2>
+<div class="defns">
 <ul>
 <li><code>Version</code> <strong><code>unicorn_version</code></strong><code>() noexcept</code></li>
 <li><code>Version</code> <strong><code>unicode_version</code></strong><code>() noexcept</code></li>

@@ -35,6 +35,7 @@ and their basic properties.</p>
 </ul>
 </div>
 <h2 id="constants">Constants</h2>
+<div class="defns">
 <ul>
 <li><code>constexpr char32_t</code> <strong><code>last_ascii_char</code></strong> <code>=            0x7f      = Highest ASCII code point</code></li>
 <li><code>constexpr char32_t</code> <strong><code>last_latin1_char</code></strong> <code>=           0xff      = Highest ISO 8859 code point</code></li>
@@ -60,11 +61,15 @@ and their basic properties.</p>
 <li><code>constexpr char32_t</code> <strong><code>last_unicode_char</code></strong> <code>=          0x10ffff  = Highest possible Unicode code point</code></li>
 </ul>
 <p>Some useful Unicode code points.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>constexpr const char*</code> <strong><code>utf8_bom</code></strong> <code>=          "\xef\xbb\xbf"  = Byte order mark (U+FEFF) in UTF-8</code></li>
 <li><code>constexpr const char*</code> <strong><code>utf8_replacement</code></strong> <code>=  "\xef\xbf\xbd"  = Replacement character (U+FFFD) in UTF-8</code></li>
 </ul>
 <p>Byte order mark and replacement character in UTF-8.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>constexpr size_t</code> <strong><code>max_case_decomposition</code></strong> <code>=           3   = Maximum length of a full case mapping</code></li>
 <li><code>constexpr size_t</code> <strong><code>max_canonical_decomposition</code></strong> <code>=      2   = Maximum length of a canonical decomposition</code></li>
@@ -75,16 +80,22 @@ under case mapping or decomposition. Note that these represent the maximum
 size of a single decomposition step; decomposition is normally applied
 recursively, so a single character may end up exceeding these sizes after the
 complete decomposition process has been applied.</p>
+</div>
 <h2 id="basic-character-functions">Basic character functions</h2>
+<div class="defns">
 <ul>
 <li><code>u8string</code> <strong><code>char_as_hex</code></strong><code>(char32_t c)</code></li>
 </ul>
 <p>Formats a code point in the conventional <code>U+XXXX</code> notation.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>constexpr bool</code> <strong><code>char_is_digit</code></strong><code>(char32_t c) noexcept</code></li>
 <li><code>constexpr bool</code> <strong><code>char_is_xdigit</code></strong><code>(char32_t c) noexcept</code></li>
 </ul>
 <p>These match only the corresponding ASCII characters.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>constexpr bool</code> <strong><code>char_is_unicode</code></strong><code>(char32_t c) noexcept</code></li>
 <li><code>constexpr bool</code> <strong><code>char_is_ascii</code></strong><code>(char32_t c) noexcept</code></li>
@@ -103,6 +114,8 @@ property tables.</p>
 <p>The <code>char_is_noncharacter()</code> function only returns true for the Unicode scalar
 values that are explicitly designated as noncharacters, not for implicit
 noncharacters such as surrogates.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; constexpr uint32_t</code> <strong><code>char_to_uint</code></strong><code>(C c) noexcept</code></li>
 </ul>
@@ -111,12 +124,14 @@ Unicode code point. This should be used in preference to simply casting a
 character to an integer, because plain <code>char</code> is signed on most systems; this
 means that 8 bit code points are negative when stored in a <code>char</code>, and casting
 them directly to an unsigned integer will give the wrong answer.</p>
+</div>
 <h2 id="general-category">General category</h2>
 <p>The General Category property is commonly presented as a two-letter
 abbreviation. To avoid too many allocations of short strings, functions in
 this library that use GC represent it as a 16-bit integer, which simply
 contains the ASCII code points of the two letters. (These are declared in a
 namespace, instead of an <code>enum class</code>, to make integer comparisons easier.)</p>
+<div class="defns">
 <ul>
 <li><code>namespace</code> <strong><code>GC</code></strong><ul>
 <li><code>enum</code> <strong><code>GC</code></strong><code>: uint16_t</code><ul>
@@ -179,14 +194,20 @@ namespace, instead of an <code>enum class</code>, to make integer comparisons ea
 </ul>
 <p>Constants corresponding to the standard GC values. All of these are <code>static
 constexpr uint16_t</code>.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>uint16_t</code> <strong><code>char_general_category</code></strong><code>(char32_t c) noexcept</code></li>
 </ul>
 <p>Returns the general category of a character.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>char</code> <strong><code>char_primary_category</code></strong><code>(char32_t c) noexcept</code></li>
 </ul>
 <p>Returns the first letter of the character's general category.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>bool</code> <strong><code>char_is_alphanumeric</code></strong><code>(char32_t c) noexcept  [gc=L,N]</code></li>
 <li><code>bool</code> <strong><code>char_is_control</code></strong><code>(char32_t c) noexcept       [gc=Cc]</code></li>
@@ -201,6 +222,8 @@ constexpr uint16_t</code>.</p>
 <p>These check for a character's membership in a broad general category. (The
 miscellaneous categories not listed here are covered elsewhere in this
 module.)</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>std::function&lt;bool(char32_t)&gt;</code> <strong><code>gc_predicate</code></strong><code>(uint16_t cat)</code></li>
 <li><code>std::function&lt;bool(char32_t)&gt;</code> <strong><code>gc_predicate</code></strong><code>(const u8string&amp; cat)</code></li>
@@ -213,6 +236,8 @@ you a function that will check whether a character is a letter, digit,
 connector punctuation, or dash punctuation. Following the convention suggested
 by the Unicode standard, the special category <code>"LC"</code> or <code>"L&amp;"</code> tests for a
 cased letter, i.e. equivalent to <code>"Lltu"</code>.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>u8string</code> <strong><code>decode_gc</code></strong><code>(uint16_t cat)</code></li>
 <li><code>constexpr uint16_t</code> <strong><code>encode_gc</code></strong><code>(char c1, char c2) noexcept</code></li>
@@ -221,11 +246,15 @@ cased letter, i.e. equivalent to <code>"Lltu"</code>.</p>
 </ul>
 <p>These convert between a GC abbreviation (passed as either a pair of letters or
 a string) and its integer code.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>const char*</code> <strong><code>gc_name</code></strong><code>(uint16_t cat) noexcept</code></li>
 </ul>
 <p>Returns the description of the general category, as shown in the list above.</p>
+</div>
 <h2 id="boolean-properties">Boolean properties</h2>
+<div class="defns">
 <ul>
 <li><code>bool</code> <strong><code>char_is_assigned</code></strong><code>(char32_t c) noexcept</code></li>
 <li><code>bool</code> <strong><code>char_is_unassigned</code></strong><code>(char32_t c) noexcept</code></li>
@@ -248,7 +277,9 @@ properties. The <code>char_is_line_break()</code> function is true for character
 line breaking property values <code>BK</code>, <code>CR</code>, <code>LF</code>, or <code>NL</code>; the
 <code>char_is_inline_space()</code> function is true for whitespace characters that are
 not line breaks.</p>
+</div>
 <h2 id="bidirectional-properties">Bidirectional properties</h2>
+<div class="defns">
 <ul>
 <li><code>Bidi_Class</code> <strong><code>bidi_class</code></strong><code>(char32_t c) noexcept</code></li>
 <li><code>bool</code> <strong><code>char_is_bidi_mirrored</code></strong><code>(char32_t c) noexcept</code></li>
@@ -257,12 +288,16 @@ not line breaks.</p>
 <li><code>char</code> <strong><code>bidi_paired_bracket_type</code></strong><code>(char32_t c) noexcept</code></li>
 </ul>
 <p>Properties relevant to the Unicode bidirectional algorithm.</p>
+</div>
 <h2 id="block-properties">Block properties</h2>
+<div class="defns">
 <ul>
 <li><code>u8string</code> <strong><code>char_block</code></strong><code>(char32_t c)</code></li>
 </ul>
 <p>Returns the name of the block to which a character belongs, or an empty string
 if it is not part of any block.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>struct</code> <strong><code>BlockInfo</code></strong><ul>
 <li><code>u8string BlockInfo::</code><strong><code>name</code></strong></li>
@@ -274,7 +309,9 @@ if it is not part of any block.</p>
 </ul>
 <p>The <code>unicode_block_list()</code> function returns a list of all Unicode character
 blocks (in code point order).</p>
+</div>
 <h2 id="case-folding-properties">Case folding properties</h2>
+<div class="defns">
 <ul>
 <li><code>bool</code> <strong><code>char_is_cased</code></strong><code>(char32_t c) noexcept</code></li>
 <li><code>bool</code> <strong><code>char_is_case_ignorable</code></strong><code>(char32_t c) noexcept</code></li>
@@ -283,6 +320,8 @@ blocks (in code point order).</p>
 <li><code>bool</code> <strong><code>char_is_titlecase</code></strong><code>(char32_t c) noexcept</code></li>
 </ul>
 <p>Boolean Unicode properties related to case conversion.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>char32_t</code> <strong><code>char_to_simple_uppercase</code></strong><code>(char32_t c) noexcept</code></li>
 <li><code>char32_t</code> <strong><code>char_to_simple_lowercase</code></strong><code>(char32_t c) noexcept</code></li>
@@ -304,7 +343,9 @@ be less than 1 or greater than <code>max_case_decomposition</code>).</p>
 Unicode, and make no attempt at localization; locale-dependent cases such as
 the Turkish <em>"I"</em> are not handled (these belong in a separate localization
 library).</p>
+</div>
 <h2 id="character-names">Character names</h2>
+<div class="defns">
 <ul>
 <li><code>u8string</code> <strong><code>char_name</code></strong><code>(char32_t c, uint32_t flags = 0)</code></li>
 </ul>
@@ -346,16 +387,22 @@ any of the three options. If both <code>cn_control</code> and <code>cn_label</co
 <p>The character name table is stored in compressed form to save space. The first
 call to <code>char_name()</code> may throw <code>InitializationError</code> if something goes wrong
 while loading the table.</p>
+</div>
 <h2 id="decomposition-properties">Decomposition properties</h2>
+<div class="defns">
 <ul>
 <li><code>int</code> <strong><code>combining_class</code></strong><code>(char32_t c) noexcept</code></li>
 </ul>
 <p>Returns the character's canonical combining class.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>char32_t</code> <strong><code>canonical_composition</code></strong><code>(char32_t c1, char32_t c2) noexcept</code></li>
 </ul>
 <p>Returns the canonical composition of the two characters, or zero if the two
 characters do not combine.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>size_t</code> <strong><code>canonical_decomposition</code></strong><code>(char32_t c, char32_t* dst) noexcept</code></li>
 <li><code>size_t</code> <strong><code>compatibility_decomposition</code></strong><code>(char32_t c, char32_t* dst) noexcept</code></li>
@@ -366,7 +413,9 @@ The output buffer is expected to have room for at least
 <code>max_canonical_decomposition</code> or <code>max_compatibility_decomposition</code> characters,
 respectively; the functions return the number of characters actually written,
 or zero if the character does not have a decomposition of the relevant type.</p>
+</div>
 <h2 id="enumeration-properties">Enumeration properties</h2>
+<div class="defns">
 <ul>
 <li><code>enum class</code> <strong><code>Bidi_Class</code></strong><ul>
 <li><code>Default, AL, AN, B, BN, CS, EN, ES, ET, FSI, L, LRE, LRI, LRO, NSM, ON, PDF, PDI, R, RLE, RLI, RLO, S, WS</code></li>
@@ -420,6 +469,8 @@ or zero if the character does not have a decomposition of the relevant type.</p>
 <p>Enumeration property values. The spelling of the class and value names follows
 their spelling in the Unicode standard, which is not entirely consistent about
 naming conventions.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>std::ostream&amp;</code> <strong><code>operator&lt;&lt;</code></strong><code>(std::ostream&amp; o, Bidi_Class x)</code></li>
 <li><code>std::ostream&amp;</code> <strong><code>operator&lt;&lt;</code></strong><code>(std::ostream&amp; o, East_Asian_Width x)</code></li>
@@ -436,6 +487,8 @@ naming conventions.</p>
 </ul>
 <p>Output operators convert an enumerated property value into a string for
 display.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>East_Asian_Width</code> <strong><code>east_asian_width</code></strong><code>(char32_t c) noexcept</code></li>
 <li><code>Grapheme_Cluster_Break</code> <strong><code>grapheme_cluster_break</code></strong><code>(char32_t c) noexcept</code></li>
@@ -450,14 +503,18 @@ display.</p>
 <li><code>Word_Break</code> <strong><code>word_break</code></strong><code>(char32_t c) noexcept</code></li>
 </ul>
 <p>Functions returning the properties of a character.</p>
+</div>
 <h2 id="numeric-properties">Numeric properties</h2>
+<div class="defns">
 <ul>
 <li><code>std::pair&lt;long long, long long&gt;</code> <strong><code>numeric_value</code></strong><code>(char32_t c)</code></li>
 </ul>
 <p>Returns the numeric value of a character, as a pair containg the numerator and
 denominator of the value. The denominator will always be positive. If the
 character is not numeric, the numeric value will be zero (expressed as <code>0/1</code>).</p>
+</div>
 <h2 id="script-properties">Script properties</h2>
+<div class="defns">
 <ul>
 <li><code>u8string</code> <strong><code>char_script</code></strong><code>(char32_t c)</code></li>
 <li><code>vector&lt;u8string&gt;</code> <strong><code>char_script_list</code></strong><code>(char32_t c)</code></li>
@@ -466,6 +523,8 @@ character is not numeric, the numeric value will be zero (expressed as <code>0/1
 scripts (in unspecified order) for characters that are commonly used with
 multiple scripts. These return the ISO 15924 four letter abbreviations of the
 script names; use <code>script_name()</code> to convert these to full names.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>u8string</code> <strong><code>script_name</code></strong><code>(const u8string&amp; abbr)</code></li>
 </ul>

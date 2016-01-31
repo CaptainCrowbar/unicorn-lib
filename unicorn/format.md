@@ -96,6 +96,8 @@ TODO
 
 ### Global flags ###
 
+<!-- DEFN -->
+
 Flag                   | Letter  | Description
 ----                   | ------  | -----------
 **`fx_left`**          |`<`      | Left align (default)
@@ -113,6 +115,8 @@ TODO
 
 ### Boolean formatting ###
 
+<!-- DEFN -->
+
 Flag             | Letter  | Description
 ----             | ------  | -----------
 **`fx_tf`**      |`t`      | Write as true or false (default)
@@ -122,6 +126,8 @@ Flag             | Letter  | Description
 TODO
 
 ### Integer formatting ###
+
+<!-- DEFN -->
 
 Flag              | Letter  | Description
 ----              | ------  | -----------
@@ -135,6 +141,8 @@ Flag              | Letter  | Description
 TODO
 
 ### Floating point formatting ###
+
+<!-- DEFN -->
 
 Flag              | Letter  | Description
 ----              | ------  | -----------
@@ -151,6 +159,8 @@ TODO
 
 ### Character and string formatting ###
 
+<!-- DEFN -->
+
 Flag               | Letter  | Description
 ----               | ------  | -----------
 **`fx_ascii`**     |`a`      | Escape if not printable ASCII
@@ -165,6 +175,8 @@ Flag               | Letter  | Description
 TODO
 
 ### Time and date formatting ###
+
+<!-- DEFN -->
 
 Flag             | Letter  | Description
 ----             | ------  | -----------

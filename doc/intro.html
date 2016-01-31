@@ -7,29 +7,35 @@
 </head>
 <body>
 <h1 id="unicorn-library-introduction"><a href="index.html">Unicorn Library</a>: Introduction</h1>
-<h4 id="unicode-library-for-c-by-ross-smith">Unicode library for C++ by Ross Smith</h4>
+<p><em>Unicode library for C++ by Ross Smith</em></p>
 <p>Please keep in mind that the Unicorn documentation does not attempt to be a
 <a href="http://unicode.org/">Unicode</a> tutorial; the reader is assumed to be familiar
 with the basic concepts and terminology involved. I recommend reading the
 Unicorn documentation with a copy of the Unicode standard on hand.</p>
 <h2 id="contents">Contents</h2>
+<div class="toc">
 <ul>
-<li>[Compatibility][]</li>
-<li>[Design philosophy][]</li>
-<li>[Coding conventions][]</li>
-<li>[Exception safety][]</li>
-<li>[Building Unicorn][]</li>
-<li>[Using Unicorn][]</li>
+<li><a href="#unicorn-library-introduction">Unicorn Library: Introduction</a><ul>
+<li><a href="#contents">Contents</a></li>
+<li><a href="#compatibility">Compatibility</a></li>
+<li><a href="#design-philosophy">Design philosophy</a></li>
+<li><a href="#coding-conventions">Coding conventions</a></li>
+<li><a href="#exception-safety">Exception safety</a></li>
+<li><a href="#building-unicorn">Building Unicorn</a></li>
+<li><a href="#using-unicorn">Using Unicorn</a></li>
 </ul>
+</li>
+</ul>
+</div>
 <h2 id="compatibility">Compatibility</h2>
 <p>Unicorn is written in C++14; you will need an up-to-date C++ compiler,
 probably a recent version of Clang or GCC. I developed it mainly on Mac OS X,
 currently using Clang 7.0. All test builds are made using strict compilation
 mode (<code>-Wall -Wextra -Werror</code>).</p>
-<p>Unicorn has also been tested with GCC 4.9 and 5.1 on Ubuntu GNU/Linux,
-<a href="http://www.cygwin.com/">Cygwin</a> on Microsoft Windows, and native Windows
-using <a href="http://nuwen.net/mingw.html">Nuwen-Mingw</a>, although I can't promise
-that the most recent checkin will have been tested with all of those.</p>
+<p>Unicorn has also been tested with GCC versions from 4.9 to 5.3 on Ubuntu
+GNU/Linux, <a href="http://www.cygwin.com/">Cygwin</a> on Microsoft Windows, and native
+Windows using <a href="http://nuwen.net/mingw.html">Nuwen-Mingw</a>, although I can't
+promise that the most recent checkin will have been tested with all of those.</p>
 <p>Currently, Unicorn will not work with any existing release of Microsoft Visual
 Studio. VS 2015 probably has sufficiently good C++11/14 support, but does not
 yet support UTF-8 source code; Microsoft developers have told me they're
@@ -145,7 +151,7 @@ them with the library.</p>
 character tables from the original data. You can do this by first running
 <code>scripts/download-ucd</code> to download the original tables from the Unicode
 website, then <code>scripts/make-tables</code> to generate the C++ tables used by Unicorn
-(this script requires Python 3.2+). This is not necessary if you're just
+(this script requires Python 3.4+). This is not necessary if you're just
 building the library and not modifying it, or if your changes don't require
 any tables to be rebuilt; all the precompiled tables are already included in
 the source tree.</p>
@@ -176,6 +182,8 @@ the other required libraries described above.</p>
 <p>Everything in the Unicorn library is in <code>namespace Unicorn</code> (or a subordinate
 namespace inside <code>Unicorn</code>). You can either qualify all calls with the
 <code>Unicorn::</code> prefix, or use <code>using namespace Unicorn</code>.</p>
-<p>Unicorn uses my minimal, header-only Prion utility library. Everything in
-<code>namespace Prion</code> is imported into <code>namespace Unicorn</code>.</p></body>
+<p>Unicorn uses my minimal, header-only Prion utility library. No special build
+actions are required beyond making sure the compiler can find the
+<code>"prion/core.hpp"</code> header. Everything in <code>namespace Prion</code> is imported into
+<code>namespace Unicorn</code>.</p></body>
 </html>

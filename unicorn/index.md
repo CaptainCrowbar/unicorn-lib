@@ -1,6 +1,6 @@
 # Unicorn Library #
 
-#### Unicode library for C++ by Ross Smith ####
+_Unicode library for C++ by Ross Smith_
 
 The Unicorn library is intended to make [Unicode](http://www.unicode.org/)
 text manipulation easy for programmers using modern C++. It implements most of
@@ -20,7 +20,7 @@ namespace inside `Unicorn`). You can either qualify all calls with the
 The Unicorn library depends on the utilities and unit testing framework in my
 [Prion library](https://github.com/CaptainCrowbar/prion-lib).
 
-* **Documentation**
+* <!-- TEXT --> **Documentation**
     * [Introduction to the Unicorn Library](intro.html)
 * **Core definitions**
     * [`"unicorn/core.hpp"`](core.html) -- Core definitions.

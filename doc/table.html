@@ -35,6 +35,7 @@ Douglas Adams     42      0x02a  +42.00
 Maxwell Smart     86      0x056  +86.00
 </code></pre>
 <h2 id="table-class">Table class</h2>
+<div class="defns">
 <ul>
 <li><code>Table::</code><strong><code>Table</code></strong><code>()</code></li>
 <li><code>Table::</code><strong><code>Table</code></strong><code>(const Table&amp; t)</code></li>
@@ -44,11 +45,15 @@ Maxwell Smart     86      0x056  +86.00
 <li><code>Table&amp; Table::</code><strong><code>operator=</code></strong><code>(Table&amp;&amp; t) noexcept</code></li>
 </ul>
 <p>Life cycle functions.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>void Table::</code><strong><code>clear</code></strong><code>() noexcept</code></li>
 </ul>
 <p>Clears all cell data and formatting settings from the table (i.e. resets the
 table to its default constructed state).</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename... FS&gt; void Table::</code><strong><code>format</code></strong><code>(const u8string&amp; f, const FS&amp;... fs)</code></li>
 </ul>
@@ -60,11 +65,15 @@ an empty string, will be written using <code>to_str()</code> (from Prion, but ca
 without namespace qualification, so user defined overloads will be found).
 Formatting is applied to cell data entered after a call to <code>format()</code>;
 existing cells already in the table will not be reformatted.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename T&gt; Table&amp; Table::</code><strong><code>operator&lt;&lt;</code></strong><code>(const T&amp; t)</code></li>
 </ul>
 <p>Adds a data cell to the table. The cell will be formatted according to the
 current column's formatting code, if one has been set.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>Table&amp; Table::</code><strong><code>operator&lt;&lt;</code></strong><code>([character type] c)</code></li>
 </ul>
@@ -105,6 +114,8 @@ unassigned code point, the insertion operator will throw
 <code>std::invalid_argument</code>. Otherwise, the character is used to write a
 horizontal rule across the table, by repeating the character to match the
 width of each column.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C, typename... Args&gt; std::basic_string&lt;C&gt; Table::</code><strong><code>as_string</code></strong><code>(const Args&amp;... args) const</code></li>
 <li><code>template &lt;typename... Args&gt; u8string Table::</code><strong><code>str</code></strong><code>(const Args&amp;... args) const</code></li>

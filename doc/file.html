@@ -106,10 +106,13 @@ of <code>"/foo/bar/hello.txt"</code> is <code>"hello.txt"</code>).</p>
 </table>
 <p>Flags recognised by some of the functions in this module.</p>
 <h2 id="system-dependencies">System dependencies</h2>
+<div class="defns">
 <ul>
 <li><code>constexpr char</code> <strong><code>file_delimiter</code></strong> <code>= ['/' on Unix, '\\' on Windows]</code></li>
 </ul>
 <p>The standard delimiter for directory paths.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C1, typename C2&gt; void</code> <strong><code>recode_filename</code></strong><code>(const basic_string&lt;C1&gt;&amp; src, basic_string&lt;C2&gt;&amp; dst)</code></li>
 <li><code>template &lt;typename C2, typename C1&gt; basic_string&lt;C2&gt;</code> <strong><code>recode_filename</code></strong><code>(const basic_string&lt;C1&gt;&amp; src)</code></li>
@@ -119,6 +122,7 @@ of <code>"/foo/bar/hello.txt"</code> is <code>"hello.txt"</code>).</p>
 option, except that, if both the source and destination strings are the
 operating system's native encoding, the string will simply be copied verbatim
 without checking for valid Unicode.</p>
+</div>
 <h2 id="file-name-functions">File name functions</h2>
 <p>These functions operate purely on file name strings; they do not make any
 contact with the actual file system, and will give the same results regardless
@@ -126,6 +130,7 @@ of whether or not a file actually exists. Where relevant, these functions are
 aware of the standard double slash convention for network paths <span
 class="nobr">(<code>"//server/path..."</code>),</span> and the Windows versions are aware
 of UNC paths <span class="nobr">(<code>"\\?\path..."</code>).</span></p>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; bool</code> <strong><code>file_is_absolute</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
 <li><code>template &lt;typename C&gt; bool</code> <strong><code>file_is_relative</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
@@ -141,10 +146,14 @@ class="nobr">(<code>"C:path..."</code>),</span> and "drive absolute" paths that 
 absolute with respect to an unspecified current drive <span
 class="nobr">(<code>"\path..."</code>).</span> Both of these functions are always false
 on Unix.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; bool</code> <strong><code>file_is_root</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
 </ul>
 <p>True if the file name refers to the root of a directory tree.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C, typename... Args&gt; basic_string&lt;C&gt;</code> <strong><code>file_path</code></strong><code>(const basic_string&lt;C&gt;&amp; file, Args... args)</code></li>
 <li><code>template &lt;typename C, typename... Args&gt; basic_string&lt;C&gt;</code> <strong><code>file_path</code></strong><code>(const C* file, Args... args)</code></li>
@@ -157,6 +166,8 @@ paths on Windows are treated as absolute in this context.)</p>
 <pre><code>file_path("foo", "bar", "hello.txt") == "foo/bar/hello.txt"
 file_path("/foo", "/bar", "hello.txt") == "/bar/hello.txt"
 </code></pre>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; std::pair&lt;basic_string&lt;C&gt;, basic_string&lt;C&gt;&gt;</code> <strong><code>split_path</code></strong><code>(const basic_string&lt;C&gt;&amp; file, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename C&gt; std::pair&lt;basic_string&lt;C&gt;, basic_string&lt;C&gt;&gt;</code> <strong><code>split_file</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
@@ -184,8 +195,10 @@ empty.</p>
 split_file("/foo/bar/hello.txt") == {"hello", ".txt"}
 split_file(".hello") == {".hello", ""}
 </code></pre>
+</div>
 <h2 id="file-system-query-functions">File system query functions</h2>
 <p>These functions perform read-only operations on the file system.</p>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>current_directory</code></strong><code>()</code></li>
 <li><code>template &lt;typename C&gt; void</code> <strong><code>current_directory</code></strong><code>(basic_string&lt;C&gt;&amp; dir)</code></li>
@@ -194,17 +207,23 @@ split_file(".hello") == {".hello", ""}
 version requires the character type to be explicitly specified. These may
 throw <code>std::system_error</code> in some unusual cases of failure, usually involving
 access permission problems.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; bool</code> <strong><code>file_exists</code></strong><code>(const basic_string&lt;C&gt;&amp; file) noexcept</code></li>
 </ul>
 <p>Query whether a file exists. This may give a false negative if the file exists
 but is not accessible to the calling process.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; bool</code> <strong><code>file_is_directory</code></strong><code>(const basic_string&lt;C&gt;&amp; file) noexcept</code></li>
 </ul>
 <p>Query whether a file is a directory. This will return <code>false</code> if the file does
 not exist; it may give a false negative if the directory exists but is not
 accessible to the calling process.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; bool</code> <strong><code>file_is_hidden</code></strong><code>(const basic_string&lt;C&gt;&amp; file) noexcept</code></li>
 </ul>
@@ -212,10 +231,14 @@ accessible to the calling process.</p>
 not exist or is not accessible to the calling process. On Unix this is based
 on the file name (a file is hidden if its name starts with a dot), but on
 Windows this is a metadata property.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; bool</code> <strong><code>file_is_symlink</code></strong><code>(const basic_string&lt;C&gt;&amp; file) noexcept</code></li>
 </ul>
 <p>True if the file is a symbolic link.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; uint64_t</code> <strong><code>file_size</code></strong><code>(const basic_string&lt;C&gt;&amp; file, uint32_t flags = 0) noexcept</code></li>
 </ul>
@@ -225,6 +248,8 @@ directory, by default only the size of the directory entry itself (which may
 be zero on some systems) is returned; if the <code>fs_recurse</code> flag is supplied,
 the directory's contents will be recursively scanned (symbolic links are not
 followed).</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>resolve_symlink</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
 </ul>
@@ -235,9 +260,11 @@ a permission failure or a symlink loop. On Windows, resolving a symlink
 requires opening the target file, so this will fail if the target file does
 not exist (presumably the symlink still contains a path but there does not
 appear to be any way to retrieve it).</p>
+</div>
 <h2 id="file-system-modifying-functions">File system modifying functions</h2>
 <p>These functions perform operations that require write access to the file
 system.</p>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; void</code> <strong><code>make_directory</code></strong><code>(const basic_string&lt;C&gt;&amp; dir, uint32_t flags = 0)</code></li>
 </ul>
@@ -251,6 +278,8 @@ not a directory, and either the <code>fs_overwrite</code> flag is not used or an
 to delete the existing file fails, if the directory path is not a legal
 filename, if the parent directory does not exist and the <code>recurse</code> flag was
 not set, or if the caller does not have permission to create the directory.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; void</code> <strong><code>make_symlink</code></strong><code>(const basic_string&lt;C&gt;&amp; file, const basic_string&lt;C&gt;&amp; link, uint32_t flags = 0)</code></li>
 </ul>
@@ -261,6 +290,8 @@ a non-empty directory, it will only be replaced if the <code>fs_recurse</code> f
 also set. This will throw <code>std::system_error</code> if the symlink cannot be
 created, or if a file or directory of the same name as <code>link</code> already exists
 but the necessary flags were not supplied.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; void</code> <strong><code>remove_file</code></strong><code>(const basic_string&lt;C&gt;&amp; file, uint32_t flags = 0)</code></li>
 </ul>
@@ -270,6 +301,8 @@ This will do nothing if the named file does not exist to begin with. It will
 throw <code>std::system_error</code> if the directory path is not a legal filename, if
 the name refers to a nonempty directory and the <code>fs_recurse</code> flag was not set,
 or if the caller does not have permission to delete the file.</p>
+</div>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; void</code> <strong><code>rename_file</code></strong><code>(const basic_string&lt;C&gt;&amp; src, const basic_string&lt;C&gt;&amp; dst)</code></li>
 </ul>
@@ -282,7 +315,9 @@ behaviour when the destination file already exists is system dependent (this
 may overwrite the file or throw an exception), and on most systems the call
 will fail if the source and destination are on different physical file
 systems.</p>
+</div>
 <h2 id="directory-iterators">Directory iterators</h2>
+<div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; class</code> <strong><code>DirectoryIterator</code></strong><ul>
 <li><code>using DirectoryIterator::</code><strong><code>difference_type</code></strong> <code>= ptrdiff_t</code></li>
