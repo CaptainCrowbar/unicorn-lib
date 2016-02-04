@@ -15,22 +15,19 @@ namespace Unicorn {
 
     namespace UnicornDetail {
 
-        template <typename T, bool FP = std::is_floating_point<T>::value>
-        struct ArgConv {
+        template <typename T, bool I = std::is_integral<T>::value,
+            bool F = std::is_floating_point<T>::value>
+        struct ArgConv;
+
+        template <typename T>
+        struct ArgConv<T, false, false> {
             T operator()(const u8string& s) const {
                 return s.empty() ? T() : static_cast<T>(s);
             }
         };
 
         template <typename T>
-        struct ArgConv<T, true> {
-            T operator()(const u8string& s) const {
-                return s.empty() ? T(0) : from_si<T>(s);
-            }
-        };
-
-        template <typename T>
-        struct ArgConv<T, false> {
+        struct ArgConv<T, true, false> {
             T operator()(const u8string& s) const {
                 if (s.empty())
                     return T(0);
@@ -41,8 +38,15 @@ namespace Unicorn {
             }
         };
 
+        template <typename T>
+        struct ArgConv<T, false, true> {
+            T operator()(const u8string& s) const {
+                return s.empty() ? T(0) : from_si<T>(s);
+            }
+        };
+
         template <typename C>
-        struct ArgConv<basic_string<C>, false> {
+        struct ArgConv<basic_string<C>, false, false> {
             basic_string<C> operator()(const u8string& s) const {
                 return recode<C>(s);
             }
