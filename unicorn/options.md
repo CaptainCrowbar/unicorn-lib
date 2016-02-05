@@ -200,16 +200,18 @@ Behaviour is unspecified if `parse()` is called more than once on the same
 * `template <typename T> vector<T> Options::`**`get_list`**`(const u8string& name) const`
 * `bool Options::`**`has`**`(const u8string& name) const`
 
-These return information about the options and arguments found in the command line.
-The option name can be supplied with or without leading hyphens. Only the full name is
-recognized here, not an abbreviation.
+These return information about the options and arguments found in the command
+line. The option name can be supplied with or without leading hyphens. Only
+the full name is recognized here, not an abbreviation.
 
 The `get()` function returns the argument attached to an option, converted to
-the given type (which must be a string type or an arithmetic type; when
-converting to a number, characters after a valid number are ignored). If
-multiple arguments were supplied for the option, they are concatenated into a
-space delimited list first. If the option was not present on the command line,
-its default value is used.
+the given type. If the return type is an arithmetic type, the argument string
+will be converted; it may have a leading `"0x"` for hexadecimal, or a trailing
+SI multiplier (e.g. `"42k"` is interpreted as 42000); any other trailing
+characters that are not part of a number are ignored. If multiple arguments
+were supplied for the option, they are concatenated into a space delimited
+list first. If the option was not present on the command line, its default
+value is used.
 
 The `get_list()` function returns multiple arguments as a vector. Its
 behaviour is otherwise the same as `get()`.

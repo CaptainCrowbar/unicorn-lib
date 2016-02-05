@@ -285,15 +285,17 @@ true:</p>
 <li><code>template &lt;typename T&gt; vector&lt;T&gt; Options::</code><strong><code>get_list</code></strong><code>(const u8string&amp; name) const</code></li>
 <li><code>bool Options::</code><strong><code>has</code></strong><code>(const u8string&amp; name) const</code></li>
 </ul>
-<p>These return information about the options and arguments found in the command line.
-The option name can be supplied with or without leading hyphens. Only the full name is
-recognized here, not an abbreviation.</p>
+<p>These return information about the options and arguments found in the command
+line. The option name can be supplied with or without leading hyphens. Only
+the full name is recognized here, not an abbreviation.</p>
 <p>The <code>get()</code> function returns the argument attached to an option, converted to
-the given type (which must be a string type or an arithmetic type; when
-converting to a number, characters after a valid number are ignored). If
-multiple arguments were supplied for the option, they are concatenated into a
-space delimited list first. If the option was not present on the command line,
-its default value is used.</p>
+the given type. If the return type is an arithmetic type, the argument string
+will be converted; it may have a leading <code>"0x"</code> for hexadecimal, or a trailing
+SI multiplier (e.g. <code>"42k"</code> is interpreted as 42000); any other trailing
+characters that are not part of a number are ignored. If multiple arguments
+were supplied for the option, they are concatenated into a space delimited
+list first. If the option was not present on the command line, its default
+value is used.</p>
 <p>The <code>get_list()</code> function returns multiple arguments as a vector. Its
 behaviour is otherwise the same as <code>get()</code>.</p>
 <p>The <code>has()</code> function simply indicates whether an option was present on the
