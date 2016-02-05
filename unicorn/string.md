@@ -560,6 +560,7 @@ Unicode line or paragraph breaking character is recognised and replaced; the
 `CR+LF` sequence is also treated as a single line break.
 
 * `template <typename C> basic_string<C>` **`str_wrap`**`(const basic_string<C>& str, uint32_t flags = 0, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos)`
+* `template <typename C> basic_string<C>` **`str_wrap`**`(const C* str, uint32_t flags = 0, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos)`
 * `template <typename C> void` **`str_wrap_in`**`(basic_string<C>& str, uint32_t flags = 0, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos)`
 
 Flag                 | Description

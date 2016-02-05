@@ -1374,6 +1374,11 @@ namespace Unicorn {
     }
 
     template <typename C>
+    basic_string<C> str_wrap(const C* str, uint32_t flags = 0, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos) {
+        return str_wrap(cstr(str), flags, width, margin1, margin2);
+    }
+
+    template <typename C>
     void str_wrap_in(basic_string<C>& str, uint32_t flags = 0, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos) {
         auto result = str_wrap(str, flags, width, margin1, margin2);
         str.swap(result);
