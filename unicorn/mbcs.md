@@ -69,6 +69,12 @@ Ignoring invalid encoding is not allowed here; if any MBCS function that takes
 a `flags` argument is passed the `err_ignore` flags, it will throw
 `std::invalid_argument`.
 
+If the constant `mb_strict` is included in the `flags`, no attempt will be
+made to translate the encoding name or number supplied into an equivalent
+acceptable to the underlying API; the value supplied will simply be passed
+unchanged (apart from conversion between string and integer where necessary).
+This flag has no effect if no encoding is explicitly supplied.
+
 These functions necessarily inherit some of the limitations of the underlying
 native APIs. In particular, the Windows APIs do not reliably report encoding
 errors; although the wrapper functions make a good faith attempt to respect

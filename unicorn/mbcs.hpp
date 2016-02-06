@@ -9,6 +9,10 @@
 
 namespace Unicorn {
 
+    // Constants
+
+    constexpr uint32_t mb_strict = 8; // Do not look up encoding
+
     // Exceptions
 
     class UnknownEncoding:
@@ -42,8 +46,8 @@ namespace Unicorn {
             #endif
 
         u8string guess_utf(const string& str);
-        EncodingTag lookup_encoding(const u8string& name);
-        EncodingTag lookup_encoding(uint32_t page);
+        EncodingTag lookup_encoding(const u8string& name, uint32_t flags = 0);
+        EncodingTag lookup_encoding(uint32_t page, uint32_t flags = 0);
         void mbcs_flags(uint32_t& flags);
         void native_import(const string& src, NativeString& dst, EncodingTag tag, uint32_t flags);
         void native_export(const NativeString& src, string& dst, EncodingTag tag, uint32_t flags);
@@ -53,7 +57,7 @@ namespace Unicorn {
         template <typename C, typename E>
         void import_string_helper(const string& src, basic_string<C>& dst, E enc, uint32_t flags) {
             mbcs_flags(flags);
-            auto tag = lookup_encoding(enc);
+            auto tag = lookup_encoding(enc, flags);
             if (src.empty()) {
                 dst.clear();
                 return;
@@ -71,7 +75,7 @@ namespace Unicorn {
         template <typename C, typename E>
         void export_string_helper(const basic_string<C>& src, string& dst, E enc, uint32_t flags) {
             mbcs_flags(flags);
-            auto tag = lookup_encoding(enc);
+            auto tag = lookup_encoding(enc, flags);
             if (src.empty()) {
                 dst.clear();
                 return;

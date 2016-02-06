@@ -398,13 +398,19 @@ namespace Unicorn {
             return "utf-8";
         }
 
-        EncodingTag lookup_encoding(const u8string& name) {
+        EncodingTag lookup_encoding(const u8string& name, uint32_t flags) {
             static std::map<u8string, EncodingTag> cache;
             static Mutex mtx;
-            auto lcname = ascii_lowercase(name);
-            if (lcname.empty())
+            if (name.empty())
                 throw UnknownEncoding();
-            else if (lcname == "char")
+            if (flags & mb_strict)
+                #if defined(PRI_TARGET_WINDOWS)
+                    return EncodingTag(decnum(name));
+                #else
+                    return name;
+                #endif
+            auto lcname = ascii_lowercase(name);
+            if (lcname == "char")
                 return lookup_encoding(local_encoding());
             else if (lcname == "wchar_t")
                 return wchar_tag;
@@ -430,11 +436,17 @@ namespace Unicorn {
             return tag;
         }
 
-        EncodingTag lookup_encoding(uint32_t page) {
+        EncodingTag lookup_encoding(uint32_t page, uint32_t flags) {
             static std::map<uint32_t, EncodingTag> cache;
             static Mutex mtx;
             if (page == 0)
                 throw UnknownEncoding();
+            if (flags & mb_strict)
+                #if defined(PRI_TARGET_WINDOWS)
+                    return page;
+                #else
+                    return dec(page);
+                #endif
             {
                 MutexLock lock(mtx);
                 auto it = cache.find(page);

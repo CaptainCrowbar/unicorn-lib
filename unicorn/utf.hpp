@@ -15,9 +15,9 @@ namespace Unicorn {
     // Remember that any other set of flags that might be combined with these
     // needs to skip the bits that are already spoken for.
 
-    constexpr uint32_t err_ignore   = 1ul << 0;  // Assume valid UTF input
-    constexpr uint32_t err_replace  = 1ul << 1;  // Replace invalid UTF with U+FFFD
-    constexpr uint32_t err_throw    = 1ul << 2;  // Throw EncodingError on invalid UTF
+    constexpr uint32_t err_ignore = 1;   // Assume valid UTF input
+    constexpr uint32_t err_replace = 2;  // Replace invalid UTF with U+FFFD
+    constexpr uint32_t err_throw = 4;    // Throw EncodingError on invalid UTF
 
     constexpr auto err_flags = err_ignore | err_replace | err_throw;
 
