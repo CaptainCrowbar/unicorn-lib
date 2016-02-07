@@ -105,7 +105,7 @@ namespace Unicorn {
                     return 0;
                 auto bytes = uint64_t(s.st_size);
                 if ((flags & fs_recurse) && S_ISDIR(s.st_mode))
-                    for (auto& child: directory(file, fs_all | fs_fullname))
+                    for (auto& child: directory(file, fs_fullname | fs_hidden))
                         bytes += native_file_size(child, fs_recurse);
                 return bytes;
             }
@@ -304,7 +304,7 @@ namespace Unicorn {
                     return 0;
                 auto bytes = (uint64_t(info.nFileSizeHigh) << 32) + uint64_t(info.nFileSizeLow);
                 if (flags & fs_recurse)
-                    for (auto& child: directory(file, fs_all | fs_fullname))
+                    for (auto& child: directory(file, fs_fullname | fs_hidden))
                         bytes += native_file_size(child, fs_recurse);
                 return bytes;
             }
@@ -435,7 +435,7 @@ namespace Unicorn {
                 native_make_symlink(target, dst, 0);
             } else if (native_file_is_directory(src)) {
                 native_make_directory(dst, 0);
-                for (auto& child: directory(src, fs_all))
+                for (auto& child: directory(src, fs_hidden))
                     native_copy_file(file_path(src, child), file_path(dst, child), fs_recurse);
             } else {
                 Cstdio in(src, false), out(dst, true);
@@ -513,7 +513,7 @@ namespace Unicorn {
 
         void native_remove_file(const NativeString& file, uint32_t flags) {
             if ((flags & fs_recurse) && native_file_is_directory(file) && ! native_file_is_symlink(file))
-                for (auto child: directory(file, fs_all | fs_fullname))
+                for (auto child: directory(file, fs_fullname | fs_hidden))
                     native_remove_file(child, fs_recurse);
             remove_file_helper(file);
         }
@@ -523,7 +523,7 @@ namespace Unicorn {
         void DirectoryStage2::init2(const NativeString& dir, uint32_t flags) {
             init1(dir);
             fset = flags;
-            if (! (fset & fs_all) || (fset & fs_fullname)) {
+            if ((fset & fs_fullname) || ! (fset & fs_hidden)) {
                 prefix = dir;
                 if (! prefix.empty() && prefix.back() != native_file_delimiter)
                     prefix += native_file_delimiter;
@@ -544,7 +544,7 @@ namespace Unicorn {
                 if (! (fset & fs_dotdot) && (leaf() == link1 || leaf() == link2))
                     continue;
                 current = prefix + leaf();
-                if (! (fset & fs_all) && file_is_hidden(current))
+                if (! (fset & fs_hidden) && file_is_hidden(current))
                     continue;
                 if (! (fset & fs_fullname))
                     current = leaf();

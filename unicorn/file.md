@@ -61,9 +61,9 @@ of `"/foo/bar/hello.txt"` is `"hello.txt"`).
 
 Flag                | Description
 ----                | -----------
-**`fs_all`**        | Include hidden files
 **`fs_dotdot`**     | Include . and ..
 **`fs_fullname`**   | Return full file names
+**`fs_hidden`**     | Include hidden files
 **`fs_overwrite`**  | Delete existing file if necessary
 **`fs_recurse`**    | Recursive directory operations
 **`fs_unicode`**    | Skip files with non-Unicode names
@@ -295,9 +295,9 @@ The following flags are recognised:
 
 Flag               | Description
 ----               | -----------
-**`fs_all`**       | Include hidden files
 **`fs_dotdot`**    | Include . and ..
 **`fs_fullname`**  | Return full file names
+**`fs_hidden`**    | Include hidden files
 **`fs_unicode`**   | Skip files with non-Unicode names
 
 An iterator over the files in a directory. Normally you should call the

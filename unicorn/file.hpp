@@ -15,9 +15,9 @@ namespace Unicorn {
 
     // Constants
 
-    constexpr uint32_t fs_all        = 1ul << 0;  // Include hidden files
-    constexpr uint32_t fs_dotdot     = 1ul << 1;  // Include . and ..
-    constexpr uint32_t fs_fullname   = 1ul << 2;  // Return full file names
+    constexpr uint32_t fs_dotdot     = 1ul << 0;  // Include . and ..
+    constexpr uint32_t fs_fullname   = 1ul << 1;  // Return full file names
+    constexpr uint32_t fs_hidden     = 1ul << 2;  // Include hidden files
     constexpr uint32_t fs_overwrite  = 1ul << 3;  // Delete existing file if necessary
     constexpr uint32_t fs_recurse    = 1ul << 4;  // Recursive directory operations
     constexpr uint32_t fs_unicode    = 1ul << 5;  // Skip files with non-Unicode names
