@@ -81,18 +81,25 @@ The standard delimiter for directory paths.
 
 These convert a file name from one UTF encoding to another, using the
 `recode()` functions from [`unicorn/utf`](utf.html) with the `err_replace`
-option, except that, if both the source and destination strings are the
-operating system's native encoding, the string will simply be copied verbatim
-without checking for valid Unicode.
+option, except that, if the source and destination character types are the
+same size, the string will simply be copied verbatim without checking for
+valid Unicode.
 
 ## File name functions ##
 
 These functions operate purely on file names as strings; they do not make any
 contact with the actual file system, and will give the same results regardless
-of whether or not a file actually exists. Where relevant, these functions are
-aware of the standard double slash convention for network paths <span
-class="nobr">(`"//server/path..."`),</span> and the Windows versions are aware
-of UNC paths <span class="nobr">(`"\\?\path..."`).</span>
+of whether or not a file actually exists.
+
+The `file_is_*()` functions do not test the complete file name for legality;
+if a file name would fail `is_legal_path_name()`, the results of the
+`file_is_*()` functions is unspecified, except as noted below for the
+individual functions.
+
+Where relevant, these functions are aware of the standard double slash
+convention for network paths <span class="nobr">(`"//server/path..."`),</span>
+and the Windows versions are aware of UNC paths <span
+class="nobr">(`"\\?\path..."`).</span>
 
 * `template <typename C> bool` **`file_is_absolute`**`(const basic_string<C>& file)`
 * `template <typename C> bool` **`file_is_relative`**`(const basic_string<C>& file)`
@@ -100,8 +107,7 @@ of UNC paths <span class="nobr">(`"\\?\path..."`).</span>
 * `template <typename C> bool` **`file_is_drive_relative`**`(const basic_string<C>& file)`
 
 These indicate whether a file name is absolute or relative; exactly one of
-them will be true for any file name (an empty string is considered to be a
-relative name).
+them will be true for any non-empty file name (including illegal ones).
 
 On Windows, two extra functions identify "drive relative" paths that are
 relative to the current directory on a specific drive <span
@@ -128,6 +134,34 @@ Examples:
 
     file_path("foo", "bar", "hello.txt") == "foo/bar/hello.txt"
     file_path("/foo", "/bar", "hello.txt") == "/bar/hello.txt"
+
+* `template <typename C> bool` **`is_legal_leaf_name`**`(const basic_string<C>& file)`
+* `template <typename C> bool` **`is_legal_path_name`**`(const basic_string<C>& file)`
+* `template <typename C> bool` **`is_legal_mac_leaf_name`**`(const basic_string<C>& file)`
+* `template <typename C> bool` **`is_legal_mac_path_name`**`(const basic_string<C>& file)`
+* `template <typename C> bool` **`is_legal_posix_leaf_name`**`(const basic_string<C>& file)`
+* `template <typename C> bool` **`is_legal_posix_path_name`**`(const basic_string<C>& file)`
+* `template <typename C> bool` **`is_legal_windows_leaf_name`**`(const basic_string<C>& file)`
+* `template <typename C> bool` **`is_legal_windows_path_name`**`(const basic_string<C>& file)`
+
+These indicate whether a string is a legal file name. The first two functions
+call the corresponding system specific function for the host operating system.
+
+The `*_leaf_name()` functions test for a valid path component, and will always
+return false for any name that contains a slash (or backslash on Windows); the
+`*_path_name()` functions test for a valid relative or absolute qualified file
+name. Any name that passes `*_leaf_name()` will also pass the corresponding
+`*_path_name()` test. All of these will return false for an empty string.
+
+These test for the usual file name rules on the relevant operating systems;
+keep in mind that remote mounted file systems may be physically located on a
+different system and therefore will not necessarily follow exactly the same
+rules. There are no separate functions for Linux because as far as I know it
+does not impose any file name restrictions beyond the standard Posix rules.
+
+These will accept invalid UTF strings if the native file system API would, but
+if the character size does not match the system's native encoding, a string
+that is not valid UTF will fail all of these.
 
 * `template <typename C> std::pair<basic_string<C>, basic_string<C>>` **`split_path`**`(const basic_string<C>& file, uint32_t flags = 0)`
 * `template <typename C> std::pair<basic_string<C>, basic_string<C>>` **`split_file`**`(const basic_string<C>& file)`

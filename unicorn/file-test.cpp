@@ -26,6 +26,53 @@ namespace {
         std::ofstream(to_utf8(file));
     }
 
+    void check_legal_file_names() {
+
+        TEST(is_legal_mac_leaf_name("foo"s));
+        TEST(! is_legal_mac_leaf_name("\x80\xff"s));
+        TEST(! is_legal_mac_leaf_name("foo/bar"s));
+        TEST(! is_legal_mac_leaf_name("/"s));
+
+        TEST(is_legal_mac_path_name("foo"s));
+        TEST(is_legal_mac_path_name("/"s));
+        TEST(is_legal_mac_path_name("/foo"s));
+        TEST(is_legal_mac_path_name("/foo/bar"s));
+        TEST(is_legal_mac_path_name("//foo/bar"s));
+        TEST(! is_legal_mac_path_name("//foo/\x80\xff"s));
+
+        TEST(is_legal_posix_leaf_name("foo"s));
+        TEST(is_legal_posix_leaf_name("\x80\xff"s));
+        TEST(! is_legal_posix_leaf_name("foo/bar"s));
+        TEST(! is_legal_posix_leaf_name("/"s));
+
+        TEST(is_legal_posix_path_name("foo"s));
+        TEST(is_legal_posix_path_name("/"s));
+        TEST(is_legal_posix_path_name("/foo"s));
+        TEST(is_legal_posix_path_name("/foo/bar"s));
+        TEST(is_legal_posix_path_name("//foo/bar"s));
+        TEST(is_legal_posix_path_name("//foo/\x80\xff"s));
+
+        TEST(is_legal_windows_leaf_name(L"foo"s));
+        TEST(is_legal_windows_leaf_name(L"\u0080\u00ff"s));
+        TEST(! is_legal_windows_leaf_name(L"<foo>"s));
+        TEST(! is_legal_windows_leaf_name(L"aux"s));
+        TEST(! is_legal_windows_leaf_name(L"aux.txt"s));
+        TEST(! is_legal_windows_leaf_name(L"foo\\bar"s));
+        TEST(! is_legal_windows_leaf_name(L"C:\\"s));
+
+        TEST(is_legal_windows_path_name(L"foo"s));
+        TEST(is_legal_windows_path_name(L"C:\\"s));
+        TEST(is_legal_windows_path_name(L"C:\\foo"s));
+        TEST(is_legal_windows_path_name(L"C:\\foo/bar"s));
+        TEST(is_legal_windows_path_name(L"\\\\foo\\bar"s));
+        TEST(is_legal_windows_path_name(L"\\\\foo\\\u0080\u00ff"s));
+        TEST(! is_legal_windows_path_name(L"@:\\"s));
+        TEST(! is_legal_windows_path_name(L"C:\\<foo>"s));
+        TEST(! is_legal_windows_path_name(L"C:\\aux"s));
+        TEST(! is_legal_windows_path_name(L"C:\\aux.txt"s));
+
+    }
+
     void check_file_name_operations() {
 
         #if defined(PRI_TARGET_UNIX)
@@ -40,7 +87,7 @@ namespace {
             TEST(file_is_absolute("//foo/"s));
             TEST(file_is_absolute("//foo"s));
 
-            TEST(file_is_relative(""s));
+            TEST(! file_is_relative(""s));
             TEST(! file_is_relative("/"s));
             TEST(file_is_relative("foo"s));
             TEST(! file_is_relative("/foo"s));
@@ -60,7 +107,7 @@ namespace {
             TEST(file_is_absolute(u"//foo/"s));
             TEST(file_is_absolute(u"//foo"s));
 
-            TEST(file_is_relative(u""s));
+            TEST(! file_is_relative(u""s));
             TEST(! file_is_relative(u"/"s));
             TEST(file_is_relative(u"foo"s));
             TEST(! file_is_relative(u"/foo"s));
@@ -80,7 +127,7 @@ namespace {
             TEST(file_is_absolute(U"//foo/"s));
             TEST(file_is_absolute(U"//foo"s));
 
-            TEST(file_is_relative(U""s));
+            TEST(! file_is_relative(U""s));
             TEST(! file_is_relative(U"/"s));
             TEST(file_is_relative(U"foo"s));
             TEST(! file_is_relative(U"/foo"s));
@@ -143,7 +190,7 @@ namespace {
             TEST(file_is_absolute("\\\\?\\\\\\foo\\"s));
             TEST(file_is_absolute("\\\\?\\\\\\foo"s));
 
-            TEST(file_is_relative(""s));
+            TEST(! file_is_relative(""s));
             TEST(file_is_relative("foo"s));
             TEST(file_is_relative("foo\\bar"s));
             TEST(! file_is_relative("C:\\"s));
@@ -227,7 +274,7 @@ namespace {
             TEST(file_is_absolute(u"\\\\?\\\\\\foo\\"s));
             TEST(file_is_absolute(u"\\\\?\\\\\\foo"s));
 
-            TEST(file_is_relative(u""s));
+            TEST(! file_is_relative(u""s));
             TEST(file_is_relative(u"foo"s));
             TEST(file_is_relative(u"foo\\bar"s));
             TEST(! file_is_relative(u"C:\\"s));
@@ -311,7 +358,7 @@ namespace {
             TEST(file_is_absolute(U"\\\\?\\\\\\foo\\"s));
             TEST(file_is_absolute(U"\\\\?\\\\\\foo"s));
 
-            TEST(file_is_relative(U""s));
+            TEST(! file_is_relative(U""s));
             TEST(file_is_relative(U"foo"s));
             TEST(file_is_relative(U"foo\\bar"s));
             TEST(! file_is_relative(U"C:\\"s));
@@ -1236,6 +1283,7 @@ namespace {
 
 TEST_MODULE(unicorn, file) {
 
+    check_legal_file_names();
     check_file_name_operations();
     check_file_path_operations();
     check_file_system_operations_utf8();

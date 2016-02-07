@@ -16,8 +16,8 @@
     #include <windows.h>
 #endif
 
-using namespace std::literals;
 using namespace Unicorn::Literals;
+using namespace std::literals;
 
 namespace Unicorn {
 
@@ -33,6 +33,82 @@ namespace Unicorn {
     }
 
     namespace UnicornDetail {
+
+        // File name operations
+
+        namespace {
+
+            #define ILLEGAL_WINDOWS_CHARS "\0\"*:<>?|"s
+
+            constexpr const char* posix_root              = R"(/{2,}[^/]+/?|/+)";
+            constexpr const char* windows_absolute        = R"((\\\\\?\\)*([A-Z]:\\|\\{2,}(?=[^?\\])))";
+            constexpr const char* windows_root            = R"((\\\\\?\\)*([A-Z]:\\|\\{2,}[^?\\]+\\?|\\+))";
+            constexpr const char* windows_drive_absolute  = R"(\\[^\\])";
+            constexpr const char* windows_drive_relative  = R"([A-Z]:[^\\])";
+            constexpr const char* windows_illegal_names   = R"((AUX|COM[1-9]|CON|LPT[1-9]|NUL|PRN)(\.[^.]*)?)";
+            constexpr uint32_t match_flags                = rx_byte | rx_caseless | rx_noautocapture;
+
+        }
+
+        bool legal_posix_leaf(const string& file) {
+            return file.find_first_of("\0/"s) == npos;
+        }
+
+        bool legal_posix_path(const string& file) {
+            if (file.find('\0') != npos || (file[0] == '/' && ! posix_file_is_absolute(file)))
+                return false;
+            size_t i = file.find_first_not_of('/');
+            return file.find("//", i) == npos;
+        }
+
+        bool legal_windows_leaf(const string& file) {
+            static const string illegal_chars = ILLEGAL_WINDOWS_CHARS "/\\"s;
+            static const Regex illegal_pattern(windows_illegal_names, match_flags);
+            return file.find_first_of(illegal_chars) == npos && ! illegal_pattern.match(file);
+        }
+
+        bool legal_windows_path(const string& file) {
+            static const string illegal_chars = ILLEGAL_WINDOWS_CHARS;
+            static const Regex abs_pattern(windows_absolute, match_flags);
+            static const Regex illegal_pattern(R"(([:\\]|^))"s + windows_illegal_names + R"(([:\\]|$))"s, match_flags);
+            auto norm = normalize_file(file);
+            auto match = abs_pattern.anchor(norm);
+            if (! match && norm[0] == '\\')
+                return false;
+            size_t skip = match.count();
+            return norm.find_first_of(illegal_chars, skip) == npos
+                && norm.find("\\\\"s, skip) == npos
+                && ! illegal_pattern.search(norm);
+        }
+
+        bool posix_file_is_absolute(const string& file) {
+            return file[0] == '/';
+        }
+
+        bool posix_file_is_root(const string& file) {
+            static const Regex root_pattern(posix_root, match_flags);
+            return bool(root_pattern.match(file));
+        }
+
+        bool windows_file_is_absolute(const string& file) {
+            static const Regex abs_pattern(windows_absolute, match_flags);
+            return bool(abs_pattern.match(file));
+        }
+
+        bool windows_file_is_root(const string& file) {
+            static const Regex root_pattern(windows_root, match_flags);
+            return bool(root_pattern.match(file));
+        }
+
+        bool windows_file_is_drive_absolute(const string& file) {
+            static const Regex drive_abs_pattern(windows_drive_absolute, match_flags);
+            return bool(drive_abs_pattern.match(file));
+        }
+
+        bool windows_file_is_drive_relative(const string& file) {
+            static const Regex drive_rel_pattern(windows_drive_relative, match_flags);
+            return bool(drive_rel_pattern.match(file));
+        }
 
         #if defined(PRI_TARGET_UNIX)
 
@@ -52,17 +128,6 @@ namespace Unicorn {
                     FILE* fp;
                 };
 
-            }
-
-            // File name operations
-
-            bool native_file_is_absolute(const string& file) {
-                return file[0] == '/';
-            }
-
-            bool native_file_is_root(const string& file) {
-                static const auto pattern = "/{2,}[^/]+/?|/+"_re_i;
-                return pattern.match(file).matched();
             }
 
             // File system query functions
@@ -218,28 +283,6 @@ namespace Unicorn {
                     FILE* fp;
                 };
 
-            }
-
-            // File name operations
-
-            bool native_file_is_absolute(const wstring& file) {
-                static const auto pattern = LR"((\\\\\?\\)*([A-Z]:\\|\\{2,}[^?\\]))"_re_i;
-                return pattern.anchor(file).matched();
-            }
-
-            bool native_file_is_drive_absolute(const wstring& file) {
-                static const auto pattern = LR"(\\[^\\])"_re_i;
-                return pattern.anchor(file).matched();
-            }
-
-            bool native_file_is_drive_relative(const wstring& file) {
-                static const auto pattern = LR"([A-Z]:[^\\])"_re_i;
-                return pattern.anchor(file).matched();
-            }
-
-            bool native_file_is_root(const wstring& file) {
-                static const auto pattern = LR"((\\\\\?\\)*([A-Z]:\\|\\{2,}[^?\\]+\\?|\\+))"_re_i;
-                return pattern.match(file).matched();
             }
 
             // File system query functions

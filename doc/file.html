@@ -119,17 +119,22 @@ of <code>"/foo/bar/hello.txt"</code> is <code>"hello.txt"</code>).</p>
 </ul>
 <p>These convert a file name from one UTF encoding to another, using the
 <code>recode()</code> functions from <a href="utf.html"><code>unicorn/utf</code></a> with the <code>err_replace</code>
-option, except that, if both the source and destination strings are the
-operating system's native encoding, the string will simply be copied verbatim
-without checking for valid Unicode.</p>
+option, except that, if the source and destination character types are the
+same size, the string will simply be copied verbatim without checking for
+valid Unicode.</p>
 </div>
 <h2 id="file-name-functions">File name functions</h2>
 <p>These functions operate purely on file names as strings; they do not make any
 contact with the actual file system, and will give the same results regardless
-of whether or not a file actually exists. Where relevant, these functions are
-aware of the standard double slash convention for network paths <span
-class="nobr">(<code>"//server/path..."</code>),</span> and the Windows versions are aware
-of UNC paths <span class="nobr">(<code>"\\?\path..."</code>).</span></p>
+of whether or not a file actually exists.</p>
+<p>The <code>file_is_*()</code> functions do not test the complete file name for legality;
+if a file name would fail <code>is_legal_path_name()</code>, the results of the
+<code>file_is_*()</code> functions is unspecified, except as noted below for the
+individual functions.</p>
+<p>Where relevant, these functions are aware of the standard double slash
+convention for network paths <span class="nobr">(<code>"//server/path..."</code>),</span>
+and the Windows versions are aware of UNC paths <span
+class="nobr">(<code>"\\?\path..."</code>).</span></p>
 <div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; bool</code> <strong><code>file_is_absolute</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
@@ -138,8 +143,7 @@ of UNC paths <span class="nobr">(<code>"\\?\path..."</code>).</span></p>
 <li><code>template &lt;typename C&gt; bool</code> <strong><code>file_is_drive_relative</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
 </ul>
 <p>These indicate whether a file name is absolute or relative; exactly one of
-them will be true for any file name (an empty string is considered to be a
-relative name).</p>
+them will be true for any non-empty file name (including illegal ones).</p>
 <p>On Windows, two extra functions identify "drive relative" paths that are
 relative to the current directory on a specific drive <span
 class="nobr">(<code>"C:path..."</code>),</span> and "drive absolute" paths that are
@@ -168,6 +172,33 @@ paths on Windows are treated as absolute in this context.)</p>
 <pre><code>file_path("foo", "bar", "hello.txt") == "foo/bar/hello.txt"
 file_path("/foo", "/bar", "hello.txt") == "/bar/hello.txt"
 </code></pre>
+</div>
+<div class="defns">
+<ul>
+<li><code>template &lt;typename C&gt; bool</code> <strong><code>is_legal_leaf_name</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
+<li><code>template &lt;typename C&gt; bool</code> <strong><code>is_legal_path_name</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
+<li><code>template &lt;typename C&gt; bool</code> <strong><code>is_legal_mac_leaf_name</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
+<li><code>template &lt;typename C&gt; bool</code> <strong><code>is_legal_mac_path_name</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
+<li><code>template &lt;typename C&gt; bool</code> <strong><code>is_legal_posix_leaf_name</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
+<li><code>template &lt;typename C&gt; bool</code> <strong><code>is_legal_posix_path_name</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
+<li><code>template &lt;typename C&gt; bool</code> <strong><code>is_legal_windows_leaf_name</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
+<li><code>template &lt;typename C&gt; bool</code> <strong><code>is_legal_windows_path_name</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
+</ul>
+<p>These indicate whether a string is a legal file name. The first two functions
+call the corresponding system specific function for the host operating system.</p>
+<p>The <code>*_leaf_name()</code> functions test for a valid path component, and will always
+return false for any name that contains a slash (or backslash on Windows); the
+<code>*_path_name()</code> functions test for a valid relative or absolute qualified file
+name. Any name that passes <code>*_leaf_name()</code> will also pass the corresponding
+<code>*_path_name()</code> test. All of these will return false for an empty string.</p>
+<p>These test for the usual file name rules on the relevant operating systems;
+keep in mind that remote mounted file systems may be physically located on a
+different system and therefore will not necessarily follow exactly the same
+rules. There are no separate functions for Linux because as far as I know it
+does not impose any file name restrictions beyond the standard Posix rules.</p>
+<p>These will accept invalid UTF strings if the native file system API would, but
+if the character size does not match the system's native encoding, a string
+that is not valid UTF will fail all of these.</p>
 </div>
 <div class="defns">
 <ul>

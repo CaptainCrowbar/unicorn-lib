@@ -74,17 +74,38 @@ namespace Unicorn {
             return normalize_file(nfile);
         }
 
-        bool native_file_is_absolute(const NativeString& file);
-        bool native_file_is_root(const NativeString& file);
+        // The Windows file name checking functions use UTF-8 instead of
+        // UTF-16 so we can use regexes in the implementation without having
+        // to link with the 16-bit PCRE library. This won't make any
+        // difference to the legality of a name since all the characters
+        // relevant to the check are in ASCII.
 
-        #if defined(PRI_TARGET_WINDOWS)
-            bool native_file_is_drive_absolute(const NativeString& file);
-            bool native_file_is_drive_relative(const NativeString& file);
-        #endif
+        bool legal_posix_leaf(const string& file);
+        bool legal_posix_path(const string& file);
+        bool legal_windows_leaf(const string& file);
+        bool legal_windows_path(const string& file);
+        bool posix_file_is_absolute(const string& file);
+        bool posix_file_is_root(const string& file);
+        bool windows_file_is_absolute(const string& file);
+        bool windows_file_is_root(const string& file);
+        bool windows_file_is_drive_absolute(const string& file);
+        bool windows_file_is_drive_relative(const string& file);
 
     }
 
     #if defined(PRI_TARGET_UNIX)
+
+        template <typename C>
+        bool file_is_absolute(const basic_string<C>& file) {
+            using namespace UnicornDetail;
+            return posix_file_is_absolute(recode_filename<char>(file));
+        }
+
+        template <typename C>
+        bool file_is_root(const basic_string<C>& file) {
+            using namespace UnicornDetail;
+            return posix_file_is_root(recode_filename<char>(file));
+        }
 
         template <typename C>
         bool file_is_drive_absolute(const basic_string<C>& /*file*/) {
@@ -99,34 +120,34 @@ namespace Unicorn {
     #else
 
         template <typename C>
+        bool file_is_absolute(const basic_string<C>& file) {
+            using namespace UnicornDetail;
+            return windows_file_is_absolute(recode_filename<char>(file));
+        }
+
+        template <typename C>
+        bool file_is_root(const basic_string<C>& file) {
+            using namespace UnicornDetail;
+            return windows_file_is_root(recode_filename<char>(file));
+        }
+
+        template <typename C>
         bool file_is_drive_absolute(const basic_string<C>& file) {
             using namespace UnicornDetail;
-            return native_file_is_drive_absolute(native_file(file));
+            return windows_file_is_drive_absolute(recode_filename<char>(file));
         }
 
         template <typename C>
         bool file_is_drive_relative(const basic_string<C>& file) {
             using namespace UnicornDetail;
-            return native_file_is_drive_relative(native_file(file));
+            return windows_file_is_drive_relative(recode_filename<char>(file));
         }
 
     #endif
 
     template <typename C>
-    bool file_is_absolute(const basic_string<C>& file) {
-        using namespace UnicornDetail;
-        return native_file_is_absolute(native_file(file));
-    }
-
-    template <typename C>
     bool file_is_relative(const basic_string<C>& file) {
-        return ! (file_is_absolute(file) || file_is_drive_absolute(file) || file_is_drive_relative(file));
-    }
-
-    template <typename C>
-    bool file_is_root(const basic_string<C>& file) {
-        using namespace UnicornDetail;
-        return native_file_is_root(native_file(file));
+        return ! (file.empty() || file_is_absolute(file) || file_is_drive_absolute(file) || file_is_drive_relative(file));
     }
 
     template <typename C>
@@ -166,6 +187,64 @@ namespace Unicorn {
     template <typename C, typename... Args>
     basic_string<C> file_path(const C* file1, const C* file2, Args... args) {
         return file_path(cstr(file1), cstr(file2), args...);
+    }
+
+    template <typename C>
+    bool is_legal_mac_leaf_name(const basic_string<C>& file) {
+        using namespace UnicornDetail;
+        return ! file.empty() && valid_string(file) && legal_posix_leaf(to_utf8(file));
+    }
+
+    template <typename C>
+    bool is_legal_mac_path_name(const basic_string<C>& file) {
+        using namespace UnicornDetail;
+        return ! file.empty() && valid_string(file) && legal_posix_path(to_utf8(file));
+    }
+
+    template <typename C>
+    bool is_legal_posix_leaf_name(const basic_string<C>& file) {
+        using namespace UnicornDetail;
+        return ! file.empty() && (sizeof(C) == 1 || valid_string(file)) && legal_posix_leaf(to_utf8(file, err_replace));
+    }
+
+    template <typename C>
+    bool is_legal_posix_path_name(const basic_string<C>& file) {
+        using namespace UnicornDetail;
+        return ! file.empty() && (sizeof(C) == 1 || valid_string(file)) && legal_posix_path(to_utf8(file, err_replace));
+    }
+
+    template <typename C>
+    bool is_legal_windows_leaf_name(const basic_string<C>& file) {
+        using namespace UnicornDetail;
+        return ! file.empty() && (sizeof(C) == 2 || valid_string(file)) && legal_windows_leaf(to_utf8(file, err_replace));
+    }
+
+    template <typename C>
+    bool is_legal_windows_path_name(const basic_string<C>& file) {
+        using namespace UnicornDetail;
+        return ! file.empty() && (sizeof(C) == 2 || valid_string(file)) && legal_windows_path(to_utf8(file, err_replace));
+    }
+
+    template <typename C>
+    bool is_legal_leaf_name(const basic_string<C>& file) {
+        #if defined(PRI_TARGET_APPLE)
+            return is_legal_mac_leaf_name(file);
+        #elif defined(PRI_TARGET_WINDOWS)
+            return is_legal_windows_leaf_name(file);
+        #else
+            return is_legal_posix_leaf_name(file);
+        #endif
+    }
+
+    template <typename C>
+    bool is_legal_path_name(const basic_string<C>& file) {
+        #if defined(PRI_TARGET_APPLE)
+            return is_legal_mac_path_name(file);
+        #elif defined(PRI_TARGET_WINDOWS)
+            return is_legal_windows_path_name(file);
+        #else
+            return is_legal_posix_path_name(file);
+        #endif
     }
 
     template <typename C>
