@@ -222,21 +222,23 @@ namespace Unicorn {
 
             // File name operations
 
-            bool native_file_is_absolute(const u8string& file) {
-                static const auto pattern = R"((\\\\\?\\)*([A-Z]:\\|\\{2,}[^?\\]))"_re_i;
+            bool native_file_is_absolute(const wstring& file) {
+                static const auto pattern = LR"((\\\\\?\\)*([A-Z]:\\|\\{2,}[^?\\]))"_re_i;
                 return pattern.anchor(file).matched();
             }
 
-            bool native_file_is_drive_absolute(const u8string& file) {
-                return ! file.empty() && file[0] == '\\' && file[1] != '\\';
+            bool native_file_is_drive_absolute(const wstring& file) {
+                static const auto pattern = LR"(\\[^\\])"_re_i;
+                return pattern.anchor(file).matched();
             }
 
-            bool native_file_is_drive_relative(const u8string& file) {
-                return file.size() >= 2 && ascii_isalpha(file[0]) && file[1] == ':' && file[2] != '\\';
+            bool native_file_is_drive_relative(const wstring& file) {
+                static const auto pattern = LR"([A-Z]:[^\\])"_re_i;
+                return pattern.anchor(file).matched();
             }
 
-            bool native_file_is_root(const u8string& file) {
-                static const auto pattern = R"((\\\\\?\\)*([A-Z]:\\|\\{2,}[^?\\]+\\?|\\+))"_re_i;
+            bool native_file_is_root(const wstring& file) {
+                static const auto pattern = LR"((\\\\\?\\)*([A-Z]:\\|\\{2,}[^?\\]+\\?|\\+))"_re_i;
                 return pattern.match(file).matched();
             }
 

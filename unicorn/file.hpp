@@ -74,39 +74,48 @@ namespace Unicorn {
             return normalize_file(nfile);
         }
 
-        bool native_file_is_absolute(const u8string& file);
-        bool native_file_is_root(const u8string& file);
+        bool native_file_is_absolute(const NativeString& file);
+        bool native_file_is_root(const NativeString& file);
 
         #if defined(PRI_TARGET_WINDOWS)
-            bool native_file_is_drive_absolute(const u8string& file);
-            bool native_file_is_drive_relative(const u8string& file);
+            bool native_file_is_drive_absolute(const NativeString& file);
+            bool native_file_is_drive_relative(const NativeString& file);
         #endif
 
     }
+
+    #if defined(PRI_TARGET_UNIX)
+
+        template <typename C>
+        bool file_is_drive_absolute(const basic_string<C>& /*file*/) {
+            return false;
+        }
+
+        template <typename C>
+        bool file_is_drive_relative(const basic_string<C>& /*file*/) {
+            return false;
+        }
+
+    #else
+
+        template <typename C>
+        bool file_is_drive_absolute(const basic_string<C>& file) {
+            using namespace UnicornDetail;
+            return native_file_is_drive_absolute(native_file(file));
+        }
+
+        template <typename C>
+        bool file_is_drive_relative(const basic_string<C>& file) {
+            using namespace UnicornDetail;
+            return native_file_is_drive_relative(native_file(file));
+        }
+
+    #endif
 
     template <typename C>
     bool file_is_absolute(const basic_string<C>& file) {
-        return UnicornDetail::native_file_is_absolute(to_utf8(file, err_replace));
-    }
-
-    template <typename C>
-    bool file_is_drive_absolute(const basic_string<C>& file) {
-        #if defined(PRI_TARGET_UNIX)
-            (void)file;
-            return false;
-        #else
-            return UnicornDetail::native_file_is_drive_absolute(to_utf8(file, err_replace));
-        #endif
-    }
-
-    template <typename C>
-    bool file_is_drive_relative(const basic_string<C>& file) {
-        #if defined(PRI_TARGET_UNIX)
-            (void)file;
-            return false;
-        #else
-            return UnicornDetail::native_file_is_drive_relative(to_utf8(file, err_replace));
-        #endif
+        using namespace UnicornDetail;
+        return native_file_is_absolute(native_file(file));
     }
 
     template <typename C>
@@ -116,7 +125,8 @@ namespace Unicorn {
 
     template <typename C>
     bool file_is_root(const basic_string<C>& file) {
-        return UnicornDetail::native_file_is_root(to_utf8(file, err_replace));
+        using namespace UnicornDetail;
+        return native_file_is_root(native_file(file));
     }
 
     template <typename C>
