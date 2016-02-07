@@ -149,6 +149,10 @@ namespace Unicorn {
                     throw std::system_error(error, std::generic_category(), file_pair(link, file));
                 }
 
+                bool move_file_helper(const string& src, const string& dst) noexcept {
+                    return rename(src.data(), dst.data()) == 0;
+                }
+
                 void remove_file_helper(const string& file) {
                     int rc = std::remove(file.data());
                     int error = errno;
@@ -156,13 +160,6 @@ namespace Unicorn {
                         throw std::system_error(error, std::generic_category(), quote_file(file));
                 }
 
-            }
-
-            void native_rename_file(const string& src, const string& dst) {
-                if (rename(src.data(), dst.data())) {
-                    int error = errno;
-                    throw std::system_error(error, std::generic_category(), file_pair(src, dst));
-                }
             }
 
             // Directory iterators
@@ -355,6 +352,10 @@ namespace Unicorn {
                     throw std::system_error(error, windows_category(), file_pair(link, file));
                 }
 
+                bool move_file_helper(const wstring& src, const wstring& dst) noexcept {
+                    return MoveFileW(src.c_str(), dst.c_str()) == 0;
+                }
+
                 void remove_file_helper(const wstring& file) {
                     bool dir = file_is_directory(file), ok;
                     if (dir)
@@ -366,13 +367,6 @@ namespace Unicorn {
                         throw std::system_error(error, windows_category(), quote_file(file));
                 }
 
-            }
-
-            void native_rename_file(const wstring& src, const wstring& dst) {
-                if (! MoveFileW(src.c_str(), dst.c_str())) {
-                    auto error = GetLastError();
-                    throw std::system_error(error, windows_category(), file_pair(src, dst));
-                }
             }
 
             // Directory iterators
@@ -424,14 +418,15 @@ namespace Unicorn {
         // File system modifying functions
 
         void native_copy_file(const NativeString& src, const NativeString& dst, uint32_t flags) {
+            bool overwrite = (flags & fs_overwrite) != 0, recurse = (flags & fs_recurse) != 0;
             if (! native_file_exists(src))
                 throw std::system_error(std::make_error_code(std::errc::no_such_file_or_directory), quote_file(src));
             if (src == dst)
                 throw std::system_error(std::make_error_code(std::errc::file_exists), quote_file(dst));
-            if (native_file_is_directory(src) && (flags & fs_recurse) == 0)
+            if (native_file_is_directory(src) && ! recurse)
                 throw std::system_error(std::make_error_code(std::errc::is_a_directory), quote_file(src));
             if (native_file_exists(dst)) {
-                if ((flags & fs_overwrite) == 0 || (native_file_is_directory(dst) && (flags & fs_recurse) == 0))
+                if (! overwrite || (native_file_is_directory(dst) && ! recurse))
                     throw std::system_error(std::make_error_code(std::errc::file_exists), quote_file(dst));
                 native_remove_file(dst, fs_recurse);
             }
@@ -497,6 +492,23 @@ namespace Unicorn {
             if ((flags & fs_overwrite) && native_file_exists(link))
                 native_remove_file(link, flags);
             make_symlink_helper(file, link, flags);
+        }
+
+        void native_move_file(const NativeString& src, const NativeString& dst, uint32_t flags) {
+            bool overwrite = (flags & fs_overwrite) != 0, recurse = (flags & fs_recurse) != 0;
+            if (! native_file_exists(src))
+                throw std::system_error(std::make_error_code(std::errc::no_such_file_or_directory), quote_file(src));
+            if (src == dst)
+                return;
+            if (native_file_exists(dst)) {
+                if (! overwrite || (native_file_is_directory(dst) && ! recurse))
+                    throw std::system_error(std::make_error_code(std::errc::file_exists), quote_file(dst));
+                native_remove_file(dst, fs_recurse);
+            }
+            if (! move_file_helper(src, dst)) {
+                native_copy_file(src, dst, fs_recurse);
+                native_remove_file(src, fs_recurse);
+            }
         }
 
         void native_remove_file(const NativeString& file, uint32_t flags) {

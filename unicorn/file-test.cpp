@@ -789,7 +789,7 @@ namespace {
         TEST(! file_is_directory(f2));
         TRY(touch(f1));
         TEST(file_exists(f1));
-        TRY(rename_file(f1, f2));
+        TRY(move_file(f1, f2));
         TEST(! file_exists(f1));
         TEST(file_exists(f2));
         TRY(copy_file(f2, f3));
@@ -812,7 +812,7 @@ namespace {
         TEST(file_exists(d1));
         TEST(file_is_directory(d1));
         TRY(make_directory(d1));
-        TRY(rename_file(d1, d2));
+        TRY(move_file(d1, d2));
         TEST(! file_exists(d1));
         TEST(! file_is_directory(d1));
         TEST(file_exists(d2));
@@ -957,7 +957,7 @@ namespace {
         TEST(! file_is_directory(f2));
         TRY(touch(f1));
         TEST(file_exists(f1));
-        TRY(rename_file(f1, f2));
+        TRY(move_file(f1, f2));
         TEST(! file_exists(f1));
         TEST(file_exists(f2));
         TRY(copy_file(f2, f3));
@@ -980,7 +980,7 @@ namespace {
         TEST(file_exists(d1));
         TEST(file_is_directory(d1));
         TRY(make_directory(d1));
-        TRY(rename_file(d1, d2));
+        TRY(move_file(d1, d2));
         TEST(! file_exists(d1));
         TEST(! file_is_directory(d1));
         TEST(file_exists(d2));
@@ -1125,7 +1125,7 @@ namespace {
         TEST(! file_is_directory(f2));
         TRY(touch(f1));
         TEST(file_exists(f1));
-        TRY(rename_file(f1, f2));
+        TRY(move_file(f1, f2));
         TEST(! file_exists(f1));
         TEST(file_exists(f2));
         TRY(copy_file(f2, f3));
@@ -1148,7 +1148,7 @@ namespace {
         TEST(file_exists(d1));
         TEST(file_is_directory(d1));
         TRY(make_directory(d1));
-        TRY(rename_file(d1, d2));
+        TRY(move_file(d1, d2));
         TEST(! file_exists(d1));
         TEST(! file_is_directory(d1));
         TEST(file_exists(d2));

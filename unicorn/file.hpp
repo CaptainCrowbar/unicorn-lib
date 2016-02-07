@@ -271,8 +271,8 @@ namespace Unicorn {
         void native_copy_file(const NativeString& src, const NativeString& dst, uint32_t flags);
         void native_make_directory(const NativeString& dir, uint32_t flags);
         void native_make_symlink(const NativeString& file, const NativeString& link, uint32_t flags);
+        void native_move_file(const NativeString& src, const NativeString& dst, uint32_t flags);
         void native_remove_file(const NativeString& file, uint32_t flags);
-        void native_rename_file(const NativeString& src, const NativeString& dst);
 
     }
 
@@ -295,15 +295,15 @@ namespace Unicorn {
     }
 
     template <typename C>
-    void remove_file(const basic_string<C>& file, uint32_t flags = 0) {
+    void move_file(const basic_string<C>& src, const basic_string<C>& dst, uint32_t flags = 0) {
         using namespace UnicornDetail;
-        native_remove_file(native_file(file), flags);
+        native_move_file(native_file(src), native_file(dst), flags);
     }
 
     template <typename C>
-    void rename_file(const basic_string<C>& src, const basic_string<C>& dst) {
+    void remove_file(const basic_string<C>& file, uint32_t flags = 0) {
         using namespace UnicornDetail;
-        native_rename_file(native_file(src), native_file(dst));
+        native_remove_file(native_file(file), flags);
     }
 
     // Directory iterators

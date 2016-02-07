@@ -124,7 +124,7 @@ operating system's native encoding, the string will simply be copied verbatim
 without checking for valid Unicode.</p>
 </div>
 <h2 id="file-name-functions">File name functions</h2>
-<p>These functions operate purely on file name strings; they do not make any
+<p>These functions operate purely on file names as strings; they do not make any
 contact with the actual file system, and will give the same results regardless
 of whether or not a file actually exists. Where relevant, these functions are
 aware of the standard double slash convention for network paths <span
@@ -151,7 +151,9 @@ on Unix.</p>
 <ul>
 <li><code>template &lt;typename C&gt; bool</code> <strong><code>file_is_root</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
 </ul>
-<p>True if the file name refers to the root of a directory tree.</p>
+<p>True if the file name refers to the root of a directory tree (note that this
+is a purely syntactic operation on the file name, and is not the same as
+identifying the root of a physical file system).</p>
 </div>
 <div class="defns">
 <ul>
@@ -269,7 +271,7 @@ system.</p>
 <li><code>template &lt;typename C&gt; void</code> <strong><code>copy_file</code></strong><code>(const basic_string&lt;C&gt;&amp; src, const basic_string&lt;C&gt;&amp; dst, uint32_t flags = 0)</code></li>
 </ul>
 <p>Copy a file. If the <code>fs_recurse</code> flag is used, this will copy a directory
-recursively; otherwise, it will fail if the source file is a directory If the
+recursively; otherwise, it will fail if the source file is a directory. If the
 <code>fs_overwrite</code> flag is used, an existing file of the same name will be deleted
 if possible; otherwise, the copy will fail. If the existing destination file
 is a directory, it will only be replaced if the <code>fs_recurse</code> flag is also
@@ -310,28 +312,27 @@ but the necessary flags were not supplied.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>remove_file</code></strong><code>(const basic_string&lt;C&gt;&amp; file, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; void</code> <strong><code>move_file</code></strong><code>(const basic_string&lt;C&gt;&amp; src, const basic_string&lt;C&gt;&amp; dst, uint32_t flags = 0)</code></li>
 </ul>
-<p>Delete a file or directory. If the <code>fs_recurse</code> flag is set, directories will
-be deleted recursively (like <code>rm -rf</code>; this will not follow symbolic links).
-This will do nothing if the named file does not exist to begin with. It will
-throw <code>std::system_error</code> if the directory path is not a legal filename, if
-the name refers to a nonempty directory and the <code>fs_recurse</code> flag was not set,
-or if the caller does not have permission to delete the file.</p>
+<p>Rename a file or directory. This will attempt to use the operating system's
+native <code>rename()</code> call if possible, but will attempt a copy-and-delete
+operation if this fails. This follows the same rules, and respects the same
+flags, as <code>copy_file()</code>, except that moving a file to itself always succeeds,
+and directories are always moved recursively (the <code>fs_recurse</code> flag is only
+needed if an existing directory is to be replaced). This will throw
+<code>std::system_error</code> if anything goes wrong.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>rename_file</code></strong><code>(const basic_string&lt;C&gt;&amp; src, const basic_string&lt;C&gt;&amp; dst)</code></li>
+<li><code>template &lt;typename C&gt; void</code> <strong><code>remove_file</code></strong><code>(const basic_string&lt;C&gt;&amp; file, uint32_t flags = 0)</code></li>
 </ul>
-<p>Rename a file or directory. This will throw <code>std::system_error</code> if either
-argument is not a legal filename, if the caller does not have permission to
-perform the operation, or under other OS-specific circumstances.</p>
-<p>This function is a thin wrapper around the underlying native file renaming
-functions, and will share any system specific limitations and variations;
-behaviour when the destination file already exists is system dependent (this
-may overwrite the file or throw an exception), and on most systems the call
-will fail if the source and destination are on different physical file
-systems.</p>
+<p>Delete a file or directory. If the <code>fs_recurse</code> flag is set, directories will
+be deleted recursively (like <code>rm -rf</code>; this will not follow symbolic links);
+the flag is not needed to delete an empty directory. This will do nothing if
+the named file does not exist to begin with. It will throw <code>std::system_error</code>
+if the directory path is not a legal filename, if the name refers to a non-
+empty directory and the <code>fs_recurse</code> flag was not set, or if the caller does
+not have permission to delete the file.</p>
 </div>
 <h2 id="directory-iterators">Directory iterators</h2>
 <div class="defns">
@@ -379,7 +380,8 @@ systems.</p>
 </table>
 <p>An iterator over the files in a directory. Normally you should call the
 <code>directory()</code> function to get an iterator range, rather than explicitly
-construct a <code>DirectoryIterator</code>.</p>
+construct a <code>DirectoryIterator</code>. Note that this is an input (i.e. single pass)
+iterator.</p>
 <p>If the name passed to the constructor, or to the <code>directory()</code> function,
 refers to a file that does not exist or is not a directory, it will simply be
 treated as an empty directory.</p>
