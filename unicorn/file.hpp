@@ -86,7 +86,7 @@ namespace Unicorn {
 
     template <typename C>
     bool file_is_absolute(const basic_string<C>& file) {
-        return UnicornDetail::native_file_is_absolute(to_utf8(file));
+        return UnicornDetail::native_file_is_absolute(to_utf8(file, err_replace));
     }
 
     template <typename C>
@@ -95,7 +95,7 @@ namespace Unicorn {
             (void)file;
             return false;
         #else
-            return UnicornDetail::native_file_is_drive_absolute(to_utf8(file));
+            return UnicornDetail::native_file_is_drive_absolute(to_utf8(file, err_replace));
         #endif
     }
 
@@ -105,7 +105,7 @@ namespace Unicorn {
             (void)file;
             return false;
         #else
-            return UnicornDetail::native_file_is_drive_relative(to_utf8(file));
+            return UnicornDetail::native_file_is_drive_relative(to_utf8(file, err_replace));
         #endif
     }
 
@@ -116,7 +116,7 @@ namespace Unicorn {
 
     template <typename C>
     bool file_is_root(const basic_string<C>& file) {
-        return UnicornDetail::native_file_is_root(to_utf8(file));
+        return UnicornDetail::native_file_is_root(to_utf8(file, err_replace));
     }
 
     template <typename C>
@@ -268,11 +268,18 @@ namespace Unicorn {
 
     namespace UnicornDetail {
 
+        void native_copy_file(const NativeString& src, const NativeString& dst, uint32_t flags);
         void native_make_directory(const NativeString& dir, uint32_t flags);
         void native_make_symlink(const NativeString& file, const NativeString& link, uint32_t flags);
         void native_remove_file(const NativeString& file, uint32_t flags);
         void native_rename_file(const NativeString& src, const NativeString& dst);
 
+    }
+
+    template <typename C>
+    void copy_file(const basic_string<C>& src, const basic_string<C>& dst, uint32_t flags = 0) {
+        using namespace UnicornDetail;
+        native_copy_file(native_file(src), native_file(dst), flags);
     }
 
     template <typename C>

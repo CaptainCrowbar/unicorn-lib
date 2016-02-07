@@ -23,11 +23,12 @@ namespace Unicorn {
 
     namespace {
 
-        template <typename C> u8string quote_file(const basic_string<C>& name) { return quote(to_utf8(name), true); }
-
         #if defined(PRI_TARGET_WINDOWS)
             using HandleTarget = std::remove_pointer_t<HANDLE>;
         #endif
+
+        template <typename C> u8string quote_file(const basic_string<C>& name) { return quote(to_utf8(name), true); }
+        NativeString file_pair(const NativeString& f1, const NativeString& f2) { return quote_file(f1) + " -> " + quote_file(f2); }
 
     }
 
@@ -35,13 +36,31 @@ namespace Unicorn {
 
         #if defined(PRI_TARGET_UNIX)
 
+            namespace {
+
+                class Cstdio {
+                public:
+                    Cstdio(const string& file, bool write) {
+                        fp = fopen(file.data(), write ? "wb" : "rb");
+                        int error = errno;
+                        if (! fp)
+                            throw std::system_error(error, std::generic_category(), quote_file(file));
+                    }
+                    ~Cstdio() noexcept { if (fp) fclose(fp); }
+                    operator FILE*() const noexcept { return fp; }
+                private:
+                    FILE* fp;
+                };
+
+            }
+
             // File name operations
 
-            bool native_file_is_absolute(const u8string& file) {
+            bool native_file_is_absolute(const string& file) {
                 return file[0] == '/';
             }
 
-            bool native_file_is_root(const u8string& file) {
+            bool native_file_is_root(const string& file) {
                 static const auto pattern = "/{2,}[^/]+/?|/+"_re_i;
                 return pattern.match(file).matched();
             }
@@ -127,8 +146,7 @@ namespace Unicorn {
                     if (symlink(file.data(), link.data()) == 0)
                         return;
                     int error = errno;
-                    u8string note = quote_file(link) + " -> " + quote_file(file);
-                    throw std::system_error(error, std::generic_category(), note);
+                    throw std::system_error(error, std::generic_category(), file_pair(link, file));
                 }
 
                 void remove_file_helper(const string& file) {
@@ -143,8 +161,7 @@ namespace Unicorn {
             void native_rename_file(const string& src, const string& dst) {
                 if (rename(src.data(), dst.data())) {
                     int error = errno;
-                    u8string note = quote_file(src) + " => " + quote_file(dst);
-                    throw std::system_error(error, std::generic_category(), note);
+                    throw std::system_error(error, std::generic_category(), file_pair(src, dst));
                 }
             }
 
@@ -187,6 +204,24 @@ namespace Unicorn {
             }
 
         #else
+
+            namespace {
+
+                class Cstdio {
+                public:
+                    Cstdio(const wstring& file, bool write) {
+                        fp = _wfopen(file.data(), write ? L"wb" : L"rb");
+                        int error = errno;
+                        if (! fp)
+                            throw std::system_error(error, std::generic_category(), quote_file(file));
+                    }
+                    ~Cstdio() noexcept { if (fp) fclose(fp); }
+                    operator FILE*() const noexcept { return fp; }
+                private:
+                    FILE* fp;
+                };
+
+            }
 
             // File name operations
 
@@ -317,8 +352,7 @@ namespace Unicorn {
                     if (CreateSymbolicLinkW(link.data(), file.data(), wflags))
                         return;
                     auto error = GetLastError();
-                    u8string note = quote_file(link) + " -> " + quote_file(file);
-                    throw std::system_error(error, windows_category(), note);
+                    throw std::system_error(error, windows_category(), file_pair(link, file));
                 }
 
                 void remove_file_helper(const wstring& file) {
@@ -337,8 +371,7 @@ namespace Unicorn {
             void native_rename_file(const wstring& src, const wstring& dst) {
                 if (! MoveFileW(src.c_str(), dst.c_str())) {
                     auto error = GetLastError();
-                    u8string note = quote_file(src) + " => " + quote_file(dst);
-                    throw std::system_error(error, windows_category(), note);
+                    throw std::system_error(error, windows_category(), file_pair(src, dst));
                 }
             }
 
@@ -389,6 +422,45 @@ namespace Unicorn {
         #endif
 
         // File system modifying functions
+
+        void native_copy_file(const NativeString& src, const NativeString& dst, uint32_t flags) {
+            if (! native_file_exists(src))
+                throw std::system_error(std::make_error_code(std::errc::no_such_file_or_directory), quote_file(src));
+            if (src == dst)
+                throw std::system_error(std::make_error_code(std::errc::file_exists), quote_file(dst));
+            if (native_file_is_directory(src) && (flags & fs_recurse) == 0)
+                throw std::system_error(std::make_error_code(std::errc::is_a_directory), quote_file(src));
+            if (native_file_exists(dst)) {
+                if ((flags & fs_overwrite) == 0 || (native_file_is_directory(dst) && (flags & fs_recurse) == 0))
+                    throw std::system_error(std::make_error_code(std::errc::file_exists), quote_file(dst));
+                native_remove_file(dst, fs_recurse);
+            }
+            if (native_file_is_symlink(src)) {
+                auto target = native_resolve_symlink(src);
+                native_make_symlink(target, dst, 0);
+            } else if (native_file_is_directory(src)) {
+                native_make_directory(dst, 0);
+                for (auto& child: directory(src, fs_all))
+                    native_copy_file(file_path(src, child), file_path(dst, child), fs_recurse);
+            } else {
+                Cstdio in(src, false), out(dst, true);
+                vector<char> buf(16384);
+                while (! feof(in)) {
+                    errno = 0;
+                    size_t n = fread(buf.data(), 1, buf.size(), in);
+                    int error = errno;
+                    if (error)
+                        throw std::system_error(error, std::generic_category(), quote_file(src));
+                    if (n) {
+                        errno = 0;
+                        fwrite(buf.data(), 1, n, out);
+                        int error = errno;
+                        if (error)
+                            throw std::system_error(error, std::generic_category(), quote_file(dst));
+                    }
+                }
+            }
+        }
 
         void native_make_directory(const NativeString& dir, uint32_t flags) {
             int error = mkdir_helper(dir);

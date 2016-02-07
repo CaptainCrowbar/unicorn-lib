@@ -215,6 +215,22 @@ appear to be any way to retrieve it).
 These functions perform operations that require write access to the file
 system.
 
+* `template <typename C> void` **`copy_file`**`(const basic_string<C>& src, const basic_string<C>& dst, uint32_t flags = 0)`
+
+Copy a file. If the `fs_recurse` flag is used, this will copy a directory
+recursively; otherwise, it will fail if the source file is a directory If the
+`fs_overwrite` flag is used, an existing file of the same name will be deleted
+if possible; otherwise, the copy will fail. If the existing destination file
+is a directory, it will only be replaced if the `fs_recurse` flag is also
+present (regardless of whether the source is a directory). Regardless of
+flags, it will always fail if the source and destination are the same.
+Symbolic links will be copied as links; the linked file will not be copied.
+
+This will throw `std::system_error` if anything goes wrong. This is
+necessarily a non-atomic operation; there is always the possibility that an
+interruption or a race condition between threads will leave a partially copied
+file or directory.
+
 * `template <typename C> void` **`make_directory`**`(const basic_string<C>& dir, uint32_t flags = 0)`
 
 Create a directory (with default permissions). It will do nothing if the

@@ -730,7 +730,7 @@ namespace {
 
     void check_file_system_operations_utf8() {
 
-        string d1, d2, f1, f2;
+        u8string d1, d2, d3, f1, f2, f3;
         vector<string> vec;
 
         TEST(file_exists("."s));
@@ -782,27 +782,28 @@ namespace {
 
         f1 = "__test_file_1";
         f2 = "__test_file_2";
+        f3 = "__test_file_3";
         TEST(! file_exists(f1));
         TEST(! file_is_directory(f1));
         TEST(! file_exists(f2));
         TEST(! file_is_directory(f2));
         TRY(touch(f1));
         TEST(file_exists(f1));
-        TEST(! file_is_directory(f1));
         TRY(rename_file(f1, f2));
         TEST(! file_exists(f1));
-        TEST(! file_is_directory(f1));
         TEST(file_exists(f2));
-        TEST(! file_is_directory(f2));
+        TRY(copy_file(f2, f3));
+        TEST(file_exists(f2));
+        TEST(file_exists(f3));
         TRY(remove_file(f2));
+        TRY(remove_file(f3));
         TEST(! file_exists(f1));
-        TEST(! file_is_directory(f1));
         TEST(! file_exists(f2));
-        TEST(! file_is_directory(f2));
-        TRY(remove_file(f1));
+        TEST(! file_exists(f3));
 
         d1 = "__test_dir_1";
         d2 = "__test_dir_2";
+        d3 = "__test_dir_3";
         TEST(! file_exists(d1));
         TEST(! file_is_directory(d1));
         TEST(! file_exists(d2));
@@ -816,12 +817,18 @@ namespace {
         TEST(! file_is_directory(d1));
         TEST(file_exists(d2));
         TEST(file_is_directory(d2));
+        TEST_THROW(copy_file(d2, d3), std::system_error);
+        TRY(copy_file(d2, d3, fs_recurse));
+        TEST(file_exists(d2));
+        TEST(file_is_directory(d2));
+        TEST(file_exists(d3));
+        TEST(file_is_directory(d3));
         TRY(remove_file(d2));
+        TRY(remove_file(d3));
         TEST(! file_exists(d1));
         TEST(! file_is_directory(d1));
         TEST(! file_exists(d2));
         TEST(! file_is_directory(d2));
-        TRY(remove_file(d2));
 
         d1 = "__test_dir_1";
         d2 = "__test_dir_1/test_dir_2";
@@ -891,7 +898,7 @@ namespace {
 
     void check_file_system_operations_utf16() {
 
-        u16string d1, d2, f1, f2;
+        u16string d1, d2, d3, f1, f2, f3;
         vector<u16string> vec;
 
         TEST(file_exists(u"."s));
@@ -943,27 +950,28 @@ namespace {
 
         f1 = u"__test_file_1";
         f2 = u"__test_file_2";
+        f3 = u"__test_file_3";
         TEST(! file_exists(f1));
         TEST(! file_is_directory(f1));
         TEST(! file_exists(f2));
         TEST(! file_is_directory(f2));
         TRY(touch(f1));
         TEST(file_exists(f1));
-        TEST(! file_is_directory(f1));
         TRY(rename_file(f1, f2));
         TEST(! file_exists(f1));
-        TEST(! file_is_directory(f1));
         TEST(file_exists(f2));
-        TEST(! file_is_directory(f2));
+        TRY(copy_file(f2, f3));
+        TEST(file_exists(f2));
+        TEST(file_exists(f3));
         TRY(remove_file(f2));
+        TRY(remove_file(f3));
         TEST(! file_exists(f1));
-        TEST(! file_is_directory(f1));
         TEST(! file_exists(f2));
-        TEST(! file_is_directory(f2));
-        TRY(remove_file(f1));
+        TEST(! file_exists(f3));
 
         d1 = u"__test_dir_1";
         d2 = u"__test_dir_2";
+        d3 = u"__test_dir_3";
         TEST(! file_exists(d1));
         TEST(! file_is_directory(d1));
         TEST(! file_exists(d2));
@@ -977,12 +985,18 @@ namespace {
         TEST(! file_is_directory(d1));
         TEST(file_exists(d2));
         TEST(file_is_directory(d2));
+        TEST_THROW(copy_file(d2, d3), std::system_error);
+        TRY(copy_file(d2, d3, fs_recurse));
+        TEST(file_exists(d2));
+        TEST(file_is_directory(d2));
+        TEST(file_exists(d3));
+        TEST(file_is_directory(d3));
         TRY(remove_file(d2));
+        TRY(remove_file(d3));
         TEST(! file_exists(d1));
         TEST(! file_is_directory(d1));
         TEST(! file_exists(d2));
         TEST(! file_is_directory(d2));
-        TRY(remove_file(d2));
 
         d1 = u"__test_dir_1";
         d2 = u"__test_dir_1/test_dir_2";
@@ -1052,7 +1066,7 @@ namespace {
 
     void check_file_system_operations_utf32() {
 
-        u32string d1, d2, f1, f2;
+        u32string d1, d2, d3, f1, f2, f3;
         vector<u32string> vec;
 
         TEST(file_exists(U"."s));
@@ -1104,27 +1118,28 @@ namespace {
 
         f1 = U"__test_file_1";
         f2 = U"__test_file_2";
+        f3 = U"__test_file_3";
         TEST(! file_exists(f1));
         TEST(! file_is_directory(f1));
         TEST(! file_exists(f2));
         TEST(! file_is_directory(f2));
         TRY(touch(f1));
         TEST(file_exists(f1));
-        TEST(! file_is_directory(f1));
         TRY(rename_file(f1, f2));
         TEST(! file_exists(f1));
-        TEST(! file_is_directory(f1));
         TEST(file_exists(f2));
-        TEST(! file_is_directory(f2));
+        TRY(copy_file(f2, f3));
+        TEST(file_exists(f2));
+        TEST(file_exists(f3));
         TRY(remove_file(f2));
+        TRY(remove_file(f3));
         TEST(! file_exists(f1));
-        TEST(! file_is_directory(f1));
         TEST(! file_exists(f2));
-        TEST(! file_is_directory(f2));
-        TRY(remove_file(f1));
+        TEST(! file_exists(f3));
 
         d1 = U"__test_dir_1";
         d2 = U"__test_dir_2";
+        d3 = U"__test_dir_3";
         TEST(! file_exists(d1));
         TEST(! file_is_directory(d1));
         TEST(! file_exists(d2));
@@ -1138,12 +1153,18 @@ namespace {
         TEST(! file_is_directory(d1));
         TEST(file_exists(d2));
         TEST(file_is_directory(d2));
+        TEST_THROW(copy_file(d2, d3), std::system_error);
+        TRY(copy_file(d2, d3, fs_recurse));
+        TEST(file_exists(d2));
+        TEST(file_is_directory(d2));
+        TEST(file_exists(d3));
+        TEST(file_is_directory(d3));
         TRY(remove_file(d2));
+        TRY(remove_file(d3));
         TEST(! file_exists(d1));
         TEST(! file_is_directory(d1));
         TEST(! file_exists(d2));
         TEST(! file_is_directory(d2));
-        TRY(remove_file(d2));
 
         d1 = U"__test_dir_1";
         d2 = U"__test_dir_1/test_dir_2";

@@ -165,7 +165,7 @@ namespace Unicorn {
 
     void FileWriter::flush() {
         if (! impl)
-            throw std::system_error(EBADF, std::generic_category());
+            throw std::system_error(std::make_error_code(std::errc::bad_file_descriptor));
         if (fflush(impl->handle.get()) == EOF) {
             int err = errno;
             throw std::system_error(err, std::generic_category(), quote_file(impl->name));
@@ -225,7 +225,7 @@ namespace Unicorn {
 
     void FileWriter::write(u8string str) {
         if (! impl)
-            throw std::system_error(EBADF, std::generic_category());
+            throw std::system_error(std::make_error_code(std::errc::bad_file_descriptor));
         fixtext(str);
         if (impl->flags & io_linebuf) {
             str.insert(0, impl->wrbuf);

@@ -266,6 +266,23 @@ appear to be any way to retrieve it).</p>
 system.</p>
 <div class="defns">
 <ul>
+<li><code>template &lt;typename C&gt; void</code> <strong><code>copy_file</code></strong><code>(const basic_string&lt;C&gt;&amp; src, const basic_string&lt;C&gt;&amp; dst, uint32_t flags = 0)</code></li>
+</ul>
+<p>Copy a file. If the <code>fs_recurse</code> flag is used, this will copy a directory
+recursively; otherwise, it will fail if the source file is a directory If the
+<code>fs_overwrite</code> flag is used, an existing file of the same name will be deleted
+if possible; otherwise, the copy will fail. If the existing destination file
+is a directory, it will only be replaced if the <code>fs_recurse</code> flag is also
+present (regardless of whether the source is a directory). Regardless of
+flags, it will always fail if the source and destination are the same.
+Symbolic links will be copied as links; the linked file will not be copied.</p>
+<p>This will throw <code>std::system_error</code> if anything goes wrong. This is
+necessarily a non-atomic operation; there is always the possibility that an
+interruption or a race condition between threads will leave a partially copied
+file or directory.</p>
+</div>
+<div class="defns">
+<ul>
 <li><code>template &lt;typename C&gt; void</code> <strong><code>make_directory</code></strong><code>(const basic_string&lt;C&gt;&amp; dir, uint32_t flags = 0)</code></li>
 </ul>
 <p>Create a directory (with default permissions). It will do nothing if the
