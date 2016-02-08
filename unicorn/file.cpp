@@ -28,7 +28,7 @@ namespace Unicorn {
         #endif
 
         template <typename C> u8string quote_file(const basic_string<C>& name) { return quote(to_utf8(name), true); }
-        NativeString file_pair(const NativeString& f1, const NativeString& f2) { return quote_file(f1) + " -> " + quote_file(f2); }
+        u8string file_pair(const NativeString& f1, const NativeString& f2) { return quote_file(f1) + " -> " + quote_file(f2); }
 
     }
 
@@ -44,7 +44,7 @@ namespace Unicorn {
             constexpr const char* windows_absolute        = R"((\\\\\?\\)*([A-Z]:\\|\\{2,}(?=[^?\\])))";
             constexpr const char* windows_root            = R"((\\\\\?\\)*([A-Z]:\\|\\{2,}[^?\\]+\\?|\\+))";
             constexpr const char* windows_drive_absolute  = R"(\\[^\\])";
-            constexpr const char* windows_drive_relative  = R"([A-Z]:[^\\])";
+            constexpr const char* windows_drive_relative  = R"([A-Z]:(?!\\))";
             constexpr const char* windows_illegal_names   = R"((AUX|COM[1-9]|CON|LPT[1-9]|NUL|PRN)(\.[^.]*)?)";
             constexpr uint32_t match_flags                = rx_byte | rx_caseless | rx_noautocapture;
 
@@ -92,7 +92,7 @@ namespace Unicorn {
 
         bool windows_file_is_absolute(const string& file) {
             static const Regex abs_pattern(windows_absolute, match_flags);
-            return bool(abs_pattern.match(file));
+            return bool(abs_pattern.anchor(file));
         }
 
         bool windows_file_is_root(const string& file) {
@@ -102,12 +102,12 @@ namespace Unicorn {
 
         bool windows_file_is_drive_absolute(const string& file) {
             static const Regex drive_abs_pattern(windows_drive_absolute, match_flags);
-            return bool(drive_abs_pattern.match(file));
+            return bool(drive_abs_pattern.anchor(file));
         }
 
         bool windows_file_is_drive_relative(const string& file) {
             static const Regex drive_rel_pattern(windows_drive_relative, match_flags);
-            return bool(drive_rel_pattern.match(file));
+            return bool(drive_rel_pattern.anchor(file));
         }
 
         #if defined(PRI_TARGET_UNIX)
@@ -398,7 +398,7 @@ namespace Unicorn {
                 }
 
                 bool move_file_helper(const wstring& src, const wstring& dst) noexcept {
-                    return MoveFileW(src.c_str(), dst.c_str()) == 0;
+                    return MoveFileW(src.c_str(), dst.c_str()) != 0;
                 }
 
                 void remove_file_helper(const wstring& file) {
