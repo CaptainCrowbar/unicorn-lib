@@ -51,7 +51,7 @@ namespace Unicorn {
         SyntaxError(const u8string& text, size_t offset, const u8string& message = "Syntax error"):
             std::runtime_error(assemble(text, offset, message)),
             bug(make_shared<u8string>(text)), ofs(offset) {}
-        const char* text() const noexcept { return bug->data(); }
+        const u8string& text() const noexcept { return *bug; }
         size_t offset() const noexcept { return ofs; }
     private:
         shared_ptr<u8string> bug;
@@ -150,14 +150,13 @@ namespace Unicorn {
         BasicLexer(): BasicLexer(0) {}
         explicit BasicLexer(uint32_t flags):
             lexemes(), prefix_table(flags & rx_byte ? 256 : 128), mask((flags | rx_notempty | rx_partialsoft) & ~ rx_partialhard) {}
-        token_range operator()(const string_type& text) const { return lex(text); }
-        token_range lex(const string_type& text) const;
-        void custom(int tag, const callback_type& call, const string_type& prefixes = {});
         void exact(int tag, const string_type& pattern);
         void exact(int tag, const C* pattern) { exact(tag, cstr(pattern)); }
         void match(int tag, const regex_type& pattern) { add_match(tag, pattern); }
         void match(int tag, const string_type& pattern, uint32_t flags = 0) { add_match(tag, regex_type(pattern, fix_flags(flags))); }
         void match(int tag, const C* pattern, uint32_t flags = 0) { add_match(tag, regex_type(pattern, fix_flags(flags))); }
+        void custom(int tag, const callback_type& call);
+        token_range operator()(const string_type& text) const;
     private:
         friend class BasicTokenIterator<C>;
         struct element {
@@ -171,38 +170,8 @@ namespace Unicorn {
         uint32_t mask;
         void add_exact(int tag, const string_type& pattern);
         void add_match(int tag, regex_type pattern);
-        bool byte_mode() const noexcept { return mask & rx_byte; }
         uint32_t fix_flags(uint32_t flags) const noexcept { return (flags | mask) & ~ rx_partialhard; }
     };
-
-    template <typename C>
-    typename BasicLexer<C>::token_range BasicLexer<C>::lex(const string_type& text) const {
-        token_range result;
-        result.first.lex = result.second.lex = this;
-        result.first.token.text = result.second.token.text = &text;
-        result.first.token.offset = 0;
-        result.second.token.offset = text.size();
-        result.first.token.count = result.second.token.count = 0;
-        result.first.token.tag = result.second.token.tag = 0;
-        ++result.first;
-        return result;
-    }
-
-    template <typename C>
-    void BasicLexer<C>::custom(int tag, const callback_type& call, const string_type& prefixes) {
-        if (! call)
-            return;
-        element e = {tag, call};
-        lexemes.push_back(e);
-        if (prefixes.empty()) {
-            for (auto& p: prefix_table)
-                p.push_back(e);
-        } else {
-            for (char32_t c: utf_range(prefixes))
-                if (c < prefix_table.size())
-                    prefix_table[c].push_back(e);
-        }
-    }
 
     template <typename C>
     void BasicLexer<C>::exact(int tag, const string_type& pattern) {
@@ -226,9 +195,6 @@ namespace Unicorn {
     void BasicLexer<C>::add_match(int tag, regex_type pattern) {
         if (pattern.empty())
             return;
-        bool byte_pattern = pattern.flags() & rx_byte;
-        if (byte_pattern != byte_mode())
-            throw std::invalid_argument("Mixed Unicode and byte patterns in lexer");
         uint32_t new_flags = fix_flags(pattern.flags());
         if (new_flags != pattern.flags())
             pattern = regex_type(pattern.pattern(), new_flags);
@@ -241,6 +207,29 @@ namespace Unicorn {
             if (pattern.anchor(s).full_or_partial())
                 prefix_table[i].push_back(e);
         }
+    }
+
+    template <typename C>
+    void BasicLexer<C>::custom(int tag, const callback_type& call) {
+        if (! call)
+            return;
+        element e = {tag, call};
+        lexemes.push_back(e);
+        for (auto& p: prefix_table)
+            p.push_back(e);
+    }
+
+    template <typename C>
+    typename BasicLexer<C>::token_range BasicLexer<C>::operator()(const string_type& text) const {
+        token_range result;
+        result.first.lex = result.second.lex = this;
+        result.first.token.text = result.second.token.text = &text;
+        result.first.token.offset = 0;
+        result.second.token.offset = text.size();
+        result.first.token.count = result.second.token.count = 0;
+        result.first.token.tag = result.second.token.tag = 0;
+        ++result.first;
+        return result;
     }
 
 }

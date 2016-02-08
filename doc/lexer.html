@@ -18,7 +18,35 @@ according to rules defined by the user.</p>
 calls the PCRE library. It will only work with encodings for which the
 corresponding PCRE library has been linked; see the regex module documentation
 for details.</p>
-<p>[TODO: DOCUMENTATION]</p>
+<p>Example:</p>
+<pre><code>enum TokenType { name = 1, number = 2, op = 3 };
+
+Lexer lex;
+lex.match(0, "\\s+");
+lex.match(0, "#[^\\n]*");
+lex.match(name, "[a-z]\\w*", rx_caseless);
+lex.match(number, "\\d+");
+lex.match(op, "[-+*/=]");
+
+u8string source =
+    "Hello world\n"
+    "# Comment\n"
+    "2 + 2 = 4\n";
+
+auto tokens = lex(source);
+
+for (auto&amp; t: tokens)
+    std::cout &lt;&lt; "Type " &lt;&lt; t.tag &lt;&lt; ": " &lt;&lt; u8string(t) &lt;&lt; "\n";
+</code></pre>
+<p>Output:</p>
+<pre><code>Type 1: Hello
+Type 1: world
+Type 2: 2
+Type 3: +
+Type 2: 2
+Type 3: =
+Type 2: 4
+</code></pre>
 <h2 id="contents">Contents</h2>
 <div class="toc">
 <ul>
@@ -37,12 +65,15 @@ for details.</p>
 <ul>
 <li><code>class</code> <strong><code>SyntaxError</code></strong><code>: public std::runtime_error</code><ul>
 <li><code>SyntaxError::</code><strong><code>SyntaxError</code></strong><code>(const u8string&amp; text, size_t offset, const u8string&amp; message = "Syntax error")</code></li>
-<li><code>const char* SyntaxError::</code><strong><code>text</code></strong><code>() const noexcept</code></li>
+<li><code>const u8string&amp; SyntaxError::</code><strong><code>text</code></strong><code>() const noexcept</code></li>
 <li><code>size_t SyntaxError::</code><strong><code>offset</code></strong><code>() const noxcept</code></li>
 </ul>
 </li>
 </ul>
-<p>TODO</p>
+<p>Thrown when the lexer detects invalid syntax in the subject string. The
+<code>text()</code> function returns the erroneous text (normally a single character that
+could not be parsed); <code>offset()</code> returns its position (in code units) from the
+start of the original subject string.</p>
 </div>
 <h2 id="token-structure">Token structure</h2>
 <div class="defns">
@@ -62,7 +93,13 @@ for details.</p>
 <li><code>using</code> <strong><code>Token32</code></strong> <code>= BasicToken&lt;char32_t&gt;</code></li>
 <li><code>using</code> <strong><code>WideToken</code></strong> <code>= BasicToken&lt;wchar_t&gt;</code></li>
 </ul>
-<p>TODO</p>
+<p>This contains the details of a token. The <code>text</code> member points to the original
+subject string; <code>offset</code> and <code>count</code> give the position and length of the token
+(in code units). The <code>tag</code> member identifies the token type (one of a list of
+user supplied constants indicating the various lexical elements that you
+expect to find). The string conversion operator returns a copy of the token's
+substring within the subject string (i.e. <code>text-&gt;substr(offset,count)</code>, or an
+empty string if the text pointer is null).</p>
 </div>
 <h2 id="token-iterator">Token iterator</h2>
 <div class="defns">
@@ -84,21 +121,16 @@ for details.</p>
 <li><code>using</code> <strong><code>TokenIterator32</code></strong> <code>= BasicTokenIterator&lt;char32_t&gt;</code></li>
 <li><code>using</code> <strong><code>WideTokenIterator</code></strong> <code>= BasicTokenIterator&lt;wchar_t&gt;</code></li>
 </ul>
-<p>TODO</p>
+<p>An iterator over the tokens within a string. A lexer returns a pair of these
+marking the beginning and end of the token stream. The iterator holds
+references to both the lexer object and the subject string; behaviour is
+undefined if either of those is changed or destroyed while the token iterator
+exists.</p>
 </div>
 <h2 id="lexer-class">Lexer class</h2>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; class</code> <strong><code>BasicLexer</code></strong></li>
-<li><code>using</code> <strong><code>Lexer</code></strong> <code>= BasicLexer&lt;char&gt;</code></li>
-<li><code>using</code> <strong><code>Lexer16</code></strong> <code>= BasicLexer&lt;char16_t&gt;</code></li>
-<li><code>using</code> <strong><code>Lexer32</code></strong> <code>= BasicLexer&lt;char32_t&gt;</code></li>
-<li><code>using</code> <strong><code>WideLexer</code></strong> <code>= BasicLexer&lt;wchar_t&gt;</code></li>
-</ul>
-<p>TODO</p>
-</div>
-<div class="defns">
-<ul>
+<li><code>template &lt;typename C&gt; class</code> <strong><code>BasicLexer</code></strong><ul>
 <li><code>using BasicLexer::</code><strong><code>callback_type</code></strong> <code>= std::function&lt;size_t(const string_type&amp;, size_t)&gt;</code></li>
 <li><code>using BasicLexer::</code><strong><code>char_type</code></strong> <code>= C</code></li>
 <li><code>using BasicLexer::</code><strong><code>regex_type</code></strong> <code>= BasicRegex&lt;C&gt;</code></li>
@@ -106,35 +138,54 @@ for details.</p>
 <li><code>using BasicLexer::</code><strong><code>token_iterator</code></strong> <code>= BasicTokenIterator&lt;C&gt;</code></li>
 <li><code>using BasicLexer::</code><strong><code>token_range</code></strong> <code>= Irange&lt;token_iterator&gt;</code></li>
 <li><code>using BasicLexer::</code><strong><code>token_type</code></strong> <code>= BasicToken&lt;C&gt;</code></li>
-</ul>
-<p>TODO</p>
-</div>
-<div class="defns">
-<ul>
 <li><code>BasicLexer::</code><strong><code>BasicLexer</code></strong><code>()</code></li>
+<li><code>explicit BasicLexer::</code><strong><code>BasicLexer</code></strong><code>(uint32_t flags)</code></li>
 <li><code>BasicLexer::</code><strong><code>BasicLexer</code></strong><code>(const BasicLexer&amp; lex)</code></li>
 <li><code>BasicLexer::</code><strong><code>BasicLexer</code></strong><code>(BasicLexer&amp;&amp; lex) noexcept</code></li>
 <li><code>BasicLexer::</code><strong><code>~BasicLexer</code></strong><code>() noexcept</code></li>
 <li><code>BasicLexer&amp; BasicLexer::</code><strong><code>operator=</code></strong><code>(const BasicLexer&amp; lex)</code></li>
 <li><code>BasicLexer&amp; BasicLexer::</code><strong><code>operator=</code></strong><code>(BasicLexer&amp;&amp; lex) noexcept</code></li>
-</ul>
-<p>TODO</p>
-</div>
-<div class="defns">
-<ul>
-<li><code>BasicLexer::token_range BasicLexer::</code><strong><code>lex</code></strong><code>(const string_type&amp; text) const</code></li>
-<li><code>BasicLexer::token_range BasicLexer::</code><strong><code>operator()</code></strong><code>(const string_type&amp; text) const</code></li>
-</ul>
-<p>TODO</p>
-</div>
-<div class="defns">
-<ul>
-<li><code>void BasicLexer::</code><strong><code>custom</code></strong><code>(int tag, const callback_type&amp; call, const string_type&amp; prefixes = {})</code></li>
 <li><code>void BasicLexer::</code><strong><code>exact</code></strong><code>(int tag, const string_type&amp; pattern)</code></li>
 <li><code>void BasicLexer::</code><strong><code>exact</code></strong><code>(int tag, const C* pattern)</code></li>
 <li><code>void BasicLexer::</code><strong><code>match</code></strong><code>(int tag, const regex_type&amp; pattern)</code></li>
 <li><code>void BasicLexer::</code><strong><code>match</code></strong><code>(int tag, const string_type&amp; pattern, uint32_t flags = 0)</code></li>
 <li><code>void BasicLexer::</code><strong><code>match</code></strong><code>(int tag, const C* pattern, uint32_t flags = 0)</code></li>
+<li><code>void BasicLexer::</code><strong><code>custom</code></strong><code>(int tag, const callback_type&amp; call)</code></li>
+<li><code>BasicLexer::token_range BasicLexer::</code><strong><code>operator()</code></strong><code>(const string_type&amp; text) const</code></li>
 </ul>
-<p>TODO</p></body>
+</li>
+<li><code>using</code> <strong><code>Lexer</code></strong> <code>= BasicLexer&lt;char&gt;</code></li>
+<li><code>using</code> <strong><code>Lexer16</code></strong> <code>= BasicLexer&lt;char16_t&gt;</code></li>
+<li><code>using</code> <strong><code>Lexer32</code></strong> <code>= BasicLexer&lt;char32_t&gt;</code></li>
+<li><code>using</code> <strong><code>WideLexer</code></strong> <code>= BasicLexer&lt;wchar_t&gt;</code></li>
+</ul>
+<p>The lexer class. Normally this will be used by first adding a number of user
+defined lexical rules through the <code>exact()</code>, <code>match()</code>, and <code>custom()</code>
+functions, then applying the lexer to a subject string through the function
+call operator.</p>
+<p>The constructor that takes a <code>flags</code> argument accepts a bitmask of regular
+expression flags, and adds them to any regex pattern later supplied through
+the <code>match()</code> function; this is just a convenience to avoid having to repeat
+the same flags on all <code>match()</code> calls.</p>
+<p>The <code>tag</code> argument to the functions that add lexical rules identifies the type
+of token that this rule will match. If the tag is zero, the token is assumed
+to be unimportant (e.g. whitespace or a comment), and will not be returned by
+the token iterator. Any other tag values can be given whatever meaning you
+choose.</p>
+<p>The <code>exact()</code> functions create the simplest rule, one that just matches a
+single literal string. The <code>match()</code> functions create a rule that matches a
+regular expression. The <code>custom()</code> function creates a rule that calls a user
+supplied function, which will be passed a subject string and a code unit
+offset into it, and is expected to return the length of the token starting at
+that position, or zero if there is no match.</p>
+<p>The lexer will accept the longest token that could match any of the rules at a
+given point in the subject string. If there is more than one possible longest
+match, the first matching rule (in the order in which they were added to the
+lexer) will be accepted.</p>
+<p>Lexical rules will never match an empty token (unless you try to increment the
+token iterator past the end of the subject string). Regular expression rules
+will not match an empty substring, even if the regex would normally match an
+empty string (i.e. the regex is always matched as though it had the
+<code>rx_nonempty</code> flag); an exact rule whose pattern string is empty will never be
+matched.</p></body>
 </html>

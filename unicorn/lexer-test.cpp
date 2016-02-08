@@ -37,7 +37,7 @@ namespace {
 
         TRY(lex.match(0, "\\s+"));
         TRY(lex.match(0, "#[^\\n]*"));
-        TRY(lex.match(1, "[a-z]\\w+", rx_caseless));
+        TRY(lex.match(1, "[a-z]\\w*", rx_caseless));
         TRY(lex.match(2, "\\d+"));
         TRY(lex.match(3, "[-+*/=]"));
         TRY(lex.exact(4, "<magic>"));
@@ -117,18 +117,6 @@ namespace {
         TRY(it = range.begin());
         TEST_THROW_EQUAL(++it, SyntaxError, "Syntax error at offset 5: Unexpected \"@\"");
 
-        TRY(lex = {});
-        TRY(lex.match(1, "abc"));
-        TEST_THROW(lex.match(2, "abc", rx_byte), std::invalid_argument);
-        TRY(lex.match(3, "abc"_re));
-        TEST_THROW(lex.match(4, "abc"_re_b), std::invalid_argument);
-
-        TRY(lex = Lexer(rx_byte));
-        TRY(lex.match(1, "abc"));
-        TRY(lex.match(2, "abc", rx_byte));
-        TEST_THROW(lex.match(3, "abc"_re), std::invalid_argument);
-        TRY(lex.match(4, "abc"_re_b));
-
     }
 
     void check_utf16_lexer() {
@@ -143,7 +131,7 @@ namespace {
 
             TRY(lex.match(0, u"\\s+"));
             TRY(lex.match(0, u"#[^\\n]*"));
-            TRY(lex.match(1, u"[a-z]\\w+", rx_caseless));
+            TRY(lex.match(1, u"[a-z]\\w*", rx_caseless));
             TRY(lex.match(2, u"\\d+"));
             TRY(lex.match(3, u"[-+*/=]"));
             TRY(lex.exact(4, u"<magic>"));
@@ -202,7 +190,7 @@ namespace {
 
             TRY(lex.match(0, U"\\s+"));
             TRY(lex.match(0, U"#[^\\n]*"));
-            TRY(lex.match(1, U"[a-z]\\w+", rx_caseless));
+            TRY(lex.match(1, U"[a-z]\\w*", rx_caseless));
             TRY(lex.match(2, U"\\d+"));
             TRY(lex.match(3, U"[-+*/=]"));
             TRY(lex.exact(4, U"<magic>"));
@@ -261,7 +249,7 @@ namespace {
 
             TRY(lex.match(0, L"\\s+"));
             TRY(lex.match(0, L"#[^\\n]*"));
-            TRY(lex.match(1, L"[a-z]\\w+", rx_caseless));
+            TRY(lex.match(1, L"[a-z]\\w*", rx_caseless));
             TRY(lex.match(2, L"\\d+"));
             TRY(lex.match(3, L"[-+*/=]"));
             TRY(lex.exact(4, L"<magic>"));
@@ -320,7 +308,7 @@ namespace {
 
         TRY(lex.match(0, "\\s+"));
         TRY(lex.match(0, "#[^\\n]*"));
-        TRY(lex.match(1, "[a-z]\\w+", rx_caseless));
+        TRY(lex.match(1, "[a-z]\\w*", rx_caseless));
         TRY(lex.match(2, "\\d+"));
         TRY(lex.match(3, "[-+*/=]"));
         TRY(lex.exact(4, "<magic>"));
