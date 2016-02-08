@@ -25,7 +25,6 @@ of this module and will need to be handled by the caller.</p>
 calls the PCRE library. It will only work with encodings for which the
 corresponding PCRE library has been linked; see the regex module documentation
 for details.</p>
-<p>[TODO: DOCUMENTATION]</p>
 <h2 id="contents">Contents</h2>
 <div class="toc">
 <ul>
@@ -33,16 +32,12 @@ for details.</p>
 <li><a href="#contents">Contents</a></li>
 <li><a href="#basic-formatting-functions">Basic formatting functions</a></li>
 <li><a href="#formatter-class">Formatter class</a></li>
-<li><a href="#formatter-literals">Formatter literals</a></li>
 <li><a href="#formatting-for-specific-types">Formatting for specific types</a><ul>
-<li><a href="#global-flags">Global flags</a></li>
 <li><a href="#boolean-formatting">Boolean formatting</a></li>
 <li><a href="#integer-formatting">Integer formatting</a></li>
 <li><a href="#floating-point-formatting">Floating point formatting</a></li>
 <li><a href="#character-and-string-formatting">Character and string formatting</a></li>
 <li><a href="#time-and-date-formatting">Time and date formatting</a></li>
-<li><a href="#uuid-formatting">UUID formatting</a></li>
-<li><a href="#version-number-formatting">Version number formatting</a></li>
 </ul>
 </li>
 </ul>
@@ -53,83 +48,46 @@ for details.</p>
 <div class="defns">
 <ul>
 <li><code>template &lt;typename T&gt; u8string</code> <strong><code>format_type</code></strong><code>(const T&amp; t, uint64_t flags, int prec)</code></li>
-<li><em>Library defined specializations for</em><ul>
-<li><code>bool</code></li>
+</ul>
+<p>This is the core formatting function. The details of how the flags and
+precision are interpreted depend on the type being formatted. This function
+can be overloaded for user defined types to provide formatting for them; the
+other functions in this library will find any user defined overloads through
+argument dependent lookup. The library defines specializations for the types
+listed here; their behaviour is described in more detail below.</p>
+<ul>
+<li><!-- TEXT --> <code>bool</code></li>
 <li><code>char</code>, <code>char16_t</code>, <code>char32_t</code>, <code>wchar_t</code></li>
-<li><code>signed char</code>, <code>unsigned char</code></li>
-<li><code>short</code>, <code>unsigned short</code></li>
-<li><code>int</code>, <code>unsigned</code></li>
-<li><code>long</code>, <code>unsigned long</code></li>
-<li><code>long long</code>, <code>unsigned long long</code></li>
-<li><code>int128_t</code>, <code>uint128_t</code></li>
+<li><code>signed char</code>, <code>unsigned char</code>, <code>short</code>, <code>unsigned short</code>, <code>int</code>, <code>unsigned</code>, <code>long</code>, <code>unsigned long</code>, <code>long long</code>, <code>unsigned long long</code>, <code>int128_t</code>, <code>uint128_t</code></li>
 <li><code>float</code>, <code>double</code>, <code>long double</code></li>
-<li><code>C*</code>, <code>const C*</code>, <code>basic_string&lt;C&gt;</code></li>
-<li><code>std::chrono::duration&lt;R</code>, <code>P&gt;</code></li>
-<li><code>std::chrono::system_clock::time_point</code></li>
-<li><code>Uuid</code></li>
-<li><code>Version</code></li>
+<li><code>C*</code>, <code>const C*</code>, <code>basic_string&lt;C&gt;</code> <em>for the four standard character types</em></li>
+<li><code>std::chrono::duration&lt;R, P&gt;</code>, <code>std::chrono::system_clock::time_point</code></li>
+<li><code>Prion::Uuid</code></li>
+<li><code>Prion::Version</code></li>
 </ul>
-</li>
-</ul>
-<p>TODO</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C, typename T&gt; basic_string&lt;C&gt;</code> <strong><code>format_as</code></strong><code>(const T&amp; t, uint64_t flags = 0, int prec = -1, size_t width = 0, char32_t pad = U' ')</code></li>
+<li><!-- DEFN--> <code>template &lt;typename C, typename T&gt; basic_string&lt;C&gt;</code> <strong><code>format_as</code></strong><code>(const T&amp; t, uint64_t flags = 0, int prec = -1, size_t width = 0, char32_t pad = U' ')</code></li>
 <li><code>template &lt;typename C, typename T&gt; basic_string&lt;C&gt;</code> <strong><code>format_as</code></strong><code>(const T&amp; t, const basic_string&lt;C&gt;&amp; flags)</code></li>
 <li><code>template &lt;typename C, typename T&gt; basic_string&lt;C&gt;</code> <strong><code>format_as</code></strong><code>(const T&amp; t, const C* flags)</code></li>
 </ul>
-<p>TODO</p>
-</div>
-<h2 id="formatter-class">Formatter class</h2>
-<div class="defns">
-<ul>
-<li><code>template &lt;typename C&gt; class</code> <strong><code>BasicFormat</code></strong><ul>
-<li><code>using BasicFormat::</code><strong><code>char_type</code></strong> <code>= C</code></li>
-<li><code>using BasicFormat::</code><strong><code>string_type</code></strong> <code>= basic_string&lt;C&gt;</code></li>
-<li><code>BasicFormat::</code><strong><code>BasicFormat</code></strong><code>()</code></li>
-<li><code>explicit BasicFormat::</code><strong><code>BasicFormat</code></strong><code>(const string_type&amp; format)</code></li>
-<li><code>BasicFormat::</code><strong><code>BasicFormat</code></strong><code>(const BasicFormat&amp; f)</code></li>
-<li><code>BasicFormat::</code><strong><code>BasicFormat</code></strong><code>(BasicFormat&amp;&amp; f) noexcept</code></li>
-<li><code>BasicFormat::</code><strong><code>~BasicFormat</code></strong><code>() noexcept</code></li>
-<li><code>BasicFormat&amp; BasicFormat::</code><strong><code>operator=</code></strong><code>(const BasicFormat&amp; f)</code></li>
-<li><code>BasicFormat&amp; BasicFormat::</code><strong><code>operator=</code></strong><code>(BasicFormat&amp;&amp; f) noexcept</code></li>
-<li><code>template &lt;typename... Args&gt; BasicFormat::string_type BasicFormat::</code><strong><code>operator()</code></strong><code>(const Args&amp;... args) const</code></li>
-<li><code>bool BasicFormat::</code><strong><code>empty</code></strong><code>() const noexcept</code></li>
-<li><code>size_t BasicFormat::</code><strong><code>fields</code></strong><code>() const</code></li>
-<li><code>BasicFormat::</code><strong><code>string_type</code></strong> <code>BasicFormat::</code><strong><code>format</code></strong><code>() const</code></li>
-</ul>
-</li>
-<li><code>using</code> <strong><code>Format</code></strong> <code>= BasicFormat&lt;char&gt;</code></li>
-<li><code>using</code> <strong><code>Format16</code></strong> <code>= BasicFormat&lt;char16_t&gt;</code></li>
-<li><code>using</code> <strong><code>Format32</code></strong> <code>= BasicFormat&lt;char32_t&gt;</code></li>
-<li><code>using</code> <strong><code>WideFormat</code></strong> <code>= BasicFormat&lt;wchar_t&gt;</code></li>
-</ul>
-<p>TODO</p>
-</div>
-<div class="defns">
-<ul>
-<li><code>template &lt;typename C&gt; BasicFormat&lt;C&gt;</code> <strong><code>format</code></strong><code>(const basic_string&lt;C&gt;&amp; fmt)</code></li>
-<li><code>template &lt;typename C&gt; BasicFormat&lt;C&gt;</code> <strong><code>format</code></strong><code>(const C* fmt)</code></li>
-</ul>
-<p>TODO</p>
-</div>
-<h2 id="formatter-literals">Formatter literals</h2>
-<div class="defns">
-<ul>
-<li><code>namespace Literals</code><ul>
-<li><code>Format</code> <strong><code>operator"" _fmt</code></strong><code>(const char* ptr, size_t len)</code></li>
-<li><code>Format16</code> <strong><code>operator"" _fmt</code></strong><code>(const char16_t* ptr, size_t len)</code></li>
-<li><code>Format32</code> <strong><code>operator"" _fmt</code></strong><code>(const char32_t* ptr, size_t len)</code></li>
-<li><code>WideFormat</code> <strong><code>operator"" _fmt</code></strong><code>(const wchar_t* ptr, size_t len)</code></li>
-</ul>
-</li>
-</ul>
-<p>TODO</p>
-</div>
-<h2 id="formatting-for-specific-types">Formatting for specific types</h2>
-<h3 id="global-flags">Global flags</h3>
-<div class="defns">
+<p>These call <code>format_type()</code> to format their first argument, converting the
+resulting string to the requested type. The first version accepts the same
+arguments as <code>format_type()</code>, along with a width and padding character; the
+formatted string will be padded to the specified width (if it is not already
+longer than that).</p>
+<p>The other two versions of <code>format_as()</code> take a second string argument that
+carries the same information as the format control arguments to
+<code>format_type()</code> and the first version of <code>format_as()</code>. The flag descriptions
+below indicate which letter corresponds to which flag; when defining
+<code>format_type()</code> overloads for user defined types, you can use the predefined
+flags or use <code>Prion::letter_to_mask()</code> to define new ones.</p>
+<p>Example:</p>
+<pre><code>constexpr uint64_t fx_alpha = letter_to_mask('A');
+constexpr uint64_t fx_omega = letter_to_mask('Z');
+</code></pre>
+<p>The following global flags are common to all types:</p>
 <!-- DEFN -->
 
 <table>
@@ -193,8 +151,73 @@ for details.</p>
 </tr>
 </tbody>
 </table>
-<p>TODO</p>
+<p>See <a href="string.html"><code>unicorn/string</code></a> for details of the four string measurement
+flags. The alignment flags can be followed by a decimal number, which will be
+interpreted as the fully padded width; optionally, a padding character can be
+inserted between the alignment flag and the width:</p>
+<pre><code>format_as(42, "&gt;*5") == "***42"
+</code></pre>
+<p>If the flag string includes a number (other than one associated with the
+alignment), it will be interpreted as a precision:</p>
+<pre><code>`format_as(123.0, "d6") == "123.000"
+</code></pre>
 </div>
+<h2 id="formatter-class">Formatter class</h2>
+<div class="defns">
+<ul>
+<li><code>template &lt;typename C&gt; class</code> <strong><code>BasicFormat</code></strong><ul>
+<li><code>using BasicFormat::</code><strong><code>char_type</code></strong> <code>= C</code></li>
+<li><code>using BasicFormat::</code><strong><code>string_type</code></strong> <code>= basic_string&lt;C&gt;</code></li>
+<li><code>BasicFormat::</code><strong><code>BasicFormat</code></strong><code>()</code></li>
+<li><code>explicit BasicFormat::</code><strong><code>BasicFormat</code></strong><code>(const string_type&amp; format)</code></li>
+<li><code>BasicFormat::</code><strong><code>BasicFormat</code></strong><code>(const BasicFormat&amp; f)</code></li>
+<li><code>BasicFormat::</code><strong><code>BasicFormat</code></strong><code>(BasicFormat&amp;&amp; f) noexcept</code></li>
+<li><code>BasicFormat::</code><strong><code>~BasicFormat</code></strong><code>() noexcept</code></li>
+<li><code>BasicFormat&amp; BasicFormat::</code><strong><code>operator=</code></strong><code>(const BasicFormat&amp; f)</code></li>
+<li><code>BasicFormat&amp; BasicFormat::</code><strong><code>operator=</code></strong><code>(BasicFormat&amp;&amp; f) noexcept</code></li>
+<li><code>template &lt;typename... Args&gt; BasicFormat::string_type BasicFormat::</code><strong><code>operator()</code></strong><code>(const Args&amp;... args) const</code></li>
+<li><code>bool BasicFormat::</code><strong><code>empty</code></strong><code>() const noexcept</code></li>
+<li><code>size_t BasicFormat::</code><strong><code>fields</code></strong><code>() const</code></li>
+<li><code>BasicFormat::</code><strong><code>string_type</code></strong> <code>BasicFormat::</code><strong><code>format</code></strong><code>() const</code></li>
+</ul>
+</li>
+<li><code>using</code> <strong><code>Format</code></strong> <code>= BasicFormat&lt;char&gt;</code></li>
+<li><code>using</code> <strong><code>Format16</code></strong> <code>= BasicFormat&lt;char16_t&gt;</code></li>
+<li><code>using</code> <strong><code>Format32</code></strong> <code>= BasicFormat&lt;char32_t&gt;</code></li>
+<li><code>using</code> <strong><code>WideFormat</code></strong> <code>= BasicFormat&lt;wchar_t&gt;</code></li>
+</ul>
+<p>This class is constructed from a formatting string, which contains
+placeholders into which arguments will be substituted when the formatting
+object's function call operator is called.</p>
+<p>A placeholder takes the form <code>$n</code> or <code>${n}</code>, where <code>n</code> is the 1-based index of
+the corresponding argument. Optionally the field number can be followed by a
+flag string, using the same syntax as <code>format_as()</code> above. The braces are only
+needed if the field number or flag string is immediately followed by a letter
+or digit that would be read as part of the placeholder in the absence of
+braces.</p>
+<p>Example:</p>
+<pre><code>Format form("Hello $1, your number is $2f3");
+u8string a = form("Alice", 42); // a = "Hello Alice, your number is 42.000"
+u8string b = form("Bob", 1.23); // b = "Hello Bob, your number is 1.230"
+</code></pre>
+<p>Use <code>"$$"</code> to insert a literal dollar sign in the format string.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>template &lt;typename C&gt; BasicFormat&lt;C&gt;</code> <strong><code>format</code></strong><code>(const basic_string&lt;C&gt;&amp; fmt)</code></li>
+<li><code>template &lt;typename C&gt; BasicFormat&lt;C&gt;</code> <strong><code>format</code></strong><code>(const C* fmt)</code></li>
+<li><code>namespace Unicorn::Literals</code><ul>
+<li><code>Format</code> <strong><code>operator"" _fmt</code></strong><code>(const char* ptr, size_t len)</code></li>
+<li><code>Format16</code> <strong><code>operator"" _fmt</code></strong><code>(const char16_t* ptr, size_t len)</code></li>
+<li><code>Format32</code> <strong><code>operator"" _fmt</code></strong><code>(const char32_t* ptr, size_t len)</code></li>
+<li><code>WideFormat</code> <strong><code>operator"" _fmt</code></strong><code>(const wchar_t* ptr, size_t len)</code></li>
+</ul>
+</li>
+</ul>
+<p>Convenience functions and literals for construction formatting objects.</p>
+</div>
+<h2 id="formatting-for-specific-types">Formatting for specific types</h2>
+<p>No type-specific flags are defined for <code>Prion::Uuid</code> and <code>Prion::Version</code>.</p>
 <h3 id="boolean-formatting">Boolean formatting</h3>
 <div class="defns">
 <!-- DEFN -->
@@ -211,26 +234,27 @@ for details.</p>
 <tr>
 <td><strong><code>fx_tf</code></strong></td>
 <td><code>t</code></td>
-<td>Write as true or false (default)</td>
+<td>Format as <code>"true"</code> or <code>"false"</code> (default)</td>
 </tr>
 <tr>
 <td><strong><code>fx_binary</code></strong></td>
 <td><code>b</code></td>
-<td>Write as 1 or 0</td>
+<td>Format as <code>"1"</code> or <code>"0"</code></td>
 </tr>
 <tr>
 <td><strong><code>fx_yesno</code></strong></td>
 <td><code>y</code></td>
-<td>Write as yes or no</td>
+<td>Format as <code>"yes"</code> or <code>"no"</code></td>
 </tr>
 </tbody>
 </table>
-<p>TODO</p>
 </div>
 <h3 id="integer-formatting">Integer formatting</h3>
 <div class="defns">
 <!-- DEFN -->
 
+<p>These flags apply to all integer types other than the four standard character
+types.</p>
 <table>
 <thead>
 <tr>
@@ -243,22 +267,22 @@ for details.</p>
 <tr>
 <td><strong><code>fx_decimal</code></strong></td>
 <td><code>n</code></td>
-<td>Decimal number (default)</td>
+<td>Format as a decimal number (default)</td>
 </tr>
 <tr>
 <td><strong><code>fx_binary</code></strong></td>
 <td><code>b</code></td>
-<td>Binary number</td>
+<td>Format as a binary number</td>
 </tr>
 <tr>
 <td><strong><code>fx_hex</code></strong></td>
 <td><code>x</code></td>
-<td>Hexadecimal number</td>
+<td>Format as a hexadecimal number</td>
 </tr>
 <tr>
 <td><strong><code>fx_roman</code></strong></td>
 <td><code>r</code></td>
-<td>Roman numerals</td>
+<td>Format as a roman numeral</td>
 </tr>
 <tr>
 <td><strong><code>fx_sign</code></strong></td>
@@ -268,11 +292,10 @@ for details.</p>
 <tr>
 <td><strong><code>fx_signz</code></strong></td>
 <td><code>S</code></td>
-<td>Always show a sign unless zero</td>
+<td>Always show a sign unless the value is zero</td>
 </tr>
 </tbody>
 </table>
-<p>TODO</p>
 </div>
 <h3 id="floating-point-formatting">Floating point formatting</h3>
 <div class="defns">
@@ -290,27 +313,27 @@ for details.</p>
 <tr>
 <td><strong><code>fx_digits</code></strong></td>
 <td><code>d</code></td>
-<td>Fixed significant figures</td>
+<td>Format with a fixed number of significant figures</td>
 </tr>
 <tr>
 <td><strong><code>fx_exp</code></strong></td>
 <td><code>e</code></td>
-<td>Scientific notation</td>
+<td>Format in scientific notation</td>
 </tr>
 <tr>
 <td><strong><code>fx_fixed</code></strong></td>
 <td><code>f</code></td>
-<td>Fixed point notation</td>
+<td>Format with a fixed number of decimal places</td>
 </tr>
 <tr>
 <td><strong><code>fx_general</code></strong></td>
 <td><code>g</code></td>
-<td>Use the shorter of d or e (default)</td>
+<td>Use the shorter of <code>fx_digits</code> or <code>fx_exp</code> (default)</td>
 </tr>
 <tr>
 <td><strong><code>fx_prob</code></strong></td>
 <td><code>p</code></td>
-<td>Probability format</td>
+<td>Use probability format (see below)</td>
 </tr>
 <tr>
 <td><strong><code>fx_sign</code></strong></td>
@@ -320,18 +343,31 @@ for details.</p>
 <tr>
 <td><strong><code>fx_signz</code></strong></td>
 <td><code>S</code></td>
-<td>Always show a sign unless zero</td>
+<td>Always show a sign unless the value is zero</td>
 </tr>
 <tr>
 <td><strong><code>fx_stripz</code></strong></td>
 <td><code>z</code></td>
-<td>Strip trailing zeros</td>
+<td>Strip trailing zeros after the decimal point</td>
 </tr>
 </tbody>
 </table>
-<p>TODO</p>
+<p>Probability format is similar to <code>fx_digits</code> format, but is intended for
+formatting probability values between 0 and 1 (values outside this range will
+be clamped to the nearest end of the range). Leading nines after the decimal
+point are treated as non-significant, in the same way as leading zeros; this
+means that <code>p</code> and <code>1-p</code> will be expressed to the same number of decimal
+places.</p>
+<pre><code>format_as(0.5, "p3") == "0.500"
+format_as(0.05, "p3") == "0.0500"
+format_as(0.95, "p3") == "0.9500"
+format_as(0.005, "p3") == "0.00500"
+format_as(0.995, "p3") == "0.99500"
+</code></pre>
 </div>
 <h3 id="character-and-string-formatting">Character and string formatting</h3>
+<p>These flags apply to all character, character pointer, and standard string
+types.</p>
 <div class="defns">
 <!-- DEFN -->
 
@@ -347,51 +383,54 @@ for details.</p>
 <tr>
 <td><strong><code>fx_ascii</code></strong></td>
 <td><code>a</code></td>
-<td>Escape if not printable ASCII</td>
+<td>Escape all characters except printable ASCII</td>
 </tr>
 <tr>
 <td><strong><code>fx_escape</code></strong></td>
 <td><code>c</code></td>
-<td>Escape C0/C1 controls</td>
+<td>Escape C0 and C1 control characters</td>
 </tr>
 <tr>
 <td><strong><code>fx_quote</code></strong></td>
 <td><code>q</code></td>
-<td>Quote string, escape C0/C1</td>
+<td>Quote the string, and escape C0 and C1 controls</td>
 </tr>
 <tr>
 <td><strong><code>fx_ascquote</code></strong></td>
 <td><code>o</code></td>
-<td>Quote string, escape non-ASCII</td>
+<td>Quote the string, and escape non-ASCII characters</td>
 </tr>
 <tr>
 <td><strong><code>fx_decimal</code></strong></td>
 <td><code>n</code></td>
-<td>Decimal number</td>
+<td>Format characters as decimal numbers</td>
 </tr>
 <tr>
 <td><strong><code>fx_hex</code></strong></td>
 <td><code>x</code></td>
-<td>Hexadecimal number</td>
+<td>Format characters as hexadecimal numbers</td>
 </tr>
 <tr>
 <td><strong><code>fx_hex8</code></strong></td>
 <td><code>u</code></td>
-<td>Hex UTF-8 bytes</td>
+<td>Format characters as hex UTF-8 code units</td>
 </tr>
 <tr>
 <td><strong><code>fx_hex16</code></strong></td>
 <td><code>v</code></td>
-<td>Hex UTF-16 code units</td>
+<td>Format characters as hex UTF-16 code units</td>
 </tr>
 </tbody>
 </table>
-<p>TODO</p>
 </div>
 <h3 id="time-and-date-formatting">Time and date formatting</h3>
 <div class="defns">
 <!-- DEFN -->
 
+<p>Formatting for <code>std::chrono::duration</code> calls <code>Prion::format_time()</code>, with the
+specified precision if one was supplied. Formatting for
+<code>std::chrono::system_clock::time_point</code> uses ISO 8601 format by default
+(<code>"yyyy-mm-dd hh:mm:ss"</code>), and respects the following flags:</p>
 <table>
 <thead>
 <tr>
@@ -404,24 +443,18 @@ for details.</p>
 <tr>
 <td><strong><code>fx_iso</code></strong></td>
 <td><code>t</code></td>
-<td>ISO 8601 with T delimiter</td>
+<td>Use ISO 8601 format with T delimiter</td>
 </tr>
 <tr>
 <td><strong><code>fx_common</code></strong></td>
 <td><code>c</code></td>
-<td>Local standard format</td>
+<td>Use the locale's standard format</td>
 </tr>
 <tr>
 <td><strong><code>fx_local</code></strong></td>
 <td><code>l</code></td>
-<td>Local time zone</td>
+<td>Use the local time zone instead of UTC</td>
 </tr>
 </tbody>
-</table>
-<p>TODO</p>
-</div>
-<h3 id="uuid-formatting">UUID formatting</h3>
-<p>No type-specific flags are defined.</p>
-<h3 id="version-number-formatting">Version number formatting</h3>
-<p>No type-specific flags are defined.</p></body>
+</table></body>
 </html>
