@@ -279,8 +279,8 @@ Flag              | Description
 ----              | -----------
 **`cn_control`**  | Use the common ASCII or ISO 8859 names for control characters
 **`cn_label`**    | Generate the standard code point label for characters that do not have an official name
-**`cn_lower`**    | Return name in lower case (excluding `U+XXXX` prefix if present)
-**`cn_prefix`**   | Prefix name with code point in `U+XXXX` format
+**`cn_lower`**    | Return the name in lower case (excluding `U+XXXX` prefix if present)
+**`cn_prefix`**   | Prefix the name with the code point in `U+XXXX` format
 **`cn_update`**   | Where the official name was in error and a suggested correction has been published, use that instead
 
 Returns the name of a character. By default, only the official Unicode name is
