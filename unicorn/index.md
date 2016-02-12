@@ -3,13 +3,10 @@
 _Unicode library for C++ by Ross Smith_
 
 The Unicorn library is intended to make [Unicode](http://www.unicode.org/)
-text manipulation easy for programmers using modern C++. It implements most of
-the main requirements of the [Unicode
-standard](http://www.unicode.org/versions/latest/), currently supporting
-Unicode version 7.0.0. The major missing functionality in the current version
-are localization support through the [CLDR](http://cldr.unicode.org/index),
-and the Unicode bidirectional algorithm. Documentation for some of the modules
-has also still to be written.
+text manipulation easy for programmers using modern C++.
+It implements most of the main requirements of the
+[Unicode standard](http://www.unicode.org/versions/latest/),
+currently supporting Unicode version 8.0.
 
 The library is divided into the modules listed below; you can import only the
 ones you need, or import the whole API using `#include "unicorn/library.hpp"`.

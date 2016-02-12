@@ -8,8 +8,6 @@ The functions and classes in this module provided line oriented input and
 output, with automatic conversion between Unicode and external legacy
 encodings, as well as other conveniences such as normalization of line breaks.
 
-[TODO: DOCUMENTATION]
-
 ## Contents ##
 
 [TOC]
@@ -32,23 +30,41 @@ encodings, as well as other conveniences such as normalization of line breaks.
     * `size_t FileReader::`**`line`**`() const noexcept`
     * _[standard input iterator operations]_
 
-TODO
+An iterator over the lines in a text file. You should normally obtain a pair
+of these by calling one of the `read_lines()` functions described below,
+rather than constructing the iterator type explicitly.
+
+The constructor opens the file for input. The `flags` argument contains a
+combination of flags controlling the  iterator's behaviour (described below).
+The `enc` argument is an optional encoding name or number, indicating what
+encoding is expected to be found in the file (see [`unicorn/mbcs`](mbcs.html)
+for the details of how these work); if no encoding is supplied, it will assume
+UTF-8. The `eol` argument optionally supplies an end-of-line marker; if no EOL
+marker is supplied by the user, any of `CR`, `LF`, `FF`, or `CR+LF` will be
+recognised as a line delimiter.
+
+The constructor will throw `std::invalid_argument` if an inconsistent
+combination of flags is supplied, `UnknownEncoding` if the encoding is not
+recognised, or `std::system_error` if anything goes wrong while opening the
+file. If the `err_throw` option was selected, the constructor or increment
+operator may throw `EncodingError` if the file contains invalid text.
+
+A dereferenced iterator yields one line of text from the file, optionally
+modified by the flags below.
 
 Flag               | Description
 ----               | -----------
-**`io_stdin`**     | Default to stdin
-**`io_nofail`**    | Treat nonexistent file as empty
-**`io_bom`**       | Strip leading BOM
-**`io_lf`**        | Convert all line breaks to LF
-**`io_crlf`**      | Convert all line breaks to CR+LF
-**`io_striplf`**   | Strip line breaks
-**`io_striptws`**  | Strip trailing whitespace
-**`io_stripws`**   | Strip whitespace
-**`io_notempty`**  | Skip empty lines
-
-(May be combined with err_replace/throw)
-
-TODO
+**`err_replace`**  | Replace invalid encoding with `U+FFFD` (default)
+**`err_throw`**    | Throw `EncodingError` if invalid encoding is encountered
+**`io_stdin`**     | Read from standard input if the file name is `"-"` or an empty string
+**`io_nofail`**    | Treat a nonexistent file as empty instead of throwing an exception
+**`io_bom`**       | Strip a leading byte order mark if one is found
+**`io_lf`**        | Convert all line breaks to `LF`
+**`io_crlf`**      | Convert all line breaks to `CR+LF`
+**`io_striplf`**   | Strip trailing line breaks from each line
+**`io_striptws`**  | Strip trailing whitespace from each line (implies `io_striplf`)
+**`io_stripws`**   | Strip leading and trailing whitespace from each line (implies `io_striplf`)
+**`io_notempty`**  | Skip empty lines (after any whitespace stripping)
 
 * `template <typename C> Irange<FileReader>` **`read_lines`**`(const basic_string<C>& file, uint32_t flags = 0)`
 * `template <typename C1, typename C2> Irange<FileReader>` **`read_lines`**`(const basic_string<C1>& file, uint32_t flags, const basic_string<C2>& enc)`
@@ -56,7 +72,8 @@ TODO
 * `template <typename C1, typename C2, typename C3> Irange<FileReader>` **`read_lines`**`(const basic_string<C1>& file, uint32_t flags, const basic_string<C2>& enc, const basic_string<C3>& eol)`
 * `template <typename C1, typename C2> Irange<FileReader>` **`read_lines`**`(const basic_string<C1>& file, uint32_t flags, uint32_t enc, const basic_string<C2>& eol)`
 
-TODO
+These construct a pair of iterators, from which the lines in a file can be
+read. The arguments are interpreted as described above.
 
 ## File output iterator ##
 
@@ -74,22 +91,31 @@ TODO
     * `void FileWriter::`**`flush`**`()`
     * _[standard output iterator operations]_
 
-TODO
+An output iterator that can be used to write to a file. The constructor
+arguments have the same meaning as for `FileReader` above, except that the
+`flags` argument is interpreted as described below, and will throw exceptions
+under the same circumstances.
+
+The default behaviour, if none of the flags below are used, is to simply write
+any string assigned to the iterator into the file, converted if necessary to
+the encoding specified in the constructor (UTF-8 by default). Text need not be
+written one line at a time; a single output string can contain multiple lines.
+
+See the [`unicorn/mbcs`](mbcs.html) documentation for the behaviour of the
+error handling flags on output.
 
 Flag                | Description
 ----                | -----------
-**`io_stdout`**     | Default to stdout
-**`io_stderr`**     | Default to stderr
-**`io_append`**     | Append to file
-**`io_bom`**        | Insert leading BOM if not already there
-**`io_lf`**         | Convert all line breaks to LF
-**`io_crlf`**       | Convert all line breaks to CR+LF
-**`io_writeline`**  | Write LF after every write
-**`io_autoline`**   | Write LF if not already there
+**`err_replace`**   | Replace encoding errors (default)
+**`err_throw`**     | Throw `EncodingError` on encoding errors
+**`io_stdout`**     | Write to standard output if the file name is `"-"` or an empty string
+**`io_stderr`**     | Write to standard error if the file name is `"-"` or an empty string
+**`io_append`**     | Open an existing file for appending instead of overwriting it
+**`io_bom`**        | Insert a leading byte order mark if the first output string does not contain one
+**`io_lf`**         | Convert all line breaks to `LF`
+**`io_crlf`**       | Convert all line breaks to `CR+LF`
+**`io_writeline`**  | Write a line feed after every write
+**`io_autoline`**   | Write a line feed after every write that does not already end with one
 **`io_linebuf`**    | Line buffered output
 **`io_unbuf`**      | Unbuffered output
-**`io_mutex`**      | Hold per-file mutex while writing
-
-(May be combined with err_replace/throw)
-
-TODO
+**`io_mutex`**      | Hold a per-file mutex while writing, to allow coherent multithreaded output

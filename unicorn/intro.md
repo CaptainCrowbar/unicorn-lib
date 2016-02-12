@@ -11,6 +11,17 @@ Unicorn documentation with a copy of the Unicode standard on hand.
 
 [TOC]
 
+## Features ##
+
+Unicorn implements most of the main requirements of the Unicode standard and
+related specifications. The major missing or incomplete features in the
+current version are:
+
+* The Unicode bidirectional algorithm.
+* Localization support through the [CLDR](http://cldr.unicode.org/index),
+* Support for IDNA/Punycode.
+* User defined encoding conversions.
+
 ## Compatibility ##
 
 Unicorn is written in C++14; you will need an up-to-date C++ compiler,

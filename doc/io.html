@@ -14,7 +14,6 @@
 <p>The functions and classes in this module provided line oriented input and
 output, with automatic conversion between Unicode and external legacy
 encodings, as well as other conveniences such as normalization of line breaks.</p>
-<p>[TODO: DOCUMENTATION]</p>
 <h2 id="contents">Contents</h2>
 <div class="toc">
 <ul>
@@ -47,7 +46,24 @@ encodings, as well as other conveniences such as normalization of line breaks.</
 </ul>
 </li>
 </ul>
-<p>TODO</p>
+<p>An iterator over the lines in a text file. You should normally obtain a pair
+of these by calling one of the <code>read_lines()</code> functions described below,
+rather than constructing the iterator type explicitly.</p>
+<p>The constructor opens the file for input. The <code>flags</code> argument contains a
+combination of flags controlling the  iterator's behaviour (described below).
+The <code>enc</code> argument is an optional encoding name or number, indicating what
+encoding is expected to be found in the file (see <a href="mbcs.html"><code>unicorn/mbcs</code></a>
+for the details of how these work); if no encoding is supplied, it will assume
+UTF-8. The <code>eol</code> argument optionally supplies an end-of-line marker; if no EOL
+marker is supplied by the user, any of <code>CR</code>, <code>LF</code>, <code>FF</code>, or <code>CR+LF</code> will be
+recognised as a line delimiter.</p>
+<p>The constructor will throw <code>std::invalid_argument</code> if an inconsistent
+combination of flags is supplied, <code>UnknownEncoding</code> if the encoding is not
+recognised, or <code>std::system_error</code> if anything goes wrong while opening the
+file. If the <code>err_throw</code> option was selected, the constructor or increment
+operator may throw <code>EncodingError</code> if the file contains invalid text.</p>
+<p>A dereferenced iterator yields one line of text from the file, optionally
+modified by the flags below.</p>
 <table>
 <thead>
 <tr>
@@ -57,45 +73,51 @@ encodings, as well as other conveniences such as normalization of line breaks.</
 </thead>
 <tbody>
 <tr>
+<td><strong><code>err_replace</code></strong></td>
+<td>Replace invalid encoding with <code>U+FFFD</code> (default)</td>
+</tr>
+<tr>
+<td><strong><code>err_throw</code></strong></td>
+<td>Throw <code>EncodingError</code> if invalid encoding is encountered</td>
+</tr>
+<tr>
 <td><strong><code>io_stdin</code></strong></td>
-<td>Default to stdin</td>
+<td>Read from standard input if the file name is <code>"-"</code> or an empty string</td>
 </tr>
 <tr>
 <td><strong><code>io_nofail</code></strong></td>
-<td>Treat nonexistent file as empty</td>
+<td>Treat a nonexistent file as empty instead of throwing an exception</td>
 </tr>
 <tr>
 <td><strong><code>io_bom</code></strong></td>
-<td>Strip leading BOM</td>
+<td>Strip a leading byte order mark if one is found</td>
 </tr>
 <tr>
 <td><strong><code>io_lf</code></strong></td>
-<td>Convert all line breaks to LF</td>
+<td>Convert all line breaks to <code>LF</code></td>
 </tr>
 <tr>
 <td><strong><code>io_crlf</code></strong></td>
-<td>Convert all line breaks to CR+LF</td>
+<td>Convert all line breaks to <code>CR+LF</code></td>
 </tr>
 <tr>
 <td><strong><code>io_striplf</code></strong></td>
-<td>Strip line breaks</td>
+<td>Strip trailing line breaks from each line</td>
 </tr>
 <tr>
 <td><strong><code>io_striptws</code></strong></td>
-<td>Strip trailing whitespace</td>
+<td>Strip trailing whitespace from each line (implies <code>io_striplf</code>)</td>
 </tr>
 <tr>
 <td><strong><code>io_stripws</code></strong></td>
-<td>Strip whitespace</td>
+<td>Strip leading and trailing whitespace from each line (implies <code>io_striplf</code>)</td>
 </tr>
 <tr>
 <td><strong><code>io_notempty</code></strong></td>
-<td>Skip empty lines</td>
+<td>Skip empty lines (after any whitespace stripping)</td>
 </tr>
 </tbody>
 </table>
-<p>(May be combined with err_replace/throw)</p>
-<p>TODO</p>
 </div>
 <div class="defns">
 <ul>
@@ -105,7 +127,8 @@ encodings, as well as other conveniences such as normalization of line breaks.</
 <li><code>template &lt;typename C1, typename C2, typename C3&gt; Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const basic_string&lt;C1&gt;&amp; file, uint32_t flags, const basic_string&lt;C2&gt;&amp; enc, const basic_string&lt;C3&gt;&amp; eol)</code></li>
 <li><code>template &lt;typename C1, typename C2&gt; Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const basic_string&lt;C1&gt;&amp; file, uint32_t flags, uint32_t enc, const basic_string&lt;C2&gt;&amp; eol)</code></li>
 </ul>
-<p>TODO</p>
+<p>These construct a pair of iterators, from which the lines in a file can be
+read. The arguments are interpreted as described above.</p>
 </div>
 <h2 id="file-output-iterator">File output iterator</h2>
 <div class="defns">
@@ -126,7 +149,16 @@ encodings, as well as other conveniences such as normalization of line breaks.</
 </ul>
 </li>
 </ul>
-<p>TODO</p>
+<p>An output iterator that can be used to write to a file. The constructor
+arguments have the same meaning as for <code>FileReader</code> above, except that the
+<code>flags</code> argument is interpreted as described below, and will throw exceptions
+under the same circumstances.</p>
+<p>The default behaviour, if none of the flags below are used, is to simply write
+any string assigned to the iterator into the file, converted if necessary to
+the encoding specified in the constructor (UTF-8 by default). Text need not be
+written one line at a time; a single output string can contain multiple lines.</p>
+<p>See the <a href="mbcs.html"><code>unicorn/mbcs</code></a> documentation for the behaviour of the
+error handling flags on output.</p>
 <table>
 <thead>
 <tr>
@@ -136,36 +168,44 @@ encodings, as well as other conveniences such as normalization of line breaks.</
 </thead>
 <tbody>
 <tr>
+<td><strong><code>err_replace</code></strong></td>
+<td>Replace encoding errors (default)</td>
+</tr>
+<tr>
+<td><strong><code>err_throw</code></strong></td>
+<td>Throw <code>EncodingError</code> on encoding errors</td>
+</tr>
+<tr>
 <td><strong><code>io_stdout</code></strong></td>
-<td>Default to stdout</td>
+<td>Write to standard output if the file name is <code>"-"</code> or an empty string</td>
 </tr>
 <tr>
 <td><strong><code>io_stderr</code></strong></td>
-<td>Default to stderr</td>
+<td>Write to standard error if the file name is <code>"-"</code> or an empty string</td>
 </tr>
 <tr>
 <td><strong><code>io_append</code></strong></td>
-<td>Append to file</td>
+<td>Open an existing file for appending instead of overwriting it</td>
 </tr>
 <tr>
 <td><strong><code>io_bom</code></strong></td>
-<td>Insert leading BOM if not already there</td>
+<td>Insert a leading byte order mark if the first output string does not contain one</td>
 </tr>
 <tr>
 <td><strong><code>io_lf</code></strong></td>
-<td>Convert all line breaks to LF</td>
+<td>Convert all line breaks to <code>LF</code></td>
 </tr>
 <tr>
 <td><strong><code>io_crlf</code></strong></td>
-<td>Convert all line breaks to CR+LF</td>
+<td>Convert all line breaks to <code>CR+LF</code></td>
 </tr>
 <tr>
 <td><strong><code>io_writeline</code></strong></td>
-<td>Write LF after every write</td>
+<td>Write a line feed after every write</td>
 </tr>
 <tr>
 <td><strong><code>io_autoline</code></strong></td>
-<td>Write LF if not already there</td>
+<td>Write a line feed after every write that does not already end with one</td>
 </tr>
 <tr>
 <td><strong><code>io_linebuf</code></strong></td>
@@ -177,10 +217,8 @@ encodings, as well as other conveniences such as normalization of line breaks.</
 </tr>
 <tr>
 <td><strong><code>io_mutex</code></strong></td>
-<td>Hold per-file mutex while writing</td>
+<td>Hold a per-file mutex while writing, to allow coherent multithreaded output</td>
 </tr>
 </tbody>
-</table>
-<p>(May be combined with err_replace/throw)</p>
-<p>TODO</p></body>
+</table></body>
 </html>

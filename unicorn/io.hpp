@@ -13,8 +13,7 @@ namespace Unicorn {
 
     // I/O flags
 
-    // Skip the first 3 bits because these need to be compatible with the
-    // encoding error flags.
+    // Skip the first 3 bits because these need to be compatible with the encoding error flags
 
     // Common reader and writer flags
 
