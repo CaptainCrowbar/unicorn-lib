@@ -18,6 +18,7 @@ Unicorn documentation with a copy of the Unicode standard on hand.</p>
 <li><a href="#unicorn-library-introduction">Unicorn Library: Introduction</a><ul>
 <li><a href="#contents">Contents</a></li>
 <li><a href="#features">Features</a></li>
+<li><a href="#example">Example</a></li>
 <li><a href="#compatibility">Compatibility</a></li>
 <li><a href="#design-philosophy">Design philosophy</a></li>
 <li><a href="#coding-conventions">Coding conventions</a></li>
@@ -38,6 +39,91 @@ current version are:</p>
 <li>Support for IDNA/Punycode.</li>
 <li>User defined encoding conversions.</li>
 </ul>
+<h2 id="example">Example</h2>
+<p>A sample program that demonstrates some of the facilities in the Unicorn
+library. This program reads a text file, splits it into words, converts each
+word to normalization form NFC and lower case, and writes out a list of all
+words encountered more than once, in descending order of frequency.</p>
+<pre><code>#include "unicorn/library.hpp"
+#include &lt;cstdlib&gt;
+#include &lt;exception&gt;
+#include &lt;iostream&gt;
+#include &lt;map&gt;
+#include &lt;string&gt;
+
+using namespace Unicorn;
+using namespace Unicorn::Literals;
+
+int main(int argc, char** argv) {
+
+    try {
+
+        const u8string description =
+            "This program reads a text file, splits it into words, "
+            "converts each word to normalization form NFC and lower case, "
+            "and writes out a list of all words encountered more than once, "
+            "in descending order of frequency.";
+
+        // Parse the command line options
+
+        Options opt("Unicorn Demo", str_wrap(description, 0, 75));
+
+        opt.add("input", "Input file (default is standard input)", opt_abbrev="i", opt_default="-");
+        opt.add("output", "Output file (default is standard output)", opt_abbrev="o", opt_default="-");
+        opt.add("encoding", "Input encoding", opt_abbrev="e", opt_default="UTF-8");
+
+        if (opt.parse(argc, argv))
+            return 0;
+
+        auto input_file = opt.get&lt;u8string&gt;("input");
+        auto output_file = opt.get&lt;u8string&gt;("output");
+        auto input_encoding = opt.get&lt;u8string&gt;("encoding");
+
+        // Read all the words in the input file
+
+        std::map&lt;u8string, size_t&gt; census;
+
+        for (auto&amp; line: read_lines(input_file, io_stdin, input_encoding))
+            for (auto&amp; word: word_range(line, alpha_words))
+                ++census[str_lowercase(normalize(u_str(word), NFC))];
+
+        // Order them by descending frequency
+
+        std::multimap&lt;size_t, u8string, std::greater&lt;&gt;&gt; frequencies;
+
+        for (auto&amp; pair: census)
+            if (pair.second &gt; 1)
+                frequencies.insert({pair.second, pair.first});
+
+        for (auto&amp; pair: frequencies)
+            std::cout &lt;&lt; "[$1] $2\n"_fmt(pair.first, pair.second);
+
+        return 0;
+
+    }
+
+    catch (const std::exception&amp; ex) {
+        std::cerr &lt;&lt; "*** " &lt;&lt; ex.what() &lt;&lt; "\n";
+        return EXIT_FAILURE;
+    }
+
+}
+</code></pre>
+<p>If the program is run with the <code>--help</code> (or <code>-h</code>) option, it will print the
+following usage guide:</p>
+<pre><code>Unicorn Demo
+
+This program reads a text file, splits it into words, converts each word to
+normalization form NFC and lower case, and writes out a list of all words
+encountered more than once, in descending order of frequency.
+
+Options:
+    --input, -i &lt;arg&gt;     = Input file (default is standard input)
+    --output, -o &lt;arg&gt;    = Output file (default is standard output)
+    --encoding, -e &lt;arg&gt;  = Input encoding (default "UTF-8")
+    --help, -h            = Show usage information
+    --version, -v         = Show version information
+</code></pre>
 <h2 id="compatibility">Compatibility</h2>
 <p>Unicorn is written in C++14; you will need an up-to-date C++ compiler,
 probably a recent version of Clang or GCC. I developed it mainly on Mac OS X,

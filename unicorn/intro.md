@@ -22,6 +22,94 @@ current version are:
 * Support for IDNA/Punycode.
 * User defined encoding conversions.
 
+## Example ##
+
+A sample program that demonstrates some of the facilities in the Unicorn
+library. This program reads a text file, splits it into words, converts each
+word to normalization form NFC and lower case, and writes out a list of all
+words encountered more than once, in descending order of frequency.
+
+    #include "unicorn/library.hpp"
+    #include <cstdlib>
+    #include <exception>
+    #include <iostream>
+    #include <map>
+    #include <string>
+
+    using namespace Unicorn;
+    using namespace Unicorn::Literals;
+
+    int main(int argc, char** argv) {
+
+        try {
+
+            const u8string description =
+                "This program reads a text file, splits it into words, "
+                "converts each word to normalization form NFC and lower case, "
+                "and writes out a list of all words encountered more than once, "
+                "in descending order of frequency.";
+
+            // Parse the command line options
+
+            Options opt("Unicorn Demo", str_wrap(description, 0, 75));
+
+            opt.add("input", "Input file (default is standard input)", opt_abbrev="i", opt_default="-");
+            opt.add("output", "Output file (default is standard output)", opt_abbrev="o", opt_default="-");
+            opt.add("encoding", "Input encoding", opt_abbrev="e", opt_default="UTF-8");
+
+            if (opt.parse(argc, argv))
+                return 0;
+
+            auto input_file = opt.get<u8string>("input");
+            auto output_file = opt.get<u8string>("output");
+            auto input_encoding = opt.get<u8string>("encoding");
+
+            // Read all the words in the input file
+
+            std::map<u8string, size_t> census;
+
+            for (auto& line: read_lines(input_file, io_stdin, input_encoding))
+                for (auto& word: word_range(line, alpha_words))
+                    ++census[str_lowercase(normalize(u_str(word), NFC))];
+
+            // Order them by descending frequency
+
+            std::multimap<size_t, u8string, std::greater<>> frequencies;
+
+            for (auto& pair: census)
+                if (pair.second > 1)
+                    frequencies.insert({pair.second, pair.first});
+
+            for (auto& pair: frequencies)
+                std::cout << "[$1] $2\n"_fmt(pair.first, pair.second);
+
+            return 0;
+
+        }
+
+        catch (const std::exception& ex) {
+            std::cerr << "*** " << ex.what() << "\n";
+            return EXIT_FAILURE;
+        }
+
+    }
+
+If the program is run with the `--help` (or `-h`) option, it will print the
+following usage guide:
+
+    Unicorn Demo
+
+    This program reads a text file, splits it into words, converts each word to
+    normalization form NFC and lower case, and writes out a list of all words
+    encountered more than once, in descending order of frequency.
+
+    Options:
+        --input, -i <arg>     = Input file (default is standard input)
+        --output, -o <arg>    = Output file (default is standard output)
+        --encoding, -e <arg>  = Input encoding (default "UTF-8")
+        --help, -h            = Show usage information
+        --version, -v         = Show version information
+
 ## Compatibility ##
 
 Unicorn is written in C++14; you will need an up-to-date C++ compiler,
