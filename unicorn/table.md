@@ -96,17 +96,17 @@ By default, string lengths are measured in grapheme units (user perceived
 characters) in calculating fixed width table layout. Other measurement flags
 (from [`unicorn/string`](string.html)) can be passed if required.
 
-If the `unfill` flag is passed, cells that are identical to the one
+If the `tab_unfill` flag is passed, cells that are identical to the one
 immediately above them will be written using a ditto mark (two apostrophes by
 default) instead of repeating their contents.
 
 The following keyword arguments are recognised:
 
-Keyword                 | Argument type  | Default           | Description
--------                 | -------------  | -------           | -----------
-`Table::`**`flags`**    | `uint32_t`     | `grapheme_units`  | How string lengths are measured
-`Table::`**`margin`**   | `size_t`       | `0`               | Number of spaces in the left margin
-`Table::`**`spacing`**  | `size_t`       | `2`               | Number of spaces between columns
-`Table::`**`unfill`**   | `bool`         | `false`           | Show repeated cells with a ditto mark
-`Table::`**`ditto`**    | `u8string`     | `"''"`            | Symbol used for repeated cells in unfill mode
-`Table::`**`empty`**    | `u8string`     | `"--"`            | Symbol used for empty cells
+Keyword            | Argument type  | Default           | Description
+-------            | -------------  | -------           | -----------
+**`tab_ditto`**    | `u8string`     | `"''"`            | Symbol used for repeated cells in unfill mode
+**`tab_empty`**    | `u8string`     | `"--"`            | Symbol used for empty cells
+**`tab_flags`**    | `uint32_t`     | `grapheme_units`  | How string lengths are measured
+**`tab_margin`**   | `size_t`       | `0`               | Number of spaces in the left margin
+**`tab_spacing`**  | `size_t`       | `2`               | Number of spaces between columns
+**`tab_unfill`**   | `bool`         | `false`           | Show repeated cells with a ditto mark

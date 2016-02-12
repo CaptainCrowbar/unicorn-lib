@@ -9,11 +9,6 @@ using namespace std::literals;
 
 namespace Unicorn {
 
-    constexpr Kwarg<uint32_t> Table::flags;
-    constexpr Kwarg<u8string> Table::ditto, Table::empty;
-    constexpr Kwarg<size_t> Table::margin, Table::spacing;
-    constexpr Kwarg<bool> Table::unfill;
-
     void Table::add_str(const u8string& t) {
         size_t index = cells.back().size();
         u8string cell;

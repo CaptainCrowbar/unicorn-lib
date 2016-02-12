@@ -9,12 +9,13 @@
 
 namespace Unicorn {
 
+    constexpr Kwarg<bool> tab_unfill;
+    constexpr Kwarg<uint32_t> tab_flags;
+    constexpr Kwarg<size_t> tab_margin, tab_spacing;
+    constexpr Kwarg<u8string> tab_ditto, tab_empty;
+
     class Table {
     public:
-        static constexpr Kwarg<uint32_t> flags = {};
-        static constexpr Kwarg<u8string> ditto = {}, empty = {};
-        static constexpr Kwarg<size_t> margin = {}, spacing = {};
-        static constexpr Kwarg<bool> unfill = {};
         Table(): formats(), cells(1) {}
         template <typename T> Table& operator<<(const T& t) { add_cell(t); return *this; }
         Table& operator<<(char t) { character_code(char_to_uint(t)); return *this; }
@@ -94,12 +95,12 @@ namespace Unicorn {
     template <typename... Args>
     Table::layout_spec Table::parse_args(const Args&... args) {
         layout_spec spec;
-        kwget(flags, spec.flags, args...);
-        kwget(ditto, spec.ditto, args...);
-        kwget(empty, spec.empty, args...);
-        kwget(margin, spec.margin, args...);
-        kwget(spacing, spec.spacing, args...);
-        kwget(unfill, spec.unfill, args...);
+        kwget(tab_flags, spec.flags, args...);
+        kwget(tab_ditto, spec.ditto, args...);
+        kwget(tab_empty, spec.empty, args...);
+        kwget(tab_margin, spec.margin, args...);
+        kwget(tab_spacing, spec.spacing, args...);
+        kwget(tab_unfill, spec.unfill, args...);
         return spec;
     }
 

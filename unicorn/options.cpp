@@ -46,18 +46,6 @@ namespace Unicorn {
 
     }
 
-    constexpr Kwarg<bool> Options::anon;
-    constexpr Kwarg<bool> Options::boolean;
-    constexpr Kwarg<bool> Options::integer;
-    constexpr Kwarg<bool> Options::uinteger;
-    constexpr Kwarg<bool> Options::floating;
-    constexpr Kwarg<bool> Options::multiple;
-    constexpr Kwarg<bool> Options::required;
-    constexpr Kwarg<u8string> Options::abbrev;
-    constexpr Kwarg<u8string> Options::defval;
-    constexpr Kwarg<u8string> Options::group;
-    constexpr Kwarg<u8string> Options::pattern;
-
     Options::CommandError::CommandError(const u8string& details, const u8string& arg, const u8string& arg2):
     std::runtime_error(cmd_error(details, arg, arg2)) {}
 
@@ -227,9 +215,9 @@ namespace Unicorn {
     }
 
     void Options::clean_up_arguments(string_list& args, uint32_t flags) {
-        if (! (flags & noprefix) && ! args.empty())
+        if (! (flags & opt_noprefix) && ! args.empty())
             args.erase(args.begin());
-        if (flags & quoted)
+        if (flags & opt_quoted)
             for (auto& arg: args)
                 if (arg.size() >= 2 && arg.front() == '\"' && arg.back() == '\"')
                     arg = arg.substr(1, arg.size() - 1);
@@ -355,7 +343,7 @@ namespace Unicorn {
     }
 
     u8string Options::arg_convert(const string& str, uint32_t flags) {
-        if (! (flags & locale))
+        if (! (flags & opt_locale))
             return str;
         u8string utf8;
         import_string(str, utf8, local_encoding());

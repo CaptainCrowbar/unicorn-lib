@@ -54,24 +54,26 @@ namespace Unicorn {
 
     }
 
+    constexpr uint32_t opt_locale = 1;    // Argument list is in local encoding
+    constexpr uint32_t opt_noprefix = 2;  // First argument is not the command name
+    constexpr uint32_t opt_quoted = 4;    // Allow arguments to be quoted
+
+    constexpr Kwarg<bool>
+        opt_anon,     // Assign anonymous arguments to this option
+        opt_bool,     // Boolean option
+        opt_int,      // Argument must be an integer
+        opt_uint,     // Argument must be an unsigned integer
+        opt_float,    // Argument must be a floating point number
+        opt_multi,    // Option may have multiple arguments
+        opt_require;  // Option is required
+    constexpr Kwarg<u8string>
+        opt_abbrev,   // Single letter abbreviation
+        opt_default,  // Default value if not supplied
+        opt_group,    // Mutual exclusion group name
+        opt_pattern;  // Argument must match this regular expression
+
     class Options {
     public:
-        static constexpr uint32_t locale = 1;    // Argument list is in local encoding
-        static constexpr uint32_t noprefix = 2;  // First argument is not the command name
-        static constexpr uint32_t quoted = 4;    // Allow arguments to be quoted
-        static constexpr Kwarg<bool>
-            anon = {},      // Assign anonymous arguments to this option
-            boolean = {},   // Boolean option
-            integer = {},   // Argument must be an integer
-            uinteger = {},  // Argument must be an unsigned integer
-            floating = {},  // Argument must be a floating point number
-            multiple = {},  // Option may have multiple arguments
-            required = {};  // Option is required
-        static constexpr Kwarg<u8string>
-            abbrev = {},    // Single letter abbreviation
-            defval = {},    // Default value if not supplied
-            group = {},     // Mutual exclusion group name
-            pattern = {};   // Argument must match this regular expression
         class CommandError: public std::runtime_error {
         public:
             explicit CommandError(const u8string& details, const u8string& arg = {}, const u8string& arg2 = {});
@@ -153,17 +155,17 @@ namespace Unicorn {
         u8string pat;
         opt.name = name;
         opt.info = info;
-        kwget(anon, opt.is_anon, args...);
-        kwget(boolean, opt.is_boolean, args...);
-        kwget(integer, opt.is_integer, args...);
-        kwget(uinteger, opt.is_uinteger, args...);
-        kwget(floating, opt.is_float, args...);
-        kwget(multiple, opt.is_multiple, args...);
-        kwget(required, opt.is_required, args...);
-        kwget(abbrev, opt.abbrev, args...);
-        kwget(defval, opt.defval, args...);
-        kwget(group, opt.group, args...);
-        kwget(pattern, pat, args...);
+        kwget(opt_anon, opt.is_anon, args...);
+        kwget(opt_bool, opt.is_boolean, args...);
+        kwget(opt_int, opt.is_integer, args...);
+        kwget(opt_uint, opt.is_uinteger, args...);
+        kwget(opt_float, opt.is_float, args...);
+        kwget(opt_multi, opt.is_multiple, args...);
+        kwget(opt_require, opt.is_required, args...);
+        kwget(opt_abbrev, opt.abbrev, args...);
+        kwget(opt_default, opt.defval, args...);
+        kwget(opt_group, opt.group, args...);
+        kwget(opt_pattern, pat, args...);
         opt.pattern = Regex(pat);
         add_option(opt);
     }
@@ -190,9 +192,9 @@ namespace Unicorn {
     bool Options::parse(const basic_string<C>& args, std::basic_ostream<C2>& out, uint32_t flags) {
         auto u8args = arg_convert(args, flags);
         string_list vec;
-        if (flags & quoted) {
+        if (flags & opt_quoted) {
             unquote(u8args, vec);
-            flags &= ~ quoted;
+            flags &= ~ opt_quoted;
         } else {
             str_split(u8args, append(vec));
         }
@@ -204,7 +206,7 @@ namespace Unicorn {
     template <typename C, typename C2>
     bool Options::parse(int argc, C** argv, std::basic_ostream<C2>& out, uint32_t flags) {
         vector<basic_string<C>> args(argv, argv + argc);
-        if (flags & quoted)
+        if (flags & opt_quoted)
             return parse(str_join(args, str_char<C>(U' ')), out, flags);
         else
             return parse(args, out, flags);

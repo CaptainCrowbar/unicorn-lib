@@ -29,9 +29,9 @@ Example:
 
     int main(int argc, char** argv) {
         Options opt("My Program 1.0");
-        opt.add("--alpha", "The most important option", Options::abbrev="-a");
+        opt.add("--alpha", "The most important option", opt_abbrev="-a");
         opt.add("--omega", "The least important option");
-        opt.add("--number", "How many roads to walk down", Options::abbrev="-n", Options::defval="42", Options::integer);
+        opt.add("--number", "How many roads to walk down", opt_abbrev="-n", opt_default="42", opt_int);
         if (opt.parse(argc, argv))
             return 0;
         // ... main program code goes here ...
@@ -91,22 +91,22 @@ supplied to the `add()` function with or without the leading hyphens). The
 user when help is requested. These may be followed by optional keyword
 arguments, as listed below.
 
-Keyword                    | Type        | Description
--------                    | ----        | -----------
-`Options::`**`abbrev`**    | `u8string`  | A single letter abbreviation for the option (e.g. `"-x"`; the hyphen is optional).
-`Options::`**`anon`**      | `bool`      | Anonymous arguments (not claimed by any other option) will be assigned to this option.
-`Options::`**`boolean`**   | `bool`      | This option is a boolean switch and does not take arguments.
-`Options::`**`defval`**    | `u8string`  | Use this default value if the option is not supplied by the user.
-`Options::`**`floating`**  | `bool`      | The argument value must be a floating point number.
-`Options::`**`group`**     | `u8string`  | Assign the option to a mutual exclusion group; at most one option from a group is allowed.
-`Options::`**`integer`**   | `bool`      | The argument value must be an integer.
-`Options::`**`multiple`**  | `bool`      | This option may be followed by multiple arguments.
-`Options::`**`pattern`**   | `u8string`  | The argument value must match this regular expression.
-`Options::`**`required`**  | `bool`      | This option is mandatory.
-`Options::`**`uinteger`**  | `bool`      | The argument value must be an unsigned integer.
+Keyword            | Type        | Description
+-------            | ----        | -----------
+**`opt_abbrev`**   | `u8string`  | A single letter abbreviation for the option (e.g. `"-x"`; the hyphen is optional).
+**`opt_anon`**     | `bool`      | Anonymous arguments (not claimed by any other option) will be assigned to this option.
+**`opt_bool`**     | `bool`      | This option is a boolean switch and does not take arguments.
+**`opt_default`**  | `u8string`  | Use this default value if the option is not supplied by the user.
+**`opt_float`**    | `bool`      | The argument value must be a floating point number.
+**`opt_group`**    | `u8string`  | Assign the option to a mutual exclusion group; at most one option from a group is allowed.
+**`opt_int`**      | `bool`      | The argument value must be an integer.
+**`opt_multi`**    | `bool`      | This option may be followed by multiple arguments.
+**`opt_pattern`**  | `u8string`  | The argument value must match this regular expression.
+**`opt_require`**  | `bool`      | This option is mandatory.
+**`opt_uint`**     | `bool`      | The argument value must be an unsigned integer.
 
 Boolean options can be supplied in negated form, by giving a name starting
-with `"--no-"` or `"no-"`. This creates a boolean option whose default value
+with `"--no-"` (or `"no-"`). This creates a boolean option whose default value
 is `true`.
 
 The `add()` function will throw `SpecError` if any of the following is true:
@@ -115,10 +115,10 @@ The `add()` function will throw `SpecError` if any of the following is true:
 * The info string is empty.
 * An abbreviation is supplied that is longer than one character (not counting a leading hyphen), or is not alphanumeric.
 * An option starting with `"--no-"` is not boolean or has an abbreviation.
-* The `boolean` tag is combined with `anon`, `defval`, `multiple`, `pattern`, or `required`.
-* The `required` tag is combined with `defval` or `group`.
-* More than one of `float`, `integer`, `pattern`, and `uinteger` is supplied.
-* The `defval` and `pattern` tags are both present, but the default value does not match the pattern.
+* The `opt_bool` tag is combined with `opt_anon`, `opt_default`, `opt_multi`, `opt_pattern`, or `opt_require`.
+* The `opt_require` tag is combined with `opt_default` or `opt_group`.
+* More than one of `opt_float`, `opt_int`, `opt_pattern`, and `opt_uint` is supplied.
+* The `opt_default` and `opt_pattern` tags are both present, but the default value does not match the pattern.
 * The name or abbreviation has already been used by an earlier entry.
 
 Do not explicitly add the standard `"--help"` and `"--version"` boolean
@@ -173,21 +173,21 @@ the return value from `parse()` and end the program if it is true.
 
 The `flags` argument can be any combination of these:
 
-Flag                       | Description
-----                       | -----------
-`Options::`**`locale`**    | The argument list is in the local encoding
-`Options::`**`noprefix`**  | The first argument is not the command name
-`Options::`**`quoted`**    | Allow arguments to be quoted
+Flag                | Description
+----                | -----------
+**`opt_locale`**    | The argument list is in the local encoding
+**`opt_noprefix`**  | The first argument is not the command name
+**`opt_quoted`**    | Allow arguments to be quoted
 
-The `Options::locale` flag is only relevant to 8 bit strings, which are
-assumed to be UTF-8 by default; the flag is ignored if the `C` type is not
-`char`, since 16 or 32 bit strings are always assumed to be UTF-16/32.
+The `opt_locale` flag is only relevant to 8 bit strings, which are assumed to
+be UTF-8 by default; the flag is ignored if the `C` type is not `char`, since
+16 or 32 bit strings are always assumed to be UTF-16/32.
 
 The `parse()` functions will throw `CommandError` if any of the following is
 true:
 
 * A full or abbreviated option is supplied that is not in the spec.
-* The same option appears more than once, but does not have the `multiple` flag.
+* The same option appears more than once, but does not have the `opt_multi` flag.
 * Multiple options from the same mutual exclusion group are supplied.
 * The argument supplied for an option does not match the pattern given in the spec.
 * A required option is missing.

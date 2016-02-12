@@ -70,7 +70,7 @@ namespace {
             );
         }
 
-        TRY(s = tab.str(Table::margin=4, Table::spacing=3));
+        TRY(s = tab.str(tab_margin=4, tab_spacing=3));
         TEST_EQUAL(s,
             "    alpha   bravo   charlie\n"
             "    1       2       3\n"
@@ -111,7 +111,7 @@ namespace {
             "10     9      10\n"
             "10     9      10\n"
         );
-        TRY(s = tab.str(Table::unfill));
+        TRY(s = tab.str(tab_unfill));
         TEST_EQUAL(s,
             "alpha  bravo  charlie\n"
             "=====  =====  =======\n"
@@ -139,7 +139,7 @@ namespace {
         TRY(tab.clear());
         TRY(tab << u8"水星" << u8"金星" << u8"地球" << u8"火星" << u8"..." << '\n');
         TRY(tab << u8"木星" << u8"土星" << u8"天王星" << u8"海王星" << u8"..." << '\n');
-        TRY(s = tab.str(Table::flags=grapheme_units|wide_context));
+        TRY(s = tab.str(tab_flags=grapheme_units|wide_context));
         TEST_EQUAL(s,
             u8"水星  金星  地球    火星    ...\n"
             u8"木星  土星  天王星  海王星  ...\n"

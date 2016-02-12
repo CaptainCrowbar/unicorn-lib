@@ -34,9 +34,9 @@ however, will accept an argument list in any Unicode encoding.</p>
 <p>Example:</p>
 <pre><code>int main(int argc, char** argv) {
     Options opt("My Program 1.0");
-    opt.add("--alpha", "The most important option", Options::abbrev="-a");
+    opt.add("--alpha", "The most important option", opt_abbrev="-a");
     opt.add("--omega", "The least important option");
-    opt.add("--number", "How many roads to walk down", Options::abbrev="-n", Options::defval="42", Options::integer);
+    opt.add("--number", "How many roads to walk down", opt_abbrev="-n", opt_default="42", opt_int);
     if (opt.parse(argc, argv))
         return 0;
     // ... main program code goes here ...
@@ -117,64 +117,64 @@ arguments, as listed below.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>Options::</code><strong><code>abbrev</code></strong></td>
+<td><strong><code>opt_abbrev</code></strong></td>
 <td><code>u8string</code></td>
 <td>A single letter abbreviation for the option (e.g. <code>"-x"</code>; the hyphen is optional).</td>
 </tr>
 <tr>
-<td><code>Options::</code><strong><code>anon</code></strong></td>
+<td><strong><code>opt_anon</code></strong></td>
 <td><code>bool</code></td>
 <td>Anonymous arguments (not claimed by any other option) will be assigned to this option.</td>
 </tr>
 <tr>
-<td><code>Options::</code><strong><code>boolean</code></strong></td>
+<td><strong><code>opt_bool</code></strong></td>
 <td><code>bool</code></td>
 <td>This option is a boolean switch and does not take arguments.</td>
 </tr>
 <tr>
-<td><code>Options::</code><strong><code>defval</code></strong></td>
+<td><strong><code>opt_default</code></strong></td>
 <td><code>u8string</code></td>
 <td>Use this default value if the option is not supplied by the user.</td>
 </tr>
 <tr>
-<td><code>Options::</code><strong><code>floating</code></strong></td>
+<td><strong><code>opt_float</code></strong></td>
 <td><code>bool</code></td>
 <td>The argument value must be a floating point number.</td>
 </tr>
 <tr>
-<td><code>Options::</code><strong><code>group</code></strong></td>
+<td><strong><code>opt_group</code></strong></td>
 <td><code>u8string</code></td>
 <td>Assign the option to a mutual exclusion group; at most one option from a group is allowed.</td>
 </tr>
 <tr>
-<td><code>Options::</code><strong><code>integer</code></strong></td>
+<td><strong><code>opt_int</code></strong></td>
 <td><code>bool</code></td>
 <td>The argument value must be an integer.</td>
 </tr>
 <tr>
-<td><code>Options::</code><strong><code>multiple</code></strong></td>
+<td><strong><code>opt_multi</code></strong></td>
 <td><code>bool</code></td>
 <td>This option may be followed by multiple arguments.</td>
 </tr>
 <tr>
-<td><code>Options::</code><strong><code>pattern</code></strong></td>
+<td><strong><code>opt_pattern</code></strong></td>
 <td><code>u8string</code></td>
 <td>The argument value must match this regular expression.</td>
 </tr>
 <tr>
-<td><code>Options::</code><strong><code>required</code></strong></td>
+<td><strong><code>opt_require</code></strong></td>
 <td><code>bool</code></td>
 <td>This option is mandatory.</td>
 </tr>
 <tr>
-<td><code>Options::</code><strong><code>uinteger</code></strong></td>
+<td><strong><code>opt_uint</code></strong></td>
 <td><code>bool</code></td>
 <td>The argument value must be an unsigned integer.</td>
 </tr>
 </tbody>
 </table>
 <p>Boolean options can be supplied in negated form, by giving a name starting
-with <code>"--no-"</code> or <code>"no-"</code>. This creates a boolean option whose default value
+with <code>"--no-"</code> (or <code>"no-"</code>). This creates a boolean option whose default value
 is <code>true</code>.</p>
 <p>The <code>add()</code> function will throw <code>SpecError</code> if any of the following is true:</p>
 <ul>
@@ -182,10 +182,10 @@ is <code>true</code>.</p>
 <li>The info string is empty.</li>
 <li>An abbreviation is supplied that is longer than one character (not counting a leading hyphen), or is not alphanumeric.</li>
 <li>An option starting with <code>"--no-"</code> is not boolean or has an abbreviation.</li>
-<li>The <code>boolean</code> tag is combined with <code>anon</code>, <code>defval</code>, <code>multiple</code>, <code>pattern</code>, or <code>required</code>.</li>
-<li>The <code>required</code> tag is combined with <code>defval</code> or <code>group</code>.</li>
-<li>More than one of <code>float</code>, <code>integer</code>, <code>pattern</code>, and <code>uinteger</code> is supplied.</li>
-<li>The <code>defval</code> and <code>pattern</code> tags are both present, but the default value does not match the pattern.</li>
+<li>The <code>opt_bool</code> tag is combined with <code>opt_anon</code>, <code>opt_default</code>, <code>opt_multi</code>, <code>opt_pattern</code>, or <code>opt_require</code>.</li>
+<li>The <code>opt_require</code> tag is combined with <code>opt_default</code> or <code>opt_group</code>.</li>
+<li>More than one of <code>opt_float</code>, <code>opt_int</code>, <code>opt_pattern</code>, and <code>opt_uint</code> is supplied.</li>
+<li>The <code>opt_default</code> and <code>opt_pattern</code> tags are both present, but the default value does not match the pattern.</li>
 <li>The name or abbreviation has already been used by an earlier entry.</li>
 </ul>
 <p>Do not explicitly add the standard <code>"--help"</code> and <code>"--version"</code> boolean
@@ -250,27 +250,27 @@ the return value from <code>parse()</code> and end the program if it is true.</p
 </thead>
 <tbody>
 <tr>
-<td><code>Options::</code><strong><code>locale</code></strong></td>
+<td><strong><code>opt_locale</code></strong></td>
 <td>The argument list is in the local encoding</td>
 </tr>
 <tr>
-<td><code>Options::</code><strong><code>noprefix</code></strong></td>
+<td><strong><code>opt_noprefix</code></strong></td>
 <td>The first argument is not the command name</td>
 </tr>
 <tr>
-<td><code>Options::</code><strong><code>quoted</code></strong></td>
+<td><strong><code>opt_quoted</code></strong></td>
 <td>Allow arguments to be quoted</td>
 </tr>
 </tbody>
 </table>
-<p>The <code>Options::locale</code> flag is only relevant to 8 bit strings, which are
-assumed to be UTF-8 by default; the flag is ignored if the <code>C</code> type is not
-<code>char</code>, since 16 or 32 bit strings are always assumed to be UTF-16/32.</p>
+<p>The <code>opt_locale</code> flag is only relevant to 8 bit strings, which are assumed to
+be UTF-8 by default; the flag is ignored if the <code>C</code> type is not <code>char</code>, since
+16 or 32 bit strings are always assumed to be UTF-16/32.</p>
 <p>The <code>parse()</code> functions will throw <code>CommandError</code> if any of the following is
 true:</p>
 <ul>
 <li>A full or abbreviated option is supplied that is not in the spec.</li>
-<li>The same option appears more than once, but does not have the <code>multiple</code> flag.</li>
+<li>The same option appears more than once, but does not have the <code>opt_multi</code> flag.</li>
 <li>Multiple options from the same mutual exclusion group are supplied.</li>
 <li>The argument supplied for an option does not match the pattern given in the spec.</li>
 <li>A required option is missing.</li>

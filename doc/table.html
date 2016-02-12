@@ -126,7 +126,7 @@ encoding. The <code>str()</code> function is shorthand for <code>as_string&lt;ch
 <p>By default, string lengths are measured in grapheme units (user perceived
 characters) in calculating fixed width table layout. Other measurement flags
 (from <a href="string.html"><code>unicorn/string</code></a>) can be passed if required.</p>
-<p>If the <code>unfill</code> flag is passed, cells that are identical to the one
+<p>If the <code>tab_unfill</code> flag is passed, cells that are identical to the one
 immediately above them will be written using a ditto mark (two apostrophes by
 default) instead of repeating their contents.</p>
 <p>The following keyword arguments are recognised:</p>
@@ -141,40 +141,40 @@ default) instead of repeating their contents.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>Table::</code><strong><code>flags</code></strong></td>
-<td><code>uint32_t</code></td>
-<td><code>grapheme_units</code></td>
-<td>How string lengths are measured</td>
-</tr>
-<tr>
-<td><code>Table::</code><strong><code>margin</code></strong></td>
-<td><code>size_t</code></td>
-<td><code>0</code></td>
-<td>Number of spaces in the left margin</td>
-</tr>
-<tr>
-<td><code>Table::</code><strong><code>spacing</code></strong></td>
-<td><code>size_t</code></td>
-<td><code>2</code></td>
-<td>Number of spaces between columns</td>
-</tr>
-<tr>
-<td><code>Table::</code><strong><code>unfill</code></strong></td>
-<td><code>bool</code></td>
-<td><code>false</code></td>
-<td>Show repeated cells with a ditto mark</td>
-</tr>
-<tr>
-<td><code>Table::</code><strong><code>ditto</code></strong></td>
+<td><strong><code>tab_ditto</code></strong></td>
 <td><code>u8string</code></td>
 <td><code>"''"</code></td>
 <td>Symbol used for repeated cells in unfill mode</td>
 </tr>
 <tr>
-<td><code>Table::</code><strong><code>empty</code></strong></td>
+<td><strong><code>tab_empty</code></strong></td>
 <td><code>u8string</code></td>
 <td><code>"--"</code></td>
 <td>Symbol used for empty cells</td>
+</tr>
+<tr>
+<td><strong><code>tab_flags</code></strong></td>
+<td><code>uint32_t</code></td>
+<td><code>grapheme_units</code></td>
+<td>How string lengths are measured</td>
+</tr>
+<tr>
+<td><strong><code>tab_margin</code></strong></td>
+<td><code>size_t</code></td>
+<td><code>0</code></td>
+<td>Number of spaces in the left margin</td>
+</tr>
+<tr>
+<td><strong><code>tab_spacing</code></strong></td>
+<td><code>size_t</code></td>
+<td><code>2</code></td>
+<td>Number of spaces between columns</td>
+</tr>
+<tr>
+<td><strong><code>tab_unfill</code></strong></td>
+<td><code>bool</code></td>
+<td><code>false</code></td>
+<td>Show repeated cells with a ditto mark</td>
 </tr>
 </tbody>
 </table></body>
