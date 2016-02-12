@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Makefile"
 #include "unicorn/character.hpp"
 #include "unicorn/core.hpp"
 #include "unicorn/environment.hpp"
