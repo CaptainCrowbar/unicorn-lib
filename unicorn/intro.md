@@ -298,7 +298,8 @@ Everything in the Unicorn library is in `namespace Unicorn` (or a subordinate
 namespace inside `Unicorn`). You can either qualify all calls with the
 `Unicorn::` prefix, or use `using namespace Unicorn`.
 
-Unicorn uses my minimal, header-only Prion utility library. No special build
-actions are required beyond making sure the compiler can find the
-`"prion/core.hpp"` header. Everything in `namespace Prion` is imported into
-`namespace Unicorn`.
+Unicorn calls my [Prion library](https://github.com/CaptainCrowbar/prion-lib).
+This consists only of a single header (and a second one if you build the unit
+tests); no special build actions are required beyond making sure the compiler
+can find the `"prion/core.hpp"` header. Everything in `namespace Prion` is
+imported into `namespace Unicorn`.

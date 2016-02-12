@@ -286,7 +286,7 @@ Flag              | Description
 Returns the name of a character. By default, only the official Unicode name is
 returned; an empty string is returned if the character does not have an
 official name. The `flags` argument can contain a bitwise-OR combination of
-any of the three options. If both `cn_control` and `cn_label` are present,
+any of the options. If both `cn_control` and `cn_label` are present,
 `cn_control` takes precedence for characters that qualify for both.
 
 The character name table is stored in compressed form to save space. The first

@@ -279,8 +279,9 @@ the other required libraries described above.</p>
 <p>Everything in the Unicorn library is in <code>namespace Unicorn</code> (or a subordinate
 namespace inside <code>Unicorn</code>). You can either qualify all calls with the
 <code>Unicorn::</code> prefix, or use <code>using namespace Unicorn</code>.</p>
-<p>Unicorn uses my minimal, header-only Prion utility library. No special build
-actions are required beyond making sure the compiler can find the
-<code>"prion/core.hpp"</code> header. Everything in <code>namespace Prion</code> is imported into
-<code>namespace Unicorn</code>.</p></body>
+<p>Unicorn calls my <a href="https://github.com/CaptainCrowbar/prion-lib">Prion library</a>.
+This consists only of a single header (and a second one if you build the unit
+tests); no special build actions are required beyond making sure the compiler
+can find the <code>"prion/core.hpp"</code> header. Everything in <code>namespace Prion</code> is
+imported into <code>namespace Unicorn</code>.</p></body>
 </html>

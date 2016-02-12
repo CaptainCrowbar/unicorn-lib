@@ -382,7 +382,7 @@ library).</p>
 <p>Returns the name of a character. By default, only the official Unicode name is
 returned; an empty string is returned if the character does not have an
 official name. The <code>flags</code> argument can contain a bitwise-OR combination of
-any of the three options. If both <code>cn_control</code> and <code>cn_label</code> are present,
+any of the options. If both <code>cn_control</code> and <code>cn_label</code> are present,
 <code>cn_control</code> takes precedence for characters that qualify for both.</p>
 <p>The character name table is stored in compressed form to save space. The first
 call to <code>char_name()</code> may throw <code>InitializationError</code> if something goes wrong
