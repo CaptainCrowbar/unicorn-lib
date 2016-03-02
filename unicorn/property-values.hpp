@@ -11,33 +11,31 @@
 
 namespace Unicorn {
 
-    // The default value is always listed first
-
-    enum class Bidi_Class: uint8_t {
+    PRI_ENUM_CLASS(Bidi_Class, 0,
         Default, AL, AN, B, BN, CS, EN, ES, ET, FSI, L, LRE, LRI, LRO, NSM,
         ON, PDF, PDI, R, RLE, RLI, RLO, S, WS
-    };
+    )
 
-    enum class East_Asian_Width: uint8_t {
+    PRI_ENUM_CLASS(East_Asian_Width, 0,
         N, A, F, H, Na, W
-    };
+    )
 
-    enum class Grapheme_Cluster_Break: uint8_t {
+    PRI_ENUM_CLASS(Grapheme_Cluster_Break, 0,
         Other, Control, CR, EOT, Extend, L, LF, LV, LVT, Prepend,
         Regional_Indicator, SOT, SpacingMark, T, V
-    };
+    )
 
-    enum class Hangul_Syllable_Type: uint8_t {
+    PRI_ENUM_CLASS(Hangul_Syllable_Type, 0,
         NA, L, LV, LVT, T, V
-    };
+    )
 
-    enum class Indic_Positional_Category: uint8_t {
+    PRI_ENUM_CLASS(Indic_Positional_Category, 0,
         NA, Bottom, Bottom_And_Right, Left, Left_And_Right, Overstruck, Right,
         Top, Top_And_Bottom, Top_And_Bottom_And_Right, Top_And_Left,
         Top_And_Left_And_Right, Top_And_Right, Visual_Order_Left
-    };
+    )
 
-    enum class Indic_Syllabic_Category: uint8_t {
+    PRI_ENUM_CLASS(Indic_Syllabic_Category, 0,
         Other, Avagraha, Bindu, Brahmi_Joining_Number, Cantillation_Mark,
         Consonant, Consonant_Dead, Consonant_Final, Consonant_Head_Letter,
         Consonant_Killer, Consonant_Medial, Consonant_Placeholder,
@@ -47,9 +45,9 @@ namespace Unicorn {
         Number, Number_Joiner, Pure_Killer, Register_Shifter,
         Syllable_Modifier, Tone_Letter, Tone_Mark, Virama, Visarga, Vowel,
         Vowel_Dependent, Vowel_Independent
-    };
+    )
 
-    enum class Joining_Group: uint8_t {
+    PRI_ENUM_CLASS(Joining_Group, 0,
         No_Joining_Group, Ain, Alaph, Alef, Beh, Beth, Burushaski_Yeh_Barree,
         Dal, Dalath_Rish, E, Farsi_Yeh, Fe, Feh, Final_Semkath, Gaf, Gamal,
         Hah, He, Heh, Heh_Goal, Heth, Kaf, Kaph, Khaph, Knotted_Heh, Lam,
@@ -65,32 +63,32 @@ namespace Unicorn {
         Straight_Waw, Swash_Kaf, Syriac_Waw, Tah, Taw, Teh_Marbuta,
         Teh_Marbuta_Goal, Teth, Waw, Yeh, Yeh_Barree, Yeh_With_Tail, Yudh,
         Yudh_He, Zain, Zhain
-    };
+    )
 
-    enum class Joining_Type: uint8_t {
+    PRI_ENUM_CLASS(Joining_Type, 0,
         Default, Dual_Joining, Join_Causing, Left_Joining, Non_Joining,
         Right_Joining, Transparent
-    };
+    )
 
-    enum class Line_Break: uint8_t {
+    PRI_ENUM_CLASS(Line_Break, 0,
         XX, AI, AL, B2, BA, BB, BK, CB, CJ, CL, CM, CP, CR, EX, GL, H2, H3,
         HL, HY, ID, IN, IS, JL, JT, JV, LF, NL, NS, NU, OP, PO, PR, QU, RI,
         SA, SG, SP, SY, WJ, ZW
-    };
+    )
 
-    enum class Numeric_Type: uint8_t {
+    PRI_ENUM_CLASS(Numeric_Type, 0,
         None, Decimal, Digit, Numeric
-    };
+    )
 
-    enum class Sentence_Break: uint8_t {
+    PRI_ENUM_CLASS(Sentence_Break, 0,
         Other, ATerm, Close, CR, EOT, Extend, Format, LF, Lower, Numeric,
         OLetter, SContinue, Sep, SOT, Sp, STerm, Upper
-    };
+    )
 
-    enum class Word_Break: uint8_t {
+    PRI_ENUM_CLASS(Word_Break, 0,
         Other, ALetter, CR, Double_Quote, EOT, Extend, ExtendNumLet, Format,
         Hebrew_Letter, Katakana, LF, MidLetter, MidNum, MidNumLet, Newline,
         Numeric, Regional_Indicator, Single_Quote, SOT
-    };
+    )
 
 }

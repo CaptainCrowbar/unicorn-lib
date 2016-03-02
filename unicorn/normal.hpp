@@ -42,8 +42,7 @@ namespace Unicorn {
 
     }
 
-    enum NormalizationForm { NFC, NFD, NFKC, NFKD };
-    std::ostream& operator<<(std::ostream& o, NormalizationForm n);
+    PRI_ENUM(NormalizationForm, 1, NFC, NFD, NFKC, NFKD)
 
     template <typename C>
     basic_string<C> normalize(const basic_string<C>& src, NormalizationForm form) {

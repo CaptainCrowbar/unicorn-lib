@@ -821,7 +821,7 @@ namespace {
         system_clock::time_point ldate, udate;
 
         TRY(udate = make_date(2000, 1, 2, 3, 4, 5.678));
-        TRY(ldate = make_date(2000, 1, 2, 3, 4, 5.678, local_date));
+        TRY(ldate = make_date(2000, 1, 2, 3, 4, 5.678, Zone::local));
 
         TEST_EQUAL(format_as<char>(udate), "2000-01-02 03:04:05");
         TEST_EQUAL(format_as<char>(udate, "3"), "2000-01-02 03:04:05.678");

@@ -340,11 +340,6 @@ or zero if the character does not have a decomposition of the relevant type.
     * `Other, ATerm, Close, CR, EOT, Extend, Format, LF, Lower, Numeric, OLetter, SContinue, Sep, SOT, Sp, STerm, Upper`
 * `enum class` **`Word_Break`**
     * `Other, ALetter, CR, Double_Quote, EOT, Extend, ExtendNumLet, Format, Hebrew_Letter, Katakana, LF, MidLetter, MidNum, MidNumLet, Newline, Numeric, Regional_Indicator, Single_Quote, SOT`
-
-Enumeration property values. The spelling of the class and value names follows
-their spelling in the Unicode standard, which is not entirely consistent about
-naming conventions.
-
 * `std::ostream&` **`operator<<`**`(std::ostream& o, Bidi_Class x)`
 * `std::ostream&` **`operator<<`**`(std::ostream& o, East_Asian_Width x)`
 * `std::ostream&` **`operator<<`**`(std::ostream& o, Grapheme_Cluster_Break x)`
@@ -358,8 +353,9 @@ naming conventions.
 * `std::ostream&` **`operator<<`**`(std::ostream& o, Sentence_Break x)`
 * `std::ostream&` **`operator<<`**`(std::ostream& o, Word_Break x)`
 
-Output operators convert an enumerated property value into a string for
-display.
+Enumeration property values. The spelling of the class and value names follows
+their spelling in the Unicode standard, which is not entirely consistent about
+naming conventions.
 
 * `East_Asian_Width` **`east_asian_width`**`(char32_t c) noexcept`
 * `Grapheme_Cluster_Break` **`grapheme_cluster_break`**`(char32_t c) noexcept`
