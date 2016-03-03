@@ -113,12 +113,15 @@ namespace Unicorn {
     uint16_t char_general_category(char32_t c) noexcept;
     inline char char_primary_category(char32_t c) noexcept { return char(char_general_category(c) >> 8); }
     inline bool char_is_alphanumeric(char32_t c) noexcept { auto g = char_primary_category(c); return g == 'L' || g == 'N'; }
+    inline bool char_is_alphanumeric_w(char32_t c) noexcept { return char_is_alphanumeric(c) || c == U'_'; }
     inline bool char_is_control(char32_t c) noexcept { return char_general_category(c) == GC::Cc; }
     inline bool char_is_format(char32_t c) noexcept { return char_general_category(c) == GC::Cf; }
     inline bool char_is_letter(char32_t c) noexcept { return char_primary_category(c) == 'L'; }
+    inline bool char_is_letter_w(char32_t c) noexcept { return char_is_letter(c) || c == U'_'; }
     inline bool char_is_mark(char32_t c) noexcept { return char_primary_category(c) == 'M'; }
     inline bool char_is_number(char32_t c) noexcept { return char_primary_category(c) == 'N'; }
     inline bool char_is_punctuation(char32_t c) noexcept { return char_primary_category(c) == 'P'; }
+    inline bool char_is_punctuation_w(char32_t c) noexcept { return char_is_punctuation(c) && c != U'_'; }
     inline bool char_is_symbol(char32_t c) noexcept { return char_primary_category(c) == 'S'; }
     inline bool char_is_separator(char32_t c) noexcept { return char_primary_category(c) == 'Z'; }
 

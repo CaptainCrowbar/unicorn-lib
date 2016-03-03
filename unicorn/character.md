@@ -165,6 +165,14 @@ These check for a character's membership in a broad general category. (The
 miscellaneous categories not listed here are covered elsewhere in this
 module.)
 
+* `bool` **`char_is_alphanumeric_w`**`(char32_t c) noexcept`
+* `bool` **`char_is_letter_w`**`(char32_t c) noexcept`
+* `bool` **`char_is_punctuation_w`**`(char32_t c) noexcept`
+
+These perform the same checks as the similarly named functions above, except
+that the underscore character is counted as a letter instead of a punctuation
+mark.
+
 * `std::function<bool(char32_t)>` **`gc_predicate`**`(uint16_t cat)`
 * `std::function<bool(char32_t)>` **`gc_predicate`**`(const u8string& cat)`
 * `std::function<bool(char32_t)>` **`gc_predicate`**`(const char* cat)`

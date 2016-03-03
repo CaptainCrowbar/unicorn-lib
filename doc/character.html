@@ -225,6 +225,16 @@ module.)</p>
 </div>
 <div class="defns">
 <ul>
+<li><code>bool</code> <strong><code>char_is_alphanumeric_w</code></strong><code>(char32_t c) noexcept</code></li>
+<li><code>bool</code> <strong><code>char_is_letter_w</code></strong><code>(char32_t c) noexcept</code></li>
+<li><code>bool</code> <strong><code>char_is_punctuation_w</code></strong><code>(char32_t c) noexcept</code></li>
+</ul>
+<p>These perform the same checks as the similarly named functions above, except
+that the underscore character is counted as a letter instead of a punctuation
+mark.</p>
+</div>
+<div class="defns">
+<ul>
 <li><code>std::function&lt;bool(char32_t)&gt;</code> <strong><code>gc_predicate</code></strong><code>(uint16_t cat)</code></li>
 <li><code>std::function&lt;bool(char32_t)&gt;</code> <strong><code>gc_predicate</code></strong><code>(const u8string&amp; cat)</code></li>
 <li><code>std::function&lt;bool(char32_t)&gt;</code> <strong><code>gc_predicate</code></strong><code>(const char* cat)</code></li>

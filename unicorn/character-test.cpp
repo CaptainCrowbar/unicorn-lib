@@ -578,39 +578,39 @@ namespace {
         TEST(! gc_predicate("Zs,L&")(0x30));
         TEST(! gc_predicate("Zs,L&")(0x10ffff));
 
-        TEST(char_is_alphanumeric(0x61));
-        TEST(char_is_alphanumeric(0x6a));
+        TEST(char_is_alphanumeric('0'));
+        TEST(char_is_alphanumeric('9'));
+        TEST(char_is_alphanumeric('A'));
+        TEST(char_is_alphanumeric('Z'));
+        TEST(char_is_alphanumeric('a'));
+        TEST(char_is_alphanumeric('z'));
+        TEST(char_is_alphanumeric(0xaa));
+        TEST(char_is_alphanumeric(0xb2));
+        TEST(char_is_alphanumeric(0x1c5));
         TEST(char_is_alphanumeric(0x2b0));
         TEST(char_is_alphanumeric(0x2b9));
-        TEST(char_is_alphanumeric(0xaa));
         TEST(char_is_alphanumeric(0x5d1));
-        TEST(char_is_alphanumeric(0x1c5));
-        TEST(char_is_alphanumeric(0x1f8d));
-        TEST(char_is_alphanumeric(0x41));
-        TEST(char_is_alphanumeric(0x4a));
-        TEST(char_is_alphanumeric(0x30));
-        TEST(char_is_alphanumeric(0x39));
-        TEST(char_is_alphanumeric(0x16ee));
-        TEST(char_is_alphanumeric(0x2166));
-        TEST(char_is_alphanumeric(0xb2));
         TEST(char_is_alphanumeric(0x9f7));
+        TEST(char_is_alphanumeric(0x16ee));
+        TEST(char_is_alphanumeric(0x1f8d));
+        TEST(char_is_alphanumeric(0x2166));
 
         TEST(char_is_control(0));
-        TEST(char_is_control(0x9));
+        TEST(char_is_control(9));
 
         TEST(char_is_format(0xad));
         TEST(char_is_format(0x180e));
 
-        TEST(char_is_letter(0x61));
-        TEST(char_is_letter(0x6a));
+        TEST(char_is_letter('A'));
+        TEST(char_is_letter('Z'));
+        TEST(char_is_letter('a'));
+        TEST(char_is_letter('z'));
+        TEST(char_is_letter(0xaa));
+        TEST(char_is_letter(0x1c5));
         TEST(char_is_letter(0x2b0));
         TEST(char_is_letter(0x2b9));
-        TEST(char_is_letter(0xaa));
         TEST(char_is_letter(0x5d1));
-        TEST(char_is_letter(0x1c5));
         TEST(char_is_letter(0x1f8d));
-        TEST(char_is_letter(0x41));
-        TEST(char_is_letter(0x4a));
 
         TEST(char_is_mark(0x903));
         TEST(char_is_mark(0x94e));
@@ -619,41 +619,57 @@ namespace {
         TEST(char_is_mark(0x300));
         TEST(char_is_mark(0x309));
 
-        TEST(char_is_number(0x30));
-        TEST(char_is_number(0x39));
-        TEST(char_is_number(0x16ee));
-        TEST(char_is_number(0x2166));
+        TEST(char_is_number('0'));
+        TEST(char_is_number('9'));
         TEST(char_is_number(0xb2));
         TEST(char_is_number(0x9f7));
+        TEST(char_is_number(0x16ee));
+        TEST(char_is_number(0x2166));
 
-        TEST(char_is_punctuation(0x5f));
-        TEST(char_is_punctuation(0xff3f));
-        TEST(char_is_punctuation(0x2d));
-        TEST(char_is_punctuation(0x2014));
-        TEST(char_is_punctuation(0x29));
-        TEST(char_is_punctuation(0x2309));
-        TEST(char_is_punctuation(0xbb));
-        TEST(char_is_punctuation(0x2e21));
+        TEST(char_is_punctuation('!'));
+        TEST(char_is_punctuation('('));
+        TEST(char_is_punctuation(')'));
+        TEST(char_is_punctuation('-'));
+        TEST(char_is_punctuation('/'));
+        TEST(char_is_punctuation('_'));
         TEST(char_is_punctuation(0xab));
-        TEST(char_is_punctuation(0x2e0c));
-        TEST(char_is_punctuation(0x21));
-        TEST(char_is_punctuation(0x2f));
-        TEST(char_is_punctuation(0x28));
+        TEST(char_is_punctuation(0xbb));
+        TEST(char_is_punctuation(0x2014));
         TEST(char_is_punctuation(0x207d));
+        TEST(char_is_punctuation(0x2309));
+        TEST(char_is_punctuation(0x2e0c));
+        TEST(char_is_punctuation(0x2e21));
+        TEST(char_is_punctuation(0xff3f));
 
         TEST(char_is_symbol(0x24));
-        TEST(char_is_symbol(0x9fb));
-        TEST(char_is_symbol(0x5e));
-        TEST(char_is_symbol(0x2c5));
         TEST(char_is_symbol(0x2b));
-        TEST(char_is_symbol(0xf7));
+        TEST(char_is_symbol(0x5e));
         TEST(char_is_symbol(0xa6));
+        TEST(char_is_symbol(0xf7));
+        TEST(char_is_symbol(0x2c5));
         TEST(char_is_symbol(0x6fd));
+        TEST(char_is_symbol(0x9fb));
 
-        TEST(char_is_separator(0x2028));
-        TEST(char_is_separator(0x2029));
         TEST(char_is_separator(0x20));
         TEST(char_is_separator(0x2006));
+        TEST(char_is_separator(0x2028));
+        TEST(char_is_separator(0x2029));
+
+        TEST(char_is_alphanumeric('A'));    TEST(char_is_alphanumeric_w('A'));
+        TEST(char_is_alphanumeric('Z'));    TEST(char_is_alphanumeric_w('Z'));
+        TEST(! char_is_alphanumeric('_'));  TEST(char_is_alphanumeric_w('_'));
+        TEST(char_is_alphanumeric('a'));    TEST(char_is_alphanumeric_w('a'));
+        TEST(char_is_alphanumeric('z'));    TEST(char_is_alphanumeric_w('z'));
+        TEST(char_is_letter('A'));          TEST(char_is_letter_w('A'));
+        TEST(char_is_letter('Z'));          TEST(char_is_letter_w('Z'));
+        TEST(! char_is_letter('_'));        TEST(char_is_letter_w('_'));
+        TEST(char_is_letter('a'));          TEST(char_is_letter_w('a'));
+        TEST(char_is_letter('z'));          TEST(char_is_letter_w('z'));
+        TEST(! char_is_punctuation('A'));   TEST(! char_is_punctuation_w('A'));
+        TEST(! char_is_punctuation('Z'));   TEST(! char_is_punctuation_w('Z'));
+        TEST(char_is_punctuation('_'));     TEST(! char_is_punctuation_w('_'));
+        TEST(! char_is_punctuation('a'));   TEST(! char_is_punctuation_w('a'));
+        TEST(! char_is_punctuation('z'));   TEST(! char_is_punctuation_w('z'));
 
     }
 
