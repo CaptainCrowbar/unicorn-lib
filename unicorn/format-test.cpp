@@ -187,7 +187,6 @@ namespace {
         // e, fx_exp      = Scientific notation
         // f, fx_fixed    = Fixed point notation
         // g, fx_general  = Use the shorter of d or e [default]
-        // p, fx_prob     = Probability formatting
         // s, fx_sign     = Always show a sign
         // i, fx_signz    = Always show a sign unless zero
         // z, fx_stripz   = Strip trailing zeros
@@ -353,23 +352,6 @@ namespace {
         TEST_EQUAL(format_as<char>(-5678900.0, "g3"), "-5.68e6");
         TEST_EQUAL(format_as<char>(-56789000.0, "g3"), "-5.68e7");
         TEST_EQUAL(format_as<char>(-567890000.0, "g3"), "-5.68e8");
-        TEST_EQUAL(format_as<char>(-0.25, "p3"), "0");
-        TEST_EQUAL(format_as<char>(0.0, "p3"), "0");
-        TEST_EQUAL(format_as<char>(0.25, "p3"), "0.250");
-        TEST_EQUAL(format_as<char>(0.5, "p3"), "0.500");
-        TEST_EQUAL(format_as<char>(0.75, "p3"), "0.750");
-        TEST_EQUAL(format_as<char>(1.0, "p3"), "1");
-        TEST_EQUAL(format_as<char>(1.25, "p3"), "1");
-        TEST_EQUAL(format_as<char>(0.12345, "p3"), "0.123");
-        TEST_EQUAL(format_as<char>(0.012345, "p3"), "0.0123");
-        TEST_EQUAL(format_as<char>(0.0012345, "p3"), "0.00123");
-        TEST_EQUAL(format_as<char>(0.00012345, "p3"), "0.000123");
-        TEST_EQUAL(format_as<char>(0.000012345, "p3"), "0.0000123");
-        TEST_EQUAL(format_as<char>(0.87654, "p3"), "0.877");
-        TEST_EQUAL(format_as<char>(0.987654, "p3"), "0.9877");
-        TEST_EQUAL(format_as<char>(0.9987654, "p3"), "0.99877");
-        TEST_EQUAL(format_as<char>(0.99987654, "p3"), "0.999877");
-        TEST_EQUAL(format_as<char>(0.999987654, "p3"), "0.9999877");
         TEST_EQUAL(format_as<char>(0.0, "sd3"), "+0.00");
         TEST_EQUAL(format_as<char>(42.0, "sd3"), "+42.0");
         TEST_EQUAL(format_as<char>(-42.0, "sd3"), "-42.0");
@@ -394,12 +376,6 @@ namespace {
         TEST_EQUAL(format_as<char>(0.0, "Sg3"), "0.00");
         TEST_EQUAL(format_as<char>(42.0, "Sg3"), "+42.0");
         TEST_EQUAL(format_as<char>(-42.0, "Sg3"), "-42.0");
-        TEST_EQUAL(format_as<char>(0.0, "sp3"), "+0");
-        TEST_EQUAL(format_as<char>(0.42, "sp3"), "+0.420");
-        TEST_EQUAL(format_as<char>(-0.42, "sp3"), "+0");
-        TEST_EQUAL(format_as<char>(0.0, "Sp3"), "0");
-        TEST_EQUAL(format_as<char>(0.42, "Sp3"), "+0.420");
-        TEST_EQUAL(format_as<char>(-0.42, "Sp3"), "0");
 
         #if defined(UNICORN_PCRE16)
             TEST_EQUAL(format_as<char16_t>(0.0, u"d3"), u"0.00");
@@ -414,9 +390,6 @@ namespace {
             TEST_EQUAL(format_as<char16_t>(0.0, u"g3"), u"0.00");
             TEST_EQUAL(format_as<char16_t>(42.0, u"g3"), u"42.0");
             TEST_EQUAL(format_as<char16_t>(-42.0, u"g3"), u"-42.0");
-            TEST_EQUAL(format_as<char16_t>(0.0, u"p3"), u"0");
-            TEST_EQUAL(format_as<char16_t>(0.42, u"p3"), u"0.420");
-            TEST_EQUAL(format_as<char16_t>(-0.42, u"p3"), u"0");
         #endif
 
         #if defined(UNICORN_PCRE32)
@@ -432,9 +405,6 @@ namespace {
             TEST_EQUAL(format_as<char32_t>(0.0, U"g3"), U"0.00");
             TEST_EQUAL(format_as<char32_t>(42.0, U"g3"), U"42.0");
             TEST_EQUAL(format_as<char32_t>(-42.0, U"g3"), U"-42.0");
-            TEST_EQUAL(format_as<char32_t>(0.0, U"p3"), U"0");
-            TEST_EQUAL(format_as<char32_t>(0.42, U"p3"), U"0.420");
-            TEST_EQUAL(format_as<char32_t>(-0.42, U"p3"), U"0");
         #endif
 
         #if defined(UNICORN_PCRE_WCHAR)
@@ -450,9 +420,6 @@ namespace {
             TEST_EQUAL(format_as<wchar_t>(0.0, L"g3"), L"0.00");
             TEST_EQUAL(format_as<wchar_t>(42.0, L"g3"), L"42.0");
             TEST_EQUAL(format_as<wchar_t>(-42.0, L"g3"), L"-42.0");
-            TEST_EQUAL(format_as<wchar_t>(0.0, L"p3"), L"0");
-            TEST_EQUAL(format_as<wchar_t>(0.42, L"p3"), L"0.420");
-            TEST_EQUAL(format_as<wchar_t>(-0.42, L"p3"), L"0");
         #endif
 
     }

@@ -331,11 +331,6 @@ types.</p>
 <td>Use the shorter of <code>fx_digits</code> or <code>fx_exp</code> (default)</td>
 </tr>
 <tr>
-<td><strong><code>fx_prob</code></strong></td>
-<td><code>p</code></td>
-<td>Use probability format (see below)</td>
-</tr>
-<tr>
 <td><strong><code>fx_sign</code></strong></td>
 <td><code>s</code></td>
 <td>Always show a sign</td>
@@ -352,18 +347,6 @@ types.</p>
 </tr>
 </tbody>
 </table>
-<p>Probability format is similar to <code>fx_digits</code> format, but is intended for
-formatting probability values between 0 and 1 (values outside this range will
-be clamped to the nearest end of the range). Leading nines after the decimal
-point are treated as non-significant, in the same way as leading zeros; this
-means that <code>p</code> and <code>1-p</code> will be expressed to the same number of decimal
-places.</p>
-<pre><code>format_as(0.5, "p3") == "0.500"
-format_as(0.05, "p3") == "0.0500"
-format_as(0.95, "p3") == "0.9500"
-format_as(0.005, "p3") == "0.00500"
-format_as(0.995, "p3") == "0.99500"
-</code></pre>
 </div>
 <h3 id="character-and-string-formatting">Character and string formatting</h3>
 <p>These flags apply to all character, character pointer, and standard string

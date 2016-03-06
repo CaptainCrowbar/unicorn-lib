@@ -35,7 +35,6 @@ namespace Unicorn {
     constexpr uint64_t fx_exp       = letter_to_mask('e');  // Scientific notation             --   --    --   float  --    --      --
     constexpr uint64_t fx_fixed     = letter_to_mask('f');  // Fixed point notation            --   --    --   float  --    --      --
     constexpr uint64_t fx_general   = letter_to_mask('g');  // Use the shorter of d or e       --   --    --   float  --    --      --
-    constexpr uint64_t fx_prob      = letter_to_mask('p');  // Probability format              --   --    --   float  --    --      --
     constexpr uint64_t fx_stripz    = letter_to_mask('z');  // Strip trailing zeros            --   --    --   float  --    --      --
     constexpr uint64_t fx_ascii     = letter_to_mask('a');  // Escape if not printable ASCII   --   --    --   --     char  string  --
     constexpr uint64_t fx_escape    = letter_to_mask('c');  // Escape if C0/C1 control         --   --    --   --     char  string  --
@@ -78,7 +77,7 @@ namespace Unicorn {
 
         template <typename T>
         u8string format_int(T t, uint64_t flags, int prec) {
-            static constexpr auto float_flags = fx_digits | fx_exp | fx_fixed | fx_general | fx_prob | fx_stripz;
+            static constexpr auto float_flags = fx_digits | fx_exp | fx_fixed | fx_general | fx_stripz;
             static constexpr auto int_flags = fx_binary | fx_decimal | fx_hex | fx_roman;
             static constexpr auto sign_flags = fx_sign | fx_signz;
             if ((flags & float_flags) && ! (flags & int_flags))

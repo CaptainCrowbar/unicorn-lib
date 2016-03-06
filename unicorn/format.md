@@ -186,23 +186,9 @@ Flag              | Letter  | Description
 **`fx_exp`**      |`e`      | Format in scientific notation
 **`fx_fixed`**    |`f`      | Format with a fixed number of decimal places
 **`fx_general`**  |`g`      | Use the shorter of `fx_digits` or `fx_exp` (default)
-**`fx_prob`**     |`p`      | Use probability format (see below)
 **`fx_sign`**     |`s`      | Always show a sign
 **`fx_signz`**    |`S`      | Always show a sign unless the value is zero
 **`fx_stripz`**   |`z`      | Strip trailing zeros after the decimal point
-
-Probability format is similar to `fx_digits` format, but is intended for
-formatting probability values between 0 and 1 (values outside this range will
-be clamped to the nearest end of the range). Leading nines after the decimal
-point are treated as non-significant, in the same way as leading zeros; this
-means that `p` and `1-p` will be expressed to the same number of decimal
-places.
-
-    format_as(0.5, "p3") == "0.500"
-    format_as(0.05, "p3") == "0.0500"
-    format_as(0.95, "p3") == "0.9500"
-    format_as(0.005, "p3") == "0.00500"
-    format_as(0.995, "p3") == "0.99500"
 
 ### Character and string formatting ###
 

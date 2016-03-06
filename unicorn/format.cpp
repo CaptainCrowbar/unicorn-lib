@@ -102,21 +102,6 @@ namespace Unicorn {
                 return dform.size() <= eform.size() ? dform : eform;
             }
 
-            u8string float_prob(long double x, int prec) {
-                if (x <= 0)
-                    return "0";
-                if (x >= 1)
-                    return "1";
-                if (x > 0.8) {
-                    prec = std::max(prec, 1);
-                    auto complement = float_print("%.*Le", 1 - x, prec - 1);
-                    auto epos = complement.find_first_of("Ee");
-                    auto exponent = strtol(complement.data() + epos + 1, nullptr, 10);
-                    prec -= exponent + 1;
-                }
-                return float_digits(x, prec);
-            }
-
             u8string string_escape(const u8string& s, uint64_t mode) {
                 u8string result;
                 result.reserve(s.size() + 2);
@@ -203,14 +188,12 @@ namespace Unicorn {
 
         u8string format_float(long double t, uint64_t flags, int prec) {
             using std::fabs;
-            static constexpr auto format_flags = fx_digits | fx_exp | fx_fixed | fx_general | fx_prob;
+            static constexpr auto format_flags = fx_digits | fx_exp | fx_fixed | fx_general;
             static constexpr auto sign_flags = fx_sign | fx_signz;
             if (bits_set(flags & format_flags) > 1 || bits_set(flags & sign_flags) > 1)
                 throw std::invalid_argument("Inconsistent formatting flags");
             if (prec < 0)
                 prec = 6;
-            if (flags & fx_prob)
-                t = t < 0 ? 0 : t > 1 ? 1 : t;
             auto mag = fabs(t);
             u8string s;
             if (flags & fx_digits)
@@ -219,8 +202,6 @@ namespace Unicorn {
                 s = float_exp(mag, prec);
             else if (flags & fx_fixed)
                 s = float_fixed(mag, prec);
-            else if (flags & fx_prob)
-                s = float_prob(mag, prec);
             else
                 s = float_general(mag, prec);
             if (flags & fx_stripz)
