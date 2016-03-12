@@ -110,8 +110,8 @@ namespace Unicorn {
     }
 
     template <typename T, typename C>
-    UtfIterator<C> str_to_int(T& t, const basic_string<C>& str, uint32_t flags = 0) {
-        return UnicornDetail::convert_str_to_int<T>(t, utf_begin(str), flags, 10);
+    size_t str_to_int(T& t, const basic_string<C>& str, size_t offset = 0, uint32_t flags = 0) {
+        return UnicornDetail::convert_str_to_int<T>(t, utf_iterator(str, offset), flags, 10).offset() - offset;
     }
 
     template <typename T, typename C>
@@ -134,8 +134,8 @@ namespace Unicorn {
     }
 
     template <typename T, typename C>
-    UtfIterator<C> hex_to_int(T& t, const basic_string<C>& str, uint32_t flags = 0) {
-        return UnicornDetail::convert_str_to_int<T>(t, utf_begin(str), flags, 16);
+    size_t hex_to_int(T& t, const basic_string<C>& str, size_t offset = 0, uint32_t flags = 0) {
+        return UnicornDetail::convert_str_to_int<T>(t, utf_iterator(str, offset), flags, 16).offset() - offset;
     }
 
     template <typename T, typename C>
@@ -201,8 +201,8 @@ namespace Unicorn {
     }
 
     template <typename T, typename C>
-    UtfIterator<C> str_to_float(T& t, const basic_string<C>& str, uint32_t flags = 0) {
-        return str_to_float(t, utf_begin(str), flags);
+    size_t str_to_float(T& t, const basic_string<C>& str, size_t offset = 0, uint32_t flags = 0) {
+        return str_to_float(t, utf_iterator(str, offset), flags).offset() - offset;
     }
 
     template <typename T, typename C>

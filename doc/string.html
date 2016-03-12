@@ -855,15 +855,15 @@ unescaping the resulting strings.</p>
 <h2 id="type-conversion-functions">Type conversion functions</h2>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename T, typename C&gt; UtfIterator&lt;C&gt;</code> <strong><code>str_to_int</code></strong><code>(T&amp; t, const basic_string&lt;C&gt;&amp; str, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename T, typename C&gt; size_t</code> <strong><code>str_to_int</code></strong><code>(T&amp; t, const basic_string&lt;C&gt;&amp; str, size_t offset = 0, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename T, typename C&gt; UtfIterator&lt;C&gt;</code> <strong><code>str_to_int</code></strong><code>(T&amp; t, const UtfIterator&lt;C&gt;&amp; start, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename T, typename C&gt; T</code> <strong><code>str_to_int</code></strong><code>(const basic_string&lt;C&gt;&amp; str, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename T, typename C&gt; T</code> <strong><code>str_to_int</code></strong><code>(const UtfIterator&lt;C&gt;&amp; start, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename T, typename C&gt; UtfIterator&lt;C&gt;</code> <strong><code>hex_to_int</code></strong><code>(T&amp; t, const basic_string&lt;C&gt;&amp; str, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename T, typename C&gt; size_t</code> <strong><code>hex_to_int</code></strong><code>(T&amp; t, const basic_string&lt;C&gt;&amp; str, size_t offset = 0, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename T, typename C&gt; UtfIterator&lt;C&gt;</code> <strong><code>hex_to_int</code></strong><code>(T&amp; t, const UtfIterator&lt;C&gt;&amp; start, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename T, typename C&gt; T</code> <strong><code>hex_to_int</code></strong><code>(const basic_string&lt;C&gt;&amp; str, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename T, typename C&gt; T</code> <strong><code>hex_to_int</code></strong><code>(const UtfIterator&lt;C&gt;&amp; start, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename T, typename C&gt; UtfIterator&lt;C&gt;</code> <strong><code>str_to_float</code></strong><code>(T&amp; t, const basic_string&lt;C&gt;&amp; str, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename T, typename C&gt; size_t</code> <strong><code>str_to_float</code></strong><code>(T&amp; t, const basic_string&lt;C&gt;&amp; str, size_t offset = 0, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename T, typename C&gt; UtfIterator&lt;C&gt;</code> <strong><code>str_to_float</code></strong><code>(T&amp; t, const UtfIterator&lt;C&gt;&amp; start, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename T, typename C&gt; T</code> <strong><code>str_to_float</code></strong><code>(const basic_string&lt;C&gt;&amp; str, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename T, typename C&gt; T</code> <strong><code>str_to_float</code></strong><code>(const UtfIterator&lt;C&gt;&amp; start, uint32_t flags = 0)</code></li>
@@ -871,12 +871,14 @@ unescaping the resulting strings.</p>
 <p>Conversions from a string to an integer (in decimal or hexadecimal) or a
 floating point number. In each set of four overloaded functions, the first two
 versions write the result into a variable passed by reference, and return the
-number of characters read from the string; the last two versions return the
-result, and require the return type to be explicitly specified at the call
-site.</p>
+number of characters read from the string, or an iterator marking the end of
+the number; the last two versions return the result, require the return type
+to be explicitly specified at the call site, and do not return any indication
+of where the number ended.</p>
 <p>Any characters after a valid number are ignored. Note that, unlike the
 otherwise similar <code>strtol()</code> and related functions, these do not skip leading
-whitespace.</p>
+whitespace. For the versions that take a string and offset, results are
+unspecified if the offset does not point to an encoded character boundary.</p>
 <p>The only flag recognised is <code>err_throw</code>. By default, a value out of range for
 the return type will be clamped to the nearest end of its valid range, and the
 result will be zero if the string does not contain a valid number. If

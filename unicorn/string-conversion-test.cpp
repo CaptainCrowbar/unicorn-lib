@@ -24,26 +24,26 @@ namespace {
         int64_t i64;
         uint64_t u64;
 
-        s = "42xyz";   TEST_EQUAL(str_to_int(i8, s).offset(), 2);   TEST_EQUAL(i8, 42);
-        s = "-42xyz";  TEST_EQUAL(str_to_int(i8, s).offset(), 3);   TEST_EQUAL(i8, -42);
-        s = "xyz";     TEST_EQUAL(str_to_int(i8, s).offset(), 0);   TEST_EQUAL(i8, 0);
-        s = "42xyz";   TEST_EQUAL(str_to_int(u8, s).offset(), 2);   TEST_EQUAL(u8, 42);
-        s = "xyz";     TEST_EQUAL(str_to_int(u8, s).offset(), 0);   TEST_EQUAL(u8, 0);
-        s = "42xyz";   TEST_EQUAL(str_to_int(i16, s).offset(), 2);  TEST_EQUAL(i16, 42);
-        s = "-42xyz";  TEST_EQUAL(str_to_int(i16, s).offset(), 3);  TEST_EQUAL(i16, -42);
-        s = "xyz";     TEST_EQUAL(str_to_int(i16, s).offset(), 0);  TEST_EQUAL(i16, 0);
-        s = "42xyz";   TEST_EQUAL(str_to_int(u16, s).offset(), 2);  TEST_EQUAL(u16, 42);
-        s = "xyz";     TEST_EQUAL(str_to_int(u16, s).offset(), 0);  TEST_EQUAL(u16, 0);
-        s = "42xyz";   TEST_EQUAL(str_to_int(i32, s).offset(), 2);  TEST_EQUAL(i32, 42);
-        s = "-42xyz";  TEST_EQUAL(str_to_int(i32, s).offset(), 3);  TEST_EQUAL(i32, -42);
-        s = "xyz";     TEST_EQUAL(str_to_int(i32, s).offset(), 0);  TEST_EQUAL(i32, 0);
-        s = "42xyz";   TEST_EQUAL(str_to_int(u32, s).offset(), 2);  TEST_EQUAL(u32, 42);
-        s = "xyz";     TEST_EQUAL(str_to_int(u32, s).offset(), 0);  TEST_EQUAL(u32, 0);
-        s = "42xyz";   TEST_EQUAL(str_to_int(i64, s).offset(), 2);  TEST_EQUAL(i64, 42);
-        s = "-42xyz";  TEST_EQUAL(str_to_int(i64, s).offset(), 3);  TEST_EQUAL(i64, -42);
-        s = "xyz";     TEST_EQUAL(str_to_int(i64, s).offset(), 0);  TEST_EQUAL(i64, 0);
-        s = "42xyz";   TEST_EQUAL(str_to_int(u64, s).offset(), 2);  TEST_EQUAL(u64, 42);
-        s = "xyz";     TEST_EQUAL(str_to_int(u64, s).offset(), 0);  TEST_EQUAL(u64, 0);
+        s = "42xyz";   TEST_EQUAL(str_to_int(i8, s), 2);   TEST_EQUAL(i8, 42);
+        s = "-42xyz";  TEST_EQUAL(str_to_int(i8, s), 3);   TEST_EQUAL(i8, -42);
+        s = "xyz";     TEST_EQUAL(str_to_int(i8, s), 0);   TEST_EQUAL(i8, 0);
+        s = "42xyz";   TEST_EQUAL(str_to_int(u8, s), 2);   TEST_EQUAL(u8, 42);
+        s = "xyz";     TEST_EQUAL(str_to_int(u8, s), 0);   TEST_EQUAL(u8, 0);
+        s = "42xyz";   TEST_EQUAL(str_to_int(i16, s), 2);  TEST_EQUAL(i16, 42);
+        s = "-42xyz";  TEST_EQUAL(str_to_int(i16, s), 3);  TEST_EQUAL(i16, -42);
+        s = "xyz";     TEST_EQUAL(str_to_int(i16, s), 0);  TEST_EQUAL(i16, 0);
+        s = "42xyz";   TEST_EQUAL(str_to_int(u16, s), 2);  TEST_EQUAL(u16, 42);
+        s = "xyz";     TEST_EQUAL(str_to_int(u16, s), 0);  TEST_EQUAL(u16, 0);
+        s = "42xyz";   TEST_EQUAL(str_to_int(i32, s), 2);  TEST_EQUAL(i32, 42);
+        s = "-42xyz";  TEST_EQUAL(str_to_int(i32, s), 3);  TEST_EQUAL(i32, -42);
+        s = "xyz";     TEST_EQUAL(str_to_int(i32, s), 0);  TEST_EQUAL(i32, 0);
+        s = "42xyz";   TEST_EQUAL(str_to_int(u32, s), 2);  TEST_EQUAL(u32, 42);
+        s = "xyz";     TEST_EQUAL(str_to_int(u32, s), 0);  TEST_EQUAL(u32, 0);
+        s = "42xyz";   TEST_EQUAL(str_to_int(i64, s), 2);  TEST_EQUAL(i64, 42);
+        s = "-42xyz";  TEST_EQUAL(str_to_int(i64, s), 3);  TEST_EQUAL(i64, -42);
+        s = "xyz";     TEST_EQUAL(str_to_int(i64, s), 0);  TEST_EQUAL(i64, 0);
+        s = "42xyz";   TEST_EQUAL(str_to_int(u64, s), 2);  TEST_EQUAL(u64, 42);
+        s = "xyz";     TEST_EQUAL(str_to_int(u64, s), 0);  TEST_EQUAL(u64, 0);
 
         TEST_EQUAL(str_to_int<int8_t>("42xyz"s), 42);
         TEST_EQUAL(str_to_int<int8_t>("-42xyz"s), -42);
@@ -152,14 +152,14 @@ namespace {
         int64_t i64;
         uint64_t u64;
 
-        TEST_EQUAL(hex_to_int(i8, s).offset(), 2);   TEST_EQUAL(i8, 127);
-        TEST_EQUAL(hex_to_int(u8, s).offset(), 2);   TEST_EQUAL(u8, 255);
-        TEST_EQUAL(hex_to_int(i16, s).offset(), 2);  TEST_EQUAL(i16, 255);
-        TEST_EQUAL(hex_to_int(u16, s).offset(), 2);  TEST_EQUAL(u16, 255);
-        TEST_EQUAL(hex_to_int(i32, s).offset(), 2);  TEST_EQUAL(i32, 255);
-        TEST_EQUAL(hex_to_int(u32, s).offset(), 2);  TEST_EQUAL(u32, 255);
-        TEST_EQUAL(hex_to_int(i64, s).offset(), 2);  TEST_EQUAL(i64, 255);
-        TEST_EQUAL(hex_to_int(u64, s).offset(), 2);  TEST_EQUAL(u64, 255);
+        TEST_EQUAL(hex_to_int(i8, s), 2);   TEST_EQUAL(i8, 127);
+        TEST_EQUAL(hex_to_int(u8, s), 2);   TEST_EQUAL(u8, 255);
+        TEST_EQUAL(hex_to_int(i16, s), 2);  TEST_EQUAL(i16, 255);
+        TEST_EQUAL(hex_to_int(u16, s), 2);  TEST_EQUAL(u16, 255);
+        TEST_EQUAL(hex_to_int(i32, s), 2);  TEST_EQUAL(i32, 255);
+        TEST_EQUAL(hex_to_int(u32, s), 2);  TEST_EQUAL(u32, 255);
+        TEST_EQUAL(hex_to_int(i64, s), 2);  TEST_EQUAL(i64, 255);
+        TEST_EQUAL(hex_to_int(u64, s), 2);  TEST_EQUAL(u64, 255);
 
         TEST_EQUAL(hex_to_int<int8_t>("ffxyz"s), 127);
         TEST_EQUAL(hex_to_int<uint8_t>("ffxyz"s), 255);
@@ -251,15 +251,15 @@ namespace {
         double d;
         long double ld;
 
-        s = "42xyz";        TEST_EQUAL(str_to_float(f, s).offset(), 2);   TEST_EQUAL(f, 42);
-        s = "-6.25e-2xyz";  TEST_EQUAL(str_to_float(f, s).offset(), 8);   TEST_EQUAL(f, -0.0625);
-        s = "xyz";          TEST_EQUAL(str_to_float(f, s).offset(), 0);   TEST_EQUAL(f, 0);
-        s = "42xyz";        TEST_EQUAL(str_to_float(d, s).offset(), 2);   TEST_EQUAL(d, 42);
-        s = "-6.25e-2xyz";  TEST_EQUAL(str_to_float(d, s).offset(), 8);   TEST_EQUAL(d, -0.0625);
-        s = "xyz";          TEST_EQUAL(str_to_float(d, s).offset(), 0);   TEST_EQUAL(d, 0);
-        s = "42xyz";        TEST_EQUAL(str_to_float(ld, s).offset(), 2);  TEST_EQUAL(ld, 42);
-        s = "-6.25e-2xyz";  TEST_EQUAL(str_to_float(ld, s).offset(), 8);  TEST_EQUAL(ld, -0.0625);
-        s = "xyz";          TEST_EQUAL(str_to_float(ld, s).offset(), 0);  TEST_EQUAL(ld, 0);
+        s = "42xyz";        TEST_EQUAL(str_to_float(f, s), 2);   TEST_EQUAL(f, 42);
+        s = "-6.25e-2xyz";  TEST_EQUAL(str_to_float(f, s), 8);   TEST_EQUAL(f, -0.0625);
+        s = "xyz";          TEST_EQUAL(str_to_float(f, s), 0);   TEST_EQUAL(f, 0);
+        s = "42xyz";        TEST_EQUAL(str_to_float(d, s), 2);   TEST_EQUAL(d, 42);
+        s = "-6.25e-2xyz";  TEST_EQUAL(str_to_float(d, s), 8);   TEST_EQUAL(d, -0.0625);
+        s = "xyz";          TEST_EQUAL(str_to_float(d, s), 0);   TEST_EQUAL(d, 0);
+        s = "42xyz";        TEST_EQUAL(str_to_float(ld, s), 2);  TEST_EQUAL(ld, 42);
+        s = "-6.25e-2xyz";  TEST_EQUAL(str_to_float(ld, s), 8);  TEST_EQUAL(ld, -0.0625);
+        s = "xyz";          TEST_EQUAL(str_to_float(ld, s), 0);  TEST_EQUAL(ld, 0);
 
         TEST_EQUAL(str_to_float<double>(""s), 0);
         TEST_EQUAL(str_to_float<double>("0"s), 0);

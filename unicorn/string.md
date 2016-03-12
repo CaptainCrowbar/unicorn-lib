@@ -695,15 +695,15 @@ unescaping the resulting strings.
 
 ## Type conversion functions ##
 
-* `template <typename T, typename C> UtfIterator<C>` **`str_to_int`**`(T& t, const basic_string<C>& str, uint32_t flags = 0)`
+* `template <typename T, typename C> size_t` **`str_to_int`**`(T& t, const basic_string<C>& str, size_t offset = 0, uint32_t flags = 0)`
 * `template <typename T, typename C> UtfIterator<C>` **`str_to_int`**`(T& t, const UtfIterator<C>& start, uint32_t flags = 0)`
 * `template <typename T, typename C> T` **`str_to_int`**`(const basic_string<C>& str, uint32_t flags = 0)`
 * `template <typename T, typename C> T` **`str_to_int`**`(const UtfIterator<C>& start, uint32_t flags = 0)`
-* `template <typename T, typename C> UtfIterator<C>` **`hex_to_int`**`(T& t, const basic_string<C>& str, uint32_t flags = 0)`
+* `template <typename T, typename C> size_t` **`hex_to_int`**`(T& t, const basic_string<C>& str, size_t offset = 0, uint32_t flags = 0)`
 * `template <typename T, typename C> UtfIterator<C>` **`hex_to_int`**`(T& t, const UtfIterator<C>& start, uint32_t flags = 0)`
 * `template <typename T, typename C> T` **`hex_to_int`**`(const basic_string<C>& str, uint32_t flags = 0)`
 * `template <typename T, typename C> T` **`hex_to_int`**`(const UtfIterator<C>& start, uint32_t flags = 0)`
-* `template <typename T, typename C> UtfIterator<C>` **`str_to_float`**`(T& t, const basic_string<C>& str, uint32_t flags = 0)`
+* `template <typename T, typename C> size_t` **`str_to_float`**`(T& t, const basic_string<C>& str, size_t offset = 0, uint32_t flags = 0)`
 * `template <typename T, typename C> UtfIterator<C>` **`str_to_float`**`(T& t, const UtfIterator<C>& start, uint32_t flags = 0)`
 * `template <typename T, typename C> T` **`str_to_float`**`(const basic_string<C>& str, uint32_t flags = 0)`
 * `template <typename T, typename C> T` **`str_to_float`**`(const UtfIterator<C>& start, uint32_t flags = 0)`
@@ -711,13 +711,15 @@ unescaping the resulting strings.
 Conversions from a string to an integer (in decimal or hexadecimal) or a
 floating point number. In each set of four overloaded functions, the first two
 versions write the result into a variable passed by reference, and return the
-number of characters read from the string; the last two versions return the
-result, and require the return type to be explicitly specified at the call
-site.
+number of characters read from the string, or an iterator marking the end of
+the number; the last two versions return the result, require the return type
+to be explicitly specified at the call site, and do not return any indication
+of where the number ended.
 
 Any characters after a valid number are ignored. Note that, unlike the
 otherwise similar `strtol()` and related functions, these do not skip leading
-whitespace.
+whitespace. For the versions that take a string and offset, results are
+unspecified if the offset does not point to an encoded character boundary.
 
 The only flag recognised is `err_throw`. By default, a value out of range for
 the return type will be clamped to the nearest end of its valid range, and the
