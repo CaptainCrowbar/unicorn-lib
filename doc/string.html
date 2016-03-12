@@ -43,9 +43,9 @@ actual string or a UTF iterator range as their subject string.</p>
 Unicode strings. They all use <code>ignore_errors</code> mode internally, and do not
 provide any other error handling options.</p>
 <p>Many of the string manipulation functions in this module come in two versions,
-on that takes the subject string by <code>const</code> reference and returns the modified
-string, and one that takes it by non-<code>const</code> reference and modifies it in
-place. Usually the in-place version has a name ending with <code>_in</code> to
+one that takes the subject string by <code>const</code> reference and returns the
+modified string, and one that takes it by non-<code>const</code> reference and modifies
+it in place. Usually the in-place version has a name ending with <code>_in</code> to
 distinguish them, since in many cases they have identical argument lists apart
 from the <code>const</code> vs non-<code>const</code> argument, and therefore would not be reliably
 distinguished by overload resolution if they had the same name.</p>

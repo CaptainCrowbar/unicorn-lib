@@ -26,9 +26,9 @@ Unicode strings. They all use `ignore_errors` mode internally, and do not
 provide any other error handling options.
 
 Many of the string manipulation functions in this module come in two versions,
-on that takes the subject string by `const` reference and returns the modified
-string, and one that takes it by non-`const` reference and modifies it in
-place. Usually the in-place version has a name ending with `_in` to
+one that takes the subject string by `const` reference and returns the
+modified string, and one that takes it by non-`const` reference and modifies
+it in place. Usually the in-place version has a name ending with `_in` to
 distinguish them, since in many cases they have identical argument lists apart
 from the `const` vs non-`const` argument, and therefore would not be reliably
 distinguished by overload resolution if they had the same name.
