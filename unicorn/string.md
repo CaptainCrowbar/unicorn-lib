@@ -49,6 +49,10 @@ iterators (plain or UTF) passed to it that were pointing into that string.
 Note that the iterators should still be considered to be invalidated even if
 the string turns out not to be actually modified in a particular case.
 
+Modified strings, or new strings returned by a function, are not guaranteed to
+preserve any particular normalization form that the original string may have
+been in.
+
 Any function that implicitly compares strings uses a simple literal
 comparison, making no attempt to handle Unicode's concepts of canonical or
 compatibility equivalence; if your code needs to be aware of such things, you
