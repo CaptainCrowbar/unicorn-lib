@@ -248,7 +248,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    std::pair<basic_string<C>, basic_string<C>> split_path(const basic_string<C>& file, uint32_t flags = 0) {
+    pair<basic_string<C>, basic_string<C>> split_path(const basic_string<C>& file, uint32_t flags = 0) {
         auto nfile = UnicornDetail::normalize_file(file);
         auto cut = nfile.find_last_of(static_cast<C>(file_delimiter));
         #if defined(PRI_TARGET_WINDOWS)
@@ -270,7 +270,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    std::pair<basic_string<C>, basic_string<C>> split_file(const basic_string<C>& file) {
+    pair<basic_string<C>, basic_string<C>> split_file(const basic_string<C>& file) {
         auto nfile = UnicornDetail::normalize_file(file);
         auto cut = nfile.find_last_of(static_cast<C>(file_delimiter));
         #if defined(PRI_TARGET_WINDOWS)

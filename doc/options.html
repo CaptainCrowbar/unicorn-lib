@@ -236,7 +236,7 @@ vs <code>"--no-magic"</code>). Integer options will accept hexadecimal options p
 with <code>"0x"</code>; integer or float options will accept values tagged with SI prefix
 abbreviations (e.g. <code>"50k"</code> or <code>"2.5M"</code>).</p>
 <p>If help or version information is requested, it will be written to the given
-output stream (<code>std::cout</code> by default). The <code>parse()</code> function will return
+output stream (standard output by default). The <code>parse()</code> function will return
 true if all requested processing has already been handled (i.e. if help or
 version information has been presented to the user); the caller should check
 the return value from <code>parse()</code> and end the program if it is true.</p>

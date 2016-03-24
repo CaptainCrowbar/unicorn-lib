@@ -36,7 +36,7 @@ u8string source =
 auto tokens = lex(source);
 
 for (auto&amp; t: tokens)
-    std::cout &lt;&lt; "Type " &lt;&lt; t.tag &lt;&lt; ": " &lt;&lt; u8string(t) &lt;&lt; "\n";
+    cout &lt;&lt; "Type " &lt;&lt; t.tag &lt;&lt; ": " &lt;&lt; u8string(t) &lt;&lt; "\n";
 </code></pre>
 <p>Output:</p>
 <pre><code>Type 1: Hello
@@ -131,7 +131,7 @@ exists.</p>
 <div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; class</code> <strong><code>BasicLexer</code></strong><ul>
-<li><code>using BasicLexer::</code><strong><code>callback_type</code></strong> <code>= std::function&lt;size_t(const string_type&amp;, size_t)&gt;</code></li>
+<li><code>using BasicLexer::</code><strong><code>callback_type</code></strong> <code>= function&lt;size_t(const string_type&amp;, size_t)&gt;</code></li>
 <li><code>using BasicLexer::</code><strong><code>char_type</code></strong> <code>= C</code></li>
 <li><code>using BasicLexer::</code><strong><code>regex_type</code></strong> <code>= BasicRegex&lt;C&gt;</code></li>
 <li><code>using BasicLexer::</code><strong><code>string_type</code></strong> <code>= basic_string&lt;C&gt;</code></li>

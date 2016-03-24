@@ -81,14 +81,14 @@ words encountered more than once, in descending order of frequency.
                     frequencies.insert({pair.second, pair.first});
 
             for (auto& pair: frequencies)
-                std::cout << "[$1] $2\n"_fmt(pair.first, pair.second);
+                cout << "[$1] $2\n"_fmt(pair.first, pair.second);
 
             return 0;
 
         }
 
         catch (const std::exception& ex) {
-            std::cerr << "*** " << ex.what() << "\n";
+            cerr << "*** " << ex.what() << "\n";
             return EXIT_FAILURE;
         }
 

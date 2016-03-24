@@ -27,8 +27,8 @@ namespace {
     void check_version_information() {
 
         auto v1 = unicorn_version(), v2 = unicode_version();
-        std::cout << "... Unicorn version: " << v1.str(3) << "\n";
-        std::cout << "... Unicode version: " << v2.str(3) << "\n";
+        cout << "... Unicorn version: " << v1.str(3) << "\n";
+        cout << "... Unicode version: " << v2.str(3) << "\n";
         TEST_COMPARE(v1, >=, (Version{0,1,0}));
         TEST_COMPARE(v2, >=, (Version{8,0,0}));
 

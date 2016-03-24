@@ -91,7 +91,7 @@ namespace Unicorn {
     private:
         using ptr_list = vector<NativeCharacter*>;
         using string_map = std::map<NativeString, NativeString>;
-        using string_pair = std::pair<NativeString, NativeString>;
+        using string_pair = pair<NativeString, NativeString>;
     public:
         class iterator:
         public ForwardIterator<iterator, const string_pair> {
@@ -108,7 +108,7 @@ namespace Unicorn {
         Environment() = default;
         explicit Environment(bool from_process) { if (from_process) load(); }
         Environment(const Environment& env): map(env.map), block(), index() {}
-        Environment(Environment&& env) noexcept: map(std::move(env.map)), block(), index() { env.deconstruct(); }
+        Environment(Environment&& env) noexcept: map(move(env.map)), block(), index() { env.deconstruct(); }
         ~Environment() noexcept = default;
         Environment& operator=(const Environment& env);
         Environment& operator=(Environment&& env) noexcept;

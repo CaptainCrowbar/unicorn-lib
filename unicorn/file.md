@@ -163,8 +163,8 @@ These will accept invalid UTF strings if the native file system API would, but
 if the character size does not match the system's native encoding, a string
 that is not valid UTF will fail all of these.
 
-* `template <typename C> std::pair<basic_string<C>, basic_string<C>>` **`split_path`**`(const basic_string<C>& file, uint32_t flags = 0)`
-* `template <typename C> std::pair<basic_string<C>, basic_string<C>>` **`split_file`**`(const basic_string<C>& file)`
+* `template <typename C> pair<basic_string<C>, basic_string<C>>` **`split_path`**`(const basic_string<C>& file, uint32_t flags = 0)`
+* `template <typename C> pair<basic_string<C>, basic_string<C>>` **`split_file`**`(const basic_string<C>& file)`
 
 These functions break down a file name into its constituent parts. The
 `split_path()` function breaks the full name into directory and leaf names;

@@ -65,9 +65,9 @@ namespace Unicorn {
 
     namespace {
 
-        using CategoryTable = vector<std::pair<uint16_t, uint16_t>>;
+        using CategoryTable = vector<pair<uint16_t, uint16_t>>;
 
-        std::function<bool(char32_t)> make_category_function(const CategoryTable& table) {
+        function<bool(char32_t)> make_category_function(const CategoryTable& table) {
             return [=] (char32_t c) {
                 auto cat = char_general_category(c);
                 for (auto& pair: table)
@@ -158,18 +158,18 @@ namespace Unicorn {
         return sparse_table_lookup(UnicornDetail::general_category_table, c);
     }
 
-    std::function<bool(char32_t)> gc_predicate(uint16_t cat) {
+    function<bool(char32_t)> gc_predicate(uint16_t cat) {
         CategoryTable table;
         table.push_back({cat, cat});
         return make_category_function(table);
     }
 
-    std::function<bool(char32_t)> gc_predicate(const u8string& cat) {
+    function<bool(char32_t)> gc_predicate(const u8string& cat) {
         auto table = make_category_table(cat.data(), cat.size());
         return make_category_function(table);
     }
 
-    std::function<bool(char32_t)> gc_predicate(const char* cat) {
+    function<bool(char32_t)> gc_predicate(const char* cat) {
         auto table = make_category_table(cat, strlen(cat));
         return make_category_function(table);
     }
@@ -639,7 +639,7 @@ namespace Unicorn {
 
     // Numeric properties
 
-    std::pair<long long, long long> numeric_value(char32_t c) {
+    pair<long long, long long> numeric_value(char32_t c) {
         const auto pair = sparse_table_lookup(UnicornDetail::numeric_value_table, c);
         return {pair.first, pair.second};
     }

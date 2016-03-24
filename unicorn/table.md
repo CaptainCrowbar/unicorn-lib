@@ -19,7 +19,7 @@ Example:
         << "James Bond" << 007 << 007 << 007 << '\n'
         << "Douglas Adams" << 42 << 42 << 42 << '\n'
         << "Maxwell Smart" << 86 << 86 << 86 << '\n';
-    std::cout << tab;
+    cout << tab;
 
 Output:
 

@@ -16,10 +16,10 @@ namespace {
     void check_version_information() {
 
         auto ver = regex_version();
-        std::cout << "... PCRE version: " << ver.str(3) << "\n";
+        cout << "... PCRE version: " << ver.str(3) << "\n";
         TEST_COMPARE(ver, >=, (Version{8,0,0}));
         ver = regex_unicode_version();
-        std::cout << "... PCRE Unicode version: " << ver.str(3) << "\n";
+        cout << "... PCRE Unicode version: " << ver.str(3) << "\n";
         TEST_COMPARE(ver, >=, (Version{7,0,0}));
 
     }

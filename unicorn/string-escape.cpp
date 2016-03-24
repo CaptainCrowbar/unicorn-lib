@@ -35,13 +35,13 @@ namespace Unicorn {
     void str_encode_uri_in(u8string& str) {
         u8string result;
         UnicornDetail::encode_uri_helper(str, result, UnicornDetail::uri_full_escaped);
-        str = std::move(result);
+        str = move(result);
     }
 
     void str_encode_uri_component_in(u8string& str) {
         u8string result;
         UnicornDetail::encode_uri_helper(str, result, UnicornDetail::uri_comp_escaped);
-        str = std::move(result);
+        str = move(result);
     }
 
     u8string str_unencode_uri(const u8string& str) {
@@ -53,7 +53,7 @@ namespace Unicorn {
     void str_unencode_uri_in(u8string& str) {
         u8string result;
         UnicornDetail::unencode_uri_helper(str, result);
-        str = std::move(result);
+        str = move(result);
     }
 
 }

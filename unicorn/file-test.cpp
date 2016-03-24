@@ -487,9 +487,9 @@ namespace {
 
     void check_file_path_operations() {
 
-        std::pair<u8string, u8string> p8;
-        std::pair<u16string, u16string> p16;
-        std::pair<u32string, u32string> p32;
+        pair<u8string, u8string> p8;
+        pair<u16string, u16string> p16;
+        pair<u32string, u32string> p32;
 
         TRY(p8 = split_path(""s));           TEST_EQUAL(p8.first, "");        TEST_EQUAL(p8.second, "");
         TRY(p8 = split_file(""s));           TEST_EQUAL(p8.first, "");        TEST_EQUAL(p8.second, "");

@@ -173,9 +173,9 @@ These perform the same checks as the similarly named functions above, except
 that the underscore character is counted as a letter instead of a punctuation
 mark.
 
-* `std::function<bool(char32_t)>` **`gc_predicate`**`(uint16_t cat)`
-* `std::function<bool(char32_t)>` **`gc_predicate`**`(const u8string& cat)`
-* `std::function<bool(char32_t)>` **`gc_predicate`**`(const char* cat)`
+* `function<bool(char32_t)>` **`gc_predicate`**`(uint16_t cat)`
+* `function<bool(char32_t)>` **`gc_predicate`**`(const u8string& cat)`
+* `function<bool(char32_t)>` **`gc_predicate`**`(const char* cat)`
 
 These return function objects that can be used to test a character for
 membership in one or more categories. The versions that take a string can
@@ -381,7 +381,7 @@ Functions returning the properties of a character.
 
 ## Numeric properties ##
 
-* `std::pair<long long, long long>` **`numeric_value`**`(char32_t c)`
+* `pair<long long, long long>` **`numeric_value`**`(char32_t c)`
 
 Returns the numeric value of a character, as a pair containg the numerator and
 denominator of the value. The denominator will always be positive. If the

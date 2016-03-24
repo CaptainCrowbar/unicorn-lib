@@ -125,9 +125,9 @@ namespace Unicorn {
     inline bool char_is_symbol(char32_t c) noexcept { return char_primary_category(c) == 'S'; }
     inline bool char_is_separator(char32_t c) noexcept { return char_primary_category(c) == 'Z'; }
 
-    std::function<bool(char32_t)> gc_predicate(uint16_t cat);
-    std::function<bool(char32_t)> gc_predicate(const u8string& cat);
-    std::function<bool(char32_t)> gc_predicate(const char* cat);
+    function<bool(char32_t)> gc_predicate(uint16_t cat);
+    function<bool(char32_t)> gc_predicate(const u8string& cat);
+    function<bool(char32_t)> gc_predicate(const char* cat);
 
     // Boolean properties
 
@@ -228,7 +228,7 @@ namespace Unicorn {
 
     // Numeric properties
 
-    std::pair<long long, long long> numeric_value(char32_t c);
+    pair<long long, long long> numeric_value(char32_t c);
 
     // Script properties
 

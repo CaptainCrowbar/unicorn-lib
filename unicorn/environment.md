@@ -95,7 +95,7 @@ A class that holds a complete environment block.
 
 A read-only iterator over the name-value pairs stored in an `Environment`
 object. This is a forward iterator whose value type is
-`std::pair<NativeString,NativeString>`.
+`pair<NativeString,NativeString>`.
 
 * `Environment::`**`Environment`**`()`
 * `explicit Environment::`**`Environment`**`(bool from_process)`

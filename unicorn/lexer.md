@@ -32,7 +32,7 @@ Example:
     auto tokens = lex(source);
 
     for (auto& t: tokens)
-        std::cout << "Type " << t.tag << ": " << u8string(t) << "\n";
+        cout << "Type " << t.tag << ": " << u8string(t) << "\n";
 
 Output:
 
@@ -109,7 +109,7 @@ exists.
 ## Lexer class ##
 
 * `template <typename C> class` **`BasicLexer`**
-    * `using BasicLexer::`**`callback_type`** `= std::function<size_t(const string_type&, size_t)>`
+    * `using BasicLexer::`**`callback_type`** `= function<size_t(const string_type&, size_t)>`
     * `using BasicLexer::`**`char_type`** `= C`
     * `using BasicLexer::`**`regex_type`** `= BasicRegex<C>`
     * `using BasicLexer::`**`string_type`** `= basic_string<C>`

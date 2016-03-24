@@ -210,8 +210,8 @@ namespace Unicorn {
         template <typename T> struct FormatObject<T, true>: FormatRange<T> {};
 
         template <typename T1, typename T2>
-        struct FormatObject<std::pair<T1, T2>, false> {
-            u8string operator()(const std::pair<T1, T2>& p, uint64_t flags, int prec) const {
+        struct FormatObject<pair<T1, T2>, false> {
+            u8string operator()(const pair<T1, T2>& p, uint64_t flags, int prec) const {
                 return format_type(p.first, flags, prec) + ':' + format_type(p.second, flags, prec);
             }
         };

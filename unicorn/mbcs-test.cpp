@@ -37,7 +37,7 @@ namespace {
             loc = "<unknown>";
         else
             TRY(lookup_encoding(loc));
-        std::cout << "... Local encoding: " << loc << "\n";
+        cout << "... Local encoding: " << loc << "\n";
 
     }
 

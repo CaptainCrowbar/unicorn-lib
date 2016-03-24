@@ -144,7 +144,7 @@ namespace Unicorn {
         using string_type = basic_string<C>;
         using regex_type = BasicRegex<C>;
         using token_type = BasicToken<C>;
-        using callback_type = std::function<size_t(const string_type&, size_t)>;
+        using callback_type = function<size_t(const string_type&, size_t)>;
         using token_iterator = BasicTokenIterator<C>;
         using token_range = Irange<token_iterator>;
         BasicLexer(): BasicLexer(0) {}

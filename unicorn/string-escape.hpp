@@ -221,7 +221,7 @@ namespace Unicorn {
     void str_escape_in(basic_string<C>& str, uint32_t flags = 0) {
         basic_string<C> result;
         UnicornDetail::escape_helper(str, result, flags);
-        str = std::move(result);
+        str = move(result);
     }
 
     template <typename C>
@@ -235,7 +235,7 @@ namespace Unicorn {
     void str_unescape_in(basic_string<C>& str) {
         basic_string<C> result;
         UnicornDetail::unescape_helper(utf_begin(str), utf_end(str), result);
-        str = std::move(result);
+        str = move(result);
     }
 
     template <typename C>
@@ -251,7 +251,7 @@ namespace Unicorn {
         auto result = str_char<C>(quote);
         UnicornDetail::escape_helper(str, result, flags, quote);
         str_append_char(result, quote);
-        str = std::move(result);
+        str = move(result);
     }
 
     template <typename C>
@@ -265,7 +265,7 @@ namespace Unicorn {
     void str_unquote_in(basic_string<C>& str, char32_t quote = U'\"') {
         basic_string<C> result;
         UnicornDetail::unquote_helper(str, result, quote);
-        str = std::move(result);
+        str = move(result);
     }
 
 }

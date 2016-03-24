@@ -95,7 +95,7 @@ namespace Unicorn {
     }
 
     Environment& Environment::operator=(Environment&& env) noexcept {
-        map = std::move(env.map);
+        map = move(env.map);
         deconstruct();
         env.deconstruct();
         return *this;

@@ -235,9 +235,9 @@ mark.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>std::function&lt;bool(char32_t)&gt;</code> <strong><code>gc_predicate</code></strong><code>(uint16_t cat)</code></li>
-<li><code>std::function&lt;bool(char32_t)&gt;</code> <strong><code>gc_predicate</code></strong><code>(const u8string&amp; cat)</code></li>
-<li><code>std::function&lt;bool(char32_t)&gt;</code> <strong><code>gc_predicate</code></strong><code>(const char* cat)</code></li>
+<li><code>function&lt;bool(char32_t)&gt;</code> <strong><code>gc_predicate</code></strong><code>(uint16_t cat)</code></li>
+<li><code>function&lt;bool(char32_t)&gt;</code> <strong><code>gc_predicate</code></strong><code>(const u8string&amp; cat)</code></li>
+<li><code>function&lt;bool(char32_t)&gt;</code> <strong><code>gc_predicate</code></strong><code>(const char* cat)</code></li>
 </ul>
 <p>These return function objects that can be used to test a character for
 membership in one or more categories. The versions that take a string can
@@ -511,7 +511,7 @@ naming conventions.</p>
 <h2 id="numeric-properties">Numeric properties</h2>
 <div class="defns">
 <ul>
-<li><code>std::pair&lt;long long, long long&gt;</code> <strong><code>numeric_value</code></strong><code>(char32_t c)</code></li>
+<li><code>pair&lt;long long, long long&gt;</code> <strong><code>numeric_value</code></strong><code>(char32_t c)</code></li>
 </ul>
 <p>Returns the numeric value of a character, as a pair containg the numerator and
 denominator of the value. The denominator will always be positive. If the

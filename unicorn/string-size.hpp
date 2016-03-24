@@ -58,7 +58,7 @@ namespace Unicorn {
         };
 
         template <typename C>
-        std::pair<UtfIterator<C>, bool> find_position(const Irange<UtfIterator<C>>& range, size_t pos, uint32_t flags = 0) {
+        pair<UtfIterator<C>, bool> find_position(const Irange<UtfIterator<C>>& range, size_t pos, uint32_t flags = 0) {
             check_length_flags(flags);
             if (flags & character_units) {
                 auto i = range.begin();

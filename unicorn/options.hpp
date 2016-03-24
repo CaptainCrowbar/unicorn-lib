@@ -96,9 +96,9 @@ namespace Unicorn {
             bool parse(const basic_string<C>& args, std::basic_ostream<C2>& out, uint32_t flags = 0);
         template <typename C, typename C2>
             bool parse(int argc, C** argv, std::basic_ostream<C2>& out, uint32_t flags = 0);
-        template <typename C> bool parse(const vector<basic_string<C>>& args) { return parse(args, std::cout); }
-        template <typename C> bool parse(const basic_string<C>& args) { return parse(args, std::cout); }
-        template <typename C> bool parse(int argc, C** argv) { return parse(argc, argv, std::cout); }
+        template <typename C> bool parse(const vector<basic_string<C>>& args) { return parse(args, cout); }
+        template <typename C> bool parse(const basic_string<C>& args) { return parse(args, cout); }
+        template <typename C> bool parse(int argc, C** argv) { return parse(argc, argv, cout); }
         template <typename T> T get(const u8string& name) const
             { return UnicornDetail::ArgConv<T>()(str_join(find_values(name), " ")); }
         template <typename T> vector<T> get_list(const u8string& name) const;

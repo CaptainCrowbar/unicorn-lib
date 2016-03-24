@@ -96,14 +96,14 @@ int main(int argc, char** argv) {
                 frequencies.insert({pair.second, pair.first});
 
         for (auto&amp; pair: frequencies)
-            std::cout &lt;&lt; "[$1] $2\n"_fmt(pair.first, pair.second);
+            cout &lt;&lt; "[$1] $2\n"_fmt(pair.first, pair.second);
 
         return 0;
 
     }
 
     catch (const std::exception&amp; ex) {
-        std::cerr &lt;&lt; "*** " &lt;&lt; ex.what() &lt;&lt; "\n";
+        cerr &lt;&lt; "*** " &lt;&lt; ex.what() &lt;&lt; "\n";
         return EXIT_FAILURE;
     }
 
