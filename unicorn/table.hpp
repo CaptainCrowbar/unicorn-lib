@@ -37,7 +37,7 @@ namespace Unicorn {
         void clear() noexcept { cells.clear(); cells.resize(1); formats.clear(); }
         template <typename... FS> void format(const u8string& f, const FS&... fs) { format(f); format(fs...); }
         void format(const u8string& f) { formats.push_back(Unicorn::format(f)); }
-        template <typename C, typename... Args> std::basic_string<C> as_string(const Args&... args) const;
+        template <typename C, typename... Args> basic_string<C> as_string(const Args&... args) const;
         template <typename... Args> u8string str(const Args&... args) const { return as_string<char>(args...); }
         template <typename C, typename... Args> void write(std::basic_ostream<C>& out, const Args&... args) const;
     private:
@@ -60,11 +60,11 @@ namespace Unicorn {
     };
 
     template <typename C, typename... Args>
-    std::basic_string<C> Table::as_string(const Args&... args) const {
+    basic_string<C> Table::as_string(const Args&... args) const {
         auto spec = parse_args(args...);
         vector<u8string> lines;
         write_table(spec, lines);
-        std::basic_string<C> result;
+        basic_string<C> result;
         for (auto& line: lines) {
             result += recode<C>(line);
             result += PRI_CHAR('\n', C);

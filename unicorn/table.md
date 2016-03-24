@@ -85,7 +85,7 @@ unassigned code point, the insertion operator will throw
 horizontal rule across the table, by repeating the character to match the
 width of each column.
 
-* `template <typename C, typename... Args> std::basic_string<C> Table::`**`as_string`**`(const Args&... args) const`
+* `template <typename C, typename... Args> basic_string<C> Table::`**`as_string`**`(const Args&... args) const`
 * `template <typename... Args> u8string Table::`**`str`**`(const Args&... args) const`
 * `template <typename C, typename... Args> void Table::`**`write`**`(std::basic_ostream<C>& out, const Args&... args) const`
 
