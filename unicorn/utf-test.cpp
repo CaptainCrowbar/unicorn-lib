@@ -129,6 +129,40 @@ namespace {
 
         #endif
 
+        { char a[] = "\0\0\0\0";          u = 0;  TEST_EQUAL(char_from_utf8(a, u), 1);  TEST_EQUAL(u, 0); }
+        { char a[] = "\x4d\0\0\0";        u = 0;  TEST_EQUAL(char_from_utf8(a, u), 1);  TEST_EQUAL(u, 0x4d); }
+        { char a[] = "\xd0\xb0\0\0";      u = 0;  TEST_EQUAL(char_from_utf8(a, u), 2);  TEST_EQUAL(u, 0x430); }
+        { char a[] = "\xe4\xba\x8c\0";    u = 0;  TEST_EQUAL(char_from_utf8(a, u), 3);  TEST_EQUAL(u, 0x4e8c); }
+        { char a[] = "\xf0\x90\x8c\x82";  u = 0;  TEST_EQUAL(char_from_utf8(a, u), 4);  TEST_EQUAL(u, 0x10302); }
+        { char a[] = "\xf4\x8f\xbf\xbd";  u = 0;  TEST_EQUAL(char_from_utf8(a, u), 4);  TEST_EQUAL(u, 0x10fffd); }
+        { char a[] = "\xff\xff\xff\xff";  u = 0;  TEST_EQUAL(char_from_utf8(a, u), 0);  TEST_EQUAL(u, 0); }
+
+        TEST_EQUAL(char_to_utf8(0, buf8), 1);         TEST_EQUAL(u8string(buf8, 1), "\0"s);
+        TEST_EQUAL(char_to_utf8(0x4d, buf8), 1);      TEST_EQUAL(u8string(buf8, 1), "\x4d");
+        TEST_EQUAL(char_to_utf8(0x430, buf8), 2);     TEST_EQUAL(u8string(buf8, 2), "\xd0\xb0");
+        TEST_EQUAL(char_to_utf8(0x4e8c, buf8), 3);    TEST_EQUAL(u8string(buf8, 3), "\xe4\xba\x8c");
+        TEST_EQUAL(char_to_utf8(0x10302, buf8), 4);   TEST_EQUAL(u8string(buf8, 4), "\xf0\x90\x8c\x82");
+        TEST_EQUAL(char_to_utf8(0x10fffd, buf8), 4);  TEST_EQUAL(u8string(buf8, 4), "\xf4\x8f\xbf\xbd");
+        TEST_EQUAL(char_to_utf8(0xd800, buf8), 0);
+        TEST_EQUAL(char_to_utf8(0x110000, buf8), 0);
+
+        { char16_t a[] {0x0000, 0};       u = 0;  TEST_EQUAL(char_from_utf16(a, u), 1);  TEST_EQUAL(u, 0); }
+        { char16_t a[] {0x004d, 0};       u = 0;  TEST_EQUAL(char_from_utf16(a, u), 1);  TEST_EQUAL(u, 0x4d); }
+        { char16_t a[] {0x0430, 0};       u = 0;  TEST_EQUAL(char_from_utf16(a, u), 1);  TEST_EQUAL(u, 0x430); }
+        { char16_t a[] {0x4e8c, 0};       u = 0;  TEST_EQUAL(char_from_utf16(a, u), 1);  TEST_EQUAL(u, 0x4e8c); }
+        { char16_t a[] {0xd800, 0xdf02};  u = 0;  TEST_EQUAL(char_from_utf16(a, u), 2);  TEST_EQUAL(u, 0x10302); }
+        { char16_t a[] {0xdbff, 0xdffd};  u = 0;  TEST_EQUAL(char_from_utf16(a, u), 2);  TEST_EQUAL(u, 0x10fffd); }
+        { char16_t a[] {0xdffd, 0xdbff};  u = 0;  TEST_EQUAL(char_from_utf16(a, u), 0);  TEST_EQUAL(u, 0); }
+
+        TEST_EQUAL(char_to_utf16(0, buf16), 1);         TEST_EQUAL(buf16[0], 0);
+        TEST_EQUAL(char_to_utf16(0x4d, buf16), 1);      TEST_EQUAL(buf16[0], 0x4d);
+        TEST_EQUAL(char_to_utf16(0x430, buf16), 1);     TEST_EQUAL(buf16[0], 0x430);
+        TEST_EQUAL(char_to_utf16(0x4e8c, buf16), 1);    TEST_EQUAL(buf16[0], 0x4e8c);
+        TEST_EQUAL(char_to_utf16(0x10302, buf16), 2);   TEST_EQUAL(buf16[0], 0xd800);  TEST_EQUAL(buf16[1], 0xdf02);
+        TEST_EQUAL(char_to_utf16(0x10fffd, buf16), 2);  TEST_EQUAL(buf16[0], 0xdbff);  TEST_EQUAL(buf16[1], 0xdffd);
+        TEST_EQUAL(char_to_utf16(0xd800, buf16), 0);
+        TEST_EQUAL(char_to_utf16(0x110000, buf16), 0);
+
     }
 
     void check_basic_utilities() {

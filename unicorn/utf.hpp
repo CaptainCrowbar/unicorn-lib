@@ -134,20 +134,31 @@ namespace Unicorn {
 
     }
 
-    // Utility functions
+    // Single character functions
+
+    size_t char_from_utf8(const char* src, char32_t& dst) noexcept;
+    size_t char_from_utf16(const char16_t* src, char32_t& dst) noexcept;
+    size_t char_to_utf8(char32_t src, char* dst) noexcept;
+    size_t char_to_utf16(char32_t src, char16_t* dst) noexcept;
 
     template <typename C>
-    unsigned code_units(char32_t c) {
-        switch (sizeof(C)) {
-            case 1: return c <= 0x7f ? 1 : c <= 0x7ff ? 2 : c <= 0xffff ? 3 : 4;
-            case 2: return c <= 0xffff ? 1 : 2;
-            default: return 1;
-        }
+    size_t code_units(char32_t c) {
+        if (! char_is_unicode(c))
+            return 0;
+        else if (sizeof(C) == 1)
+            return c <= 0x7f ? 1 : c <= 0x7ff ? 2 : c <= 0xffff ? 3 : 4;
+        else if (sizeof(C) == 2)
+            return c <= 0xffff ? 1 : 2;
+        else
+            return 1;
     }
 
     template <typename C>
     bool is_single_unit(C c) {
-        return sizeof(C) == 1 ? uint8_t(c) <= 0x7f : char_is_unicode(c);
+        if (sizeof(C) == 1)
+            return uint8_t(c) <= 0x7f;
+        else
+            return char_is_unicode(c);
     }
 
     template <typename C>

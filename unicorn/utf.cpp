@@ -136,4 +136,38 @@ namespace Unicorn {
 
     }
 
+    // Single character functions
+
+    size_t char_from_utf8(const char* src, char32_t& dst) noexcept {
+        char32_t c = 0;
+        size_t n = UnicornDetail::UtfEncoding<char>::decode(src, 4, c);
+        if (c == not_unicode)
+            return 0;
+        dst = c;
+        return n;
+    }
+
+    size_t char_from_utf16(const char16_t* src, char32_t& dst) noexcept {
+        char32_t c = 0;
+        size_t n = UnicornDetail::UtfEncoding<char16_t>::decode(src, 2, c);
+        if (c == not_unicode)
+            return 0;
+        dst = c;
+        return n;
+    }
+
+    size_t char_to_utf8(char32_t src, char* dst) noexcept {
+        if (! char_is_unicode(src))
+            return 0;
+        else
+            return UnicornDetail::UtfEncoding<char>::encode(src, dst);
+    }
+
+    size_t char_to_utf16(char32_t src, char16_t* dst) noexcept {
+        if (! char_is_unicode(src))
+            return 0;
+        else
+            return UnicornDetail::UtfEncoding<char16_t>::encode(src, dst);
+    }
+
 }

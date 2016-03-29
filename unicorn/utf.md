@@ -54,12 +54,23 @@ functions in this module, the functions in [`unicorn/mbcs`](mbcs.html) that
 convert between Unicode and other encodings default to `err_replace`, and do
 not accept the `err_ignore` option.
 
-## Utility functions ##
+## Single character functions ##
 
-* `template <typename C> unsigned` **`code_units`**`(char32_t c)`
+* `size_t` **`char_from_utf8`**`(const char* src, char32_t& dst) noexcept`
+* `size_t` **`char_from_utf16`**`(const char16_t* src, char32_t& dst) noexcept`
+* `size_t` **`char_to_utf8`**`(char32_t src, char* dst) noexcept`
+* `size_t` **`char_to_utf16`**`(char32_t src, char16_t* dst) noexcept`
+
+Read one character from `src` and write the decoded or encoded form into
+`dst`, returning the number of code units read or written. If `src` does not
+contain a valid character, zero is returned and `dst` is left unchanged.
+Behaviour is undefined if a pointer argument is null.
+
+* `template <typename C> size_t` **`code_units`**`(char32_t c)`
 
 Returns the number of code units in the encoding of the character `c`, in the
-UTF encoding implied by the character type `C`.
+UTF encoding implied by the character type `C`, or zero if `c` is not a valid
+Unicode character.
 
 * `template <typename C> bool` **`is_single_unit`**`(C c)` _-- This code unit represents a character by itself_
 * `template <typename C> bool` **`is_start_unit`**`(C c)` _-- This is the first code unit of a multi-unit character_
@@ -68,7 +79,7 @@ UTF encoding implied by the character type `C`.
 * `template <typename C> bool` **`is_initial_unit`**`(C c)` _-- Either a single unit or a start unit_
 
 These give the properties of individual code units. Exactly one of the first
-four functions will be true for any value of `C`.
+four functions will be true for any value of the argument.
 
 ## UTF decoding iterator ##
 

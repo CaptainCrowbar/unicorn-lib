@@ -23,7 +23,7 @@ UTF-32; <code>wstring</code> may hold either UTF-16 or UTF-32, depending on the 
 <li><a href="#unicorn-library-utf-encodings">Unicorn Library: UTF Encodings</a><ul>
 <li><a href="#contents">Contents</a></li>
 <li><a href="#constants">Constants</a></li>
-<li><a href="#utility-functions">Utility functions</a></li>
+<li><a href="#single-character-functions">Single character functions</a></li>
 <li><a href="#utf-decoding-iterator">UTF decoding iterator</a></li>
 <li><a href="#utf-encoding-iterator">UTF encoding iterator</a></li>
 <li><a href="#utf-conversion-functions">UTF conversion functions</a></li>
@@ -82,13 +82,26 @@ functions in this module, the functions in <a href="mbcs.html"><code>unicorn/mbc
 convert between Unicode and other encodings default to <code>err_replace</code>, and do
 not accept the <code>err_ignore</code> option.</p>
 </div>
-<h2 id="utility-functions">Utility functions</h2>
+<h2 id="single-character-functions">Single character functions</h2>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; unsigned</code> <strong><code>code_units</code></strong><code>(char32_t c)</code></li>
+<li><code>size_t</code> <strong><code>char_from_utf8</code></strong><code>(const char* src, char32_t&amp; dst) noexcept</code></li>
+<li><code>size_t</code> <strong><code>char_from_utf16</code></strong><code>(const char16_t* src, char32_t&amp; dst) noexcept</code></li>
+<li><code>size_t</code> <strong><code>char_to_utf8</code></strong><code>(char32_t src, char* dst) noexcept</code></li>
+<li><code>size_t</code> <strong><code>char_to_utf16</code></strong><code>(char32_t src, char16_t* dst) noexcept</code></li>
+</ul>
+<p>Read one character from <code>src</code> and write the decoded or encoded form into
+<code>dst</code>, returning the number of code units read or written. If <code>src</code> does not
+contain a valid character, zero is returned and <code>dst</code> is left unchanged.
+Behaviour is undefined if a pointer argument is null.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>template &lt;typename C&gt; size_t</code> <strong><code>code_units</code></strong><code>(char32_t c)</code></li>
 </ul>
 <p>Returns the number of code units in the encoding of the character <code>c</code>, in the
-UTF encoding implied by the character type <code>C</code>.</p>
+UTF encoding implied by the character type <code>C</code>, or zero if <code>c</code> is not a valid
+Unicode character.</p>
 </div>
 <div class="defns">
 <ul>
@@ -99,7 +112,7 @@ UTF encoding implied by the character type <code>C</code>.</p>
 <li><code>template &lt;typename C&gt; bool</code> <strong><code>is_initial_unit</code></strong><code>(C c)</code> <em>-- Either a single unit or a start unit</em></li>
 </ul>
 <p>These give the properties of individual code units. Exactly one of the first
-four functions will be true for any value of <code>C</code>.</p>
+four functions will be true for any value of the argument.</p>
 </div>
 <h2 id="utf-decoding-iterator">UTF decoding iterator</h2>
 <div class="defns">
