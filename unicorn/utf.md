@@ -245,17 +245,18 @@ These are just shorthand for the corresponding invocation of `recode()`.
 
 ## UTF validation functions ##
 
-* `template <typename C> void` **`sanitize`**`(basic_string<C>& str)`
-
-This ensures that the string is a valid UTF encoding, by replacing any invalid
-data with the `U+FFFD` replacement character.
-
-* `template <typename C> bool` **`valid_string`**`(const basic_string<C>& str)`
 * `template <typename C> void` **`check_string`**`(const basic_string<C>& str)`
+* `template <typename C> bool` **`valid_string`**`(const basic_string<C>& str)`
 
 These check for valid encoding. If the string contains invalid UTF,
 `valid_string()` returns `false`, while `check_string()` throws
 `EncodingError`.
+
+* `template <typename C> basic_string<C>` **`sanitize`**`(const basic_string<C>& str)`
+* `template <typename C> void` **`sanitize_in`**`(basic_string<C>& str)`
+
+Ensure that the string is a valid UTF encoding, by replacing any invalid data
+with the `U+FFFD` replacement character.
 
 * `template <typename C> size_t` **`valid_count`**`(const basic_string<C>& str) noexcept`
 

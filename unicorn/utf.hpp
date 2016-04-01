@@ -568,10 +568,17 @@ namespace Unicorn {
     // UTF validation functions
 
     template <typename C>
-    void sanitize(basic_string<C>& str) {
-        basic_string<C> result;
-        recode(str, result, err_replace);
-        str.swap(result);
+    void check_string(const basic_string<C>& str) {
+        using namespace UnicornDetail;
+        auto data = str.data();
+        size_t pos = 0, size = str.size();
+        char32_t u = 0;
+        while (pos < size) {
+            auto rc = UtfEncoding<C>::decode(data + pos, size - pos, u);
+            if (! char_is_unicode(u))
+                throw EncodingError(UtfEncoding<C>::name(), pos, data + pos, rc);
+            pos += rc;
+        }
     }
 
     template <typename C>
@@ -591,17 +598,17 @@ namespace Unicorn {
     }
 
     template <typename C>
-    void check_string(const basic_string<C>& str) {
-        using namespace UnicornDetail;
-        auto data = str.data();
-        size_t pos = 0, size = str.size();
-        char32_t u = 0;
-        while (pos < size) {
-            auto rc = UtfEncoding<C>::decode(data + pos, size - pos, u);
-            if (! char_is_unicode(u))
-                throw EncodingError(UtfEncoding<C>::name(), pos, data + pos, rc);
-            pos += rc;
-        }
+    basic_string<C> sanitize(const basic_string<C>& str) {
+        basic_string<C> result;
+        recode(str, result, err_replace);
+        return result;
+    }
+
+    template <typename C>
+    void sanitize_in(basic_string<C>& str) {
+        basic_string<C> result;
+        recode(str, result, err_replace);
+        str.swap(result);
     }
 
     template <typename C>

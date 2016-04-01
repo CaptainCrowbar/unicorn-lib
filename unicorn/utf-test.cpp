@@ -620,22 +620,12 @@ namespace {
         u32string s32;
         wstring sw;
 
-        s8 = a8;    TRY(sanitize(s8));   TEST_EQUAL(s8, a8);
-        s8 = b8;    TRY(sanitize(s8));   TEST_EQUAL(s8, b8);
-        s8 = c8;    TRY(sanitize(s8));   TEST_EQUAL(s8, c8);
-        s8 = x8;    TRY(sanitize(s8));   TEST_EQUAL(s8, y8);
-        s16 = a16;  TRY(sanitize(s16));  TEST_EQUAL(s16, a16);
-        s16 = b16;  TRY(sanitize(s16));  TEST_EQUAL(s16, b16);
-        s16 = c16;  TRY(sanitize(s16));  TEST_EQUAL(s16, c16);
-        s16 = x16;  TRY(sanitize(s16));  TEST_EQUAL(s16, y16);
-        s32 = a32;  TRY(sanitize(s32));  TEST_EQUAL(s32, a32);
-        s32 = b32;  TRY(sanitize(s32));  TEST_EQUAL(s32, b32);
-        s32 = c32;  TRY(sanitize(s32));  TEST_EQUAL(s32, c32);
-        s32 = x32;  TRY(sanitize(s32));  TEST_EQUAL(s32, y32);
-        sw = aw;    TRY(sanitize(sw));   TEST_EQUAL(sw, aw);
-        sw = bw;    TRY(sanitize(sw));   TEST_EQUAL(sw, bw);
-        sw = cw;    TRY(sanitize(sw));   TEST_EQUAL(sw, cw);
-        sw = xw;    TRY(sanitize(sw));   TEST_EQUAL(sw, yw);
+        TRY(check_string(c8));
+        TEST_THROW(check_string(x8), EncodingError);
+        TRY(check_string(c16));
+        TEST_THROW(check_string(x16), EncodingError);
+        TRY(check_string(c32));
+        TEST_THROW(check_string(x32), EncodingError);
 
         TEST(valid_string(a8));
         TEST(valid_string(b8));
@@ -650,12 +640,39 @@ namespace {
         TEST(valid_string(c32));
         TEST(! valid_string(x32));
 
-        TRY(check_string(c8));
-        TEST_THROW(check_string(x8), EncodingError);
-        TRY(check_string(c16));
-        TEST_THROW(check_string(x16), EncodingError);
-        TRY(check_string(c32));
-        TEST_THROW(check_string(x32), EncodingError);
+        TRY(s8 = sanitize(a8));    TEST_EQUAL(s8, a8);
+        TRY(s8 = sanitize(b8));    TEST_EQUAL(s8, b8);
+        TRY(s8 = sanitize(c8));    TEST_EQUAL(s8, c8);
+        TRY(s8 = sanitize(x8));    TEST_EQUAL(s8, y8);
+        TRY(s16 = sanitize(a16));  TEST_EQUAL(s16, a16);
+        TRY(s16 = sanitize(b16));  TEST_EQUAL(s16, b16);
+        TRY(s16 = sanitize(c16));  TEST_EQUAL(s16, c16);
+        TRY(s16 = sanitize(x16));  TEST_EQUAL(s16, y16);
+        TRY(s32 = sanitize(a32));  TEST_EQUAL(s32, a32);
+        TRY(s32 = sanitize(b32));  TEST_EQUAL(s32, b32);
+        TRY(s32 = sanitize(c32));  TEST_EQUAL(s32, c32);
+        TRY(s32 = sanitize(x32));  TEST_EQUAL(s32, y32);
+        TRY(sw = sanitize(aw));    TEST_EQUAL(sw, aw);
+        TRY(sw = sanitize(bw));    TEST_EQUAL(sw, bw);
+        TRY(sw = sanitize(cw));    TEST_EQUAL(sw, cw);
+        TRY(sw = sanitize(xw));    TEST_EQUAL(sw, yw);
+
+        s8 = a8;    TRY(sanitize_in(s8));   TEST_EQUAL(s8, a8);
+        s8 = b8;    TRY(sanitize_in(s8));   TEST_EQUAL(s8, b8);
+        s8 = c8;    TRY(sanitize_in(s8));   TEST_EQUAL(s8, c8);
+        s8 = x8;    TRY(sanitize_in(s8));   TEST_EQUAL(s8, y8);
+        s16 = a16;  TRY(sanitize_in(s16));  TEST_EQUAL(s16, a16);
+        s16 = b16;  TRY(sanitize_in(s16));  TEST_EQUAL(s16, b16);
+        s16 = c16;  TRY(sanitize_in(s16));  TEST_EQUAL(s16, c16);
+        s16 = x16;  TRY(sanitize_in(s16));  TEST_EQUAL(s16, y16);
+        s32 = a32;  TRY(sanitize_in(s32));  TEST_EQUAL(s32, a32);
+        s32 = b32;  TRY(sanitize_in(s32));  TEST_EQUAL(s32, b32);
+        s32 = c32;  TRY(sanitize_in(s32));  TEST_EQUAL(s32, c32);
+        s32 = x32;  TRY(sanitize_in(s32));  TEST_EQUAL(s32, y32);
+        sw = aw;    TRY(sanitize_in(sw));   TEST_EQUAL(sw, aw);
+        sw = bw;    TRY(sanitize_in(sw));   TEST_EQUAL(sw, bw);
+        sw = cw;    TRY(sanitize_in(sw));   TEST_EQUAL(sw, cw);
+        sw = xw;    TRY(sanitize_in(sw));   TEST_EQUAL(sw, yw);
 
         TEST_EQUAL(valid_count(a8), npos);
         TEST_EQUAL(valid_count(b8), npos);

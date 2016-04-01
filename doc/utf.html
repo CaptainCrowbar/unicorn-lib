@@ -290,19 +290,20 @@ will contain the successfully converted part of the string before the error.</p>
 <h2 id="utf-validation-functions">UTF validation functions</h2>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>sanitize</code></strong><code>(basic_string&lt;C&gt;&amp; str)</code></li>
-</ul>
-<p>This ensures that the string is a valid UTF encoding, by replacing any invalid
-data with the <code>U+FFFD</code> replacement character.</p>
-</div>
-<div class="defns">
-<ul>
-<li><code>template &lt;typename C&gt; bool</code> <strong><code>valid_string</code></strong><code>(const basic_string&lt;C&gt;&amp; str)</code></li>
 <li><code>template &lt;typename C&gt; void</code> <strong><code>check_string</code></strong><code>(const basic_string&lt;C&gt;&amp; str)</code></li>
+<li><code>template &lt;typename C&gt; bool</code> <strong><code>valid_string</code></strong><code>(const basic_string&lt;C&gt;&amp; str)</code></li>
 </ul>
 <p>These check for valid encoding. If the string contains invalid UTF,
 <code>valid_string()</code> returns <code>false</code>, while <code>check_string()</code> throws
 <code>EncodingError</code>.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>sanitize</code></strong><code>(const basic_string&lt;C&gt;&amp; str)</code></li>
+<li><code>template &lt;typename C&gt; void</code> <strong><code>sanitize_in</code></strong><code>(basic_string&lt;C&gt;&amp; str)</code></li>
+</ul>
+<p>Ensure that the string is a valid UTF encoding, by replacing any invalid data
+with the <code>U+FFFD</code> replacement character.</p>
 </div>
 <div class="defns">
 <ul>

@@ -201,9 +201,7 @@ namespace Unicorn {
             u8string operator()(T t, uint64_t /*flags*/, int /*prec*/) const {
                 std::ostringstream out;
                 out << t;
-                auto s = out.str();
-                sanitize(s);
-                return s;
+                return sanitize(out.str());
             }
         };
 
