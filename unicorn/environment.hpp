@@ -109,7 +109,7 @@ namespace Unicorn {
         explicit Environment(bool from_process) { if (from_process) load(); }
         Environment(const Environment& env): map(env.map), block(), index() {}
         Environment(Environment&& env) noexcept: map(move(env.map)), block(), index() { env.deconstruct(); }
-        ~Environment() noexcept = default;
+        ~Environment() = default;
         Environment& operator=(const Environment& env);
         Environment& operator=(Environment&& env) noexcept;
         template <typename C> basic_string<C> operator[](const basic_string<C>& name) { return get(name); }
