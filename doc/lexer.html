@@ -92,6 +92,10 @@ start of the original subject string.</p>
 <li><code>using</code> <strong><code>Token16</code></strong> <code>= BasicToken&lt;char16_t&gt;</code></li>
 <li><code>using</code> <strong><code>Token32</code></strong> <code>= BasicToken&lt;char32_t&gt;</code></li>
 <li><code>using</code> <strong><code>WideToken</code></strong> <code>= BasicToken&lt;wchar_t&gt;</code></li>
+<li><code>using</code> <strong><code>TokenList</code></strong> <code>= vector&lt;Token&gt;</code></li>
+<li><code>using</code> <strong><code>TokenList16</code></strong> <code>= vector&lt;Token16&gt;</code></li>
+<li><code>using</code> <strong><code>TokenList32</code></strong> <code>= vector&lt;Token32&gt;</code></li>
+<li><code>using</code> <strong><code>WideTokenList</code></strong> <code>= vector&lt;WideToken&gt;</code></li>
 </ul>
 <p>This contains the details of a token. The <code>text</code> member points to the original
 subject string; <code>offset</code> and <code>count</code> give the position and length of the token
@@ -138,6 +142,7 @@ exists.</p>
 <li><code>using BasicLexer::</code><strong><code>token_iterator</code></strong> <code>= BasicTokenIterator&lt;C&gt;</code></li>
 <li><code>using BasicLexer::</code><strong><code>token_range</code></strong> <code>= Irange&lt;token_iterator&gt;</code></li>
 <li><code>using BasicLexer::</code><strong><code>token_type</code></strong> <code>= BasicToken&lt;C&gt;</code></li>
+<li><code>using BasicLexer::</code><strong><code>token_list</code></strong> <code>= vector&lt;token_type&gt;</code></li>
 <li><code>BasicLexer::</code><strong><code>BasicLexer</code></strong><code>()</code></li>
 <li><code>explicit BasicLexer::</code><strong><code>BasicLexer</code></strong><code>(uint32_t flags)</code></li>
 <li><code>BasicLexer::</code><strong><code>BasicLexer</code></strong><code>(const BasicLexer&amp; lex)</code></li>
@@ -152,6 +157,7 @@ exists.</p>
 <li><code>void BasicLexer::</code><strong><code>match</code></strong><code>(int tag, const C* pattern, uint32_t flags = 0)</code></li>
 <li><code>void BasicLexer::</code><strong><code>custom</code></strong><code>(int tag, const callback_type&amp; call)</code></li>
 <li><code>BasicLexer::token_range BasicLexer::</code><strong><code>operator()</code></strong><code>(const string_type&amp; text) const</code></li>
+<li><code>void BasicLexer::</code><strong><code>operator()</code></strong><code>(const string_type&amp; text, token_list&amp; tokens) const</code></li>
 </ul>
 </li>
 <li><code>using</code> <strong><code>Lexer</code></strong> <code>= BasicLexer&lt;char&gt;</code></li>
@@ -161,8 +167,10 @@ exists.</p>
 </ul>
 <p>The lexer class. Normally this will be used by first adding a number of user
 defined lexical rules through the <code>exact()</code>, <code>match()</code>, and <code>custom()</code>
-functions, then applying the lexer to a subject string through the function
-call operator.</p>
+functions, then applying the lexer to a subject string through one of the
+function call operators. The first version of the function call returns a pair
+of iterators that can be used to step through the token stream; the second
+generates the complete token list at once.</p>
 <p>The constructor that takes a <code>flags</code> argument accepts a bitmask of regular
 expression flags, and adds them to any regex pattern later supplied through
 the <code>match()</code> function; this is just a convenience to avoid having to repeat

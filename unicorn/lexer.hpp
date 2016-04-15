@@ -24,23 +24,27 @@ namespace Unicorn {
     using Lexer = BasicLexer<char>;
     using Token = BasicToken<char>;
     using TokenIterator = BasicTokenIterator<char>;
+    using TokenList = vector<Token>;
 
     #if defined(UNICORN_PCRE16)
         using Lexer16 = BasicLexer<char16_t>;
         using Token16 = BasicToken<char16_t>;
         using TokenIterator16 = BasicTokenIterator<char16_t>;
+        using TokenList16 = vector<Token16>;
     #endif
 
     #if defined(UNICORN_PCRE32)
         using Lexer32 = BasicLexer<char32_t>;
         using Token32 = BasicToken<char32_t>;
         using TokenIterator32 = BasicTokenIterator<char32_t>;
+        using TokenList32 = vector<Token32>;
     #endif
 
     #if defined(UNICORN_PCRE_WCHAR)
         using WideLexer = BasicLexer<wchar_t>;
         using WideToken = BasicToken<wchar_t>;
         using WideTokenIterator = BasicTokenIterator<wchar_t>;
+        using WideTokenList = vector<WideToken>;
     #endif
 
     // Exceptions
@@ -144,6 +148,7 @@ namespace Unicorn {
         using string_type = basic_string<C>;
         using regex_type = BasicRegex<C>;
         using token_type = BasicToken<C>;
+        using token_list = vector<token_type>;
         using callback_type = function<size_t(const string_type&, size_t)>;
         using token_iterator = BasicTokenIterator<C>;
         using token_range = Irange<token_iterator>;
@@ -157,6 +162,7 @@ namespace Unicorn {
         void match(int tag, const C* pattern, uint32_t flags = 0) { add_match(tag, regex_type(pattern, fix_flags(flags))); }
         void custom(int tag, const callback_type& call);
         token_range operator()(const string_type& text) const;
+        void operator()(const string_type& text, token_list& tokens) const;
     private:
         friend class BasicTokenIterator<C>;
         struct element {
@@ -230,6 +236,13 @@ namespace Unicorn {
         result.first.token.tag = result.second.token.tag = 0;
         ++result.first;
         return result;
+    }
+
+    template <typename C>
+    void BasicLexer<C>::operator()(const string_type& text, token_list& tokens) const {
+        auto range = (*this)(text);
+        token_list list(range.begin(), range.end());
+        tokens = move(list);
     }
 
 }

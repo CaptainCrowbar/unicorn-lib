@@ -74,6 +74,10 @@ start of the original subject string.
 * `using` **`Token16`** `= BasicToken<char16_t>`
 * `using` **`Token32`** `= BasicToken<char32_t>`
 * `using` **`WideToken`** `= BasicToken<wchar_t>`
+* `using` **`TokenList`** `= vector<Token>`
+* `using` **`TokenList16`** `= vector<Token16>`
+* `using` **`TokenList32`** `= vector<Token32>`
+* `using` **`WideTokenList`** `= vector<WideToken>`
 
 This contains the details of a token. The `text` member points to the original
 subject string; `offset` and `count` give the position and length of the token
@@ -116,6 +120,7 @@ exists.
     * `using BasicLexer::`**`token_iterator`** `= BasicTokenIterator<C>`
     * `using BasicLexer::`**`token_range`** `= Irange<token_iterator>`
     * `using BasicLexer::`**`token_type`** `= BasicToken<C>`
+    * `using BasicLexer::`**`token_list`** `= vector<token_type>`
     * `BasicLexer::`**`BasicLexer`**`()`
     * `explicit BasicLexer::`**`BasicLexer`**`(uint32_t flags)`
     * `BasicLexer::`**`BasicLexer`**`(const BasicLexer& lex)`
@@ -130,6 +135,7 @@ exists.
     * `void BasicLexer::`**`match`**`(int tag, const C* pattern, uint32_t flags = 0)`
     * `void BasicLexer::`**`custom`**`(int tag, const callback_type& call)`
     * `BasicLexer::token_range BasicLexer::`**`operator()`**`(const string_type& text) const`
+    * `void BasicLexer::`**`operator()`**`(const string_type& text, token_list& tokens) const`
 * `using` **`Lexer`** `= BasicLexer<char>`
 * `using` **`Lexer16`** `= BasicLexer<char16_t>`
 * `using` **`Lexer32`** `= BasicLexer<char32_t>`
@@ -137,8 +143,10 @@ exists.
 
 The lexer class. Normally this will be used by first adding a number of user
 defined lexical rules through the `exact()`, `match()`, and `custom()`
-functions, then applying the lexer to a subject string through the function
-call operator.
+functions, then applying the lexer to a subject string through one of the
+function call operators. The first version of the function call returns a pair
+of iterators that can be used to step through the token stream; the second
+generates the complete token list at once.
 
 The constructor that takes a `flags` argument accepts a bitmask of regular
 expression flags, and adds them to any regex pattern later supplied through
