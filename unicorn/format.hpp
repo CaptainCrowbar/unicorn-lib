@@ -2,7 +2,6 @@
 
 #include "unicorn/core.hpp"
 #include "unicorn/character.hpp"
-#include "unicorn/regex.hpp"
 #include "unicorn/string.hpp"
 #include "unicorn/utf.hpp"
 #include <chrono>
@@ -281,28 +280,38 @@ namespace Unicorn {
     template <typename C>
     BasicFormat<C>::BasicFormat(const string_type& format):
     fmt(format), seq() {
-        using regex_type = BasicRegex<C>;
-        static const u8string pattern_ascii =
-            "(?:\\$(\\d+)(\\w*))"
-            "|(?:\\$\\{(\\d+)([^{}]*)\\})"
-            "|(?:\\$(.?))";
-        static const regex_type pattern(recode<C>(pattern_ascii));
-        size_t prev = 0;
-        for (;;) {
-            auto match = pattern.search(format, prev);
-            if (! match) {
-                add_literal(format.substr(prev, npos));
+        auto i = utf_begin(format), end = utf_end(format);
+        while (i != end) {
+            auto j = std::find(i, end, U'$');
+            add_literal(u_str(i, j));
+            i = std::next(j);
+            if (i == end)
                 break;
+            string_type prefix, suffix;
+            if (char_is_digit(*i)) {
+                auto k = std::find_if_not(i, end, char_is_digit);
+                j = std::find_if_not(k, end, char_is_alphanumeric);
+                prefix = u_str(i, k);
+                suffix = u_str(k, j);
+            } else if (*i == U'{') {
+                auto k = std::next(i);
+                if (char_is_digit(*k)) {
+                    auto l = std::find_if_not(k, end, char_is_digit);
+                    j = std::find(l, end, U'}');
+                    if (j != end) {
+                        prefix = u_str(k, l);
+                        suffix = u_str(l, j);
+                        ++j;
+                    }
+                }
             }
-            if (match.offset() > prev)
-                add_literal(format.substr(prev, match.offset() - prev));
-            if (match.count(1))
-                add_index(str_to_int<unsigned>(match[1]), match[2]);
-            else if (match.count(3))
-                add_index(str_to_int<unsigned>(match[3]), match[4]);
-            else
-                add_literal(match[5]);
-            prev = match.endpos();
+            if (prefix.empty()) {
+                add_literal(i.str());
+                ++i;
+            } else {
+                add_index(str_to_int<unsigned>(prefix), suffix);
+                i = j;
+            }
         }
     }
 

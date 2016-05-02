@@ -36,11 +36,11 @@ build/$(TARGET)/file.o: unicorn/file.cpp unicorn/file.hpp unicorn/core.hpp \
   unicorn/utf.hpp unicorn/string-property.hpp unicorn/string-size.hpp \
   unicorn/segment.hpp unicorn/string-case.hpp \
   unicorn/string-conversion.hpp unicorn/string-escape.hpp \
-  unicorn/string-manip.hpp unicorn/format.hpp unicorn/regex.hpp \
-  unicorn/mbcs.hpp
+  unicorn/string-manip.hpp unicorn/format.hpp unicorn/mbcs.hpp \
+  unicorn/regex.hpp
 build/$(TARGET)/format-test.o: unicorn/format-test.cpp unicorn/core.hpp \
   $(LIBROOT)/prion-lib/prion/core.hpp unicorn/format.hpp unicorn/character.hpp \
-  unicorn/property-values.hpp unicorn/regex.hpp unicorn/string.hpp \
+  unicorn/property-values.hpp unicorn/string.hpp \
   unicorn/string-algorithm.hpp unicorn/string-forward.hpp \
   unicorn/utf.hpp unicorn/string-property.hpp unicorn/string-size.hpp \
   unicorn/segment.hpp unicorn/string-case.hpp \
@@ -48,12 +48,12 @@ build/$(TARGET)/format-test.o: unicorn/format-test.cpp unicorn/core.hpp \
   unicorn/string-manip.hpp $(LIBROOT)/prion-lib/prion/unit-test.hpp
 build/$(TARGET)/format.o: unicorn/format.cpp unicorn/format.hpp unicorn/core.hpp \
   $(LIBROOT)/prion-lib/prion/core.hpp unicorn/character.hpp \
-  unicorn/property-values.hpp unicorn/regex.hpp unicorn/string.hpp \
+  unicorn/property-values.hpp unicorn/string.hpp \
   unicorn/string-algorithm.hpp unicorn/string-forward.hpp \
   unicorn/utf.hpp unicorn/string-property.hpp unicorn/string-size.hpp \
   unicorn/segment.hpp unicorn/string-case.hpp \
   unicorn/string-conversion.hpp unicorn/string-escape.hpp \
-  unicorn/string-manip.hpp
+  unicorn/string-manip.hpp unicorn/regex.hpp
 build/$(TARGET)/io-test.o: unicorn/io-test.cpp unicorn/core.hpp \
   $(LIBROOT)/prion-lib/prion/core.hpp unicorn/io.hpp unicorn/character.hpp \
   unicorn/property-values.hpp unicorn/file.hpp unicorn/string.hpp \
@@ -69,8 +69,7 @@ build/$(TARGET)/io.o: unicorn/io.cpp unicorn/io.hpp unicorn/core.hpp \
   unicorn/utf.hpp unicorn/string-property.hpp unicorn/string-size.hpp \
   unicorn/segment.hpp unicorn/string-case.hpp \
   unicorn/string-conversion.hpp unicorn/string-escape.hpp \
-  unicorn/string-manip.hpp unicorn/format.hpp unicorn/regex.hpp \
-  unicorn/mbcs.hpp
+  unicorn/string-manip.hpp unicorn/format.hpp unicorn/mbcs.hpp
 build/$(TARGET)/lexer-test.o: unicorn/lexer-test.cpp unicorn/core.hpp \
   $(LIBROOT)/prion-lib/prion/core.hpp unicorn/lexer.hpp unicorn/character.hpp \
   unicorn/property-values.hpp unicorn/regex.hpp unicorn/string.hpp \
@@ -218,15 +217,15 @@ build/$(TARGET)/string-size-test.o: unicorn/string-size-test.cpp unicorn/string-
   unicorn/string-forward.hpp $(LIBROOT)/prion-lib/prion/unit-test.hpp
 build/$(TARGET)/table-test.o: unicorn/table-test.cpp unicorn/core.hpp \
   $(LIBROOT)/prion-lib/prion/core.hpp unicorn/table.hpp unicorn/format.hpp \
-  unicorn/character.hpp unicorn/property-values.hpp unicorn/regex.hpp \
-  unicorn/string.hpp unicorn/string-algorithm.hpp \
-  unicorn/string-forward.hpp unicorn/utf.hpp unicorn/string-property.hpp \
-  unicorn/string-size.hpp unicorn/segment.hpp unicorn/string-case.hpp \
+  unicorn/character.hpp unicorn/property-values.hpp unicorn/string.hpp \
+  unicorn/string-algorithm.hpp unicorn/string-forward.hpp \
+  unicorn/utf.hpp unicorn/string-property.hpp unicorn/string-size.hpp \
+  unicorn/segment.hpp unicorn/string-case.hpp \
   unicorn/string-conversion.hpp unicorn/string-escape.hpp \
   unicorn/string-manip.hpp $(LIBROOT)/prion-lib/prion/unit-test.hpp
 build/$(TARGET)/table.o: unicorn/table.cpp unicorn/table.hpp unicorn/core.hpp \
   $(LIBROOT)/prion-lib/prion/core.hpp unicorn/format.hpp unicorn/character.hpp \
-  unicorn/property-values.hpp unicorn/regex.hpp unicorn/string.hpp \
+  unicorn/property-values.hpp unicorn/string.hpp \
   unicorn/string-algorithm.hpp unicorn/string-forward.hpp \
   unicorn/utf.hpp unicorn/string-property.hpp unicorn/string-size.hpp \
   unicorn/segment.hpp unicorn/string-case.hpp \
