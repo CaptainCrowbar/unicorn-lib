@@ -218,7 +218,7 @@ access permission problems.
 Query whether a file exists. This may give a false negative if the file exists
 but is not accessible to the calling process.
 
-* `template <typename C> FileId` **`file_id`**`(const basic_string<C>& file, uint32_t flags = 0) noexcept`
+* `template <typename C> FileId` **`file_id`**`(const basic_string<C>& file, uint32_t flags = 0)`
 
 Returns a unique file identifier, intended to identify the file even if it is
 referred to by different paths. It will return zero if the file does not exist
@@ -229,7 +229,8 @@ is not a symlink.
 
 This is based on the device and inode numbers on Unix, or the file index on
 Windows. Completely reliable file identification cannot be guaranteed in the
-presence of parallel remote mounts or similar trickery.
+presence of parallel remote mounts or similar trickery. On some systems it may
+throw `std::system_error` in unusual cases.
 
 * `template <typename C> bool` **`file_is_directory`**`(const basic_string<C>& file) noexcept`
 

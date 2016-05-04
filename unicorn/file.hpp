@@ -312,7 +312,7 @@ namespace Unicorn {
 
         NativeString native_current_directory();
         bool native_file_exists(const NativeString& file) noexcept;
-        FileId native_file_id(const NativeString& file, uint32_t flags) noexcept;
+        FileId native_file_id(const NativeString& file, uint32_t flags);
         bool native_file_is_directory(const NativeString& file) noexcept;
         bool native_file_is_hidden(const NativeString& file) noexcept;
         bool native_file_is_symlink(const NativeString& file) noexcept;
@@ -340,7 +340,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    FileId file_id(const basic_string<C>& file, uint32_t flags = 0) noexcept {
+    FileId file_id(const basic_string<C>& file, uint32_t flags = 0) {
         using namespace UnicornDetail;
         return native_file_id(native_file(file), flags);
     }

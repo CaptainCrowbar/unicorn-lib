@@ -147,7 +147,7 @@ namespace Unicorn {
                 return stat(file.data(), &s) == 0;
             }
 
-            FileId native_file_id(const NativeString& file, uint32_t flags) noexcept {
+            FileId native_file_id(const NativeString& file, uint32_t flags) {
                 struct stat s;
                 int rc;
                 if (flags & fs_follow)
@@ -330,7 +330,7 @@ namespace Unicorn {
                 return file == L"." || file == L".." || get_attributes(file) || is_drive(file);
             }
 
-            FileId native_file_id(const NativeString& file, uint32_t flags) noexcept {
+            FileId native_file_id(const NativeString& file, uint32_t flags) {
                 NativeString f;
                 try {
                     if (flags & fs_follow)
@@ -342,8 +342,8 @@ namespace Unicorn {
                     return 0;
                 }
                 shared_ptr<HandleTarget> handle(CreateFileW(f.data(), GENERIC_READ, FILE_SHARE_READ,
-                    nullptr, OPEN_EXISTING, 0, nullptr), CloseHandle);
-                if (! handle)
+                    nullptr, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS , nullptr), CloseHandle);
+                if (handle.get() == INVALID_HANDLE_VALUE)
                     return 0;
                 BY_HANDLE_FILE_INFORMATION info;
                 memset(&info, 0, sizeof(info));
@@ -394,8 +394,8 @@ namespace Unicorn {
                 if (! native_file_is_symlink(file))
                     return file;
                 shared_ptr<HandleTarget> handle(CreateFileW(file.data(), GENERIC_READ, FILE_SHARE_READ,
-                    nullptr, OPEN_EXISTING, 0, nullptr), CloseHandle);
-                if (! handle) {
+                    nullptr, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS , nullptr), CloseHandle);
+                if (handle.get() == INVALID_HANDLE_VALUE) {
                     auto error = GetLastError();
                     throw std::system_error(error, std::generic_category(), quote_file(file));
                 }

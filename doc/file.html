@@ -263,7 +263,7 @@ but is not accessible to the calling process.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; FileId</code> <strong><code>file_id</code></strong><code>(const basic_string&lt;C&gt;&amp; file, uint32_t flags = 0) noexcept</code></li>
+<li><code>template &lt;typename C&gt; FileId</code> <strong><code>file_id</code></strong><code>(const basic_string&lt;C&gt;&amp; file, uint32_t flags = 0)</code></li>
 </ul>
 <p>Returns a unique file identifier, intended to identify the file even if it is
 referred to by different paths. It will return zero if the file does not exist
@@ -273,7 +273,8 @@ linked file instead of that of the symlink; it has no effect if the file named
 is not a symlink.</p>
 <p>This is based on the device and inode numbers on Unix, or the file index on
 Windows. Completely reliable file identification cannot be guaranteed in the
-presence of parallel remote mounts or similar trickery.</p>
+presence of parallel remote mounts or similar trickery. On some systems it may
+throw <code>std::system_error</code> in unusual cases.</p>
 </div>
 <div class="defns">
 <ul>
