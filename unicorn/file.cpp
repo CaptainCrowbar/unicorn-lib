@@ -5,11 +5,9 @@
 #include <cerrno>
 #include <cstdio>
 #include <system_error>
-#include <type_traits>
 
 #if defined(PRI_TARGET_UNIX)
     #include <dirent.h>
-    #include <sys/stat.h>
     #include <sys/types.h>
     #include <unistd.h>
 #else
@@ -147,6 +145,20 @@ namespace Unicorn {
             bool native_file_exists(const string& file) noexcept {
                 struct stat s;
                 return stat(file.data(), &s) == 0;
+            }
+
+            FileId native_file_id(const NativeString& file, uint32_t flags) noexcept {
+                struct stat s;
+                int rc;
+                if (flags & fs_follow)
+                    rc = stat(file.data(), &s);
+                else
+                    rc = lstat(file.data(), &s);
+                if (rc != 0)
+                    return 0;
+                auto dev = FileId(s.st_dev);
+                auto ino = FileId(s.st_ino);
+                return (dev << (8 * sizeof(ino_t))) + ino;
             }
 
             bool native_file_is_directory(const string& file) noexcept {
@@ -318,6 +330,30 @@ namespace Unicorn {
                 return file == L"." || file == L".." || get_attributes(file) || is_drive(file);
             }
 
+            FileId native_file_id(const NativeString& file, uint32_t flags) noexcept {
+                NativeString f;
+                try {
+                    if (flags & fs_follow)
+                        f = native_resolve_symlink(file);
+                    else
+                        f = file;
+                }
+                catch (const std::exception&) {
+                    return 0;
+                }
+                shared_ptr<HandleTarget> handle(CreateFileW(f.data(), GENERIC_READ, FILE_SHARE_READ,
+                    nullptr, OPEN_EXISTING, 0, nullptr), CloseHandle);
+                if (! handle)
+                    return 0;
+                BY_HANDLE_FILE_INFORMATION info;
+                memset(&info, 0, sizeof(info));
+                if (! GetFileInformationByHandle(handle.get(), &info))
+                    return 0;
+                uint64_t hi = info.nFileIndexHigh;
+                uint64_t lo = info.nFileIndexLow;
+                return (hi << 32) + lo;
+            }
+
             bool native_file_is_directory(const wstring& file) noexcept {
                 return file == L"." || file == L".."
                     || (get_attributes(file) & FILE_ATTRIBUTE_DIRECTORY)
@@ -466,7 +502,7 @@ namespace Unicorn {
             bool overwrite = (flags & fs_overwrite) != 0, recurse = (flags & fs_recurse) != 0;
             if (! native_file_exists(src))
                 throw std::system_error(std::make_error_code(std::errc::no_such_file_or_directory), quote_file(src));
-            if (src == dst)
+            if (src == dst || file_id(src) == file_id(dst))
                 throw std::system_error(std::make_error_code(std::errc::file_exists), quote_file(dst));
             if (native_file_is_directory(src) && ! recurse)
                 throw std::system_error(std::make_error_code(std::errc::is_a_directory), quote_file(src));
@@ -545,7 +581,7 @@ namespace Unicorn {
                 throw std::system_error(std::make_error_code(std::errc::no_such_file_or_directory), quote_file(src));
             if (src == dst)
                 return;
-            if (native_file_exists(dst)) {
+            if (native_file_exists(dst) && file_id(src) != file_id(dst)) {
                 if (! overwrite || (native_file_is_directory(dst) && ! recurse))
                     throw std::system_error(std::make_error_code(std::errc::file_exists), quote_file(dst));
                 native_remove_file(dst, fs_recurse);

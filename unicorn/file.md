@@ -62,6 +62,7 @@ of `"/foo/bar/hello.txt"` is `"hello.txt"`).
 Flag                | Description
 ----                | -----------
 **`fs_dotdot`**     | Include . and ..
+**`fs_follow`**     | Follow symlinks
 **`fs_fullname`**   | Return full file names
 **`fs_hidden`**     | Include hidden files
 **`fs_overwrite`**  | Delete existing file if necessary
@@ -69,6 +70,13 @@ Flag                | Description
 **`fs_unicode`**    | Skip files with non-Unicode names
 
 Flags recognised by some of the functions in this module.
+
+## Types ##
+
+* `using` **`FileId`** `= [unsigned integer type]`
+
+The file identifier returned by the `file_id()` function. Note that this will
+be a non-standard 128-bit integer on many systems.
 
 ## System dependencies ##
 
@@ -210,6 +218,19 @@ access permission problems.
 Query whether a file exists. This may give a false negative if the file exists
 but is not accessible to the calling process.
 
+* `template <typename C> FileId` **`file_id`**`(const basic_string<C>& file, uint32_t flags = 0) noexcept`
+
+Returns a unique file identifier, intended to identify the file even if it is
+referred to by different paths. It will return zero if the file does not exist
+or the caller does not have permission to query its properties. The only flag
+recognised is `fs_follow`, which causes the function to return the ID of the
+linked file instead of that of the symlink; it has no effect if the file named
+is not a symlink.
+
+This is based on the device and inode numbers on Unix, or the file index on
+Windows. Completely reliable file identification cannot be guaranteed in the
+presence of parallel remote mounts or similar trickery.
+
 * `template <typename C> bool` **`file_is_directory`**`(const basic_string<C>& file) noexcept`
 
 Query whether a file is a directory. This will return `false` if the file does
@@ -307,9 +328,9 @@ Delete a file or directory. If the `fs_recurse` flag is set, directories will
 be deleted recursively (like `rm -rf`; this will not follow symbolic links);
 the flag is not needed to delete an empty directory. This will do nothing if
 the named file does not exist to begin with. It will throw `std::system_error`
-if the directory path is not a legal filename, if the name refers to a non-
-empty directory and the `fs_recurse` flag was not set, or if the caller does
-not have permission to delete the file.
+if the name is not a legal filename, if the name refers to a non-empty
+directory and the `fs_recurse` flag was not set, or if the caller does not
+have permission to delete the file.
 
 ## Directory iterators ##
 
@@ -336,8 +357,9 @@ Flag               | Description
 
 An iterator over the files in a directory. Normally you should call the
 `directory()` function to get an iterator range, rather than explicitly
-construct a `DirectoryIterator`. Note that this is an input (i.e. single pass)
-iterator.
+constructing a `DirectoryIterator`. Note that this is an input (i.e. single
+pass) iterator (a restriction imposed by the way the underlying system APIs
+work).
 
 If the name passed to the constructor, or to the `directory()` function,
 refers to a file that does not exist or is not a directory, it will simply be

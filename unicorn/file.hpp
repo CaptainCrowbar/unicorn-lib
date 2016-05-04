@@ -8,19 +8,34 @@
 #include <iterator>
 #include <memory>
 #include <string>
+#include <type_traits>
 #include <utility>
 #include <vector>
+
+#if defined(PRI_TARGET_UNIX)
+    #include <sys/stat.h>
+#endif
 
 namespace Unicorn {
 
     // Constants
 
     constexpr uint32_t fs_dotdot     = 1ul << 0;  // Include . and ..
-    constexpr uint32_t fs_fullname   = 1ul << 1;  // Return full file names
-    constexpr uint32_t fs_hidden     = 1ul << 2;  // Include hidden files
-    constexpr uint32_t fs_overwrite  = 1ul << 3;  // Delete existing file if necessary
-    constexpr uint32_t fs_recurse    = 1ul << 4;  // Recursive directory operations
-    constexpr uint32_t fs_unicode    = 1ul << 5;  // Skip files with non-Unicode names
+    constexpr uint32_t fs_follow     = 1ul << 1;  // Include . and ..
+    constexpr uint32_t fs_fullname   = 1ul << 2;  // Return full file names
+    constexpr uint32_t fs_hidden     = 1ul << 3;  // Include hidden files
+    constexpr uint32_t fs_overwrite  = 1ul << 4;  // Delete existing file if necessary
+    constexpr uint32_t fs_recurse    = 1ul << 5;  // Recursive directory operations
+    constexpr uint32_t fs_unicode    = 1ul << 6;  // Skip files with non-Unicode names
+
+    // Types
+
+    using FileId =
+        #if defined(PRI_TARGET_UNIX)
+            std::conditional_t<(sizeof(dev_t) + sizeof(ino_t) > 8), uint128_t, uint64_t>;
+        #else
+            uint64_t;
+        #endif
 
     // System dependencies
 
@@ -297,6 +312,7 @@ namespace Unicorn {
 
         NativeString native_current_directory();
         bool native_file_exists(const NativeString& file) noexcept;
+        FileId native_file_id(const NativeString& file, uint32_t flags) noexcept;
         bool native_file_is_directory(const NativeString& file) noexcept;
         bool native_file_is_hidden(const NativeString& file) noexcept;
         bool native_file_is_symlink(const NativeString& file) noexcept;
@@ -321,6 +337,12 @@ namespace Unicorn {
     bool file_exists(const basic_string<C>& file) noexcept {
         using namespace UnicornDetail;
         return native_file_exists(native_file(file));
+    }
+
+    template <typename C>
+    FileId file_id(const basic_string<C>& file, uint32_t flags = 0) noexcept {
+        using namespace UnicornDetail;
+        return native_file_id(native_file(file), flags);
     }
 
     template <typename C>

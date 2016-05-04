@@ -20,6 +20,7 @@ file renaming and deletion, directory search, and so on.</p>
 <li><a href="#contents">Contents</a></li>
 <li><a href="#introduction">Introduction</a></li>
 <li><a href="#constants">Constants</a></li>
+<li><a href="#types">Types</a></li>
 <li><a href="#system-dependencies">System dependencies</a></li>
 <li><a href="#file-name-functions">File name functions</a></li>
 <li><a href="#file-system-query-functions">File system query functions</a></li>
@@ -83,6 +84,10 @@ of <code>"/foo/bar/hello.txt"</code> is <code>"hello.txt"</code>).</p>
 <td>Include . and ..</td>
 </tr>
 <tr>
+<td><strong><code>fs_follow</code></strong></td>
+<td>Follow symlinks</td>
+</tr>
+<tr>
 <td><strong><code>fs_fullname</code></strong></td>
 <td>Return full file names</td>
 </tr>
@@ -105,6 +110,14 @@ of <code>"/foo/bar/hello.txt"</code> is <code>"hello.txt"</code>).</p>
 </tbody>
 </table>
 <p>Flags recognised by some of the functions in this module.</p>
+<h2 id="types">Types</h2>
+<div class="defns">
+<ul>
+<li><code>using</code> <strong><code>FileId</code></strong> <code>= [unsigned integer type]</code></li>
+</ul>
+<p>The file identifier returned by the <code>file_id()</code> function. Note that this will
+be a non-standard 128-bit integer on many systems.</p>
+</div>
 <h2 id="system-dependencies">System dependencies</h2>
 <div class="defns">
 <ul>
@@ -250,6 +263,20 @@ but is not accessible to the calling process.</p>
 </div>
 <div class="defns">
 <ul>
+<li><code>template &lt;typename C&gt; FileId</code> <strong><code>file_id</code></strong><code>(const basic_string&lt;C&gt;&amp; file, uint32_t flags = 0) noexcept</code></li>
+</ul>
+<p>Returns a unique file identifier, intended to identify the file even if it is
+referred to by different paths. It will return zero if the file does not exist
+or the caller does not have permission to query its properties. The only flag
+recognised is <code>fs_follow</code>, which causes the function to return the ID of the
+linked file instead of that of the symlink; it has no effect if the file named
+is not a symlink.</p>
+<p>This is based on the device and inode numbers on Unix, or the file index on
+Windows. Completely reliable file identification cannot be guaranteed in the
+presence of parallel remote mounts or similar trickery.</p>
+</div>
+<div class="defns">
+<ul>
 <li><code>template &lt;typename C&gt; bool</code> <strong><code>file_is_directory</code></strong><code>(const basic_string&lt;C&gt;&amp; file) noexcept</code></li>
 </ul>
 <p>Query whether a file is a directory. This will return <code>false</code> if the file does
@@ -361,9 +388,9 @@ needed if an existing directory is to be replaced). This will throw
 be deleted recursively (like <code>rm -rf</code>; this will not follow symbolic links);
 the flag is not needed to delete an empty directory. This will do nothing if
 the named file does not exist to begin with. It will throw <code>std::system_error</code>
-if the directory path is not a legal filename, if the name refers to a non-
-empty directory and the <code>fs_recurse</code> flag was not set, or if the caller does
-not have permission to delete the file.</p>
+if the name is not a legal filename, if the name refers to a non-empty
+directory and the <code>fs_recurse</code> flag was not set, or if the caller does not
+have permission to delete the file.</p>
 </div>
 <h2 id="directory-iterators">Directory iterators</h2>
 <div class="defns">
@@ -411,8 +438,9 @@ not have permission to delete the file.</p>
 </table>
 <p>An iterator over the files in a directory. Normally you should call the
 <code>directory()</code> function to get an iterator range, rather than explicitly
-construct a <code>DirectoryIterator</code>. Note that this is an input (i.e. single pass)
-iterator.</p>
+constructing a <code>DirectoryIterator</code>. Note that this is an input (i.e. single
+pass) iterator (a restriction imposed by the way the underlying system APIs
+work).</p>
 <p>If the name passed to the constructor, or to the <code>directory()</code> function,
 refers to a file that does not exist or is not a directory, it will simply be
 treated as an empty directory.</p>

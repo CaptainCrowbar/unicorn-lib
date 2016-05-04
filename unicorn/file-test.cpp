@@ -777,14 +777,24 @@ namespace {
 
     void check_file_system_operations_utf8() {
 
-        u8string d1, d2, d3, f1, f2, f3;
+        u8string d1, d2, d3, f1, f2, f3, f4;
         vector<string> vec;
+        FileId id1, id2;
 
         TEST(file_exists("."s));
         TEST(file_exists(".."s));
         TEST(file_exists("Makefile"s));
+        TEST(file_exists("unicorn"s));
         TEST(! file_exists(""s));
         TEST(! file_exists("no such file"s));
+
+        TEST_EQUAL(file_id(""s), 0);
+        TEST_EQUAL(file_id("no such file"s), 0);
+        TRY(id1 = file_id("Makefile"s));
+        TRY(id2 = file_id("unicorn"s));
+        TEST_COMPARE(id1, >, 0);
+        TEST_COMPARE(id2, >, 0);
+        TEST_COMPARE(id1, !=, id2);
 
         TEST(file_is_directory("."s));
         TEST(file_is_directory(".."s));
@@ -830,6 +840,7 @@ namespace {
         f1 = "__test_file_1";
         f2 = "__test_file_2";
         f3 = "__test_file_3";
+        f4 = "__test_FILE_3";
         TEST(! file_exists(f1));
         TEST(! file_is_directory(f1));
         TEST(! file_exists(f2));
@@ -842,11 +853,16 @@ namespace {
         TRY(copy_file(f2, f3));
         TEST(file_exists(f2));
         TEST(file_exists(f3));
+        TRY(move_file(f3, f4));
+        TEST(file_exists(f4));
+        TRY(remove_file(f1));
         TRY(remove_file(f2));
         TRY(remove_file(f3));
+        TRY(remove_file(f4));
         TEST(! file_exists(f1));
         TEST(! file_exists(f2));
         TEST(! file_exists(f3));
+        TEST(! file_exists(f4));
 
         d1 = "__test_dir_1";
         d2 = "__test_dir_2";
@@ -870,12 +886,15 @@ namespace {
         TEST(file_is_directory(d2));
         TEST(file_exists(d3));
         TEST(file_is_directory(d3));
+        TRY(remove_file(d1));
         TRY(remove_file(d2));
         TRY(remove_file(d3));
         TEST(! file_exists(d1));
         TEST(! file_is_directory(d1));
         TEST(! file_exists(d2));
         TEST(! file_is_directory(d2));
+        TEST(! file_exists(d3));
+        TEST(! file_is_directory(d3));
 
         d1 = "__test_dir_1";
         d2 = "__test_dir_1/test_dir_2";
@@ -945,14 +964,24 @@ namespace {
 
     void check_file_system_operations_utf16() {
 
-        u16string d1, d2, d3, f1, f2, f3;
+        u16string d1, d2, d3, f1, f2, f3, f4;
         vector<u16string> vec;
+        FileId id1, id2;
 
         TEST(file_exists(u"."s));
         TEST(file_exists(u".."s));
         TEST(file_exists(u"Makefile"s));
+        TEST(file_exists(u"unicorn"s));
         TEST(! file_exists(u""s));
         TEST(! file_exists(u"no such file"s));
+
+        TEST_EQUAL(file_id(u""s), 0);
+        TEST_EQUAL(file_id(u"no such file"s), 0);
+        TRY(id1 = file_id(u"Makefile"s));
+        TRY(id2 = file_id(u"unicorn"s));
+        TEST_COMPARE(id1, >, 0);
+        TEST_COMPARE(id2, >, 0);
+        TEST_COMPARE(id1, !=, id2);
 
         TEST(file_is_directory(u"."s));
         TEST(file_is_directory(u".."s));
@@ -998,6 +1027,7 @@ namespace {
         f1 = u"__test_file_1";
         f2 = u"__test_file_2";
         f3 = u"__test_file_3";
+        f4 = u"__test_FILE_3";
         TEST(! file_exists(f1));
         TEST(! file_is_directory(f1));
         TEST(! file_exists(f2));
@@ -1010,11 +1040,16 @@ namespace {
         TRY(copy_file(f2, f3));
         TEST(file_exists(f2));
         TEST(file_exists(f3));
+        TRY(move_file(f3, f4));
+        TEST(file_exists(f4));
+        TRY(remove_file(f1));
         TRY(remove_file(f2));
         TRY(remove_file(f3));
+        TRY(remove_file(f4));
         TEST(! file_exists(f1));
         TEST(! file_exists(f2));
         TEST(! file_exists(f3));
+        TEST(! file_exists(f4));
 
         d1 = u"__test_dir_1";
         d2 = u"__test_dir_2";
@@ -1038,12 +1073,15 @@ namespace {
         TEST(file_is_directory(d2));
         TEST(file_exists(d3));
         TEST(file_is_directory(d3));
+        TRY(remove_file(d1));
         TRY(remove_file(d2));
         TRY(remove_file(d3));
         TEST(! file_exists(d1));
         TEST(! file_is_directory(d1));
         TEST(! file_exists(d2));
         TEST(! file_is_directory(d2));
+        TEST(! file_exists(d3));
+        TEST(! file_is_directory(d3));
 
         d1 = u"__test_dir_1";
         d2 = u"__test_dir_1/test_dir_2";
@@ -1113,14 +1151,24 @@ namespace {
 
     void check_file_system_operations_utf32() {
 
-        u32string d1, d2, d3, f1, f2, f3;
+        u32string d1, d2, d3, f1, f2, f3, f4;
         vector<u32string> vec;
+        FileId id1, id2;
 
         TEST(file_exists(U"."s));
         TEST(file_exists(U".."s));
         TEST(file_exists(U"Makefile"s));
+        TEST(file_exists(U"unicorn"s));
         TEST(! file_exists(U""s));
         TEST(! file_exists(U"no such file"s));
+
+        TEST_EQUAL(file_id(U""s), 0);
+        TEST_EQUAL(file_id(U"no such file"s), 0);
+        TRY(id1 = file_id(U"Makefile"s));
+        TRY(id2 = file_id(U"unicorn"s));
+        TEST_COMPARE(id1, >, 0);
+        TEST_COMPARE(id2, >, 0);
+        TEST_COMPARE(id1, !=, id2);
 
         TEST(file_is_directory(U"."s));
         TEST(file_is_directory(U".."s));
@@ -1166,6 +1214,7 @@ namespace {
         f1 = U"__test_file_1";
         f2 = U"__test_file_2";
         f3 = U"__test_file_3";
+        f4 = U"__test_FILE_3";
         TEST(! file_exists(f1));
         TEST(! file_is_directory(f1));
         TEST(! file_exists(f2));
@@ -1178,11 +1227,16 @@ namespace {
         TRY(copy_file(f2, f3));
         TEST(file_exists(f2));
         TEST(file_exists(f3));
+        TRY(move_file(f3, f4));
+        TEST(file_exists(f4));
+        TRY(remove_file(f1));
         TRY(remove_file(f2));
         TRY(remove_file(f3));
+        TRY(remove_file(f4));
         TEST(! file_exists(f1));
         TEST(! file_exists(f2));
         TEST(! file_exists(f3));
+        TEST(! file_exists(f4));
 
         d1 = U"__test_dir_1";
         d2 = U"__test_dir_2";
@@ -1206,12 +1260,15 @@ namespace {
         TEST(file_is_directory(d2));
         TEST(file_exists(d3));
         TEST(file_is_directory(d3));
+        TRY(remove_file(d1));
         TRY(remove_file(d2));
         TRY(remove_file(d3));
         TEST(! file_exists(d1));
         TEST(! file_is_directory(d1));
         TEST(! file_exists(d2));
         TEST(! file_is_directory(d2));
+        TEST(! file_exists(d3));
+        TEST(! file_is_directory(d3));
 
         d1 = U"__test_dir_1";
         d2 = U"__test_dir_1/test_dir_2";
