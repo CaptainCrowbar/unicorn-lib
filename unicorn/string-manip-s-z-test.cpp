@@ -83,6 +83,125 @@ namespace {
         TRY(str_split_by(U"“”,“€uro”,“∈lement”"s, overwrite(v32), U"“”,"));   TEST_EQUAL(v32.size(), 2);  TEST_EQUAL(str_join(v32, U"/"), U"€uro/∈lement");
         TRY(str_split_by(U"“”,“€uro”,“∈lement”"s, overwrite(v32), U"“”,"s));  TEST_EQUAL(v32.size(), 2);  TEST_EQUAL(str_join(v32, U"/"), U"€uro/∈lement");
 
+        TRY(str_split_lines(""s, overwrite(v8)));              TEST_EQUAL(v8.size(), 0);  TEST_EQUAL(str_join(v8, "/"), "");
+        TRY(str_split_lines("\n"s, overwrite(v8)));            TEST_EQUAL(v8.size(), 1);  TEST_EQUAL(str_join(v8, "/"), "");
+        TRY(str_split_lines("\n\n"s, overwrite(v8)));          TEST_EQUAL(v8.size(), 2);  TEST_EQUAL(str_join(v8, "/"), "/");
+        TRY(str_split_lines("\n\n\n"s, overwrite(v8)));        TEST_EQUAL(v8.size(), 3);  TEST_EQUAL(str_join(v8, "/"), "//");
+        TRY(str_split_lines("\r\n"s, overwrite(v8)));          TEST_EQUAL(v8.size(), 1);  TEST_EQUAL(str_join(v8, "/"), "");
+        TRY(str_split_lines("\r\n\r\n"s, overwrite(v8)));      TEST_EQUAL(v8.size(), 2);  TEST_EQUAL(str_join(v8, "/"), "/");
+        TRY(str_split_lines("\r\n\r\n\r\n"s, overwrite(v8)));  TEST_EQUAL(v8.size(), 3);  TEST_EQUAL(str_join(v8, "/"), "//");
+
+        u8string text8 =
+            u8"Line one\n"
+            u8"Line two\r"
+            u8"Line three\r\n"
+            u8"Line four\f"
+            u8"Line five\u0085"
+            u8"Line six\u2028"
+            u8"Line seven\u2029";
+        TRY(str_split_lines(text8, overwrite(v8)));
+        TEST_EQUAL(v8.size(), 7);
+        TEST_EQUAL(str_join(v8, "/"),
+            u8"Line one/"
+            u8"Line two/"
+            u8"Line three/"
+            u8"Line four/"
+            u8"Line five/"
+            u8"Line six/"
+            u8"Line seven");
+        text8 =
+            u8"Line one\n\n"
+            u8"Line two\r\r"
+            u8"Line three\r\n\r\n"
+            u8"Line four\f\f"
+            u8"Line five\u0085\u0085"
+            u8"Line six\u2028\u2028"
+            u8"Line seven\u2029\u2029";
+        TRY(str_split_lines(text8, overwrite(v8)));
+        TEST_EQUAL(v8.size(), 14);
+        TEST_EQUAL(str_join(v8, "/"),
+            u8"Line one//"
+            u8"Line two//"
+            u8"Line three//"
+            u8"Line four//"
+            u8"Line five//"
+            u8"Line six//"
+            u8"Line seven/");
+
+        u16string text16 =
+            u"Line one\n"
+            u"Line two\r"
+            u"Line three\r\n"
+            u"Line four\f"
+            u"Line five\u0085"
+            u"Line six\u2028"
+            u"Line seven\u2029";
+        TRY(str_split_lines(text16, overwrite(v16)));
+        TEST_EQUAL(v16.size(), 7);
+        TEST_EQUAL(str_join(v16, u"/"),
+            u"Line one/"
+            u"Line two/"
+            u"Line three/"
+            u"Line four/"
+            u"Line five/"
+            u"Line six/"
+            u"Line seven");
+        text16 =
+            u"Line one\n\n"
+            u"Line two\r\r"
+            u"Line three\r\n\r\n"
+            u"Line four\f\f"
+            u"Line five\u0085\u0085"
+            u"Line six\u2028\u2028"
+            u"Line seven\u2029\u2029";
+        TRY(str_split_lines(text16, overwrite(v16)));
+        TEST_EQUAL(v16.size(), 14);
+        TEST_EQUAL(str_join(v16, u"/"),
+            u"Line one//"
+            u"Line two//"
+            u"Line three//"
+            u"Line four//"
+            u"Line five//"
+            u"Line six//"
+            u"Line seven/");
+
+        u32string text32 =
+            U"Line one\n"
+            U"Line two\r"
+            U"Line three\r\n"
+            U"Line four\f"
+            U"Line five\u0085"
+            U"Line six\u2028"
+            U"Line seven\u2029";
+        TRY(str_split_lines(text32, overwrite(v32)));
+        TEST_EQUAL(v32.size(), 7);
+        TEST_EQUAL(str_join(v32, U"/"),
+            U"Line one/"
+            U"Line two/"
+            U"Line three/"
+            U"Line four/"
+            U"Line five/"
+            U"Line six/"
+            U"Line seven");
+        text32 =
+            U"Line one\n\n"
+            U"Line two\r\r"
+            U"Line three\r\n\r\n"
+            U"Line four\f\f"
+            U"Line five\u0085\u0085"
+            U"Line six\u2028\u2028"
+            U"Line seven\u2029\u2029";
+        TRY(str_split_lines(text32, overwrite(v32)));
+        TEST_EQUAL(v32.size(), 14);
+        TEST_EQUAL(str_join(v32, U"/"),
+            U"Line one//"
+            U"Line two//"
+            U"Line three//"
+            U"Line four//"
+            U"Line five//"
+            U"Line six//"
+            U"Line seven/");
+
     }
 
     void check_squeeze() {

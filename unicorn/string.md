@@ -463,6 +463,15 @@ in the `delim` list. Nothing will be written if the original source string is
 empty; if the delimiter string is empty (but the source string is not), a
 single string will be written.
 
+* `template <typename C, typename OutIter> void` **`str_split_lines`**`(const basic_string<C>& src, OutIter dst)`
+
+Splits a string at each line break, copying lines into the output iterator.
+Any character that passes `char_is_line_break()` is counted as a line break.
+The line break characters are not included in the output strings. The `CR+LF`
+combination is counted as a single line break; any other sequence of multiple
+line breaks will generate empty lines in the output. An empty line will not be
+generated at the end if the last character in the input was a line break.
+
 * `template <typename C> basic_string<C>` **`str_squeeze`**`(const basic_string<C>& str)`
 * `template <typename C> basic_string<C>` **`str_squeeze`**`(const basic_string<C>& str, const basic_string<C>& chars)`
 * `template <typename C> basic_string<C>` **`str_squeeze`**`(const basic_string<C>& str, const C* chars)`

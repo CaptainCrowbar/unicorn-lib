@@ -803,6 +803,23 @@ namespace Unicorn {
         str_split_by(src, dst, cstr(delim));
     }
 
+    template <typename C, typename OutIter>
+    void str_split_lines(const basic_string<C>& src, OutIter dst) {
+        auto i = utf_begin(src), j = i, e = utf_end(src);
+        while (i != e) {
+            j = std::find_if(i, e, char_is_line_break);
+            *dst++ = u_str(i, j);
+            if (j == e)
+                break;
+            char32_t c = *j;
+            if (++j == e)
+                break;
+            if (c == U'\r' && *j == U'\n')
+                ++j;
+            i = j;
+        }
+    }
+
     namespace UnicornDetail {
 
         template <typename C>

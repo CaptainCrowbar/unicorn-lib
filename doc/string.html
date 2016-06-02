@@ -556,6 +556,17 @@ single string will be written.</p>
 </div>
 <div class="defns">
 <ul>
+<li><code>template &lt;typename C, typename OutIter&gt; void</code> <strong><code>str_split_lines</code></strong><code>(const basic_string&lt;C&gt;&amp; src, OutIter dst)</code></li>
+</ul>
+<p>Splits a string at each line break, copying lines into the output iterator.
+Any character that passes <code>char_is_line_break()</code> is counted as a line break.
+The line break characters are not included in the output strings. The <code>CR+LF</code>
+combination is counted as a single line break; any other sequence of multiple
+line breaks will generate empty lines in the output. An empty line will not be
+generated at the end if the last character in the input was a line break.</p>
+</div>
+<div class="defns">
+<ul>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_squeeze</code></strong><code>(const basic_string&lt;C&gt;&amp; str)</code></li>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_squeeze</code></strong><code>(const basic_string&lt;C&gt;&amp; str, const basic_string&lt;C&gt;&amp; chars)</code></li>
 <li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>str_squeeze</code></strong><code>(const basic_string&lt;C&gt;&amp; str, const C* chars)</code></li>
