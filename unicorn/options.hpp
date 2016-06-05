@@ -34,14 +34,14 @@ namespace Unicorn {
                 else if (s.size() >= 3 && s[0] == '0' && (s[1] == 'X' || s[1] == 'x'))
                     return hex_to_int<T>(utf_iterator(s, 2));
                 else
-                    return from_si<T>(s);
+                    return T(si_to_int(s));
             }
         };
 
         template <typename T>
         struct ArgConv<T, false, true> {
             T operator()(const u8string& s) const {
-                return s.empty() ? T(0) : from_si<T>(s);
+                return s.empty() ? T(0) : T(si_to_float(s));
             }
         };
 

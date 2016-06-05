@@ -382,9 +382,9 @@ namespace {
         TEST_EQUAL(opt2.get<int>("int"), 24000);
 
         TRY(opt2 = opt1);
-        cmdline = "app --int 2.5MB";
+        cmdline = "app --int 25MB";
         TEST(! opt2.parse(cmdline, nowhere));
-        TEST_EQUAL(opt2.get<int>("int"), 2500000);
+        TEST_EQUAL(opt2.get<int>("int"), 25000000);
 
         TRY(opt2 = opt1);
         cmdline = "app --float 2.5MB";
