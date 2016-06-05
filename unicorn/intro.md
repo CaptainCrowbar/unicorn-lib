@@ -117,16 +117,15 @@ probably a recent version of Clang or GCC. I developed it mainly on Mac OS X,
 currently using Clang 7.0. All test builds are made using strict compilation
 mode (`-Wall -Wextra -Werror`).
 
-Unicorn has also been tested with GCC versions from 4.9 to 5.3 on Ubuntu
-GNU/Linux, [Cygwin](http://www.cygwin.com/) on Microsoft Windows, and native
-Windows using [Nuwen-Mingw](http://nuwen.net/mingw.html), although I can't
-promise that the most recent checkin will have been tested with all of those.
+Unicorn has also been tested with GCC 5.x and 6.x on Ubuntu GNU/Linux,
+[Cygwin](http://www.cygwin.com/) on Microsoft Windows, and native Windows
+using [Nuwen-Mingw](http://nuwen.net/mingw.html), although I can't promise
+that the most recent checkin will have been tested with all of those.
 
 Currently, Unicorn will not work with any existing release of Microsoft Visual
-Studio. VS 2015 probably has sufficiently good C++11/14 support, but does not
-yet support UTF-8 source code; Microsoft developers have told me they're
-trying to get this fixed, though, so I hope to be able to port Unicorn to MSVC
-in the future.
+Studio. The latest release, VS 2015 update 2 probably has sufficiently good
+support for C++14 and for UTF-8 source code, so I hope to be able to port
+Unicorn to MSVC in the future.
 
 ## Design philosophy ##
 
@@ -139,7 +138,7 @@ written in the style of existing idiomatic C++11/14, rather than requiring
 users to change their coding style to accommodate Unicorn. In particular, it
 uses the existing string classes supplied by the standard C++ library, rather
 than adding its own new string type. I would have preferred to also work with
-standard C++11 regular expressions instead of creating a new regex class, but
+standard C++ regular expressions instead of creating a new regex class, but
 this turned out to be impractical (see the [`unicorn/regex`](regex.html)
 documentation for the details).
 
@@ -158,16 +157,27 @@ Unicorn assumes that most or all of your string processing will be done in
 Unicode. Programs that need to work with text in other formats should convert
 the text to Unicode at the earliest opportunity upon reading it in, do their
 processing with strings known to be valid Unicode, and then convert to other
-encodings, if necessary, upon output. You can use any of the four standard
-string types to hold Unicode text, depending on which encoding you choose; as
-far as possible, everything in Unicorn will work with any of the UTF
-encodings. Functions for conversion between Unicode and other encodings can be
-found in the [`unicorn/mbcs`](mbcs.html) and [`unicorn/io`](io.html) modules.
+encodings, if necessary, upon output. Functions for conversion between Unicode
+and other encodings can be found in the [`unicorn/mbcs`](mbcs.html) and
+[`unicorn/io`](io.html) modules. Most of the other modules are intended to
+work only with Unicode strings that have already been validated. The
+documentation for the [`unicorn/utf`](utf.html) module explains the details of
+how the handling of invalid encoding is controlled.
 
-Most of the other modules are intended to work only with Unicode strings that
-have already been validated. The documentation for the
-[`unicorn/utf`](utf.html) module explains the details of how the handling of
-invalid encoding is controlled.
+Earlier versions of Unicorn largely treated all four standard string types
+equally; in practise, however, the world is increasingly moving toward
+consistently using [UTF-8 everywhere](http://utf8everywhere.org), and
+experience with using Unicorn in real projects has shown that 16 and 32 bit
+strings are used rarely and only for a few specialized purposes. (Calling 16
+bit APIs in Microsoft Windows is probably the most common use for non-UTF-8
+strings in practise.) I concluded that supporting all three character
+encodings in the entire Unicorn API, when only one is really needed, was just
+complicating the code (and extending compile times) to no useful purpose.
+Unicorn is now designed to handle text almost entirely in UTF-8; support for
+the other encoding forms and string classes is mostly present now only in the
+encoding conversion functions in the [`unicorn/utf`](utf.html) module, and in
+a handful of other places (such as the string length functions in
+[`unicorn/string`](string.html)) where they may be particularly useful.
 
 ## Coding conventions ##
 
@@ -200,7 +210,7 @@ is a position measured in characters.
 
 In some contexts a string's size may be measured in other units, such as
 grapheme clusters; these variations are described in the documentation of the
-relevant functions (in particular, see the `str_length()` function in
+relevant functions (in particular, see `str_length()` and related functions in
 [`unicorn/string`](string.html)).
 
 The term **character type** is used to mean one of the four standard types
@@ -273,20 +283,10 @@ Python 3 to be callable as `python3`.
 Unicorn requires some other libraries to be linked with programs that use it;
 all of these should be present or easily installed on most systems:
 
-* [PCRE](http://www.pcre.org/) (`-lpcre` required, `-lpcre16` and `-lpcre32` recommended; see below)
+* [PCRE](http://www.pcre.org/) (`-lpcre`)
 * [Zlib](http://www.zlib.net/) (`-lz`)
-* Iconv for Unix targets (on some systems this requires `-liconv`)
+* Iconv for Unix targets (on some systems this is implicit, on others it requires `-liconv`)
 * The system thread library (`-lpthread` on most Unix systems, `-mthreads` on Mingw)
-
-Unicorn's [regular expression module](regex.html) uses PCRE as its underlying
-regex engine. If you only need to support UTF-8 and byte-mode regexes, it will
-work with just the 8-bit version (`-lpcre`). If you want UTF-16 and UTF-32
-regexes as well, you will also need `-lpcre16` and `-lpcre32`. The chosen PCRE
-libraries also need to be selected at build time by defining `UNICORN_PCRE16`
-and/or `UNICORN_PCRE32`. These defines are only needed when building the
-Unicorn library itself, not when building code that uses it. The supplied
-makefile will attempt to detect which versions are available and set these
-automatically. Note that the 8-bit PCRE library is always required.
 
 ## Using Unicorn ##
 

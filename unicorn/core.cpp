@@ -64,7 +64,7 @@ namespace Unicorn {
     }
 
     Version unicorn_version() noexcept {
-        return {0,1,0};
+        return {0,2,0};
     }
 
     Version unicode_version() noexcept {

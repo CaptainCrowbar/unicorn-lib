@@ -129,15 +129,14 @@ Options:
 probably a recent version of Clang or GCC. I developed it mainly on Mac OS X,
 currently using Clang 7.0. All test builds are made using strict compilation
 mode (<code>-Wall -Wextra -Werror</code>).</p>
-<p>Unicorn has also been tested with GCC versions from 4.9 to 5.3 on Ubuntu
-GNU/Linux, <a href="http://www.cygwin.com/">Cygwin</a> on Microsoft Windows, and native
-Windows using <a href="http://nuwen.net/mingw.html">Nuwen-Mingw</a>, although I can't
-promise that the most recent checkin will have been tested with all of those.</p>
+<p>Unicorn has also been tested with GCC 5.x and 6.x on Ubuntu GNU/Linux,
+<a href="http://www.cygwin.com/">Cygwin</a> on Microsoft Windows, and native Windows
+using <a href="http://nuwen.net/mingw.html">Nuwen-Mingw</a>, although I can't promise
+that the most recent checkin will have been tested with all of those.</p>
 <p>Currently, Unicorn will not work with any existing release of Microsoft Visual
-Studio. VS 2015 probably has sufficiently good C++11/14 support, but does not
-yet support UTF-8 source code; Microsoft developers have told me they're
-trying to get this fixed, though, so I hope to be able to port Unicorn to MSVC
-in the future.</p>
+Studio. The latest release, VS 2015 update 2 probably has sufficiently good
+support for C++14 and for UTF-8 source code, so I hope to be able to port
+Unicorn to MSVC in the future.</p>
 <h2 id="design-philosophy">Design philosophy</h2>
 <p>The Unicorn library is still in a fairly early form. The code is primarily
 striving to be correct, with performance a secondary consideration; aggressive
@@ -147,7 +146,7 @@ written in the style of existing idiomatic C++11/14, rather than requiring
 users to change their coding style to accommodate Unicorn. In particular, it
 uses the existing string classes supplied by the standard C++ library, rather
 than adding its own new string type. I would have preferred to also work with
-standard C++11 regular expressions instead of creating a new regex class, but
+standard C++ regular expressions instead of creating a new regex class, but
 this turned out to be impractical (see the <a href="regex.html"><code>unicorn/regex</code></a>
 documentation for the details).</p>
 <p>UTF-8, 16, and 32 strings are represented by <code>u8string</code>, <code>u16string</code>, and
@@ -164,15 +163,26 @@ an alias for <code>string</code>, not a new type.</p>
 Unicode. Programs that need to work with text in other formats should convert
 the text to Unicode at the earliest opportunity upon reading it in, do their
 processing with strings known to be valid Unicode, and then convert to other
-encodings, if necessary, upon output. You can use any of the four standard
-string types to hold Unicode text, depending on which encoding you choose; as
-far as possible, everything in Unicorn will work with any of the UTF
-encodings. Functions for conversion between Unicode and other encodings can be
-found in the <a href="mbcs.html"><code>unicorn/mbcs</code></a> and <a href="io.html"><code>unicorn/io</code></a> modules.</p>
-<p>Most of the other modules are intended to work only with Unicode strings that
-have already been validated. The documentation for the
-<a href="utf.html"><code>unicorn/utf</code></a> module explains the details of how the handling of
-invalid encoding is controlled.</p>
+encodings, if necessary, upon output. Functions for conversion between Unicode
+and other encodings can be found in the <a href="mbcs.html"><code>unicorn/mbcs</code></a> and
+<a href="io.html"><code>unicorn/io</code></a> modules. Most of the other modules are intended to
+work only with Unicode strings that have already been validated. The
+documentation for the <a href="utf.html"><code>unicorn/utf</code></a> module explains the details of
+how the handling of invalid encoding is controlled.</p>
+<p>Earlier versions of Unicorn largely treated all four standard string types
+equally; in practise, however, the world is increasingly moving toward
+consistently using <a href="http://utf8everywhere.org">UTF-8 everywhere</a>, and
+experience with using Unicorn in real projects has shown that 16 and 32 bit
+strings are used rarely and only for a few specialized purposes. (Calling 16
+bit APIs in Microsoft Windows is probably the most common use for non-UTF-8
+strings in practise.) I concluded that supporting all three character
+encodings in the entire Unicorn API, when only one is really needed, was just
+complicating the code (and extending compile times) to no useful purpose.
+Unicorn is now designed to handle text almost entirely in UTF-8; support for
+the other encoding forms and string classes is mostly present now only in the
+encoding conversion functions in the <a href="utf.html"><code>unicorn/utf</code></a> module, and in
+a handful of other places (such as the string length functions in
+<a href="string.html"><code>unicorn/string</code></a>) where they may be particularly useful.</p>
 <h2 id="coding-conventions">Coding conventions</h2>
 <p>In the context of Unicode and other text encodings, the word "character" is
 often used confusingly with any number of different meanings. In the Unicorn
@@ -200,7 +210,7 @@ string measured in code units from the start of the string, while an <strong>ind
 is a position measured in characters.</p>
 <p>In some contexts a string's size may be measured in other units, such as
 grapheme clusters; these variations are described in the documentation of the
-relevant functions (in particular, see the <code>str_length()</code> function in
+relevant functions (in particular, see <code>str_length()</code> and related functions in
 <a href="string.html"><code>unicorn/string</code></a>).</p>
 <p>The term <strong>character type</strong> is used to mean one of the four standard types
 that can be used as the code unit type in an instantiation of
@@ -258,20 +268,11 @@ Python 3 to be callable as <code>python3</code>.</p>
 <p>Unicorn requires some other libraries to be linked with programs that use it;
 all of these should be present or easily installed on most systems:</p>
 <ul>
-<li><a href="http://www.pcre.org/">PCRE</a> (<code>-lpcre</code> required, <code>-lpcre16</code> and <code>-lpcre32</code> recommended; see below)</li>
+<li><a href="http://www.pcre.org/">PCRE</a> (<code>-lpcre</code>)</li>
 <li><a href="http://www.zlib.net/">Zlib</a> (<code>-lz</code>)</li>
-<li>Iconv for Unix targets (on some systems this requires <code>-liconv</code>)</li>
+<li>Iconv for Unix targets (on some systems this is implicit, on others it requires <code>-liconv</code>)</li>
 <li>The system thread library (<code>-lpthread</code> on most Unix systems, <code>-mthreads</code> on Mingw)</li>
 </ul>
-<p>Unicorn's <a href="regex.html">regular expression module</a> uses PCRE as its underlying
-regex engine. If you only need to support UTF-8 and byte-mode regexes, it will
-work with just the 8-bit version (<code>-lpcre</code>). If you want UTF-16 and UTF-32
-regexes as well, you will also need <code>-lpcre16</code> and <code>-lpcre32</code>. The chosen PCRE
-libraries also need to be selected at build time by defining <code>UNICORN_PCRE16</code>
-and/or <code>UNICORN_PCRE32</code>. These defines are only needed when building the
-Unicorn library itself, not when building code that uses it. The supplied
-makefile will attempt to detect which versions are available and set these
-automatically. Note that the 8-bit PCRE library is always required.</p>
 <h2 id="using-unicorn">Using Unicorn</h2>
 <p>You can import the whole library using <code>#include "unicorn/library.hpp"</code>, or
 include the individual modules that you need. Link with <code>-lunicorn</code>, and with
