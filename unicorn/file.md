@@ -83,7 +83,7 @@ be a non-standard 128-bit integer on many systems.
 ## System dependencies ##
 
 * `constexpr char` **`file_delimiter`** `= ['/' on Unix, '\\' on Windows]`
-* `constexpr char` **`native_file_delimiter`** `= ['/' on Unix, L'\\' on Windows]`
+* `constexpr NativeCharacter` **`native_file_delimiter`** `= ['/' on Unix, L'\\' on Windows]`
 
 The standard delimiter for directory paths.
 
