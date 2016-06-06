@@ -91,7 +91,8 @@ The standard delimiter for directory paths.
 
 These functions operate purely on file names as strings; they do not make any
 contact with the actual file system, and will give the same results regardless
-of whether or not a file actually exists.
+of whether or not a file actually exists, or the user has permission to access
+it.
 
 The `file_is_*()` functions do not test the complete file name for legality;
 if a file name would fail `is_legal_path_name()`, the results of the

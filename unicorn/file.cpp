@@ -58,6 +58,10 @@ namespace Unicorn {
                 FILE* fp;
             };
 
+            bool is_ascii_letter(wchar_t c) noexcept {
+                return (c >= L'A' && c <= L'Z') || (c >= L'a' && c <= L'z');
+            }
+
             uint32_t get_attributes(const wstring& file) {
                 auto rc = GetFileAttributes(file.data());
                 return rc == INVALID_FILE_ATTRIBUTES ? 0 : rc;
@@ -170,6 +174,84 @@ namespace Unicorn {
         bool file_is_root(const wstring& file) {
             static const Regex root_pattern(windows_root, match_flags);
             return bool(root_pattern.match(to_utf8(file)));
+        }
+
+    #endif
+
+    pair<u8string, u8string> split_path(const u8string& file, uint32_t flags) {
+        auto nfile = UnicornDetail::normalize_path(file);
+        auto cut = nfile.find_last_of(file_delimiter);
+        #if defined(PRI_TARGET_WINDOWS)
+            if (cut == 2 && file[1] == ':' && ascii_isalpha(file[0]))
+                return {nfile.substr(0, 3), nfile.substr(3, npos)};
+            else if (cut == npos && file[1] == ':' && ascii_isalpha(file[0]))
+                return {nfile.substr(0, 2), nfile.substr(2, npos)};
+        #endif
+        if (cut == npos) {
+            return {{}, nfile};
+        } else if (cut == 0) {
+            return {nfile.substr(0, 1), nfile.substr(1, npos)};
+        } else {
+            size_t cut1 = flags & fs_fullname ? cut + 1 : cut;
+            return {nfile.substr(0, cut1), nfile.substr(cut + 1, npos)};
+        }
+    }
+
+    pair<u8string, u8string> split_file(const u8string& file) {
+        auto nfile = UnicornDetail::normalize_path(file);
+        auto cut = nfile.find_last_of(file_delimiter);
+        #if defined(PRI_TARGET_WINDOWS)
+            if (cut == npos && ascii_isalpha(file[0]) && file[1] == ':')
+                cut = 1;
+        #endif
+        if (cut == npos)
+            cut = 0;
+        else
+            ++cut;
+        if (cut >= nfile.size())
+            return {};
+        auto dot = nfile.find_last_of('.');
+        if (dot > cut && dot != npos)
+            return {nfile.substr(cut, dot - cut), nfile.substr(dot, npos)};
+        else
+            return {nfile.substr(cut, npos), {}};
+    }
+
+    #if defined(PRI_TARGET_WINDOWS)
+
+        pair<wstring, wstring> split_path(const wstring& file, uint32_t flags) {
+            auto nfile = UnicornDetail::normalize_path(file);
+            auto cut = nfile.find_last_of(native_file_delimiter);
+            if (cut == 2 && is_ascii_letter(char(file[0])) && file[1] == L':') {
+                return {nfile.substr(0, 3), nfile.substr(3, npos)};
+            } else if (cut == npos && is_ascii_letter(char(file[0])) && file[1] == L':') {
+                return {nfile.substr(0, 2), nfile.substr(2, npos)};
+            } else if (cut == npos) {
+                return {{}, nfile};
+            } else if (cut == 0) {
+                return {nfile.substr(0, 1), nfile.substr(1, npos)};
+            } else {
+                size_t cut1 = flags & fs_fullname ? cut + 1 : cut;
+                return {nfile.substr(0, cut1), nfile.substr(cut + 1, npos)};
+            }
+        }
+
+        pair<wstring, wstring> split_file(const wstring& file) {
+            auto nfile = UnicornDetail::normalize_path(file);
+            auto cut = nfile.find_last_of(native_file_delimiter);
+            if (cut == npos && is_ascii_letter(char(file[0])) && file[1] == L':')
+                cut = 1;
+            if (cut == npos)
+                cut = 0;
+            else
+                ++cut;
+            if (cut >= nfile.size())
+                return {};
+            auto dot = nfile.find_last_of(L'.');
+            if (dot > cut && dot != npos)
+                return {nfile.substr(cut, dot - cut), nfile.substr(dot, npos)};
+            else
+                return {nfile.substr(cut, npos), {}};
         }
 
     #endif

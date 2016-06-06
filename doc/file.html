@@ -130,7 +130,8 @@ be a non-standard 128-bit integer on many systems.</p>
 <h2 id="file-name-functions">File name functions</h2>
 <p>These functions operate purely on file names as strings; they do not make any
 contact with the actual file system, and will give the same results regardless
-of whether or not a file actually exists.</p>
+of whether or not a file actually exists, or the user has permission to access
+it.</p>
 <p>The <code>file_is_*()</code> functions do not test the complete file name for legality;
 if a file name would fail <code>is_legal_path_name()</code>, the results of the
 <code>file_is_*()</code> functions is unspecified, except as noted below for the

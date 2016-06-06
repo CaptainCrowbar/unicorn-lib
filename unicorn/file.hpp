@@ -123,97 +123,44 @@ namespace Unicorn {
 
     #endif
 
-    namespace UnicornDetail {
-
-        template <typename C>
-        basic_string<C> make_file_path(const basic_string<C>& file) {
-            return file;
-        }
-
-        template <typename C, typename... Args>
-        basic_string<C> make_file_path(const basic_string<C>& file1, const basic_string<C>& file2, Args... args) {
-            if (file1.empty() || ! file_is_relative(file2))
-                return make_file_path(file2, args...);
-            if (file2.empty())
-                return make_file_path(file1, args...);
-            basic_string<C> delim;
-            if (str_last_char(file1) != file_delimiter)
-                delim = C(file_delimiter);
-            return make_file_path(file1 + delim + file2, args...);
-        }
-
-        template <typename C>
-        pair<basic_string<C>, basic_string<C>> split_file_path(const basic_string<C>& file, uint32_t flags) {
-            auto nfile = normalize_path(file);
-            auto cut = nfile.find_last_of(static_cast<C>(file_delimiter));
-            #if defined(PRI_TARGET_WINDOWS)
-                if (cut == 2 && file[1] == C(':') && char_is_ascii(file[0]) && ascii_isalpha(char(file[0])))
-                    return {nfile.substr(0, 3), nfile.substr(3, npos)};
-                else if (cut == npos && file[1] == C(':') && char_is_ascii(file[0]) && ascii_isalpha(char(file[0])))
-                    return {nfile.substr(0, 2), nfile.substr(2, npos)};
-            #endif
-            if (cut == npos) {
-                return {{}, nfile};
-            } else if (cut == 0) {
-                return {nfile.substr(0, 1), nfile.substr(1, npos)};
-            } else {
-                size_t cut1 = flags & fs_fullname ? cut + 1 : cut;
-                return {nfile.substr(0, cut1), nfile.substr(cut + 1, npos)};
-            }
-        }
-
-        template <typename C>
-        pair<basic_string<C>, basic_string<C>> split_leaf_name(const basic_string<C>& file) {
-            auto nfile = normalize_path(file);
-            auto cut = nfile.find_last_of(static_cast<C>(file_delimiter));
-            #if defined(PRI_TARGET_WINDOWS)
-                if (cut == npos && char_is_ascii(file[0]) && ascii_isalpha(char(file[0])) && file[1] == C(':'))
-                    cut = 1;
-            #endif
-            if (cut == npos)
-                cut = 0;
-            else
-                ++cut;
-            if (cut >= nfile.size())
-                return {};
-            auto dot = nfile.find_last_of(C('.'));
-            if (dot > cut && dot != npos)
-                return {nfile.substr(cut, dot - cut), nfile.substr(dot, npos)};
-            else
-                return {nfile.substr(cut, npos), {}};
-        }
-
-    }
+    inline u8string file_path(const u8string& file) { return UnicornDetail::normalize_path(file); }
 
     template <typename... Args>
-    u8string file_path(const u8string& file, Args... args) {
+    u8string file_path(const u8string& file1, const u8string& file2, Args... args) {
         using namespace UnicornDetail;
-        return make_file_path(normalize_path(file), normalize_path(args)...);
+        u8string prefix = normalize_path(file1), suffix = normalize_path(file2);
+        if (prefix.empty() || ! file_is_relative(suffix))
+            return file_path(suffix, args...);
+        if (suffix.empty())
+            return file_path(prefix, args...);
+        if (prefix.back() != file_delimiter)
+            prefix += file_delimiter;
+        return file_path(prefix + suffix, args...);
     }
 
-    inline pair<u8string, u8string> split_path(const u8string& file, uint32_t flags = 0) {
-        return UnicornDetail::split_file_path(file, flags);
-    }
-
-    inline pair<u8string, u8string> split_file(const u8string& file) {
-        return UnicornDetail::split_leaf_name(file);
-    }
+    pair<u8string, u8string> split_path(const u8string& file, uint32_t flags = 0);
+    pair<u8string, u8string> split_file(const u8string& file);
 
     #if defined(PRI_TARGET_WINDOWS)
 
+        inline wstring file_path(const wstring& file) { return UnicornDetail::normalize_path(file); }
+
         template <typename... Args>
-        wstring file_path(const wstring& file, Args... args) {
+        wstring file_path(const wstring& file1, const wstring& file2, Args... args) {
             using namespace UnicornDetail;
-            return make_file_path(normalize_path(file), normalize_path(args)...);
+            wstring prefix = normalize_path(file1), suffix = normalize_path(file2);
+            if (prefix.empty() || ! file_is_relative(suffix))
+                return file_path(suffix, args...);
+            if (suffix.empty())
+                return file_path(prefix, args...);
+            wstring delim;
+            if (prefix.back() != native_file_delimiter)
+                prefix += native_file_delimiter;
+            return file_path(prefix + suffix, args...);
         }
 
-        inline pair<wstring, wstring> split_path(const wstring& file, uint32_t flags = 0) {
-            return UnicornDetail::split_file_path(file, flags);
-        }
-
-        inline pair<wstring, wstring> split_file(const wstring& file) {
-            return UnicornDetail::split_leaf_name(file);
-        }
+        pair<wstring, wstring> split_path(const wstring& file, uint32_t flags = 0);
+        pair<wstring, wstring> split_file(const wstring& file);
 
     #endif
 
