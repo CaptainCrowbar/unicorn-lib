@@ -127,17 +127,6 @@ be a non-standard 128-bit integer on many systems.</p>
 </ul>
 <p>The standard delimiter for directory paths.</p>
 </div>
-<div class="defns">
-<ul>
-<li><code>template &lt;typename C1, typename C2&gt; void</code> <strong><code>recode_filename</code></strong><code>(const basic_string&lt;C1&gt;&amp; src, basic_string&lt;C2&gt;&amp; dst)</code></li>
-<li><code>template &lt;typename C2, typename C1&gt; basic_string&lt;C2&gt;</code> <strong><code>recode_filename</code></strong><code>(const basic_string&lt;C1&gt;&amp; src)</code></li>
-</ul>
-<p>These convert a file name from one UTF encoding to another, using the
-<code>recode()</code> functions from <a href="utf.html"><code>unicorn/utf</code></a> with the <code>err_replace</code>
-option, except that, if the source and destination character types are the
-same size, the string will simply be copied verbatim without checking for
-valid Unicode.</p>
-</div>
 <h2 id="file-name-functions">File name functions</h2>
 <p>These functions operate purely on file names as strings; they do not make any
 contact with the actual file system, and will give the same results regardless
@@ -182,9 +171,7 @@ identifying the root of a physical file system).</p>
 <div class="defns">
 <ul>
 <li><code>template &lt;typename... Args&gt; u8string</code> <strong><code>file_path</code></strong><code>(const u8string&amp; file, Args... args)</code></li>
-<li><code>template &lt;typename... Args&gt; u8string</code> <strong><code>file_path</code></strong><code>(const char* file, Args... args)</code></li>
 <li><code>template &lt;typename... Args&gt; NativeString</code> <strong><code>file_path</code></strong><code>(const NativeString&amp; file, Args... args)</code></li>
-<li><code>template &lt;typename... Args&gt; NativeString</code> <strong><code>file_path</code></strong><code>(const NativeCharacter* file, Args... args)</code></li>
 </ul>
 <p>Assembles a directory path from a series of path elements or relative paths.
 If any argument is an absolute path, this is taken as the root of the final
@@ -267,8 +254,8 @@ permission problems.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>bool</code> <strong><code>file_exists</code></strong><code>(const u8string&amp; file) noexcept</code></li>
-<li><code>bool</code> <strong><code>file_exists</code></strong><code>(const NativeString&amp; file) noexcept</code></li>
+<li><code>bool</code> <strong><code>file_exists</code></strong><code>(const u8string&amp; file)</code></li>
+<li><code>bool</code> <strong><code>file_exists</code></strong><code>(const NativeString&amp; file)</code></li>
 </ul>
 <p>Query whether a file exists. This may give a false negative if the file exists
 but is not accessible to the calling process.</p>
@@ -291,8 +278,8 @@ throw <code>std::system_error</code> in unusual cases.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>bool</code> <strong><code>file_is_directory</code></strong><code>(const u8string&amp; file) noexcept</code></li>
-<li><code>bool</code> <strong><code>file_is_directory</code></strong><code>(const NativeString&amp; file) noexcept</code></li>
+<li><code>bool</code> <strong><code>file_is_directory</code></strong><code>(const u8string&amp; file)</code></li>
+<li><code>bool</code> <strong><code>file_is_directory</code></strong><code>(const NativeString&amp; file)</code></li>
 </ul>
 <p>Query whether a file is a directory. This will return <code>false</code> if the file does
 not exist; it may give a false negative if the directory exists but is not
@@ -300,8 +287,8 @@ accessible to the calling process.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>bool</code> <strong><code>file_is_hidden</code></strong><code>(const u8string&amp; file) noexcept</code></li>
-<li><code>bool</code> <strong><code>file_is_hidden</code></strong><code>(const NativeString&amp; file) noexcept</code></li>
+<li><code>bool</code> <strong><code>file_is_hidden</code></strong><code>(const u8string&amp; file)</code></li>
+<li><code>bool</code> <strong><code>file_is_hidden</code></strong><code>(const NativeString&amp; file)</code></li>
 </ul>
 <p>True if the file is normally hidden. This will return <code>false</code> if the file does
 not exist or is not accessible to the calling process. On Unix this is based
@@ -310,15 +297,15 @@ Windows this is a metadata property.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>bool</code> <strong><code>file_is_symlink</code></strong><code>(const u8string&amp; file) noexcept</code></li>
-<li><code>bool</code> <strong><code>file_is_symlink</code></strong><code>(const NativeString&amp; file) noexcept</code></li>
+<li><code>bool</code> <strong><code>file_is_symlink</code></strong><code>(const u8string&amp; file)</code></li>
+<li><code>bool</code> <strong><code>file_is_symlink</code></strong><code>(const NativeString&amp; file)</code></li>
 </ul>
 <p>True if the file is a symbolic link.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>uint64_t</code> <strong><code>file_size</code></strong><code>(const u8string&amp; file, uint32_t flags = 0) noexcept</code></li>
-<li><code>uint64_t</code> <strong><code>file_size</code></strong><code>(const NativeString&amp; file, uint32_t flags = 0) noexcept</code></li>
+<li><code>uint64_t</code> <strong><code>file_size</code></strong><code>(const u8string&amp; file, uint32_t flags = 0)</code></li>
+<li><code>uint64_t</code> <strong><code>file_size</code></strong><code>(const NativeString&amp; file, uint32_t flags = 0)</code></li>
 </ul>
 <p>Returns the size of the file in bytes. This will return zero if the file does
 not exist, or if it can't be accessed for any other reason. If the file is a

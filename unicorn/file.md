@@ -87,15 +87,6 @@ be a non-standard 128-bit integer on many systems.
 
 The standard delimiter for directory paths.
 
-* `template <typename C1, typename C2> void` **`recode_filename`**`(const basic_string<C1>& src, basic_string<C2>& dst)`
-* `template <typename C2, typename C1> basic_string<C2>` **`recode_filename`**`(const basic_string<C1>& src)`
-
-These convert a file name from one UTF encoding to another, using the
-`recode()` functions from [`unicorn/utf`](utf.html) with the `err_replace`
-option, except that, if the source and destination character types are the
-same size, the string will simply be copied verbatim without checking for
-valid Unicode.
-
 ## File name functions ##
 
 These functions operate purely on file names as strings; they do not make any
@@ -139,9 +130,7 @@ is a purely syntactic operation on the file name, and is not the same as
 identifying the root of a physical file system).
 
 * `template <typename... Args> u8string` **`file_path`**`(const u8string& file, Args... args)`
-* `template <typename... Args> u8string` **`file_path`**`(const char* file, Args... args)`
 * `template <typename... Args> NativeString` **`file_path`**`(const NativeString& file, Args... args)`
-* `template <typename... Args> NativeString` **`file_path`**`(const NativeCharacter* file, Args... args)`
 
 Assembles a directory path from a series of path elements or relative paths.
 If any argument is an absolute path, this is taken as the root of the final
@@ -224,8 +213,8 @@ Query the current working directory of the calling process. These may throw
 `std::system_error` in some unusual cases of failure, usually involving access
 permission problems.
 
-* `bool` **`file_exists`**`(const u8string& file) noexcept`
-* `bool` **`file_exists`**`(const NativeString& file) noexcept`
+* `bool` **`file_exists`**`(const u8string& file)`
+* `bool` **`file_exists`**`(const NativeString& file)`
 
 Query whether a file exists. This may give a false negative if the file exists
 but is not accessible to the calling process.
@@ -245,28 +234,28 @@ Windows. Completely reliable file identification cannot be guaranteed in the
 presence of parallel remote mounts or similar trickery. On some systems it may
 throw `std::system_error` in unusual cases.
 
-* `bool` **`file_is_directory`**`(const u8string& file) noexcept`
-* `bool` **`file_is_directory`**`(const NativeString& file) noexcept`
+* `bool` **`file_is_directory`**`(const u8string& file)`
+* `bool` **`file_is_directory`**`(const NativeString& file)`
 
 Query whether a file is a directory. This will return `false` if the file does
 not exist; it may give a false negative if the directory exists but is not
 accessible to the calling process.
 
-* `bool` **`file_is_hidden`**`(const u8string& file) noexcept`
-* `bool` **`file_is_hidden`**`(const NativeString& file) noexcept`
+* `bool` **`file_is_hidden`**`(const u8string& file)`
+* `bool` **`file_is_hidden`**`(const NativeString& file)`
 
 True if the file is normally hidden. This will return `false` if the file does
 not exist or is not accessible to the calling process. On Unix this is based
 on the file name (a file is hidden if its name starts with a dot), but on
 Windows this is a metadata property.
 
-* `bool` **`file_is_symlink`**`(const u8string& file) noexcept`
-* `bool` **`file_is_symlink`**`(const NativeString& file) noexcept`
+* `bool` **`file_is_symlink`**`(const u8string& file)`
+* `bool` **`file_is_symlink`**`(const NativeString& file)`
 
 True if the file is a symbolic link.
 
-* `uint64_t` **`file_size`**`(const u8string& file, uint32_t flags = 0) noexcept`
-* `uint64_t` **`file_size`**`(const NativeString& file, uint32_t flags = 0) noexcept`
+* `uint64_t` **`file_size`**`(const u8string& file, uint32_t flags = 0)`
+* `uint64_t` **`file_size`**`(const NativeString& file, uint32_t flags = 0)`
 
 Returns the size of the file in bytes. This will return zero if the file does
 not exist, or if it can't be accessed for any other reason. If the file is a

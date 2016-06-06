@@ -19,8 +19,6 @@ using namespace Unicorn;
 
 namespace {
 
-    using UnicornDetail::normalize_file;
-
     template <typename C>
     void touch(const basic_string<C>& file) {
         std::ofstream(to_utf8(file));
@@ -97,46 +95,6 @@ namespace {
             TEST(! file_is_relative("//foo/"s));
             TEST(! file_is_relative("//foo"s));
 
-            TEST(! file_is_absolute(u""s));
-            TEST(file_is_absolute(u"/"s));
-            TEST(! file_is_absolute(u"foo"s));
-            TEST(file_is_absolute(u"/foo"s));
-            TEST(! file_is_absolute(u"foo/bar"s));
-            TEST(file_is_absolute(u"/foo/bar"s));
-            TEST(file_is_absolute(u"//foo/bar"s));
-            TEST(file_is_absolute(u"//foo/"s));
-            TEST(file_is_absolute(u"//foo"s));
-
-            TEST(! file_is_relative(u""s));
-            TEST(! file_is_relative(u"/"s));
-            TEST(file_is_relative(u"foo"s));
-            TEST(! file_is_relative(u"/foo"s));
-            TEST(file_is_relative(u"foo/bar"s));
-            TEST(! file_is_relative(u"/foo/bar"s));
-            TEST(! file_is_relative(u"//foo/bar"s));
-            TEST(! file_is_relative(u"//foo/"s));
-            TEST(! file_is_relative(u"//foo"s));
-
-            TEST(! file_is_absolute(U""s));
-            TEST(file_is_absolute(U"/"s));
-            TEST(! file_is_absolute(U"foo"s));
-            TEST(file_is_absolute(U"/foo"s));
-            TEST(! file_is_absolute(U"foo/bar"s));
-            TEST(file_is_absolute(U"/foo/bar"s));
-            TEST(file_is_absolute(U"//foo/bar"s));
-            TEST(file_is_absolute(U"//foo/"s));
-            TEST(file_is_absolute(U"//foo"s));
-
-            TEST(! file_is_relative(U""s));
-            TEST(! file_is_relative(U"/"s));
-            TEST(file_is_relative(U"foo"s));
-            TEST(! file_is_relative(U"/foo"s));
-            TEST(file_is_relative(U"foo/bar"s));
-            TEST(! file_is_relative(U"/foo/bar"s));
-            TEST(! file_is_relative(U"//foo/bar"s));
-            TEST(! file_is_relative(U"//foo/"s));
-            TEST(! file_is_relative(U"//foo"s));
-
             TEST(! file_is_root(""s));
             TEST(file_is_root("/"s));
             TEST(! file_is_root("foo"s));
@@ -146,26 +104,6 @@ namespace {
             TEST(! file_is_root("//foo/bar"s));
             TEST(file_is_root("//foo/"s));
             TEST(file_is_root("//foo"s));
-
-            TEST(! file_is_root(u""s));
-            TEST(file_is_root(u"/"s));
-            TEST(! file_is_root(u"foo"s));
-            TEST(! file_is_root(u"/foo"s));
-            TEST(! file_is_root(u"foo/bar"s));
-            TEST(! file_is_root(u"/foo/bar"s));
-            TEST(! file_is_root(u"//foo/bar"s));
-            TEST(file_is_root(u"//foo/"s));
-            TEST(file_is_root(u"//foo"s));
-
-            TEST(! file_is_root(U""s));
-            TEST(file_is_root(U"/"s));
-            TEST(! file_is_root(U"foo"s));
-            TEST(! file_is_root(U"/foo"s));
-            TEST(! file_is_root(U"foo/bar"s));
-            TEST(! file_is_root(U"/foo/bar"s));
-            TEST(! file_is_root(U"//foo/bar"s));
-            TEST(file_is_root(U"//foo/"s));
-            TEST(file_is_root(U"//foo"s));
 
         #else
 
@@ -253,174 +191,6 @@ namespace {
             TEST(! file_is_drive_relative("\\\\?\\\\\\foo\\"s));
             TEST(! file_is_drive_relative("\\\\?\\\\\\foo"s));
 
-            TEST(! file_is_absolute(u""s));
-            TEST(! file_is_absolute(u"foo"s));
-            TEST(! file_is_absolute(u"foo\\bar"s));
-            TEST(file_is_absolute(u"C:\\"s));
-            TEST(file_is_absolute(u"C:\\foo"s));
-            TEST(! file_is_absolute(u"C:"s));
-            TEST(! file_is_absolute(u"C:foo"s));
-            TEST(! file_is_absolute(u"\\foo"s));
-            TEST(file_is_absolute(u"\\\\foo\\bar"s));
-            TEST(file_is_absolute(u"\\\\foo\\"s));
-            TEST(file_is_absolute(u"\\\\foo"s));
-            TEST(! file_is_absolute(u"\\\\?\\foo"s));
-            TEST(! file_is_absolute(u"\\\\?\\foo\\bar"s));
-            TEST(file_is_absolute(u"\\\\?\\C:\\"s));
-            TEST(file_is_absolute(u"\\\\?\\C:\\foo"s));
-            TEST(! file_is_absolute(u"\\\\?\\C:"s));
-            TEST(! file_is_absolute(u"\\\\?\\C:foo"s));
-            TEST(file_is_absolute(u"\\\\?\\\\\\foo\\bar"s));
-            TEST(file_is_absolute(u"\\\\?\\\\\\foo\\"s));
-            TEST(file_is_absolute(u"\\\\?\\\\\\foo"s));
-
-            TEST(! file_is_relative(u""s));
-            TEST(file_is_relative(u"foo"s));
-            TEST(file_is_relative(u"foo\\bar"s));
-            TEST(! file_is_relative(u"C:\\"s));
-            TEST(! file_is_relative(u"C:\\foo"s));
-            TEST(! file_is_relative(u"C:"s));
-            TEST(! file_is_relative(u"C:foo"s));
-            TEST(! file_is_relative(u"\\foo"s));
-            TEST(! file_is_relative(u"\\\\foo\\bar"s));
-            TEST(! file_is_relative(u"\\\\foo\\"s));
-            TEST(! file_is_relative(u"\\\\foo"s));
-            TEST(file_is_relative(u"\\\\?\\foo"s));
-            TEST(file_is_relative(u"\\\\?\\foo\\bar"s));
-            TEST(! file_is_relative(u"\\\\?\\C:\\"s));
-            TEST(! file_is_relative(u"\\\\?\\C:\\foo"s));
-            TEST(file_is_relative(u"\\\\?\\C:"s));
-            TEST(file_is_relative(u"\\\\?\\C:foo"s));
-            TEST(! file_is_relative(u"\\\\?\\\\\\foo\\bar"s));
-            TEST(! file_is_relative(u"\\\\?\\\\\\foo\\"s));
-            TEST(! file_is_relative(u"\\\\?\\\\\\foo"s));
-
-            TEST(! file_is_drive_absolute(u""s));
-            TEST(! file_is_drive_absolute(u"foo"s));
-            TEST(! file_is_drive_absolute(u"foo\\bar"s));
-            TEST(! file_is_drive_absolute(u"C:\\"s));
-            TEST(! file_is_drive_absolute(u"C:\\foo"s));
-            TEST(! file_is_drive_absolute(u"C:"s));
-            TEST(! file_is_drive_absolute(u"C:foo"s));
-            TEST(file_is_drive_absolute(u"\\foo"s));
-            TEST(! file_is_drive_absolute(u"\\\\foo\\bar"s));
-            TEST(! file_is_drive_absolute(u"\\\\foo\\"s));
-            TEST(! file_is_drive_absolute(u"\\\\foo"s));
-            TEST(! file_is_drive_absolute(u"\\\\?\\foo"s));
-            TEST(! file_is_drive_absolute(u"\\\\?\\foo\\bar"s));
-            TEST(! file_is_drive_absolute(u"\\\\?\\C:\\"s));
-            TEST(! file_is_drive_absolute(u"\\\\?\\C:\\foo"s));
-            TEST(! file_is_drive_absolute(u"\\\\?\\C:"s));
-            TEST(! file_is_drive_absolute(u"\\\\?\\C:foo"s));
-            TEST(! file_is_drive_absolute(u"\\\\?\\\\\\foo\\bar"s));
-            TEST(! file_is_drive_absolute(u"\\\\?\\\\\\foo\\"s));
-            TEST(! file_is_drive_absolute(u"\\\\?\\\\\\foo"s));
-
-            TEST(! file_is_drive_relative(u""s));
-            TEST(! file_is_drive_relative(u"foo"s));
-            TEST(! file_is_drive_relative(u"foo\\bar"s));
-            TEST(! file_is_drive_relative(u"C:\\"s));
-            TEST(! file_is_drive_relative(u"C:\\foo"s));
-            TEST(file_is_drive_relative(u"C:"s));
-            TEST(file_is_drive_relative(u"C:foo"s));
-            TEST(! file_is_drive_relative(u"\\foo"s));
-            TEST(! file_is_drive_relative(u"\\\\foo\\bar"s));
-            TEST(! file_is_drive_relative(u"\\\\foo\\"s));
-            TEST(! file_is_drive_relative(u"\\\\foo"s));
-            TEST(! file_is_drive_relative(u"\\\\?\\foo"s));
-            TEST(! file_is_drive_relative(u"\\\\?\\foo\\bar"s));
-            TEST(! file_is_drive_relative(u"\\\\?\\C:\\"s));
-            TEST(! file_is_drive_relative(u"\\\\?\\C:\\foo"s));
-            TEST(! file_is_drive_relative(u"\\\\?\\C:"s));
-            TEST(! file_is_drive_relative(u"\\\\?\\C:foo"s));
-            TEST(! file_is_drive_relative(u"\\\\?\\\\\\foo\\bar"s));
-            TEST(! file_is_drive_relative(u"\\\\?\\\\\\foo\\"s));
-            TEST(! file_is_drive_relative(u"\\\\?\\\\\\foo"s));
-
-            TEST(! file_is_absolute(U""s));
-            TEST(! file_is_absolute(U"foo"s));
-            TEST(! file_is_absolute(U"foo\\bar"s));
-            TEST(file_is_absolute(U"C:\\"s));
-            TEST(file_is_absolute(U"C:\\foo"s));
-            TEST(! file_is_absolute(U"C:"s));
-            TEST(! file_is_absolute(U"C:foo"s));
-            TEST(! file_is_absolute(U"\\foo"s));
-            TEST(file_is_absolute(U"\\\\foo\\bar"s));
-            TEST(file_is_absolute(U"\\\\foo\\"s));
-            TEST(file_is_absolute(U"\\\\foo"s));
-            TEST(! file_is_absolute(U"\\\\?\\foo"s));
-            TEST(! file_is_absolute(U"\\\\?\\foo\\bar"s));
-            TEST(file_is_absolute(U"\\\\?\\C:\\"s));
-            TEST(file_is_absolute(U"\\\\?\\C:\\foo"s));
-            TEST(! file_is_absolute(U"\\\\?\\C:"s));
-            TEST(! file_is_absolute(U"\\\\?\\C:foo"s));
-            TEST(file_is_absolute(U"\\\\?\\\\\\foo\\bar"s));
-            TEST(file_is_absolute(U"\\\\?\\\\\\foo\\"s));
-            TEST(file_is_absolute(U"\\\\?\\\\\\foo"s));
-
-            TEST(! file_is_relative(U""s));
-            TEST(file_is_relative(U"foo"s));
-            TEST(file_is_relative(U"foo\\bar"s));
-            TEST(! file_is_relative(U"C:\\"s));
-            TEST(! file_is_relative(U"C:\\foo"s));
-            TEST(! file_is_relative(U"C:"s));
-            TEST(! file_is_relative(U"C:foo"s));
-            TEST(! file_is_relative(U"\\foo"s));
-            TEST(! file_is_relative(U"\\\\foo\\bar"s));
-            TEST(! file_is_relative(U"\\\\foo\\"s));
-            TEST(! file_is_relative(U"\\\\foo"s));
-            TEST(file_is_relative(U"\\\\?\\foo"s));
-            TEST(file_is_relative(U"\\\\?\\foo\\bar"s));
-            TEST(! file_is_relative(U"\\\\?\\C:\\"s));
-            TEST(! file_is_relative(U"\\\\?\\C:\\foo"s));
-            TEST(file_is_relative(U"\\\\?\\C:"s));
-            TEST(file_is_relative(U"\\\\?\\C:foo"s));
-            TEST(! file_is_relative(U"\\\\?\\\\\\foo\\bar"s));
-            TEST(! file_is_relative(U"\\\\?\\\\\\foo\\"s));
-            TEST(! file_is_relative(U"\\\\?\\\\\\foo"s));
-
-            TEST(! file_is_drive_absolute(U""s));
-            TEST(! file_is_drive_absolute(U"foo"s));
-            TEST(! file_is_drive_absolute(U"foo\\bar"s));
-            TEST(! file_is_drive_absolute(U"C:\\"s));
-            TEST(! file_is_drive_absolute(U"C:\\foo"s));
-            TEST(! file_is_drive_absolute(U"C:"s));
-            TEST(! file_is_drive_absolute(U"C:foo"s));
-            TEST(file_is_drive_absolute(U"\\foo"s));
-            TEST(! file_is_drive_absolute(U"\\\\foo\\bar"s));
-            TEST(! file_is_drive_absolute(U"\\\\foo\\"s));
-            TEST(! file_is_drive_absolute(U"\\\\foo"s));
-            TEST(! file_is_drive_absolute(U"\\\\?\\foo"s));
-            TEST(! file_is_drive_absolute(U"\\\\?\\foo\\bar"s));
-            TEST(! file_is_drive_absolute(U"\\\\?\\C:\\"s));
-            TEST(! file_is_drive_absolute(U"\\\\?\\C:\\foo"s));
-            TEST(! file_is_drive_absolute(U"\\\\?\\C:"s));
-            TEST(! file_is_drive_absolute(U"\\\\?\\C:foo"s));
-            TEST(! file_is_drive_absolute(U"\\\\?\\\\\\foo\\bar"s));
-            TEST(! file_is_drive_absolute(U"\\\\?\\\\\\foo\\"s));
-            TEST(! file_is_drive_absolute(U"\\\\?\\\\\\foo"s));
-
-            TEST(! file_is_drive_relative(U""s));
-            TEST(! file_is_drive_relative(U"foo"s));
-            TEST(! file_is_drive_relative(U"foo\\bar"s));
-            TEST(! file_is_drive_relative(U"C:\\"s));
-            TEST(! file_is_drive_relative(U"C:\\foo"s));
-            TEST(file_is_drive_relative(U"C:"s));
-            TEST(file_is_drive_relative(U"C:foo"s));
-            TEST(! file_is_drive_relative(U"\\foo"s));
-            TEST(! file_is_drive_relative(U"\\\\foo\\bar"s));
-            TEST(! file_is_drive_relative(U"\\\\foo\\"s));
-            TEST(! file_is_drive_relative(U"\\\\foo"s));
-            TEST(! file_is_drive_relative(U"\\\\?\\foo"s));
-            TEST(! file_is_drive_relative(U"\\\\?\\foo\\bar"s));
-            TEST(! file_is_drive_relative(U"\\\\?\\C:\\"s));
-            TEST(! file_is_drive_relative(U"\\\\?\\C:\\foo"s));
-            TEST(! file_is_drive_relative(U"\\\\?\\C:"s));
-            TEST(! file_is_drive_relative(U"\\\\?\\C:foo"s));
-            TEST(! file_is_drive_relative(U"\\\\?\\\\\\foo\\bar"s));
-            TEST(! file_is_drive_relative(U"\\\\?\\\\\\foo\\"s));
-            TEST(! file_is_drive_relative(U"\\\\?\\\\\\foo"s));
-
             TEST(! file_is_root(""s));
             TEST(! file_is_root("foo"s));
             TEST(! file_is_root("foo\\bar"s));
@@ -441,141 +211,43 @@ namespace {
             TEST(file_is_root("\\\\?\\\\\\foo\\"s));
             TEST(file_is_root("\\\\?\\\\\\foo"s));
 
-            TEST(! file_is_root(u""s));
-            TEST(! file_is_root(u"foo"s));
-            TEST(! file_is_root(u"foo\\bar"s));
-            TEST(file_is_root(u"C:\\"s));
-            TEST(! file_is_root(u"C:\\foo"s));
-            TEST(! file_is_root(u"C:"s));
-            TEST(! file_is_root(u"C:foo"s));
-            TEST(! file_is_root(u"\\\\foo\\bar"s));
-            TEST(file_is_root(u"\\\\foo\\"s));
-            TEST(file_is_root(u"\\\\foo"s));
-            TEST(! file_is_root(u"\\\\?\\foo"s));
-            TEST(! file_is_root(u"\\\\?\\foo\\bar"s));
-            TEST(file_is_root(u"\\\\?\\C:\\"s));
-            TEST(! file_is_root(u"\\\\?\\C:\\foo"s));
-            TEST(! file_is_root(u"\\\\?\\C:"s));
-            TEST(! file_is_root(u"\\\\?\\C:foo"s));
-            TEST(! file_is_root(u"\\\\?\\\\\\foo\\bar"s));
-            TEST(file_is_root(u"\\\\?\\\\\\foo\\"s));
-            TEST(file_is_root(u"\\\\?\\\\\\foo"s));
-
-            TEST(! file_is_root(U""s));
-            TEST(! file_is_root(U"foo"s));
-            TEST(! file_is_root(U"foo\\bar"s));
-            TEST(file_is_root(U"C:\\"s));
-            TEST(! file_is_root(U"C:\\foo"s));
-            TEST(! file_is_root(U"C:"s));
-            TEST(! file_is_root(U"C:foo"s));
-            TEST(! file_is_root(U"\\\\foo\\bar"s));
-            TEST(file_is_root(U"\\\\foo\\"s));
-            TEST(file_is_root(U"\\\\foo"s));
-            TEST(! file_is_root(U"\\\\?\\foo"s));
-            TEST(! file_is_root(U"\\\\?\\foo\\bar"s));
-            TEST(file_is_root(U"\\\\?\\C:\\"s));
-            TEST(! file_is_root(U"\\\\?\\C:\\foo"s));
-            TEST(! file_is_root(U"\\\\?\\C:"s));
-            TEST(! file_is_root(U"\\\\?\\C:foo"s));
-            TEST(! file_is_root(U"\\\\?\\\\\\foo\\bar"s));
-            TEST(file_is_root(U"\\\\?\\\\\\foo\\"s));
-            TEST(file_is_root(U"\\\\?\\\\\\foo"s));
-
         #endif
 
     }
 
     void check_file_path_operations() {
 
-        pair<u8string, u8string> p8;
-        pair<u16string, u16string> p16;
-        pair<u32string, u32string> p32;
+        pair<u8string, u8string> p;
 
-        TRY(p8 = split_path(""s));           TEST_EQUAL(p8.first, "");        TEST_EQUAL(p8.second, "");
-        TRY(p8 = split_file(""s));           TEST_EQUAL(p8.first, "");        TEST_EQUAL(p8.second, "");
-        TRY(p8 = split_path("hello.txt"s));  TEST_EQUAL(p8.first, "");        TEST_EQUAL(p8.second, "hello.txt");
-        TRY(p8 = split_file("hello.txt"s));  TEST_EQUAL(p8.first, "hello");   TEST_EQUAL(p8.second, ".txt");
-        TRY(p8 = split_path("hello"s));      TEST_EQUAL(p8.first, "");        TEST_EQUAL(p8.second, "hello");
-        TRY(p8 = split_file("hello"s));      TEST_EQUAL(p8.first, "hello");   TEST_EQUAL(p8.second, "");
-        TRY(p8 = split_path(".hello"s));     TEST_EQUAL(p8.first, "");        TEST_EQUAL(p8.second, ".hello");
-        TRY(p8 = split_file(".hello"s));     TEST_EQUAL(p8.first, ".hello");  TEST_EQUAL(p8.second, "");
-
-        TRY(p16 = split_path(u""s));           TEST_EQUAL(p16.first, u"");        TEST_EQUAL(p16.second, u"");
-        TRY(p16 = split_file(u""s));           TEST_EQUAL(p16.first, u"");        TEST_EQUAL(p16.second, u"");
-        TRY(p16 = split_path(u"hello.txt"s));  TEST_EQUAL(p16.first, u"");        TEST_EQUAL(p16.second, u"hello.txt");
-        TRY(p16 = split_file(u"hello.txt"s));  TEST_EQUAL(p16.first, u"hello");   TEST_EQUAL(p16.second, u".txt");
-        TRY(p16 = split_path(u"hello"s));      TEST_EQUAL(p16.first, u"");        TEST_EQUAL(p16.second, u"hello");
-        TRY(p16 = split_file(u"hello"s));      TEST_EQUAL(p16.first, u"hello");   TEST_EQUAL(p16.second, u"");
-        TRY(p16 = split_path(u".hello"s));     TEST_EQUAL(p16.first, u"");        TEST_EQUAL(p16.second, u".hello");
-        TRY(p16 = split_file(u".hello"s));     TEST_EQUAL(p16.first, u".hello");  TEST_EQUAL(p16.second, u"");
-
-        TRY(p32 = split_path(U""s));           TEST_EQUAL(p32.first, U"");        TEST_EQUAL(p32.second, U"");
-        TRY(p32 = split_file(U""s));           TEST_EQUAL(p32.first, U"");        TEST_EQUAL(p32.second, U"");
-        TRY(p32 = split_path(U"hello.txt"s));  TEST_EQUAL(p32.first, U"");        TEST_EQUAL(p32.second, U"hello.txt");
-        TRY(p32 = split_file(U"hello.txt"s));  TEST_EQUAL(p32.first, U"hello");   TEST_EQUAL(p32.second, U".txt");
-        TRY(p32 = split_path(U"hello"s));      TEST_EQUAL(p32.first, U"");        TEST_EQUAL(p32.second, U"hello");
-        TRY(p32 = split_file(U"hello"s));      TEST_EQUAL(p32.first, U"hello");   TEST_EQUAL(p32.second, U"");
-        TRY(p32 = split_path(U".hello"s));     TEST_EQUAL(p32.first, U"");        TEST_EQUAL(p32.second, U".hello");
-        TRY(p32 = split_file(U".hello"s));     TEST_EQUAL(p32.first, U".hello");  TEST_EQUAL(p32.second, U"");
+        TRY(p = split_path(""s));           TEST_EQUAL(p.first, "");        TEST_EQUAL(p.second, "");
+        TRY(p = split_file(""s));           TEST_EQUAL(p.first, "");        TEST_EQUAL(p.second, "");
+        TRY(p = split_path("hello.txt"s));  TEST_EQUAL(p.first, "");        TEST_EQUAL(p.second, "hello.txt");
+        TRY(p = split_file("hello.txt"s));  TEST_EQUAL(p.first, "hello");   TEST_EQUAL(p.second, ".txt");
+        TRY(p = split_path("hello"s));      TEST_EQUAL(p.first, "");        TEST_EQUAL(p.second, "hello");
+        TRY(p = split_file("hello"s));      TEST_EQUAL(p.first, "hello");   TEST_EQUAL(p.second, "");
+        TRY(p = split_path(".hello"s));     TEST_EQUAL(p.first, "");        TEST_EQUAL(p.second, ".hello");
+        TRY(p = split_file(".hello"s));     TEST_EQUAL(p.first, ".hello");  TEST_EQUAL(p.second, "");
 
         #if defined(PRI_TARGET_UNIX)
 
-            TRY(p8 = split_path("/hello.txt"s));                            TEST_EQUAL(p8.first, "/");            TEST_EQUAL(p8.second, "hello.txt");
-            TRY(p8 = split_path("/hello.txt"s, fs_fullname));               TEST_EQUAL(p8.first, "/");            TEST_EQUAL(p8.second, "hello.txt");
-            TRY(p8 = split_file("/hello.txt"s));                            TEST_EQUAL(p8.first, "hello");        TEST_EQUAL(p8.second, ".txt");
-            TRY(p8 = split_path("abc/def/hello.txt"s));                     TEST_EQUAL(p8.first, "abc/def");      TEST_EQUAL(p8.second, "hello.txt");
-            TRY(p8 = split_path("abc/def/hello.txt"s, fs_fullname));        TEST_EQUAL(p8.first, "abc/def/");     TEST_EQUAL(p8.second, "hello.txt");
-            TRY(p8 = split_file("abc/def/hello.txt"s));                     TEST_EQUAL(p8.first, "hello");        TEST_EQUAL(p8.second, ".txt");
-            TRY(p8 = split_path("abc/def/hello"s));                         TEST_EQUAL(p8.first, "abc/def");      TEST_EQUAL(p8.second, "hello");
-            TRY(p8 = split_path("abc/def/hello"s, fs_fullname));            TEST_EQUAL(p8.first, "abc/def/");     TEST_EQUAL(p8.second, "hello");
-            TRY(p8 = split_file("abc/def/hello"s));                         TEST_EQUAL(p8.first, "hello");        TEST_EQUAL(p8.second, "");
-            TRY(p8 = split_path("abc/def/hello.world.txt"s));               TEST_EQUAL(p8.first, "abc/def");      TEST_EQUAL(p8.second, "hello.world.txt");
-            TRY(p8 = split_path("abc/def/hello.world.txt"s, fs_fullname));  TEST_EQUAL(p8.first, "abc/def/");     TEST_EQUAL(p8.second, "hello.world.txt");
-            TRY(p8 = split_file("abc/def/hello.world.txt"s));               TEST_EQUAL(p8.first, "hello.world");  TEST_EQUAL(p8.second, ".txt");
-            TRY(p8 = split_path("abc/def/.hello"s));                        TEST_EQUAL(p8.first, "abc/def");      TEST_EQUAL(p8.second, ".hello");
-            TRY(p8 = split_path("abc/def/.hello"s, fs_fullname));           TEST_EQUAL(p8.first, "abc/def/");     TEST_EQUAL(p8.second, ".hello");
-            TRY(p8 = split_file("abc/def/.hello"s));                        TEST_EQUAL(p8.first, ".hello");       TEST_EQUAL(p8.second, "");
-            TRY(p8 = split_path("abc/def/.hello.txt"s));                    TEST_EQUAL(p8.first, "abc/def");      TEST_EQUAL(p8.second, ".hello.txt");
-            TRY(p8 = split_path("abc/def/.hello.txt"s, fs_fullname));       TEST_EQUAL(p8.first, "abc/def/");     TEST_EQUAL(p8.second, ".hello.txt");
-            TRY(p8 = split_file("abc/def/.hello.txt"s));                    TEST_EQUAL(p8.first, ".hello");       TEST_EQUAL(p8.second, ".txt");
-
-            TRY(p16 = split_path(u"/hello.txt"s));                            TEST_EQUAL(p16.first, u"/");            TEST_EQUAL(p16.second, u"hello.txt");
-            TRY(p16 = split_path(u"/hello.txt"s, fs_fullname));               TEST_EQUAL(p16.first, u"/");            TEST_EQUAL(p16.second, u"hello.txt");
-            TRY(p16 = split_file(u"/hello.txt"s));                            TEST_EQUAL(p16.first, u"hello");        TEST_EQUAL(p16.second, u".txt");
-            TRY(p16 = split_path(u"abc/def/hello.txt"s));                     TEST_EQUAL(p16.first, u"abc/def");      TEST_EQUAL(p16.second, u"hello.txt");
-            TRY(p16 = split_path(u"abc/def/hello.txt"s, fs_fullname));        TEST_EQUAL(p16.first, u"abc/def/");     TEST_EQUAL(p16.second, u"hello.txt");
-            TRY(p16 = split_file(u"abc/def/hello.txt"s));                     TEST_EQUAL(p16.first, u"hello");        TEST_EQUAL(p16.second, u".txt");
-            TRY(p16 = split_path(u"abc/def/hello"s));                         TEST_EQUAL(p16.first, u"abc/def");      TEST_EQUAL(p16.second, u"hello");
-            TRY(p16 = split_path(u"abc/def/hello"s, fs_fullname));            TEST_EQUAL(p16.first, u"abc/def/");     TEST_EQUAL(p16.second, u"hello");
-            TRY(p16 = split_file(u"abc/def/hello"s));                         TEST_EQUAL(p16.first, u"hello");        TEST_EQUAL(p16.second, u"");
-            TRY(p16 = split_path(u"abc/def/hello.world.txt"s));               TEST_EQUAL(p16.first, u"abc/def");      TEST_EQUAL(p16.second, u"hello.world.txt");
-            TRY(p16 = split_path(u"abc/def/hello.world.txt"s, fs_fullname));  TEST_EQUAL(p16.first, u"abc/def/");     TEST_EQUAL(p16.second, u"hello.world.txt");
-            TRY(p16 = split_file(u"abc/def/hello.world.txt"s));               TEST_EQUAL(p16.first, u"hello.world");  TEST_EQUAL(p16.second, u".txt");
-            TRY(p16 = split_path(u"abc/def/.hello"s));                        TEST_EQUAL(p16.first, u"abc/def");      TEST_EQUAL(p16.second, u".hello");
-            TRY(p16 = split_path(u"abc/def/.hello"s, fs_fullname));           TEST_EQUAL(p16.first, u"abc/def/");     TEST_EQUAL(p16.second, u".hello");
-            TRY(p16 = split_file(u"abc/def/.hello"s));                        TEST_EQUAL(p16.first, u".hello");       TEST_EQUAL(p16.second, u"");
-            TRY(p16 = split_path(u"abc/def/.hello.txt"s));                    TEST_EQUAL(p16.first, u"abc/def");      TEST_EQUAL(p16.second, u".hello.txt");
-            TRY(p16 = split_path(u"abc/def/.hello.txt"s, fs_fullname));       TEST_EQUAL(p16.first, u"abc/def/");     TEST_EQUAL(p16.second, u".hello.txt");
-            TRY(p16 = split_file(u"abc/def/.hello.txt"s));                    TEST_EQUAL(p16.first, u".hello");       TEST_EQUAL(p16.second, u".txt");
-
-            TRY(p32 = split_path(U"/hello.txt"s));                            TEST_EQUAL(p32.first, U"/");            TEST_EQUAL(p32.second, U"hello.txt");
-            TRY(p32 = split_path(U"/hello.txt"s, fs_fullname));               TEST_EQUAL(p32.first, U"/");            TEST_EQUAL(p32.second, U"hello.txt");
-            TRY(p32 = split_file(U"/hello.txt"s));                            TEST_EQUAL(p32.first, U"hello");        TEST_EQUAL(p32.second, U".txt");
-            TRY(p32 = split_path(U"abc/def/hello.txt"s));                     TEST_EQUAL(p32.first, U"abc/def");      TEST_EQUAL(p32.second, U"hello.txt");
-            TRY(p32 = split_path(U"abc/def/hello.txt"s, fs_fullname));        TEST_EQUAL(p32.first, U"abc/def/");     TEST_EQUAL(p32.second, U"hello.txt");
-            TRY(p32 = split_file(U"abc/def/hello.txt"s));                     TEST_EQUAL(p32.first, U"hello");        TEST_EQUAL(p32.second, U".txt");
-            TRY(p32 = split_path(U"abc/def/hello"s));                         TEST_EQUAL(p32.first, U"abc/def");      TEST_EQUAL(p32.second, U"hello");
-            TRY(p32 = split_path(U"abc/def/hello"s, fs_fullname));            TEST_EQUAL(p32.first, U"abc/def/");     TEST_EQUAL(p32.second, U"hello");
-            TRY(p32 = split_file(U"abc/def/hello"s));                         TEST_EQUAL(p32.first, U"hello");        TEST_EQUAL(p32.second, U"");
-            TRY(p32 = split_path(U"abc/def/hello.world.txt"s));               TEST_EQUAL(p32.first, U"abc/def");      TEST_EQUAL(p32.second, U"hello.world.txt");
-            TRY(p32 = split_path(U"abc/def/hello.world.txt"s, fs_fullname));  TEST_EQUAL(p32.first, U"abc/def/");     TEST_EQUAL(p32.second, U"hello.world.txt");
-            TRY(p32 = split_file(U"abc/def/hello.world.txt"s));               TEST_EQUAL(p32.first, U"hello.world");  TEST_EQUAL(p32.second, U".txt");
-            TRY(p32 = split_path(U"abc/def/.hello"s));                        TEST_EQUAL(p32.first, U"abc/def");      TEST_EQUAL(p32.second, U".hello");
-            TRY(p32 = split_path(U"abc/def/.hello"s, fs_fullname));           TEST_EQUAL(p32.first, U"abc/def/");     TEST_EQUAL(p32.second, U".hello");
-            TRY(p32 = split_file(U"abc/def/.hello"s));                        TEST_EQUAL(p32.first, U".hello");       TEST_EQUAL(p32.second, U"");
-            TRY(p32 = split_path(U"abc/def/.hello.txt"s));                    TEST_EQUAL(p32.first, U"abc/def");      TEST_EQUAL(p32.second, U".hello.txt");
-            TRY(p32 = split_path(U"abc/def/.hello.txt"s, fs_fullname));       TEST_EQUAL(p32.first, U"abc/def/");     TEST_EQUAL(p32.second, U".hello.txt");
-            TRY(p32 = split_file(U"abc/def/.hello.txt"s));                    TEST_EQUAL(p32.first, U".hello");       TEST_EQUAL(p32.second, U".txt");
+            TRY(p = split_path("/hello.txt"s));                            TEST_EQUAL(p.first, "/");            TEST_EQUAL(p.second, "hello.txt");
+            TRY(p = split_path("/hello.txt"s, fs_fullname));               TEST_EQUAL(p.first, "/");            TEST_EQUAL(p.second, "hello.txt");
+            TRY(p = split_file("/hello.txt"s));                            TEST_EQUAL(p.first, "hello");        TEST_EQUAL(p.second, ".txt");
+            TRY(p = split_path("abc/def/hello.txt"s));                     TEST_EQUAL(p.first, "abc/def");      TEST_EQUAL(p.second, "hello.txt");
+            TRY(p = split_path("abc/def/hello.txt"s, fs_fullname));        TEST_EQUAL(p.first, "abc/def/");     TEST_EQUAL(p.second, "hello.txt");
+            TRY(p = split_file("abc/def/hello.txt"s));                     TEST_EQUAL(p.first, "hello");        TEST_EQUAL(p.second, ".txt");
+            TRY(p = split_path("abc/def/hello"s));                         TEST_EQUAL(p.first, "abc/def");      TEST_EQUAL(p.second, "hello");
+            TRY(p = split_path("abc/def/hello"s, fs_fullname));            TEST_EQUAL(p.first, "abc/def/");     TEST_EQUAL(p.second, "hello");
+            TRY(p = split_file("abc/def/hello"s));                         TEST_EQUAL(p.first, "hello");        TEST_EQUAL(p.second, "");
+            TRY(p = split_path("abc/def/hello.world.txt"s));               TEST_EQUAL(p.first, "abc/def");      TEST_EQUAL(p.second, "hello.world.txt");
+            TRY(p = split_path("abc/def/hello.world.txt"s, fs_fullname));  TEST_EQUAL(p.first, "abc/def/");     TEST_EQUAL(p.second, "hello.world.txt");
+            TRY(p = split_file("abc/def/hello.world.txt"s));               TEST_EQUAL(p.first, "hello.world");  TEST_EQUAL(p.second, ".txt");
+            TRY(p = split_path("abc/def/.hello"s));                        TEST_EQUAL(p.first, "abc/def");      TEST_EQUAL(p.second, ".hello");
+            TRY(p = split_path("abc/def/.hello"s, fs_fullname));           TEST_EQUAL(p.first, "abc/def/");     TEST_EQUAL(p.second, ".hello");
+            TRY(p = split_file("abc/def/.hello"s));                        TEST_EQUAL(p.first, ".hello");       TEST_EQUAL(p.second, "");
+            TRY(p = split_path("abc/def/.hello.txt"s));                    TEST_EQUAL(p.first, "abc/def");      TEST_EQUAL(p.second, ".hello.txt");
+            TRY(p = split_path("abc/def/.hello.txt"s, fs_fullname));       TEST_EQUAL(p.first, "abc/def/");     TEST_EQUAL(p.second, ".hello.txt");
+            TRY(p = split_file("abc/def/.hello.txt"s));                    TEST_EQUAL(p.first, ".hello");       TEST_EQUAL(p.second, ".txt");
 
             TEST_EQUAL(file_path(""), "");
             TEST_EQUAL(file_path("hello.txt"), "hello.txt");
@@ -598,115 +270,29 @@ namespace {
             TEST_EQUAL(file_path("/hello/", "/world"), "/world");
             TEST_EQUAL(file_path("/hello/", "/world/"), "/world/");
 
-            TEST_EQUAL(file_path(u""), u"");
-            TEST_EQUAL(file_path(u"hello.txt"), u"hello.txt");
-            TEST_EQUAL(file_path(u"abc/def/hello.txt"), u"abc/def/hello.txt");
-            TEST_EQUAL(file_path(u"", u""), u"");
-            TEST_EQUAL(file_path(u"hello", u"world"), u"hello/world");
-            TEST_EQUAL(file_path(u"hello", u"world/"), u"hello/world/");
-            TEST_EQUAL(file_path(u"hello", u"/world"), u"/world");
-            TEST_EQUAL(file_path(u"hello", u"/world/"), u"/world/");
-            TEST_EQUAL(file_path(u"hello/", u"world"), u"hello/world");
-            TEST_EQUAL(file_path(u"hello/", u"world/"), u"hello/world/");
-            TEST_EQUAL(file_path(u"hello/", u"/world"), u"/world");
-            TEST_EQUAL(file_path(u"hello/", u"/world/"), u"/world/");
-            TEST_EQUAL(file_path(u"/hello", u"world"), u"/hello/world");
-            TEST_EQUAL(file_path(u"/hello", u"world/"), u"/hello/world/");
-            TEST_EQUAL(file_path(u"/hello", u"/world"), u"/world");
-            TEST_EQUAL(file_path(u"/hello", u"/world/"), u"/world/");
-            TEST_EQUAL(file_path(u"/hello/", u"world"), u"/hello/world");
-            TEST_EQUAL(file_path(u"/hello/", u"world/"), u"/hello/world/");
-            TEST_EQUAL(file_path(u"/hello/", u"/world"), u"/world");
-            TEST_EQUAL(file_path(u"/hello/", u"/world/"), u"/world/");
-
-            TEST_EQUAL(file_path(U""), U"");
-            TEST_EQUAL(file_path(U"hello.txt"), U"hello.txt");
-            TEST_EQUAL(file_path(U"abc/def/hello.txt"), U"abc/def/hello.txt");
-            TEST_EQUAL(file_path(U"", U""), U"");
-            TEST_EQUAL(file_path(U"hello", U"world"), U"hello/world");
-            TEST_EQUAL(file_path(U"hello", U"world/"), U"hello/world/");
-            TEST_EQUAL(file_path(U"hello", U"/world"), U"/world");
-            TEST_EQUAL(file_path(U"hello", U"/world/"), U"/world/");
-            TEST_EQUAL(file_path(U"hello/", U"world"), U"hello/world");
-            TEST_EQUAL(file_path(U"hello/", U"world/"), U"hello/world/");
-            TEST_EQUAL(file_path(U"hello/", U"/world"), U"/world");
-            TEST_EQUAL(file_path(U"hello/", U"/world/"), U"/world/");
-            TEST_EQUAL(file_path(U"/hello", U"world"), U"/hello/world");
-            TEST_EQUAL(file_path(U"/hello", U"world/"), U"/hello/world/");
-            TEST_EQUAL(file_path(U"/hello", U"/world"), U"/world");
-            TEST_EQUAL(file_path(U"/hello", U"/world/"), U"/world/");
-            TEST_EQUAL(file_path(U"/hello/", U"world"), U"/hello/world");
-            TEST_EQUAL(file_path(U"/hello/", U"world/"), U"/hello/world/");
-            TEST_EQUAL(file_path(U"/hello/", U"/world"), U"/world");
-            TEST_EQUAL(file_path(U"/hello/", U"/world/"), U"/world/");
-
         #else
 
-            TRY(p8 = split_path("C:\\hello.txt"s));                           TEST_EQUAL(p8.first, "C:\\");         TEST_EQUAL(p8.second, "hello.txt");
-            TRY(p8 = split_path("C:\\hello.txt"s, fs_fullname));              TEST_EQUAL(p8.first, "C:\\");         TEST_EQUAL(p8.second, "hello.txt");
-            TRY(p8 = split_file("C:\\hello.txt"s));                           TEST_EQUAL(p8.first, "hello");        TEST_EQUAL(p8.second, ".txt");
-            TRY(p8 = split_path("C:hello.txt"s));                             TEST_EQUAL(p8.first, "C:");           TEST_EQUAL(p8.second, "hello.txt");
-            TRY(p8 = split_path("C:hello.txt"s, fs_fullname));                TEST_EQUAL(p8.first, "C:");           TEST_EQUAL(p8.second, "hello.txt");
-            TRY(p8 = split_file("C:hello.txt"s));                             TEST_EQUAL(p8.first, "hello");        TEST_EQUAL(p8.second, ".txt");
-            TRY(p8 = split_path("abc\\def\\hello.txt"s));                     TEST_EQUAL(p8.first, "abc\\def");     TEST_EQUAL(p8.second, "hello.txt");
-            TRY(p8 = split_path("abc\\def\\hello.txt"s, fs_fullname));        TEST_EQUAL(p8.first, "abc\\def\\");   TEST_EQUAL(p8.second, "hello.txt");
-            TRY(p8 = split_file("abc\\def\\hello.txt"s));                     TEST_EQUAL(p8.first, "hello");        TEST_EQUAL(p8.second, ".txt");
-            TRY(p8 = split_path("abc\\def\\hello"s));                         TEST_EQUAL(p8.first, "abc\\def");     TEST_EQUAL(p8.second, "hello");
-            TRY(p8 = split_path("abc\\def\\hello"s, fs_fullname));            TEST_EQUAL(p8.first, "abc\\def\\");   TEST_EQUAL(p8.second, "hello");
-            TRY(p8 = split_file("abc\\def\\hello"s));                         TEST_EQUAL(p8.first, "hello");        TEST_EQUAL(p8.second, "");
-            TRY(p8 = split_path("abc\\def\\hello.world.txt"s));               TEST_EQUAL(p8.first, "abc\\def");     TEST_EQUAL(p8.second, "hello.world.txt");
-            TRY(p8 = split_path("abc\\def\\hello.world.txt"s, fs_fullname));  TEST_EQUAL(p8.first, "abc\\def\\");   TEST_EQUAL(p8.second, "hello.world.txt");
-            TRY(p8 = split_file("abc\\def\\hello.world.txt"s));               TEST_EQUAL(p8.first, "hello.world");  TEST_EQUAL(p8.second, ".txt");
-            TRY(p8 = split_path("abc\\def\\.hello"s));                        TEST_EQUAL(p8.first, "abc\\def");     TEST_EQUAL(p8.second, ".hello");
-            TRY(p8 = split_path("abc\\def\\.hello"s, fs_fullname));           TEST_EQUAL(p8.first, "abc\\def\\");   TEST_EQUAL(p8.second, ".hello");
-            TRY(p8 = split_file("abc\\def\\.hello"s));                        TEST_EQUAL(p8.first, ".hello");       TEST_EQUAL(p8.second, "");
-            TRY(p8 = split_path("abc\\def\\.hello.txt"s));                    TEST_EQUAL(p8.first, "abc\\def");     TEST_EQUAL(p8.second, ".hello.txt");
-            TRY(p8 = split_path("abc\\def\\.hello.txt"s, fs_fullname));       TEST_EQUAL(p8.first, "abc\\def\\");   TEST_EQUAL(p8.second, ".hello.txt");
-            TRY(p8 = split_file("abc\\def\\.hello.txt"s));                    TEST_EQUAL(p8.first, ".hello");       TEST_EQUAL(p8.second, ".txt");
-
-            TRY(p16 = split_path(u"C:\\hello.txt"s));                           TEST_EQUAL(p16.first, u"C:\\");         TEST_EQUAL(p16.second, u"hello.txt");
-            TRY(p16 = split_path(u"C:\\hello.txt"s, fs_fullname));              TEST_EQUAL(p16.first, u"C:\\");         TEST_EQUAL(p16.second, u"hello.txt");
-            TRY(p16 = split_file(u"C:\\hello.txt"s));                           TEST_EQUAL(p16.first, u"hello");        TEST_EQUAL(p16.second, u".txt");
-            TRY(p16 = split_path(u"C:hello.txt"s));                             TEST_EQUAL(p16.first, u"C:");           TEST_EQUAL(p16.second, u"hello.txt");
-            TRY(p16 = split_path(u"C:hello.txt"s, fs_fullname));                TEST_EQUAL(p16.first, u"C:");           TEST_EQUAL(p16.second, u"hello.txt");
-            TRY(p16 = split_file(u"C:hello.txt"s));                             TEST_EQUAL(p16.first, u"hello");        TEST_EQUAL(p16.second, u".txt");
-            TRY(p16 = split_path(u"abc\\def\\hello.txt"s));                     TEST_EQUAL(p16.first, u"abc\\def");     TEST_EQUAL(p16.second, u"hello.txt");
-            TRY(p16 = split_path(u"abc\\def\\hello.txt"s, fs_fullname));        TEST_EQUAL(p16.first, u"abc\\def\\");   TEST_EQUAL(p16.second, u"hello.txt");
-            TRY(p16 = split_file(u"abc\\def\\hello.txt"s));                     TEST_EQUAL(p16.first, u"hello");        TEST_EQUAL(p16.second, u".txt");
-            TRY(p16 = split_path(u"abc\\def\\hello"s));                         TEST_EQUAL(p16.first, u"abc\\def");     TEST_EQUAL(p16.second, u"hello");
-            TRY(p16 = split_path(u"abc\\def\\hello"s, fs_fullname));            TEST_EQUAL(p16.first, u"abc\\def\\");   TEST_EQUAL(p16.second, u"hello");
-            TRY(p16 = split_file(u"abc\\def\\hello"s));                         TEST_EQUAL(p16.first, u"hello");        TEST_EQUAL(p16.second, u"");
-            TRY(p16 = split_path(u"abc\\def\\hello.world.txt"s));               TEST_EQUAL(p16.first, u"abc\\def");     TEST_EQUAL(p16.second, u"hello.world.txt");
-            TRY(p16 = split_path(u"abc\\def\\hello.world.txt"s, fs_fullname));  TEST_EQUAL(p16.first, u"abc\\def\\");   TEST_EQUAL(p16.second, u"hello.world.txt");
-            TRY(p16 = split_file(u"abc\\def\\hello.world.txt"s));               TEST_EQUAL(p16.first, u"hello.world");  TEST_EQUAL(p16.second, u".txt");
-            TRY(p16 = split_path(u"abc\\def\\.hello"s));                        TEST_EQUAL(p16.first, u"abc\\def");     TEST_EQUAL(p16.second, u".hello");
-            TRY(p16 = split_path(u"abc\\def\\.hello"s, fs_fullname));           TEST_EQUAL(p16.first, u"abc\\def\\");   TEST_EQUAL(p16.second, u".hello");
-            TRY(p16 = split_file(u"abc\\def\\.hello"s));                        TEST_EQUAL(p16.first, u".hello");       TEST_EQUAL(p16.second, u"");
-            TRY(p16 = split_path(u"abc\\def\\.hello.txt"s));                    TEST_EQUAL(p16.first, u"abc\\def");     TEST_EQUAL(p16.second, u".hello.txt");
-            TRY(p16 = split_path(u"abc\\def\\.hello.txt"s, fs_fullname));       TEST_EQUAL(p16.first, u"abc\\def\\");   TEST_EQUAL(p16.second, u".hello.txt");
-            TRY(p16 = split_file(u"abc\\def\\.hello.txt"s));                    TEST_EQUAL(p16.first, u".hello");       TEST_EQUAL(p16.second, u".txt");
-
-            TRY(p32 = split_path(U"C:\\hello.txt"s));                           TEST_EQUAL(p32.first, U"C:\\");         TEST_EQUAL(p32.second, U"hello.txt");
-            TRY(p32 = split_path(U"C:\\hello.txt"s, fs_fullname));              TEST_EQUAL(p32.first, U"C:\\");         TEST_EQUAL(p32.second, U"hello.txt");
-            TRY(p32 = split_file(U"C:\\hello.txt"s));                           TEST_EQUAL(p32.first, U"hello");        TEST_EQUAL(p32.second, U".txt");
-            TRY(p32 = split_path(U"C:hello.txt"s));                             TEST_EQUAL(p32.first, U"C:");           TEST_EQUAL(p32.second, U"hello.txt");
-            TRY(p32 = split_path(U"C:hello.txt"s, fs_fullname));                TEST_EQUAL(p32.first, U"C:");           TEST_EQUAL(p32.second, U"hello.txt");
-            TRY(p32 = split_file(U"C:hello.txt"s));                             TEST_EQUAL(p32.first, U"hello");        TEST_EQUAL(p32.second, U".txt");
-            TRY(p32 = split_path(U"abc\\def\\hello.txt"s));                     TEST_EQUAL(p32.first, U"abc\\def");     TEST_EQUAL(p32.second, U"hello.txt");
-            TRY(p32 = split_path(U"abc\\def\\hello.txt"s, fs_fullname));        TEST_EQUAL(p32.first, U"abc\\def\\");   TEST_EQUAL(p32.second, U"hello.txt");
-            TRY(p32 = split_file(U"abc\\def\\hello.txt"s));                     TEST_EQUAL(p32.first, U"hello");        TEST_EQUAL(p32.second, U".txt");
-            TRY(p32 = split_path(U"abc\\def\\hello"s));                         TEST_EQUAL(p32.first, U"abc\\def");     TEST_EQUAL(p32.second, U"hello");
-            TRY(p32 = split_path(U"abc\\def\\hello"s, fs_fullname));            TEST_EQUAL(p32.first, U"abc\\def\\");   TEST_EQUAL(p32.second, U"hello");
-            TRY(p32 = split_file(U"abc\\def\\hello"s));                         TEST_EQUAL(p32.first, U"hello");        TEST_EQUAL(p32.second, U"");
-            TRY(p32 = split_path(U"abc\\def\\hello.world.txt"s));               TEST_EQUAL(p32.first, U"abc\\def");     TEST_EQUAL(p32.second, U"hello.world.txt");
-            TRY(p32 = split_path(U"abc\\def\\hello.world.txt"s, fs_fullname));  TEST_EQUAL(p32.first, U"abc\\def\\");   TEST_EQUAL(p32.second, U"hello.world.txt");
-            TRY(p32 = split_file(U"abc\\def\\hello.world.txt"s));               TEST_EQUAL(p32.first, U"hello.world");  TEST_EQUAL(p32.second, U".txt");
-            TRY(p32 = split_path(U"abc\\def\\.hello"s));                        TEST_EQUAL(p32.first, U"abc\\def");     TEST_EQUAL(p32.second, U".hello");
-            TRY(p32 = split_path(U"abc\\def\\.hello"s, fs_fullname));           TEST_EQUAL(p32.first, U"abc\\def\\");   TEST_EQUAL(p32.second, U".hello");
-            TRY(p32 = split_file(U"abc\\def\\.hello"s));                        TEST_EQUAL(p32.first, U".hello");       TEST_EQUAL(p32.second, U"");
-            TRY(p32 = split_path(U"abc\\def\\.hello.txt"s));                    TEST_EQUAL(p32.first, U"abc\\def");     TEST_EQUAL(p32.second, U".hello.txt");
-            TRY(p32 = split_path(U"abc\\def\\.hello.txt"s, fs_fullname));       TEST_EQUAL(p32.first, U"abc\\def\\");   TEST_EQUAL(p32.second, U".hello.txt");
-            TRY(p32 = split_file(U"abc\\def\\.hello.txt"s));                    TEST_EQUAL(p32.first, U".hello");       TEST_EQUAL(p32.second, U".txt");
+            TRY(p = split_path("C:\\hello.txt"s));                           TEST_EQUAL(p.first, "C:\\");         TEST_EQUAL(p.second, "hello.txt");
+            TRY(p = split_path("C:\\hello.txt"s, fs_fullname));              TEST_EQUAL(p.first, "C:\\");         TEST_EQUAL(p.second, "hello.txt");
+            TRY(p = split_file("C:\\hello.txt"s));                           TEST_EQUAL(p.first, "hello");        TEST_EQUAL(p.second, ".txt");
+            TRY(p = split_path("C:hello.txt"s));                             TEST_EQUAL(p.first, "C:");           TEST_EQUAL(p.second, "hello.txt");
+            TRY(p = split_path("C:hello.txt"s, fs_fullname));                TEST_EQUAL(p.first, "C:");           TEST_EQUAL(p.second, "hello.txt");
+            TRY(p = split_file("C:hello.txt"s));                             TEST_EQUAL(p.first, "hello");        TEST_EQUAL(p.second, ".txt");
+            TRY(p = split_path("abc\\def\\hello.txt"s));                     TEST_EQUAL(p.first, "abc\\def");     TEST_EQUAL(p.second, "hello.txt");
+            TRY(p = split_path("abc\\def\\hello.txt"s, fs_fullname));        TEST_EQUAL(p.first, "abc\\def\\");   TEST_EQUAL(p.second, "hello.txt");
+            TRY(p = split_file("abc\\def\\hello.txt"s));                     TEST_EQUAL(p.first, "hello");        TEST_EQUAL(p.second, ".txt");
+            TRY(p = split_path("abc\\def\\hello"s));                         TEST_EQUAL(p.first, "abc\\def");     TEST_EQUAL(p.second, "hello");
+            TRY(p = split_path("abc\\def\\hello"s, fs_fullname));            TEST_EQUAL(p.first, "abc\\def\\");   TEST_EQUAL(p.second, "hello");
+            TRY(p = split_file("abc\\def\\hello"s));                         TEST_EQUAL(p.first, "hello");        TEST_EQUAL(p.second, "");
+            TRY(p = split_path("abc\\def\\hello.world.txt"s));               TEST_EQUAL(p.first, "abc\\def");     TEST_EQUAL(p.second, "hello.world.txt");
+            TRY(p = split_path("abc\\def\\hello.world.txt"s, fs_fullname));  TEST_EQUAL(p.first, "abc\\def\\");   TEST_EQUAL(p.second, "hello.world.txt");
+            TRY(p = split_file("abc\\def\\hello.world.txt"s));               TEST_EQUAL(p.first, "hello.world");  TEST_EQUAL(p.second, ".txt");
+            TRY(p = split_path("abc\\def\\.hello"s));                        TEST_EQUAL(p.first, "abc\\def");     TEST_EQUAL(p.second, ".hello");
+            TRY(p = split_path("abc\\def\\.hello"s, fs_fullname));           TEST_EQUAL(p.first, "abc\\def\\");   TEST_EQUAL(p.second, ".hello");
+            TRY(p = split_file("abc\\def\\.hello"s));                        TEST_EQUAL(p.first, ".hello");       TEST_EQUAL(p.second, "");
+            TRY(p = split_path("abc\\def\\.hello.txt"s));                    TEST_EQUAL(p.first, "abc\\def");     TEST_EQUAL(p.second, ".hello.txt");
+            TRY(p = split_path("abc\\def\\.hello.txt"s, fs_fullname));       TEST_EQUAL(p.first, "abc\\def\\");   TEST_EQUAL(p.second, ".hello.txt");
+            TRY(p = split_file("abc\\def\\.hello.txt"s));                    TEST_EQUAL(p.first, ".hello");       TEST_EQUAL(p.second, ".txt");
 
             TEST_EQUAL(file_path(""), "");
             TEST_EQUAL(file_path("hello.txt"), "hello.txt");
@@ -728,48 +314,6 @@ namespace {
             TEST_EQUAL(file_path("C:\\hello\\", "world\\"), "C:\\hello\\world\\");
             TEST_EQUAL(file_path("C:\\hello\\", "C:\\world"), "C:\\world");
             TEST_EQUAL(file_path("C:\\hello\\", "C:\\world\\"), "C:\\world\\");
-
-            TEST_EQUAL(file_path(u""), u"");
-            TEST_EQUAL(file_path(u"hello.txt"), u"hello.txt");
-            TEST_EQUAL(file_path(u"abc\\def\\hello.txt"), u"abc\\def\\hello.txt");
-            TEST_EQUAL(file_path(u"", u""), u"");
-            TEST_EQUAL(file_path(u"hello", u"world"), u"hello\\world");
-            TEST_EQUAL(file_path(u"hello", u"world\\"), u"hello\\world\\");
-            TEST_EQUAL(file_path(u"hello", u"C:\\world"), u"C:\\world");
-            TEST_EQUAL(file_path(u"hello", u"C:\\world\\"), u"C:\\world\\");
-            TEST_EQUAL(file_path(u"hello\\", u"world"), u"hello\\world");
-            TEST_EQUAL(file_path(u"hello\\", u"world\\"), u"hello\\world\\");
-            TEST_EQUAL(file_path(u"hello\\", u"C:\\world"), u"C:\\world");
-            TEST_EQUAL(file_path(u"hello\\", u"C:\\world\\"), u"C:\\world\\");
-            TEST_EQUAL(file_path(u"C:\\hello", u"world"), u"C:\\hello\\world");
-            TEST_EQUAL(file_path(u"C:\\hello", u"world\\"), u"C:\\hello\\world\\");
-            TEST_EQUAL(file_path(u"C:\\hello", u"C:\\world"), u"C:\\world");
-            TEST_EQUAL(file_path(u"C:\\hello", u"C:\\world\\"), u"C:\\world\\");
-            TEST_EQUAL(file_path(u"C:\\hello\\", u"world"), u"C:\\hello\\world");
-            TEST_EQUAL(file_path(u"C:\\hello\\", u"world\\"), u"C:\\hello\\world\\");
-            TEST_EQUAL(file_path(u"C:\\hello\\", u"C:\\world"), u"C:\\world");
-            TEST_EQUAL(file_path(u"C:\\hello\\", u"C:\\world\\"), u"C:\\world\\");
-
-            TEST_EQUAL(file_path(U""), U"");
-            TEST_EQUAL(file_path(U"hello.txt"), U"hello.txt");
-            TEST_EQUAL(file_path(U"abc\\def\\hello.txt"), U"abc\\def\\hello.txt");
-            TEST_EQUAL(file_path(U"", U""), U"");
-            TEST_EQUAL(file_path(U"hello", U"world"), U"hello\\world");
-            TEST_EQUAL(file_path(U"hello", U"world\\"), U"hello\\world\\");
-            TEST_EQUAL(file_path(U"hello", U"C:\\world"), U"C:\\world");
-            TEST_EQUAL(file_path(U"hello", U"C:\\world\\"), U"C:\\world\\");
-            TEST_EQUAL(file_path(U"hello\\", U"world"), U"hello\\world");
-            TEST_EQUAL(file_path(U"hello\\", U"world\\"), U"hello\\world\\");
-            TEST_EQUAL(file_path(U"hello\\", U"C:\\world"), U"C:\\world");
-            TEST_EQUAL(file_path(U"hello\\", U"C:\\world\\"), U"C:\\world\\");
-            TEST_EQUAL(file_path(U"C:\\hello", U"world"), U"C:\\hello\\world");
-            TEST_EQUAL(file_path(U"C:\\hello", U"world\\"), U"C:\\hello\\world\\");
-            TEST_EQUAL(file_path(U"C:\\hello", U"C:\\world"), U"C:\\world");
-            TEST_EQUAL(file_path(U"C:\\hello", U"C:\\world\\"), U"C:\\world\\");
-            TEST_EQUAL(file_path(U"C:\\hello\\", U"world"), U"C:\\hello\\world");
-            TEST_EQUAL(file_path(U"C:\\hello\\", U"world\\"), U"C:\\hello\\world\\");
-            TEST_EQUAL(file_path(U"C:\\hello\\", U"C:\\world"), U"C:\\world");
-            TEST_EQUAL(file_path(U"C:\\hello\\", U"C:\\world\\"), U"C:\\world\\");
 
         #endif
 
@@ -936,17 +480,17 @@ namespace {
         TRY(std::copy(dir.begin(), dir.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 2);
         std::sort(vec.begin(), vec.end());
-        TEST_EQUAL(Test::format_range(vec), normalize_file("[hello,world]"s));
+        TEST_EQUAL(Test::format_range(vec), "[hello,world]"s);
         TRY(dir = directory(d1, fs_dotdot));
         TRY(std::copy(dir.begin(), dir.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 4);
         std::sort(vec.begin(), vec.end());
-        TEST_EQUAL(Test::format_range(vec), normalize_file("[.,..,hello,world]"s));
+        TEST_EQUAL(Test::format_range(vec), "[.,..,hello,world]"s);
         TRY(dir = directory(d1, fs_fullname));
         TRY(std::copy(dir.begin(), dir.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 2);
         std::sort(vec.begin(), vec.end());
-        TEST_EQUAL(Test::format_range(vec), normalize_file("[__test_dir_1" SLASH "hello,__test_dir_1" SLASH "world]"s));
+        TEST_EQUAL(Test::format_range(vec), "[__test_dir_1" SLASH "hello,__test_dir_1" SLASH "world]"s);
         TEST_THROW(remove_file(d1), std::system_error);
         TEST(file_exists(d1));
         TEST(file_exists(f1));
