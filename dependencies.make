@@ -216,17 +216,17 @@ build/$(TARGET)/string-size-test.o: unicorn/string-size-test.cpp unicorn/string-
   unicorn/core.hpp $(LIBROOT)/prion-lib/prion/core.hpp unicorn/character.hpp \
   unicorn/property-values.hpp unicorn/segment.hpp unicorn/utf.hpp \
   unicorn/string-forward.hpp $(LIBROOT)/prion-lib/prion/unit-test.hpp
-build/$(TARGET)/table-test.o: unicorn/table-test.cpp unicorn/core.hpp \
-  $(LIBROOT)/prion-lib/prion/core.hpp unicorn/table.hpp unicorn/format.hpp \
+build/$(TARGET)/text-table-test.o: unicorn/text-table-test.cpp unicorn/core.hpp \
+  $(LIBROOT)/prion-lib/prion/core.hpp unicorn/text-table.hpp unicorn/format.hpp \
   unicorn/character.hpp unicorn/property-values.hpp unicorn/string.hpp \
   unicorn/string-algorithm.hpp unicorn/string-forward.hpp \
   unicorn/utf.hpp unicorn/string-property.hpp unicorn/string-size.hpp \
   unicorn/segment.hpp unicorn/string-case.hpp unicorn/string-compare.hpp \
   unicorn/string-conversion.hpp unicorn/string-escape.hpp \
   unicorn/string-manip.hpp $(LIBROOT)/prion-lib/prion/unit-test.hpp
-build/$(TARGET)/table.o: unicorn/table.cpp unicorn/table.hpp unicorn/core.hpp \
-  $(LIBROOT)/prion-lib/prion/core.hpp unicorn/format.hpp unicorn/character.hpp \
-  unicorn/property-values.hpp unicorn/string.hpp \
+build/$(TARGET)/text-table.o: unicorn/text-table.cpp unicorn/text-table.hpp \
+  unicorn/core.hpp $(LIBROOT)/prion-lib/prion/core.hpp unicorn/format.hpp \
+  unicorn/character.hpp unicorn/property-values.hpp unicorn/string.hpp \
   unicorn/string-algorithm.hpp unicorn/string-forward.hpp \
   unicorn/utf.hpp unicorn/string-property.hpp unicorn/string-size.hpp \
   unicorn/segment.hpp unicorn/string-case.hpp unicorn/string-compare.hpp \

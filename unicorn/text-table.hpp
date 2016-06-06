@@ -18,10 +18,10 @@ namespace Unicorn {
     public:
         Table(): formats(), cells(1) {}
         template <typename T> Table& operator<<(const T& t) { add_cell(t); return *this; }
-        Table& operator<<(char t) { character_code(char_to_uint(t)); return *this; }
-        Table& operator<<(char16_t t) { character_code(char_to_uint(t)); return *this; }
-        Table& operator<<(char32_t t) { character_code(t); return *this; }
-        Table& operator<<(wchar_t t) { character_code(char_to_uint(t)); return *this; }
+        Table& operator<<(char t) { character_code(t); return *this; }
+        Table& operator<<(char16_t t) { add_str(str_char<char>(t)); return *this; }
+        Table& operator<<(char32_t t) { add_str(str_char<char>(t)); return *this; }
+        Table& operator<<(wchar_t t) { add_str(str_char<char>(t)); return *this; }
         Table& operator<<(char* t) { add_str(cstr(t)); return *this; }
         Table& operator<<(char16_t* t) { add_str(to_utf8(cstr(t))); return *this; }
         Table& operator<<(char32_t* t) { add_str(to_utf8(cstr(t))); return *this; }
@@ -37,9 +37,8 @@ namespace Unicorn {
         void clear() noexcept { cells.clear(); cells.resize(1); formats.clear(); }
         template <typename... FS> void format(const u8string& f, const FS&... fs) { format(f); format(fs...); }
         void format(const u8string& f) { formats.push_back(Unicorn::format(f)); }
-        template <typename C, typename... Args> basic_string<C> as_string(const Args&... args) const;
-        template <typename... Args> u8string str(const Args&... args) const { return as_string<char>(args...); }
-        template <typename C, typename... Args> void write(std::basic_ostream<C>& out, const Args&... args) const;
+        template <typename... Args> u8string str(const Args&... args) const;
+        template <typename... Args> void write(std::ostream& out, const Args&... args) const;
     private:
         struct layout_spec {
             uint32_t flags = grapheme_units;
@@ -53,32 +52,30 @@ namespace Unicorn {
         vector<vector<u8string>> cells;
         template <typename T> void add_cell(const T& t);
         void add_str(const u8string& t);
-        void character_code(char32_t c);
+        void character_code(char c);
         void force_break();
         template <typename... Args> static layout_spec parse_args(const Args&... args);
         void write_table(const layout_spec& spec, vector<u8string>& lines) const;
     };
 
-    template <typename C, typename... Args>
-    basic_string<C> Table::as_string(const Args&... args) const {
+    template <typename... Args>
+    u8string Table::str(const Args&... args) const {
         auto spec = parse_args(args...);
         vector<u8string> lines;
         write_table(spec, lines);
-        basic_string<C> result;
-        for (auto& line: lines) {
-            result += recode<C>(line);
-            result += PRI_CHAR('\n', C);
-        }
+        auto result = join(lines, "\n");
+        if (! lines.empty())
+            result += '\n';
         return result;
     }
 
-    template <typename C, typename... Args>
-    void Table::write(std::basic_ostream<C>& out, const Args&... args) const {
+    template <typename... Args>
+    void Table::write(std::ostream& out, const Args&... args) const {
         auto spec = parse_args(args...);
         vector<u8string> lines;
         write_table(spec, lines);
         for (auto& line: lines)
-            out << recode<C>(line) << PRI_CHAR('\n', C);
+            out << line << '\n';
     }
 
     template <typename T>
@@ -104,8 +101,7 @@ namespace Unicorn {
         return spec;
     }
 
-    template <typename C>
-    std::basic_ostream<C>& operator<<(std::basic_ostream<C>& out, const Table& tab) {
+    inline std::ostream& operator<<(std::ostream& out, const Table& tab) {
         tab.write(out);
         return out;
     }

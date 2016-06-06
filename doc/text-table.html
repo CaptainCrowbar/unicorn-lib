@@ -9,12 +9,11 @@
 <h1 id="unicorn-library-table-layout"><a href="index.html">Unicorn Library</a>: Table Layout</h1>
 <p><em>Unicode library for C++ by Ross Smith</em></p>
 <ul>
-<li><code>#include "unicorn/table.hpp"</code></li>
+<li><code>#include "unicorn/text-table.hpp"</code></li>
 </ul>
 <p><code>Unicorn::</code><strong><code>Table</code></strong> is a utility class for simple table layout in fixed width
 text, a task often useful in formatting the output from command line programs
-and similar utilities. Tables are compiled in UTF-8 but can be written to
-strings or output streams of any UTF encoding.</p>
+and similar utilities.</p>
 <p>Example:</p>
 <pre><code>Table tab;
 tab &lt;&lt; "Name" &lt;&lt; "Number" &lt;&lt; "Hex" &lt;&lt; "Float" &lt;&lt; '\n'
@@ -75,7 +74,7 @@ current column's formatting code, if one has been set.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>Table&amp; Table::</code><strong><code>operator&lt;&lt;</code></strong><code>([character type] c)</code></li>
+<li><code>Table&amp; Table::</code><strong><code>operator&lt;&lt;</code></strong><code>(char c)</code></li>
 </ul>
 <p>Single character insertion is used to request various miscellaneous control operations, as
 described in the table below.</p>
@@ -109,20 +108,18 @@ described in the table below.</p>
 literally; they will not reformat the original data value if the new cell has
 a different formatting code. They will produce a blank cell if this is the
 first column or row.</p>
-<p>If the character is a control character (not listed above), whitespace, or an
-unassigned code point, the insertion operator will throw
-<code>std::invalid_argument</code>. Otherwise, the character is used to write a
-horizontal rule across the table, by repeating the character to match the
-width of each column.</p>
+<p>If the character is an ASCII punctuation mark, the character is used to write
+a horizontal rule across the table, by repeating the character to match the
+width of each column. Otherwise, the insertion operator will throw
+<code>std::invalid_argument</code>.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C, typename... Args&gt; basic_string&lt;C&gt; Table::</code><strong><code>as_string</code></strong><code>(const Args&amp;... args) const</code></li>
 <li><code>template &lt;typename... Args&gt; u8string Table::</code><strong><code>str</code></strong><code>(const Args&amp;... args) const</code></li>
-<li><code>template &lt;typename C, typename... Args&gt; void Table::</code><strong><code>write</code></strong><code>(std::basic_ostream&lt;C&gt;&amp; out, const Args&amp;... args) const</code></li>
+<li><code>template &lt;typename... Args&gt; void Table::</code><strong><code>write</code></strong><code>(std::ostream&amp; out, const Args&amp;... args) const</code></li>
+<li><code>std::ostream&amp;</code> <strong><code>operator&lt;&lt;</code></strong><code>(std::ostream&amp; out, const Table&amp; tab)</code></li>
 </ul>
-<p>These format the table, to a string or an output stream, in the chosen UTF
-encoding. The <code>str()</code> function is shorthand for <code>as_string&lt;char&gt;()</code>.</p>
+<p>These format the table to a string or an output stream.</p>
 <p>By default, string lengths are measured in grapheme units (user perceived
 characters) in calculating fixed width table layout. Other measurement flags
 (from <a href="string.html"><code>unicorn/string</code></a>) can be passed if required.</p>

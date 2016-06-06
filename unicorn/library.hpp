@@ -23,5 +23,5 @@
 #include "unicorn/string-property.hpp"
 #include "unicorn/string-size.hpp"
 #include "unicorn/string.hpp"
-#include "unicorn/table.hpp"
+#include "unicorn/text-table.hpp"
 #include "unicorn/utf.hpp"

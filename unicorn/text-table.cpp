@@ -1,4 +1,4 @@
-#include "unicorn/table.hpp"
+#include "unicorn/text-table.hpp"
 #include "unicorn/character.hpp"
 #include "unicorn/utf.hpp"
 #include <algorithm>
@@ -19,7 +19,7 @@ namespace Unicorn {
         cells.back().push_back(str_trim(cell));
     }
 
-    void Table::character_code(char32_t c) {
+    void Table::character_code(char c) {
         switch (c) {
             case '\f': // eol + reset formats
                 force_break();
@@ -41,10 +41,10 @@ namespace Unicorn {
                     cells.back().push_back(cells[cells.size() - 2][cells.back().size()]);
                 break;
             default: // insert divider
-                if (char_is_unassigned(c) || char_is_control(c) || char_is_white_space(c))
+                if (! ascii_ispunct(c))
                     throw std::invalid_argument("Invalid table divider: "s + char_as_hex(c));
                 force_break();
-                cells.back().push_back(u8string(1, 0) + str_char<char>(c));
+                cells.back().push_back(u8string(1, 0) + c);
                 cells.push_back({});
                 break;
         }

@@ -2,12 +2,11 @@
 
 _Unicode library for C++ by Ross Smith_
 
-* `#include "unicorn/table.hpp"`
+* `#include "unicorn/text-table.hpp"`
 
 `Unicorn::`**`Table`** is a utility class for simple table layout in fixed width
 text, a task often useful in formatting the output from command line programs
-and similar utilities. Tables are compiled in UTF-8 but can be written to
-strings or output streams of any UTF encoding.
+and similar utilities.
 
 Example:
 
@@ -62,7 +61,7 @@ existing cells already in the table will not be reformatted.
 Adds a data cell to the table. The cell will be formatted according to the
 current column's formatting code, if one has been set.
 
-* `Table& Table::`**`operator<<`**`([character type] c)`
+* `Table& Table::`**`operator<<`**`(char c)`
 
 Single character insertion is used to request various miscellaneous control operations, as
 described in the table below.
@@ -79,18 +78,16 @@ literally; they will not reformat the original data value if the new cell has
 a different formatting code. They will produce a blank cell if this is the
 first column or row.
 
-If the character is a control character (not listed above), whitespace, or an
-unassigned code point, the insertion operator will throw
-`std::invalid_argument`. Otherwise, the character is used to write a
-horizontal rule across the table, by repeating the character to match the
-width of each column.
+If the character is an ASCII punctuation mark, the character is used to write
+a horizontal rule across the table, by repeating the character to match the
+width of each column. Otherwise, the insertion operator will throw
+`std::invalid_argument`.
 
-* `template <typename C, typename... Args> basic_string<C> Table::`**`as_string`**`(const Args&... args) const`
 * `template <typename... Args> u8string Table::`**`str`**`(const Args&... args) const`
-* `template <typename C, typename... Args> void Table::`**`write`**`(std::basic_ostream<C>& out, const Args&... args) const`
+* `template <typename... Args> void Table::`**`write`**`(std::ostream& out, const Args&... args) const`
+* `std::ostream&` **`operator<<`**`(std::ostream& out, const Table& tab)`
 
-These format the table, to a string or an output stream, in the chosen UTF
-encoding. The `str()` function is shorthand for `as_string<char>()`.
+These format the table to a string or an output stream.
 
 By default, string lengths are measured in grapheme units (user perceived
 characters) in calculating fixed width table layout. Other measurement flags

@@ -50,4 +50,4 @@
     * **[TODO]** `options -> character, core, format, mbcs, regex, string`
     * **[TODO]** `table -> character, core, format, string, utf`
 * _Level 15_
-    * **[TODO]** `io -> character, core, file, format, mbcs, string, utf`
+    * [done] `io -> character, core, file, format, mbcs, string, utf`

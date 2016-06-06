@@ -1,5 +1,5 @@
 #include "unicorn/core.hpp"
-#include "unicorn/table.hpp"
+#include "unicorn/text-table.hpp"
 #include "prion/unit-test.hpp"
 #include <sstream>
 #include <string>
@@ -13,9 +13,6 @@ namespace {
 
         Table tab;
         u8string s;
-        u16string s16;
-        u32string s32;
-        wstring ws;
 
         TRY(s = tab.str());
         TEST_EQUAL(s, "");
@@ -34,21 +31,6 @@ namespace {
             "alpha  bravo  charlie\n"
             "1      2      3\n"
         );
-        TRY(s16 = tab.as_string<char16_t>());
-        TEST_EQUAL(s16,
-            u"alpha  bravo  charlie\n"
-            u"1      2      3\n"
-        );
-        TRY(s32 = tab.as_string<char32_t>());
-        TEST_EQUAL(s32,
-            U"alpha  bravo  charlie\n"
-            U"1      2      3\n"
-        );
-        TRY(ws = tab.as_string<wchar_t>());
-        TEST_EQUAL(ws,
-            L"alpha  bravo  charlie\n"
-            L"1      2      3\n"
-        );
 
         {
             std::ostringstream out;
@@ -57,16 +39,6 @@ namespace {
             TEST_EQUAL(s,
                 "alpha  bravo  charlie\n"
                 "1      2      3\n"
-            );
-        }
-
-        {
-            std::wostringstream out;
-            TRY(tab.write(out));
-            wstring s = out.str();
-            TEST_EQUAL(s,
-                L"alpha  bravo  charlie\n"
-                L"1      2      3\n"
             );
         }
 
@@ -200,7 +172,7 @@ namespace {
 
 }
 
-TEST_MODULE(unicorn, table) {
+TEST_MODULE(unicorn, text_table) {
 
     check_layout();
     check_unicode_length();
