@@ -20,11 +20,6 @@ some commonly expected command line features:
 * An argument consisting only of two hyphens (`"--"`) marks the end of explicitly named options;
     any text following it is read as unattached arguments, even if it looks like an option.
 
-The member functions that set up the option specifications take UTF-8 strings
-(mostly because making keyword arguments work with variable string types would
-have complicated the interface too much). The option parsing functions,
-however, will accept an argument list in any Unicode encoding.
-
 Example:
 
     int main(int argc, char** argv) {
@@ -144,12 +139,9 @@ and `"--version"` options. The `help()` text is constructed automatically by
 the `Options` object; the `version()` text is simply the original `info`
 string that was supplied to the `Options` constructor.
 
-* `template <typename C> bool Options::`**`parse`**`(const vector<basic_string<C>>& args)`
-* `template <typename C> bool Options::`**`parse`**`(const basic_string<C>& args)`
-* `template <typename C> bool Options::`**`parse`**`(int argc, C** argv)`
-* `template <typename C, typename C2> bool Options::`**`parse`**`(const vector<basic_string<C>>& args, std::basic_ostream<C2>& out, uint32_t flags = 0)`
-* `template <typename C, typename C2> bool Options::`**`parse`**`(const basic_string<C>& args, std::basic_ostream<C2>& out, uint32_t flags = 0)`
-* `template <typename C, typename C2> bool Options::`**`parse`**`(int argc, C** argv, std::basic_ostream<C2>& out, uint32_t flags = 0)`
+* `template <typename C> bool Options::`**`parse`**`(const vector<basic_string<C>>& args, std::ostream& out = cout, uint32_t flags = 0)`
+* `template <typename C> bool Options::`**`parse`**`(const basic_string<C>& args, std::ostream& out = cout, uint32_t flags = 0)`
+* `template <typename C> bool Options::`**`parse`**`(int argc, C** argv, std::ostream& out = cout, uint32_t flags = 0)`
 
 After the option specification has been constructed, call one of the `parse()`
 functions to parse the actual command line arguments. The arguments can be

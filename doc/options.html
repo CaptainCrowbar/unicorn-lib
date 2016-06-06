@@ -27,10 +27,6 @@ some commonly expected command line features:</p>
 <li>An argument consisting only of two hyphens (<code>"--"</code>) marks the end of explicitly named options;
     any text following it is read as unattached arguments, even if it looks like an option.</li>
 </ul>
-<p>The member functions that set up the option specifications take UTF-8 strings
-(mostly because making keyword arguments work with variable string types would
-have complicated the interface too much). The option parsing functions,
-however, will accept an argument list in any Unicode encoding.</p>
 <p>Example:</p>
 <pre><code>int main(int argc, char** argv) {
     Options opt("My Program 1.0");
@@ -216,12 +212,9 @@ string that was supplied to the <code>Options</code> constructor.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; bool Options::</code><strong><code>parse</code></strong><code>(const vector&lt;basic_string&lt;C&gt;&gt;&amp; args)</code></li>
-<li><code>template &lt;typename C&gt; bool Options::</code><strong><code>parse</code></strong><code>(const basic_string&lt;C&gt;&amp; args)</code></li>
-<li><code>template &lt;typename C&gt; bool Options::</code><strong><code>parse</code></strong><code>(int argc, C** argv)</code></li>
-<li><code>template &lt;typename C, typename C2&gt; bool Options::</code><strong><code>parse</code></strong><code>(const vector&lt;basic_string&lt;C&gt;&gt;&amp; args, std::basic_ostream&lt;C2&gt;&amp; out, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C, typename C2&gt; bool Options::</code><strong><code>parse</code></strong><code>(const basic_string&lt;C&gt;&amp; args, std::basic_ostream&lt;C2&gt;&amp; out, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C, typename C2&gt; bool Options::</code><strong><code>parse</code></strong><code>(int argc, C** argv, std::basic_ostream&lt;C2&gt;&amp; out, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; bool Options::</code><strong><code>parse</code></strong><code>(const vector&lt;basic_string&lt;C&gt;&gt;&amp; args, std::ostream&amp; out = cout, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; bool Options::</code><strong><code>parse</code></strong><code>(const basic_string&lt;C&gt;&amp; args, std::ostream&amp; out = cout, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; bool Options::</code><strong><code>parse</code></strong><code>(int argc, C** argv, std::ostream&amp; out = cout, uint32_t flags = 0)</code></li>
 </ul>
 <p>After the option specification has been constructed, call one of the <code>parse()</code>
 functions to parse the actual command line arguments. The arguments can be

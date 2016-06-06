@@ -90,15 +90,9 @@ namespace Unicorn {
         void autohelp() noexcept { help_auto = true; }
         u8string help() const;
         u8string version() const { return app_info; }
-        template <typename C, typename C2>
-            bool parse(const vector<basic_string<C>>& args, std::basic_ostream<C2>& out, uint32_t flags = 0);
-        template <typename C, typename C2>
-            bool parse(const basic_string<C>& args, std::basic_ostream<C2>& out, uint32_t flags = 0);
-        template <typename C, typename C2>
-            bool parse(int argc, C** argv, std::basic_ostream<C2>& out, uint32_t flags = 0);
-        template <typename C> bool parse(const vector<basic_string<C>>& args) { return parse(args, cout); }
-        template <typename C> bool parse(const basic_string<C>& args) { return parse(args, cout); }
-        template <typename C> bool parse(int argc, C** argv) { return parse(argc, argv, cout); }
+        template <typename C> bool parse(const vector<basic_string<C>>& args, std::ostream& out = cout, uint32_t flags = 0);
+        template <typename C> bool parse(const basic_string<C>& args, std::ostream& out = cout, uint32_t flags = 0);
+        template <typename C> bool parse(int argc, C** argv, std::ostream& out = cout, uint32_t flags = 0);
         template <typename T> T get(const u8string& name) const
             { return UnicornDetail::ArgConv<T>()(str_join(find_values(name), " ")); }
         template <typename T> vector<T> get_list(const u8string& name) const;
@@ -142,7 +136,7 @@ namespace Unicorn {
         void parse_remaining_anonymous(string_list& args, const string_list& anon);
         void check_required();
         void supply_defaults();
-        template <typename C> void send_help(std::basic_ostream<C>& out, help_mode mode) const;
+        void send_help(std::ostream& out, help_mode mode) const;
         template <typename C> static u8string arg_convert(const basic_string<C>& str, uint32_t /*flags*/)
             { return to_utf8(str); }
         static u8string arg_convert(const string& str, uint32_t flags);
@@ -178,8 +172,8 @@ namespace Unicorn {
         return tvec;
     }
 
-    template <typename C, typename C2>
-    bool Options::parse(const vector<basic_string<C>>& args, std::basic_ostream<C2>& out, uint32_t flags) {
+    template <typename C>
+    bool Options::parse(const vector<basic_string<C>>& args, std::ostream& out, uint32_t flags) {
         string_list u8vec;
         std::transform(args.begin(), args.end(), append(u8vec),
             [=] (const basic_string<C>& s) { return arg_convert(s, flags); });
@@ -188,8 +182,8 @@ namespace Unicorn {
         return help_wanted != help_mode::none;
     }
 
-    template <typename C, typename C2>
-    bool Options::parse(const basic_string<C>& args, std::basic_ostream<C2>& out, uint32_t flags) {
+    template <typename C>
+    bool Options::parse(const basic_string<C>& args, std::ostream& out, uint32_t flags) {
         auto u8args = arg_convert(args, flags);
         string_list vec;
         if (flags & opt_quoted) {
@@ -203,25 +197,13 @@ namespace Unicorn {
         return help_wanted != help_mode::none;
     }
 
-    template <typename C, typename C2>
-    bool Options::parse(int argc, C** argv, std::basic_ostream<C2>& out, uint32_t flags) {
+    template <typename C>
+    bool Options::parse(int argc, C** argv, std::ostream& out, uint32_t flags) {
         vector<basic_string<C>> args(argv, argv + argc);
         if (flags & opt_quoted)
             return parse(str_join(args, str_char<C>(U' ')), out, flags);
         else
             return parse(args, out, flags);
-    }
-
-    template <typename C>
-    void Options::send_help(std::basic_ostream<C>& out, help_mode mode) const {
-        u8string message;
-        switch (mode) {
-            case help_mode::version:  message = app_info + '\n'; break;
-            case help_mode::usage:    message = help(); break;
-            default:                  break;
-        }
-        if (! message.empty())
-            out << recode<C>(message);
     }
 
 }

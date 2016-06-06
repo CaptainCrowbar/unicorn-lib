@@ -342,6 +342,17 @@ namespace Unicorn {
                 opt.values.push_back(opt.defval);
     }
 
+    void Options::send_help(std::ostream& out, help_mode mode) const {
+        u8string message;
+        switch (mode) {
+            case help_mode::version:  message = app_info + '\n'; break;
+            case help_mode::usage:    message = help(); break;
+            default:                  break;
+        }
+        if (! message.empty())
+            out << message;
+    }
+
     u8string Options::arg_convert(const string& str, uint32_t flags) {
         if (! (flags & opt_locale))
             return str;
