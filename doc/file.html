@@ -49,21 +49,22 @@ even on a Mac you need to be careful in the presence of remote file systems
 that may be on a different OS).</p>
 <p>To make it possible to deal with this situation, this module uses the
 <code>NativeString</code> type from the <a href="core.html"><code>unicorn/core</code></a> module, which is
-<code>string</code> on Unix systems and <code>wstring</code> on Windows. Like most of the rest of
-the Unicorn library, all of the functions and classes in this module take a
-character type as a template argument. Functions that match the native
-filename type can operate on, and may return, file names with invalid
-encoding; the other versions of each function will convert invalid Unicode
-names using the usual character replacement rule, which may result in
-unexpected behaviour if there are any files on your system with non-Unicode
-names. (On Windows, although <code>wstring</code> is used as the native filename type,
-<code>u16string</code> names will also be passed through without sanitization.)</p>
-<p>In short, stick to the <code>NativeString</code> versions of the functions here if you
-need reliable handling of all filenames, including those containing invalid
-Unicode; use other encodings only if you expect all the files you deal with to
-have valid Unicode names, and you don't mind if non-Unicode names are slightly
-mangled, or if you're only targeting Mac/iOS and don't need to worry about
-other operating systems.</p>
+<code>string</code> on Unix systems and <code>wstring</code> on Windows. Most of the functions in
+this module come in <code>u8string</code> and <code>NativeString</code> versions; on Windows these
+are separate overloads, while on Unix <code>u8string</code> and <code>NativeString</code> are really
+the same type (<code>std::string</code>), and only one version of each function is
+needed.</p>
+<p>Functions that take a <code>NativeString</code> can operate on, and may return, file
+names with invalid encoding. If the <code>u8string</code> function is a separate
+overload, it will convert invalid Unicode names using the usual character
+replacement rule, which may result in unexpected behaviour if there are any
+files on your system with non-Unicode names.</p>
+<p>In short, use the <code>NativeString</code> versions of the functions here if you need
+reliable handling of all filenames, including those containing invalid
+Unicode; use the <code>u8string</code> versions if you expect all the files you deal with
+to have valid Unicode names, and you don't mind if non-Unicode names are
+slightly mangled, or if you're only targeting Mac/iOS and don't need to worry
+about other operating systems.</p>
 <p>The examples in the documentation below mostly use Unix-style file names for
 simplicity; the equivalent code on Windows will make the obvious substitutions
 of backslashes for slashes, and drive roots such as <code>"C:\"</code> for <code>"/"</code>.</p>
@@ -122,6 +123,7 @@ be a non-standard 128-bit integer on many systems.</p>
 <div class="defns">
 <ul>
 <li><code>constexpr char</code> <strong><code>file_delimiter</code></strong> <code>= ['/' on Unix, '\\' on Windows]</code></li>
+<li><code>constexpr char</code> <strong><code>native_file_delimiter</code></strong> <code>= ['/' on Unix, L'\\' on Windows]</code></li>
 </ul>
 <p>The standard delimiter for directory paths.</p>
 </div>
@@ -150,10 +152,14 @@ and the Windows versions are aware of UNC paths <span
 class="nobr">(<code>"\\?\path..."</code>).</span></p>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; bool</code> <strong><code>file_is_absolute</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
-<li><code>template &lt;typename C&gt; bool</code> <strong><code>file_is_relative</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
-<li><code>template &lt;typename C&gt; bool</code> <strong><code>file_is_drive_absolute</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
-<li><code>template &lt;typename C&gt; bool</code> <strong><code>file_is_drive_relative</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
+<li><code>bool</code> <strong><code>file_is_absolute</code></strong><code>(const u8string&amp; file)</code></li>
+<li><code>bool</code> <strong><code>file_is_absolute</code></strong><code>(const NativeString&amp; file)</code></li>
+<li><code>bool</code> <strong><code>file_is_relative</code></strong><code>(const u8string&amp; file)</code></li>
+<li><code>bool</code> <strong><code>file_is_relative</code></strong><code>(const NativeString&amp; file)</code></li>
+<li><code>bool</code> <strong><code>file_is_drive_absolute</code></strong><code>(const u8string&amp; file)</code></li>
+<li><code>bool</code> <strong><code>file_is_drive_absolute</code></strong><code>(const NativeString&amp; file)</code></li>
+<li><code>bool</code> <strong><code>file_is_drive_relative</code></strong><code>(const u8string&amp; file)</code></li>
+<li><code>bool</code> <strong><code>file_is_drive_relative</code></strong><code>(const NativeString&amp; file)</code></li>
 </ul>
 <p>These indicate whether a file name is absolute or relative; exactly one of
 them will be true for any non-empty file name (including illegal ones).</p>
@@ -166,7 +172,8 @@ on Unix.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; bool</code> <strong><code>file_is_root</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
+<li><code>bool</code> <strong><code>file_is_root</code></strong><code>(const u8string&amp; file)</code></li>
+<li><code>bool</code> <strong><code>file_is_root</code></strong><code>(const NativeString&amp; file)</code></li>
 </ul>
 <p>True if the file name refers to the root of a directory tree (note that this
 is a purely syntactic operation on the file name, and is not the same as
@@ -174,8 +181,10 @@ identifying the root of a physical file system).</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C, typename... Args&gt; basic_string&lt;C&gt;</code> <strong><code>file_path</code></strong><code>(const basic_string&lt;C&gt;&amp; file, Args... args)</code></li>
-<li><code>template &lt;typename C, typename... Args&gt; basic_string&lt;C&gt;</code> <strong><code>file_path</code></strong><code>(const C* file, Args... args)</code></li>
+<li><code>template &lt;typename... Args&gt; u8string</code> <strong><code>file_path</code></strong><code>(const u8string&amp; file, Args... args)</code></li>
+<li><code>template &lt;typename... Args&gt; u8string</code> <strong><code>file_path</code></strong><code>(const char* file, Args... args)</code></li>
+<li><code>template &lt;typename... Args&gt; NativeString</code> <strong><code>file_path</code></strong><code>(const NativeString&amp; file, Args... args)</code></li>
+<li><code>template &lt;typename... Args&gt; NativeString</code> <strong><code>file_path</code></strong><code>(const NativeCharacter* file, Args... args)</code></li>
 </ul>
 <p>Assembles a directory path from a series of path elements or relative paths.
 If any argument is an absolute path, this is taken as the root of the final
@@ -188,14 +197,18 @@ file_path("/foo", "/bar", "hello.txt") == "/bar/hello.txt"
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; bool</code> <strong><code>is_legal_leaf_name</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
-<li><code>template &lt;typename C&gt; bool</code> <strong><code>is_legal_path_name</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
-<li><code>template &lt;typename C&gt; bool</code> <strong><code>is_legal_mac_leaf_name</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
-<li><code>template &lt;typename C&gt; bool</code> <strong><code>is_legal_mac_path_name</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
-<li><code>template &lt;typename C&gt; bool</code> <strong><code>is_legal_posix_leaf_name</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
-<li><code>template &lt;typename C&gt; bool</code> <strong><code>is_legal_posix_path_name</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
-<li><code>template &lt;typename C&gt; bool</code> <strong><code>is_legal_windows_leaf_name</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
-<li><code>template &lt;typename C&gt; bool</code> <strong><code>is_legal_windows_path_name</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
+<li><code>bool</code> <strong><code>is_legal_leaf_name</code></strong><code>(const u8string&amp; file)</code></li>
+<li><code>bool</code> <strong><code>is_legal_leaf_name</code></strong><code>(const NativeString&amp; file)</code></li>
+<li><code>bool</code> <strong><code>is_legal_path_name</code></strong><code>(const u8string&amp; file)</code></li>
+<li><code>bool</code> <strong><code>is_legal_path_name</code></strong><code>(const NativeString&amp; file)</code></li>
+<li><code>bool</code> <strong><code>is_legal_mac_leaf_name</code></strong><code>(const u8string&amp; file)</code></li>
+<li><code>bool</code> <strong><code>is_legal_mac_path_name</code></strong><code>(const u8string&amp; file)</code></li>
+<li><code>bool</code> <strong><code>is_legal_posix_leaf_name</code></strong><code>(const u8string&amp; file)</code></li>
+<li><code>bool</code> <strong><code>is_legal_posix_path_name</code></strong><code>(const u8string&amp; file)</code></li>
+<li><code>bool</code> <strong><code>is_legal_windows_leaf_name</code></strong><code>(const u8string&amp; file)</code></li>
+<li><code>bool</code> <strong><code>is_legal_windows_leaf_name</code></strong><code>(const wstring&amp; file)</code></li>
+<li><code>bool</code> <strong><code>is_legal_windows_path_name</code></strong><code>(const u8string&amp; file)</code></li>
+<li><code>bool</code> <strong><code>is_legal_windows_path_name</code></strong><code>(const wstring&amp; file)</code></li>
 </ul>
 <p>These indicate whether a string is a legal file name. The first two functions
 call the corresponding system specific function for the host operating system.</p>
@@ -209,14 +222,13 @@ keep in mind that remote mounted file systems may be physically located on a
 different system and therefore will not necessarily follow exactly the same
 rules. There are no separate functions for Linux because as far as I know it
 does not impose any file name restrictions beyond the standard Posix rules.</p>
-<p>These will accept invalid UTF strings if the native file system API would, but
-if the character size does not match the system's native encoding, a string
-that is not valid UTF will fail all of these.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; pair&lt;basic_string&lt;C&gt;, basic_string&lt;C&gt;&gt;</code> <strong><code>split_path</code></strong><code>(const basic_string&lt;C&gt;&amp; file, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; pair&lt;basic_string&lt;C&gt;, basic_string&lt;C&gt;&gt;</code> <strong><code>split_file</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
+<li><code>pair&lt;u8string, u8string&gt;</code> <strong><code>split_path</code></strong><code>(const u8string&amp; file, uint32_t flags = 0)</code></li>
+<li><code>pair&lt;NativeString, NativeString&gt;</code> <strong><code>split_path</code></strong><code>(const NativeString&amp; file, uint32_t flags = 0)</code></li>
+<li><code>pair&lt;u8string, u8string&gt;</code> <strong><code>split_file</code></strong><code>(const u8string&amp; file)</code></li>
+<li><code>pair&lt;NativeString, NativeString&gt;</code> <strong><code>split_file</code></strong><code>(const NativeString&amp; file)</code></li>
 </ul>
 <p>These functions break down a file name into its constituent parts. The
 <code>split_path()</code> function breaks the full name into directory and leaf names;
@@ -246,24 +258,25 @@ split_file(".hello") == {".hello", ""}
 <p>These functions perform read-only operations on the file system.</p>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>current_directory</code></strong><code>()</code></li>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>current_directory</code></strong><code>(basic_string&lt;C&gt;&amp; dir)</code></li>
+<li><code>u8string</code> <strong><code>current_directory</code></strong><code>()</code></li>
+<li><code>NativeString</code> <strong><code>native_current_directory</code></strong><code>()</code></li>
 </ul>
-<p>These query the current working directory of the calling process. The first
-version requires the character type to be explicitly specified. These may
-throw <code>std::system_error</code> in some unusual cases of failure, usually involving
-access permission problems.</p>
+<p>Query the current working directory of the calling process. These may throw
+<code>std::system_error</code> in some unusual cases of failure, usually involving access
+permission problems.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; bool</code> <strong><code>file_exists</code></strong><code>(const basic_string&lt;C&gt;&amp; file) noexcept</code></li>
+<li><code>bool</code> <strong><code>file_exists</code></strong><code>(const u8string&amp; file) noexcept</code></li>
+<li><code>bool</code> <strong><code>file_exists</code></strong><code>(const NativeString&amp; file) noexcept</code></li>
 </ul>
 <p>Query whether a file exists. This may give a false negative if the file exists
 but is not accessible to the calling process.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; FileId</code> <strong><code>file_id</code></strong><code>(const basic_string&lt;C&gt;&amp; file, uint32_t flags = 0)</code></li>
+<li><code>FileId</code> <strong><code>file_id</code></strong><code>(const u8string&amp; file, uint32_t flags = 0)</code></li>
+<li><code>FileId</code> <strong><code>file_id</code></strong><code>(const NativeString&amp; file, uint32_t flags = 0)</code></li>
 </ul>
 <p>Returns a unique file identifier, intended to identify the file even if it is
 referred to by different paths. It will return zero if the file does not exist
@@ -278,7 +291,8 @@ throw <code>std::system_error</code> in unusual cases.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; bool</code> <strong><code>file_is_directory</code></strong><code>(const basic_string&lt;C&gt;&amp; file) noexcept</code></li>
+<li><code>bool</code> <strong><code>file_is_directory</code></strong><code>(const u8string&amp; file) noexcept</code></li>
+<li><code>bool</code> <strong><code>file_is_directory</code></strong><code>(const NativeString&amp; file) noexcept</code></li>
 </ul>
 <p>Query whether a file is a directory. This will return <code>false</code> if the file does
 not exist; it may give a false negative if the directory exists but is not
@@ -286,7 +300,8 @@ accessible to the calling process.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; bool</code> <strong><code>file_is_hidden</code></strong><code>(const basic_string&lt;C&gt;&amp; file) noexcept</code></li>
+<li><code>bool</code> <strong><code>file_is_hidden</code></strong><code>(const u8string&amp; file) noexcept</code></li>
+<li><code>bool</code> <strong><code>file_is_hidden</code></strong><code>(const NativeString&amp; file) noexcept</code></li>
 </ul>
 <p>True if the file is normally hidden. This will return <code>false</code> if the file does
 not exist or is not accessible to the calling process. On Unix this is based
@@ -295,13 +310,15 @@ Windows this is a metadata property.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; bool</code> <strong><code>file_is_symlink</code></strong><code>(const basic_string&lt;C&gt;&amp; file) noexcept</code></li>
+<li><code>bool</code> <strong><code>file_is_symlink</code></strong><code>(const u8string&amp; file) noexcept</code></li>
+<li><code>bool</code> <strong><code>file_is_symlink</code></strong><code>(const NativeString&amp; file) noexcept</code></li>
 </ul>
 <p>True if the file is a symbolic link.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; uint64_t</code> <strong><code>file_size</code></strong><code>(const basic_string&lt;C&gt;&amp; file, uint32_t flags = 0) noexcept</code></li>
+<li><code>uint64_t</code> <strong><code>file_size</code></strong><code>(const u8string&amp; file, uint32_t flags = 0) noexcept</code></li>
+<li><code>uint64_t</code> <strong><code>file_size</code></strong><code>(const NativeString&amp; file, uint32_t flags = 0) noexcept</code></li>
 </ul>
 <p>Returns the size of the file in bytes. This will return zero if the file does
 not exist, or if it can't be accessed for any other reason. If the file is a
@@ -312,7 +329,8 @@ followed).</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>resolve_symlink</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
+<li><code>u8string</code> <strong><code>resolve_symlink</code></strong><code>(const u8string&amp; file)</code></li>
+<li><code>NativeString</code> <strong><code>resolve_symlink</code></strong><code>(const NativeString&amp; file)</code></li>
 </ul>
 <p>Returns the file pointed to by a symlink. If the argument names a file that
 does not exist or is not a symlink, this will simply return the argument
@@ -327,7 +345,8 @@ appear to be any way to retrieve it).</p>
 system.</p>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>copy_file</code></strong><code>(const basic_string&lt;C&gt;&amp; src, const basic_string&lt;C&gt;&amp; dst, uint32_t flags = 0)</code></li>
+<li><code>void</code> <strong><code>copy_file</code></strong><code>(const u8string&amp; src, const u8string&amp; dst, uint32_t flags = 0)</code></li>
+<li><code>void</code> <strong><code>copy_file</code></strong><code>(const NativeString&amp; src, const NativeString&amp; dst, uint32_t flags = 0)</code></li>
 </ul>
 <p>Copy a file. If the <code>fs_recurse</code> flag is used, this will copy a directory
 recursively; otherwise, it will fail if the source file is a directory. If the
@@ -344,7 +363,8 @@ file or directory.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>make_directory</code></strong><code>(const basic_string&lt;C&gt;&amp; dir, uint32_t flags = 0)</code></li>
+<li><code>void</code> <strong><code>make_directory</code></strong><code>(const u8string&amp; dir, uint32_t flags = 0)</code></li>
+<li><code>void</code> <strong><code>make_directory</code></strong><code>(const NativeString&amp; dir, uint32_t flags = 0)</code></li>
 </ul>
 <p>Create a directory (with default permissions). It will do nothing if the
 directory already exists. If the <code>fs_recurse</code> flag is set, this will
@@ -359,7 +379,8 @@ not set, or if the caller does not have permission to create the directory.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>make_symlink</code></strong><code>(const basic_string&lt;C&gt;&amp; file, const basic_string&lt;C&gt;&amp; link, uint32_t flags = 0)</code></li>
+<li><code>void</code> <strong><code>make_symlink</code></strong><code>(const u8string&amp; file, const u8string&amp; link, uint32_t flags = 0)</code></li>
+<li><code>void</code> <strong><code>make_symlink</code></strong><code>(const NativeString&amp; file, const NativeString&amp; link, uint32_t flags = 0)</code></li>
 </ul>
 <p>Creates a symlink named <code>link</code> pointing to <code>file</code>. This will do nothing if the
 symlink already exists. If the <code>fs_overwrite</code> flag is set, this will delete
@@ -371,7 +392,8 @@ but the necessary flags were not supplied.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>move_file</code></strong><code>(const basic_string&lt;C&gt;&amp; src, const basic_string&lt;C&gt;&amp; dst, uint32_t flags = 0)</code></li>
+<li><code>void</code> <strong><code>move_file</code></strong><code>(const u8string&amp; src, const u8string&amp; dst, uint32_t flags = 0)</code></li>
+<li><code>void</code> <strong><code>move_file</code></strong><code>(const NativeString&amp; src, const NativeString&amp; dst, uint32_t flags = 0)</code></li>
 </ul>
 <p>Rename a file or directory. This will attempt to use the operating system's
 native <code>rename()</code> call if possible, but will attempt a copy-and-delete
@@ -383,7 +405,8 @@ needed if an existing directory is to be replaced). This will throw
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>remove_file</code></strong><code>(const basic_string&lt;C&gt;&amp; file, uint32_t flags = 0)</code></li>
+<li><code>void</code> <strong><code>remove_file</code></strong><code>(const u8string&amp; file, uint32_t flags = 0)</code></li>
+<li><code>void</code> <strong><code>remove_file</code></strong><code>(const NativeString&amp; file, uint32_t flags = 0)</code></li>
 </ul>
 <p>Delete a file or directory. If the <code>fs_recurse</code> flag is set, directories will
 be deleted recursively (like <code>rm -rf</code>; this will not follow symbolic links);
@@ -396,19 +419,32 @@ have permission to delete the file.</p>
 <h2 id="directory-iterators">Directory iterators</h2>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; class</code> <strong><code>DirectoryIterator</code></strong><ul>
+<li><code>class</code> <strong><code>DirectoryIterator</code></strong><ul>
 <li><code>using DirectoryIterator::</code><strong><code>difference_type</code></strong> <code>= ptrdiff_t</code></li>
 <li><code>using DirectoryIterator::</code><strong><code>iterator_category</code></strong> <code>= std::input_iterator_tag</code></li>
-<li><code>using DirectoryIterator::</code><strong><code>value_type</code></strong> <code>= basic_string&lt;C&gt;</code></li>
-<li><code>using DirectoryIterator::</code><strong><code>pointer</code></strong> <code>= const value_type*</code></li>
-<li><code>using DirectoryIterator::</code><strong><code>reference</code></strong> <code>= const value_type&amp;</code></li>
+<li><code>using DirectoryIterator::</code><strong><code>value_type</code></strong> <code>= u8string</code></li>
+<li><code>using DirectoryIterator::</code><strong><code>pointer</code></strong> <code>= const u8string*</code></li>
+<li><code>using DirectoryIterator::</code><strong><code>reference</code></strong> <code>= const u8string&amp;</code></li>
 <li><code>DirectoryIterator::</code><strong><code>DirectoryIterator</code></strong><code>()</code></li>
-<li><code>explicit DirectoryIterator::</code><strong><code>DirectoryIterator</code></strong><code>(const value_type&amp; dir, uint32_t flags = 0)</code></li>
+<li><code>explicit DirectoryIterator::</code><strong><code>DirectoryIterator</code></strong><code>(const u8string&amp; dir, uint32_t flags = 0)</code></li>
 <li><em>[standard iterator operations]</em></li>
 </ul>
 </li>
-<li><code>template &lt;typename C&gt; Irange&lt;DirectoryIterator&lt;C&gt;&gt;</code> <strong><code>directory</code></strong><code>(const basic_string&lt;C&gt;&amp; dir, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; Irange&lt;DirectoryIterator&lt;C&gt;&gt;</code> <strong><code>directory</code></strong><code>(const C* dir, uint32_t flags = 0)</code></li>
+<li><code>class</code> <strong><code>NativeDirectoryIterator</code></strong><ul>
+<li><code>using NativeDirectoryIterator::</code><strong><code>difference_type</code></strong> <code>= ptrdiff_t</code></li>
+<li><code>using NativeDirectoryIterator::</code><strong><code>iterator_category</code></strong> <code>= std::input_iterator_tag</code></li>
+<li><code>using NativeDirectoryIterator::</code><strong><code>value_type</code></strong> <code>= NativeString</code></li>
+<li><code>using NativeDirectoryIterator::</code><strong><code>pointer</code></strong> <code>= const NativeString*</code></li>
+<li><code>using NativeDirectoryIterator::</code><strong><code>reference</code></strong> <code>= const NativeString&amp;</code></li>
+<li><code>NativeDirectoryIterator::</code><strong><code>NativeDirectoryIterator</code></strong><code>()</code></li>
+<li><code>explicit NativeDirectoryIterator::</code><strong><code>NativeDirectoryIterator</code></strong><code>(const NativeString&amp; dir, uint32_t flags = 0)</code></li>
+<li><em>[standard iterator operations]</em></li>
+</ul>
+</li>
+<li><code>Irange&lt;DirectoryIterator&gt;</code> <strong><code>directory</code></strong><code>(const u8string&amp; dir, uint32_t flags = 0)</code></li>
+<li><code>Irange&lt;DirectoryIterator&gt;</code> <strong><code>directory</code></strong><code>(const char* dir, uint32_t flags = 0)</code></li>
+<li><code>Irange&lt;NativeDirectoryIterator&gt;</code> <strong><code>directory</code></strong><code>(const NativeString&amp; dir, uint32_t flags = 0)</code></li>
+<li><code>Irange&lt;NativeDirectoryIterator&gt;</code> <strong><code>directory</code></strong><code>(const NativeCharacter* dir, uint32_t flags = 0)</code></li>
 </ul>
 <p>The following flags are recognised:</p>
 <table>
@@ -439,22 +475,21 @@ have permission to delete the file.</p>
 </table>
 <p>An iterator over the files in a directory. Normally you should call the
 <code>directory()</code> function to get an iterator range, rather than explicitly
-constructing a <code>DirectoryIterator</code>. Note that this is an input (i.e. single
-pass) iterator (a restriction imposed by the way the underlying system APIs
-work).</p>
+constructing a <code>[Native]DirectoryIterator</code>. Note that this is an input (i.e.
+single pass) iterator (a restriction imposed by the way the underlying system
+APIs work).</p>
 <p>If the name passed to the constructor, or to the <code>directory()</code> function,
 refers to a file that does not exist or is not a directory, it will simply be
 treated as an empty directory.</p>
 <p>By default, an iterator dereferences to a file's leaf name; if the
 <code>fs_fullname</code> option is used, the full path is reported instead, including the
 directory (this is based on the name passed to the constructor, and will not
-be a fully qualified absolute path if the original name was not).</p>
+be a fully qualified absolute path if the original directory name was not).</p>
 <p>If the <code>fs_unicode</code> flag is supplied, and the original directory name was
 invalid UTF, no files will be returned.</p>
 <p>The order in which files are returned is unspecified; do not rely on them
 being returned in the same order as the <code>ls</code> or <code>dir</code> command, or on the order
 remaining the same on separate iterations over the same directory. Behaviour
-is also unspecified if a directory's contents change while a
-<code>DirectoryIterator</code> is scanning it; the change may or may not be visible to
-the caller.</p></body>
+is also unspecified if a directory's contents change while a directory
+iterator is scanning it; the change may or may not be visible to the caller.</p></body>
 </html>
