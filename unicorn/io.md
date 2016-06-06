@@ -8,6 +8,13 @@ The functions and classes in this module provided line oriented input and
 output, with automatic conversion between Unicode and external legacy
 encodings, as well as other conveniences such as normalization of line breaks.
 
+File names can be supplied either as UTF-8 strings or as native character
+strings (these are different types only on Windows; on Unix the `u8string` and
+`NativeString` versions are the same function). Constructors that take a
+`NativeString` can be used with non-Unicode file names; see
+[`unicorn/file`](file.html) for the details of how file name encodings are
+handled.
+
 ## Contents ##
 
 [TOC]
@@ -21,12 +28,18 @@ encodings, as well as other conveniences such as normalization of line breaks.
     * `using FileReader::`**`reference`** `= const u8string&`
     * `using FileReader::`**`value_type`** `= u8string`
     * `FileReader::`**`FileReader`**`()`
-    * `template <typename C> explicit FileReader::`**`FileReader`**`(const basic_string<C>& file)`
-    * `template <typename C> FileReader::`**`FileReader`**`(const basic_string<C>& file, uint32_t flags)`
-    * `template <typename C1, typename C2> FileReader::`**`FileReader`**`(const basic_string<C1>& file, uint32_t flags, const basic_string<C2>& enc)`
-    * `template <typename C> FileReader::`**`FileReader`**`(const basic_string<C>& file, uint32_t flags, uint32_t enc)`
-    * `template <typename C1, typename C2, typename C3> FileReader::`**`FileReader`**`(const basic_string<C1>& file, uint32_t flags, const basic_string<C2>& enc, const basic_string<C3>& eol)`
-    * `template <typename C1, typename C2> FileReader::`**`FileReader`**`(const basic_string<C1>& file, uint32_t flags, uint32_t enc, const basic_string<C2>& eol)`
+    * `explicit FileReader::`**`FileReader`**`(const u8string& file)`
+    * `FileReader::`**`FileReader`**`(const u8string& file, uint32_t flags)`
+    * `FileReader::`**`FileReader`**`(const u8string& file, uint32_t flags, const u8string& enc)`
+    * `FileReader::`**`FileReader`**`(const u8string& file, uint32_t flags, uint32_t enc)`
+    * `FileReader::`**`FileReader`**`(const u8string& file, uint32_t flags, const u8string& enc, const u8string& eol)`
+    * `FileReader::`**`FileReader`**`(const u8string& file, uint32_t flags, uint32_t enc, const u8string& eol)`
+    * `explicit FileReader::`**`FileReader`**`(const NativeString& file)`
+    * `FileReader::`**`FileReader`**`(const NativeString& file, uint32_t flags)`
+    * `FileReader::`**`FileReader`**`(const NativeString& file, uint32_t flags, const u8string& enc)`
+    * `FileReader::`**`FileReader`**`(const NativeString& file, uint32_t flags, uint32_t enc)`
+    * `FileReader::`**`FileReader`**`(const NativeString& file, uint32_t flags, const u8string& enc, const u8string& eol)`
+    * `FileReader::`**`FileReader`**`(const NativeString& file, uint32_t flags, uint32_t enc, const u8string& eol)`
     * `size_t FileReader::`**`line`**`() const noexcept`
     * _[standard input iterator operations]_
 
@@ -34,7 +47,7 @@ An iterator over the lines in a text file. You should normally obtain a pair
 of these by calling one of the `read_lines()` functions described below,
 rather than constructing the iterator type explicitly.
 
-The constructor opens the file for input. The `flags` argument contains a
+The constructors open the file for input. The `flags` argument contains a
 combination of flags controlling the  iterator's behaviour (described below).
 The `enc` argument is an optional encoding name or number, indicating what
 encoding is expected to be found in the file (see [`unicorn/mbcs`](mbcs.html)
@@ -57,7 +70,7 @@ Flag               | Description
 **`err_replace`**  | Replace invalid encoding with `U+FFFD` (default)
 **`err_throw`**    | Throw `EncodingError` if invalid encoding is encountered
 **`io_stdin`**     | Read from standard input if the file name is `"-"` or an empty string
-**`io_nofail`**    | Treat a nonexistent file as empty instead of throwing an exception
+**`io_pretend`**   | Treat a nonexistent file as empty instead of throwing an exception
 **`io_bom`**       | Strip a leading byte order mark if one is found
 **`io_lf`**        | Convert all line breaks to `LF`
 **`io_crlf`**      | Convert all line breaks to `CR+LF`
@@ -66,11 +79,16 @@ Flag               | Description
 **`io_stripws`**   | Strip leading and trailing whitespace from each line (implies `io_striplf`)
 **`io_notempty`**  | Skip empty lines (after any whitespace stripping)
 
-* `template <typename C> Irange<FileReader>` **`read_lines`**`(const basic_string<C>& file, uint32_t flags = 0)`
-* `template <typename C1, typename C2> Irange<FileReader>` **`read_lines`**`(const basic_string<C1>& file, uint32_t flags, const basic_string<C2>& enc)`
-* `template <typename C> Irange<FileReader>` **`read_lines`**`(const basic_string<C>& file, uint32_t flags, uint32_t enc)`
-* `template <typename C1, typename C2, typename C3> Irange<FileReader>` **`read_lines`**`(const basic_string<C1>& file, uint32_t flags, const basic_string<C2>& enc, const basic_string<C3>& eol)`
-* `template <typename C1, typename C2> Irange<FileReader>` **`read_lines`**`(const basic_string<C1>& file, uint32_t flags, uint32_t enc, const basic_string<C2>& eol)`
+* `Irange<FileReader>` **`read_lines`**`(const u8string& file, uint32_t flags = 0)`
+* `Irange<FileReader>` **`read_lines`**`(const u8string& file, uint32_t flags, const u8string& enc)`
+* `Irange<FileReader>` **`read_lines`**`(const u8string& file, uint32_t flags, uint32_t enc)`
+* `Irange<FileReader>` **`read_lines`**`(const u8string& file, uint32_t flags, const u8string& enc, const u8string& eol)`
+* `Irange<FileReader>` **`read_lines`**`(const u8string& file, uint32_t flags, uint32_t enc, const u8string& eol)`
+* `Irange<FileReader>` **`read_lines`**`(const NativeString& file, uint32_t flags = 0)`
+* `Irange<FileReader>` **`read_lines`**`(const NativeString& file, uint32_t flags, const u8string& enc)`
+* `Irange<FileReader>` **`read_lines`**`(const NativeString& file, uint32_t flags, uint32_t enc)`
+* `Irange<FileReader>` **`read_lines`**`(const NativeString& file, uint32_t flags, const u8string& enc, const u8string& eol)`
+* `Irange<FileReader>` **`read_lines`**`(const NativeString& file, uint32_t flags, uint32_t enc, const u8string& eol)`
 
 These construct a pair of iterators, from which the lines in a file can be
 read. The arguments are interpreted as described above.
@@ -84,10 +102,14 @@ read. The arguments are interpreted as described above.
     * `using FileWriter::`**`reference`** `= void`
     * `using FileWriter::`**`value_type`** `= void`
     * `FileWriter::`**`FileWriter`**`()`
-    * `template <typename C> explicit FileWriter::`**`FileWriter`**`(const basic_string<C>& file)`
-    * `template <typename C> FileWriter::`**`FileWriter`**`(const basic_string<C>& file, uint32_t flags)`
-    * `template <typename C1, typename C2> FileWriter::`**`FileWriter`**`(const basic_string<C1>& file, uint32_t flags, const basic_string<C2>& enc)`
-    * `template <typename C> FileWriter::`**`FileWriter`**`(const basic_string<C>& file, uint32_t flags, uint32_t enc)`
+    * `explicit FileWriter::`**`FileWriter`**`(const u8string& file)`
+    * `FileWriter::`**`FileWriter`**`(const u8string& file, uint32_t flags)`
+    * `FileWriter::`**`FileWriter`**`(const u8string& file, uint32_t flags, const u8string& enc)`
+    * `FileWriter::`**`FileWriter`**`(const u8string& file, uint32_t flags, uint32_t enc)`
+    * `explicit FileWriter::`**`FileWriter`**`(const NativeString& file)`
+    * `FileWriter::`**`FileWriter`**`(const NativeString& file, uint32_t flags)`
+    * `FileWriter::`**`FileWriter`**`(const NativeString& file, uint32_t flags, const u8string& enc)`
+    * `FileWriter::`**`FileWriter`**`(const NativeString& file, uint32_t flags, uint32_t enc)`
     * `void FileWriter::`**`flush`**`()`
     * _[standard output iterator operations]_
 

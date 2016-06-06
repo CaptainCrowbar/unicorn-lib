@@ -82,7 +82,7 @@ namespace Unicorn {
         if ((flags & io_stdin) && (file.empty() || file == dashfile))
             impl->handle.reset(stdin, do_nothing);
         else
-            impl->handle = shared_fopen(file, PRI_CSTR("rb", NativeCharacter), ! (flags & io_nofail));
+            impl->handle = shared_fopen(file, PRI_CSTR("rb", NativeCharacter), ! (flags & io_pretend));
         ++*this;
     }
 
@@ -205,7 +205,7 @@ namespace Unicorn {
         }
     }
 
-    void FileWriter::fixtext(u8string& str) const {
+    void FileWriter::fix_text(u8string& str) const {
         if ((impl->flags & io_writeline) || ((impl->flags & io_autoline)
                 && (str.empty() || ! char_is_line_break(str_last_char(str)))))
             str += '\n';
@@ -226,7 +226,7 @@ namespace Unicorn {
     void FileWriter::write(u8string str) {
         if (! impl)
             throw std::system_error(std::make_error_code(std::errc::bad_file_descriptor));
-        fixtext(str);
+        fix_text(str);
         if (impl->flags & io_linebuf) {
             str.insert(0, impl->wrbuf);
             impl->wrbuf.clear();
@@ -255,14 +255,14 @@ namespace Unicorn {
             export_string(str, encoded, impl->enc, impl->flags & (err_replace | err_throw));
             if (impl->mutex) {
                 MutexLock lock(*impl->mutex);
-                writembcs(encoded);
+                write_mbcs(encoded);
             } else {
-                writembcs(encoded);
+                write_mbcs(encoded);
             }
         }
     }
 
-    void FileWriter::writembcs(const string& str) {
+    void FileWriter::write_mbcs(const string& str) {
         fwrite(str.data(), 1, str.size(), impl->handle.get());
         auto err = errno;
         if (ferror(impl->handle.get()))

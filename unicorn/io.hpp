@@ -24,7 +24,7 @@ namespace Unicorn {
     // Reader flags
 
     constexpr uint32_t io_stdin      = 1ul << 6;   // Default to stdin
-    constexpr uint32_t io_nofail     = 1ul << 7;   // Treat nonexistent file as empty
+    constexpr uint32_t io_pretend    = 1ul << 7;   // Treat nonexistent file as empty
     constexpr uint32_t io_striplf    = 1ul << 8;   // Strip line breaks
     constexpr uint32_t io_striptws   = 1ul << 9;   // Strip trailing whitespace
     constexpr uint32_t io_stripws    = 1ul << 10;  // Strip whitespace
@@ -47,20 +47,45 @@ namespace Unicorn {
     public InputIterator<FileReader, u8string> {
     public:
         FileReader() {}
-        template <typename C> explicit FileReader(const basic_string<C>& file)
-            { init(recode_filename<NativeCharacter>(file), {}, {}, {}); }
-        template <typename C> FileReader(const basic_string<C>& file, uint32_t flags)
-            { init(recode_filename<NativeCharacter>(file), flags, {}, {}); }
-        template <typename C1, typename C2> FileReader(const basic_string<C1>& file, uint32_t flags, const basic_string<C2>& enc)
-            { init(recode_filename<NativeCharacter>(file), flags, to_utf8(enc), {}); }
-        template <typename C> FileReader(const basic_string<C>& file, uint32_t flags, uint32_t enc)
-            { init(recode_filename<NativeCharacter>(file), flags, dec(enc), {}); }
-        template <typename C1, typename C2, typename C3> FileReader(const basic_string<C1>& file, uint32_t flags,
-            const basic_string<C2>& enc, const basic_string<C3>& eol)
-            { init(recode_filename<NativeCharacter>(file), flags, to_utf8(enc), to_utf8(eol)); }
-        template <typename C1, typename C2> FileReader(const basic_string<C1>& file, uint32_t flags, uint32_t enc,
-            const basic_string<C2>& eol)
-            { init(recode_filename<NativeCharacter>(file), flags, dec(enc), to_utf8(eol)); }
+        #if defined(UNICORN_NATIVE_WCHAR)
+            explicit FileReader(const u8string& file)
+                { init(recode_filename<NativeCharacter>(file), {}, {}, {}); }
+            FileReader(const u8string& file, uint32_t flags)
+                { init(recode_filename<NativeCharacter>(file), flags, {}, {}); }
+            FileReader(const u8string& file, uint32_t flags, const u8string& enc)
+                { init(recode_filename<NativeCharacter>(file), flags, to_utf8(enc), {}); }
+            FileReader(const u8string& file, uint32_t flags, uint32_t enc)
+                { init(recode_filename<NativeCharacter>(file), flags, dec(enc), {}); }
+            FileReader(const u8string& file, uint32_t flags, const u8string& enc, const u8string& eol)
+                { init(recode_filename<NativeCharacter>(file), flags, to_utf8(enc), to_utf8(eol)); }
+            FileReader(const u8string& file, uint32_t flags, uint32_t enc, const u8string& eol)
+                { init(recode_filename<NativeCharacter>(file), flags, dec(enc), to_utf8(eol)); }
+            explicit FileReader(const NativeString& file)
+                { init(file, {}, {}, {}); }
+            FileReader(const NativeString& file, uint32_t flags)
+                { init(file, flags, {}, {}); }
+            FileReader(const NativeString& file, uint32_t flags, const u8string& enc)
+                { init(file, flags, enc, {}); }
+            FileReader(const NativeString& file, uint32_t flags, uint32_t enc)
+                { init(file, flags, dec(enc), {}); }
+            FileReader(const NativeString& file, uint32_t flags, const u8string& enc, const u8string& eol)
+                { init(file, flags, enc, eol); }
+            FileReader(const NativeString& file, uint32_t flags, uint32_t enc, const u8string& eol)
+                { init(file, flags, dec(enc), eol); }
+        #else
+            explicit FileReader(const u8string& file)
+                { init(file, {}, {}, {}); }
+            FileReader(const u8string& file, uint32_t flags)
+                { init(file, flags, {}, {}); }
+            FileReader(const u8string& file, uint32_t flags, const u8string& enc)
+                { init(file, flags, enc, {}); }
+            FileReader(const u8string& file, uint32_t flags, uint32_t enc)
+                { init(file, flags, dec(enc), {}); }
+            FileReader(const u8string& file, uint32_t flags, const u8string& enc, const u8string& eol)
+                { init(file, flags, enc, eol); }
+            FileReader(const u8string& file, uint32_t flags, uint32_t enc, const u8string& eol)
+                { init(file, flags, dec(enc), eol); }
+        #endif
         const u8string& operator*() const noexcept;
         FileReader& operator++();
         friend bool operator==(const FileReader& lhs, const FileReader& rhs) noexcept { return lhs.impl == rhs.impl; }
@@ -74,21 +99,29 @@ namespace Unicorn {
         void getmore(size_t n);
     };
 
-    template <typename C>
-        Irange<FileReader> read_lines(const basic_string<C>& file, uint32_t flags = 0)
+    inline Irange<FileReader> read_lines(const u8string& file, uint32_t flags = 0)
         { return {FileReader{file, flags}, {}}; }
-    template <typename C1, typename C2>
-        Irange<FileReader> read_lines(const basic_string<C1>& file, uint32_t flags, const basic_string<C2>& enc)
+    inline Irange<FileReader> read_lines(const u8string& file, uint32_t flags, const u8string& enc)
         { return {{file, flags, enc}, {}}; }
-    template <typename C>
-        Irange<FileReader> read_lines(const basic_string<C>& file, uint32_t flags, uint32_t enc)
+    inline Irange<FileReader> read_lines(const u8string& file, uint32_t flags, uint32_t enc)
         { return {{file, flags, enc}, {}}; }
-    template <typename C1, typename C2, typename C3>
-        Irange<FileReader> read_lines(const basic_string<C1>& file, uint32_t flags, const basic_string<C2>& enc, const basic_string<C3>& eol)
+    inline Irange<FileReader> read_lines(const u8string& file, uint32_t flags, const u8string& enc, const u8string& eol)
         { return {{file, flags, enc, eol}, {}}; }
-    template <typename C1, typename C2>
-        Irange<FileReader> read_lines(const basic_string<C1>& file, uint32_t flags, uint32_t enc, const basic_string<C2>& eol)
+    inline Irange<FileReader> read_lines(const u8string& file, uint32_t flags, uint32_t enc, const u8string& eol)
         { return {{file, flags, enc, eol}, {}}; }
+
+    #if defined(UNICORN_NATIVE_WCHAR)
+        inline Irange<FileReader> read_lines(const NativeString& file, uint32_t flags = 0)
+            { return {FileReader{file, flags}, {}}; }
+        inline Irange<FileReader> read_lines(const NativeString& file, uint32_t flags, const u8string& enc)
+            { return {{file, flags, enc}, {}}; }
+        inline Irange<FileReader> read_lines(const NativeString& file, uint32_t flags, uint32_t enc)
+            { return {{file, flags, enc}, {}}; }
+        inline Irange<FileReader> read_lines(const NativeString& file, uint32_t flags, const u8string& enc, const u8string& eol)
+            { return {{file, flags, enc, eol}, {}}; }
+        inline Irange<FileReader> read_lines(const NativeString& file, uint32_t flags, uint32_t enc, const u8string& eol)
+            { return {{file, flags, enc, eol}, {}}; }
+    #endif
 
     // File output iterator
 
@@ -96,24 +129,43 @@ namespace Unicorn {
     public OutputIterator<FileWriter> {
     public:
         FileWriter() {}
-        template <typename C> explicit FileWriter(const basic_string<C>& file)
-            { init(recode_filename<NativeCharacter>(file), {}, {}); }
-        template <typename C> FileWriter(const basic_string<C>& file, uint32_t flags)
-            { init(recode_filename<NativeCharacter>(file), flags, {}); }
-        template <typename C1, typename C2> FileWriter(const basic_string<C1>& file, uint32_t flags, const basic_string<C2>& enc)
-            { init(recode_filename<NativeCharacter>(file), flags, to_utf8(enc)); }
-        template <typename C> FileWriter(const basic_string<C>& file, uint32_t flags, uint32_t enc)
-            { init(recode_filename<NativeCharacter>(file), flags, dec(enc)); }
-        template <typename C> FileWriter& operator=(const basic_string<C>& str) { write(to_utf8(str)); return *this; }
-        template <typename C> FileWriter& operator=(const C* str) { write(to_utf8(cstr(str))); return *this; }
+        #if defined(UNICORN_NATIVE_WCHAR)
+            explicit FileWriter(const u8string& file)
+                { init(recode_filename<NativeCharacter>(file), {}, {}); }
+            FileWriter(const u8string& file, uint32_t flags)
+                { init(recode_filename<NativeCharacter>(file), flags, {}); }
+            FileWriter(const u8string& file, uint32_t flags, const u8string& enc)
+                { init(recode_filename<NativeCharacter>(file), flags, enc); }
+            FileWriter(const u8string& file, uint32_t flags, uint32_t enc)
+                { init(recode_filename<NativeCharacter>(file), flags, dec(enc)); }
+            explicit FileWriter(const NativeString& file)
+                { init(file, {}, {}); }
+            FileWriter(const NativeString& file, uint32_t flags)
+                { init(file, flags, {}); }
+            FileWriter(const NativeString& file, uint32_t flags, const u8string& enc)
+                { init(file, flags, enc); }
+            FileWriter(const NativeString& file, uint32_t flags, uint32_t enc)
+                { init(file, flags, dec(enc)); }
+        #else
+            explicit FileWriter(const u8string& file)
+                { init(file, {}, {}); }
+            FileWriter(const u8string& file, uint32_t flags)
+                { init(file, flags, {}); }
+            FileWriter(const u8string& file, uint32_t flags, const u8string& enc)
+                { init(file, flags, enc); }
+            FileWriter(const u8string& file, uint32_t flags, uint32_t enc)
+                { init(file, flags, dec(enc)); }
+        #endif
+        FileWriter& operator=(const u8string& str) { write(str); return *this; }
+        FileWriter& operator=(const char* str) { write(cstr(str)); return *this; }
         void flush();
     private:
         struct impl_type;
         shared_ptr<impl_type> impl;
         void init(const NativeString& file, uint32_t flags, const u8string& enc);
-        void fixtext(u8string& str) const;
+        void fix_text(u8string& str) const;
         void write(u8string str);
-        void writembcs(const string& str);
+        void write_mbcs(const string& str);
     };
 
 }

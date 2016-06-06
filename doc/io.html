@@ -14,6 +14,12 @@
 <p>The functions and classes in this module provided line oriented input and
 output, with automatic conversion between Unicode and external legacy
 encodings, as well as other conveniences such as normalization of line breaks.</p>
+<p>File names can be supplied either as UTF-8 strings or as native character
+strings (these are different types only on Windows; on Unix the <code>u8string</code> and
+<code>NativeString</code> versions are the same function). Constructors that take a
+<code>NativeString</code> can be used with non-Unicode file names; see
+<a href="file.html"><code>unicorn/file</code></a> for the details of how file name encodings are
+handled.</p>
 <h2 id="contents">Contents</h2>
 <div class="toc">
 <ul>
@@ -35,12 +41,18 @@ encodings, as well as other conveniences such as normalization of line breaks.</
 <li><code>using FileReader::</code><strong><code>reference</code></strong> <code>= const u8string&amp;</code></li>
 <li><code>using FileReader::</code><strong><code>value_type</code></strong> <code>= u8string</code></li>
 <li><code>FileReader::</code><strong><code>FileReader</code></strong><code>()</code></li>
-<li><code>template &lt;typename C&gt; explicit FileReader::</code><strong><code>FileReader</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
-<li><code>template &lt;typename C&gt; FileReader::</code><strong><code>FileReader</code></strong><code>(const basic_string&lt;C&gt;&amp; file, uint32_t flags)</code></li>
-<li><code>template &lt;typename C1, typename C2&gt; FileReader::</code><strong><code>FileReader</code></strong><code>(const basic_string&lt;C1&gt;&amp; file, uint32_t flags, const basic_string&lt;C2&gt;&amp; enc)</code></li>
-<li><code>template &lt;typename C&gt; FileReader::</code><strong><code>FileReader</code></strong><code>(const basic_string&lt;C&gt;&amp; file, uint32_t flags, uint32_t enc)</code></li>
-<li><code>template &lt;typename C1, typename C2, typename C3&gt; FileReader::</code><strong><code>FileReader</code></strong><code>(const basic_string&lt;C1&gt;&amp; file, uint32_t flags, const basic_string&lt;C2&gt;&amp; enc, const basic_string&lt;C3&gt;&amp; eol)</code></li>
-<li><code>template &lt;typename C1, typename C2&gt; FileReader::</code><strong><code>FileReader</code></strong><code>(const basic_string&lt;C1&gt;&amp; file, uint32_t flags, uint32_t enc, const basic_string&lt;C2&gt;&amp; eol)</code></li>
+<li><code>explicit FileReader::</code><strong><code>FileReader</code></strong><code>(const u8string&amp; file)</code></li>
+<li><code>FileReader::</code><strong><code>FileReader</code></strong><code>(const u8string&amp; file, uint32_t flags)</code></li>
+<li><code>FileReader::</code><strong><code>FileReader</code></strong><code>(const u8string&amp; file, uint32_t flags, const u8string&amp; enc)</code></li>
+<li><code>FileReader::</code><strong><code>FileReader</code></strong><code>(const u8string&amp; file, uint32_t flags, uint32_t enc)</code></li>
+<li><code>FileReader::</code><strong><code>FileReader</code></strong><code>(const u8string&amp; file, uint32_t flags, const u8string&amp; enc, const u8string&amp; eol)</code></li>
+<li><code>FileReader::</code><strong><code>FileReader</code></strong><code>(const u8string&amp; file, uint32_t flags, uint32_t enc, const u8string&amp; eol)</code></li>
+<li><code>explicit FileReader::</code><strong><code>FileReader</code></strong><code>(const NativeString&amp; file)</code></li>
+<li><code>FileReader::</code><strong><code>FileReader</code></strong><code>(const NativeString&amp; file, uint32_t flags)</code></li>
+<li><code>FileReader::</code><strong><code>FileReader</code></strong><code>(const NativeString&amp; file, uint32_t flags, const u8string&amp; enc)</code></li>
+<li><code>FileReader::</code><strong><code>FileReader</code></strong><code>(const NativeString&amp; file, uint32_t flags, uint32_t enc)</code></li>
+<li><code>FileReader::</code><strong><code>FileReader</code></strong><code>(const NativeString&amp; file, uint32_t flags, const u8string&amp; enc, const u8string&amp; eol)</code></li>
+<li><code>FileReader::</code><strong><code>FileReader</code></strong><code>(const NativeString&amp; file, uint32_t flags, uint32_t enc, const u8string&amp; eol)</code></li>
 <li><code>size_t FileReader::</code><strong><code>line</code></strong><code>() const noexcept</code></li>
 <li><em>[standard input iterator operations]</em></li>
 </ul>
@@ -49,7 +61,7 @@ encodings, as well as other conveniences such as normalization of line breaks.</
 <p>An iterator over the lines in a text file. You should normally obtain a pair
 of these by calling one of the <code>read_lines()</code> functions described below,
 rather than constructing the iterator type explicitly.</p>
-<p>The constructor opens the file for input. The <code>flags</code> argument contains a
+<p>The constructors open the file for input. The <code>flags</code> argument contains a
 combination of flags controlling the  iterator's behaviour (described below).
 The <code>enc</code> argument is an optional encoding name or number, indicating what
 encoding is expected to be found in the file (see <a href="mbcs.html"><code>unicorn/mbcs</code></a>
@@ -85,7 +97,7 @@ modified by the flags below.</p>
 <td>Read from standard input if the file name is <code>"-"</code> or an empty string</td>
 </tr>
 <tr>
-<td><strong><code>io_nofail</code></strong></td>
+<td><strong><code>io_pretend</code></strong></td>
 <td>Treat a nonexistent file as empty instead of throwing an exception</td>
 </tr>
 <tr>
@@ -121,11 +133,16 @@ modified by the flags below.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const basic_string&lt;C&gt;&amp; file, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C1, typename C2&gt; Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const basic_string&lt;C1&gt;&amp; file, uint32_t flags, const basic_string&lt;C2&gt;&amp; enc)</code></li>
-<li><code>template &lt;typename C&gt; Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const basic_string&lt;C&gt;&amp; file, uint32_t flags, uint32_t enc)</code></li>
-<li><code>template &lt;typename C1, typename C2, typename C3&gt; Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const basic_string&lt;C1&gt;&amp; file, uint32_t flags, const basic_string&lt;C2&gt;&amp; enc, const basic_string&lt;C3&gt;&amp; eol)</code></li>
-<li><code>template &lt;typename C1, typename C2&gt; Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const basic_string&lt;C1&gt;&amp; file, uint32_t flags, uint32_t enc, const basic_string&lt;C2&gt;&amp; eol)</code></li>
+<li><code>Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const u8string&amp; file, uint32_t flags = 0)</code></li>
+<li><code>Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const u8string&amp; file, uint32_t flags, const u8string&amp; enc)</code></li>
+<li><code>Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const u8string&amp; file, uint32_t flags, uint32_t enc)</code></li>
+<li><code>Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const u8string&amp; file, uint32_t flags, const u8string&amp; enc, const u8string&amp; eol)</code></li>
+<li><code>Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const u8string&amp; file, uint32_t flags, uint32_t enc, const u8string&amp; eol)</code></li>
+<li><code>Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const NativeString&amp; file, uint32_t flags = 0)</code></li>
+<li><code>Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const NativeString&amp; file, uint32_t flags, const u8string&amp; enc)</code></li>
+<li><code>Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const NativeString&amp; file, uint32_t flags, uint32_t enc)</code></li>
+<li><code>Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const NativeString&amp; file, uint32_t flags, const u8string&amp; enc, const u8string&amp; eol)</code></li>
+<li><code>Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const NativeString&amp; file, uint32_t flags, uint32_t enc, const u8string&amp; eol)</code></li>
 </ul>
 <p>These construct a pair of iterators, from which the lines in a file can be
 read. The arguments are interpreted as described above.</p>
@@ -140,10 +157,14 @@ read. The arguments are interpreted as described above.</p>
 <li><code>using FileWriter::</code><strong><code>reference</code></strong> <code>= void</code></li>
 <li><code>using FileWriter::</code><strong><code>value_type</code></strong> <code>= void</code></li>
 <li><code>FileWriter::</code><strong><code>FileWriter</code></strong><code>()</code></li>
-<li><code>template &lt;typename C&gt; explicit FileWriter::</code><strong><code>FileWriter</code></strong><code>(const basic_string&lt;C&gt;&amp; file)</code></li>
-<li><code>template &lt;typename C&gt; FileWriter::</code><strong><code>FileWriter</code></strong><code>(const basic_string&lt;C&gt;&amp; file, uint32_t flags)</code></li>
-<li><code>template &lt;typename C1, typename C2&gt; FileWriter::</code><strong><code>FileWriter</code></strong><code>(const basic_string&lt;C1&gt;&amp; file, uint32_t flags, const basic_string&lt;C2&gt;&amp; enc)</code></li>
-<li><code>template &lt;typename C&gt; FileWriter::</code><strong><code>FileWriter</code></strong><code>(const basic_string&lt;C&gt;&amp; file, uint32_t flags, uint32_t enc)</code></li>
+<li><code>explicit FileWriter::</code><strong><code>FileWriter</code></strong><code>(const u8string&amp; file)</code></li>
+<li><code>FileWriter::</code><strong><code>FileWriter</code></strong><code>(const u8string&amp; file, uint32_t flags)</code></li>
+<li><code>FileWriter::</code><strong><code>FileWriter</code></strong><code>(const u8string&amp; file, uint32_t flags, const u8string&amp; enc)</code></li>
+<li><code>FileWriter::</code><strong><code>FileWriter</code></strong><code>(const u8string&amp; file, uint32_t flags, uint32_t enc)</code></li>
+<li><code>explicit FileWriter::</code><strong><code>FileWriter</code></strong><code>(const NativeString&amp; file)</code></li>
+<li><code>FileWriter::</code><strong><code>FileWriter</code></strong><code>(const NativeString&amp; file, uint32_t flags)</code></li>
+<li><code>FileWriter::</code><strong><code>FileWriter</code></strong><code>(const NativeString&amp; file, uint32_t flags, const u8string&amp; enc)</code></li>
+<li><code>FileWriter::</code><strong><code>FileWriter</code></strong><code>(const NativeString&amp; file, uint32_t flags, uint32_t enc)</code></li>
 <li><code>void FileWriter::</code><strong><code>flush</code></strong><code>()</code></li>
 <li><em>[standard output iterator operations]</em></li>
 </ul>
