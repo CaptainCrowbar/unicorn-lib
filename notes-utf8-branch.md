@@ -47,7 +47,7 @@
     * **[TODO]** `mbcs -> character, core, iana-character-sets, regex, string, utf`
 * _Level 14_
     * **[TODO]** `file -> character, core, format, mbcs, regex, string, utf`
-    * **[TODO]** `options -> character, core, format, mbcs, regex, string`
-    * **[TODO]** `table -> character, core, format, string, utf`
+    * [done] `options -> character, core, format, mbcs, regex, string`
+    * [done] `table -> character, core, format, string, utf`
 * _Level 15_
     * [done] `io -> character, core, file, format, mbcs, string, utf`
