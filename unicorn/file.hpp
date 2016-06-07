@@ -222,81 +222,53 @@ namespace Unicorn {
 
     #endif
 
-    // TODO
-
     // Directory iterators
 
-    namespace UnicornDetail {
-
-        // Directory iterator implementation is split into three stages:
-
-        // Stage 1: The system specific part that calls the operating system's
-        // directory walking API; this requires separate implementations for
-        // each OS.
-
-        // Stage 2: The part that works only with native file names, but is
-        // not system specific apart from the choice of string type, so it can
-        // be written as a single implementation.
-
-        // Stage 3: The part that translates the file name to the caller's
-        // preferred encoding; this is the template based interface exported
-        // to the caller.
-
-        class DirectoryStage1 {
-        protected:
-            const NativeString& leaf() const noexcept;
-            void init1(const NativeString& dir);
-            void next1();
-            bool done() const noexcept { return ! impl; }
-            bool equal(const DirectoryStage1& rhs) const noexcept { return impl == rhs.impl; }
-        private:
-            struct impl_type;
-            shared_ptr<impl_type> impl;
-        };
-
-        class DirectoryStage2:
-        public DirectoryStage1 {
-        protected:
-            const NativeString& filename() const noexcept { return current; }
-            void init2(const NativeString& dir, uint32_t flags);
-            void next2();
-        private:
-            NativeString prefix;
-            NativeString current;
-            uint32_t fset;
-        };
-
-    }
-
-    template <typename C>
-    class DirectoryIterator:
-    public UnicornDetail::DirectoryStage2,
-    public InputIterator<DirectoryIterator<C>, const basic_string<C>> {
+    class NativeDirectoryIterator:
+    public InputIterator<NativeDirectoryIterator, const NativeString> {
     public:
-        DirectoryIterator() = default;
-        explicit DirectoryIterator(const basic_string<C>& dir, uint32_t flags = 0) {
-            if ((flags & fs_unicode) && ! valid_string(dir))
-                return;
-            auto normdir = UnicornDetail::normalize_path(dir);
-            NativeString natdir;
-            recode(normdir, natdir);
-            init2(natdir, flags);
-            recode(filename(), file);
-        }
-        const basic_string<C>& operator*() const noexcept { return file; }
-        DirectoryIterator& operator++() {
-            next2();
-            recode(filename(), file);
-            return *this;
-        }
-        friend bool operator==(const DirectoryIterator& lhs, const DirectoryIterator& rhs) noexcept { return lhs.equal(rhs); }
+        NativeDirectoryIterator() = default;
+        explicit NativeDirectoryIterator(const NativeString& dir, uint32_t flags = 0);
+        const NativeString& operator*() const noexcept { return current; }
+        NativeDirectoryIterator& operator++();
+        bool operator==(const NativeDirectoryIterator& rhs) const noexcept { return impl == rhs.impl; }
     private:
-        basic_string<C> file;
+        struct impl_type;
+        shared_ptr<impl_type> impl;
+        NativeString prefix;
+        NativeString leaf;
+        NativeString current;
+        uint32_t fset;
+        void do_init(const NativeString& dir);
+        void do_next();
     };
 
-    template <typename C> Irange<DirectoryIterator<C>> directory(const basic_string<C>& dir, uint32_t flags = 0)
-        { return {DirectoryIterator<C>(dir, flags), DirectoryIterator<C>()}; }
-    template <typename C> Irange<DirectoryIterator<C>> directory(const C* dir, uint32_t flags = 0)
-        { return {DirectoryIterator<C>(cstr(dir), flags), DirectoryIterator<C>()}; }
+    inline Irange<NativeDirectoryIterator> directory(const NativeString& dir, uint32_t flags = 0)
+        { return {NativeDirectoryIterator(dir, flags), NativeDirectoryIterator()}; }
+
+    #if defined(PRI_TARGET_UNIX)
+
+        using DirectoryIterator = NativeDirectoryIterator;
+
+    #else
+
+        class DirectoryIterator:
+        public InputIterator<DirectoryIterator, const u8string> {
+        public:
+            DirectoryIterator() = default;
+            explicit DirectoryIterator(const u8string& dir, uint32_t flags = 0):
+                nat(to_wstring(dir), flags), current(to_utf8(*nat)) {}
+            const u8string& operator*() const noexcept { return current; }
+            DirectoryIterator& operator++() { ++nat; current = to_utf8(*nat); return *this; }
+            bool operator==(const DirectoryIterator& rhs) const noexcept { return nat == rhs.nat; }
+        private:
+            NativeDirectoryIterator nat;
+            u8string current;
+        };
+
+        inline Irange<DirectoryIterator> directory(const u8string& dir, uint32_t flags = 0)
+            { return {DirectoryIterator(dir, flags), DirectoryIterator()}; }
+
+    #endif
 
 }

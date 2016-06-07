@@ -348,28 +348,34 @@ have permission to delete the file.
 
 ## Directory iterators ##
 
-* `class` **`DirectoryIterator`**
-    * `using DirectoryIterator::`**`difference_type`** `= ptrdiff_t`
-    * `using DirectoryIterator::`**`iterator_category`** `= std::input_iterator_tag`
-    * `using DirectoryIterator::`**`value_type`** `= u8string`
-    * `using DirectoryIterator::`**`pointer`** `= const u8string*`
-    * `using DirectoryIterator::`**`reference`** `= const u8string&`
-    * `DirectoryIterator::`**`DirectoryIterator`**`()`
-    * `explicit DirectoryIterator::`**`DirectoryIterator`**`(const u8string& dir, uint32_t flags = 0)`
-    * _[standard iterator operations]_
-* `class` **`NativeDirectoryIterator`**
-    * `using NativeDirectoryIterator::`**`difference_type`** `= ptrdiff_t`
-    * `using NativeDirectoryIterator::`**`iterator_category`** `= std::input_iterator_tag`
-    * `using NativeDirectoryIterator::`**`value_type`** `= NativeString`
-    * `using NativeDirectoryIterator::`**`pointer`** `= const NativeString*`
-    * `using NativeDirectoryIterator::`**`reference`** `= const NativeString&`
-    * `NativeDirectoryIterator::`**`NativeDirectoryIterator`**`()`
-    * `explicit NativeDirectoryIterator::`**`NativeDirectoryIterator`**`(const NativeString& dir, uint32_t flags = 0)`
+* `class` **`[Native]DirectoryIterator`**
+    * `using [Native]DirectoryIterator::`**`difference_type`** `= ptrdiff_t`
+    * `using [Native]DirectoryIterator::`**`iterator_category`** `= std::input_iterator_tag`
+    * `using [Native]DirectoryIterator::`**`value_type`** `= [NativeString or u8string]`
+    * `using [Native]DirectoryIterator::`**`pointer`** `= const value_type*`
+    * `using [Native]DirectoryIterator::`**`reference`** `= const value_type&`
+    * `[Native]DirectoryIterator::`**`[Native]DirectoryIterator`**`()`
+    * `explicit [Native]DirectoryIterator::`**`[Native]DirectoryIterator`**`(const value_type& dir, uint32_t flags = 0)`
     * _[standard iterator operations]_
 * `Irange<DirectoryIterator>` **`directory`**`(const u8string& dir, uint32_t flags = 0)`
-* `Irange<DirectoryIterator>` **`directory`**`(const char* dir, uint32_t flags = 0)`
 * `Irange<NativeDirectoryIterator>` **`directory`**`(const NativeString& dir, uint32_t flags = 0)`
-* `Irange<NativeDirectoryIterator>` **`directory`**`(const NativeCharacter* dir, uint32_t flags = 0)`
+
+An iterator over the files in a directory. Normally you should call the
+`directory()` function to get an iterator range, rather than explicitly
+constructing a `[Native]DirectoryIterator`. Note that this is an input (i.e.
+single pass) iterator (a restriction imposed by the way the underlying system
+APIs work).
+
+On systems (Windows) where the native string type is not 8-bit, there are two
+directory iterator types: `NativeDirectoryIterator` has a value type of
+`NativeString`, and returns the actual file names even if they are not valid
+Unicode (unless the `fs_unicode` option is used); `DirectoryIterator` has a
+value type of `u8string`, and converts file names using the usual substitution
+convention if the original name is invalid.
+
+On Unix, `DirectoryIterator` and `NativeDirectoryIterator` are the same type.
+Although the value type is nominally `u8string`, file names that are not valid
+UTF-8 (on systems where this is possible) are passed through unchanged.
 
 The following flags are recognised:
 
@@ -379,12 +385,6 @@ Flag               | Description
 **`fs_fullname`**  | Return full file names
 **`fs_hidden`**    | Include hidden files
 **`fs_unicode`**   | Skip files with non-Unicode names
-
-An iterator over the files in a directory. Normally you should call the
-`directory()` function to get an iterator range, rather than explicitly
-constructing a `[Native]DirectoryIterator`. Note that this is an input (i.e.
-single pass) iterator (a restriction imposed by the way the underlying system
-APIs work).
 
 If the name passed to the constructor, or to the `directory()` function,
 refers to a file that does not exist or is not a directory, it will simply be

@@ -611,132 +611,114 @@ namespace Unicorn {
         remove_file_helper(file);
     }
 
-    // TODO
+    // Directory iterators
 
-    namespace UnicornDetail {
+    #if defined(PRI_TARGET_UNIX)
 
-        #if defined(PRI_TARGET_UNIX)
+        struct NativeDirectoryIterator::impl_type {
+            dirent entry;
+            char padding[NAME_MAX + 1];
+            DIR* dp;
+            ~impl_type() { if (dp) closedir(dp); }
+        };
 
-            // Directory iterators
-
-            struct DirectoryStage1::impl_type {
-                string name;
-                dirent entry;
-                char padding[NAME_MAX + 1];
-                DIR* dp;
-                ~impl_type() { if (dp) closedir(dp); }
-            };
-
-            const string& DirectoryStage1::leaf() const noexcept {
-                static const string dummy {};
-                return impl ? impl->name : dummy;
-            }
-
-            void DirectoryStage1::init1(const string& dir) {
-                impl = make_shared<impl_type>();
-                memset(&impl->entry, 0, sizeof(impl->entry));
-                memset(impl->padding, 0, sizeof(impl->padding));
-                if (dir.empty())
-                    impl->dp = opendir(".");
-                else
-                    impl->dp = opendir(dir.data());
-                if (! impl->dp)
-                    impl.reset();
-            }
-
-            void DirectoryStage1::next1() {
-                if (! impl)
-                    return;
-                dirent* ptr = nullptr;
-                int rc = readdir_r(impl->dp, &impl->entry, &ptr);
-                if (! rc && ptr)
-                    impl->name = impl->entry.d_name;
-                else
-                    impl.reset();
-            }
-
-        #else
-
-            // Directory iterators
-
-            // On Windows we need to check first that the supplied file name
-            // refers to a directory, because FindFirstFile() gives a false
-            // positive for "file\*" when "file" exists but is not a
-            // directory. There's a race condition here but there doesn't seem
-            // to be anything we can do about it.
-
-            struct DirectoryStage1::impl_type {
-                wstring name;
-                HANDLE handle;
-                WIN32_FIND_DATAW info;
-                bool first;
-                ~impl_type() { if (handle) FindClose(handle); }
-            };
-
-            const wstring& DirectoryStage1::leaf() const noexcept {
-                static const wstring dummy {};
-                return impl ? impl->name : dummy;
-            }
-
-            void DirectoryStage1::init1(const wstring& dir) {
-                if (! file_is_directory(dir))
-                    return;
-                impl = make_shared<impl_type>();
-                memset(&impl->info, 0, sizeof(impl->info));
-                impl->first = true;
-                auto glob = dir + L"\\*";
-                impl->handle = FindFirstFileW(glob.data(), &impl->info);
-                if (! impl->handle)
-                    impl.reset();
-            }
-
-            void DirectoryStage1::next1() {
-                if (! impl)
-                    return;
-                if (! impl->first && ! FindNextFile(impl->handle, &impl->info)) {
-                    impl.reset();
-                    return;
-                }
-                impl->first = false;
-                impl->name = impl->info.cFileName;
-            }
-
-        #endif
-
-        // Directory iterators
-
-        void DirectoryStage2::init2(const NativeString& dir, uint32_t flags) {
-            init1(dir);
-            fset = flags;
-            if ((fset & fs_fullname) || ! (fset & fs_hidden)) {
-                prefix = dir;
-                if (! prefix.empty() && prefix.back() != native_file_delimiter)
-                    prefix += native_file_delimiter;
-            }
-            next2();
+        void NativeDirectoryIterator::do_init(const string& dir) {
+            impl = make_shared<impl_type>();
+            memset(&impl->entry, 0, sizeof(impl->entry));
+            memset(impl->padding, 0, sizeof(impl->padding));
+            if (dir.empty())
+                impl->dp = opendir(".");
+            else
+                impl->dp = opendir(dir.data());
+            if (! impl->dp)
+                impl.reset();
         }
 
-        void DirectoryStage2::next2() {
-            static const NativeString link1(1, PRI_CHAR('.', NativeCharacter));
-            static const NativeString link2(2, PRI_CHAR('.', NativeCharacter));
-            current.clear();
-            for (;;) {
-                next1();
-                if (done())
-                    break;
-                if ((fset & fs_unicode) && ! valid_string(leaf()))
-                    continue;
-                if (! (fset & fs_dotdot) && (leaf() == link1 || leaf() == link2))
-                    continue;
-                current = prefix + leaf();
-                if (! (fset & fs_hidden) && file_is_hidden(current))
-                    continue;
-                if (! (fset & fs_fullname))
-                    current = leaf();
+        void NativeDirectoryIterator::do_next() {
+            if (! impl)
+                return;
+            dirent* ptr = nullptr;
+            int rc = readdir_r(impl->dp, &impl->entry, &ptr);
+            if (! rc && ptr)
+                leaf = impl->entry.d_name;
+            else
+                impl.reset();
+        }
+
+    #else
+
+        // On Windows we need to check first that the supplied file name
+        // refers to a directory, because FindFirstFile() gives a false
+        // positive for "file\*" when "file" exists but is not a directory.
+        // There's a race condition here but there doesn't seem to be anything
+        // we can do about it.
+
+        struct NativeDirectoryIterator::impl_type {
+            HANDLE handle;
+            WIN32_FIND_DATAW info;
+            bool first;
+            ~impl_type() { if (handle) FindClose(handle); }
+        };
+
+        void NativeDirectoryIterator::do_init(const wstring& dir) {
+            if (! file_is_directory(dir))
+                return;
+            impl = make_shared<impl_type>();
+            memset(&impl->info, 0, sizeof(impl->info));
+            impl->first = true;
+            auto glob = dir + L"\\*";
+            impl->handle = FindFirstFileW(glob.data(), &impl->info);
+            if (! impl->handle)
+                impl.reset();
+        }
+
+        void NativeDirectoryIterator::do_next() {
+            if (! impl)
+                return;
+            if (! impl->first && ! FindNextFile(impl->handle, &impl->info)) {
+                impl.reset();
+                return;
+            }
+            impl->first = false;
+            leaf = impl->info.cFileName;
+        }
+
+    #endif
+
+    NativeDirectoryIterator::NativeDirectoryIterator(const NativeString& dir, uint32_t flags) {
+        if ((flags & fs_unicode) && ! valid_string(dir))
+            return;
+        auto normdir = UnicornDetail::normalize_path(dir);
+        do_init(normdir);
+        fset = flags;
+        if ((fset & fs_fullname) || ! (fset & fs_hidden)) {
+            prefix = normdir;
+            if (! prefix.empty() && prefix.back() != native_file_delimiter)
+                prefix += native_file_delimiter;
+        }
+        ++*this;
+    }
+
+    NativeDirectoryIterator& NativeDirectoryIterator::operator++() {
+        static const NativeString link1(1, NativeCharacter('.'));
+        static const NativeString link2(2, NativeCharacter('.'));
+        current.clear();
+        for (;;) {
+            do_next();
+            if (! impl)
                 break;
-            }
+            if ((fset & fs_unicode) && ! valid_string(leaf))
+                continue;
+            if (! (fset & fs_dotdot) && (leaf == link1 || leaf == link2))
+                continue;
+            current = prefix + leaf;
+            if (! (fset & fs_hidden) && file_is_hidden(current))
+                continue;
+            if (! (fset & fs_fullname))
+                current = leaf;
+            break;
         }
-
+        return *this;
     }
 
 }
