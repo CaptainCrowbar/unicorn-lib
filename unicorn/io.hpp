@@ -49,17 +49,17 @@ namespace Unicorn {
         FileReader() {}
         #if defined(UNICORN_NATIVE_WCHAR)
             explicit FileReader(const u8string& file)
-                { init(recode_filename<NativeCharacter>(file), {}, {}, {}); }
+                { init(to_wstring(file), {}, {}, {}); }
             FileReader(const u8string& file, uint32_t flags)
-                { init(recode_filename<NativeCharacter>(file), flags, {}, {}); }
+                { init(to_wstring(file), flags, {}, {}); }
             FileReader(const u8string& file, uint32_t flags, const u8string& enc)
-                { init(recode_filename<NativeCharacter>(file), flags, to_utf8(enc), {}); }
+                { init(to_wstring(file), flags, to_utf8(enc), {}); }
             FileReader(const u8string& file, uint32_t flags, uint32_t enc)
-                { init(recode_filename<NativeCharacter>(file), flags, dec(enc), {}); }
+                { init(to_wstring(file), flags, dec(enc), {}); }
             FileReader(const u8string& file, uint32_t flags, const u8string& enc, const u8string& eol)
-                { init(recode_filename<NativeCharacter>(file), flags, to_utf8(enc), to_utf8(eol)); }
+                { init(to_wstring(file), flags, to_utf8(enc), to_utf8(eol)); }
             FileReader(const u8string& file, uint32_t flags, uint32_t enc, const u8string& eol)
-                { init(recode_filename<NativeCharacter>(file), flags, dec(enc), to_utf8(eol)); }
+                { init(to_wstring(file), flags, dec(enc), to_utf8(eol)); }
             explicit FileReader(const NativeString& file)
                 { init(file, {}, {}, {}); }
             FileReader(const NativeString& file, uint32_t flags)
@@ -131,13 +131,13 @@ namespace Unicorn {
         FileWriter() {}
         #if defined(UNICORN_NATIVE_WCHAR)
             explicit FileWriter(const u8string& file)
-                { init(recode_filename<NativeCharacter>(file), {}, {}); }
+                { init(to_wstring(file), {}, {}); }
             FileWriter(const u8string& file, uint32_t flags)
-                { init(recode_filename<NativeCharacter>(file), flags, {}); }
+                { init(to_wstring(file), flags, {}); }
             FileWriter(const u8string& file, uint32_t flags, const u8string& enc)
-                { init(recode_filename<NativeCharacter>(file), flags, enc); }
+                { init(to_wstring(file), flags, enc); }
             FileWriter(const u8string& file, uint32_t flags, uint32_t enc)
-                { init(recode_filename<NativeCharacter>(file), flags, dec(enc)); }
+                { init(to_wstring(file), flags, dec(enc)); }
             explicit FileWriter(const NativeString& file)
                 { init(file, {}, {}); }
             FileWriter(const NativeString& file, uint32_t flags)

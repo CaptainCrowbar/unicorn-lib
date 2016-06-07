@@ -482,9 +482,9 @@ namespace Unicorn {
             }
 
             void make_symlink_helper(const wstring& file, const wstring& link, uint32_t flags) {
-                if (! (flags & fs_overwrite) && native_file_exists(link))
+                if (! (flags & fs_overwrite) && file_exists(link))
                     throw std::system_error(ERROR_ALREADY_EXISTS, windows_category(), quote_file(link));
-                DWORD wflags = native_file_is_directory(file) ? SYMBOLIC_LINK_FLAG_DIRECTORY : 0;
+                DWORD wflags = file_is_directory(file) ? SYMBOLIC_LINK_FLAG_DIRECTORY : 0;
                 if (CreateSymbolicLinkW(link.data(), file.data(), wflags))
                     return;
                 auto error = GetLastError();

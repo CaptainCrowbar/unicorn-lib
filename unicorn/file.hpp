@@ -190,11 +190,11 @@ namespace Unicorn {
         wstring resolve_symlink(const wstring& file);
         inline u8string current_directory() { return to_utf8(native_current_directory()); }
         inline bool file_exists(const u8string& file) { return file_exists(to_wstring(file)); }
-        inline FileId file_id(const u8string& file, uint32_t flags = 0) { return file_id(to_wstring(file)); }
+        inline FileId file_id(const u8string& file, uint32_t flags = 0) { return file_id(to_wstring(file), flags); }
         inline bool file_is_directory(const u8string& file) { return file_is_directory(to_wstring(file)); }
         inline bool file_is_hidden(const u8string& file) { return file_is_hidden(to_wstring(file)); }
         inline bool file_is_symlink(const u8string& file) { return file_is_symlink(to_wstring(file)); }
-        inline uint64_t file_size(const u8string& file, uint32_t flags = 0) { return file_size(to_wstring(file)); }
+        inline uint64_t file_size(const u8string& file, uint32_t flags = 0) { return file_size(to_wstring(file), flags); }
         inline u8string resolve_symlink(const u8string& file) { return to_utf8(resolve_symlink(to_wstring(file))); }
 
     #endif
@@ -210,15 +210,15 @@ namespace Unicorn {
     #if defined(PRI_TARGET_WINDOWS)
 
         inline void copy_file(const u8string& src, const u8string& dst, uint32_t flags = 0)
-            { return copy_file(to_wstring(src), to_wstring(dst), flags = 0); }
+            { return copy_file(to_wstring(src), to_wstring(dst), flags); }
         inline void make_directory(const u8string& dir, uint32_t flags = 0)
-            { return make_directory(to_wstring(dir), flags = 0); }
+            { return make_directory(to_wstring(dir), flags); }
         inline void make_symlink(const u8string& file, const u8string& link, uint32_t flags = 0)
-            { return make_symlink(to_wstring(file), to_wstring(link), flags = 0); }
+            { return make_symlink(to_wstring(file), to_wstring(link), flags); }
         inline void move_file(const u8string& src, const u8string& dst, uint32_t flags = 0)
-            { return move_file(to_wstring(src), to_wstring(dst), flags = 0); }
+            { return move_file(to_wstring(src), to_wstring(dst), flags); }
         inline void remove_file(const u8string& file, uint32_t flags = 0)
-            { return remove_file(to_wstring(file), flags = 0); }
+            { return remove_file(to_wstring(file), flags); }
 
     #endif
 
