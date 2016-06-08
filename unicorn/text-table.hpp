@@ -36,7 +36,7 @@ namespace Unicorn {
         Table& operator<<(const wstring& t) { add_str(to_utf8(t)); return *this; }
         void clear() noexcept { cells.clear(); cells.resize(1); formats.clear(); }
         template <typename... FS> void format(const u8string& f, const FS&... fs) { format(f); format(fs...); }
-        void format(const u8string& f) { formats.push_back(Unicorn::format(f)); }
+        void format(const u8string& f) { formats.push_back(Format(f)); }
         template <typename... Args> u8string str(const Args&... args) const;
         template <typename... Args> void write(std::ostream& out, const Args&... args) const;
     private:

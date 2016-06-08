@@ -42,7 +42,7 @@
     * **[TODO]** `environment -> core, string, utf`
     * **[TODO]** `regex -> character, core, string, utf`
 * _Level 13_
-    * **[TODO]** `format -> character, core, regex, string, utf`
+    * [done] `format -> character, core, regex, string, utf`
     * **[TODO]** `lexer -> character, core, regex, string`
     * **[TODO]** `mbcs -> character, core, iana-character-sets, regex, string, utf`
 * _Level 14_

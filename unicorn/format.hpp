@@ -110,34 +110,7 @@ namespace Unicorn {
 
         // Alignment and padding
 
-        template <typename C>
-        basic_string<C> format_align(basic_string<C> src, uint64_t flags, size_t width, char32_t pad) {
-            if (bits_set(flags & (fx_left | fx_centre | fx_right)) > 1)
-                throw std::invalid_argument("Inconsistent formatting alignment flags");
-            if (bits_set(flags & (fx_lower | fx_title | fx_upper)) > 1)
-                throw std::invalid_argument("Inconsistent formatting case conversion flags");
-            if (flags & fx_lower)
-                str_lowercase_in(src);
-            else if (flags & fx_title)
-                str_titlecase_in(src);
-            else if (flags & fx_upper)
-                str_uppercase_in(src);
-            size_t len = str_length(src, flags & fx_length_flags);
-            if (width <= len)
-                return src;
-            size_t extra = width - len;
-            basic_string<C> dst;
-            if (flags & fx_right)
-                str_append_chars(dst, extra, pad);
-            else if (flags & fx_centre)
-                str_append_chars(dst, extra / 2, pad);
-            dst += src;
-            if (flags & fx_left)
-                str_append_chars(dst, extra, pad);
-            else if (flags & fx_centre)
-                str_append_chars(dst, (extra + 1) / 2, pad);
-            return dst;
-        }
+        u8string format_align(u8string src, uint64_t flags, size_t width, char32_t pad);
 
     }
 
@@ -220,161 +193,86 @@ namespace Unicorn {
         return UnicornDetail::FormatObject<std::decay_t<T>>()(t, flags, prec);
     }
 
-    template <typename C, typename T>
-    basic_string<C> format_as(const T& t, uint64_t flags = 0, int prec = -1, size_t width = 0, char32_t pad = U' ') {
+    template <typename T>
+    u8string format_str(const T& t, uint64_t flags = 0, int prec = -1, size_t width = 0, char32_t pad = U' ') {
         using namespace UnicornDetail;
         auto s = format_type(t, flags, prec);
-        basic_string<C> dst;
-        return format_align(recode<C>(s), flags & fx_global_flags, width, pad);
+        return format_align(s, flags & fx_global_flags, width, pad);
     }
 
-    template <typename C, typename T>
-    basic_string<C> format_as(const T& t, const basic_string<C>& flags) {
+    template <typename T>
+    u8string format_str(const T& t, const u8string& flags) {
         using namespace UnicornDetail;
         uint64_t f = 0;
         int prec = 0;
         size_t width = 0;
         char32_t pad = U' ';
-        translate_flags(to_utf8(flags), f, prec, width, pad);
-        return format_as<C, T>(t, f, prec, width, pad);
+        translate_flags(flags, f, prec, width, pad);
+        return format_str(t, f, prec, width, pad);
     }
 
-    template <typename C, typename T>
-    basic_string<C> format_as(const T& t, const C* flags) {
-        return format_as<C, T>(t, cstr(flags));
+    template <typename T>
+    u8string format_str(const T& t, const char* flags) {
+        return format_str(t, cstr(flags));
     }
 
     // Formatter class
 
-    template <typename C>
-    class BasicFormat {
+    class Format {
     public:
-        using char_type = C;
-        using string_type = basic_string<C>;
-        BasicFormat() = default;
-        explicit BasicFormat(const string_type& format);
-        template <typename... Args> string_type operator()(const Args&... args) const;
+        Format() = default;
+        explicit Format(const u8string& format);
+        template <typename... Args> u8string operator()(const Args&... args) const;
         bool empty() const noexcept { return fmt.empty(); }
         size_t fields() const { return num; }
-        string_type format() const { return fmt; }
+        u8string format() const { return fmt; }
     private:
         struct element {
-            int index;         // 0 = literal text, 1+ = field reference
-            string_type text;  // Literal text
-            uint64_t flags;    // Field formatting flags
-            int prec;          // Field precision
-            size_t width;      // Field width
-            char32_t pad;      // Padding character
+            int index;       // 0 = literal text, 1+ = field reference
+            u8string text;   // Literal text
+            uint64_t flags;  // Field formatting flags
+            int prec;        // Field precision
+            size_t width;    // Field width
+            char32_t pad;    // Padding character
         };
         using sequence = vector<element>;
-        using string_list = vector<string_type>;
-        string_type fmt {};
+        using string_list = vector<u8string>;
+        u8string fmt;
         size_t num = 0;
-        sequence seq {};
-        void add_index(unsigned index, const string_type& flags = {});
-        void add_literal(const string_type& text);
-        void apply(string_list&, int) const {}
-        template <typename T, typename... Args> void apply(string_list& list, int index, const T& t, const Args&... args) const;
+        sequence seq;
+        void add_index(unsigned index, const u8string& flags = {});
+        void add_literal(const u8string& text);
+        void apply_format(string_list&, int) const {}
+        template <typename T, typename... Args> void apply_format(string_list& list, int index, const T& t, const Args&... args) const;
     };
 
-    template <typename C>
-    BasicFormat<C>::BasicFormat(const string_type& format):
-    fmt(format), seq() {
-        auto i = utf_begin(format), end = utf_end(format);
-        while (i != end) {
-            auto j = std::find(i, end, U'$');
-            add_literal(u_str(i, j));
-            i = std::next(j);
-            if (i == end)
-                break;
-            string_type prefix, suffix;
-            if (char_is_digit(*i)) {
-                auto k = std::find_if_not(i, end, char_is_digit);
-                j = std::find_if_not(k, end, char_is_alphanumeric);
-                prefix = u_str(i, k);
-                suffix = u_str(k, j);
-            } else if (*i == U'{') {
-                auto k = std::next(i);
-                if (char_is_digit(*k)) {
-                    auto l = std::find_if_not(k, end, char_is_digit);
-                    j = std::find(l, end, U'}');
-                    if (j != end) {
-                        prefix = u_str(k, l);
-                        suffix = u_str(l, j);
-                        ++j;
-                    }
-                }
-            }
-            if (prefix.empty()) {
-                add_literal(i.str());
-                ++i;
-            } else {
-                add_index(str_to_int<unsigned>(prefix), suffix);
-                i = j;
-            }
-        }
-    }
-
-    template <typename C>
     template <typename... Args>
-    basic_string<C> BasicFormat<C>::operator()(const Args&... args) const {
+    u8string Format::operator()(const Args&... args) const {
         string_list list(seq.size());
         for (size_t i = 0; i < seq.size(); ++i)
             if (seq[i].index == 0)
                 list[i] = seq[i].text;
-        apply(list, 1, args...);
-        return str_join(list, string_type());
+        apply_format(list, 1, args...);
+        return str_join(list, u8string());
     }
 
-    template <typename C>
-    void BasicFormat<C>::add_index(unsigned index, const string_type& flags) {
-        element elem;
-        elem.index = index;
-        UnicornDetail::translate_flags(to_utf8(flags), elem.flags, elem.prec, elem.width, elem.pad);
-        seq.push_back(elem);
-        if (index > 0 && index > num)
-            num = index;
-    }
-
-    template <typename C>
-    void BasicFormat<C>::add_literal(const string_type& text) {
-        if (! text.empty()) {
-            if (seq.empty() || seq.back().index != 0)
-                seq.push_back({0, text, 0, 0, 0, 0});
-            else
-                seq.back().text += text;
-        }
-    }
-
-    template <typename C>
     template <typename T, typename... Args>
-    void BasicFormat<C>::apply(string_list& list, int index, const T& t, const Args&... args) const {
+    void Format::apply_format(string_list& list, int index, const T& t, const Args&... args) const {
         using namespace UnicornDetail;
         for (size_t i = 0; i < seq.size(); ++i) {
             if (seq[i].index == index) {
                 auto s = format_type(t, seq[i].flags, seq[i].prec);
-                list[i] = format_align(recode<C>(s), seq[i].flags & fx_global_flags, seq[i].width, seq[i].pad);
+                list[i] = format_align(s, seq[i].flags & fx_global_flags, seq[i].width, seq[i].pad);
             }
         }
-        apply(list, index + 1, args...);
+        apply_format(list, index + 1, args...);
     }
-
-    using Format = BasicFormat<char>;
-    using Format16 = BasicFormat<char16_t>;
-    using Format32 = BasicFormat<char32_t>;
-    using WideFormat = BasicFormat<wchar_t>;
-
-    template <typename C> BasicFormat<C> format(const basic_string<C>& fmt) { return BasicFormat<C>(fmt); }
-    template <typename C> BasicFormat<C> format(const C* fmt) { return BasicFormat<C>(cstr(fmt)); }
 
     // Formatter literals
 
     namespace Literals {
 
         inline auto operator"" _fmt(const char* ptr, size_t len) { return Format(cstr(ptr, len)); }
-        inline auto operator"" _fmt(const char16_t* ptr, size_t len) { return Format16(cstr(ptr, len)); }
-        inline auto operator"" _fmt(const char32_t* ptr, size_t len) { return Format32(cstr(ptr, len)); }
-        inline auto operator"" _fmt(const wchar_t* ptr, size_t len) { return WideFormat(cstr(ptr, len)); }
 
     }
 

@@ -158,6 +158,8 @@ namespace Unicorn {
 
         }
 
+        // Formatting for specific types
+
         void translate_flags(const u8string& str, uint64_t& flags, int& prec, size_t& width, char32_t& pad) {
             flags = 0;
             prec = -1;
@@ -232,7 +234,39 @@ namespace Unicorn {
             return s;
         }
 
+        // Alignment and padding
+
+        u8string format_align(u8string src, uint64_t flags, size_t width, char32_t pad) {
+            if (bits_set(flags & (fx_left | fx_centre | fx_right)) > 1)
+                throw std::invalid_argument("Inconsistent formatting alignment flags");
+            if (bits_set(flags & (fx_lower | fx_title | fx_upper)) > 1)
+                throw std::invalid_argument("Inconsistent formatting case conversion flags");
+            if (flags & fx_lower)
+                str_lowercase_in(src);
+            else if (flags & fx_title)
+                str_titlecase_in(src);
+            else if (flags & fx_upper)
+                str_uppercase_in(src);
+            size_t len = str_length(src, flags & fx_length_flags);
+            if (width <= len)
+                return src;
+            size_t extra = width - len;
+            u8string dst;
+            if (flags & fx_right)
+                str_append_chars(dst, extra, pad);
+            else if (flags & fx_centre)
+                str_append_chars(dst, extra / 2, pad);
+            dst += src;
+            if (flags & fx_left)
+                str_append_chars(dst, extra, pad);
+            else if (flags & fx_centre)
+                str_append_chars(dst, (extra + 1) / 2, pad);
+            return dst;
+        }
+
     }
+
+    // Basic formattng functions
 
     u8string format_type(bool t, uint64_t flags, int /*prec*/) {
         static constexpr auto format_flags = fx_binary | fx_tf | fx_yesno;
@@ -285,6 +319,64 @@ namespace Unicorn {
                 result[pos] = 'T';
         }
         return result;
+    }
+
+    // Formatter class
+
+    Format::Format(const u8string& format):
+    fmt(format), seq() {
+        auto i = utf_begin(format), end = utf_end(format);
+        while (i != end) {
+            auto j = std::find(i, end, U'$');
+            add_literal(u_str(i, j));
+            i = std::next(j);
+            if (i == end)
+                break;
+            u8string prefix, suffix;
+            if (char_is_digit(*i)) {
+                auto k = std::find_if_not(i, end, char_is_digit);
+                j = std::find_if_not(k, end, char_is_alphanumeric);
+                prefix = u_str(i, k);
+                suffix = u_str(k, j);
+            } else if (*i == U'{') {
+                auto k = std::next(i);
+                if (char_is_digit(*k)) {
+                    auto l = std::find_if_not(k, end, char_is_digit);
+                    j = std::find(l, end, U'}');
+                    if (j != end) {
+                        prefix = u_str(k, l);
+                        suffix = u_str(l, j);
+                        ++j;
+                    }
+                }
+            }
+            if (prefix.empty()) {
+                add_literal(i.str());
+                ++i;
+            } else {
+                add_index(str_to_int<unsigned>(prefix), suffix);
+                i = j;
+            }
+        }
+    }
+
+    void Format::add_index(unsigned index, const u8string& flags) {
+        using namespace UnicornDetail;
+        element elem;
+        elem.index = index;
+        translate_flags(to_utf8(flags), elem.flags, elem.prec, elem.width, elem.pad);
+        seq.push_back(elem);
+        if (index > 0 && index > num)
+            num = index;
+    }
+
+    void Format::add_literal(const u8string& text) {
+        if (! text.empty()) {
+            if (seq.empty() || seq.back().index != 0)
+                seq.push_back({0, text, 0, 0, 0, 0});
+            else
+                seq.back().text += text;
+        }
     }
 
 }

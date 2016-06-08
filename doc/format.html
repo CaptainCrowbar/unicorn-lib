@@ -21,10 +21,6 @@ library; user defined formatters for other types can also be supplied.</p>
 will be written in comma delimited form. Pairs will be written in
 <code>"key:value"</code> format. More elaborate formatting for ranges is beyond the scope
 of this module and will need to be handled by the caller.</p>
-<p>This module calls the <a href="regex.html"><code>unicorn/regex</code></a> module, which in turn
-calls the PCRE library. It will only work with encodings for which the
-corresponding PCRE library has been linked; see the regex module documentation
-for details.</p>
 <h2 id="contents">Contents</h2>
 <div class="toc">
 <ul>
@@ -60,26 +56,26 @@ listed here; their behaviour is described in more detail below.</p>
 <li><code>char</code>, <code>char16_t</code>, <code>char32_t</code>, <code>wchar_t</code></li>
 <li><code>signed char</code>, <code>unsigned char</code>, <code>short</code>, <code>unsigned short</code>, <code>int</code>, <code>unsigned</code>, <code>long</code>, <code>unsigned long</code>, <code>long long</code>, <code>unsigned long long</code>, <code>int128_t</code>, <code>uint128_t</code></li>
 <li><code>float</code>, <code>double</code>, <code>long double</code></li>
-<li><code>C*</code>, <code>const C*</code>, <code>basic_string&lt;C&gt;</code> <em>for the four standard character types</em></li>
+<li><code>[const] char*</code>, <code>[const] char16_t*</code>, <code>[const] char32_t*</code>, <code>[const] wchar_t*</code></li>
+<li><code>u8string</code>, <code>u16string</code>, <code>u32string</code>, <code>wstring</code></li>
 <li><code>std::chrono::duration&lt;R, P&gt;</code>, <code>std::chrono::system_clock::time_point</code></li>
-<li><code>Prion::Uuid</code></li>
-<li><code>Prion::Version</code></li>
+<li><code>Prion::Uuid</code>, <code>Prion::Version</code></li>
 </ul>
 </div>
 <div class="defns">
 <ul>
-<li><!-- DEFN--> <code>template &lt;typename C, typename T&gt; basic_string&lt;C&gt;</code> <strong><code>format_as</code></strong><code>(const T&amp; t, uint64_t flags = 0, int prec = -1, size_t width = 0, char32_t pad = U' ')</code></li>
-<li><code>template &lt;typename C, typename T&gt; basic_string&lt;C&gt;</code> <strong><code>format_as</code></strong><code>(const T&amp; t, const basic_string&lt;C&gt;&amp; flags)</code></li>
-<li><code>template &lt;typename C, typename T&gt; basic_string&lt;C&gt;</code> <strong><code>format_as</code></strong><code>(const T&amp; t, const C* flags)</code></li>
+<li><!-- DEFN--> <code>template &lt;typename T&gt; u8string</code> <strong><code>format_str</code></strong><code>(const T&amp; t, uint64_t flags = 0, int prec = -1, size_t width = 0, char32_t pad = U' ')</code></li>
+<li><code>template &lt;typename T&gt; u8string</code> <strong><code>format_str</code></strong><code>(const T&amp; t, const u8string&amp; flags)</code></li>
+<li><code>template &lt;typename T&gt; u8string</code> <strong><code>format_str</code></strong><code>(const T&amp; t, const char* flags)</code></li>
 </ul>
-<p>These call <code>format_type()</code> to format their first argument, converting the
-resulting string to the requested type. The first version accepts the same
-arguments as <code>format_type()</code>, along with a width and padding character; the
-formatted string will be padded to the specified width (if it is not already
-longer than that).</p>
-<p>The other two versions of <code>format_as()</code> take a second string argument that
+<p>These call <code>format_type()</code> to format their first argument, with additional
+global options. The first version accepts the same arguments as
+<code>format_type()</code>, along with a width and padding character; the formatted
+string will be padded to the specified width (if it is not already longer than
+that).</p>
+<p>The other two versions of <code>format_str()</code> take a second string argument that
 carries the same information as the format control arguments to
-<code>format_type()</code> and the first version of <code>format_as()</code>. The flag descriptions
+<code>format_type()</code> and the first version of <code>format_str()</code>. The flag descriptions
 below indicate which letter corresponds to which flag; when defining
 <code>format_type()</code> overloads for user defined types, you can use the predefined
 flags or use <code>Prion::letter_to_mask()</code> to define new ones.</p>
@@ -155,66 +151,55 @@ constexpr uint64_t fx_omega = letter_to_mask('Z');
 flags. The alignment flags can be followed by a decimal number, which will be
 interpreted as the fully padded width; optionally, a padding character can be
 inserted between the alignment flag and the width:</p>
-<pre><code>format_as(42, "&gt;*5") == "***42"
+<pre><code>format_str(42, "&gt;*5") == "***42"
 </code></pre>
 <p>If the flag string includes a number (other than one associated with the
 alignment), it will be interpreted as a precision:</p>
-<pre><code>`format_as(123.0, "d6") == "123.000"
+<pre><code>format_str(123.0, "d6") == "123.000"
 </code></pre>
 </div>
 <h2 id="formatter-class">Formatter class</h2>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; class</code> <strong><code>BasicFormat</code></strong><ul>
-<li><code>using BasicFormat::</code><strong><code>char_type</code></strong> <code>= C</code></li>
-<li><code>using BasicFormat::</code><strong><code>string_type</code></strong> <code>= basic_string&lt;C&gt;</code></li>
-<li><code>BasicFormat::</code><strong><code>BasicFormat</code></strong><code>()</code></li>
-<li><code>explicit BasicFormat::</code><strong><code>BasicFormat</code></strong><code>(const string_type&amp; format)</code></li>
-<li><code>BasicFormat::</code><strong><code>BasicFormat</code></strong><code>(const BasicFormat&amp; f)</code></li>
-<li><code>BasicFormat::</code><strong><code>BasicFormat</code></strong><code>(BasicFormat&amp;&amp; f) noexcept</code></li>
-<li><code>BasicFormat::</code><strong><code>~BasicFormat</code></strong><code>() noexcept</code></li>
-<li><code>BasicFormat&amp; BasicFormat::</code><strong><code>operator=</code></strong><code>(const BasicFormat&amp; f)</code></li>
-<li><code>BasicFormat&amp; BasicFormat::</code><strong><code>operator=</code></strong><code>(BasicFormat&amp;&amp; f) noexcept</code></li>
-<li><code>template &lt;typename... Args&gt; BasicFormat::string_type BasicFormat::</code><strong><code>operator()</code></strong><code>(const Args&amp;... args) const</code></li>
-<li><code>bool BasicFormat::</code><strong><code>empty</code></strong><code>() const noexcept</code></li>
-<li><code>size_t BasicFormat::</code><strong><code>fields</code></strong><code>() const</code></li>
-<li><code>BasicFormat::</code><strong><code>string_type</code></strong> <code>BasicFormat::</code><strong><code>format</code></strong><code>() const</code></li>
+<li><code>class</code> <strong><code>Format</code></strong><ul>
+<li><code>Format::</code><strong><code>Format</code></strong><code>()</code></li>
+<li><code>explicit Format::</code><strong><code>Format</code></strong><code>(const u8string&amp; format)</code></li>
+<li><code>Format::</code><strong><code>Format</code></strong><code>(const Format&amp; f)</code></li>
+<li><code>Format::</code><strong><code>Format</code></strong><code>(Format&amp;&amp; f) noexcept</code></li>
+<li><code>Format::</code><strong><code>~Format</code></strong><code>() noexcept</code></li>
+<li><code>Format&amp; Format::</code><strong><code>operator=</code></strong><code>(const Format&amp; f)</code></li>
+<li><code>Format&amp; Format::</code><strong><code>operator=</code></strong><code>(Format&amp;&amp; f) noexcept</code></li>
+<li><code>template &lt;typename... Args&gt; u8string Format::</code><strong><code>operator()</code></strong><code>(const Args&amp;... args) const</code></li>
+<li><code>bool Format::</code><strong><code>empty</code></strong><code>() const noexcept</code></li>
+<li><code>size_t Format::</code><strong><code>fields</code></strong><code>() const</code></li>
+<li><code>u8string Format::</code><strong><code>format</code></strong><code>() const</code></li>
 </ul>
 </li>
-<li><code>using</code> <strong><code>Format</code></strong> <code>= BasicFormat&lt;char&gt;</code></li>
-<li><code>using</code> <strong><code>Format16</code></strong> <code>= BasicFormat&lt;char16_t&gt;</code></li>
-<li><code>using</code> <strong><code>Format32</code></strong> <code>= BasicFormat&lt;char32_t&gt;</code></li>
-<li><code>using</code> <strong><code>WideFormat</code></strong> <code>= BasicFormat&lt;wchar_t&gt;</code></li>
 </ul>
 <p>This class is constructed from a formatting string, which contains
 placeholders into which arguments will be substituted when the formatting
 object's function call operator is called.</p>
 <p>A placeholder takes the form <code>$n</code> or <code>${n}</code>, where <code>n</code> is the 1-based index of
 the corresponding argument. Optionally the field number can be followed by a
-flag string, using the same syntax as <code>format_as()</code> above. The braces are only
-needed if the field number or flag string is immediately followed by a letter
-or digit that would be read as part of the placeholder in the absence of
-braces.</p>
+flag string, using the same syntax as <code>format_str()</code> above. The braces are
+only needed if the field number or flag string is immediately followed by a
+letter or digit that would be read as part of the placeholder in the absence
+of braces.</p>
 <p>Example:</p>
-<pre><code>Format form("Hello $1, your number is $2f3");
-u8string a = form("Alice", 42); // a = "Hello Alice, your number is 42.000"
-u8string b = form("Bob", 1.23); // b = "Hello Bob, your number is 1.230"
+<pre><code>Format f("Hello $1, your number is $2f3");
+u8string a = f("Alice", 42); // "Hello Alice, your number is 42.000"
+u8string b = f("Bob", 1.23); // "Hello Bob, your number is 1.230"
 </code></pre>
 <p>Use <code>"$$"</code> to insert a literal dollar sign in the format string.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; BasicFormat&lt;C&gt;</code> <strong><code>format</code></strong><code>(const basic_string&lt;C&gt;&amp; fmt)</code></li>
-<li><code>template &lt;typename C&gt; BasicFormat&lt;C&gt;</code> <strong><code>format</code></strong><code>(const C* fmt)</code></li>
 <li><code>namespace Unicorn::Literals</code><ul>
 <li><code>Format</code> <strong><code>operator"" _fmt</code></strong><code>(const char* ptr, size_t len)</code></li>
-<li><code>Format16</code> <strong><code>operator"" _fmt</code></strong><code>(const char16_t* ptr, size_t len)</code></li>
-<li><code>Format32</code> <strong><code>operator"" _fmt</code></strong><code>(const char32_t* ptr, size_t len)</code></li>
-<li><code>WideFormat</code> <strong><code>operator"" _fmt</code></strong><code>(const wchar_t* ptr, size_t len)</code></li>
 </ul>
 </li>
 </ul>
-<p>Convenience functions and literals for construction formatting objects.</p>
+<p>Formatting object literal.</p>
 </div>
 <h2 id="formatting-for-specific-types">Formatting for specific types</h2>
 <p>No type-specific flags are defined for <code>Prion::Uuid</code> and <code>Prion::Version</code>.</p>
@@ -426,7 +411,7 @@ specified precision if one was supplied. Formatting for
 <tr>
 <td><strong><code>fx_iso</code></strong></td>
 <td><code>t</code></td>
-<td>Use ISO 8601 format with T delimiter</td>
+<td>Use strict ISO 8601 format with T delimiter</td>
 </tr>
 <tr>
 <td><strong><code>fx_common</code></strong></td>
