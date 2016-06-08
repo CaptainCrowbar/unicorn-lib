@@ -4,9 +4,11 @@
 #include "unicorn/character.hpp"
 #include "unicorn/string.hpp"
 #include "unicorn/utf.hpp"
+#include <algorithm>
 #include <chrono>
 #include <iterator>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include <type_traits>
 #include <utility>

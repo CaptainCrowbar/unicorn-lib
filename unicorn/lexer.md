@@ -4,14 +4,9 @@ _Unicode library for C++ by Ross Smith_
 
 * `#include "unicorn/lexer.hpp"`
 
-This module defined a simple lexer or tokenizer, which can split text up into
+This module defines a simple lexer or tokenizer, which can split text up into
 tokens (optionally discarding unwanted tokens such as whitespace or comments)
 according to rules defined by the user.
-
-This module calls the [`unicorn/regex`](regex.html) module, which in turn
-calls the PCRE library. It will only work with encodings for which the
-corresponding PCRE library has been linked; see the regex module documentation
-for details.
 
 Example:
 
@@ -62,22 +57,13 @@ start of the original subject string.
 
 ## Token structure ##
 
-* `template <typename C> struct` **`BasicToken`**
-    * `using BasicToken::`**`char_type`** `= C`
-    * `using BasicToken::`**`string_type`** `= basic_string<C>`
-    * `const string_type* BasicToken::`**`text`**
-    * `size_t BasicToken::`**`offset`**
-    * `size_t BasicToken::`**`count`**
-    * `int BasicToken::`**`tag`**
-    * `BasicToken::`**`operator string_type`**`() const`
-* `using` **`Token`** `= BasicToken<char>`
-* `using` **`Token16`** `= BasicToken<char16_t>`
-* `using` **`Token32`** `= BasicToken<char32_t>`
-* `using` **`WideToken`** `= BasicToken<wchar_t>`
+* `struct` **`Token`**
+    * `const u8string* Token::`**`text`**
+    * `size_t Token::`**`offset`**
+    * `size_t Token::`**`count`**
+    * `int Token::`**`tag`**
+    * `Token::`**`operator u8string`**`() const`
 * `using` **`TokenList`** `= vector<Token>`
-* `using` **`TokenList16`** `= vector<Token16>`
-* `using` **`TokenList32`** `= vector<Token32>`
-* `using` **`WideTokenList`** `= vector<WideToken>`
 
 This contains the details of a token. The `text` member points to the original
 subject string; `offset` and `count` give the position and length of the token
@@ -89,20 +75,11 @@ empty string if the text pointer is null).
 
 ## Token iterator ##
 
-* `template <typename C> class` **`BasicTokenIterator`**
-    * `using BasicTokenIterator::`**`char_type`** `= C`
-    * `using BasicTokenIterator::`**`difference_type`** `= ptrdiff_t`
-    * `using BasicTokenIterator::`**`iterator_category`** `= std::forward_iterator_tag`
-    * `using BasicTokenIterator::`**`pointer`** `= const BasicToken<C>*`
-    * `using BasicTokenIterator::`**`reference`** `= const BasicToken<C>&`
-    * `using BasicTokenIterator::`**`string_type`** `= basic_string<C>`
-    * `using BasicTokenIterator::`**`value_type`** `= BasicToken<C>`
-    * `BasicTokenIterator::`**`BasicTokenIterator`**`()`
+* `class` **`TokenIterator`**
+    * `using TokenIterator::`**`iterator_category`** `= std::forward_iterator_tag`
+    * `using TokenIterator::`**`value_type`** `= Token`
+    * `TokenIterator::`**`TokenIterator`**`()`
     * _[standard iterator operations]_
-* `using` **`TokenIterator`** `= BasicTokenIterator<char>`
-* `using` **`TokenIterator16`** `= BasicTokenIterator<char16_t>`
-* `using` **`TokenIterator32`** `= BasicTokenIterator<char32_t>`
-* `using` **`WideTokenIterator`** `= BasicTokenIterator<wchar_t>`
 
 An iterator over the tokens within a string. A lexer returns a pair of these
 marking the beginning and end of the token stream. The iterator holds
@@ -112,34 +89,23 @@ exists.
 
 ## Lexer class ##
 
-* `template <typename C> class` **`BasicLexer`**
-    * `using BasicLexer::`**`callback_type`** `= function<size_t(const string_type&, size_t)>`
-    * `using BasicLexer::`**`char_type`** `= C`
-    * `using BasicLexer::`**`regex_type`** `= BasicRegex<C>`
-    * `using BasicLexer::`**`string_type`** `= basic_string<C>`
-    * `using BasicLexer::`**`token_iterator`** `= BasicTokenIterator<C>`
-    * `using BasicLexer::`**`token_range`** `= Irange<token_iterator>`
-    * `using BasicLexer::`**`token_type`** `= BasicToken<C>`
-    * `using BasicLexer::`**`token_list`** `= vector<token_type>`
-    * `BasicLexer::`**`BasicLexer`**`()`
-    * `explicit BasicLexer::`**`BasicLexer`**`(uint32_t flags)`
-    * `BasicLexer::`**`BasicLexer`**`(const BasicLexer& lex)`
-    * `BasicLexer::`**`BasicLexer`**`(BasicLexer&& lex) noexcept`
-    * `BasicLexer::`**`~BasicLexer`**`() noexcept`
-    * `BasicLexer& BasicLexer::`**`operator=`**`(const BasicLexer& lex)`
-    * `BasicLexer& BasicLexer::`**`operator=`**`(BasicLexer&& lex) noexcept`
-    * `void BasicLexer::`**`exact`**`(int tag, const string_type& pattern)`
-    * `void BasicLexer::`**`exact`**`(int tag, const C* pattern)`
-    * `void BasicLexer::`**`match`**`(int tag, const regex_type& pattern)`
-    * `void BasicLexer::`**`match`**`(int tag, const string_type& pattern, uint32_t flags = 0)`
-    * `void BasicLexer::`**`match`**`(int tag, const C* pattern, uint32_t flags = 0)`
-    * `void BasicLexer::`**`custom`**`(int tag, const callback_type& call)`
-    * `BasicLexer::token_range BasicLexer::`**`operator()`**`(const string_type& text) const`
-    * `void BasicLexer::`**`operator()`**`(const string_type& text, token_list& tokens) const`
-* `using` **`Lexer`** `= BasicLexer<char>`
-* `using` **`Lexer16`** `= BasicLexer<char16_t>`
-* `using` **`Lexer32`** `= BasicLexer<char32_t>`
-* `using` **`WideLexer`** `= BasicLexer<wchar_t>`
+* `class` **`Lexer`**
+    * `using Lexer::`**`callback_type`** `= function<size_t(const u8string&, size_t)>`
+    * `Lexer::`**`Lexer`**`()`
+    * `explicit Lexer::`**`Lexer`**`(uint32_t flags)`
+    * `Lexer::`**`Lexer`**`(const Lexer& lex)`
+    * `Lexer::`**`Lexer`**`(Lexer&& lex) noexcept`
+    * `Lexer::`**`~Lexer`**`() noexcept`
+    * `Lexer& Lexer::`**`operator=`**`(const Lexer& lex)`
+    * `Lexer& Lexer::`**`operator=`**`(Lexer&& lex) noexcept`
+    * `void Lexer::`**`exact`**`(int tag, const u8string& pattern)`
+    * `void Lexer::`**`exact`**`(int tag, const char* pattern)`
+    * `void Lexer::`**`match`**`(int tag, const Regex& pattern)`
+    * `void Lexer::`**`match`**`(int tag, const u8string& pattern, uint32_t flags = 0)`
+    * `void Lexer::`**`match`**`(int tag, const char* pattern, uint32_t flags = 0)`
+    * `void Lexer::`**`custom`**`(int tag, const callback_type& call)`
+    * `Irange<TokenIterator> Lexer::`**`operator()`**`(const u8string& text) const`
+    * `void Lexer::`**`operator()`**`(const u8string& text, vector<Token>& tokens) const`
 
 The lexer class. Normally this will be used by first adding a number of user
 defined lexical rules through the `exact()`, `match()`, and `custom()`
