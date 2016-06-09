@@ -14,31 +14,31 @@ namespace Unicorn {
 
     #if defined(PRI_TARGET_UNIX)
 
-        string get_env(const string& key);
-        bool has_env(const string& key);
-        void set_env(const string& key, const string& value);
-        void unset_env(const string& key);
+        string get_env(const string& name);
+        bool has_env(const string& name);
+        void set_env(const string& name, const string& value);
+        void unset_env(const string& name);
 
     #else
 
-        wstring get_env(const wstring& key);
-        bool has_env(const wstring& key);
-        void set_env(const wstring& key, const wstring& value);
-        void unset_env(const wstring& key);
+        wstring get_env(const wstring& name);
+        bool has_env(const wstring& name);
+        void set_env(const wstring& name, const wstring& value);
+        void unset_env(const wstring& name);
 
-        inline u8string get_env(const u8string& key) {
+        inline u8string get_env(const u8string& name) {
             return to_utf8(get_env(to_wstring(name, err_replace)), err_replace);
         }
 
-        inline bool has_env(const u8string& key) {
+        inline bool has_env(const u8string& name) {
             return has_env(to_wstring(name, err_replace));
         }
 
-        inline void set_env(const u8string& key, const u8string& value) {
+        inline void set_env(const u8string& name, const u8string& value) {
             set_env(to_wstring(name, err_replace), to_wstring(value, err_replace));
         }
 
-        inline void unset_env(const u8string& key) {
+        inline void unset_env(const u8string& name) {
             unset_env(to_wstring(name, err_replace));
         }
 

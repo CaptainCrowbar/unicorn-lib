@@ -18,14 +18,14 @@ namespace Unicorn {
 
         Mutex env_mutex;
 
-        void check_env(const NativeString& key) {
+        void check_env(const NativeString& name) {
             static const NativeString not_allowed{'\0','='};
-            if (key.empty() || key.find_first_of(not_allowed) != npos)
+            if (name.empty() || name.find_first_of(not_allowed) != npos)
                 throw std::invalid_argument("Invalid environment variable name");
         }
 
-        void check_env(const NativeString& key, const NativeString& value) {
-            check_env(key);
+        void check_env(const NativeString& name, const NativeString& value) {
+            check_env(name);
             if (value.find(NativeCharacter(0)) != npos)
                 throw std::invalid_argument("Invalid environment variable value");
         }
@@ -34,58 +34,58 @@ namespace Unicorn {
 
     #if defined(PRI_TARGET_UNIX)
 
-        string get_env(const string& key) {
-            check_env(key);
+        string get_env(const string& name) {
+            check_env(name);
             MutexLock lock(env_mutex);
-            return cstr(getenv(key.data()));
+            return cstr(getenv(name.data()));
         }
 
-        bool has_env(const string& key) {
-            check_env(key);
+        bool has_env(const string& name) {
+            check_env(name);
             MutexLock lock(env_mutex);
-            return getenv(key.data()) != nullptr;
+            return getenv(name.data()) != nullptr;
         }
 
-        void set_env(const string& key, const string& value) {
-            check_env(key, value);
+        void set_env(const string& name, const string& value) {
+            check_env(name, value);
             MutexLock lock(env_mutex);
-            if (setenv(key.data(), value.data(), 1) == -1)
+            if (setenv(name.data(), value.data(), 1) == -1)
                 throw std::system_error(errno, std::generic_category(), "setenv()");
         }
 
-        void unset_env(const string& key) {
-            check_env(key);
+        void unset_env(const string& name) {
+            check_env(name);
             MutexLock lock(env_mutex);
-            if (unsetenv(key.data()) == -1)
+            if (unsetenv(name.data()) == -1)
                 throw std::system_error(errno, std::generic_category(), "unsetenv()");
         }
 
     #else
 
-        wstring get_env(const wstring& key) {
-            check_env(key);
+        wstring get_env(const wstring& name) {
+            check_env(name);
             MutexLock lock(env_mutex);
-            return cstr(_wgetenv(key.data()));
+            return cstr(_wgetenv(name.data()));
         }
 
-        bool has_env(const wstring& key) {
-            check_env(key);
+        bool has_env(const wstring& name) {
+            check_env(name);
             MutexLock lock(env_mutex);
-            return _wgetenv(key.data()) != nullptr;
+            return _wgetenv(name.data()) != nullptr;
         }
 
-        void set_env(const wstring& key, const wstring& value) {
-            check_env(key, value);
+        void set_env(const wstring& name, const wstring& value) {
+            check_env(name, value);
             MutexLock lock(env_mutex);
-            auto key_value = key + L'=' + value;
+            auto key_value = name + L'=' + value;
             if (_wputenv(key_value.data()) == -1)
                 throw std::system_error(errno, std::generic_category(), "_wputenv()");
         }
 
-        void unset_env(const wstring& key) {
-            check_env(key);
+        void unset_env(const wstring& name) {
+            check_env(name);
             MutexLock lock(env_mutex);
-            set_env(key, {});
+            set_env(name, {});
         }
 
     #endif
