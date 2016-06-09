@@ -4,9 +4,8 @@ _Unicode library for C++ by Ross Smith_
 
 * `#include "unicorn/mbcs.hpp"`
 
-This module defines functions for conversion between UTF and non-Unicode
-encodings, as well as between internal and external UTF encodings with a
-specific byte order.
+This module defines functions for conversion between UTF-8 and non-Unicode
+encodings, as well as external UTF encodings with a specific byte order.
 
 ## Contents ##
 
@@ -24,20 +23,16 @@ Exception thrown to report an unknown encoding name or number.
 
 ## Conversion functions ##
 
-* `template <typename C> void` **`import_string`**`(const string& src, basic_string<C>& dst)`
-* `template <typename C, typename C2> void` **`import_string`**`(const string& src, basic_string<C>& dst, const basic_string<C2>& enc, uint32_t flags = 0)`
-* `template <typename C, typename C2> void` **`import_string`**`(const string& src, basic_string<C>& dst, const C2* enc, uint32_t flags = 0)`
-* `template <typename C> void` **`import_string`**`(const string& src, basic_string<C>& dst, uint32_t enc, uint32_t flags = 0)`
-* `template <typename C> void` **`export_string`**`(const basic_string<C>& src, string& dst)`
-* `template <typename C, typename C2> void` **`export_string`**`(const basic_string<C>& src, string& dst, const basic_string<C2>& enc, uint32_t flags = 0)`
-* `template <typename C, typename C2> void` **`export_string`**`(const basic_string<C>& src, string& dst, const C2* enc, uint32_t flags = 0)`
-* `template <typename C> void` **`export_string`**`(const basic_string<C>& src, string& dst, uint32_t enc, uint32_t flags = 0)`
+* `void` **`import_string`**`(const string& src, u8string& dst, const u8string& enc = "", uint32_t flags = 0)`
+* `void` **`import_string`**`(const string& src, u8string& dst, uint32_t enc, uint32_t flags = 0)`
+* `void` **`export_string`**`(const u8string& src, string& dst, const u8string& enc = "", uint32_t flags = 0)`
+* `void` **`export_string`**`(const u8string& src, string& dst, uint32_t enc, uint32_t flags = 0)`
 
-These functions convert from an external multibyte encoding to Unicode
-(`import_string()`), and from Unicode to an external multibyte encoding
+These functions convert from an external multibyte encoding to UTF-8
+(`import_string()`), and from UTF-8 to an external multibyte encoding
 (`export_string()`). They work by calling the operating system's native code
-conversion API, `iconv()` on Unix or `MultiByteToWideChar()` and
-`WideCharToMultiByte()` on Windows.
+conversion API (`iconv()` on Unix; `MultiByteToWideChar()` and
+`WideCharToMultiByte()` on Windows).
 
 Encodings can be identified either by name or by a Windows "code page" number.
 Either kind of identifier can be used on any system; a built-in lookup table
@@ -45,7 +40,7 @@ is used to convert to the form required by the native API. Besides the normal
 names and numbers associated with standard encodings, the following special
 values can be used:
 
-* `"char"` = Use the current locale's default multibyte character encoding.
+* `"char"` or an empty string = Use the current locale's default multibyte character encoding.
 * `"wchar_t"` = Use the operating system's default wide character encoding.
 * `"utf"` = Inspect the string and try to guess the UTF encoding.
 

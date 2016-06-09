@@ -11,9 +11,8 @@
 <ul>
 <li><code>#include "unicorn/mbcs.hpp"</code></li>
 </ul>
-<p>This module defines functions for conversion between UTF and non-Unicode
-encodings, as well as between internal and external UTF encodings with a
-specific byte order.</p>
+<p>This module defines functions for conversion between UTF-8 and non-Unicode
+encodings, as well as external UTF encodings with a specific byte order.</p>
 <h2 id="contents">Contents</h2>
 <div class="toc">
 <ul>
@@ -42,27 +41,23 @@ specific byte order.</p>
 <h2 id="conversion-functions">Conversion functions</h2>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>import_string</code></strong><code>(const string&amp; src, basic_string&lt;C&gt;&amp; dst)</code></li>
-<li><code>template &lt;typename C, typename C2&gt; void</code> <strong><code>import_string</code></strong><code>(const string&amp; src, basic_string&lt;C&gt;&amp; dst, const basic_string&lt;C2&gt;&amp; enc, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C, typename C2&gt; void</code> <strong><code>import_string</code></strong><code>(const string&amp; src, basic_string&lt;C&gt;&amp; dst, const C2* enc, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>import_string</code></strong><code>(const string&amp; src, basic_string&lt;C&gt;&amp; dst, uint32_t enc, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>export_string</code></strong><code>(const basic_string&lt;C&gt;&amp; src, string&amp; dst)</code></li>
-<li><code>template &lt;typename C, typename C2&gt; void</code> <strong><code>export_string</code></strong><code>(const basic_string&lt;C&gt;&amp; src, string&amp; dst, const basic_string&lt;C2&gt;&amp; enc, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C, typename C2&gt; void</code> <strong><code>export_string</code></strong><code>(const basic_string&lt;C&gt;&amp; src, string&amp; dst, const C2* enc, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>export_string</code></strong><code>(const basic_string&lt;C&gt;&amp; src, string&amp; dst, uint32_t enc, uint32_t flags = 0)</code></li>
+<li><code>void</code> <strong><code>import_string</code></strong><code>(const string&amp; src, u8string&amp; dst, const u8string&amp; enc = "", uint32_t flags = 0)</code></li>
+<li><code>void</code> <strong><code>import_string</code></strong><code>(const string&amp; src, u8string&amp; dst, uint32_t enc, uint32_t flags = 0)</code></li>
+<li><code>void</code> <strong><code>export_string</code></strong><code>(const u8string&amp; src, string&amp; dst, const u8string&amp; enc = "", uint32_t flags = 0)</code></li>
+<li><code>void</code> <strong><code>export_string</code></strong><code>(const u8string&amp; src, string&amp; dst, uint32_t enc, uint32_t flags = 0)</code></li>
 </ul>
-<p>These functions convert from an external multibyte encoding to Unicode
-(<code>import_string()</code>), and from Unicode to an external multibyte encoding
+<p>These functions convert from an external multibyte encoding to UTF-8
+(<code>import_string()</code>), and from UTF-8 to an external multibyte encoding
 (<code>export_string()</code>). They work by calling the operating system's native code
-conversion API, <code>iconv()</code> on Unix or <code>MultiByteToWideChar()</code> and
-<code>WideCharToMultiByte()</code> on Windows.</p>
+conversion API (<code>iconv()</code> on Unix; <code>MultiByteToWideChar()</code> and
+<code>WideCharToMultiByte()</code> on Windows).</p>
 <p>Encodings can be identified either by name or by a Windows "code page" number.
 Either kind of identifier can be used on any system; a built-in lookup table
 is used to convert to the form required by the native API. Besides the normal
 names and numbers associated with standard encodings, the following special
 values can be used:</p>
 <ul>
-<li><code>"char"</code> = Use the current locale's default multibyte character encoding.</li>
+<li><code>"char"</code> or an empty string = Use the current locale's default multibyte character encoding.</li>
 <li><code>"wchar_t"</code> = Use the operating system's default wide character encoding.</li>
 <li><code>"utf"</code> = Inspect the string and try to guess the UTF encoding.</li>
 </ul>

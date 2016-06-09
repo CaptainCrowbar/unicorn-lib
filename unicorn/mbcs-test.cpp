@@ -1,5 +1,6 @@
 #include "unicorn/core.hpp"
 #include "unicorn/mbcs.hpp"
+#include "unicorn/utf.hpp"
 #include "prion/unit-test.hpp"
 #include <cerrno>
 #include <iostream>
@@ -17,8 +18,6 @@ namespace {
     using UnicornDetail::lookup_encoding;
 
     const auto euro_utf8         = "€uro"s;
-    const auto euro_utf16        = u"€uro"s;
-    const auto euro_utf32        = U"€uro"s;
     const auto euro_utf16be      = "\x20\xac\x00\x75\x00\x72\x00\x6f"s;
     const auto euro_utf16le      = "\xac\x20\x75\x00\x72\x00\x6f\x00"s;
     const auto euro_utf32be      = "\x00\x00\x20\xac\x00\x00\x00\x75\x00\x00\x00\x72\x00\x00\x00\x6f"s;
@@ -106,24 +105,6 @@ namespace {
         TRY(import_string(euro_iso8859_15, s8, "iso-8859-15"));    TEST_EQUAL(s8, euro_utf8);
         TRY(import_string(euro_gb18030, s8, "gb18030"));           TEST_EQUAL(s8, euro_utf8);
 
-        TRY(import_string(euro_utf8, s16, "utf-8"));                TEST_EQUAL(s16, euro_utf16);
-        TRY(import_string(euro_utf16be, s16, "utf-16be"));          TEST_EQUAL(s16, euro_utf16);
-        TRY(import_string(euro_utf16le, s16, "utf-16le"));          TEST_EQUAL(s16, euro_utf16);
-        TRY(import_string(euro_utf32be, s16, "utf-32be"));          TEST_EQUAL(s16, euro_utf16);
-        TRY(import_string(euro_utf32le, s16, "utf-32le"));          TEST_EQUAL(s16, euro_utf16);
-        TRY(import_string(euro_windows1252, s16, "windows-1252"));  TEST_EQUAL(s16, euro_utf16);
-        TRY(import_string(euro_iso8859_15, s16, "iso-8859-15"));    TEST_EQUAL(s16, euro_utf16);
-        TRY(import_string(euro_gb18030, s16, "gb18030"));           TEST_EQUAL(s16, euro_utf16);
-
-        TRY(import_string(euro_utf8, s32, "utf-8"));                TEST_EQUAL(s32, euro_utf32);
-        TRY(import_string(euro_utf16be, s32, "utf-16be"));          TEST_EQUAL(s32, euro_utf32);
-        TRY(import_string(euro_utf16le, s32, "utf-16le"));          TEST_EQUAL(s32, euro_utf32);
-        TRY(import_string(euro_utf32be, s32, "utf-32be"));          TEST_EQUAL(s32, euro_utf32);
-        TRY(import_string(euro_utf32le, s32, "utf-32le"));          TEST_EQUAL(s32, euro_utf32);
-        TRY(import_string(euro_windows1252, s32, "windows-1252"));  TEST_EQUAL(s32, euro_utf32);
-        TRY(import_string(euro_iso8859_15, s32, "iso-8859-15"));    TEST_EQUAL(s32, euro_utf32);
-        TRY(import_string(euro_gb18030, s32, "gb18030"));           TEST_EQUAL(s32, euro_utf32);
-
         TRY(import_string(euro_utf8, s8, 65001));        TEST_EQUAL(s8, euro_utf8);
         TRY(import_string(euro_utf16be, s8, 1201));      TEST_EQUAL(s8, euro_utf8);
         TRY(import_string(euro_utf16le, s8, 1200));      TEST_EQUAL(s8, euro_utf8);
@@ -132,24 +113,6 @@ namespace {
         TRY(import_string(euro_windows1252, s8, 1252));  TEST_EQUAL(s8, euro_utf8);
         TRY(import_string(euro_iso8859_15, s8, 28605));  TEST_EQUAL(s8, euro_utf8);
         TRY(import_string(euro_gb18030, s8, 54936));     TEST_EQUAL(s8, euro_utf8);
-
-        TRY(import_string(euro_utf8, s16, 65001));        TEST_EQUAL(s16, euro_utf16);
-        TRY(import_string(euro_utf16be, s16, 1201));      TEST_EQUAL(s16, euro_utf16);
-        TRY(import_string(euro_utf16le, s16, 1200));      TEST_EQUAL(s16, euro_utf16);
-        TRY(import_string(euro_utf32be, s16, 12001));     TEST_EQUAL(s16, euro_utf16);
-        TRY(import_string(euro_utf32le, s16, 12000));     TEST_EQUAL(s16, euro_utf16);
-        TRY(import_string(euro_windows1252, s16, 1252));  TEST_EQUAL(s16, euro_utf16);
-        TRY(import_string(euro_iso8859_15, s16, 28605));  TEST_EQUAL(s16, euro_utf16);
-        TRY(import_string(euro_gb18030, s16, 54936));     TEST_EQUAL(s16, euro_utf16);
-
-        TRY(import_string(euro_utf8, s32, 65001));        TEST_EQUAL(s32, euro_utf32);
-        TRY(import_string(euro_utf16be, s32, 1201));      TEST_EQUAL(s32, euro_utf32);
-        TRY(import_string(euro_utf16le, s32, 1200));      TEST_EQUAL(s32, euro_utf32);
-        TRY(import_string(euro_utf32be, s32, 12001));     TEST_EQUAL(s32, euro_utf32);
-        TRY(import_string(euro_utf32le, s32, 12000));     TEST_EQUAL(s32, euro_utf32);
-        TRY(import_string(euro_windows1252, s32, 1252));  TEST_EQUAL(s32, euro_utf32);
-        TRY(import_string(euro_iso8859_15, s32, 28605));  TEST_EQUAL(s32, euro_utf32);
-        TRY(import_string(euro_gb18030, s32, 54936));     TEST_EQUAL(s32, euro_utf32);
 
         TRY(import_string(euro_utf8, s8, "utf-8", err_throw));       TEST_EQUAL(s8, euro_utf8);
         TRY(import_string(euro_utf8, s8, 65001, err_throw));         TEST_EQUAL(s8, euro_utf8);
@@ -164,47 +127,11 @@ namespace {
             TEST_THROW(import_string(euro_utf8, s8, 20127, err_throw), EncodingError);
         #endif
 
-        TRY(import_string(euro_utf8, s16, "utf-8", err_throw));       TEST_EQUAL(s16, euro_utf16);
-        TRY(import_string(euro_utf8, s16, 65001, err_throw));         TEST_EQUAL(s16, euro_utf16);
-        TRY(import_string(euro_gb18030, s16, "gb18030", err_throw));  TEST_EQUAL(s16, euro_utf16);
-        TRY(import_string(euro_gb18030, s16, 54936, err_throw));      TEST_EQUAL(s16, euro_utf16);
-        TEST_THROW(import_string(euro_windows1252, s16, "utf-8", err_throw), EncodingError);
-        TEST_THROW(import_string(euro_windows1252, s16, 65001, err_throw), EncodingError);
-
-        #if defined(PRI_TARGET_UNIX)
-            TEST_THROW(import_string(euro_utf8, s16, "ascii", err_throw), EncodingError);
-            TEST_THROW(import_string(euro_utf8, s16, 20127, err_throw), EncodingError);
-        #endif
-
-        TRY(import_string(euro_utf8, s32, "utf-8", err_throw));       TEST_EQUAL(s32, euro_utf32);
-        TRY(import_string(euro_utf8, s32, 65001, err_throw));         TEST_EQUAL(s32, euro_utf32);
-        TRY(import_string(euro_gb18030, s32, "gb18030", err_throw));  TEST_EQUAL(s32, euro_utf32);
-        TRY(import_string(euro_gb18030, s32, 54936, err_throw));      TEST_EQUAL(s32, euro_utf32);
-        TEST_THROW(import_string(euro_windows1252, s32, "utf-8", err_throw), EncodingError);
-        TEST_THROW(import_string(euro_windows1252, s32, 65001, err_throw), EncodingError);
-
-        #if defined(PRI_TARGET_UNIX)
-            TEST_THROW(import_string(euro_utf8, s32, "ascii", err_throw), EncodingError);
-            TEST_THROW(import_string(euro_utf8, s32, 20127, err_throw), EncodingError);
-        #endif
-
         TRY(import_string(euro_utf8, s8, "utf"));     TEST_EQUAL(s8, euro_utf8);
         TRY(import_string(euro_utf16be, s8, "utf"));  TEST_EQUAL(s8, euro_utf8);
         TRY(import_string(euro_utf16le, s8, "utf"));  TEST_EQUAL(s8, euro_utf8);
         TRY(import_string(euro_utf32be, s8, "utf"));  TEST_EQUAL(s8, euro_utf8);
         TRY(import_string(euro_utf32le, s8, "utf"));  TEST_EQUAL(s8, euro_utf8);
-
-        TRY(import_string(euro_utf8, s16, "utf"));     TEST_EQUAL(s16, euro_utf16);
-        TRY(import_string(euro_utf16be, s16, "utf"));  TEST_EQUAL(s16, euro_utf16);
-        TRY(import_string(euro_utf16le, s16, "utf"));  TEST_EQUAL(s16, euro_utf16);
-        TRY(import_string(euro_utf32be, s16, "utf"));  TEST_EQUAL(s16, euro_utf16);
-        TRY(import_string(euro_utf32le, s16, "utf"));  TEST_EQUAL(s16, euro_utf16);
-
-        TRY(import_string(euro_utf8, s32, "utf"));     TEST_EQUAL(s32, euro_utf32);
-        TRY(import_string(euro_utf16be, s32, "utf"));  TEST_EQUAL(s32, euro_utf32);
-        TRY(import_string(euro_utf16le, s32, "utf"));  TEST_EQUAL(s32, euro_utf32);
-        TRY(import_string(euro_utf32be, s32, "utf"));  TEST_EQUAL(s32, euro_utf32);
-        TRY(import_string(euro_utf32le, s32, "utf"));  TEST_EQUAL(s32, euro_utf32);
 
     }
 
@@ -221,24 +148,6 @@ namespace {
         TRY(export_string(euro_utf8, s, "iso-8859-15"));   TEST_EQUAL(s, euro_iso8859_15);
         TRY(export_string(euro_utf8, s, "gb18030"));       TEST_EQUAL(s, euro_gb18030);
 
-        TRY(export_string(euro_utf16, s, "utf-8"));         TEST_EQUAL(s, euro_utf8);
-        TRY(export_string(euro_utf16, s, "utf-16be"));      TEST_EQUAL(s, euro_utf16be);
-        TRY(export_string(euro_utf16, s, "utf-16le"));      TEST_EQUAL(s, euro_utf16le);
-        TRY(export_string(euro_utf16, s, "utf-32be"));      TEST_EQUAL(s, euro_utf32be);
-        TRY(export_string(euro_utf16, s, "utf-32le"));      TEST_EQUAL(s, euro_utf32le);
-        TRY(export_string(euro_utf16, s, "windows-1252"));  TEST_EQUAL(s, euro_windows1252);
-        TRY(export_string(euro_utf16, s, "iso-8859-15"));   TEST_EQUAL(s, euro_iso8859_15);
-        TRY(export_string(euro_utf16, s, "gb18030"));       TEST_EQUAL(s, euro_gb18030);
-
-        TRY(export_string(euro_utf32, s, "utf-8"));         TEST_EQUAL(s, euro_utf8);
-        TRY(export_string(euro_utf32, s, "utf-16be"));      TEST_EQUAL(s, euro_utf16be);
-        TRY(export_string(euro_utf32, s, "utf-16le"));      TEST_EQUAL(s, euro_utf16le);
-        TRY(export_string(euro_utf32, s, "utf-32be"));      TEST_EQUAL(s, euro_utf32be);
-        TRY(export_string(euro_utf32, s, "utf-32le"));      TEST_EQUAL(s, euro_utf32le);
-        TRY(export_string(euro_utf32, s, "windows-1252"));  TEST_EQUAL(s, euro_windows1252);
-        TRY(export_string(euro_utf32, s, "iso-8859-15"));   TEST_EQUAL(s, euro_iso8859_15);
-        TRY(export_string(euro_utf32, s, "gb18030"));       TEST_EQUAL(s, euro_gb18030);
-
         TRY(export_string(euro_utf8, s, 65001));  TEST_EQUAL(s, euro_utf8);
         TRY(export_string(euro_utf8, s, 1201));   TEST_EQUAL(s, euro_utf16be);
         TRY(export_string(euro_utf8, s, 1200));   TEST_EQUAL(s, euro_utf16le);
@@ -247,24 +156,6 @@ namespace {
         TRY(export_string(euro_utf8, s, 1252));   TEST_EQUAL(s, euro_windows1252);
         TRY(export_string(euro_utf8, s, 28605));  TEST_EQUAL(s, euro_iso8859_15);
         TRY(export_string(euro_utf8, s, 54936));  TEST_EQUAL(s, euro_gb18030);
-
-        TRY(export_string(euro_utf16, s, 65001));  TEST_EQUAL(s, euro_utf8);
-        TRY(export_string(euro_utf16, s, 1201));   TEST_EQUAL(s, euro_utf16be);
-        TRY(export_string(euro_utf16, s, 1200));   TEST_EQUAL(s, euro_utf16le);
-        TRY(export_string(euro_utf16, s, 12001));  TEST_EQUAL(s, euro_utf32be);
-        TRY(export_string(euro_utf16, s, 12000));  TEST_EQUAL(s, euro_utf32le);
-        TRY(export_string(euro_utf16, s, 1252));   TEST_EQUAL(s, euro_windows1252);
-        TRY(export_string(euro_utf16, s, 28605));  TEST_EQUAL(s, euro_iso8859_15);
-        TRY(export_string(euro_utf16, s, 54936));  TEST_EQUAL(s, euro_gb18030);
-
-        TRY(export_string(euro_utf32, s, 65001));  TEST_EQUAL(s, euro_utf8);
-        TRY(export_string(euro_utf32, s, 1201));   TEST_EQUAL(s, euro_utf16be);
-        TRY(export_string(euro_utf32, s, 1200));   TEST_EQUAL(s, euro_utf16le);
-        TRY(export_string(euro_utf32, s, 12001));  TEST_EQUAL(s, euro_utf32be);
-        TRY(export_string(euro_utf32, s, 12000));  TEST_EQUAL(s, euro_utf32le);
-        TRY(export_string(euro_utf32, s, 1252));   TEST_EQUAL(s, euro_windows1252);
-        TRY(export_string(euro_utf32, s, 28605));  TEST_EQUAL(s, euro_iso8859_15);
-        TRY(export_string(euro_utf32, s, 54936));  TEST_EQUAL(s, euro_gb18030);
 
         TRY(export_string(euro_utf8, s, "utf-8", err_throw));    TEST_EQUAL(s, euro_utf8);
         TRY(export_string(euro_utf8, s, 65001, err_throw));      TEST_EQUAL(s, euro_utf8);
@@ -276,30 +167,6 @@ namespace {
         #if defined(PRI_TARGET_UNIX)
             TEST_THROW(export_string(euro_utf8, s, "ascii", err_throw), EncodingError);
             TEST_THROW(export_string(euro_utf8, s, 20127, err_throw), EncodingError);
-        #endif
-
-        TRY(export_string(euro_utf16, s, "utf-8", err_throw));    TEST_EQUAL(s, euro_utf8);
-        TRY(export_string(euro_utf16, s, 65001, err_throw));      TEST_EQUAL(s, euro_utf8);
-        TRY(export_string(euro_utf16, s, "gb18030", err_throw));  TEST_EQUAL(s, euro_gb18030);
-        TRY(export_string(euro_utf16, s, 54936, err_throw));      TEST_EQUAL(s, euro_gb18030);
-        TEST_THROW(export_string(euro_utf16 + char16_t(0xdfff), s, "utf-8", err_throw), EncodingError);
-        TEST_THROW(export_string(euro_utf16 + char16_t(0xdfff), s, 65001, err_throw), EncodingError);
-
-        #if defined(PRI_TARGET_UNIX)
-            TEST_THROW(export_string(euro_utf16, s, "ascii", err_throw), EncodingError);
-            TEST_THROW(export_string(euro_utf16, s, 20127, err_throw), EncodingError);
-        #endif
-
-        TRY(export_string(euro_utf32, s, "utf-8", err_throw));    TEST_EQUAL(s, euro_utf8);
-        TRY(export_string(euro_utf32, s, 65001, err_throw));      TEST_EQUAL(s, euro_utf8);
-        TRY(export_string(euro_utf32, s, "gb18030", err_throw));  TEST_EQUAL(s, euro_gb18030);
-        TRY(export_string(euro_utf32, s, 54936, err_throw));      TEST_EQUAL(s, euro_gb18030);
-        TEST_THROW(export_string(euro_utf32 + char32_t(0xdfff), s, "utf-8", err_throw), EncodingError);
-        TEST_THROW(export_string(euro_utf32 + char32_t(0xdfff), s, 65001, err_throw), EncodingError);
-
-        #if defined(PRI_TARGET_UNIX)
-            TEST_THROW(export_string(euro_utf32, s, "ascii", err_throw), EncodingError);
-            TEST_THROW(export_string(euro_utf32, s, 20127, err_throw), EncodingError);
         #endif
 
     }

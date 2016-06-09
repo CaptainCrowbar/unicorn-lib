@@ -1,4 +1,5 @@
 #include "unicorn/mbcs.hpp"
+#include "unicorn/character.hpp"
 #include "unicorn/iana-character-sets.hpp"
 #include "unicorn/regex.hpp"
 #include "unicorn/string.hpp"
@@ -22,7 +23,10 @@ namespace Unicorn {
 
     namespace {
 
-        using CharsetPtr = const UnicornDetail::CharsetInfo*;
+        using UnicornDetail::CharsetInfo;
+        using UnicornDetail::EncodingTag;
+        using UnicornDetail::guess_utf;
+        using UnicornDetail::lookup_encoding;
 
         #if defined(PRI_TARGET_UNIX)
 
@@ -121,17 +125,17 @@ namespace Unicorn {
         class CharsetMap {
         public:
             CharsetMap();
-            CharsetPtr operator[](uint32_t page) const {
+            const CharsetInfo* operator[](uint32_t page) const {
                 auto i = pages.find(page);
                 return i == pages.end() ? nullptr : i->second;
             }
-            CharsetPtr operator[](const u8string& name) const {
+            const CharsetInfo* operator[](const u8string& name) const {
                 auto i = names.find(name);
                 return i == names.end() ? nullptr : i->second;
             }
         private:
-            using page_map = std::unordered_map<uint32_t, CharsetPtr>;
-            using name_map = std::unordered_map<u8string, CharsetPtr>;
+            using page_map = std::unordered_map<uint32_t, const CharsetInfo*>;
+            using name_map = std::unordered_map<u8string, const CharsetInfo*>;
             page_map pages;
             name_map names;
         };
@@ -164,8 +168,7 @@ namespace Unicorn {
             return c;
         }
 
-        UnicornDetail::EncodingTag find_encoding(const u8string& name) {
-            using namespace UnicornDetail;
+        EncodingTag find_encoding(const u8string& name) {
             static const CharsetMap map;
             static const auto match_codepage = "(?:cp|dos|ibm|ms|windows)-?(\\d+)"_re_i;
             static const auto match_integer = "\\d+"_re;
@@ -204,7 +207,7 @@ namespace Unicorn {
             match = match_codepage.match(current);
             if (match)
                 current = match[1];
-            CharsetPtr csp = nullptr;
+            const CharsetInfo* csp = nullptr;
             if (match || match_integer.match(current)) {
                 // Name is an integer, presumably a code page
                 auto page = uint32_t(decnum(current));
@@ -309,166 +312,7 @@ namespace Unicorn {
 
         #endif
 
-    }
-
-    // Exceptions
-
-    u8string UnknownEncoding::assemble(const u8string& encoding, const u8string& details) {
-        u8string s = "Unknown encoding";
-        if (! encoding.empty()) {
-            s += ": ";
-            s += encoding;
-        }
-        if (! details.empty()) {
-            s += "; ";
-            s += details;
-        }
-        return s;
-    }
-
-    // Utility functions
-
-    u8string local_encoding(const u8string& default_encoding) {
-        #if defined(PRI_TARGET_UNIX)
-            static constexpr const char* locale_vars[] {"LC_ALL", "LC_CTYPE", "LANG"};
-            u8string name;
-            for (auto key: locale_vars) {
-                string value = cstr(getenv(key));
-                size_t dot = value.find('.');
-                if (dot != npos) {
-                    value.erase(0, dot + 1);
-                    size_t cut = value.find_first_of(",;");
-                    if (cut != npos)
-                        value.resize(cut);
-                    auto cut2 = std::find_if(value.begin(), value.end(),
-                        [] (char c) { return uint8_t(c) > 127; });
-                    value.erase(cut2, value.end());
-                    return value;
-                }
-            }
-        #else
-            CPINFOEX info;
-            if (GetCPInfoEx(CP_THREAD_ACP, 0, &info) && info.CodePage > 0)
-                return dec(info.CodePage);
-        #endif
-        return default_encoding;
-    }
-
-    // Conversion functions
-
-    namespace UnicornDetail {
-
-        u8string guess_utf(const string& str) {
-            constexpr size_t max_check_bytes = 100;
-            if (str.empty())
-                return "utf-8";
-            if (str.size() >= 3 && memcmp(str.data(), utf8_bom, 3) == 0)
-                return "utf-8";
-            if (str.size() >= 4 && str.size() % 4 == 0) {
-                if (memcmp(str.data(), "\0\0\xfe\xff", 4) == 0)
-                    return "utf-32be";
-                else if (memcmp(str.data(), "\xff\xfe\0\0", 4) == 0)
-                    return "utf-32le";
-            }
-            if (str.size() >= 2 && str.size() % 2 == 0) {
-                if (memcmp(str.data(), "\xfe\xff", 2) == 0)
-                    return "utf-16be";
-                else if (memcmp(str.data(), "\xff\xfe", 2) == 0)
-                    return "utf-16le";
-            }
-            auto check_bytes = std::min(str.size(), max_check_bytes);
-            size_t nonzero[] {0,0,0,0};
-            for (size_t i = 0; i < check_bytes; ++i)
-                if (str[i])
-                    ++nonzero[i % 4];
-            if (str.size() % 4 == 0) {
-                if (nonzero[0] == 0 && 8 * nonzero[1] < check_bytes  && 8 * nonzero[3] > check_bytes)
-                    return "utf-32be";
-                else if (8 * nonzero[0] > check_bytes && 8 * nonzero[2] < check_bytes  && nonzero[3] == 0)
-                    return "utf-32le";
-            }
-            if (str.size() % 2 == 0) {
-                auto nz0 = 4 * (nonzero[0] + nonzero[2]);
-                auto nz1 = 4 * (nonzero[1] + nonzero[3]);
-                if (nz0 < check_bytes && nz1 > check_bytes)
-                    return "utf-16be";
-                else if (nz0 > check_bytes && nz1 < check_bytes)
-                    return "utf-16le";
-            }
-            return "utf-8";
-        }
-
-        EncodingTag lookup_encoding(const u8string& name, uint32_t flags) {
-            static std::map<u8string, EncodingTag> cache;
-            static Mutex mtx;
-            if (name.empty())
-                throw UnknownEncoding();
-            if (flags & mb_strict)
-                #if defined(PRI_TARGET_WINDOWS)
-                    return EncodingTag(decnum(name));
-                #else
-                    return name;
-                #endif
-            auto lcname = ascii_lowercase(name);
-            if (lcname == "char")
-                return lookup_encoding(local_encoding());
-            else if (lcname == "wchar_t")
-                return wchar_tag;
-            else if (lcname == "utf")
-                return EncodingTag();
-            {
-                MutexLock lock(mtx);
-                auto it = cache.find(lcname);
-                if (it != cache.end())
-                    return it->second;
-            }
-            auto tag = EncodingTag();
-            #if defined(PRI_TARGET_WINDOWS)
-                if (lcname.find_first_not_of("0123456789") == npos)
-                    tag = lookup_encoding(uint32_t(decnum(lcname)));
-            #endif
-            if (tag == EncodingTag())
-                tag = find_encoding(lcname);
-            if (tag == EncodingTag())
-                throw UnknownEncoding(name);
-            MutexLock lock(mtx);
-            cache[lcname] = tag;
-            return tag;
-        }
-
-        EncodingTag lookup_encoding(uint32_t page, uint32_t flags) {
-            static std::map<uint32_t, EncodingTag> cache;
-            static Mutex mtx;
-            if (page == 0)
-                throw UnknownEncoding();
-            if (flags & mb_strict)
-                #if defined(PRI_TARGET_WINDOWS)
-                    return page;
-                #else
-                    return dec(page);
-                #endif
-            {
-                MutexLock lock(mtx);
-                auto it = cache.find(page);
-                if (it != cache.end())
-                    return it->second;
-            }
-            auto tag = EncodingTag();
-            #if defined(PRI_TARGET_UNIX)
-                tag = lookup_encoding(dec(page));
-            #else
-                if (page == utf8_tag || page == utf16_tag || page == utf16swap_tag
-                        || page == utf32_tag || page == utf32swap_tag || valid_codepage(page))
-                    tag = page;
-            #endif
-            if (tag == EncodingTag())
-                throw UnknownEncoding(page);
-            MutexLock lock(mtx);
-            cache[page] = tag;
-            return tag;
-        }
-
-        void mbcs_flags(uint32_t& flags) {
+        void check_mbcs_flags(uint32_t& flags) {
             if (flags & err_ignore)
                 throw std::invalid_argument("Invalid MBCS conversion flag: err_ignore");
             if (flags == 0)
@@ -591,6 +435,230 @@ namespace Unicorn {
             }
         }
 
+        template <typename E>
+        void import_string_helper(const string& src, u8string& dst, E enc, uint32_t flags) {
+            check_mbcs_flags(flags);
+            auto tag = lookup_encoding(enc, flags);
+            if (src.empty()) {
+                dst.clear();
+                return;
+            }
+            if (tag == EncodingTag()) {
+                import_string_helper(src, dst, guess_utf(src), flags);
+                return;
+            }
+            NativeString native_dst;
+            if (! utf_import(src, native_dst, tag, flags))
+                native_import(src, native_dst, tag, flags);
+            recode(native_dst, dst);
+        }
+
+        template <typename E>
+        void export_string_helper(const u8string& src, string& dst, E enc, uint32_t flags) {
+            check_mbcs_flags(flags);
+            auto tag = lookup_encoding(enc, flags);
+            if (src.empty()) {
+                dst.clear();
+                return;
+            }
+            NativeString native_src;
+            recode(src, native_src, flags);
+            if (! utf_export(native_src, dst, tag, flags))
+                native_export(native_src, dst, tag, flags);
+        }
+
+    }
+
+    namespace UnicornDetail {
+
+        u8string guess_utf(const string& str) {
+            constexpr size_t max_check_bytes = 100;
+            if (str.empty())
+                return "utf-8";
+            if (str.size() >= 3 && memcmp(str.data(), utf8_bom, 3) == 0)
+                return "utf-8";
+            if (str.size() >= 4 && str.size() % 4 == 0) {
+                if (memcmp(str.data(), "\0\0\xfe\xff", 4) == 0)
+                    return "utf-32be";
+                else if (memcmp(str.data(), "\xff\xfe\0\0", 4) == 0)
+                    return "utf-32le";
+            }
+            if (str.size() >= 2 && str.size() % 2 == 0) {
+                if (memcmp(str.data(), "\xfe\xff", 2) == 0)
+                    return "utf-16be";
+                else if (memcmp(str.data(), "\xff\xfe", 2) == 0)
+                    return "utf-16le";
+            }
+            auto check_bytes = std::min(str.size(), max_check_bytes);
+            size_t nonzero[] {0,0,0,0};
+            for (size_t i = 0; i < check_bytes; ++i)
+                if (str[i])
+                    ++nonzero[i % 4];
+            if (str.size() % 4 == 0) {
+                if (nonzero[0] == 0 && 8 * nonzero[1] < check_bytes  && 8 * nonzero[3] > check_bytes)
+                    return "utf-32be";
+                else if (8 * nonzero[0] > check_bytes && 8 * nonzero[2] < check_bytes  && nonzero[3] == 0)
+                    return "utf-32le";
+            }
+            if (str.size() % 2 == 0) {
+                auto nz0 = 4 * (nonzero[0] + nonzero[2]);
+                auto nz1 = 4 * (nonzero[1] + nonzero[3]);
+                if (nz0 < check_bytes && nz1 > check_bytes)
+                    return "utf-16be";
+                else if (nz0 > check_bytes && nz1 < check_bytes)
+                    return "utf-16le";
+            }
+            return "utf-8";
+        }
+
+        EncodingTag lookup_encoding(const u8string& name, uint32_t flags) {
+            static std::map<u8string, EncodingTag> cache;
+            static Mutex mtx;
+            if (name.empty())
+                throw UnknownEncoding();
+            if (flags & mb_strict)
+                #if defined(PRI_TARGET_WINDOWS)
+                    return EncodingTag(decnum(name));
+                #else
+                    return name;
+                #endif
+            auto lcname = ascii_lowercase(name);
+            if (lcname == "char")
+                return lookup_encoding(local_encoding());
+            else if (lcname == "wchar_t")
+                return wchar_tag;
+            else if (lcname == "utf")
+                return EncodingTag();
+            {
+                MutexLock lock(mtx);
+                auto it = cache.find(lcname);
+                if (it != cache.end())
+                    return it->second;
+            }
+            auto tag = EncodingTag();
+            #if defined(PRI_TARGET_WINDOWS)
+                if (lcname.find_first_not_of("0123456789") == npos)
+                    tag = lookup_encoding(uint32_t(decnum(lcname)));
+            #endif
+            if (tag == EncodingTag())
+                tag = find_encoding(lcname);
+            if (tag == EncodingTag())
+                throw UnknownEncoding(name);
+            MutexLock lock(mtx);
+            cache[lcname] = tag;
+            return tag;
+        }
+
+        EncodingTag lookup_encoding(uint32_t page, uint32_t flags) {
+            static std::map<uint32_t, EncodingTag> cache;
+            static Mutex mtx;
+            if (page == 0)
+                throw UnknownEncoding();
+            if (flags & mb_strict)
+                #if defined(PRI_TARGET_WINDOWS)
+                    return page;
+                #else
+                    return dec(page);
+                #endif
+            {
+                MutexLock lock(mtx);
+                auto it = cache.find(page);
+                if (it != cache.end())
+                    return it->second;
+            }
+            auto tag = EncodingTag();
+            #if defined(PRI_TARGET_UNIX)
+                tag = lookup_encoding(dec(page));
+            #else
+                if (page == utf8_tag || page == utf16_tag || page == utf16swap_tag
+                        || page == utf32_tag || page == utf32swap_tag || valid_codepage(page))
+                    tag = page;
+            #endif
+            if (tag == EncodingTag())
+                throw UnknownEncoding(page);
+            MutexLock lock(mtx);
+            cache[page] = tag;
+            return tag;
+        }
+
+    }
+
+    // Exceptions
+
+    UnknownEncoding::UnknownEncoding():
+    std::runtime_error(assemble({}, {})),
+    enc() {}
+
+    UnknownEncoding::UnknownEncoding(const u8string& encoding, const u8string& details):
+    std::runtime_error(assemble(encoding, details)),
+    enc(make_shared<u8string>(encoding)) {}
+
+    UnknownEncoding::UnknownEncoding(uint32_t encoding, const u8string& details):
+    std::runtime_error(assemble(dec(encoding), details)),
+    enc(make_shared<u8string>(dec(encoding))) {}
+
+    const char* UnknownEncoding::encoding() const noexcept {
+        static const char c = 0;
+        return enc ? enc->data() : &c;
+    }
+
+    u8string UnknownEncoding::assemble(const u8string& encoding, const u8string& details) {
+        u8string s = "Unknown encoding";
+        if (! encoding.empty()) {
+            s += ": ";
+            s += encoding;
+        }
+        if (! details.empty()) {
+            s += "; ";
+            s += details;
+        }
+        return s;
+    }
+
+    // Utility functions
+
+    u8string local_encoding(const u8string& default_encoding) {
+        #if defined(PRI_TARGET_UNIX)
+            static constexpr const char* locale_vars[] {"LC_ALL", "LC_CTYPE", "LANG"};
+            u8string name;
+            for (auto key: locale_vars) {
+                string value = cstr(getenv(key));
+                size_t dot = value.find('.');
+                if (dot != npos) {
+                    value.erase(0, dot + 1);
+                    size_t cut = value.find_first_of(",;");
+                    if (cut != npos)
+                        value.resize(cut);
+                    auto cut2 = std::find_if(value.begin(), value.end(),
+                        [] (char c) { return uint8_t(c) > 127; });
+                    value.erase(cut2, value.end());
+                    return value;
+                }
+            }
+        #else
+            CPINFOEX info;
+            if (GetCPInfoEx(CP_THREAD_ACP, 0, &info) && info.CodePage > 0)
+                return dec(info.CodePage);
+        #endif
+        return default_encoding;
+    }
+
+    // Conversion functions
+
+    void import_string(const string& src, u8string& dst, const u8string& enc, uint32_t flags) {
+        import_string_helper(src, dst, to_utf8(enc), flags);
+    }
+
+    void import_string(const string& src, u8string& dst, uint32_t enc, uint32_t flags) {
+        import_string_helper(src, dst, enc, flags);
+    }
+
+    void export_string(const u8string& src, string& dst, const u8string& enc, uint32_t flags) {
+        export_string_helper(src, dst, to_utf8(enc), flags);
+    }
+
+    void export_string(const u8string& src, string& dst, uint32_t enc, uint32_t flags) {
+        export_string_helper(src, dst, enc, flags);
     }
 
 }
