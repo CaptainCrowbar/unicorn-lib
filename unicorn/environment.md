@@ -18,70 +18,52 @@ environment variable APIs make any attempt to enforce Unicode encoding forms;
 although normally intended to be interpreted as character data, the names and
 values are really arbitrary strings of 8 or 16 bit unsigned integers.
 
-The Unicorn environment variable API allows the caller to use their preferred
-UTF encoding, which means that some names and values may not be representable;
-for example, if you query a variable on Windows using a UTF-8 call, the actual
-value may not be valid UTF-16, and therefore not convertible to UTF-8 without
-loss of information. As a compromise solution to this problem, calls that
-match the native character size will, by default, simply copy strings without
-attempting any kind of Unicode sanitization.
-
-When using the functions in this module, keep in mind that, if you use the
-native character type and the default behaviour flag, strings returned from
-environment variable queries may not be valid Unicode. On the other hand, if
-you use a different character type or a different behaviour flag, you will
-always get valid Unicode strings, but they may lose some information if the
-original environment data was not in UTF form.
-
-This applies when writing environment strings too: if you set them using a
-call that matches the native character size, you can pass invalid UTF and it
-will simply be passed through to the underlying operating system API
-unchanged; but if your call requires an encoding conversion, UTF conversion
-follows the usual rules from the [`unicorn/utf`](utf.html) module.
+The Unicorn environment variable API allows the caller to express variable
+names and values either in UTF-8 (`u8string`) or in the operating system's
+native encoding (`NativeString`). On Unix, the native API uses 8 bit strings,
+`NativeString` and `u8string` are really the same type (plain `std::string`),
+and there is only one set of functions here; although the function signatures
+are nominally written in terms of UTF-8 strings, in fact any arbitrary byte
+string can be passed or may be returned. On Windows the native API uses 16 bit
+strings, and `NativeString` is an alias for `std::wstring`; the `u8string`
+versions of these functions will convert between UTF-8 and UTF-16, using the
+standard replacement convention to handle invalid encoding.
 
 Whether environment variable names are case sensitive is also operating system
 dependent.
 
-System environment variable APIs are usually not threadsafe; all of the
-functions in this module ensure thread safety by locking a common global
-mutex.
+The native environment variable APIs are usually not threadsafe; all of the
+functions in this module ensure thread safety internally by locking a common
+global mutex.
 
 ## Functions ##
 
-The `flags` argument passed to these functions must be one of the encoding
-conversion flags defined in [`unicorn/utf`](utf.html). Behaviour is undefined
-if the `flags` argument is not one of these values.
-
-All of these functions can throw `EncodingError` if the `err_throw` flag is
-used and invalid UTF encoding is encountered (either in a string supplied by
-the caller, or in one returned from the environment), `std::invalid_argument`
-if an environment variable name is empty or contains an equals sign, or
+All of these functions can throw `std::invalid_argument` if an environment
+variable name passed in is empty or contains an equals sign, or
 `std::system_error` if anything goes wrong with the underlying system API
 call.
 
-* `template <typename C> basic_string<C>` **`get_env`**`(const basic_string<C>& name, uint32_t flags = 0)`
-* `template <typename C> basic_string<C>` **`get_env`**`(const C* name, uint32_t flags = 0)`
+* `NativeString` **`get_env`**`(const NativeString& name)`
+* `u8string` **`get_env`**`(const u8string& name)`
 
 Query the value of an environment variable. This will return an empty string
 if the variable does not exist.
 
-* `template <typename C> bool` **`has_env`**`(const basic_string<C>& name, uint32_t flags = 0)`
-* `template <typename C> bool` **`has_env`**`(const C* name, uint32_t flags = 0)`
+* `bool` **`has_env`**`(const NativeString& name)`
+* `bool` **`has_env`**`(const u8string& name)`
 
 Query whether an environment variable exists. Windows, unlike Unix, does not
 always distinguish clearly between a variable that does not exist, and one
 that exists but whose value is an empty string; if a variable has been set to
 an empty value, this function may or may not report its existence on Windows.
 
-* `template <typename C> void` **`set_env`**`(const basic_string<C>& name, const basic_string<C>& value, uint32_t flags = 0)`
-* `template <typename C> void` **`set_env`**`(const basic_string<C>& name, const C* value, uint32_t flags = 0)`
-* `template <typename C> void` **`set_env`**`(const C* name, const basic_string<C>& value, uint32_t flags = 0)`
-* `template <typename C> void` **`set_env`**`(const C* name, const C* value, uint32_t flags = 0)`
+* `void` **`set_env`**`(const NativeString& name, const NativeString& value)`
+* `void` **`set_env`**`(const u8string& name, const u8string& value)`
 
 Set the value of a variable in the process's environment block.
 
-* `template <typename C> void` **`unset_env`**`(const basic_string<C>& name, uint32_t flags = 0)`
-* `template <typename C> void` **`unset_env`**`(const C* name, uint32_t flags = 0)`
+* `void` **`unset_env`**`(const NativeString& name)`
+* `void` **`unset_env`**`(const u8string& name)`
 
 Delete a variable from the process's environment block.
 
@@ -109,18 +91,16 @@ Life cycle operations. If the `from_process` flag is set, the constructor will
 copy the environment data from the calling process; otherwise, the newly
 constructed `Environment` object will be empty.
 
-* `template <typename C> basic_string<C> Environment::`**`operator[]`**`(const basic_string<C>& name)`
-* `template <typename C> basic_string<C> Environment::`**`operator[]`**`(const C* name)`
-* `template <typename C> basic_string<C> Environment::`**`get`**`(const basic_string<C>& name, uint32_t flags = 0)`
-* `template <typename C> basic_string<C> Environment::`**`get`**`(const C* name, uint32_t flags = 0)`
-* `template <typename C> bool Environment::`**`has`**`(const basic_string<C>& name, uint32_t flags = 0)`
-* `template <typename C> bool Environment::`**`has`**`(const C* name, uint32_t flags = 0)`
-* `template <typename C> void Environment::`**`set`**`(const basic_string<C>& name, const basic_string<C>& value, uint32_t flags = 0)`
-* `template <typename C> void Environment::`**`set`**`(const basic_string<C>& name, const C* value, uint32_t flags = 0)`
-* `template <typename C> void Environment::`**`set`**`(const C* name, const basic_string<C>& value, uint32_t flags = 0)`
-* `template <typename C> void Environment::`**`set`**`(const C* name, const C* value, uint32_t flags = 0)`
-* `template <typename C> void Environment::`**`unset`**`(const basic_string<C>& name, uint32_t flags = 0)`
-* `template <typename C> void Environment::`**`unset`**`(const C* name, uint32_t flags = 0)`
+* `NativeString Environment::`**`operator[]`**`(const NativeString& name)`
+* `u8string Environment::`**`operator[]`**`(const u8string& name)`
+* `NativeString Environment::`**`get`**`(const NativeString& name)`
+* `u8string Environment::`**`get`**`(const u8string& name)`
+* `bool Environment::`**`has`**`(const NativeString& name)`
+* `bool Environment::`**`has`**`(const u8string& name)`
+* `void Environment::`**`set`**`(const NativeString& name, const NativeString& value)`
+* `void Environment::`**`set`**`(const u8string& name, const u8string& value)`
+* `void Environment::`**`unset`**`(const NativeString& name)`
+* `void Environment::`**`unset`**`(const u8string& name)`
 
 These perform the same operations as the corresponding environment variable
 functions described above (`operator[]` is a synonym for `get()`), and will

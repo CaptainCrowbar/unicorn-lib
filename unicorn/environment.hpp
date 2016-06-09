@@ -9,81 +9,40 @@
 
 namespace Unicorn {
 
-    namespace UnicornDetail {
-
-        void check_env(const NativeString& key);
-        void check_env(const NativeString& key, const NativeString& value);
-        void native_get_env(const NativeString& key, NativeString& value);
-        bool native_has_env(const NativeString& key);
-        void native_set_env(const NativeString& key, const NativeString& value);
-        void native_unset_env(const NativeString& key);
-
-    }
 
     // Functions
 
-    template <typename C>
-    basic_string<C> get_env(const basic_string<C>& name, uint32_t flags = 0) {
-        using namespace UnicornDetail;
-        NativeString nkey = to_native(name, flags), nvalue;
-        check_env(nkey);
-        native_get_env(nkey, nvalue);
-        return recode<C>(nvalue, flags);
-    }
+    #if defined(PRI_TARGET_UNIX)
 
-    template <typename C>
-    basic_string<C> get_env(const C* name, uint32_t flags = 0) {
-        return get_env(cstr(name), flags);
-    }
+        string get_env(const string& key);
+        bool has_env(const string& key);
+        void set_env(const string& key, const string& value);
+        void unset_env(const string& key);
 
-    template <typename C>
-    bool has_env(const basic_string<C>& name, uint32_t flags = 0) {
-        using namespace UnicornDetail;
-        NativeString nkey = to_native(name, flags);
-        check_env(nkey);
-        return native_has_env(nkey);
-    }
+    #else
 
-    template <typename C>
-    bool has_env(const C* name, uint32_t flags = 0) {
-        return has_env(cstr(name), flags);
-    }
+        wstring get_env(const wstring& key);
+        bool has_env(const wstring& key);
+        void set_env(const wstring& key, const wstring& value);
+        void unset_env(const wstring& key);
 
-    template <typename C>
-    void set_env(const basic_string<C>& name, const basic_string<C>& value, uint32_t flags = 0) {
-        using namespace UnicornDetail;
-        NativeString nkey = to_native(name, flags), nvalue = to_native(value, flags);
-        check_env(nkey, nvalue);
-        native_set_env(nkey, nvalue);
-    }
+        inline u8string get_env(const u8string& key) {
+            return to_utf8(get_env(to_wstring(name, err_replace)), err_replace);
+        }
 
-    template <typename C>
-    void set_env(const basic_string<C>& name, const C* value, uint32_t flags = 0) {
-        set_env(name, cstr(value), flags);
-    }
+        inline bool has_env(const u8string& key) {
+            return has_env(to_wstring(name, err_replace));
+        }
 
-    template <typename C>
-    void set_env(const C* name, const basic_string<C>& value, uint32_t flags = 0) {
-        set_env(cstr(name), value, flags);
-    }
+        inline void set_env(const u8string& key, const u8string& value) {
+            set_env(to_wstring(name, err_replace), to_wstring(value, err_replace));
+        }
 
-    template <typename C>
-    void set_env(const C* name, const C* value, uint32_t flags = 0) {
-        set_env(cstr(name), cstr(value), flags);
-    }
+        inline void unset_env(const u8string& key) {
+            unset_env(to_wstring(name, err_replace));
+        }
 
-    template <typename C>
-    void unset_env(const basic_string<C>& name, uint32_t flags = 0) {
-        using namespace UnicornDetail;
-        NativeString nkey = to_native(name, flags);
-        check_env(nkey);
-        native_unset_env(nkey);
-    }
-
-    template <typename C>
-    void unset_env(const C* name, uint32_t flags = 0) {
-        unset_env(cstr(name), flags);
-    }
+    #endif
 
     // Class Environment
 
@@ -106,34 +65,24 @@ namespace Unicorn {
             explicit iterator(string_map::const_iterator i): iter(i) {}
         };
         Environment() = default;
-        explicit Environment(bool from_process) { if (from_process) load(); }
-        Environment(const Environment& env): map(env.map), block(), index() {}
-        Environment(Environment&& env) noexcept: map(move(env.map)), block(), index() { env.deconstruct(); }
+        explicit Environment(bool from_process);
+        Environment(const Environment& env);
+        Environment(Environment&& env) noexcept;
         ~Environment() = default;
         Environment& operator=(const Environment& env);
         Environment& operator=(Environment&& env) noexcept;
-        template <typename C> basic_string<C> operator[](const basic_string<C>& name) { return get(name); }
-        template <typename C> basic_string<C> operator[](const C* name) { return get(cstr(name)); }
-        template <typename C> basic_string<C> get(const basic_string<C>& name, uint32_t flags = 0) {
-            auto it = map.find(to_native(name, flags));
-            return it == map.end() ? basic_string<C>() : recode<C>(it->second, flags);
-        }
-        template <typename C> basic_string<C> get(const C* name, uint32_t flags = 0) { return get(cstr(name), flags); }
-        template <typename C> bool has(const basic_string<C>& name, uint32_t flags = 0) { return map.count(to_native(name, flags)) != 0; }
-        template <typename C> bool has(const C* name, uint32_t flags = 0) { return has(cstr(name), flags); }
-        template <typename C> void set(const basic_string<C>& name, const basic_string<C>& value, uint32_t flags = 0) {
-            NativeString nkey = to_native(name, flags), nvalue = to_native(value, flags);
-            deconstruct();
-            map[nkey] = nvalue;
-        }
-        template <typename C> void set(const basic_string<C>& name, const C* value, uint32_t flags = 0) { set(name, cstr(value), flags); }
-        template <typename C> void set(const C* name, const basic_string<C>& value, uint32_t flags = 0) { set(cstr(name), value, flags); }
-        template <typename C> void set(const C* name, const C* value, uint32_t flags = 0) { set(cstr(name), cstr(value), flags); }
-        template <typename C> void unset(const basic_string<C>& name, uint32_t flags = 0) {
-            deconstruct();
-            map.erase(to_native(name, flags));
-        }
-        template <typename C> void unset(const C* name, uint32_t flags = 0) { unset(cstr(name), flags); }
+        NativeString operator[](const NativeString& name) { return get(name); }
+        NativeString get(const NativeString& name);
+        bool has(const NativeString& name);
+        void set(const NativeString& name, const NativeString& value);
+        void unset(const NativeString& name);
+        #if defined(PRI_TARGET_WINDOWS)
+            u8string operator[](const u8string& name) { return get(name); }
+            u8string get(const u8string& name);
+            bool has(const u8string& name);
+            void set(const u8string& name, const u8string& value);
+            void unset(const u8string& name);
+        #endif
         iterator begin() const { return iterator(map.begin()); }
         iterator end() const { return iterator(map.end()); }
         void clear() { map.clear(); block.clear(), index.clear(); }

@@ -31,51 +31,38 @@ on Microsoft Windows, but as 8 bit strings on Unix systems. None of the native
 environment variable APIs make any attempt to enforce Unicode encoding forms;
 although normally intended to be interpreted as character data, the names and
 values are really arbitrary strings of 8 or 16 bit unsigned integers.</p>
-<p>The Unicorn environment variable API allows the caller to use their preferred
-UTF encoding, which means that some names and values may not be representable;
-for example, if you query a variable on Windows using a UTF-8 call, the actual
-value may not be valid UTF-16, and therefore not convertible to UTF-8 without
-loss of information. As a compromise solution to this problem, calls that
-match the native character size will, by default, simply copy strings without
-attempting any kind of Unicode sanitization.</p>
-<p>When using the functions in this module, keep in mind that, if you use the
-native character type and the default behaviour flag, strings returned from
-environment variable queries may not be valid Unicode. On the other hand, if
-you use a different character type or a different behaviour flag, you will
-always get valid Unicode strings, but they may lose some information if the
-original environment data was not in UTF form.</p>
-<p>This applies when writing environment strings too: if you set them using a
-call that matches the native character size, you can pass invalid UTF and it
-will simply be passed through to the underlying operating system API
-unchanged; but if your call requires an encoding conversion, UTF conversion
-follows the usual rules from the <a href="utf.html"><code>unicorn/utf</code></a> module.</p>
+<p>The Unicorn environment variable API allows the caller to express variable
+names and values either in UTF-8 (<code>u8string</code>) or in the operating system's
+native encoding (<code>NativeString</code>). On Unix, the native API uses 8 bit strings,
+<code>NativeString</code> and <code>u8string</code> are really the same type (plain <code>std::string</code>),
+and there is only one set of functions here; although the function signatures
+are nominally written in terms of UTF-8 strings, in fact any arbitrary byte
+string can be passed or may be returned. On Windows the native API uses 16 bit
+strings, and <code>NativeString</code> is an alias for <code>std::wstring</code>; the <code>u8string</code>
+versions of these functions will convert between UTF-8 and UTF-16, using the
+standard replacement convention to handle invalid encoding.</p>
 <p>Whether environment variable names are case sensitive is also operating system
 dependent.</p>
-<p>System environment variable APIs are usually not threadsafe; all of the
-functions in this module ensure thread safety by locking a common global
-mutex.</p>
+<p>The native environment variable APIs are usually not threadsafe; all of the
+functions in this module ensure thread safety internally by locking a common
+global mutex.</p>
 <h2 id="functions">Functions</h2>
-<p>The <code>flags</code> argument passed to these functions must be one of the encoding
-conversion flags defined in <a href="utf.html"><code>unicorn/utf</code></a>. Behaviour is undefined
-if the <code>flags</code> argument is not one of these values.</p>
-<p>All of these functions can throw <code>EncodingError</code> if the <code>err_throw</code> flag is
-used and invalid UTF encoding is encountered (either in a string supplied by
-the caller, or in one returned from the environment), <code>std::invalid_argument</code>
-if an environment variable name is empty or contains an equals sign, or
+<p>All of these functions can throw <code>std::invalid_argument</code> if an environment
+variable name passed in is empty or contains an equals sign, or
 <code>std::system_error</code> if anything goes wrong with the underlying system API
 call.</p>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>get_env</code></strong><code>(const basic_string&lt;C&gt;&amp; name, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>get_env</code></strong><code>(const C* name, uint32_t flags = 0)</code></li>
+<li><code>NativeString</code> <strong><code>get_env</code></strong><code>(const NativeString&amp; name)</code></li>
+<li><code>u8string</code> <strong><code>get_env</code></strong><code>(const u8string&amp; name)</code></li>
 </ul>
 <p>Query the value of an environment variable. This will return an empty string
 if the variable does not exist.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; bool</code> <strong><code>has_env</code></strong><code>(const basic_string&lt;C&gt;&amp; name, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; bool</code> <strong><code>has_env</code></strong><code>(const C* name, uint32_t flags = 0)</code></li>
+<li><code>bool</code> <strong><code>has_env</code></strong><code>(const NativeString&amp; name)</code></li>
+<li><code>bool</code> <strong><code>has_env</code></strong><code>(const u8string&amp; name)</code></li>
 </ul>
 <p>Query whether an environment variable exists. Windows, unlike Unix, does not
 always distinguish clearly between a variable that does not exist, and one
@@ -84,17 +71,15 @@ an empty value, this function may or may not report its existence on Windows.</p
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>set_env</code></strong><code>(const basic_string&lt;C&gt;&amp; name, const basic_string&lt;C&gt;&amp; value, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>set_env</code></strong><code>(const basic_string&lt;C&gt;&amp; name, const C* value, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>set_env</code></strong><code>(const C* name, const basic_string&lt;C&gt;&amp; value, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>set_env</code></strong><code>(const C* name, const C* value, uint32_t flags = 0)</code></li>
+<li><code>void</code> <strong><code>set_env</code></strong><code>(const NativeString&amp; name, const NativeString&amp; value)</code></li>
+<li><code>void</code> <strong><code>set_env</code></strong><code>(const u8string&amp; name, const u8string&amp; value)</code></li>
 </ul>
 <p>Set the value of a variable in the process's environment block.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>unset_env</code></strong><code>(const basic_string&lt;C&gt;&amp; name, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>unset_env</code></strong><code>(const C* name, uint32_t flags = 0)</code></li>
+<li><code>void</code> <strong><code>unset_env</code></strong><code>(const NativeString&amp; name)</code></li>
+<li><code>void</code> <strong><code>unset_env</code></strong><code>(const u8string&amp; name)</code></li>
 </ul>
 <p>Delete a variable from the process's environment block.</p>
 </div>
@@ -129,18 +114,16 @@ constructed <code>Environment</code> object will be empty.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; Environment::</code><strong><code>operator[]</code></strong><code>(const basic_string&lt;C&gt;&amp; name)</code></li>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; Environment::</code><strong><code>operator[]</code></strong><code>(const C* name)</code></li>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; Environment::</code><strong><code>get</code></strong><code>(const basic_string&lt;C&gt;&amp; name, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt; Environment::</code><strong><code>get</code></strong><code>(const C* name, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; bool Environment::</code><strong><code>has</code></strong><code>(const basic_string&lt;C&gt;&amp; name, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; bool Environment::</code><strong><code>has</code></strong><code>(const C* name, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; void Environment::</code><strong><code>set</code></strong><code>(const basic_string&lt;C&gt;&amp; name, const basic_string&lt;C&gt;&amp; value, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; void Environment::</code><strong><code>set</code></strong><code>(const basic_string&lt;C&gt;&amp; name, const C* value, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; void Environment::</code><strong><code>set</code></strong><code>(const C* name, const basic_string&lt;C&gt;&amp; value, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; void Environment::</code><strong><code>set</code></strong><code>(const C* name, const C* value, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; void Environment::</code><strong><code>unset</code></strong><code>(const basic_string&lt;C&gt;&amp; name, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; void Environment::</code><strong><code>unset</code></strong><code>(const C* name, uint32_t flags = 0)</code></li>
+<li><code>NativeString Environment::</code><strong><code>operator[]</code></strong><code>(const NativeString&amp; name)</code></li>
+<li><code>u8string Environment::</code><strong><code>operator[]</code></strong><code>(const u8string&amp; name)</code></li>
+<li><code>NativeString Environment::</code><strong><code>get</code></strong><code>(const NativeString&amp; name)</code></li>
+<li><code>u8string Environment::</code><strong><code>get</code></strong><code>(const u8string&amp; name)</code></li>
+<li><code>bool Environment::</code><strong><code>has</code></strong><code>(const NativeString&amp; name)</code></li>
+<li><code>bool Environment::</code><strong><code>has</code></strong><code>(const u8string&amp; name)</code></li>
+<li><code>void Environment::</code><strong><code>set</code></strong><code>(const NativeString&amp; name, const NativeString&amp; value)</code></li>
+<li><code>void Environment::</code><strong><code>set</code></strong><code>(const u8string&amp; name, const u8string&amp; value)</code></li>
+<li><code>void Environment::</code><strong><code>unset</code></strong><code>(const NativeString&amp; name)</code></li>
+<li><code>void Environment::</code><strong><code>unset</code></strong><code>(const u8string&amp; name)</code></li>
 </ul>
 <p>These perform the same operations as the corresponding environment variable
 functions described above (<code>operator[]</code> is a synonym for <code>get()</code>), and will

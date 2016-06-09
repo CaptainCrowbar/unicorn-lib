@@ -25,9 +25,6 @@ namespace {
         TRY(s = get_env("__NO_SUCH_THING__"));
         TEST(s.empty());
 
-        TEST_THROW(has_env("\x80\xff", err_throw), EncodingError);
-        TEST_THROW(get_env("\x80\xff", err_throw), EncodingError);
-
     }
 
     void check_update_functions() {

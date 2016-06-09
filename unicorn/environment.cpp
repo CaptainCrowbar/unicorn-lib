@@ -18,10 +18,6 @@ namespace Unicorn {
 
         Mutex env_mutex;
 
-    }
-
-    namespace UnicornDetail {
-
         void check_env(const NativeString& key) {
             static const NativeString not_allowed{'\0','='};
             if (key.empty() || key.find_first_of(not_allowed) != npos)
@@ -34,59 +30,80 @@ namespace Unicorn {
                 throw std::invalid_argument("Invalid environment variable value");
         }
 
-        #if defined(PRI_TARGET_UNIX)
-
-            void native_get_env(const NativeString& key, NativeString& value) {
-                MutexLock lock(env_mutex);
-                value = cstr(getenv(key.data()));
-            }
-
-            bool native_has_env(const NativeString& key) {
-                MutexLock lock(env_mutex);
-                return getenv(key.data()) != nullptr;
-            }
-
-            void native_set_env(const NativeString& key, const NativeString& value) {
-                MutexLock lock(env_mutex);
-                if (setenv(key.data(), value.data(), 1) == -1)
-                    throw std::system_error(errno, std::generic_category(), "setenv()");
-            }
-
-            void native_unset_env(const NativeString& key) {
-                MutexLock lock(env_mutex);
-                if (unsetenv(key.data()) == -1)
-                    throw std::system_error(errno, std::generic_category(), "unsetenv()");
-            }
-
-        #else
-
-            void native_get_env(const NativeString& key, NativeString& value) {
-                MutexLock lock(env_mutex);
-                value = cstr(_wgetenv(key.data()));
-            }
-
-            bool native_has_env(const NativeString& key) {
-                MutexLock lock(env_mutex);
-                return _wgetenv(key.data()) != nullptr;
-            }
-
-            void native_set_env(const NativeString& key, const NativeString& value) {
-                MutexLock lock(env_mutex);
-                auto key_value = key + L'=' + value;
-                if (_wputenv(key_value.data()) == -1)
-                    throw std::system_error(errno, std::generic_category(), "_wputenv()");
-            }
-
-            void native_unset_env(const NativeString& key) {
-                MutexLock lock(env_mutex);
-                set_env(key, {});
-            }
-
-        #endif
-
     }
 
+    #if defined(PRI_TARGET_UNIX)
+
+        string get_env(const string& key) {
+            check_env(key);
+            MutexLock lock(env_mutex);
+            return cstr(getenv(key.data()));
+        }
+
+        bool has_env(const string& key) {
+            check_env(key);
+            MutexLock lock(env_mutex);
+            return getenv(key.data()) != nullptr;
+        }
+
+        void set_env(const string& key, const string& value) {
+            check_env(key, value);
+            MutexLock lock(env_mutex);
+            if (setenv(key.data(), value.data(), 1) == -1)
+                throw std::system_error(errno, std::generic_category(), "setenv()");
+        }
+
+        void unset_env(const string& key) {
+            check_env(key);
+            MutexLock lock(env_mutex);
+            if (unsetenv(key.data()) == -1)
+                throw std::system_error(errno, std::generic_category(), "unsetenv()");
+        }
+
+    #else
+
+        wstring get_env(const wstring& key) {
+            check_env(key);
+            MutexLock lock(env_mutex);
+            return cstr(_wgetenv(key.data()));
+        }
+
+        bool has_env(const wstring& key) {
+            check_env(key);
+            MutexLock lock(env_mutex);
+            return _wgetenv(key.data()) != nullptr;
+        }
+
+        void set_env(const wstring& key, const wstring& value) {
+            check_env(key, value);
+            MutexLock lock(env_mutex);
+            auto key_value = key + L'=' + value;
+            if (_wputenv(key_value.data()) == -1)
+                throw std::system_error(errno, std::generic_category(), "_wputenv()");
+        }
+
+        void unset_env(const wstring& key) {
+            check_env(key);
+            MutexLock lock(env_mutex);
+            set_env(key, {});
+        }
+
+    #endif
+
     // Class Environment
+
+    Environment::Environment(bool from_process) {
+        if (from_process)
+            load();
+    }
+
+    Environment::Environment(const Environment& env):
+    map(env.map), block(), index() {}
+
+    Environment::Environment(Environment&& env) noexcept:
+    map(move(env.map)), block(), index() {
+        env.deconstruct();
+    }
 
     Environment& Environment::operator=(const Environment& env) {
         map = env.map;
@@ -100,6 +117,45 @@ namespace Unicorn {
         env.deconstruct();
         return *this;
     }
+
+    NativeString Environment::get(const NativeString& name) {
+        auto it = map.find(name);
+        return it == map.end() ? NativeString() : it->second;
+    }
+
+    bool Environment::has(const NativeString& name) {
+        return map.count(name) != 0;
+    }
+
+    void Environment::set(const NativeString& name, const NativeString& value) {
+        deconstruct();
+        map[name] = value;
+    }
+
+    void Environment::unset(const NativeString& name) {
+        deconstruct();
+        map.erase(name);
+    }
+
+    #if defined(PRI_TARGET_WINDOWS)
+
+        u8string Environment::get(const u8string& name) {
+            return to_utf8(get(to_wstring(name)));
+        }
+
+        bool Environment::has(const u8string& name) {
+            return has(to_wstring(name));
+        }
+
+        void Environment::set(const u8string& name, const u8string& value) {
+            return set(to_wstring(name), to_wstring(value));
+        }
+
+        void Environment::unset(const u8string& name) {
+            unset(to_wstring(name));
+        }
+
+    #endif
 
     void Environment::load() {
         deconstruct();
