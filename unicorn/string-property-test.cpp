@@ -112,41 +112,17 @@ namespace {
 
     void check_east_asian() {
 
-        TEST(! str_is_east_asian(u8"ÀÀÀ"s)); // neutral
-        TEST(! str_is_east_asian(u8"ààà"s)); // ambiguous
-        TEST(str_is_east_asian(u8"\u3000\u3000\u3000"s)); // fullwidth
-        TEST(str_is_east_asian(u8"\u20a9\u20a9\u20a9"s)); // halfwidth
-        TEST(! str_is_east_asian(u8"AAA"s)); // narrow
-        TEST(str_is_east_asian(u8"\u3001\u3001\u3001"s)); // wide
-        TEST(! str_is_east_asian(u8"àààÀÀÀ"s)); // ambiguous + neutral
-        TEST(str_is_east_asian(u8"ààà\u3000\u3000\u3000"s)); // ambiguous + fullwidth
-        TEST(str_is_east_asian(u8"ààà\u20a9\u20a9\u20a9"s)); // ambiguous + halfwidth
-        TEST(! str_is_east_asian(u8"àààAAA"s)); // ambiguous + narrow
-        TEST(str_is_east_asian(u8"ààà\u3001\u3001\u3001"s)); // ambiguous + wide
-
-        TEST(! str_is_east_asian(u"ÀÀÀ"s)); // neutral
-        TEST(! str_is_east_asian(u"ààà"s)); // ambiguous
-        TEST(str_is_east_asian(u"\u3000\u3000\u3000"s)); // fullwidth
-        TEST(str_is_east_asian(u"\u20a9\u20a9\u20a9"s)); // halfwidth
-        TEST(! str_is_east_asian(u"AAA"s)); // narrow
-        TEST(str_is_east_asian(u"\u3001\u3001\u3001"s)); // wide
-        TEST(! str_is_east_asian(u"àààÀÀÀ"s)); // ambiguous + neutral
-        TEST(str_is_east_asian(u"ààà\u3000\u3000\u3000"s)); // ambiguous + fullwidth
-        TEST(str_is_east_asian(u"ààà\u20a9\u20a9\u20a9"s)); // ambiguous + halfwidth
-        TEST(! str_is_east_asian(u"àààAAA"s)); // ambiguous + narrow
-        TEST(str_is_east_asian(u"ààà\u3001\u3001\u3001"s)); // ambiguous + wide
-
-        TEST(! str_is_east_asian(U"ÀÀÀ"s)); // neutral
-        TEST(! str_is_east_asian(U"ààà"s)); // ambiguous
-        TEST(str_is_east_asian(U"\u3000\u3000\u3000"s)); // fullwidth
-        TEST(str_is_east_asian(U"\u20a9\u20a9\u20a9"s)); // halfwidth
-        TEST(! str_is_east_asian(U"AAA"s)); // narrow
-        TEST(str_is_east_asian(U"\u3001\u3001\u3001"s)); // wide
-        TEST(! str_is_east_asian(U"àààÀÀÀ"s)); // ambiguous + neutral
-        TEST(str_is_east_asian(U"ààà\u3000\u3000\u3000"s)); // ambiguous + fullwidth
-        TEST(str_is_east_asian(U"ààà\u20a9\u20a9\u20a9"s)); // ambiguous + halfwidth
-        TEST(! str_is_east_asian(U"àààAAA"s)); // ambiguous + narrow
-        TEST(str_is_east_asian(U"ààà\u3001\u3001\u3001"s)); // ambiguous + wide
+        TEST(! str_is_east_asian(u8"ÀÀÀ"s));                  // neutral
+        TEST(! str_is_east_asian(u8"ààà"s));                  // ambiguous
+        TEST(str_is_east_asian(u8"\u3000\u3000\u3000"s));     // fullwidth
+        TEST(str_is_east_asian(u8"\u20a9\u20a9\u20a9"s));     // halfwidth
+        TEST(! str_is_east_asian(u8"AAA"s));                  // narrow
+        TEST(str_is_east_asian(u8"\u3001\u3001\u3001"s));     // wide
+        TEST(! str_is_east_asian(u8"àààÀÀÀ"s));               // ambiguous + neutral
+        TEST(str_is_east_asian(u8"ààà\u3000\u3000\u3000"s));  // ambiguous + fullwidth
+        TEST(str_is_east_asian(u8"ààà\u20a9\u20a9\u20a9"s));  // ambiguous + halfwidth
+        TEST(! str_is_east_asian(u8"àààAAA"s));               // ambiguous + narrow
+        TEST(str_is_east_asian(u8"ààà\u3001\u3001\u3001"s));  // ambiguous + wide
 
     }
 
@@ -165,32 +141,6 @@ namespace {
         TEST(! str_starts_with("Hello world"s, "world"));
         TEST(! str_starts_with("Hello"s, "Hello world"));
 
-        TEST(str_starts_with(u""s, u""s));
-        TEST(str_starts_with(u"Hello world"s, u""s));
-        TEST(str_starts_with(u"Hello world"s, u"Hello"s));
-        TEST(! str_starts_with(u"Hello world"s, u"hello"s));
-        TEST(! str_starts_with(u"Hello world"s, u"world"s));
-        TEST(! str_starts_with(u"Hello"s, u"Hello world"s));
-        TEST(str_starts_with(u""s, u""));
-        TEST(str_starts_with(u"Hello world"s, u""));
-        TEST(str_starts_with(u"Hello world"s, u"Hello"));
-        TEST(! str_starts_with(u"Hello world"s, u"hello"));
-        TEST(! str_starts_with(u"Hello world"s, u"world"));
-        TEST(! str_starts_with(u"Hello"s, u"Hello world"));
-
-        TEST(str_starts_with(U""s, U""s));
-        TEST(str_starts_with(U"Hello world"s, U""s));
-        TEST(str_starts_with(U"Hello world"s, U"Hello"s));
-        TEST(! str_starts_with(U"Hello world"s, U"hello"s));
-        TEST(! str_starts_with(U"Hello world"s, U"world"s));
-        TEST(! str_starts_with(U"Hello"s, U"Hello world"s));
-        TEST(str_starts_with(U""s, U""));
-        TEST(str_starts_with(U"Hello world"s, U""));
-        TEST(str_starts_with(U"Hello world"s, U"Hello"));
-        TEST(! str_starts_with(U"Hello world"s, U"hello"));
-        TEST(! str_starts_with(U"Hello world"s, U"world"));
-        TEST(! str_starts_with(U"Hello"s, U"Hello world"));
-
         TEST(str_ends_with(""s, ""s));
         TEST(str_ends_with("Hello world"s, ""s));
         TEST(str_ends_with("Hello world"s, "world"s));
@@ -203,32 +153,6 @@ namespace {
         TEST(! str_ends_with("Hello world"s, "World"));
         TEST(! str_ends_with("Hello world"s, "Hello"));
         TEST(! str_ends_with("world"s, "Hello world"));
-
-        TEST(str_ends_with(u""s, u""s));
-        TEST(str_ends_with(u"Hello world"s, u""s));
-        TEST(str_ends_with(u"Hello world"s, u"world"s));
-        TEST(! str_ends_with(u"Hello world"s, u"World"s));
-        TEST(! str_ends_with(u"Hello world"s, u"Hello"s));
-        TEST(! str_ends_with(u"world"s, u"Hello world"s));
-        TEST(str_ends_with(u""s, u""));
-        TEST(str_ends_with(u"Hello world"s, u""));
-        TEST(str_ends_with(u"Hello world"s, u"world"));
-        TEST(! str_ends_with(u"Hello world"s, u"World"));
-        TEST(! str_ends_with(u"Hello world"s, u"Hello"));
-        TEST(! str_ends_with(u"world"s, u"Hello world"));
-
-        TEST(str_ends_with(U""s, U""s));
-        TEST(str_ends_with(U"Hello world"s, U""s));
-        TEST(str_ends_with(U"Hello world"s, U"world"s));
-        TEST(! str_ends_with(U"Hello world"s, U"World"s));
-        TEST(! str_ends_with(U"Hello world"s, U"Hello"s));
-        TEST(! str_ends_with(U"world"s, U"Hello world"s));
-        TEST(str_ends_with(U""s, U""));
-        TEST(str_ends_with(U"Hello world"s, U""));
-        TEST(str_ends_with(U"Hello world"s, U"world"));
-        TEST(! str_ends_with(U"Hello world"s, U"World"));
-        TEST(! str_ends_with(U"Hello world"s, U"Hello"));
-        TEST(! str_ends_with(U"world"s, U"Hello world"));
 
     }
 

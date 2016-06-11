@@ -165,39 +165,15 @@ namespace {
         TEST_EQUAL(str_char<char>(0x10302), "\xf0\x90\x8c\x82");
         TEST_EQUAL(str_char<char>(0x10fffd), "\xf4\x8f\xbf\xbd");
 
-        TEST_EQUAL(str_char<char16_t>(U'A'), u"A");
-        TEST_EQUAL(str_char<char16_t>(0x430), u16string{0x0430});
-        TEST_EQUAL(str_char<char16_t>(0x4e8c), u16string{0x4e8c});
-        TEST_EQUAL(str_char<char16_t>(0x10302), (u16string{0xd800,0xdf02}));
-        TEST_EQUAL(str_char<char16_t>(0x10fffd), (u16string{0xdbff,0xdffd}));
-
-        TEST_EQUAL(str_char<char32_t>(U'A'), U"A");
-        TEST_EQUAL(str_char<char32_t>(0x430), u32string{0x430});
-        TEST_EQUAL(str_char<char32_t>(0x4e8c), u32string{0x4e8c});
-        TEST_EQUAL(str_char<char32_t>(0x10302), u32string{0x10302});
-        TEST_EQUAL(str_char<char32_t>(0x10fffd), u32string{0x10fffd});
-
         TEST_EQUAL(str_chars<char>(3, U'A'), "AAA");
         TEST_EQUAL(str_chars<char>(3, 0x430), "\xd0\xb0\xd0\xb0\xd0\xb0");
         TEST_EQUAL(str_chars<char>(3, 0x4e8c), "\xe4\xba\x8c\xe4\xba\x8c\xe4\xba\x8c");
         TEST_EQUAL(str_chars<char>(3, 0x10302), "\xf0\x90\x8c\x82\xf0\x90\x8c\x82\xf0\x90\x8c\x82");
         TEST_EQUAL(str_chars<char>(3, 0x10fffd), "\xf4\x8f\xbf\xbd\xf4\x8f\xbf\xbd\xf4\x8f\xbf\xbd");
 
-        TEST_EQUAL(str_chars<char16_t>(3, U'A'), u"AAA");
-        TEST_EQUAL(str_chars<char16_t>(3, 0x430), (u16string{0x0430,0x0430,0x0430}));
-        TEST_EQUAL(str_chars<char16_t>(3, 0x4e8c), (u16string{0x4e8c,0x4e8c,0x4e8c}));
-        TEST_EQUAL(str_chars<char16_t>(3, 0x10302), (u16string{0xd800,0xdf02,0xd800,0xdf02,0xd800,0xdf02}));
-        TEST_EQUAL(str_chars<char16_t>(3, 0x10fffd), (u16string{0xdbff,0xdffd,0xdbff,0xdffd,0xdbff,0xdffd}));
-
-        TEST_EQUAL(str_chars<char32_t>(3, U'A'), U"AAA");
-        TEST_EQUAL(str_chars<char32_t>(3, 0x430), (u32string{0x430,0x430,0x430}));
-        TEST_EQUAL(str_chars<char32_t>(3, 0x4e8c), (u32string{0x4e8c,0x4e8c,0x4e8c}));
-        TEST_EQUAL(str_chars<char32_t>(3, 0x10302), (u32string{0x10302,0x10302,0x10302}));
-        TEST_EQUAL(str_chars<char32_t>(3, 0x10fffd), (u32string{0x10fffd,0x10fffd,0x10fffd}));
-
     }
 
-    void check_concat_1() {
+    void check_concat() {
 
         TEST_EQUAL(str_concat(""), "");
         TEST_EQUAL(str_concat(u""), u"");
@@ -241,24 +217,6 @@ namespace {
         TEST_EQUAL(str_concat(U"Hello"s, " world"s), U"Hello world");
         TEST_EQUAL(str_concat(U"Hello"s, u" world"s), U"Hello world");
         TEST_EQUAL(str_concat(U"Hello"s, U" world"s), U"Hello world");
-
-        TEST_EQUAL(str_concat_with("++"), "");
-        TEST_EQUAL(str_concat_with("++", "Hello"), "Hello");
-        TEST_EQUAL(str_concat_with("++", "Hello", "world"), "Hello++world");
-        TEST_EQUAL(str_concat_with("++", "Hello", "world", "goodbye"), "Hello++world++goodbye");
-        TEST_EQUAL(str_concat_with(u"++"), u"");
-        TEST_EQUAL(str_concat_with(u"++", "Hello"), u"Hello");
-        TEST_EQUAL(str_concat_with(u"++", "Hello", "world"), u"Hello++world");
-        TEST_EQUAL(str_concat_with(u"++", "Hello", "world", "goodbye"), u"Hello++world++goodbye");
-        TEST_EQUAL(str_concat_with(U"++"), U"");
-        TEST_EQUAL(str_concat_with(U"++", "Hello"), U"Hello");
-        TEST_EQUAL(str_concat_with(U"++", "Hello", "world"), U"Hello++world");
-        TEST_EQUAL(str_concat_with(U"++", "Hello", "world", "goodbye"), U"Hello++world++goodbye");
-
-    }
-
-    void check_concat_2() {
-
         TEST_EQUAL(str_concat("Hello", " world", "; goodbye"), "Hello world; goodbye");
         TEST_EQUAL(str_concat("Hello", " world", u"; goodbye"), "Hello world; goodbye");
         TEST_EQUAL(str_concat("Hello", " world", U"; goodbye"), "Hello world; goodbye");
@@ -476,13 +434,16 @@ namespace {
         TEST_EQUAL(str_concat(U"Hello"s, U" world"s, u"; goodbye"s), U"Hello world; goodbye");
         TEST_EQUAL(str_concat(U"Hello"s, U" world"s, U"; goodbye"s), U"Hello world; goodbye");
 
+        TEST_EQUAL(str_concat_with("++"), "");
+        TEST_EQUAL(str_concat_with("++", "Hello"), "Hello");
+        TEST_EQUAL(str_concat_with("++", "Hello", "world"), "Hello++world");
+        TEST_EQUAL(str_concat_with("++", "Hello", "world", "goodbye"), "Hello++world++goodbye");
+
     }
 
     void check_drop() {
 
-        u8string s8;
-        u16string s16;
-        u32string s32;
+        u8string s;
 
         TEST_EQUAL(str_drop_prefix(""s, ""), "");
         TEST_EQUAL(str_drop_prefix("Hello"s, ""), "Hello");
@@ -495,60 +456,16 @@ namespace {
         TEST_EQUAL(str_drop_prefix("Hello"s, "Hello"s), "");
         TEST_EQUAL(str_drop_prefix("Hello world"s, "Hello"s), " world");
 
-        TEST_EQUAL(str_drop_prefix(u""s, u""), u"");
-        TEST_EQUAL(str_drop_prefix(u"Hello"s, u""), u"Hello");
-        TEST_EQUAL(str_drop_prefix(u""s, u"Hello"), u"");
-        TEST_EQUAL(str_drop_prefix(u"Hello"s, u"Hello"), u"");
-        TEST_EQUAL(str_drop_prefix(u"Hello world"s, u"Hello"), u" world");
-        TEST_EQUAL(str_drop_prefix(u""s, u""s), u"");
-        TEST_EQUAL(str_drop_prefix(u"Hello"s, u""s), u"Hello");
-        TEST_EQUAL(str_drop_prefix(u""s, u"Hello"s), u"");
-        TEST_EQUAL(str_drop_prefix(u"Hello"s, u"Hello"s), u"");
-        TEST_EQUAL(str_drop_prefix(u"Hello world"s, u"Hello"s), u" world");
-
-        TEST_EQUAL(str_drop_prefix(U""s, U""), U"");
-        TEST_EQUAL(str_drop_prefix(U"Hello"s, U""), U"Hello");
-        TEST_EQUAL(str_drop_prefix(U""s, U"Hello"), U"");
-        TEST_EQUAL(str_drop_prefix(U"Hello"s, U"Hello"), U"");
-        TEST_EQUAL(str_drop_prefix(U"Hello world"s, U"Hello"), U" world");
-        TEST_EQUAL(str_drop_prefix(U""s, U""s), U"");
-        TEST_EQUAL(str_drop_prefix(U"Hello"s, U""s), U"Hello");
-        TEST_EQUAL(str_drop_prefix(U""s, U"Hello"s), U"");
-        TEST_EQUAL(str_drop_prefix(U"Hello"s, U"Hello"s), U"");
-        TEST_EQUAL(str_drop_prefix(U"Hello world"s, U"Hello"s), U" world");
-
-        s8 = "";             TRY(str_drop_prefix_in(s8, ""));        TEST_EQUAL(s8, "");
-        s8 = "Hello";        TRY(str_drop_prefix_in(s8, ""));        TEST_EQUAL(s8, "Hello");
-        s8 = "";             TRY(str_drop_prefix_in(s8, "Hello"));   TEST_EQUAL(s8, "");
-        s8 = "Hello";        TRY(str_drop_prefix_in(s8, "Hello"));   TEST_EQUAL(s8, "");
-        s8 = "Hello world";  TRY(str_drop_prefix_in(s8, "Hello"));   TEST_EQUAL(s8, " world");
-        s8 = "";             TRY(str_drop_prefix_in(s8, ""s));       TEST_EQUAL(s8, "");
-        s8 = "Hello";        TRY(str_drop_prefix_in(s8, ""s));       TEST_EQUAL(s8, "Hello");
-        s8 = "";             TRY(str_drop_prefix_in(s8, "Hello"s));  TEST_EQUAL(s8, "");
-        s8 = "Hello";        TRY(str_drop_prefix_in(s8, "Hello"s));  TEST_EQUAL(s8, "");
-        s8 = "Hello world";  TRY(str_drop_prefix_in(s8, "Hello"s));  TEST_EQUAL(s8, " world");
-
-        s16 = u"";             TRY(str_drop_prefix_in(s16, u""));        TEST_EQUAL(s16, u"");
-        s16 = u"Hello";        TRY(str_drop_prefix_in(s16, u""));        TEST_EQUAL(s16, u"Hello");
-        s16 = u"";             TRY(str_drop_prefix_in(s16, u"Hello"));   TEST_EQUAL(s16, u"");
-        s16 = u"Hello";        TRY(str_drop_prefix_in(s16, u"Hello"));   TEST_EQUAL(s16, u"");
-        s16 = u"Hello world";  TRY(str_drop_prefix_in(s16, u"Hello"));   TEST_EQUAL(s16, u" world");
-        s16 = u"";             TRY(str_drop_prefix_in(s16, u""s));       TEST_EQUAL(s16, u"");
-        s16 = u"Hello";        TRY(str_drop_prefix_in(s16, u""s));       TEST_EQUAL(s16, u"Hello");
-        s16 = u"";             TRY(str_drop_prefix_in(s16, u"Hello"s));  TEST_EQUAL(s16, u"");
-        s16 = u"Hello";        TRY(str_drop_prefix_in(s16, u"Hello"s));  TEST_EQUAL(s16, u"");
-        s16 = u"Hello world";  TRY(str_drop_prefix_in(s16, u"Hello"s));  TEST_EQUAL(s16, u" world");
-
-        s32 = U"";             TRY(str_drop_prefix_in(s32, U""));        TEST_EQUAL(s32, U"");
-        s32 = U"Hello";        TRY(str_drop_prefix_in(s32, U""));        TEST_EQUAL(s32, U"Hello");
-        s32 = U"";             TRY(str_drop_prefix_in(s32, U"Hello"));   TEST_EQUAL(s32, U"");
-        s32 = U"Hello";        TRY(str_drop_prefix_in(s32, U"Hello"));   TEST_EQUAL(s32, U"");
-        s32 = U"Hello world";  TRY(str_drop_prefix_in(s32, U"Hello"));   TEST_EQUAL(s32, U" world");
-        s32 = U"";             TRY(str_drop_prefix_in(s32, U""s));       TEST_EQUAL(s32, U"");
-        s32 = U"Hello";        TRY(str_drop_prefix_in(s32, U""s));       TEST_EQUAL(s32, U"Hello");
-        s32 = U"";             TRY(str_drop_prefix_in(s32, U"Hello"s));  TEST_EQUAL(s32, U"");
-        s32 = U"Hello";        TRY(str_drop_prefix_in(s32, U"Hello"s));  TEST_EQUAL(s32, U"");
-        s32 = U"Hello world";  TRY(str_drop_prefix_in(s32, U"Hello"s));  TEST_EQUAL(s32, U" world");
+        s = "";             TRY(str_drop_prefix_in(s, ""));        TEST_EQUAL(s, "");
+        s = "Hello";        TRY(str_drop_prefix_in(s, ""));        TEST_EQUAL(s, "Hello");
+        s = "";             TRY(str_drop_prefix_in(s, "Hello"));   TEST_EQUAL(s, "");
+        s = "Hello";        TRY(str_drop_prefix_in(s, "Hello"));   TEST_EQUAL(s, "");
+        s = "Hello world";  TRY(str_drop_prefix_in(s, "Hello"));   TEST_EQUAL(s, " world");
+        s = "";             TRY(str_drop_prefix_in(s, ""s));       TEST_EQUAL(s, "");
+        s = "Hello";        TRY(str_drop_prefix_in(s, ""s));       TEST_EQUAL(s, "Hello");
+        s = "";             TRY(str_drop_prefix_in(s, "Hello"s));  TEST_EQUAL(s, "");
+        s = "Hello";        TRY(str_drop_prefix_in(s, "Hello"s));  TEST_EQUAL(s, "");
+        s = "Hello world";  TRY(str_drop_prefix_in(s, "Hello"s));  TEST_EQUAL(s, " world");
 
         TEST_EQUAL(str_drop_suffix(""s, ""), "");
         TEST_EQUAL(str_drop_suffix("Hello"s, ""), "Hello");
@@ -561,66 +478,22 @@ namespace {
         TEST_EQUAL(str_drop_suffix("Hello"s, "Hello"s), "");
         TEST_EQUAL(str_drop_suffix("Hello world"s, "world"s), "Hello ");
 
-        TEST_EQUAL(str_drop_suffix(u""s, u""), u"");
-        TEST_EQUAL(str_drop_suffix(u"Hello"s, u""), u"Hello");
-        TEST_EQUAL(str_drop_suffix(u""s, u"Hello"), u"");
-        TEST_EQUAL(str_drop_suffix(u"Hello"s, u"Hello"), u"");
-        TEST_EQUAL(str_drop_suffix(u"Hello world"s, u"world"), u"Hello ");
-        TEST_EQUAL(str_drop_suffix(u""s, u""s), u"");
-        TEST_EQUAL(str_drop_suffix(u"Hello"s, u""s), u"Hello");
-        TEST_EQUAL(str_drop_suffix(u""s, u"Hello"s), u"");
-        TEST_EQUAL(str_drop_suffix(u"Hello"s, u"Hello"s), u"");
-        TEST_EQUAL(str_drop_suffix(u"Hello world"s, u"world"s), u"Hello ");
-
-        TEST_EQUAL(str_drop_suffix(U""s, U""), U"");
-        TEST_EQUAL(str_drop_suffix(U"Hello"s, U""), U"Hello");
-        TEST_EQUAL(str_drop_suffix(U""s, U"Hello"), U"");
-        TEST_EQUAL(str_drop_suffix(U"Hello"s, U"Hello"), U"");
-        TEST_EQUAL(str_drop_suffix(U"Hello world"s, U"world"), U"Hello ");
-        TEST_EQUAL(str_drop_suffix(U""s, U""s), U"");
-        TEST_EQUAL(str_drop_suffix(U"Hello"s, U""s), U"Hello");
-        TEST_EQUAL(str_drop_suffix(U""s, U"Hello"s), U"");
-        TEST_EQUAL(str_drop_suffix(U"Hello"s, U"Hello"s), U"");
-        TEST_EQUAL(str_drop_suffix(U"Hello world"s, U"world"s), U"Hello ");
-
-        s8 = "";             TRY(str_drop_suffix_in(s8, ""));        TEST_EQUAL(s8, "");
-        s8 = "Hello";        TRY(str_drop_suffix_in(s8, ""));        TEST_EQUAL(s8, "Hello");
-        s8 = "";             TRY(str_drop_suffix_in(s8, "Hello"));   TEST_EQUAL(s8, "");
-        s8 = "Hello";        TRY(str_drop_suffix_in(s8, "Hello"));   TEST_EQUAL(s8, "");
-        s8 = "Hello world";  TRY(str_drop_suffix_in(s8, "world"));   TEST_EQUAL(s8, "Hello ");
-        s8 = "";             TRY(str_drop_suffix_in(s8, ""s));       TEST_EQUAL(s8, "");
-        s8 = "Hello";        TRY(str_drop_suffix_in(s8, ""s));       TEST_EQUAL(s8, "Hello");
-        s8 = "Hello";        TRY(str_drop_suffix_in(s8, "Hello"s));  TEST_EQUAL(s8, "");
-        s8 = "";             TRY(str_drop_suffix_in(s8, "Hello"s));  TEST_EQUAL(s8, "");
-        s8 = "Hello world";  TRY(str_drop_suffix_in(s8, "world"s));  TEST_EQUAL(s8, "Hello ");
-
-        s16 = u"";             TRY(str_drop_suffix_in(s16, u""));        TEST_EQUAL(s16, u"");
-        s16 = u"Hello";        TRY(str_drop_suffix_in(s16, u""));        TEST_EQUAL(s16, u"Hello");
-        s16 = u"";             TRY(str_drop_suffix_in(s16, u"Hello"));   TEST_EQUAL(s16, u"");
-        s16 = u"Hello";        TRY(str_drop_suffix_in(s16, u"Hello"));   TEST_EQUAL(s16, u"");
-        s16 = u"Hello world";  TRY(str_drop_suffix_in(s16, u"world"));   TEST_EQUAL(s16, u"Hello ");
-        s16 = u"";             TRY(str_drop_suffix_in(s16, u""s));       TEST_EQUAL(s16, u"");
-        s16 = u"Hello";        TRY(str_drop_suffix_in(s16, u""s));       TEST_EQUAL(s16, u"Hello");
-        s16 = u"Hello";        TRY(str_drop_suffix_in(s16, u"Hello"s));  TEST_EQUAL(s16, u"");
-        s16 = u"";             TRY(str_drop_suffix_in(s16, u"Hello"s));  TEST_EQUAL(s16, u"");
-        s16 = u"Hello world";  TRY(str_drop_suffix_in(s16, u"world"s));  TEST_EQUAL(s16, u"Hello ");
-
-        s32 = U"";             TRY(str_drop_suffix_in(s32, U""));        TEST_EQUAL(s32, U"");
-        s32 = U"Hello";        TRY(str_drop_suffix_in(s32, U""));        TEST_EQUAL(s32, U"Hello");
-        s32 = U"";             TRY(str_drop_suffix_in(s32, U"Hello"));   TEST_EQUAL(s32, U"");
-        s32 = U"Hello";        TRY(str_drop_suffix_in(s32, U"Hello"));   TEST_EQUAL(s32, U"");
-        s32 = U"Hello world";  TRY(str_drop_suffix_in(s32, U"world"));   TEST_EQUAL(s32, U"Hello ");
-        s32 = U"";             TRY(str_drop_suffix_in(s32, U""s));       TEST_EQUAL(s32, U"");
-        s32 = U"Hello";        TRY(str_drop_suffix_in(s32, U""s));       TEST_EQUAL(s32, U"Hello");
-        s32 = U"Hello";        TRY(str_drop_suffix_in(s32, U"Hello"s));  TEST_EQUAL(s32, U"");
-        s32 = U"";             TRY(str_drop_suffix_in(s32, U"Hello"s));  TEST_EQUAL(s32, U"");
-        s32 = U"Hello world";  TRY(str_drop_suffix_in(s32, U"world"s));  TEST_EQUAL(s32, U"Hello ");
+        s = "";             TRY(str_drop_suffix_in(s, ""));        TEST_EQUAL(s, "");
+        s = "Hello";        TRY(str_drop_suffix_in(s, ""));        TEST_EQUAL(s, "Hello");
+        s = "";             TRY(str_drop_suffix_in(s, "Hello"));   TEST_EQUAL(s, "");
+        s = "Hello";        TRY(str_drop_suffix_in(s, "Hello"));   TEST_EQUAL(s, "");
+        s = "Hello world";  TRY(str_drop_suffix_in(s, "world"));   TEST_EQUAL(s, "Hello ");
+        s = "";             TRY(str_drop_suffix_in(s, ""s));       TEST_EQUAL(s, "");
+        s = "Hello";        TRY(str_drop_suffix_in(s, ""s));       TEST_EQUAL(s, "Hello");
+        s = "Hello";        TRY(str_drop_suffix_in(s, "Hello"s));  TEST_EQUAL(s, "");
+        s = "";             TRY(str_drop_suffix_in(s, "Hello"s));  TEST_EQUAL(s, "");
+        s = "Hello world";  TRY(str_drop_suffix_in(s, "world"s));  TEST_EQUAL(s, "Hello ");
 
     }
 
     void check_erase() {
 
-        u8string s8;
+        u8string s;
         u16string s16;
         u32string s32;
 
@@ -631,82 +504,26 @@ namespace {
         TEST_EQUAL(str_erase_left(u8"€uro"s, 4), u8"");
         TEST_EQUAL(str_erase_left(u8"€uro"s, 5), u8"");
 
-        TEST_EQUAL(str_erase_left(u"€uro"s, 0), u"€uro");
-        TEST_EQUAL(str_erase_left(u"€uro"s, 1), u"uro");
-        TEST_EQUAL(str_erase_left(u"€uro"s, 2), u"ro");
-        TEST_EQUAL(str_erase_left(u"€uro"s, 3), u"o");
-        TEST_EQUAL(str_erase_left(u"€uro"s, 4), u"");
-        TEST_EQUAL(str_erase_left(u"€uro"s, 5), u"");
+        s = u8"€uro";  TRY(str_erase_left_in(s, 0));  TEST_EQUAL(s, u8"€uro");
+        s = u8"€uro";  TRY(str_erase_left_in(s, 1));  TEST_EQUAL(s, u8"uro");
+        s = u8"€uro";  TRY(str_erase_left_in(s, 2));  TEST_EQUAL(s, u8"ro");
+        s = u8"€uro";  TRY(str_erase_left_in(s, 3));  TEST_EQUAL(s, u8"o");
+        s = u8"€uro";  TRY(str_erase_left_in(s, 4));  TEST_EQUAL(s, u8"");
+        s = u8"€uro";  TRY(str_erase_left_in(s, 5));  TEST_EQUAL(s, u8"");
 
-        TEST_EQUAL(str_erase_left(U"€uro"s, 0), U"€uro");
-        TEST_EQUAL(str_erase_left(U"€uro"s, 1), U"uro");
-        TEST_EQUAL(str_erase_left(U"€uro"s, 2), U"ro");
-        TEST_EQUAL(str_erase_left(U"€uro"s, 3), U"o");
-        TEST_EQUAL(str_erase_left(U"€uro"s, 4), U"");
-        TEST_EQUAL(str_erase_left(U"€uro"s, 5), U"");
+        TEST_EQUAL(str_erase_right(u8"€uro"s, 0), u8"€uro");
+        TEST_EQUAL(str_erase_right(u8"€uro"s, 1), u8"€ur");
+        TEST_EQUAL(str_erase_right(u8"€uro"s, 2), u8"€u");
+        TEST_EQUAL(str_erase_right(u8"€uro"s, 3), u8"€");
+        TEST_EQUAL(str_erase_right(u8"€uro"s, 4), u8"");
+        TEST_EQUAL(str_erase_right(u8"€uro"s, 5), u8"");
 
-        s8 = u8"€uro";  TRY(str_erase_left_in(s8, 0));  TEST_EQUAL(s8, u8"€uro");
-        s8 = u8"€uro";  TRY(str_erase_left_in(s8, 1));  TEST_EQUAL(s8, u8"uro");
-        s8 = u8"€uro";  TRY(str_erase_left_in(s8, 2));  TEST_EQUAL(s8, u8"ro");
-        s8 = u8"€uro";  TRY(str_erase_left_in(s8, 3));  TEST_EQUAL(s8, u8"o");
-        s8 = u8"€uro";  TRY(str_erase_left_in(s8, 4));  TEST_EQUAL(s8, u8"");
-        s8 = u8"€uro";  TRY(str_erase_left_in(s8, 5));  TEST_EQUAL(s8, u8"");
-
-        s16 = u"€uro";  TRY(str_erase_left_in(s16, 0));  TEST_EQUAL(s16, u"€uro");
-        s16 = u"€uro";  TRY(str_erase_left_in(s16, 1));  TEST_EQUAL(s16, u"uro");
-        s16 = u"€uro";  TRY(str_erase_left_in(s16, 2));  TEST_EQUAL(s16, u"ro");
-        s16 = u"€uro";  TRY(str_erase_left_in(s16, 3));  TEST_EQUAL(s16, u"o");
-        s16 = u"€uro";  TRY(str_erase_left_in(s16, 4));  TEST_EQUAL(s16, u"");
-        s16 = u"€uro";  TRY(str_erase_left_in(s16, 5));  TEST_EQUAL(s16, u"");
-
-        s32 = U"€uro";  TRY(str_erase_left_in(s32, 0));  TEST_EQUAL(s32, U"€uro");
-        s32 = U"€uro";  TRY(str_erase_left_in(s32, 1));  TEST_EQUAL(s32, U"uro");
-        s32 = U"€uro";  TRY(str_erase_left_in(s32, 2));  TEST_EQUAL(s32, U"ro");
-        s32 = U"€uro";  TRY(str_erase_left_in(s32, 3));  TEST_EQUAL(s32, U"o");
-        s32 = U"€uro";  TRY(str_erase_left_in(s32, 4));  TEST_EQUAL(s32, U"");
-        s32 = U"€uro";  TRY(str_erase_left_in(s32, 5));  TEST_EQUAL(s32, U"");
-
-        TEST_EQUAL(str_erase_right("€uro"s, 0), "€uro");
-        TEST_EQUAL(str_erase_right("€uro"s, 1), "€ur");
-        TEST_EQUAL(str_erase_right("€uro"s, 2), "€u");
-        TEST_EQUAL(str_erase_right("€uro"s, 3), "€");
-        TEST_EQUAL(str_erase_right("€uro"s, 4), "");
-        TEST_EQUAL(str_erase_right("€uro"s, 5), "");
-
-        TEST_EQUAL(str_erase_right(u"€uro"s, 0), u"€uro");
-        TEST_EQUAL(str_erase_right(u"€uro"s, 1), u"€ur");
-        TEST_EQUAL(str_erase_right(u"€uro"s, 2), u"€u");
-        TEST_EQUAL(str_erase_right(u"€uro"s, 3), u"€");
-        TEST_EQUAL(str_erase_right(u"€uro"s, 4), u"");
-        TEST_EQUAL(str_erase_right(u"€uro"s, 5), u"");
-
-        TEST_EQUAL(str_erase_right(U"€uro"s, 0), U"€uro");
-        TEST_EQUAL(str_erase_right(U"€uro"s, 1), U"€ur");
-        TEST_EQUAL(str_erase_right(U"€uro"s, 2), U"€u");
-        TEST_EQUAL(str_erase_right(U"€uro"s, 3), U"€");
-        TEST_EQUAL(str_erase_right(U"€uro"s, 4), U"");
-        TEST_EQUAL(str_erase_right(U"€uro"s, 5), U"");
-
-        s8 = u8"€uro";  TRY(str_erase_right_in(s8, 0));  TEST_EQUAL(s8, u8"€uro");
-        s8 = u8"€uro";  TRY(str_erase_right_in(s8, 1));  TEST_EQUAL(s8, u8"€ur");
-        s8 = u8"€uro";  TRY(str_erase_right_in(s8, 2));  TEST_EQUAL(s8, u8"€u");
-        s8 = u8"€uro";  TRY(str_erase_right_in(s8, 3));  TEST_EQUAL(s8, u8"€");
-        s8 = u8"€uro";  TRY(str_erase_right_in(s8, 4));  TEST_EQUAL(s8, u8"");
-        s8 = u8"€uro";  TRY(str_erase_right_in(s8, 5));  TEST_EQUAL(s8, u8"");
-
-        s16 = u"€uro";  TRY(str_erase_right_in(s16, 0));  TEST_EQUAL(s16, u"€uro");
-        s16 = u"€uro";  TRY(str_erase_right_in(s16, 1));  TEST_EQUAL(s16, u"€ur");
-        s16 = u"€uro";  TRY(str_erase_right_in(s16, 2));  TEST_EQUAL(s16, u"€u");
-        s16 = u"€uro";  TRY(str_erase_right_in(s16, 3));  TEST_EQUAL(s16, u"€");
-        s16 = u"€uro";  TRY(str_erase_right_in(s16, 4));  TEST_EQUAL(s16, u"");
-        s16 = u"€uro";  TRY(str_erase_right_in(s16, 5));  TEST_EQUAL(s16, u"");
-
-        s32 = U"€uro";  TRY(str_erase_right_in(s32, 0));  TEST_EQUAL(s32, U"€uro");
-        s32 = U"€uro";  TRY(str_erase_right_in(s32, 1));  TEST_EQUAL(s32, U"€ur");
-        s32 = U"€uro";  TRY(str_erase_right_in(s32, 2));  TEST_EQUAL(s32, U"€u");
-        s32 = U"€uro";  TRY(str_erase_right_in(s32, 3));  TEST_EQUAL(s32, U"€");
-        s32 = U"€uro";  TRY(str_erase_right_in(s32, 4));  TEST_EQUAL(s32, U"");
-        s32 = U"€uro";  TRY(str_erase_right_in(s32, 5));  TEST_EQUAL(s32, U"");
+        s = u8"€uro";  TRY(str_erase_right_in(s, 0));  TEST_EQUAL(s, u8"€uro");
+        s = u8"€uro";  TRY(str_erase_right_in(s, 1));  TEST_EQUAL(s, u8"€ur");
+        s = u8"€uro";  TRY(str_erase_right_in(s, 2));  TEST_EQUAL(s, u8"€u");
+        s = u8"€uro";  TRY(str_erase_right_in(s, 3));  TEST_EQUAL(s, u8"€");
+        s = u8"€uro";  TRY(str_erase_right_in(s, 4));  TEST_EQUAL(s, u8"");
+        s = u8"€uro";  TRY(str_erase_right_in(s, 5));  TEST_EQUAL(s, u8"");
 
     }
 
@@ -714,123 +531,59 @@ namespace {
 
         vector<int> tabs {5,10,15,20};
 
-        const u8string a8 = u8"";
-        const u8string b8 = u8"Hello world\tGoodbye";
-        const u8string c8 = u8"ab\tcd\tef\tgh\tij\tkl\tmn\top";
-        const u8string d8 = u8"ab\tcd\nef\tgh\nij\tkl\nmn\top";
-        const u8string e8 = u8"abc\t\t\txyz";
-        const u8string f8 = u8"€uro\t∈lement\t∃";
-        const u8string g8 = u8"\tabc\txyz\t";
+        const u8string a = u8"";
+        const u8string b = u8"Hello world\tGoodbye";
+        const u8string c = u8"ab\tcd\tef\tgh\tij\tkl\tmn\top";
+        const u8string d = u8"ab\tcd\nef\tgh\nij\tkl\nmn\top";
+        const u8string e = u8"abc\t\t\txyz";
+        const u8string f = u8"€uro\t∈lement\t∃";
+        const u8string g = u8"\tabc\txyz\t";
 
-        u8string s8;
+        u8string s;
 
-        TRY(s8 = str_expand_tabs(a8));               TEST_EQUAL(s8, u8"");
-        TRY(s8 = str_expand_tabs(b8));               TEST_EQUAL(s8, u8"Hello world     Goodbye");
-        TRY(s8 = str_expand_tabs(c8));               TEST_EQUAL(s8, u8"ab      cd      ef      gh      ij      kl      mn      op");
-        TRY(s8 = str_expand_tabs(d8));               TEST_EQUAL(s8, u8"ab      cd\nef      gh\nij      kl\nmn      op");
-        TRY(s8 = str_expand_tabs(e8));               TEST_EQUAL(s8, u8"abc                     xyz");
-        TRY(s8 = str_expand_tabs(f8));               TEST_EQUAL(s8, u8"€uro    ∈lement ∃");
-        TRY(s8 = str_expand_tabs(g8));               TEST_EQUAL(s8, u8"        abc     xyz     ");
-        TRY(s8 = str_expand_tabs(a8, tabs));         TEST_EQUAL(s8, u8"");
-        TRY(s8 = str_expand_tabs(b8, tabs));         TEST_EQUAL(s8, u8"Hello world    Goodbye");
-        TRY(s8 = str_expand_tabs(c8, tabs));         TEST_EQUAL(s8, u8"ab   cd   ef   gh   ij   kl   mn   op");
-        TRY(s8 = str_expand_tabs(d8, tabs));         TEST_EQUAL(s8, u8"ab   cd\nef   gh\nij   kl\nmn   op");
-        TRY(s8 = str_expand_tabs(e8, tabs));         TEST_EQUAL(s8, u8"abc            xyz");
-        TRY(s8 = str_expand_tabs(f8, tabs));         TEST_EQUAL(s8, u8"€uro ∈lement   ∃");
-        TRY(s8 = str_expand_tabs(g8, tabs));         TEST_EQUAL(s8, u8"     abc  xyz  ");
-        TRY(s8 = str_expand_tabs(a8, {4,8,12,16}));  TEST_EQUAL(s8, u8"");
-        TRY(s8 = str_expand_tabs(b8, {4,8,12,16}));  TEST_EQUAL(s8, u8"Hello world Goodbye");
-        TRY(s8 = str_expand_tabs(c8, {4,8,12,16}));  TEST_EQUAL(s8, u8"ab  cd  ef  gh  ij  kl  mn  op");
-        TRY(s8 = str_expand_tabs(d8, {4,8,12,16}));  TEST_EQUAL(s8, u8"ab  cd\nef  gh\nij  kl\nmn  op");
-        TRY(s8 = str_expand_tabs(e8, {4,8,12,16}));  TEST_EQUAL(s8, u8"abc         xyz");
-        TRY(s8 = str_expand_tabs(f8, {4,8,12,16}));  TEST_EQUAL(s8, u8"€uro    ∈lement ∃");
-        TRY(s8 = str_expand_tabs(g8, {4,8,12,16}));  TEST_EQUAL(s8, u8"    abc xyz ");
+        TRY(s = str_expand_tabs(a));               TEST_EQUAL(s, u8"");
+        TRY(s = str_expand_tabs(b));               TEST_EQUAL(s, u8"Hello world     Goodbye");
+        TRY(s = str_expand_tabs(c));               TEST_EQUAL(s, u8"ab      cd      ef      gh      ij      kl      mn      op");
+        TRY(s = str_expand_tabs(d));               TEST_EQUAL(s, u8"ab      cd\nef      gh\nij      kl\nmn      op");
+        TRY(s = str_expand_tabs(e));               TEST_EQUAL(s, u8"abc                     xyz");
+        TRY(s = str_expand_tabs(f));               TEST_EQUAL(s, u8"€uro    ∈lement ∃");
+        TRY(s = str_expand_tabs(g));               TEST_EQUAL(s, u8"        abc     xyz     ");
+        TRY(s = str_expand_tabs(a, tabs));         TEST_EQUAL(s, u8"");
+        TRY(s = str_expand_tabs(b, tabs));         TEST_EQUAL(s, u8"Hello world    Goodbye");
+        TRY(s = str_expand_tabs(c, tabs));         TEST_EQUAL(s, u8"ab   cd   ef   gh   ij   kl   mn   op");
+        TRY(s = str_expand_tabs(d, tabs));         TEST_EQUAL(s, u8"ab   cd\nef   gh\nij   kl\nmn   op");
+        TRY(s = str_expand_tabs(e, tabs));         TEST_EQUAL(s, u8"abc            xyz");
+        TRY(s = str_expand_tabs(f, tabs));         TEST_EQUAL(s, u8"€uro ∈lement   ∃");
+        TRY(s = str_expand_tabs(g, tabs));         TEST_EQUAL(s, u8"     abc  xyz  ");
+        TRY(s = str_expand_tabs(a, {4,8,12,16}));  TEST_EQUAL(s, u8"");
+        TRY(s = str_expand_tabs(b, {4,8,12,16}));  TEST_EQUAL(s, u8"Hello world Goodbye");
+        TRY(s = str_expand_tabs(c, {4,8,12,16}));  TEST_EQUAL(s, u8"ab  cd  ef  gh  ij  kl  mn  op");
+        TRY(s = str_expand_tabs(d, {4,8,12,16}));  TEST_EQUAL(s, u8"ab  cd\nef  gh\nij  kl\nmn  op");
+        TRY(s = str_expand_tabs(e, {4,8,12,16}));  TEST_EQUAL(s, u8"abc         xyz");
+        TRY(s = str_expand_tabs(f, {4,8,12,16}));  TEST_EQUAL(s, u8"€uro    ∈lement ∃");
+        TRY(s = str_expand_tabs(g, {4,8,12,16}));  TEST_EQUAL(s, u8"    abc xyz ");
 
-        s8 = a8;  TRY(str_expand_tabs_in(s8));               TEST_EQUAL(s8, u8"");
-        s8 = b8;  TRY(str_expand_tabs_in(s8));               TEST_EQUAL(s8, u8"Hello world     Goodbye");
-        s8 = c8;  TRY(str_expand_tabs_in(s8));               TEST_EQUAL(s8, u8"ab      cd      ef      gh      ij      kl      mn      op");
-        s8 = d8;  TRY(str_expand_tabs_in(s8));               TEST_EQUAL(s8, u8"ab      cd\nef      gh\nij      kl\nmn      op");
-        s8 = e8;  TRY(str_expand_tabs_in(s8));               TEST_EQUAL(s8, u8"abc                     xyz");
-        s8 = f8;  TRY(str_expand_tabs_in(s8));               TEST_EQUAL(s8, u8"€uro    ∈lement ∃");
-        s8 = g8;  TRY(str_expand_tabs_in(s8));               TEST_EQUAL(s8, u8"        abc     xyz     ");
-        s8 = a8;  TRY(str_expand_tabs_in(s8, tabs));         TEST_EQUAL(s8, u8"");
-        s8 = b8;  TRY(str_expand_tabs_in(s8, tabs));         TEST_EQUAL(s8, u8"Hello world    Goodbye");
-        s8 = c8;  TRY(str_expand_tabs_in(s8, tabs));         TEST_EQUAL(s8, u8"ab   cd   ef   gh   ij   kl   mn   op");
-        s8 = d8;  TRY(str_expand_tabs_in(s8, tabs));         TEST_EQUAL(s8, u8"ab   cd\nef   gh\nij   kl\nmn   op");
-        s8 = e8;  TRY(str_expand_tabs_in(s8, tabs));         TEST_EQUAL(s8, u8"abc            xyz");
-        s8 = f8;  TRY(str_expand_tabs_in(s8, tabs));         TEST_EQUAL(s8, u8"€uro ∈lement   ∃");
-        s8 = g8;  TRY(str_expand_tabs_in(s8, tabs));         TEST_EQUAL(s8, u8"     abc  xyz  ");
-        s8 = a8;  TRY(str_expand_tabs_in(s8, {4,8,12,16}));  TEST_EQUAL(s8, u8"");
-        s8 = b8;  TRY(str_expand_tabs_in(s8, {4,8,12,16}));  TEST_EQUAL(s8, u8"Hello world Goodbye");
-        s8 = c8;  TRY(str_expand_tabs_in(s8, {4,8,12,16}));  TEST_EQUAL(s8, u8"ab  cd  ef  gh  ij  kl  mn  op");
-        s8 = d8;  TRY(str_expand_tabs_in(s8, {4,8,12,16}));  TEST_EQUAL(s8, u8"ab  cd\nef  gh\nij  kl\nmn  op");
-        s8 = e8;  TRY(str_expand_tabs_in(s8, {4,8,12,16}));  TEST_EQUAL(s8, u8"abc         xyz");
-        s8 = f8;  TRY(str_expand_tabs_in(s8, {4,8,12,16}));  TEST_EQUAL(s8, u8"€uro    ∈lement ∃");
-        s8 = g8;  TRY(str_expand_tabs_in(s8, {4,8,12,16}));  TEST_EQUAL(s8, u8"    abc xyz ");
-
-        const u16string a16 = u"";
-        const u16string b16 = u"Hello world\tGoodbye";
-        const u16string c16 = u"ab\tcd\tef\tgh\tij\tkl\tmn\top";
-        const u16string d16 = u"ab\tcd\nef\tgh\nij\tkl\nmn\top";
-        const u16string e16 = u"abc\t\t\txyz";
-        const u16string f16 = u"€uro\t∈lement\t∃";
-        const u16string g16 = u"\tabc\txyz\t";
-
-        u16string s16;
-
-        TRY(s16 = str_expand_tabs(a16));               TEST_EQUAL(s16, u"");
-        TRY(s16 = str_expand_tabs(b16));               TEST_EQUAL(s16, u"Hello world     Goodbye");
-        TRY(s16 = str_expand_tabs(c16));               TEST_EQUAL(s16, u"ab      cd      ef      gh      ij      kl      mn      op");
-        TRY(s16 = str_expand_tabs(d16));               TEST_EQUAL(s16, u"ab      cd\nef      gh\nij      kl\nmn      op");
-        TRY(s16 = str_expand_tabs(e16));               TEST_EQUAL(s16, u"abc                     xyz");
-        TRY(s16 = str_expand_tabs(f16));               TEST_EQUAL(s16, u"€uro    ∈lement ∃");
-        TRY(s16 = str_expand_tabs(g16));               TEST_EQUAL(s16, u"        abc     xyz     ");
-        TRY(s16 = str_expand_tabs(a16, tabs));         TEST_EQUAL(s16, u"");
-        TRY(s16 = str_expand_tabs(b16, tabs));         TEST_EQUAL(s16, u"Hello world    Goodbye");
-        TRY(s16 = str_expand_tabs(c16, tabs));         TEST_EQUAL(s16, u"ab   cd   ef   gh   ij   kl   mn   op");
-        TRY(s16 = str_expand_tabs(d16, tabs));         TEST_EQUAL(s16, u"ab   cd\nef   gh\nij   kl\nmn   op");
-        TRY(s16 = str_expand_tabs(e16, tabs));         TEST_EQUAL(s16, u"abc            xyz");
-        TRY(s16 = str_expand_tabs(f16, tabs));         TEST_EQUAL(s16, u"€uro ∈lement   ∃");
-        TRY(s16 = str_expand_tabs(g16, tabs));         TEST_EQUAL(s16, u"     abc  xyz  ");
-        TRY(s16 = str_expand_tabs(a16, {4,8,12,16}));  TEST_EQUAL(s16, u"");
-        TRY(s16 = str_expand_tabs(b16, {4,8,12,16}));  TEST_EQUAL(s16, u"Hello world Goodbye");
-        TRY(s16 = str_expand_tabs(c16, {4,8,12,16}));  TEST_EQUAL(s16, u"ab  cd  ef  gh  ij  kl  mn  op");
-        TRY(s16 = str_expand_tabs(d16, {4,8,12,16}));  TEST_EQUAL(s16, u"ab  cd\nef  gh\nij  kl\nmn  op");
-        TRY(s16 = str_expand_tabs(e16, {4,8,12,16}));  TEST_EQUAL(s16, u"abc         xyz");
-        TRY(s16 = str_expand_tabs(f16, {4,8,12,16}));  TEST_EQUAL(s16, u"€uro    ∈lement ∃");
-        TRY(s16 = str_expand_tabs(g16, {4,8,12,16}));  TEST_EQUAL(s16, u"    abc xyz ");
-
-        const u32string a32 = U"";
-        const u32string b32 = U"Hello world\tGoodbye";
-        const u32string c32 = U"ab\tcd\tef\tgh\tij\tkl\tmn\top";
-        const u32string d32 = U"ab\tcd\nef\tgh\nij\tkl\nmn\top";
-        const u32string e32 = U"abc\t\t\txyz";
-        const u32string f32 = U"€uro\t∈lement\t∃";
-        const u32string g32 = U"\tabc\txyz\t";
-
-        u32string s32;
-
-        TRY(s32 = str_expand_tabs(a32));               TEST_EQUAL(s32, U"");
-        TRY(s32 = str_expand_tabs(b32));               TEST_EQUAL(s32, U"Hello world     Goodbye");
-        TRY(s32 = str_expand_tabs(c32));               TEST_EQUAL(s32, U"ab      cd      ef      gh      ij      kl      mn      op");
-        TRY(s32 = str_expand_tabs(d32));               TEST_EQUAL(s32, U"ab      cd\nef      gh\nij      kl\nmn      op");
-        TRY(s32 = str_expand_tabs(e32));               TEST_EQUAL(s32, U"abc                     xyz");
-        TRY(s32 = str_expand_tabs(f32));               TEST_EQUAL(s32, U"€uro    ∈lement ∃");
-        TRY(s32 = str_expand_tabs(g32));               TEST_EQUAL(s32, U"        abc     xyz     ");
-        TRY(s32 = str_expand_tabs(a32, tabs));         TEST_EQUAL(s32, U"");
-        TRY(s32 = str_expand_tabs(b32, tabs));         TEST_EQUAL(s32, U"Hello world    Goodbye");
-        TRY(s32 = str_expand_tabs(c32, tabs));         TEST_EQUAL(s32, U"ab   cd   ef   gh   ij   kl   mn   op");
-        TRY(s32 = str_expand_tabs(d32, tabs));         TEST_EQUAL(s32, U"ab   cd\nef   gh\nij   kl\nmn   op");
-        TRY(s32 = str_expand_tabs(e32, tabs));         TEST_EQUAL(s32, U"abc            xyz");
-        TRY(s32 = str_expand_tabs(f32, tabs));         TEST_EQUAL(s32, U"€uro ∈lement   ∃");
-        TRY(s32 = str_expand_tabs(g32, tabs));         TEST_EQUAL(s32, U"     abc  xyz  ");
-        TRY(s32 = str_expand_tabs(a32, {4,8,12,16}));  TEST_EQUAL(s32, U"");
-        TRY(s32 = str_expand_tabs(b32, {4,8,12,16}));  TEST_EQUAL(s32, U"Hello world Goodbye");
-        TRY(s32 = str_expand_tabs(c32, {4,8,12,16}));  TEST_EQUAL(s32, U"ab  cd  ef  gh  ij  kl  mn  op");
-        TRY(s32 = str_expand_tabs(d32, {4,8,12,16}));  TEST_EQUAL(s32, U"ab  cd\nef  gh\nij  kl\nmn  op");
-        TRY(s32 = str_expand_tabs(e32, {4,8,12,16}));  TEST_EQUAL(s32, U"abc         xyz");
-        TRY(s32 = str_expand_tabs(f32, {4,8,12,16}));  TEST_EQUAL(s32, U"€uro    ∈lement ∃");
-        TRY(s32 = str_expand_tabs(g32, {4,8,12,16}));  TEST_EQUAL(s32, U"    abc xyz ");
+        s = a;  TRY(str_expand_tabs_in(s));               TEST_EQUAL(s, u8"");
+        s = b;  TRY(str_expand_tabs_in(s));               TEST_EQUAL(s, u8"Hello world     Goodbye");
+        s = c;  TRY(str_expand_tabs_in(s));               TEST_EQUAL(s, u8"ab      cd      ef      gh      ij      kl      mn      op");
+        s = d;  TRY(str_expand_tabs_in(s));               TEST_EQUAL(s, u8"ab      cd\nef      gh\nij      kl\nmn      op");
+        s = e;  TRY(str_expand_tabs_in(s));               TEST_EQUAL(s, u8"abc                     xyz");
+        s = f;  TRY(str_expand_tabs_in(s));               TEST_EQUAL(s, u8"€uro    ∈lement ∃");
+        s = g;  TRY(str_expand_tabs_in(s));               TEST_EQUAL(s, u8"        abc     xyz     ");
+        s = a;  TRY(str_expand_tabs_in(s, tabs));         TEST_EQUAL(s, u8"");
+        s = b;  TRY(str_expand_tabs_in(s, tabs));         TEST_EQUAL(s, u8"Hello world    Goodbye");
+        s = c;  TRY(str_expand_tabs_in(s, tabs));         TEST_EQUAL(s, u8"ab   cd   ef   gh   ij   kl   mn   op");
+        s = d;  TRY(str_expand_tabs_in(s, tabs));         TEST_EQUAL(s, u8"ab   cd\nef   gh\nij   kl\nmn   op");
+        s = e;  TRY(str_expand_tabs_in(s, tabs));         TEST_EQUAL(s, u8"abc            xyz");
+        s = f;  TRY(str_expand_tabs_in(s, tabs));         TEST_EQUAL(s, u8"€uro ∈lement   ∃");
+        s = g;  TRY(str_expand_tabs_in(s, tabs));         TEST_EQUAL(s, u8"     abc  xyz  ");
+        s = a;  TRY(str_expand_tabs_in(s, {4,8,12,16}));  TEST_EQUAL(s, u8"");
+        s = b;  TRY(str_expand_tabs_in(s, {4,8,12,16}));  TEST_EQUAL(s, u8"Hello world Goodbye");
+        s = c;  TRY(str_expand_tabs_in(s, {4,8,12,16}));  TEST_EQUAL(s, u8"ab  cd  ef  gh  ij  kl  mn  op");
+        s = d;  TRY(str_expand_tabs_in(s, {4,8,12,16}));  TEST_EQUAL(s, u8"ab  cd\nef  gh\nij  kl\nmn  op");
+        s = e;  TRY(str_expand_tabs_in(s, {4,8,12,16}));  TEST_EQUAL(s, u8"abc         xyz");
+        s = f;  TRY(str_expand_tabs_in(s, {4,8,12,16}));  TEST_EQUAL(s, u8"€uro    ∈lement ∃");
+        s = g;  TRY(str_expand_tabs_in(s, {4,8,12,16}));  TEST_EQUAL(s, u8"    abc xyz ");
 
     }
 
@@ -840,8 +593,7 @@ TEST_MODULE(unicorn, string_manipulation_a_e) {
 
     check_append();
     check_chars();
-    check_concat_1();
-    check_concat_2();
+    check_concat();
     check_drop();
     check_erase();
     check_expand();
