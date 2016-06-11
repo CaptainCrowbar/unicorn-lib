@@ -1,5 +1,8 @@
 // Internal to the library, do not include this directly
 
+// This header contains the string functions that are used extensively in
+// string submodules other than the one they are defined in.
+
 #pragma once
 
 #include "unicorn/core.hpp"
