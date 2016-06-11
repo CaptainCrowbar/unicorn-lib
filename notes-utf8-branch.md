@@ -24,18 +24,32 @@
     * [done] `normal -> character, core, utf`
     * **[TODO]** `segment -> character, core, utf`
     * **[TODO]** `string-forward -> character, core, utf`
+        * Refer to the modules these nominally belong to
 * _Level 7_
     * **[TODO]** `string-size -> character, core, segment, string-forward, utf`
+        * Keep all of these as templates
 * _Level 8_
     * **[TODO]** `string-property -> character, core, string-forward, string-size, utf`
+        * `str_char_at()`, `str_first_char()` Keep these as templates
+        * Others - Make UTF-8 only
 * _Level 9_
     * **[TODO]** `string-algorithm -> character, core, string-forward, string-property, string-size, utf`
+        * Make all of these UTF-8 only
     * **[TODO]** `string-case -> character, core, segment, string-forward, string-property, string-size, utf`
+        * Make all of these UTF-8 only
     * **[TODO]** `string-conversion -> character, core, string-forward, string-property, string-size, utf`
+        * Make all of these UTF-8 only
     * **[TODO]** `string-escape -> character, core, string-forward, string-property, string-size, utf`
+        * Make all of these UTF-8 only
 * _Level 10_
     * **[TODO]** `string-compare -> character, core, string-algorithm, string-case, string-forward, utf`
+        * `StringCompare` Delete
+        * Others - Make UTF-8 only
     * **[TODO]** `string-manip -> character, core, string-algorithm, string-forward, string-property, string-size, utf`
+        * `str_append()`, `str_append_char()`, `str_append_chars()` Keep these as templates
+        * `str_char()`, `str_chars()` UTF-8 output only; this will require changes elsewhere
+        * `str_concat()`, `str_concat_with()` UTF-8 output only, but keep the generic input
+        * Others - Make UTF-8 only
 * _Level 11_
     * [unchanged] `string -> string-algorithm, string-case, string-compare, string-conversion, string-escape, string-manip, string-property, string-size`
 * _Level 12_
@@ -51,23 +65,3 @@
     * [done] `table -> character, core, format, string, utf`
 * _Level 15_
     * [done] `io -> character, core, file, format, mbcs, string, utf`
-
-## String function notes ##
-
-* `string-algorithm` - Make all of these UTF-8 only
-* `string-case` - Make all of these UTF-8 only
-* `string-compare`
-    * `StringCompare` - Delete
-    * Others - Make UTF-8 only
-* `string-conversion` - Make all of these UTF-8 only
-* `string-escape` - Make all of these UTF-8 only
-* `string-forward` - Refer to the modules these nominally belong to
-* `string-manip`
-    * `str_append()`, `str_append_char()`, `str_append_chars()` - Keep these as templates
-    * `str_char()`, `str_chars()` - UTF-8 output only; this will require changes elsewhere
-    * `str_concat()`, `str_concat_with()` - UTF-8 output only, but keep the generic input
-    * Others - Make UTF-8 only
-* `string-property`
-    * `str_char_at()`, `str_first_char()` - Keep these as templates
-    * Others - Make UTF-8 only
-* `string-size` - Keep all of these as templates

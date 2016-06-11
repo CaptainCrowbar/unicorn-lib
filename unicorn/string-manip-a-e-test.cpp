@@ -24,136 +24,52 @@ namespace {
         const u16string utf16_example {0x430,0x4e8c,0xd800,0xdf02,0xdbff,0xdffd};
         const u32string utf32_example {0x430,0x4e8c,0x10302,0x10fffd};
 
-        u8string s8, t8;
-        u16string s16, t16;
-        u32string s32, t32;
+        u8string s, t;
+        u16string t16;
+        u32string t32;
 
-        s8.clear();
-        TRY(str_append(s8, u8"Hello "));  TEST_EQUAL(s8, u8"Hello ");
-        TRY(str_append(s8, u8"§¶ "));     TEST_EQUAL(s8, u8"Hello §¶ ");
-        TRY(str_append(s8, u8"€urope"));  TEST_EQUAL(s8, u8"Hello §¶ €urope");
-        s8.clear();
-        TRY(str_append(s8, u"Hello "));   TEST_EQUAL(s8, u8"Hello ");
-        TRY(str_append(s8, u"§¶ "));      TEST_EQUAL(s8, u8"Hello §¶ ");
-        TRY(str_append(s8, u"€urope"));   TEST_EQUAL(s8, u8"Hello §¶ €urope");
-        s8.clear();
-        TRY(str_append(s8, U"Hello "));   TEST_EQUAL(s8, u8"Hello ");
-        TRY(str_append(s8, U"§¶ "));      TEST_EQUAL(s8, u8"Hello §¶ ");
-        TRY(str_append(s8, U"€urope"));   TEST_EQUAL(s8, u8"Hello §¶ €urope");
+        s.clear();
+        TRY(str_append(s, u8"Hello "));  TEST_EQUAL(s, u8"Hello ");
+        TRY(str_append(s, u8"§¶ "));     TEST_EQUAL(s, u8"Hello §¶ ");
+        TRY(str_append(s, u8"€urope"));  TEST_EQUAL(s, u8"Hello §¶ €urope");
+        s.clear();
+        TRY(str_append(s, u"Hello "));   TEST_EQUAL(s, u8"Hello ");
+        TRY(str_append(s, u"§¶ "));      TEST_EQUAL(s, u8"Hello §¶ ");
+        TRY(str_append(s, u"€urope"));   TEST_EQUAL(s, u8"Hello §¶ €urope");
+        s.clear();
+        TRY(str_append(s, U"Hello "));   TEST_EQUAL(s, u8"Hello ");
+        TRY(str_append(s, U"§¶ "));      TEST_EQUAL(s, u8"Hello §¶ ");
+        TRY(str_append(s, U"€urope"));   TEST_EQUAL(s, u8"Hello §¶ €urope");
 
-        s16.clear();
-        TRY(str_append(s16, u8"Hello "));  TEST_EQUAL(s16, u"Hello ");
-        TRY(str_append(s16, u8"§¶ "));     TEST_EQUAL(s16, u"Hello §¶ ");
-        TRY(str_append(s16, u8"€urope"));  TEST_EQUAL(s16, u"Hello §¶ €urope");
-        s16.clear();
-        TRY(str_append(s16, u"Hello "));   TEST_EQUAL(s16, u"Hello ");
-        TRY(str_append(s16, u"§¶ "));      TEST_EQUAL(s16, u"Hello §¶ ");
-        TRY(str_append(s16, u"€urope"));   TEST_EQUAL(s16, u"Hello §¶ €urope");
-        s16.clear();
-        TRY(str_append(s16, U"Hello "));   TEST_EQUAL(s16, u"Hello ");
-        TRY(str_append(s16, U"§¶ "));      TEST_EQUAL(s16, u"Hello §¶ ");
-        TRY(str_append(s16, U"€urope"));   TEST_EQUAL(s16, u"Hello §¶ €urope");
+        s.clear();
+        t = u8"Hello ";  TRY(str_append(s, utf_range(t)));   TEST_EQUAL(s, u8"Hello ");
+        t = u8"§¶ ";     TRY(str_append(s, utf_range(t)));   TEST_EQUAL(s, u8"Hello §¶ ");
+        t = u8"€urope";  TRY(str_append(s, utf_range(t)));   TEST_EQUAL(s, u8"Hello §¶ €urope");
+        s.clear();
+        t16 = u"Hello ";  TRY(str_append(s, utf_range(t16)));  TEST_EQUAL(s, u8"Hello ");
+        t16 = u"§¶ ";     TRY(str_append(s, utf_range(t16)));  TEST_EQUAL(s, u8"Hello §¶ ");
+        t16 = u"€urope";  TRY(str_append(s, utf_range(t16)));  TEST_EQUAL(s, u8"Hello §¶ €urope");
+        s.clear();
+        t32 = U"Hello ";  TRY(str_append(s, utf_range(t32)));  TEST_EQUAL(s, u8"Hello ");
+        t32 = U"§¶ ";     TRY(str_append(s, utf_range(t32)));  TEST_EQUAL(s, u8"Hello §¶ ");
+        t32 = U"€urope";  TRY(str_append(s, utf_range(t32)));  TEST_EQUAL(s, u8"Hello §¶ €urope");
 
-        s32.clear();
-        TRY(str_append(s32, u8"Hello "));  TEST_EQUAL(s32, U"Hello ");
-        TRY(str_append(s32, u8"§¶ "));     TEST_EQUAL(s32, U"Hello §¶ ");
-        TRY(str_append(s32, u8"€urope"));  TEST_EQUAL(s32, U"Hello §¶ €urope");
-        s32.clear();
-        TRY(str_append(s32, u"Hello "));   TEST_EQUAL(s32, U"Hello ");
-        TRY(str_append(s32, u"§¶ "));      TEST_EQUAL(s32, U"Hello §¶ ");
-        TRY(str_append(s32, u"€urope"));   TEST_EQUAL(s32, U"Hello §¶ €urope");
-        s32.clear();
-        TRY(str_append(s32, U"Hello "));   TEST_EQUAL(s32, U"Hello ");
-        TRY(str_append(s32, U"§¶ "));      TEST_EQUAL(s32, U"Hello §¶ ");
-        TRY(str_append(s32, U"€urope"));   TEST_EQUAL(s32, U"Hello §¶ €urope");
+        s.clear();
+        TRY(str_append_char(s, 'A'));  TEST_EQUAL(s, "A");
+        TRY(str_append_char(s, 'B'));  TEST_EQUAL(s, "AB");
+        TRY(str_append_char(s, 'C'));  TEST_EQUAL(s, "ABC");
+        s.clear();
+        TRY(str_append_char(s, 0x430));     TEST_EQUAL(s, "\xd0\xb0");
+        TRY(str_append_char(s, 0x4e8c));    TEST_EQUAL(s, "\xd0\xb0\xe4\xba\x8c");
+        TRY(str_append_char(s, 0x10302));   TEST_EQUAL(s, "\xd0\xb0\xe4\xba\x8c\xf0\x90\x8c\x82");
+        TRY(str_append_char(s, 0x10fffd));  TEST_EQUAL(s, utf8_example);
 
-        s8.clear();
-        t8 = u8"Hello ";  TRY(str_append(s8, utf_range(t8)));   TEST_EQUAL(s8, u8"Hello ");
-        t8 = u8"§¶ ";     TRY(str_append(s8, utf_range(t8)));   TEST_EQUAL(s8, u8"Hello §¶ ");
-        t8 = u8"€urope";  TRY(str_append(s8, utf_range(t8)));   TEST_EQUAL(s8, u8"Hello §¶ €urope");
-        s8.clear();
-        t16 = u"Hello ";  TRY(str_append(s8, utf_range(t16)));  TEST_EQUAL(s8, u8"Hello ");
-        t16 = u"§¶ ";     TRY(str_append(s8, utf_range(t16)));  TEST_EQUAL(s8, u8"Hello §¶ ");
-        t16 = u"€urope";  TRY(str_append(s8, utf_range(t16)));  TEST_EQUAL(s8, u8"Hello §¶ €urope");
-        s8.clear();
-        t32 = U"Hello ";  TRY(str_append(s8, utf_range(t32)));  TEST_EQUAL(s8, u8"Hello ");
-        t32 = U"§¶ ";     TRY(str_append(s8, utf_range(t32)));  TEST_EQUAL(s8, u8"Hello §¶ ");
-        t32 = U"€urope";  TRY(str_append(s8, utf_range(t32)));  TEST_EQUAL(s8, u8"Hello §¶ €urope");
+        s.clear();  TRY(str_append_char(s, 'A', 'B', 'C'));                     TEST_EQUAL(s, "ABC");
+        s.clear();  TRY(str_append_char(s, 0x430, 0x4e8c, 0x10302, 0x10fffd));  TEST_EQUAL(s, utf8_example);
 
-        s16.clear();
-        t8 = u8"Hello ";  TRY(str_append(s16, utf_range(t8)));   TEST_EQUAL(s16, u"Hello ");
-        t8 = u8"§¶ ";     TRY(str_append(s16, utf_range(t8)));   TEST_EQUAL(s16, u"Hello §¶ ");
-        t8 = u8"€urope";  TRY(str_append(s16, utf_range(t8)));   TEST_EQUAL(s16, u"Hello §¶ €urope");
-        s16.clear();
-        t16 = u"Hello ";  TRY(str_append(s16, utf_range(t16)));  TEST_EQUAL(s16, u"Hello ");
-        t16 = u"§¶ ";     TRY(str_append(s16, utf_range(t16)));  TEST_EQUAL(s16, u"Hello §¶ ");
-        t16 = u"€urope";  TRY(str_append(s16, utf_range(t16)));  TEST_EQUAL(s16, u"Hello §¶ €urope");
-        s16.clear();
-        t32 = U"Hello ";  TRY(str_append(s16, utf_range(t32)));  TEST_EQUAL(s16, u"Hello ");
-        t32 = U"§¶ ";     TRY(str_append(s16, utf_range(t32)));  TEST_EQUAL(s16, u"Hello §¶ ");
-        t32 = U"€urope";  TRY(str_append(s16, utf_range(t32)));  TEST_EQUAL(s16, u"Hello §¶ €urope");
-
-        s32.clear();
-        t8 = u8"Hello ";  TRY(str_append(s32, utf_range(t8)));   TEST_EQUAL(s32, U"Hello ");
-        t8 = u8"§¶ ";     TRY(str_append(s32, utf_range(t8)));   TEST_EQUAL(s32, U"Hello §¶ ");
-        t8 = u8"€urope";  TRY(str_append(s32, utf_range(t8)));   TEST_EQUAL(s32, U"Hello §¶ €urope");
-        s32.clear();
-        t16 = u"Hello ";  TRY(str_append(s32, utf_range(t16)));  TEST_EQUAL(s32, U"Hello ");
-        t16 = u"§¶ ";     TRY(str_append(s32, utf_range(t16)));  TEST_EQUAL(s32, U"Hello §¶ ");
-        t16 = u"€urope";  TRY(str_append(s32, utf_range(t16)));  TEST_EQUAL(s32, U"Hello §¶ €urope");
-        s32.clear();
-        t32 = U"Hello ";  TRY(str_append(s32, utf_range(t32)));  TEST_EQUAL(s32, U"Hello ");
-        t32 = U"§¶ ";     TRY(str_append(s32, utf_range(t32)));  TEST_EQUAL(s32, U"Hello §¶ ");
-        t32 = U"€urope";  TRY(str_append(s32, utf_range(t32)));  TEST_EQUAL(s32, U"Hello §¶ €urope");
-
-        s8.clear();
-        TRY(str_append_char(s8, 'A'));  TEST_EQUAL(s8, "A");
-        TRY(str_append_char(s8, 'B'));  TEST_EQUAL(s8, "AB");
-        TRY(str_append_char(s8, 'C'));  TEST_EQUAL(s8, "ABC");
-        s8.clear();
-        TRY(str_append_char(s8, 0x430));     TEST_EQUAL(s8, "\xd0\xb0");
-        TRY(str_append_char(s8, 0x4e8c));    TEST_EQUAL(s8, "\xd0\xb0\xe4\xba\x8c");
-        TRY(str_append_char(s8, 0x10302));   TEST_EQUAL(s8, "\xd0\xb0\xe4\xba\x8c\xf0\x90\x8c\x82");
-        TRY(str_append_char(s8, 0x10fffd));  TEST_EQUAL(s8, utf8_example);
-
-        s8.clear();  TRY(str_append_char(s8, 'A', 'B', 'C'));                     TEST_EQUAL(s8, "ABC");
-        s8.clear();  TRY(str_append_char(s8, 0x430, 0x4e8c, 0x10302, 0x10fffd));  TEST_EQUAL(s8, utf8_example);
-
-        s16.clear();
-        TRY(str_append_char(s16, 'A'));  TEST_EQUAL(s16, u"A");
-        TRY(str_append_char(s16, 'B'));  TEST_EQUAL(s16, u"AB");
-        TRY(str_append_char(s16, 'C'));  TEST_EQUAL(s16, u"ABC");
-        s16.clear();
-        TRY(str_append_char(s16, 0x430));     TEST_EQUAL(s16, utf16_example.substr(0, 1));
-        TRY(str_append_char(s16, 0x4e8c));    TEST_EQUAL(s16, utf16_example.substr(0, 2));
-        TRY(str_append_char(s16, 0x10302));   TEST_EQUAL(s16, utf16_example.substr(0, 4));
-        TRY(str_append_char(s16, 0x10fffd));  TEST_EQUAL(s16, utf16_example);
-
-        s16.clear();  TRY(str_append_char(s16, 'A', 'B', 'C'));                     TEST_EQUAL(s16, u"ABC");
-        s16.clear();  TRY(str_append_char(s16, 0x430, 0x4e8c, 0x10302, 0x10fffd));  TEST_EQUAL(s16, utf16_example);
-
-        s32.clear();
-        TRY(str_append_char(s32, 'A'));  TEST_EQUAL(s32, U"A");
-        TRY(str_append_char(s32, 'B'));  TEST_EQUAL(s32, U"AB");
-        TRY(str_append_char(s32, 'C'));  TEST_EQUAL(s32, U"ABC");
-        s32.clear();
-        TRY(str_append_char(s32, 0x430));     TEST_EQUAL(s32, utf32_example.substr(0, 1));
-        TRY(str_append_char(s32, 0x4e8c));    TEST_EQUAL(s32, utf32_example.substr(0, 2));
-        TRY(str_append_char(s32, 0x10302));   TEST_EQUAL(s32, utf32_example.substr(0, 3));
-        TRY(str_append_char(s32, 0x10fffd));  TEST_EQUAL(s32, utf32_example);
-
-        s32.clear();  TRY(str_append_char(s32, 'A', 'B', 'C'));                     TEST_EQUAL(s32, U"ABC");
-        s32.clear();  TRY(str_append_char(s32, 0x430, 0x4e8c, 0x10302, 0x10fffd));  TEST_EQUAL(s32, utf32_example);
-
-        s8.clear();
-        TRY(str_append_chars(s8, 2, U'A'));  TEST_EQUAL(s8, u8"AA");
-        TRY(str_append_chars(s8, 4, U'€'));  TEST_EQUAL(s8, u8"AA€€€€");
-        s16.clear();
-        TRY(str_append_chars(s16, 2, U'A'));  TEST_EQUAL(s16, u"AA");
-        TRY(str_append_chars(s16, 4, U'€'));  TEST_EQUAL(s16, u"AA€€€€");
-        s32.clear();
-        TRY(str_append_chars(s32, 2, U'A'));  TEST_EQUAL(s32, U"AA");
-        TRY(str_append_chars(s32, 4, U'€'));  TEST_EQUAL(s32, U"AA€€€€");
+        s.clear();
+        TRY(str_append_chars(s, 2, U'A'));  TEST_EQUAL(s, u8"AA");
+        TRY(str_append_chars(s, 4, U'€'));  TEST_EQUAL(s, u8"AA€€€€");
 
     }
 

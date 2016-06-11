@@ -45,9 +45,9 @@ expected to mark the beginning and end of a substring do not point to the same
 string or are in the wrong order.)
 
 Any in-place function that might modify its subject string invalidates any
-iterators (plain or UTF) passed to it that were pointing into that string.
-Note that the iterators should still be considered to be invalidated even if
-the string turns out not to be actually modified in a particular case.
+iterators (string or UTF) that were pointing into that string. Note that the
+iterators should still be considered to be invalidated even if the string
+turns out not to be actually modified in a particular call.
 
 Modified strings, or new strings returned by a function, are not guaranteed to
 preserve any particular normalization form that the original string may have
@@ -61,8 +61,8 @@ will need to normalise your strings first (see
 
 When a function can take a string argument as either a string object or a
 character pointer, a null pointer is always treated as equivalent to an empty
-string. (When it takes a pointer and size, the size is ignored if the pointer
-is null.)
+string. When it takes a pointer and size, the size is ignored if the pointer
+is null.
 
 ## String size functions ##
 
@@ -123,42 +123,25 @@ range.
 Return the first or last character in a string, or zero if the string is
 empty.
 
-* `template <typename C> bool` **`str_is_east_asian`**`(const basic_string<C>& str)`
+* `bool` **`str_is_east_asian`**`(const u8string& str)`
 
 True if the string contains any East Asian characters.
 
-* `template <typename C> bool` **`str_starts_with`**`(const basic_string<C>& str, const basic_string<C>& prefix) noexcept`
-* `template <typename C> bool` **`str_starts_with`**`(const basic_string<C>& str, const C* prefix) noexcept`
-* `template <typename C> bool` **`str_ends_with`**`(const basic_string<C>& str, const basic_string<C>& suffix) noexcept`
-* `template <typename C> bool` **`str_ends_with`**`(const basic_string<C>& str, const C* suffix) noexcept`
+* `bool` **`str_starts_with`**`(const u8string& str, const u8string& prefix) noexcept`
+* `bool` **`str_ends_with`**`(const u8string& str, const u8string& suffix) noexcept`
 
 These return true if the string starts or ends with the specified substring.
 
 ## String comparison ##
 
-* `struct` **`StringCompare`**
-    * `template <typename C> bool StringCompare::`**`operator()`**`(const basic_string<C>& lhs, const basic_string<C>& rhs) const noexcept`
-* `constexpr StringCompare` **`str_compare`**
+* `int` **`str_compare_3way`**`(const u8string& lhs, const u8string& rhs)`
 
-A function object that performs a simple less-than comparison on two strings
-in any UTF encoding. The result always reflects Unicode lexicographical order,
-regardless of encoding. For UTF-8 and UTF-32 this is just a trivial call to
-`basic_string`'s less-than operator, but for UTF-16 it needs to be slightly
-more complicated to preserve the expected order (in UTF-16, unlike UTF-8 and
-32, code unit order is not the same as code point order).
+This performs a simple lexicographical comparison on the two strings,
+returning 1, 0, or -1 to indicate that the first string is greater than, equal
+to, or less than the second one, respectively.
 
-* `template <typename C> int` **`str_compare_3way`**`(const basic_string<C>& lhs, const basic_string<C>& rhs)`
-
-This compares strings in the same way as `string_compare()` above, but returns
-1, 0, or -1 to indicate that the first string is greater than, equal to, or
-less than the second one, respectively.
-
-* `struct` **`IcaseEqual`**
-    * `template <typename C> bool IcaseEqual::`**`operator()`**`(const basic_string<C>& lhs, const basic_string<C>& rhs) const noexcept`
-* `struct` **`IcaseCompare`**
-    * `template <typename C> bool IcaseCompare::`**`operator()`**`(const basic_string<C>& lhs, const basic_string<C>& rhs) const noexcept`
-* `constexpr IcaseEqual` **`str_icase_equal`**
-* `constexpr IcaseCompare` **`str_icase_compare`**
+* `bool` **`str_icase_equal`**`(const u8string& lhs, const u8string& rhs) const noexcept`
+* `bool` **`str_icase_compare`**`(const u8string& lhs, const u8string& rhs) const noexcept`
 
 Function objects that perform case insensitive string comparison, with
 equality or less-than semantics. These are equivalent to calling
@@ -167,9 +150,7 @@ functions is usually more efficient for a small number of comparisons, while
 calling `str_casefold()` and saving the case folded form of the string will be
 more efficient if the same string is going to be compared frequently.
 
-* `struct` **`NaturalCompare`**
-    * `template <typename C> bool NaturalCompare::`**`operator()`**`(const basic_string<C>& lhs, const basic_string<C>& rhs) const noexcept`
-* `constexpr NaturalCompare` **`str_natural_compare`**
+* `bool` **`str_natural_compare`**`(const u8string& lhs, const u8string& rhs) const noexcept`
 
 This attempts to perform a "natural" (human friendly) comparison between two
 strings. It treats numbers (currently only ASCII digits are recognised) as
@@ -183,8 +164,8 @@ breaker.
 
 ## Other string algorithms ##
 
-* `template <typename C> size_t` **`str_common`**`(const basic_string<C>& s1, const basic_string<C>& s2, size_t start = 0) noexcept`
-* `template <typename C> size_t` **`str_common_utf`**`(const basic_string<C>& s1, const basic_string<C>& s2, size_t start = 0) noexcept`
+* `size_t` **`str_common`**`(const u8string& s1, const u8string& s2, size_t start = 0) noexcept`
+* `size_t` **`str_common_utf`**`(const u8string& s1, const u8string& s2, size_t start = 0) noexcept`
 
 These return the count of code units in the longest common prefix of two
 strings, optionally starting at a given offset (or, equivalently, the offset,
@@ -196,8 +177,8 @@ units); this means it will return a smaller value than `str_common()` if the
 offset found by `str_common()` is partway through an encoded character. Both
 functions will return zero if `start` is past the end of either string.
 
-* `template <typename C> bool` **`str_expect`**`(UtfIterator<C>& i, const basic_string<C>& prefix)`
-* `template <typename C> bool` **`str_expect`**`(UtfIterator<C>& i, const UtfIterator<C>& end, const basic_string<C>& prefix)`
+* `bool` **`str_expect`**`(Utf8Iterator& i, const u8string& prefix)`
+* `bool` **`str_expect`**`(Utf8Iterator& i, const Utf8Iterator& end, const u8string& prefix)`
 
 If the string starting from `i` starts with `prefix`, `str_expect()` updates
 `i` to point to the end of the prefix and returns `true`; otherwise, it leaves
@@ -205,60 +186,45 @@ If the string starting from `i` starts with `prefix`, `str_expect()` updates
 of the string can be supplied. These will always return `false` if `prefix` is
 empty.
 
-* `template <typename C> UtfIterator<C>` **`str_find_char`**`(const basic_string<C>& str, char32_t c)`
-* `template <typename C> UtfIterator<C>` **`str_find_char`**`(const UtfIterator<C>& begin, const UtfIterator<C>& end, char32_t c)`
-* `template <typename C> UtfIterator<C>` **`str_find_char`**`(const Irange<UtfIterator<C>>& range, char32_t c)`
-* `template <typename C> UtfIterator<C>` **`str_find_last_char`**`(const basic_string<C>& str, char32_t c)`
-* `template <typename C> UtfIterator<C>` **`str_find_last_char`**`(const UtfIterator<C>& begin, const UtfIterator<C>& end, char32_t c)`
-* `template <typename C> UtfIterator<C>` **`str_find_last_char`**`(const Irange<UtfIterator<C>>& range, char32_t c)`
+* `Utf8Iterator` **`str_find_char`**`(const u8string& str, char32_t c)`
+* `Utf8Iterator` **`str_find_char`**`(const Utf8Iterator& begin, const Utf8Iterator& end, char32_t c)`
+* `Utf8Iterator` **`str_find_char`**`(const Irange<Utf8Iterator>& range, char32_t c)`
+* `Utf8Iterator` **`str_find_last_char`**`(const u8string& str, char32_t c)`
+* `Utf8Iterator` **`str_find_last_char`**`(const Utf8Iterator& begin, const Utf8Iterator& end, char32_t c)`
+* `Utf8Iterator` **`str_find_last_char`**`(const Irange<Utf8Iterator>& range, char32_t c)`
 
 These return an iterator pointing to the first or last occurrence of the
 specified character, or an end iterator if it is not found.
 
-* `template <typename C> UtfIterator<C>` **`str_find_first_of`**`(const basic_string<C>& str, const basic_string<C>& target)`
-* `template <typename C> UtfIterator<C>` **`str_find_first_of`**`(const basic_string<C>& str, const C* target)`
-* `template <typename C> UtfIterator<C>` **`str_find_first_of`**`(const UtfIterator<C>& begin, const UtfIterator<C>& end, const basic_string<C>& target)`
-* `template <typename C> UtfIterator<C>` **`str_find_first_of`**`(const UtfIterator<C>& begin, const UtfIterator<C>& end, const C* target)`
-* `template <typename C> UtfIterator<C>` **`str_find_first_of`**`(const Irange<UtfIterator<C>>& range, const basic_string<C>& target)`
-* `template <typename C> UtfIterator<C>` **`str_find_first_of`**`(const Irange<UtfIterator<C>>& range, const C* target)`
-* `template <typename C> UtfIterator<C>` **`str_find_first_not_of`**`(const basic_string<C>& str, const basic_string<C>& target)`
-* `template <typename C> UtfIterator<C>` **`str_find_first_not_of`**`(const basic_string<C>& str, const C* target)`
-* `template <typename C> UtfIterator<C>` **`str_find_first_not_of`**`(const UtfIterator<C>& begin, const UtfIterator<C>& end, const basic_string<C>& target)`
-* `template <typename C> UtfIterator<C>` **`str_find_first_not_of`**`(const UtfIterator<C>& begin, const UtfIterator<C>& end, const C* target)`
-* `template <typename C> UtfIterator<C>` **`str_find_first_not_of`**`(const Irange<UtfIterator<C>>& range, const basic_string<C>& target)`
-* `template <typename C> UtfIterator<C>` **`str_find_first_not_of`**`(const Irange<UtfIterator<C>>& range, const C* target)`
-* `template <typename C> UtfIterator<C>` **`str_find_last_of`**`(const basic_string<C>& str, const basic_string<C>& target)`
-* `template <typename C> UtfIterator<C>` **`str_find_last_of`**`(const basic_string<C>& str, const C* target)`
-* `template <typename C> UtfIterator<C>` **`str_find_last_of`**`(const UtfIterator<C>& begin, const UtfIterator<C>& end, const basic_string<C>& target)`
-* `template <typename C> UtfIterator<C>` **`str_find_last_of`**`(const UtfIterator<C>& begin, const UtfIterator<C>& end, const C* target)`
-* `template <typename C> UtfIterator<C>` **`str_find_last_of`**`(const Irange<UtfIterator<C>>& range, const basic_string<C>& target)`
-* `template <typename C> UtfIterator<C>` **`str_find_last_of`**`(const Irange<UtfIterator<C>>& range, const C* target)`
-* `template <typename C> UtfIterator<C>` **`str_find_last_not_of`**`(const basic_string<C>& str, const basic_string<C>& target)`
-* `template <typename C> UtfIterator<C>` **`str_find_last_not_of`**`(const basic_string<C>& str, const C* target)`
-* `template <typename C> UtfIterator<C>` **`str_find_last_not_of`**`(const UtfIterator<C>& begin, const UtfIterator<C>& end, const basic_string<C>& target)`
-* `template <typename C> UtfIterator<C>` **`str_find_last_not_of`**`(const UtfIterator<C>& begin, const UtfIterator<C>& end, const C* target)`
-* `template <typename C> UtfIterator<C>` **`str_find_last_not_of`**`(const Irange<UtfIterator<C>>& range, const basic_string<C>& target)`
-* `template <typename C> UtfIterator<C>` **`str_find_last_not_of`**`(const Irange<UtfIterator<C>>& range, const C* target)`
+* `Utf8Iterator` **`str_find_first_of`**`(const u8string& str, const u8string& target)`
+* `Utf8Iterator` **`str_find_first_of`**`(const Utf8Iterator& begin, const Utf8Iterator& end, const u8string& target)`
+* `Utf8Iterator` **`str_find_first_of`**`(const Irange<Utf8Iterator>& range, const u8string& target)`
+* `Utf8Iterator` **`str_find_first_not_of`**`(const u8string& str, const u8string& target)`
+* `Utf8Iterator` **`str_find_first_not_of`**`(const Utf8Iterator& begin, const Utf8Iterator& end, const u8string& target)`
+* `Utf8Iterator` **`str_find_first_not_of`**`(const Irange<Utf8Iterator>& range, const u8string& target)`
+* `Utf8Iterator` **`str_find_last_of`**`(const u8string& str, const u8string& target)`
+* `Utf8Iterator` **`str_find_last_of`**`(const Utf8Iterator& begin, const Utf8Iterator& end, const u8string& target)`
+* `Utf8Iterator` **`str_find_last_of`**`(const Irange<Utf8Iterator>& range, const u8string& target)`
+* `Utf8Iterator` **`str_find_last_not_of`**`(const u8string& str, const u8string& target)`
+* `Utf8Iterator` **`str_find_last_not_of`**`(const Utf8Iterator& begin, const Utf8Iterator& end, const u8string& target)`
+* `Utf8Iterator` **`str_find_last_not_of`**`(const Irange<Utf8Iterator>& range, const u8string& target)`
 
 These find the first or last character in their subject range that is in, or
 not in, the target list of characters. They return an end iterator if no
 matching character is found. (They are essentially the same as the similarly
-named member functions in standard strings, except that they work on
-characters instead of code units.)
+named member functions in `std::string`, except that they work on characters
+instead of code units.)
 
-* `template <typename C> UtfIterator<C>` **`str_search`**`(const basic_string<C>& str, const basic_string<C>& target)`
-* `template <typename C> UtfIterator<C>` **`str_search`**`(const basic_string<C>& str, const C* target)`
-* `template <typename C> UtfIterator<C>` **`str_search`**`(const UtfIterator<C>& begin, const UtfIterator<C>& end, const basic_string<C>& target)`
-* `template <typename C> UtfIterator<C>` **`str_search`**`(const UtfIterator<C>& begin, const UtfIterator<C>& end, const C* target)`
-* `template <typename C> UtfIterator<C>` **`str_search`**`(const Irange<UtfIterator<C>>& range, const basic_string<C>& target)`
-* `template <typename C> UtfIterator<C>` **`str_search`**`(const Irange<UtfIterator<C>>& range, const C* target)`
+* `Utf8Iterator` **`str_search`**`(const u8string& str, const u8string& target)`
+* `Utf8Iterator` **`str_search`**`(const Utf8Iterator& begin, const Utf8Iterator& end, const u8string& target)`
+* `Utf8Iterator` **`str_search`**`(const Irange<Utf8Iterator>& range, const u8string& target)`
 
 Find the first occurrence of the target substring in the subject range,
 returning an iterator pointing to the beginning of the located substring, or
 an end iterator if it was not found.
 
-* `template <typename C> size_t` **`str_skipws`**`(UtfIterator<C>& i)`
-* `template <typename C> size_t` **`str_skipws`**`(UtfIterator<C>& i, const UtfIterator<C>& end)`
+* `size_t` **`str_skipws`**`(Utf8Iterator& i)`
+* `size_t` **`str_skipws`**`(Utf8Iterator& i, const Utf8Iterator& end)`
 
 Advances `i` to point to the next non-whitespace character, or the end of the
 string if no such character was found. Optionally an endpoint other than the
@@ -267,61 +233,54 @@ characters skipped.
 
 ## String manipulation functions ##
 
-* `template <typename C, typename C2> void` **`str_append`**`(basic_string<C>& str, const basic_string<C2>& suffix)`
-* `template <typename C, typename C2> void` **`str_append`**`(basic_string<C>& str, const Irange<UtfIterator<C2>>& suffix)`
-* `template <typename C, typename C2> void` **`str_append`**`(basic_string<C>& str, const UtfIterator<C2>& suffix_begin, const UtfIterator<C2>& suffix_end)`
-* `template <typename C, typename C2> void` **`str_append`**`(basic_string<C>& str, const C2* suffix)`
-* `template <typename C, typename C2> void` **`str_append`**`(basic_string<C>& dst, const C2* ptr, size_t n)`
-* `template <typename C, typename C2, typename... Chars> void` **`str_append_char`**`(basic_string<C>& dst, C2 c2, Chars... chars)`
-* `template <typename C> void` **`str_append_chars`**`(basic_string<C>& dst, size_t n, char32_t c)`
+* `template <typename C> void` **`str_append`**`(u8string& str, const basic_string<C>& suffix)`
+* `template <typename C> void` **`str_append`**`(u8string& str, const Irange<UtfIterator<C>>& suffix)`
+* `template <typename C> void` **`str_append`**`(u8string& str, const UtfIterator<C>& suffix_begin, const UtfIterator<C>& suffix_end)`
+* `template <typename C> void` **`str_append`**`(u8string& str, const C* suffix)`
+* `template <typename C> void` **`str_append`**`(u8string& dst, const C* ptr, size_t n)`
+* `template <typename C, typename... Chars> void` **`str_append_char`**`(u8string& dst, C c, Chars... chars)`
+* `void` **`str_append_chars`**`(u8string& dst, size_t n, char32_t c)`
 
 These append one or more characters to a Unicode string, performing any
 necessary encoding conversions.
 
-* `template <typename C> basic_string<C>` **`str_char`**`(char32_t c)`
-* `template <typename C> basic_string<C>` **`str_chars`**`(size_t n, char32_t c)`
+* `u8string>` **`str_char`**`(char32_t c)`
+* `u8string>` **`str_chars`**`(size_t n, char32_t c)`
 
-Return a string containing `n` copies of the character, in the appropriate
-encoding.
+Return a string containing `n` copies of the character.
 
-* `template <typename C, typename... Strings> basic_string<C>` **`str_concat`**`(const basic_string<C>& s, const Strings&... ss)`
-* `template <typename C, typename... Strings> basic_string<C>` **`str_concat`**`(const C* s, const Strings&... ss)`
-* `template <typename C, typename... Strings> basic_string<C>` **`str_concat_with`**`(const basic_string<C>& delim, const Strings&... ss)`
-* `template <typename C, typename... Strings> basic_string<C>` **`str_concat_with`**`(const C* delim, const Strings&... ss)`
+* `template <typename C, typename... Strings> u8string` **`str_concat`**`(const basic_string<C>& s, const Strings&... ss)`
+* `template <typename C, typename... Strings> u8string` **`str_concat`**`(const C* s, const Strings&... ss)`
+* `template <typename C, typename... Strings> u8string` **`str_concat_with`**`(const basic_string<C>& delim, const Strings&... ss)`
+* `template <typename C, typename... Strings> u8string` **`str_concat_with`**`(const C* delim, const Strings&... ss)`
 
 These concatenate one or more strings, which can be an arbitrary mixture of
 different Unicode encodings. The `str_concat_with()` versions insert a
-delimiter between each pair of strings. The encoding type of the returned
-string matches that of the first argument (the delimiter in
-`str_concat_with()`).
+delimiter between each pair of strings.
 
-* `template <typename C> basic_string<C>` **`str_drop_prefix`**`(const basic_string<C>& str, const basic_string<C>& prefix)`
-* `template <typename C> basic_string<C>` **`str_drop_prefix`**`(const basic_string<C>& str, const C* prefix)`
-* `template <typename C> void` **`str_drop_prefix_in`**`(basic_string<C>& str, const basic_string<C>& prefix) noexcept`
-* `template <typename C> void` **`str_drop_prefix_in`**`(basic_string<C>& str, const C* prefix) noexcept`
-* `template <typename C> basic_string<C>` **`str_drop_suffix`**`(const basic_string<C>& str, const basic_string<C>& suffix)`
-* `template <typename C> basic_string<C>` **`str_drop_suffix`**`(const basic_string<C>& str, const C* suffix)`
-* `template <typename C> void` **`str_drop_suffix_in`**`(basic_string<C>& str, const basic_string<C>& suffix) noexcept`
-* `template <typename C> void` **`str_drop_suffix_in`**`(basic_string<C>& str, const C* suffix) noexcept`
+* `u8string` **`str_drop_prefix`**`(const u8string& str, const u8string& prefix)`
+* `void` **`str_drop_prefix_in`**`(u8string& str, const u8string& prefix) noexcept`
+* `u8string` **`str_drop_suffix`**`(const u8string& str, const u8string& suffix)`
+* `void` **`str_drop_suffix_in`**`(u8string& str, const u8string& suffix) noexcept`
 
 If the first argument string starts or ends with the given prefix or suffix,
 remove it; otherwise, just return the original string unchanged.
 
-* `template <typename C> basic_string<C>` **`str_erase_left`**`(const basic_string<C>& str, size_t length)`
-* `template <typename C> void` **`str_erase_left_in`**`(basic_string<C>& str, size_t length) noexcept`
-* `template <typename C> basic_string<C>` **`str_erase_right`**`(const basic_string<C>& str, size_t length)`
-* `template <typename C> void` **`str_erase_right_in`**`(basic_string<C>& str, size_t length) noexcept`
+* `u8string` **`str_erase_left`**`(const u8string& str, size_t length)`
+* `void` **`str_erase_left_in`**`(u8string& str, size_t length) noexcept`
+* `u8string` **`str_erase_right`**`(const u8string& str, size_t length)`
+* `void` **`str_erase_right_in`**`(u8string& str, size_t length) noexcept`
 
 Erase the specified number of Unicode characters from the beginning or end of
 the string. These will return an empty string if `length` is greater than the
 number of characters in `str`.
 
-* `template <typename C> basic_string<C>` **`str_expand_tabs`**`(const basic_string<C>& str)`
-* `template <typename C, typename IntList> basic_string<C>` **`str_expand_tabs`**`(const basic_string<C>& str, const IntList& tabs, uint32_t flags = 0)`
-* `template <typename C, typename IntType> basic_string<C>` **`str_expand_tabs`**`(const basic_string<C>& str, initializer_list<IntType> tabs, uint32_t flags = 0)`
-* `template <typename C> void` **`str_expand_tabs_in`**`(basic_string<C>& str)`
-* `template <typename C, typename IntList> void` **`str_expand_tabs_in`**`(basic_string<C>& str, const IntList& tabs, uint32_t flags = 0)`
-* `template <typename C, typename IntType> void` **`str_expand_tabs_in`**`(basic_string<C>& str, initializer_list<IntType> tabs, uint32_t flags = 0)`
+* `u8string` **`str_expand_tabs`**`(const u8string& str)`
+* `template <typename IntList> u8string` **`str_expand_tabs`**`(const u8string& str, const IntList& tabs, uint32_t flags = 0)`
+* `template <typename IntType> u8string` **`str_expand_tabs`**`(const u8string& str, initializer_list<IntType> tabs, uint32_t flags = 0)`
+* `void` **`str_expand_tabs_in`**`(u8string& str)`
+* `template <typename IntList> void` **`str_expand_tabs_in`**`(u8string& str, const IntList& tabs, uint32_t flags = 0)`
+* `template <typename IntType> void` **`str_expand_tabs_in`**`(u8string& str, initializer_list<IntType> tabs, uint32_t flags = 0)`
 
 Expand tab characters to spaces. If the input string contains multiple lines
 (delimited by any of the standard Unicode line break characters), each line
@@ -337,69 +296,66 @@ stops is used to increment the last one (e.g. `{5,10,20}` will be expanded to
 `{5,10,20,30,40,...}`). An implicit tab stop at position zero is always
 assumed.
 
-* `template <typename C> basic_string<C>` **`str_fix_left`**`(const basic_string<C>& str, size_t length, char32_t c = U' ', uint32_t flags = 0)`
-* `template <typename C> void` **`str_fix_left_in`**`(basic_string<C>& str, size_t length, char32_t c = U' ', uint32_t flags = 0)`
-* `template <typename C> basic_string<C>` **`str_fix_right`**`(const basic_string<C>& str, size_t length, char32_t c = U' ', uint32_t flags = 0)`
-* `template <typename C> void` **`str_fix_right_in`**`(basic_string<C>& str, size_t length, char32_t c = U' ', uint32_t flags = 0)`
+* `u8string` **`str_fix_left`**`(const u8string& str, size_t length, char32_t c = U' ', uint32_t flags = 0)`
+* `void` **`str_fix_left_in`**`(u8string& str, size_t length, char32_t c = U' ', uint32_t flags = 0)`
+* `u8string` **`str_fix_right`**`(const u8string& str, size_t length, char32_t c = U' ', uint32_t flags = 0)`
+* `void` **`str_fix_right_in`**`(u8string& str, size_t length, char32_t c = U' ', uint32_t flags = 0)`
 
 Pad or truncate a string to a specific length; the character argument `c` is
-used for padding (converted to the appropriate encoding). The `str_fix_left()`
-function anchors the string on the left and pads or truncates on the right;
-this is similar to `basic_string::resize()`, except that the flags determine
-how the length of the string is measured. The `str_fix_right()` function
-anchors the string on the right and pads or truncates on the left. If the
-string can't be adjusted to exactly the specified size (because one of the
-East Asian width options was selected and wide characters are present), the
-result will be one unit longer than the requested length.
+used for padding (converted to UTF-8). The `str_fix_left()` function anchors
+the string on the left and pads or truncates on the right; this is similar to
+`std::string::resize()`, except that the flags determine how the length of the
+string is measured. The `str_fix_right()` function anchors the string on the
+right and pads or truncates on the left. If the string can't be adjusted to
+exactly the specified size (because one of the East Asian width options was
+selected and wide characters are present), the result will be one unit longer
+than the requested length.
 
-* `template <typename C> basic_string<C>` **`str_insert`**`(const UtfIterator<C>& dst, const basic_string<C>& src)`
-* `template <typename C> basic_string<C>` **`str_insert`**`(const UtfIterator<C>& dst, const Irange<UtfIterator<C>>& src)`
-* `template <typename C> basic_string<C>` **`str_insert`**`(const UtfIterator<C>& dst, const UtfIterator<C>& src_begin, const UtfIterator<C>& src_end)`
-* `template <typename C> basic_string<C>` **`str_insert`**`(const Irange<UtfIterator<C>>& dst, const basic_string<C>& src)`
-* `template <typename C> basic_string<C>` **`str_insert`**`(const Irange<UtfIterator<C>>& dst, const Irange<UtfIterator<C>>& src)`
-* `template <typename C> basic_string<C>` **`str_insert`**`(const UtfIterator<C>& dst_begin, const UtfIterator<C>& dst_end, const basic_string<C>& src)`
-* `template <typename C> basic_string<C>` **`str_insert`**`(const UtfIterator<C>& dst_begin, const UtfIterator<C>& dst_end, const UtfIterator<C>& src_begin, const UtfIterator<C>& src_end)`
-* `template <typename C> Irange<UtfIterator<C>>` **`str_insert_in`**`(basic_string<C>& dst, const UtfIterator<C>& where, const basic_string<C>& src)`
-* `template <typename C> Irange<UtfIterator<C>>` **`str_insert_in`**`(basic_string<C>& dst, const UtfIterator<C>& where, const Irange<UtfIterator<C>>& src)`
-* `template <typename C> Irange<UtfIterator<C>>` **`str_insert_in`**`(basic_string<C>& dst, const UtfIterator<C>& where, const UtfIterator<C>& src_begin, const UtfIterator<C>& src_end)`
-* `template <typename C> Irange<UtfIterator<C>>` **`str_insert_in`**`(basic_string<C>& dst, const Irange<UtfIterator<C>>& range, const basic_string<C>& src)`
-* `template <typename C> Irange<UtfIterator<C>>` **`str_insert_in`**`(basic_string<C>& dst, const Irange<UtfIterator<C>>& range, const Irange<UtfIterator<C>>& src)`
-* `template <typename C> Irange<UtfIterator<C>>` **`str_insert_in`**`(basic_string<C>& dst, const UtfIterator<C>& range_begin, const UtfIterator<C>& range_end, const basic_string<C>& src)`
-* `template <typename C> Irange<UtfIterator<C>>` **`str_insert_in`**`(basic_string<C>& dst, const UtfIterator<C>& range_begin, const UtfIterator<C>& range_end, const UtfIterator<C>& src_begin, const UtfIterator<C>& src_end)`
+* `u8string` **`str_insert`**`(const Utf8Iterator& dst, const u8string& src)`
+* `u8string` **`str_insert`**`(const Utf8Iterator& dst, const Irange<Utf8Iterator>& src)`
+* `u8string` **`str_insert`**`(const Utf8Iterator& dst, const Utf8Iterator& src_begin, const Utf8Iterator& src_end)`
+* `u8string` **`str_insert`**`(const Irange<Utf8Iterator>& dst, const u8string& src)`
+* `u8string` **`str_insert`**`(const Irange<Utf8Iterator>& dst, const Irange<Utf8Iterator>& src)`
+* `u8string` **`str_insert`**`(const Utf8Iterator& dst_begin, const Utf8Iterator& dst_end, const u8string& src)`
+* `u8string` **`str_insert`**`(const Utf8Iterator& dst_begin, const Utf8Iterator& dst_end, const Utf8Iterator& src_begin, const Utf8Iterator& src_end)`
+* `Irange<Utf8Iterator>` **`str_insert_in`**`(u8string& dst, const Utf8Iterator& where, const u8string& src)`
+* `Irange<Utf8Iterator>` **`str_insert_in`**`(u8string& dst, const Utf8Iterator& where, const Irange<Utf8Iterator>& src)`
+* `Irange<Utf8Iterator>` **`str_insert_in`**`(u8string& dst, const Utf8Iterator& where, const Utf8Iterator& src_begin, const Utf8Iterator& src_end)`
+* `Irange<Utf8Iterator>` **`str_insert_in`**`(u8string& dst, const Irange<Utf8Iterator>& range, const u8string& src)`
+* `Irange<Utf8Iterator>` **`str_insert_in`**`(u8string& dst, const Irange<Utf8Iterator>& range, const Irange<Utf8Iterator>& src)`
+* `Irange<Utf8Iterator>` **`str_insert_in`**`(u8string& dst, const Utf8Iterator& range_begin, const Utf8Iterator& range_end, const u8string& src)`
+* `Irange<Utf8Iterator>` **`str_insert_in`**`(u8string& dst, const Utf8Iterator& range_begin, const Utf8Iterator& range_end, const Utf8Iterator& src_begin, const Utf8Iterator& src_end)`
 
 These insert a copy of the source string into the destination string, either
 at a specified location or replacing a specified substring. The effect is
-similar to the `basic_string::insert()` and `replace()` methods, except that
+similar to the `std::string::insert()` and `replace()` methods, except that
 positions within the string are specified by UTF iterators instead of ordinary
 string iterators or offsets. The `str_insert_in()` functions return a pair of
 iterators delimiting the newly inserted replacement string within the updated
 `dst`.
 
-* `template <typename FwdRange> basic_string<[character type]>` **`str_join`**`(const FwdRange& r)`
-* `template <typename FwdRange, typename C> basic_string<C>` **`str_join`**`(const FwdRange& r, const basic_string<C>& delim)`
-* `template <typename FwdRange, typename C> basic_string<C>` **`str_join`**`(const FwdRange& r, const C* delim)`
+* `template <typename FwdRange> u8string` **`str_join`**`(const FwdRange& r)`
+* `template <typename FwdRange> u8string` **`str_join`**`(const FwdRange& r, const u8string& delim)`
 
 These concatenate a list of strings, optionally inserting a delimiter between
-each pair of strings. The character types of the string list and the delimiter
-must match.
+each pair of strings. The value type of the range must be `u8string` or
+convertible to it.
 
-* `template <typename C> basic_string<C>` **`str_pad_left`**`(const basic_string<C>& str, size_t length, char32_t c = U' ', uint32_t flags = 0)`
-* `template <typename C> void` **`str_pad_left_in`**`(basic_string<C>& str, size_t length, char32_t c = U' ', uint32_t flags = 0)`
-* `template <typename C> basic_string<C>` **`str_pad_right`**`(const basic_string<C>& str, size_t length, char32_t c = U' ', uint32_t flags = 0)`
-* `template <typename C> void` **`str_pad_right_in`**`(basic_string<C>& str, size_t length, char32_t c = U' ', uint32_t flags = 0)`
+* `u8string` **`str_pad_left`**`(const u8string& str, size_t length, char32_t c = U' ', uint32_t flags = 0)`
+* `void` **`str_pad_left_in`**`(u8string& str, size_t length, char32_t c = U' ', uint32_t flags = 0)`
+* `u8string` **`str_pad_right`**`(const u8string& str, size_t length, char32_t c = U' ', uint32_t flags = 0)`
+* `void` **`str_pad_right_in`**`(u8string& str, size_t length, char32_t c = U' ', uint32_t flags = 0)`
 
 Pad a string on the left or right to a specified length; the character
-argument `c` is used for padding (converted to the appropriate encoding). The
-string will be returned unchanged if it is already equal to or longer than the
-required length. If the string can't be adjusted to exactly the specified size
-(because one of the East Asian width options was selected and wide characters
-are present), the result will be one unit longer than the requested length.
+argument `c` is used for padding (converted to UTF-8). The string will be
+returned unchanged if it is already equal to or longer than the required
+length. If the string can't be adjusted to exactly the specified size (because
+one of the East Asian width options was selected and wide characters are
+present), the result will be one unit longer than the requested length.
 
-* `template <typename C> bool` **`str_partition`**`(const basic_string<C>& str, basic_string<C>& prefix, basic_string<C>& suffix)`
-* `template <typename C> bool` **`str_partition_at`**`(const basic_string<C>& str, basic_string<C>& prefix, basic_string<C>& suffix, const basic_string<C>& delim)`
-* `template <typename C> bool` **`str_partition_at`**`(const basic_string<C>& str, basic_string<C>& prefix, basic_string<C>& suffix, const C* delim)`
-* `template <typename C> bool` **`str_partition_by`**`(const basic_string<C>& str, basic_string<C>& prefix, basic_string<C>& suffix, const basic_string<C>& delim)`
-* `template <typename C> bool` **`str_partition_by`**`(const basic_string<C>& str, basic_string<C>& prefix, basic_string<C>& suffix, const C* delim)`
+* `bool` **`str_partition`**`(const u8string& str, u8string& prefix, u8string& suffix)`
+* `bool` **`str_partition_at`**`(const u8string& str, u8string& prefix, u8string& suffix, const u8string& delim)`
+* `bool` **`str_partition_by`**`(const u8string& str, u8string& prefix, u8string& suffix, const u8string& delim)`
 
 These split a string into two parts at the first occurrence of a given
 delimiter. If the delimiter is found, the two parts are written into `prefix`
@@ -409,49 +365,37 @@ made empty, and the function returns `false`. The `str_partition()` function
 splits the string on the first contiguous sequence of whitespace characters;
 `str_partition_at()` splits it at the first occurrence of the `delim` string;
 and `str_partition_by()` splits it at the first contiguous sequence of
-characters that are in the `delim` list. In `str_partition_at()` and
-`str_partition_by()`, an empty delimiter string will be treated as never being
-found.
+characters that are in the `delim` list. An empty delimiter string will be
+treated as never being found.
 
-* `template <typename C> basic_string<C>` **`str_remove`**`(const basic_string<C>& str, char32_t c)`
-* `template <typename C> basic_string<C>` **`str_remove`**`(const basic_string<C>& str, const basic_string<C>& chars)`
-* `template <typename C> basic_string<C>` **`str_remove`**`(const basic_string<C>& str, const C* chars)`
-* `template <typename C, typename Pred> basic_string<C>` **`str_remove_if`**`(const basic_string<C>& str, Pred p)`
-* `template <typename C, typename Pred> basic_string<C>` **`str_remove_if_not`**`(const basic_string<C>& str, Pred p)`
-* `template <typename C> void` **`str_remove_in`**`(basic_string<C>& str, char32_t c)`
-* `template <typename C> void` **`str_remove_in`**`(basic_string<C>& str, const basic_string<C>& chars)`
-* `template <typename C> void` **`str_remove_in`**`(basic_string<C>& str, const C* chars)`
-* `template <typename C, typename Pred> void` **`str_remove_in_if`**`(basic_string<C>& str, Pred p)`
-* `template <typename C, typename Pred> void` **`str_remove_in_if_not`**`(basic_string<C>& str, Pred p)`
+* `u8string` **`str_remove`**`(const u8string& str, char32_t c)`
+* `u8string` **`str_remove`**`(const u8string& str, const u8string& chars)`
+* `template <typename Pred> u8string` **`str_remove_if`**`(const u8string& str, Pred p)`
+* `template <typename Pred> u8string` **`str_remove_if_not`**`(const u8string& str, Pred p)`
+* `void` **`str_remove_in`**`(u8string& str, char32_t c)`
+* `void` **`str_remove_in`**`(u8string& str, const u8string& chars)`
+* `template <typename Pred> void` **`str_remove_in_if`**`(u8string& str, Pred p)`
+* `template <typename Pred> void` **`str_remove_in_if_not`**`(u8string& str, Pred p)`
 
 These remove all occurrences of a specific character, all characters in a set,
 or characters matching (or not matching) a condition from the string.
 
-* `template <typename C> basic_string<C>` **`str_repeat`**`(const basic_string<C>& str, size_t n)`
-* `template <typename C> basic_string<C>` **`str_repeat`**`(const C* str, size_t n)`
-* `template <typename C> void` **`str_repeat_in`**`(basic_string<C>& str, size_t n)`
+* `u8string` **`str_repeat`**`(const u8string& str, size_t n)`
+* `void` **`str_repeat_in`**`(u8string& str, size_t n)`
 
 Return a string formed by concatenating `n` copies of the original string.
 
-* `template <typename C> basic_string<C>` **`str_replace`**`(const basic_string<C>& str, const basic_string<C>& target, const basic_string<C>& sub, size_t n = npos)`
-* `template <typename C> basic_string<C>` **`str_replace`**`(const basic_string<C>& str, const C* target, const basic_string<C>& sub, size_t n = npos)`
-* `template <typename C> basic_string<C>` **`str_replace`**`(const basic_string<C>& str, const basic_string<C>& target, const C* sub, size_t n = npos)`
-* `template <typename C> basic_string<C>` **`str_replace`**`(const basic_string<C>& str, const C* target, const C* sub, size_t n = npos)`
-* `template <typename C> void` **`str_replace_in`**`(basic_string<C>& str, const basic_string<C>& target, const basic_string<C>& sub, size_t n = npos)`
-* `template <typename C> void` **`str_replace_in`**`(basic_string<C>& str, const C* target, const basic_string<C>& sub, size_t n = npos)`
-* `template <typename C> void` **`str_replace_in`**`(basic_string<C>& str, const basic_string<C>& target, const C* sub, size_t n = npos)`
-* `template <typename C> void` **`str_replace_in`**`(basic_string<C>& str, const C* target, const C* sub, size_t n = npos)`
+* `u8string` **`str_replace`**`(const u8string& str, const u8string& target, const u8string& sub, size_t n = npos)`
+* `void` **`str_replace_in`**`(u8string& str, const u8string& target, const u8string& sub, size_t n = npos)`
 
 These return a copy of the first argument string, with the first `n`
 substrings that match `target` replaced with `sub`. By default, all matches
 are replaced. The string will be returned unchanged if `target` is empty or
 `n=0`.
 
-* `template <typename C, typename OutIter> void` **`str_split`**`(const basic_string<C>& src, OutIter dst)`
-* `template <typename C, typename OutIter> void` **`str_split_at`**`(const basic_string<C>& src, OutIter dst, const basic_string<C>& delim)`
-* `template <typename C, typename OutIter> void` **`str_split_at`**`(const basic_string<C>& src, OutIter dst, const C* delim)`
-* `template <typename C, typename OutIter> void` **`str_split_by`**`(const basic_string<C>& src, OutIter dst, const basic_string<C>& delim)`
-* `template <typename C, typename OutIter> void` **`str_split_by`**`(const basic_string<C>& src, OutIter dst, const C* delim)`
+* `template <typename OutIter> void` **`str_split`**`(const u8string& src, OutIter dst)`
+* `template <typename OutIter> void` **`str_split_at`**`(const u8string& src, OutIter dst, const u8string& delim)`
+* `template <typename OutIter> void` **`str_split_by`**`(const u8string& src, OutIter dst, const u8string& delim)`
 
 These split a string into substrings, using the specified delimiter to mark
 the substring boundaries, and copying the resulting substrings into the
@@ -463,7 +407,7 @@ in the `delim` list. Nothing will be written if the original source string is
 empty; if the delimiter string is empty (but the source string is not), a
 single string will be written.
 
-* `template <typename C, typename OutIter> void` **`str_split_lines`**`(const basic_string<C>& src, OutIter dst)`
+* `template <typename OutIter> void` **`str_split_lines`**`(const u8string& src, OutIter dst)`
 
 Splits a string at each line break, copying lines into the output iterator.
 Any character that passes `char_is_line_break()` is counted as a line break.
@@ -472,18 +416,14 @@ combination is counted as a single line break; any other sequence of multiple
 line breaks will generate empty lines in the output. An empty line will not be
 generated at the end if the last character in the input was a line break.
 
-* `template <typename C> basic_string<C>` **`str_squeeze`**`(const basic_string<C>& str)`
-* `template <typename C> basic_string<C>` **`str_squeeze`**`(const basic_string<C>& str, const basic_string<C>& chars)`
-* `template <typename C> basic_string<C>` **`str_squeeze`**`(const basic_string<C>& str, const C* chars)`
-* `template <typename C> basic_string<C>` **`str_squeeze_trim`**`(const basic_string<C>& str)`
-* `template <typename C> basic_string<C>` **`str_squeeze_trim`**`(const basic_string<C>& str, const basic_string<C>& chars)`
-* `template <typename C> basic_string<C>` **`str_squeeze_trim`**`(const basic_string<C>& str, const C* chars)`
-* `template <typename C> void` **`str_squeeze_in`**`(basic_string<C>& str)`
-* `template <typename C> void` **`str_squeeze_in`**`(basic_string<C>& str, const basic_string<C>& chars)`
-* `template <typename C> void` **`str_squeeze_in`**`(basic_string<C>& str, const C* chars)`
-* `template <typename C> void` **`str_squeeze_trim_in`**`(basic_string<C>& str)`
-* `template <typename C> void` **`str_squeeze_trim_in`**`(basic_string<C>& str, const basic_string<C>& chars)`
-* `template <typename C> void` **`str_squeeze_trim_in`**`(basic_string<C>& str, const C* chars)`
+* `u8string` **`str_squeeze`**`(const u8string& str)`
+* `u8string` **`str_squeeze`**`(const u8string& str, const u8string& chars)`
+* `u8string` **`str_squeeze_trim`**`(const u8string& str)`
+* `u8string` **`str_squeeze_trim`**`(const u8string& str, const u8string& chars)`
+* `void` **`str_squeeze_in`**`(u8string& str)`
+* `void` **`str_squeeze_in`**`(u8string& str, const u8string& chars)`
+* `void` **`str_squeeze_trim_in`**`(u8string& str)`
+* `void` **`str_squeeze_trim_in`**`(u8string& str, const u8string& chars)`
 
 These replace every sequence of one or more characters from `chars` with the
 first character in `chars`. By default, if `chars` is not supplied, every
@@ -493,8 +433,8 @@ trailing characters from `chars` are removed completely instead of reduced to
 one character. In all cases, the original string will be left unchanged if
 `chars` is empty.
 
-* `template <typename C> basic_string<C>` **`str_substring`**`(const basic_string<C>& str, size_t offset, size_t count = npos)`
-* `template <typename C> basic_string<C>` **`utf_substring`**`(const basic_string<C>& str, size_t index, size_t length = npos, uint32_t flags = 0)`
+* `u8string` **`str_substring`**`(const u8string& str, size_t offset, size_t count = npos)`
+* `u8string` **`utf_substring`**`(const u8string& str, size_t index, size_t length = npos, uint32_t flags = 0)`
 
 These return a substring of the original string. The `str_substring()`
 function returns the same string as `basic_string::substr()`, except that an
@@ -504,14 +444,8 @@ length of the substring are measured according according to the `flags`
 argument instead of by code units (the flags are the same as for
 `str_length()`, defaulting to characters).
 
-* `template <typename C> basic_string<C>` **`str_translate`**`(const basic_string<C>& str, const basic_string<C>& target, const basic_string<C>& sub)`
-* `template <typename C> basic_string<C>` **`str_translate`**`(const basic_string<C>& str, const basic_string<C>& target, const C* sub)`
-* `template <typename C> basic_string<C>` **`str_translate`**`(const basic_string<C>& str, const C* target, const basic_string<C>& sub)`
-* `template <typename C> basic_string<C>` **`str_translate`**`(const basic_string<C>& str, const C* target, const C* sub)`
-* `template <typename C> void` **`str_translate_in`**`(basic_string<C>& str, const basic_string<C>& target, const basic_string<C>& sub)`
-* `template <typename C> void` **`str_translate_in`**`(basic_string<C>& str, const basic_string<C>& target, const C* sub)`
-* `template <typename C> void` **`str_translate_in`**`(basic_string<C>& str, const C* target, const basic_string<C>& sub)`
-* `template <typename C> void` **`str_translate_in`**`(basic_string<C>& str, const C* target, const C* sub)`
+* `u8string` **`str_translate`**`(const u8string& str, const u8string& target, const u8string& sub)`
+* `void` **`str_translate_in`**`(u8string& str, const u8string& target, const u8string& sub)`
 
 These return a copy of the first argument string, with any characters that
 occur in `target` replaced with the corresponding character in `sub`. The
@@ -522,65 +456,49 @@ the extra characters in `sub` are ignored. If the same character occurs more
 than once in `target`, only the first is used. (This function is similar to
 the Unix `tr` utility.)
 
-* `template <typename C> basic_string<C>` **`str_trim`**`(const basic_string<C>& str)`
-* `template <typename C> basic_string<C>` **`str_trim`**`(const basic_string<C>& str, const basic_string<C>& chars)`
-* `template <typename C> basic_string<C>` **`str_trim`**`(const basic_string<C>& str, const C* chars)`
-* `template <typename C> void` **`str_trim_in`**`(basic_string<C>& str)`
-* `template <typename C> void` **`str_trim_in`**`(basic_string<C>& str, const basic_string<C>& chars)`
-* `template <typename C> void` **`str_trim_in`**`(basic_string<C>& str, const C* chars)`
-* `template <typename C> basic_string<C>` **`str_trim_left`**`(const basic_string<C>& str)`
-* `template <typename C> basic_string<C>` **`str_trim_left`**`(const basic_string<C>& str, const basic_string<C>& chars)`
-* `template <typename C> basic_string<C>` **`str_trim_left`**`(const basic_string<C>& str, const C* chars)`
-* `template <typename C> void` **`str_trim_left_in`**`(basic_string<C>& str)`
-* `template <typename C> void` **`str_trim_left_in`**`(basic_string<C>& str, const basic_string<C>& chars)`
-* `template <typename C> void` **`str_trim_left_in`**`(basic_string<C>& str, const C* chars)`
-* `template <typename C> basic_string<C>` **`str_trim_right`**`(const basic_string<C>& str)`
-* `template <typename C> basic_string<C>` **`str_trim_right`**`(const basic_string<C>& str, const basic_string<C>& chars)`
-* `template <typename C> basic_string<C>` **`str_trim_right`**`(const basic_string<C>& str, const C* chars)`
-* `template <typename C> void` **`str_trim_right_in`**`(basic_string<C>& str)`
-* `template <typename C> void` **`str_trim_right_in`**`(basic_string<C>& str, const basic_string<C>& chars)`
-* `template <typename C> void` **`str_trim_right_in`**`(basic_string<C>& str, const C* chars)`
-* `template <typename C, typename Pred> basic_string<C>` **`str_trim_if`**`(const basic_string<C>& str, Pred p)`
-* `template <typename C, typename Pred> basic_string<C>` **`str_trim_if_not`**`(const basic_string<C>& str, Pred p)`
-* `template <typename C, typename Pred> void` **`str_trim_in_if`**`(const basic_string<C>& str, Pred p)`
-* `template <typename C, typename Pred> void` **`str_trim_in_if_not`**`(const basic_string<C>& str, Pred p)`
-* `template <typename C, typename Pred> basic_string<C>` **`str_trim_left_if`**`(const basic_string<C>& str, Pred p)`
-* `template <typename C, typename Pred> basic_string<C>` **`str_trim_left_if_not`**`(const basic_string<C>& str, Pred p)`
-* `template <typename C, typename Pred> void` **`str_trim_left_in_if`**`(const basic_string<C>& str, Pred p)`
-* `template <typename C, typename Pred> void` **`str_trim_left_in_if_not`**`(const basic_string<C>& str, Pred p)`
-* `template <typename C, typename Pred> basic_string<C>` **`str_trim_right_if`**`(const basic_string<C>& str, Pred p)`
-* `template <typename C, typename Pred> basic_string<C>` **`str_trim_right_if_not`**`(const basic_string<C>& str, Pred p)`
-* `template <typename C, typename Pred> void` **`str_trim_right_in_if`**`(const basic_string<C>& str, Pred p)`
-* `template <typename C, typename Pred> void` **`str_trim_right_in_if_not`**`(const basic_string<C>& str, Pred p)`
+* `u8string` **`str_trim`**`(const u8string& str)`
+* `u8string` **`str_trim`**`(const u8string& str, const u8string& chars)`
+* `void` **`str_trim_in`**`(u8string& str)`
+* `void` **`str_trim_in`**`(u8string& str, const u8string& chars)`
+* `u8string` **`str_trim_left`**`(const u8string& str)`
+* `u8string` **`str_trim_left`**`(const u8string& str, const u8string& chars)`
+* `void` **`str_trim_left_in`**`(u8string& str)`
+* `void` **`str_trim_left_in`**`(u8string& str, const u8string& chars)`
+* `u8string` **`str_trim_right`**`(const u8string& str)`
+* `u8string` **`str_trim_right`**`(const u8string& str, const u8string& chars)`
+* `void` **`str_trim_right_in`**`(u8string& str)`
+* `void` **`str_trim_right_in`**`(u8string& str, const u8string& chars)`
+* `template <typename Pred> u8string` **`str_trim_if`**`(const u8string& str, Pred p)`
+* `template <typename Pred> u8string` **`str_trim_if_not`**`(const u8string& str, Pred p)`
+* `template <typename Pred> void` **`str_trim_in_if`**`(const u8string& str, Pred p)`
+* `template <typename Pred> void` **`str_trim_in_if_not`**`(const u8string& str, Pred p)`
+* `template <typename Pred> u8string` **`str_trim_left_if`**`(const u8string& str, Pred p)`
+* `template <typename Pred> u8string` **`str_trim_left_if_not`**`(const u8string& str, Pred p)`
+* `template <typename Pred> void` **`str_trim_left_in_if`**`(const u8string& str, Pred p)`
+* `template <typename Pred> void` **`str_trim_left_in_if_not`**`(const u8string& str, Pred p)`
+* `template <typename Pred> u8string` **`str_trim_right_if`**`(const u8string& str, Pred p)`
+* `template <typename Pred> u8string` **`str_trim_right_if_not`**`(const u8string& str, Pred p)`
+* `template <typename Pred> void` **`str_trim_right_in_if`**`(const u8string& str, Pred p)`
+* `template <typename Pred> void` **`str_trim_right_in_if_not`**`(const u8string& str, Pred p)`
 
 These trim unwanted characters from one or both ends of the string. By
 default, any whitespace characters (according to the Unicode property) are
 stripped; alternatively, you can supply a string containing the list of
 unwanted characters, or a predicate function that takes a character and
-returns `true` if the character should be trimmed. (Note that the predicate
-always takes a Unicode character, i.e. a `char32_t`, regardless of the code
-unit type, `C`.)
+returns `true` if the character should be trimmed. The predicate takes a
+Unicode character, i.e. a `char32_t`, not a code unit.
 
-* `template <typename C> basic_string<C>` **`str_unify_lines`**`(const basic_string<C>& str, char32_t newline = U'\n')`
-* `template <typename C> basic_string<C>` **`str_unify_lines`**`(const basic_string<C>& str, const basic_string<C>& newline)`
-* `template <typename C> basic_string<C>` **`str_unify_lines`**`(const basic_string<C>& str, const C* newline)`
-* `template <typename C> void` **`str_unify_lines_in`**`(basic_string<C>& str, char32_t newline = U'\n')`
-* `template <typename C> void` **`str_unify_lines_in`**`(basic_string<C>& str, const basic_string<C>& newline)`
-* `template <typename C> void` **`str_unify_lines_in`**`(basic_string<C>& str, const C* newline)`
+* `u8string` **`str_unify_lines`**`(const u8string& str, char32_t newline = U'\n')`
+* `u8string` **`str_unify_lines`**`(const u8string& str, const u8string& newline)`
+* `void` **`str_unify_lines_in`**`(u8string& str, char32_t newline = U'\n')`
+* `void` **`str_unify_lines_in`**`(u8string& str, const u8string& newline)`
 
 These convert all line breaks to the same form, a single `LF` by default. Any
 Unicode line or paragraph breaking character is recognised and replaced; the
 `CR+LF` sequence is also treated as a single line break.
 
-* `template <typename C> basic_string<C>` **`str_wrap`**`(const basic_string<C>& str, uint32_t flags = 0, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos)`
-* `template <typename C> basic_string<C>` **`str_wrap`**`(const C* str, uint32_t flags = 0, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos)`
-* `template <typename C> void` **`str_wrap_in`**`(basic_string<C>& str, uint32_t flags = 0, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos)`
-
-Flag                 | Description
-----                 | -----------
-**`wrap_crlf`**      | Use CR+LF for line breaks (default is LF)
-**`wrap_enforce`**   | Enforce right margin strictly
-**`wrap_preserve`**  | Preserve layout on already indented lines
+* `u8string` **`str_wrap`**`(const u8string& str, uint32_t flags = 0, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos)`
+* `void` **`str_wrap_in`**`(u8string& str, uint32_t flags = 0, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos)`
 
 Wrap the text in a string to a given width. Wrapping is done separately for
 each paragraph; paragraphs are delimited by two or more line breaks (as usual,
@@ -598,8 +516,15 @@ of a paragraph (the width includes the indentation). If `margin2=npos`,
 `margin1` is used for all lines. The function will throw `std::length_error`
 if either margin is greater than or equal to the width.
 
-Any line breaking already present in the input text is discarded, except for
-the special behaviour described for `wrap_preserve` below.
+Any line breaking (within paragraphs) already present in the input text is
+discarded, except for the special behaviour described for `wrap_preserve`
+below.
+
+Flag                 | Description
+----                 | -----------
+**`wrap_crlf`**      | Use CR+LF for line breaks (default is LF)
+**`wrap_enforce`**   | Enforce right margin strictly
+**`wrap_preserve`**  | Preserve layout on already indented lines
 
 The `flags` argument determines the details of the word wrapping behaviour. In
 addition to the flags listed above, the standard flags for determining string
@@ -617,14 +542,14 @@ line are left in their original format.
 
 ## Case mapping functions ##
 
-* `template <typename C> basic_string<C>` **`str_uppercase`**`(const basic_string<C>& str)`
-* `template <typename C> void` **`str_uppercase_in`**`(basic_string<C>& str)`
-* `template <typename C> basic_string<C>` **`str_lowercase`**`(const basic_string<C>& str)`
-* `template <typename C> void` **`str_lowercase_in`**`(basic_string<C>& str)`
-* `template <typename C> basic_string<C>` **`str_titlecase`**`(const basic_string<C>& str)`
-* `template <typename C> void` **`str_titlecase_in`**`(basic_string<C>& str)`
-* `template <typename C> basic_string<C>` **`str_casefold`**`(const basic_string<C>& str)`
-* `template <typename C> void` **`str_casefold_in`**`(basic_string<C>& str)`
+* `u8string` **`str_uppercase`**`(const u8string& str)`
+* `void` **`str_uppercase_in`**`(u8string& str)`
+* `u8string` **`str_lowercase`**`(const u8string& str)`
+* `void` **`str_lowercase_in`**`(u8string& str)`
+* `u8string` **`str_titlecase`**`(const u8string& str)`
+* `void` **`str_titlecase_in`**`(u8string& str)`
+* `u8string` **`str_casefold`**`(const u8string& str)`
+* `void` **`str_casefold_in`**`(u8string& str)`
 
 These convert a string to upper case, lower case, title case, or the case
 folded form (the form recommended by Unicode for case insensitive string
@@ -646,8 +571,8 @@ Flag          | Description
 
 Flags recognised by `str_escape()` and related functions.
 
-* `template <typename C> u8string` **`str_encode_uri`**`(const basic_string<C>& str)`
-* `template <typename C> u8string` **`str_encode_uri_component`**`(const basic_string<C>& str)`
+* `u8string` **`str_encode_uri`**`(const u8string& str)`
+* `u8string` **`str_encode_uri_component`**`(const u8string& str)`
 * `void` **`str_encode_uri_in`**`(u8string& str)`
 * `void` **`str_encode_uri_component_in`**`(u8string& str)`
 
@@ -664,9 +589,8 @@ be encoded. ASCII punctuation is selectively encoded:
 | `!#$&'()*+,/:;=?@[]`  | Encoded by `str_encode_uri_component()` but not by `str_encode_uri()`
 | `-._~`                | Left unencoded by both functions
 
-The URI encoding functions work with UTF-8 strings because an encoded URI can
-only be an ASCII string. These functions only apply percent encoding; they do
-not make any attempt to support IDNA domain names.
+These functions only apply percent encoding; they do not make any attempt to
+support IDNA domain names.
 
 * `u8string` **`str_unencode_uri`**`(const u8string& str)`
 * `void` **`str_unencode_uri_in`**`(u8string& str)`
@@ -675,32 +599,34 @@ These perform the reverse transformation to `str_encode_uri()` and
 `str_encode_uri_component()`, replacing percent escape codes with the original
 characters.
 
-* `template <typename C> basic_string<C>` **`str_escape`**`(const basic_string<C>& str, uint32_t flags = 0)`
-* `template <typename C> void` **`str_escape_in`**`(basic_string<C>& str, uint32_t flags = 0)`
+* `u8string` **`str_escape`**`(const u8string& str, uint32_t flags = 0)`
+* `void` **`str_escape_in`**`(u8string& str, uint32_t flags = 0)`
 
 Replace some of the characters in the string with escape codes using a leading
-backslash. Normally, only C0 and C1 control characters, plus the backslash
+backslash. By default, only C0 and C1 control characters, plus the backslash
 itself, will be escaped, and conventional C codes such as `"\n"` will be used
 instead of `"\x..."` for the relevant control characters. These behaviour
 settings can be changed by using the flags listed above.
 
-* `template <typename C> basic_string<C>` **`str_unescape`**`(const basic_string<C>& str)`
-* `template <typename C> void` **`str_unescape_in`**`(basic_string<C>& str)`
+* `u8string` **`str_unescape`**`(const u8string& str)`
+* `void` **`str_unescape_in`**`(u8string& str)`
 
 These perform the reverse transformation to `str_escape()`, replacing escape
 codes with the original characters. If a backslash is followed by a character
 not recognised as an escape code, the backslash will simply be discarded and
-the second character left unchanged. These will throw `EncodingError` if a
-hexadecimal code does not represent a valid Unicode scalar value.
+the second character left unchanged. Any of `"\xHH"`, `"\x{HHH...}"`,
+`"\uHHHH"`, and `"\UHHHHHHHH"` can be used to encode hexadecimal code points.
+These will throw `EncodingError` if a hex code does not represent a valid
+Unicode scalar value.
 
-* `template <typename C> basic_string<C>` **`str_quote`**`(const basic_string<C>& str, uint32_t flags = 0, char32_t quote = '\"')`
-* `template <typename C> void` **`str_quote_in`**`(basic_string<C>& str, uint32_t flags = 0, char32_t quote = '\"')`
+* `u8string` **`str_quote`**`(const u8string& str, uint32_t flags = 0, char32_t quote = '\"')`
+* `void` **`str_quote_in`**`(u8string& str, uint32_t flags = 0, char32_t quote = '\"')`
 
-These perform much the same operation as `str_escape()`. Quote marks are added
-around the string, and internal quotes are escaped.
+These perform the same operation as `str_escape()`, except that quote marks
+are added around the string, and internal quotes are escaped.
 
-* `template <typename C> basic_string<C>` **`str_unquote`**`(const basic_string<C>& str, char32_t quote = '\"')`
-* `template <typename C> void` **`str_unquote_in`**`(basic_string<C>& str, char32_t quote = '\"')`
+* `u8string` **`str_unquote`**`(const u8string& str, char32_t quote = '\"')`
+* `void` **`str_unquote_in`**`(u8string& str, char32_t quote = '\"')`
 
 These perform the reverse transformation to `str_quote()`, removing quote
 marks from the string, or from any quoted substrings within it, and then
@@ -708,18 +634,18 @@ unescaping the resulting strings.
 
 ## Type conversion functions ##
 
-* `template <typename T, typename C> size_t` **`str_to_int`**`(T& t, const basic_string<C>& str, size_t offset = 0, uint32_t flags = 0)`
-* `template <typename T, typename C> UtfIterator<C>` **`str_to_int`**`(T& t, const UtfIterator<C>& start, uint32_t flags = 0)`
-* `template <typename T, typename C> T` **`str_to_int`**`(const basic_string<C>& str, uint32_t flags = 0)`
-* `template <typename T, typename C> T` **`str_to_int`**`(const UtfIterator<C>& start, uint32_t flags = 0)`
-* `template <typename T, typename C> size_t` **`hex_to_int`**`(T& t, const basic_string<C>& str, size_t offset = 0, uint32_t flags = 0)`
-* `template <typename T, typename C> UtfIterator<C>` **`hex_to_int`**`(T& t, const UtfIterator<C>& start, uint32_t flags = 0)`
-* `template <typename T, typename C> T` **`hex_to_int`**`(const basic_string<C>& str, uint32_t flags = 0)`
-* `template <typename T, typename C> T` **`hex_to_int`**`(const UtfIterator<C>& start, uint32_t flags = 0)`
-* `template <typename T, typename C> size_t` **`str_to_float`**`(T& t, const basic_string<C>& str, size_t offset = 0, uint32_t flags = 0)`
-* `template <typename T, typename C> UtfIterator<C>` **`str_to_float`**`(T& t, const UtfIterator<C>& start, uint32_t flags = 0)`
-* `template <typename T, typename C> T` **`str_to_float`**`(const basic_string<C>& str, uint32_t flags = 0)`
-* `template <typename T, typename C> T` **`str_to_float`**`(const UtfIterator<C>& start, uint32_t flags = 0)`
+* `template <typename T> size_t` **`str_to_int`**`(T& t, const u8string& str, size_t offset = 0, uint32_t flags = 0)`
+* `template <typename T> Utf8Iterator` **`str_to_int`**`(T& t, const Utf8Iterator& start, uint32_t flags = 0)`
+* `template <typename T> T` **`str_to_int`**`(const u8string& str, uint32_t flags = 0)`
+* `template <typename T> T` **`str_to_int`**`(const Utf8Iterator& start, uint32_t flags = 0)`
+* `template <typename T> size_t` **`hex_to_int`**`(T& t, const u8string& str, size_t offset = 0, uint32_t flags = 0)`
+* `template <typename T> Utf8Iterator` **`hex_to_int`**`(T& t, const Utf8Iterator& start, uint32_t flags = 0)`
+* `template <typename T> T` **`hex_to_int`**`(const u8string& str, uint32_t flags = 0)`
+* `template <typename T> T` **`hex_to_int`**`(const Utf8Iterator& start, uint32_t flags = 0)`
+* `template <typename T> size_t` **`str_to_float`**`(T& t, const u8string& str, size_t offset = 0, uint32_t flags = 0)`
+* `template <typename T> Utf8Iterator` **`str_to_float`**`(T& t, const Utf8Iterator& start, uint32_t flags = 0)`
+* `template <typename T> T` **`str_to_float`**`(const u8string& str, uint32_t flags = 0)`
+* `template <typename T> T` **`str_to_float`**`(const Utf8Iterator& start, uint32_t flags = 0)`
 
 Conversions from a string to an integer (in decimal or hexadecimal) or a
 floating point number. In each set of four overloaded functions, the first two
