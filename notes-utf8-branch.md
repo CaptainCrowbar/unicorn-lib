@@ -42,11 +42,11 @@
     * **[TODO]** `string-escape -> character, core, string-forward, string-property, string-size, utf`
         * Make all of these UTF-8 only
 * _Level 10_
-    * **[TODO]** `string-compare -> character, core, string-algorithm, string-case, string-forward, utf`
+    * [done] `string-compare -> character, core, string-algorithm, string-case, string-forward, utf`
         * `StringCompare` Delete
         * Others - Make UTF-8 only
     * **[TODO]** `string-manip -> character, core, string-algorithm, string-forward, string-property, string-size, utf`
-        * `str_append()`, `str_append_char()`, `str_append_chars()` Keep these as templates
+        * `str_append()`, `str_append_char()`, `str_append_chars()` Keep these as templates but UTF-8 output only
         * `str_char()`, `str_chars()` UTF-8 output only; this will require changes elsewhere
         * `str_concat()`, `str_concat_with()` UTF-8 output only, but keep the generic input
         * Others - Make UTF-8 only

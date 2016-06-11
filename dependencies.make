@@ -181,16 +181,14 @@ build/$(TARGET)/string-case.o: unicorn/string-case.cpp unicorn/string-case.hpp \
   unicorn/string-size.hpp
 build/$(TARGET)/string-compare-test.o: unicorn/string-compare-test.cpp \
   unicorn/string-compare.hpp unicorn/core.hpp \
-  $(LIBROOT)/prion-lib/prion/core.hpp unicorn/character.hpp \
-  unicorn/property-values.hpp unicorn/string-algorithm.hpp \
-  unicorn/string-forward.hpp unicorn/utf.hpp unicorn/string-property.hpp \
-  unicorn/string-size.hpp unicorn/segment.hpp unicorn/string-case.hpp \
-  $(LIBROOT)/prion-lib/prion/unit-test.hpp
+  $(LIBROOT)/prion-lib/prion/core.hpp unicorn/utf.hpp unicorn/character.hpp \
+  unicorn/property-values.hpp $(LIBROOT)/prion-lib/prion/unit-test.hpp
 build/$(TARGET)/string-compare.o: unicorn/string-compare.cpp unicorn/string-compare.hpp \
-  unicorn/core.hpp $(LIBROOT)/prion-lib/prion/core.hpp unicorn/character.hpp \
-  unicorn/property-values.hpp unicorn/string-algorithm.hpp \
-  unicorn/string-forward.hpp unicorn/utf.hpp unicorn/string-property.hpp \
-  unicorn/string-size.hpp unicorn/segment.hpp unicorn/string-case.hpp
+  unicorn/core.hpp $(LIBROOT)/prion-lib/prion/core.hpp unicorn/utf.hpp \
+  unicorn/character.hpp unicorn/property-values.hpp \
+  unicorn/string-algorithm.hpp unicorn/string-forward.hpp \
+  unicorn/string-property.hpp unicorn/string-size.hpp \
+  unicorn/segment.hpp unicorn/string-case.hpp
 build/$(TARGET)/string-conversion-test.o: unicorn/string-conversion-test.cpp \
   unicorn/string-conversion.hpp unicorn/core.hpp \
   $(LIBROOT)/prion-lib/prion/core.hpp unicorn/character.hpp \
