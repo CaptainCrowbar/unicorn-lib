@@ -72,20 +72,21 @@ build/$(TARGET)/io.o: unicorn/io.cpp unicorn/io.hpp unicorn/core.hpp \
   unicorn/string-manip.hpp unicorn/format.hpp unicorn/mbcs.hpp
 build/$(TARGET)/lexer-test.o: unicorn/lexer-test.cpp unicorn/core.hpp \
   $(LIBROOT)/prion-lib/prion/core.hpp unicorn/lexer.hpp unicorn/character.hpp \
-  unicorn/property-values.hpp unicorn/regex.hpp unicorn/string.hpp \
-  unicorn/string-algorithm.hpp unicorn/string-forward.hpp \
-  unicorn/utf.hpp unicorn/string-property.hpp unicorn/string-size.hpp \
-  unicorn/segment.hpp unicorn/string-case.hpp unicorn/string-compare.hpp \
-  unicorn/string-conversion.hpp unicorn/string-escape.hpp \
-  unicorn/string-manip.hpp $(LIBROOT)/prion-lib/prion/unit-test.hpp
+  unicorn/property-values.hpp unicorn/regex.hpp unicorn/utf.hpp \
+  unicorn/string.hpp unicorn/string-algorithm.hpp \
+  unicorn/string-forward.hpp unicorn/string-property.hpp \
+  unicorn/string-size.hpp unicorn/segment.hpp unicorn/string-case.hpp \
+  unicorn/string-compare.hpp unicorn/string-conversion.hpp \
+  unicorn/string-escape.hpp unicorn/string-manip.hpp \
+  $(LIBROOT)/prion-lib/prion/unit-test.hpp
 build/$(TARGET)/lexer.o: unicorn/lexer.cpp unicorn/lexer.hpp unicorn/core.hpp \
   $(LIBROOT)/prion-lib/prion/core.hpp unicorn/character.hpp \
-  unicorn/property-values.hpp unicorn/regex.hpp unicorn/string.hpp \
-  unicorn/string-algorithm.hpp unicorn/string-forward.hpp \
-  unicorn/utf.hpp unicorn/string-property.hpp unicorn/string-size.hpp \
-  unicorn/segment.hpp unicorn/string-case.hpp unicorn/string-compare.hpp \
-  unicorn/string-conversion.hpp unicorn/string-escape.hpp \
-  unicorn/string-manip.hpp
+  unicorn/property-values.hpp unicorn/regex.hpp unicorn/utf.hpp \
+  unicorn/string.hpp unicorn/string-algorithm.hpp \
+  unicorn/string-forward.hpp unicorn/string-property.hpp \
+  unicorn/string-size.hpp unicorn/segment.hpp unicorn/string-case.hpp \
+  unicorn/string-compare.hpp unicorn/string-conversion.hpp \
+  unicorn/string-escape.hpp unicorn/string-manip.hpp
 build/$(TARGET)/mbcs-test.o: unicorn/mbcs-test.cpp unicorn/core.hpp \
   $(LIBROOT)/prion-lib/prion/core.hpp unicorn/mbcs.hpp unicorn/utf.hpp \
   unicorn/character.hpp unicorn/property-values.hpp \
@@ -112,33 +113,35 @@ build/$(TARGET)/normal.o: unicorn/normal.cpp unicorn/normal.hpp unicorn/core.hpp
   unicorn/property-values.hpp unicorn/utf.hpp
 build/$(TARGET)/options-test.o: unicorn/options-test.cpp unicorn/core.hpp \
   $(LIBROOT)/prion-lib/prion/core.hpp unicorn/options.hpp unicorn/character.hpp \
-  unicorn/property-values.hpp unicorn/regex.hpp unicorn/string.hpp \
-  unicorn/string-algorithm.hpp unicorn/string-forward.hpp \
-  unicorn/utf.hpp unicorn/string-property.hpp unicorn/string-size.hpp \
-  unicorn/segment.hpp unicorn/string-case.hpp unicorn/string-compare.hpp \
-  unicorn/string-conversion.hpp unicorn/string-escape.hpp \
-  unicorn/string-manip.hpp $(LIBROOT)/prion-lib/prion/unit-test.hpp
+  unicorn/property-values.hpp unicorn/regex.hpp unicorn/utf.hpp \
+  unicorn/string.hpp unicorn/string-algorithm.hpp \
+  unicorn/string-forward.hpp unicorn/string-property.hpp \
+  unicorn/string-size.hpp unicorn/segment.hpp unicorn/string-case.hpp \
+  unicorn/string-compare.hpp unicorn/string-conversion.hpp \
+  unicorn/string-escape.hpp unicorn/string-manip.hpp \
+  $(LIBROOT)/prion-lib/prion/unit-test.hpp
 build/$(TARGET)/options.o: unicorn/options.cpp unicorn/options.hpp unicorn/core.hpp \
   $(LIBROOT)/prion-lib/prion/core.hpp unicorn/character.hpp \
-  unicorn/property-values.hpp unicorn/regex.hpp unicorn/string.hpp \
-  unicorn/string-algorithm.hpp unicorn/string-forward.hpp \
-  unicorn/utf.hpp unicorn/string-property.hpp unicorn/string-size.hpp \
-  unicorn/segment.hpp unicorn/string-case.hpp unicorn/string-compare.hpp \
-  unicorn/string-conversion.hpp unicorn/string-escape.hpp \
-  unicorn/string-manip.hpp unicorn/format.hpp unicorn/mbcs.hpp
+  unicorn/property-values.hpp unicorn/regex.hpp unicorn/utf.hpp \
+  unicorn/string.hpp unicorn/string-algorithm.hpp \
+  unicorn/string-forward.hpp unicorn/string-property.hpp \
+  unicorn/string-size.hpp unicorn/segment.hpp unicorn/string-case.hpp \
+  unicorn/string-compare.hpp unicorn/string-conversion.hpp \
+  unicorn/string-escape.hpp unicorn/string-manip.hpp unicorn/format.hpp \
+  unicorn/mbcs.hpp
 build/$(TARGET)/regex-test.o: unicorn/regex-test.cpp unicorn/core.hpp \
-  $(LIBROOT)/prion-lib/prion/core.hpp unicorn/regex.hpp unicorn/character.hpp \
-  unicorn/property-values.hpp unicorn/string.hpp \
+  $(LIBROOT)/prion-lib/prion/core.hpp unicorn/regex.hpp unicorn/utf.hpp \
+  unicorn/character.hpp unicorn/property-values.hpp unicorn/string.hpp \
   unicorn/string-algorithm.hpp unicorn/string-forward.hpp \
-  unicorn/utf.hpp unicorn/string-property.hpp unicorn/string-size.hpp \
+  unicorn/string-property.hpp unicorn/string-size.hpp \
   unicorn/segment.hpp unicorn/string-case.hpp unicorn/string-compare.hpp \
   unicorn/string-conversion.hpp unicorn/string-escape.hpp \
   unicorn/string-manip.hpp $(LIBROOT)/prion-lib/prion/unit-test.hpp
 build/$(TARGET)/regex.o: unicorn/regex.cpp unicorn/regex.hpp unicorn/core.hpp \
-  $(LIBROOT)/prion-lib/prion/core.hpp unicorn/character.hpp \
+  $(LIBROOT)/prion-lib/prion/core.hpp unicorn/utf.hpp unicorn/character.hpp \
   unicorn/property-values.hpp unicorn/string.hpp \
   unicorn/string-algorithm.hpp unicorn/string-forward.hpp \
-  unicorn/utf.hpp unicorn/string-property.hpp unicorn/string-size.hpp \
+  unicorn/string-property.hpp unicorn/string-size.hpp \
   unicorn/segment.hpp unicorn/string-case.hpp unicorn/string-compare.hpp \
   unicorn/string-conversion.hpp unicorn/string-escape.hpp \
   unicorn/string-manip.hpp

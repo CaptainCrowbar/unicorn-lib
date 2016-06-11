@@ -15,12 +15,15 @@ namespace {
 
     void check_version_information() {
 
-        auto ver = regex_version();
-        cout << "... PCRE version: " << ver.str(3) << "\n";
-        TEST_COMPARE(ver, >=, (Version{8,0,0}));
-        ver = regex_unicode_version();
-        cout << "... PCRE Unicode version: " << ver.str(3) << "\n";
-        TEST_COMPARE(ver, >=, (Version{7,0,0}));
+        Version pv, uv;
+
+        TRY(pv = Regex::pcre_version());
+        TRY(uv = Regex::unicode_version());
+        TEST_COMPARE(pv, >=, (Version{8,0,0}));
+        TEST_COMPARE(uv, >=, (Version{7,0,0}));
+
+        cout << "... PCRE library version: " << pv.str(3) << "\n";
+        cout << "... PCRE Unicode version: " << uv.str(3) << "\n";
 
     }
 
@@ -265,10 +268,10 @@ namespace {
         TEST_EQUAL(m[2], "world");
 
         s = "Hello world";
-        TRY(r = regex("[a-z]+"));
+        TRY(r = Regex("[a-z]+"));
         TRY(m = r(s));
         TEST_EQUAL(m.str(), "ello");
-        TRY(r = regex("[a-z]+", rx_caseless));
+        TRY(r = Regex("[a-z]+", rx_caseless));
         TRY(m = r(s));
         TEST_EQUAL(m.str(), "Hello");
 
@@ -285,7 +288,7 @@ namespace {
             return true;
         };
 
-        TRY(r = regex("^.?$|^(..+?)\\1+$"));
+        TRY(r = Regex("^.?$|^(..+?)\\1+$"));
 
         for (int n = 0; n <= 100; ++n) {
             TEST_EQUAL(! r.match(u8string(n, 'x')), is_prime(n));
@@ -415,9 +418,9 @@ namespace {
         s = "Hello world";  TEST_EQUAL(rf(s), "hEllO wOrld");
 
         s = "Hello world";
-        TRY(rf = regex_format("[a-z]+", "§"));
+        TRY(rf = RegexFormat("[a-z]+", "§"));
         TEST_EQUAL(rf(s), "H§ §");
-        TRY(rf = regex_format("[a-z]+", "§", rx_caseless));
+        TRY(rf = RegexFormat("[a-z]+", "§", rx_caseless));
         TEST_EQUAL(rf(s), "§ §");
 
         TRY(rf = RegexFormat("\\w+", "\\U$0"));
@@ -444,143 +447,11 @@ namespace {
 
     }
 
-    void check_utility_functions() {
+    void check_string_escaping() {
 
-        TEST_EQUAL(regex_escape(""), "");
-        TEST_EQUAL(regex_escape("Hello world"), "Hello world");
-        TEST_EQUAL(regex_escape("[$-*]{42}"), "\\[\\$-\\*\\]\\{42\\}");
-
-    }
-
-    void check_utf16_regex() {
-
-        #if defined(UNICORN_PCRE16)
-
-            Regex16 r;
-            Match16 m;
-            u16string s = u"(Hello world)", t;
-
-            TRY(r = Regex16(u"\\b[a-z]+\\b"));
-            TRY(m = r(s));
-            TEST(m);
-            TEST_EQUAL(m.str(), u"world");
-
-            Irange<MatchIterator16> mr;
-            vector<u16string> v;
-
-            TRY(r = Regex16(u"\\w+"));
-            TRY(mr = r.grep(s));
-            TEST_EQUAL(range_count(mr), 2);
-            TRY(std::copy(mr.begin(), mr.end(), overwrite(v)));
-            TEST_EQUAL(Test::format_range(v), "[Hello,world]");
-
-            Irange<SplitIterator16> sr;
-
-            TRY(r = Regex16(u"[ ()]+"));
-            TRY(sr = r.split(s));
-            TEST_EQUAL(range_count(sr), 4);
-            TRY(std::copy(sr.begin(), sr.end(), overwrite(v)));
-            TEST_EQUAL(Test::format_range(v), "[,Hello,world,]");
-
-            RegexFormat16 rf;
-
-            TRY(rf = RegexFormat16(u"\\w+", u"=$0="));
-            TRY(t = rf(s));
-            TEST_EQUAL(t, u"(=Hello= =world=)");
-
-            TEST_EQUAL(regex_escape(u""), u"");
-            TEST_EQUAL(regex_escape(u"Hello world"), u"Hello world");
-            TEST_EQUAL(regex_escape(u"[$-*]{42}"), u"\\[\\$-\\*\\]\\{42\\}");
-
-        #endif
-
-    }
-
-    void check_utf32_regex() {
-
-        #if defined(UNICORN_PCRE32)
-
-            Regex32 r;
-            Match32 m;
-            u32string s = U"(Hello world)", t;
-
-            TRY(r = Regex32(U"\\b[a-z]+\\b"));
-            TRY(m = r(s));
-            TEST(m);
-            TEST_EQUAL(m.str(), U"world");
-
-            Irange<MatchIterator32> mr;
-            vector<u32string> v;
-
-            TRY(r = Regex32(U"\\w+"));
-            TRY(mr = r.grep(s));
-            TEST_EQUAL(range_count(mr), 2);
-            TRY(std::copy(mr.begin(), mr.end(), overwrite(v)));
-            TEST_EQUAL(Test::format_range(v), "[Hello,world]");
-
-            Irange<SplitIterator32> sr;
-
-            TRY(r = Regex32(U"[ ()]+"));
-            TRY(sr = r.split(s));
-            TEST_EQUAL(range_count(sr), 4);
-            TRY(std::copy(sr.begin(), sr.end(), overwrite(v)));
-            TEST_EQUAL(Test::format_range(v), "[,Hello,world,]");
-
-            RegexFormat32 rf;
-
-            TRY(rf = RegexFormat32(U"\\w+", U"=$0="));
-            TRY(t = rf(s));
-            TEST_EQUAL(t, U"(=Hello= =world=)");
-
-            TEST_EQUAL(regex_escape(U""), U"");
-            TEST_EQUAL(regex_escape(U"Hello world"), U"Hello world");
-            TEST_EQUAL(regex_escape(U"[$-*]{42}"), U"\\[\\$-\\*\\]\\{42\\}");
-
-        #endif
-
-    }
-
-    void check_wchar_regex() {
-
-        #if defined(UNICORN_PCRE_WCHAR)
-
-            WideRegex r;
-            WideMatch m;
-            wstring s = L"(Hello world)", t;
-
-            TRY(r = WideRegex(L"\\b[a-z]+\\b"));
-            TRY(m = r(s));
-            TEST(m);
-            TEST_EQUAL(m.str(), L"world");
-
-            Irange<WideMatchIterator> mr;
-            vector<wstring> v;
-
-            TRY(r = WideRegex(L"\\w+"));
-            TRY(mr = r.grep(s));
-            TEST_EQUAL(range_count(mr), 2);
-            TRY(std::copy(mr.begin(), mr.end(), overwrite(v)));
-            TEST_EQUAL(Test::format_range(v), "[Hello,world]");
-
-            Irange<WideSplitIterator> sr;
-
-            TRY(r = WideRegex(L"[ ()]+"));
-            TRY(sr = r.split(s));
-            TEST_EQUAL(range_count(sr), 4);
-            TRY(std::copy(sr.begin(), sr.end(), overwrite(v)));
-            TEST_EQUAL(Test::format_range(v), "[,Hello,world,]");
-
-            WideRegexFormat rf;
-
-            TRY(rf = WideRegexFormat(L"\\w+", L"=$0="));
-            TRY(t = rf(s));
-            TEST_EQUAL(t, L"(=Hello= =world=)");
-
-            TEST_EQUAL(regex_escape(L""), L"");
-            TEST_EQUAL(regex_escape(L"Hello world"), L"Hello world");
-            TEST_EQUAL(regex_escape(L"[$-*]{42}"), L"\\[\\$-\\*\\]\\{42\\}");
-
-        #endif
+        TEST_EQUAL(Regex::escape(""), "");
+        TEST_EQUAL(Regex::escape("Hello world"), "Hello world");
+        TEST_EQUAL(Regex::escape("[$-*]{42}"), "\\[\\$-\\*\\]\\{42\\}");
 
     }
 
@@ -673,18 +544,10 @@ namespace {
         using namespace Unicorn::Literals;
 
         Regex r;
-        Regex16 r16;
-        Regex32 r32;
-        WideRegex wr;
 
-        TRY(r = "[a-z]+"_re);       TEST(r.match("hello"));     TEST(! r.match("HELLO"));     TEST(! r.match("12345"));
-        TRY(r = "[a-z]+"_re_i);     TEST(r.match("hello"));     TEST(r.match("HELLO"));       TEST(! r.match("12345"));
-        TRY(r16 = u"[a-z]+"_re);    TEST(r16.match(u"hello"));  TEST(! r16.match(u"HELLO"));  TEST(! r16.match(u"12345"));
-        TRY(r16 = u"[a-z]+"_re_i);  TEST(r16.match(u"hello"));  TEST(r16.match(u"HELLO"));    TEST(! r16.match(u"12345"));
-        TRY(r32 = U"[a-z]+"_re);    TEST(r32.match(U"hello"));  TEST(! r32.match(U"HELLO"));  TEST(! r32.match(U"12345"));
-        TRY(r32 = U"[a-z]+"_re_i);  TEST(r32.match(U"hello"));  TEST(r32.match(U"HELLO"));    TEST(! r32.match(U"12345"));
-        TRY(wr = L"[a-z]+"_re);     TEST(wr.match(L"hello"));   TEST(! wr.match(L"HELLO"));   TEST(! wr.match(L"12345"));
-        TRY(wr = L"[a-z]+"_re_i);   TEST(wr.match(L"hello"));   TEST(wr.match(L"HELLO"));     TEST(! wr.match(L"12345"));
+        TRY(r = "[a-z]+"_re);    TEST(r.match("hello"));  TEST(! r.match("HELLO"));  TEST(! r.match("12345"));
+        TRY(r = "[a-z]+"_re_i);  TEST(r.match("hello"));  TEST(r.match("HELLO"));    TEST(! r.match("12345"));
+        TRY(r = "[a-z]+"_re_b);  TEST(r.match("hello"));  TEST(! r.match("HELLO"));  TEST(! r.match("12345"));
 
     }
 
@@ -697,10 +560,7 @@ TEST_MODULE(unicorn, regex) {
     check_match_ranges();
     check_split_ranges();
     check_regex_formatting();
-    check_utility_functions();
-    check_utf16_regex();
-    check_utf32_regex();
-    check_wchar_regex();
+    check_string_escaping();
     check_byte_regex();
     check_regex_literals();
 

@@ -37,10 +37,10 @@
     * **[TODO]** `string-compare -> character, core, string-algorithm, string-case, string-forward, utf`
     * **[TODO]** `string-manip -> character, core, string-algorithm, string-forward, string-property, string-size, utf`
 * _Level 11_
-    * **[TODO]** `string -> string-algorithm, string-case, string-compare, string-conversion, string-escape, string-manip, string-property, string-size`
+    * [unchanged] `string -> string-algorithm, string-case, string-compare, string-conversion, string-escape, string-manip, string-property, string-size`
 * _Level 12_
     * [done] `environment -> core, string, utf`
-    * **[TODO]** `regex -> character, core, string, utf`
+    * [done] `regex -> character, core, string, utf`
 * _Level 13_
     * [done] `format -> character, core, regex, string, utf`
     * [done] `lexer -> character, core, regex, string`

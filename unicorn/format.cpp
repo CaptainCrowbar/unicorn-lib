@@ -25,7 +25,7 @@ namespace Unicorn {
             }
 
             void float_strip(u8string& str) {
-                static const auto pattern = regex("(.*)(\\.(?:\\d*[1-9])?)(0+)(e.*)?");
+                static const Regex pattern("(.*)(\\.(?:\\d*[1-9])?)(0+)(e.*)?");
                 auto match = pattern.match(str);
                 if (match) {
                     u8string result = match[1];
