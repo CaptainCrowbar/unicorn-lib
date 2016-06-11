@@ -29,11 +29,11 @@ of converting Unicode strings into the four standard normalization forms.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; basic_string&lt;C&gt;</code> <strong><code>normalize</code></strong><code>(const basic_string&lt;C&gt;&amp; src, NormalizationForm form)</code></li>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>normalize_in</code></strong><code>(basic_string&lt;C&gt;&amp; src, NormalizationForm form)</code></li>
+<li><code>u8string</code> <strong><code>normalize</code></strong><code>(const u8string&amp; src, NormalizationForm form)</code></li>
+<li><code>void</code> <strong><code>normalize_in</code></strong><code>(u8string&amp; src, NormalizationForm form)</code></li>
 </ul>
 <p>Convert a string to one of the normalized forms. The <code>normalize()</code> function
 returns the normalized string, while <code>normalize_in()</code> updates the source
 string in place. As usual, these functions assume valid Unicode input, and
-will emit garbage if the input contains invalid UTF encoding.</p></body>
+will emit garbage if the input contains invalid UTF-8.</p></body>
 </html>

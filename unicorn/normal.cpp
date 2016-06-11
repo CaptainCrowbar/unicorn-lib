@@ -25,13 +25,40 @@ compositions are possible.
 */
 
 #include "unicorn/normal.hpp"
+#include "unicorn/character.hpp"
+#include "unicorn/utf.hpp"
 #include <algorithm>
 
 using namespace std::literals;
 
 namespace Unicorn {
 
-    namespace UnicornDetail {
+    namespace {
+
+        void apply_decomposition(const u8string& src, u32string& dst, bool k) {
+            auto decompose = k ? compatibility_decomposition : canonical_decomposition;
+            size_t max_decompose = k ? max_compatibility_decomposition : max_canonical_decomposition;
+            char32_t buf[max_decompose];
+            dst.reserve(src.size());
+            size_t pos = 0;
+            for (char32_t c: utf_range(src)) {
+                dst.resize(pos + max_decompose);
+                size_t len = decompose(c, &dst[pos]);
+                if (len == 0) {
+                    dst.resize(++pos);
+                    dst.back() = c;
+                } else {
+                    dst.resize(pos + len);
+                    while (pos < dst.size()) {
+                        len = decompose(dst[pos], buf);
+                        if (len == 0)
+                            ++pos;
+                        else
+                            dst.replace(pos, 1, buf, len);
+                    }
+                }
+            }
+        }
 
         void apply_ordering(u32string& str) {
             auto i = str.begin(), j = i, e = str.end();
@@ -75,6 +102,26 @@ namespace Unicorn {
             }
         }
 
+    }
+
+    u8string normalize(const u8string& src, NormalizationForm form) {
+        using namespace UnicornDetail;
+        u32string utf32;
+        apply_decomposition(src, utf32, form == NFKC || form == NFKD);
+        apply_ordering(utf32);
+        if (form == NFC || form == NFKC)
+            apply_composition(utf32);
+        return to_utf8(utf32);
+    }
+
+    void normalize_in(u8string& src, NormalizationForm form) {
+        using namespace UnicornDetail;
+        u32string utf32;
+        apply_decomposition(src, utf32, form == NFKC || form == NFKD);
+        apply_ordering(utf32);
+        if (form == NFC || form == NFKC)
+            apply_composition(utf32);
+        recode(utf32, src);
     }
 
 }

@@ -101,13 +101,13 @@ build/$(TARGET)/mbcs.o: unicorn/mbcs.cpp unicorn/mbcs.hpp unicorn/core.hpp \
   unicorn/string-escape.hpp unicorn/string-manip.hpp
 build/$(TARGET)/normal-test.o: unicorn/normal-test.cpp unicorn/core.hpp \
   $(LIBROOT)/prion-lib/prion/core.hpp unicorn/character.hpp \
-  unicorn/property-values.hpp unicorn/normal.hpp unicorn/utf.hpp \
-  unicorn/string.hpp unicorn/string-algorithm.hpp \
-  unicorn/string-forward.hpp unicorn/string-property.hpp \
-  unicorn/string-size.hpp unicorn/segment.hpp unicorn/string-case.hpp \
-  unicorn/string-compare.hpp unicorn/string-conversion.hpp \
-  unicorn/string-escape.hpp unicorn/string-manip.hpp \
-  unicorn/ucd-tables.hpp $(LIBROOT)/prion-lib/prion/unit-test.hpp
+  unicorn/property-values.hpp unicorn/normal.hpp unicorn/string.hpp \
+  unicorn/string-algorithm.hpp unicorn/string-forward.hpp \
+  unicorn/utf.hpp unicorn/string-property.hpp unicorn/string-size.hpp \
+  unicorn/segment.hpp unicorn/string-case.hpp unicorn/string-compare.hpp \
+  unicorn/string-conversion.hpp unicorn/string-escape.hpp \
+  unicorn/string-manip.hpp unicorn/ucd-tables.hpp \
+  $(LIBROOT)/prion-lib/prion/unit-test.hpp
 build/$(TARGET)/normal.o: unicorn/normal.cpp unicorn/normal.hpp unicorn/core.hpp \
   $(LIBROOT)/prion-lib/prion/core.hpp unicorn/character.hpp \
   unicorn/property-values.hpp unicorn/utf.hpp

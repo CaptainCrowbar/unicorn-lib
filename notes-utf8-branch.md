@@ -21,7 +21,7 @@
 * _Level 5_
     * **[TODO]** `utf -> character, core`
 * _Level 6_
-    * **[TODO]** `normal -> character, core, utf`
+    * [done] `normal -> character, core, utf`
     * **[TODO]** `segment -> character, core, utf`
     * **[TODO]** `string-forward -> character, core, utf`
 * _Level 7_
