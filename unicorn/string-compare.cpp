@@ -95,19 +95,20 @@ namespace Unicorn {
             bool is_number = false;
             u8string cooked;
             void cook() {
-                u32string s32;
                 if (first == second)
                     return;
                 if (is_number) {
                     auto i = first;
                     while (i != second && *i == U'0')
                         ++i;
-                    std::copy(i, second, append(s32));
+                    str_append(cooked, i, second);
                 } else {
-                    std::copy_if(first, second, append(s32), char_is_significant);
-                    str_casefold_in(s32);
+                    u8string s;
+                    for (char32_t c: *this)
+                        if (char_is_significant(c))
+                            str_append_char(s, c);
+                    cooked += str_casefold(s);
                 }
-                str_append(cooked, s32);
             }
             int compare(const NaturalSegment& rhs) const {
                 if (is_number != rhs.is_number)
