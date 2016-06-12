@@ -270,6 +270,7 @@ namespace Unicorn {
     Utf8Iterator str_find_last_not_of(const Utf8Iterator& b, const Utf8Iterator& e, const u8string& target);
     Utf8Iterator str_find_last_not_of(const Irange<Utf8Iterator>& range, const u8string& target);
     Utf8Iterator str_find_last_not_of(const u8string& str, const u8string& target);
+    void str_line_column(const u8string& str, size_t offset, size_t& line, size_t& column, size_t flags = 0);
     Utf8Iterator str_search(const Utf8Iterator& b, const Utf8Iterator& e, const u8string& target);
     Utf8Iterator str_search(const Irange<Utf8Iterator>& range, const u8string& target);
     Utf8Iterator str_search(const u8string& str, const u8string& target);

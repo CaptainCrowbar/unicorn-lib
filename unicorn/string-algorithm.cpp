@@ -132,6 +132,40 @@ namespace Unicorn {
         return str_find_last_not_of(utf_begin(str), utf_end(str), target);
     }
 
+    void str_line_column(const u8string& str, size_t offset, size_t& line, size_t& column, size_t flags) {
+        offset = std::min(offset, str.size());
+        size_t lnum = 1;
+        bool prev_lf = false;
+        auto i = utf_begin(str), lstart = i;
+        while (i.offset() < offset) {
+            if (prev_lf) {
+                ++lnum;
+                lstart = i;
+                prev_lf = false;
+            }
+            if (*i == U'\r') {
+                ++i;
+                if (*i != U'\n') {
+                    prev_lf = true;
+                } else if (i.offset() < offset) {
+                    prev_lf = true;
+                    ++i;
+                }
+            } else {
+                prev_lf = char_is_line_break(*i);
+                ++i;
+            }
+        }
+        if (i.offset() > offset) {
+            --i;
+        } else if (prev_lf) {
+            ++lnum;
+            lstart = i;
+        }
+        column = str_length(lstart, i, flags) + 1;
+        line = lnum;
+    }
+
     Utf8Iterator str_search(const Utf8Iterator& b, const Utf8Iterator& e, const u8string& target) {
         auto u_target = to_utf32(target);
         return std::search(b, e, u_target.begin(), u_target.end());

@@ -215,6 +215,19 @@ matching character is found. (They are essentially the same as the similarly
 named member functions in `std::string`, except that they work on characters
 instead of code units.)
 
+* `void` **`str_line_column`**`(const u8string& str, size_t offset, size_t& line, size_t& column, uint32_t flags = 0)`
+
+Converts a code unit offset (0-based) into a string to a line and column
+number (1-based). The `flags` argument takes the same values as for
+`str_length()`, and determines how the column number is measured. Any of the
+standard Unicode line break symbols, including the `CR+LF` combination, will
+be recognised as a line break. If the offset points to a line break character,
+it is counted as the last character of the previous line. If the offset does
+not match an encoded character boundary, the position of the character that
+contains the offset will be reported. If `offset>=str.size()`, this will
+report what the line and column number would be for the next character
+appended to the string.
+
 * `Utf8Iterator` **`str_search`**`(const u8string& str, const u8string& target)`
 * `Utf8Iterator` **`str_search`**`(const Utf8Iterator& begin, const Utf8Iterator& end, const u8string& target)`
 * `Utf8Iterator` **`str_search`**`(const Irange<Utf8Iterator>& range, const u8string& target)`

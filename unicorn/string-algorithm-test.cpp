@@ -117,6 +117,41 @@ namespace {
 
     }
 
+    void check_line_column() {
+
+        u8string s0 = "",
+            s1 = "Hello world",
+            s2 = "Hello world\nGoodbye\n",
+            s3 = "Hello world\r\nGoodbye\r\n";
+        size_t ofs = 0, line = 0, col = 0;
+
+        TEST_EQUAL(s1.size(), 11);
+        TEST_EQUAL(s2.size(), 20);
+        TEST_EQUAL(s3.size(), 22);
+
+        ofs = 0;   TEST_EQUAL(s0[ofs], '\0');  TRY(str_line_column(s0, ofs, line, col));  TEST_EQUAL(line, 1);  TEST_EQUAL(col, 1);
+        ofs = 0;   TEST_EQUAL(s1[ofs], 'H');   TRY(str_line_column(s1, ofs, line, col));  TEST_EQUAL(line, 1);  TEST_EQUAL(col, 1);
+        ofs = 10;  TEST_EQUAL(s1[ofs], 'd');   TRY(str_line_column(s1, ofs, line, col));  TEST_EQUAL(line, 1);  TEST_EQUAL(col, 11);
+        ofs = 11;  TEST_EQUAL(s1[ofs], '\0');  TRY(str_line_column(s1, ofs, line, col));  TEST_EQUAL(line, 1);  TEST_EQUAL(col, 12);
+        ofs = 0;   TEST_EQUAL(s2[ofs], 'H');   TRY(str_line_column(s2, ofs, line, col));  TEST_EQUAL(line, 1);  TEST_EQUAL(col, 1);
+        ofs = 10;  TEST_EQUAL(s2[ofs], 'd');   TRY(str_line_column(s2, ofs, line, col));  TEST_EQUAL(line, 1);  TEST_EQUAL(col, 11);
+        ofs = 11;  TEST_EQUAL(s2[ofs], '\n');  TRY(str_line_column(s2, ofs, line, col));  TEST_EQUAL(line, 1);  TEST_EQUAL(col, 12);
+        ofs = 12;  TEST_EQUAL(s2[ofs], 'G');   TRY(str_line_column(s2, ofs, line, col));  TEST_EQUAL(line, 2);  TEST_EQUAL(col, 1);
+        ofs = 18;  TEST_EQUAL(s2[ofs], 'e');   TRY(str_line_column(s2, ofs, line, col));  TEST_EQUAL(line, 2);  TEST_EQUAL(col, 7);
+        ofs = 19;  TEST_EQUAL(s2[ofs], '\n');  TRY(str_line_column(s2, ofs, line, col));  TEST_EQUAL(line, 2);  TEST_EQUAL(col, 8);
+        ofs = 20;  TEST_EQUAL(s2[ofs], '\0');  TRY(str_line_column(s2, ofs, line, col));  TEST_EQUAL(line, 3);  TEST_EQUAL(col, 1);
+        ofs = 0;   TEST_EQUAL(s3[ofs], 'H');   TRY(str_line_column(s3, ofs, line, col));  TEST_EQUAL(line, 1);  TEST_EQUAL(col, 1);
+        ofs = 10;  TEST_EQUAL(s3[ofs], 'd');   TRY(str_line_column(s3, ofs, line, col));  TEST_EQUAL(line, 1);  TEST_EQUAL(col, 11);
+        ofs = 11;  TEST_EQUAL(s3[ofs], '\r');  TRY(str_line_column(s3, ofs, line, col));  TEST_EQUAL(line, 1);  TEST_EQUAL(col, 12);
+        ofs = 12;  TEST_EQUAL(s3[ofs], '\n');  TRY(str_line_column(s3, ofs, line, col));  TEST_EQUAL(line, 1);  TEST_EQUAL(col, 13);
+        ofs = 13;  TEST_EQUAL(s3[ofs], 'G');   TRY(str_line_column(s3, ofs, line, col));  TEST_EQUAL(line, 2);  TEST_EQUAL(col, 1);
+        ofs = 19;  TEST_EQUAL(s3[ofs], 'e');   TRY(str_line_column(s3, ofs, line, col));  TEST_EQUAL(line, 2);  TEST_EQUAL(col, 7);
+        ofs = 20;  TEST_EQUAL(s3[ofs], '\r');  TRY(str_line_column(s3, ofs, line, col));  TEST_EQUAL(line, 2);  TEST_EQUAL(col, 8);
+        ofs = 21;  TEST_EQUAL(s3[ofs], '\n');  TRY(str_line_column(s3, ofs, line, col));  TEST_EQUAL(line, 2);  TEST_EQUAL(col, 9);
+        ofs = 22;  TEST_EQUAL(s3[ofs], '\0');  TRY(str_line_column(s3, ofs, line, col));  TEST_EQUAL(line, 3);  TEST_EQUAL(col, 1);
+
+    }
+
     void check_search() {
 
         u8string s;
@@ -157,6 +192,7 @@ TEST_MODULE(unicorn, string_algorithm) {
     check_expect();
     check_find_char();
     check_find_first();
+    check_line_column();
     check_search();
     check_skipws();
 

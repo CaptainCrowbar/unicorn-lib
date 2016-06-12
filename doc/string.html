@@ -266,6 +266,21 @@ instead of code units.)</p>
 </div>
 <div class="defns">
 <ul>
+<li><code>void</code> <strong><code>str_line_column</code></strong><code>(const u8string&amp; str, size_t offset, size_t&amp; line, size_t&amp; column, uint32_t flags = 0)</code></li>
+</ul>
+<p>Converts a code unit offset (0-based) into a string to a line and column
+number (1-based). The <code>flags</code> argument takes the same values as for
+<code>str_length()</code>, and determines how the column number is measured. Any of the
+standard Unicode line break symbols, including the <code>CR+LF</code> combination, will
+be recognised as a line break. If the offset points to a line break character,
+it is counted as the last character of the previous line. If the offset does
+not match an encoded character boundary, the position of the character that
+contains the offset will be reported. If <code>offset&gt;=str.size()</code>, this will
+report what the line and column number would be for the next character
+appended to the string.</p>
+</div>
+<div class="defns">
+<ul>
 <li><code>Utf8Iterator</code> <strong><code>str_search</code></strong><code>(const u8string&amp; str, const u8string&amp; target)</code></li>
 <li><code>Utf8Iterator</code> <strong><code>str_search</code></strong><code>(const Utf8Iterator&amp; begin, const Utf8Iterator&amp; end, const u8string&amp; target)</code></li>
 <li><code>Utf8Iterator</code> <strong><code>str_search</code></strong><code>(const Irange&lt;Utf8Iterator&gt;&amp; range, const u8string&amp; target)</code></li>
