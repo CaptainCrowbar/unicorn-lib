@@ -129,8 +129,7 @@ them directly to an unsigned integer will give the wrong answer.</p>
 <p>The General Category property is commonly presented as a two-letter
 abbreviation. To avoid too many allocations of short strings, functions in
 this library that use GC represent it as a 16-bit integer, which simply
-contains the ASCII code points of the two letters. (These are declared in a
-namespace, instead of an <code>enum class</code>, to make integer comparisons easier.)</p>
+contains the ASCII code points of the two letters.</p>
 <div class="defns">
 <ul>
 <li><code>namespace</code> <strong><code>GC</code></strong><ul>
@@ -192,8 +191,9 @@ namespace, instead of an <code>enum class</code>, to make integer comparisons ea
 </ul>
 </li>
 </ul>
-<p>Constants corresponding to the standard GC values. All of these are <code>static
-constexpr uint16_t</code>.</p>
+<p>Constants corresponding to the standard GC values. All of these are of the
+type <code>static constexpr uint16_t</code>. These are declared in a namespace, instead
+of an <code>enum class</code>, to make integer comparisons easier.</p>
 </div>
 <div class="defns">
 <ul>
@@ -256,6 +256,12 @@ cased letter, i.e. equivalent to <code>"Lltu"</code>.</p>
 </ul>
 <p>These convert between a GC abbreviation (passed as either a pair of letters or
 a string) and its integer code.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>vector&lt;uint16_t&gt;</code> <strong><code>gc_list</code></strong><code>()</code></li>
+</ul>
+<p>Returns a list of all valid general categories, in alphabetical order.</p>
 </div>
 <div class="defns">
 <ul>

@@ -118,6 +118,18 @@ namespace Unicorn {
 
     }
 
+    vector<uint16_t> gc_list() {
+        return {
+            GC::Cc, GC::Cf, GC::Cn, GC::Co, GC::Cs,
+            GC::Ll, GC::Lm, GC::Lo, GC::Lt, GC::Lu,
+            GC::Mc, GC::Me, GC::Mn,
+            GC::Nd, GC::Nl, GC::No,
+            GC::Pc, GC::Pd, GC::Pe, GC::Pf, GC::Pi, GC::Po, GC::Ps,
+            GC::Sc, GC::Sk, GC::Sm, GC::So,
+            GC::Zl, GC::Zp, GC::Zs,
+        };
+    }
+
     const char* gc_name(uint16_t cat) noexcept {
         switch (cat) {
             case GC::Cc:  return "control";

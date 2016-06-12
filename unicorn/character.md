@@ -96,8 +96,7 @@ them directly to an unsigned integer will give the wrong answer.
 The General Category property is commonly presented as a two-letter
 abbreviation. To avoid too many allocations of short strings, functions in
 this library that use GC represent it as a 16-bit integer, which simply
-contains the ASCII code points of the two letters. (These are declared in a
-namespace, instead of an `enum class`, to make integer comparisons easier.)
+contains the ASCII code points of the two letters.
 
 * `namespace` **`GC`**
     * `enum` **`GC`**`: uint16_t`
@@ -140,8 +139,9 @@ namespace, instead of an `enum class`, to make integer comparisons easier.)
             * **`Zs`** _[space separator]_
     * `std::ostream&` **`operator<<`**`(std::ostream& o, GC cat)`
 
-Constants corresponding to the standard GC values. All of these are `static
-constexpr uint16_t`.
+Constants corresponding to the standard GC values. All of these are of the
+type `static constexpr uint16_t`. These are declared in a namespace, instead
+of an `enum class`, to make integer comparisons easier.
 
 * `uint16_t` **`char_general_category`**`(char32_t c) noexcept`
 
@@ -192,6 +192,10 @@ cased letter, i.e. equivalent to `"Lltu"`.
 
 These convert between a GC abbreviation (passed as either a pair of letters or
 a string) and its integer code.
+
+* `vector<uint16_t>` **`gc_list`**`()`
+
+Returns a list of all valid general categories, in alphabetical order.
 
 * `const char*` **`gc_name`**`(uint16_t cat) noexcept`
 

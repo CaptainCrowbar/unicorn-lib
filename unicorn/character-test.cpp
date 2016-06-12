@@ -671,6 +671,12 @@ namespace {
         TEST(! char_is_punctuation('a'));   TEST(! char_is_punctuation_w('a'));
         TEST(! char_is_punctuation('z'));   TEST(! char_is_punctuation_w('z'));
 
+        vector<uint16_t> v;
+        TRY(v = gc_list());
+        TEST_EQUAL(v.size(), 30);
+        TEST_EQUAL(v.at(0), GC::Cc);
+        TEST_EQUAL(v.at(29), GC::Zs);
+
     }
 
     void check_boolean_properties() {
