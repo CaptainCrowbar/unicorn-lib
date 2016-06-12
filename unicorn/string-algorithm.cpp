@@ -50,7 +50,7 @@ namespace Unicorn {
     }
 
     Utf8Iterator str_find_char(const u8string& str, char32_t c) {
-        return utf_iterator(str, str.find(str_char<char>(c)));
+        return utf_iterator(str, str.find(str_char(c)));
     }
 
     Utf8Iterator str_find_last_char(const Utf8Iterator& b, const Utf8Iterator& e, char32_t c) {
@@ -68,7 +68,7 @@ namespace Unicorn {
     }
 
     Utf8Iterator str_find_last_char(const u8string& str, char32_t c) {
-        return utf_iterator(str, str.rfind(str_char<char>(c)));
+        return utf_iterator(str, str.rfind(str_char(c)));
     }
 
     Utf8Iterator str_find_first_of(const Utf8Iterator& b, const Utf8Iterator& e, const u8string& target) {

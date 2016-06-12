@@ -231,15 +231,15 @@ build/$(TARGET)/string-manip.o: unicorn/string-manip.cpp unicorn/string-manip.hp
   unicorn/string-property.hpp
 build/$(TARGET)/string-property-test.o: unicorn/string-property-test.cpp \
   unicorn/string-property.hpp unicorn/core.hpp \
-  $(LIBROOT)/prion-lib/prion/core.hpp unicorn/character.hpp \
-  unicorn/property-values.hpp unicorn/string-forward.hpp unicorn/utf.hpp \
-  unicorn/string-size.hpp unicorn/segment.hpp \
+  $(LIBROOT)/prion-lib/prion/core.hpp unicorn/string-size.hpp \
+  unicorn/character.hpp unicorn/property-values.hpp unicorn/segment.hpp \
+  unicorn/utf.hpp unicorn/string-forward.hpp \
   $(LIBROOT)/prion-lib/prion/unit-test.hpp
 build/$(TARGET)/string-property.o: unicorn/string-property.cpp \
   unicorn/string-property.hpp unicorn/core.hpp \
-  $(LIBROOT)/prion-lib/prion/core.hpp unicorn/character.hpp \
-  unicorn/property-values.hpp unicorn/string-forward.hpp unicorn/utf.hpp \
-  unicorn/string-size.hpp unicorn/segment.hpp
+  $(LIBROOT)/prion-lib/prion/core.hpp unicorn/string-size.hpp \
+  unicorn/character.hpp unicorn/property-values.hpp unicorn/segment.hpp \
+  unicorn/utf.hpp unicorn/string-forward.hpp
 build/$(TARGET)/string-size-test.o: unicorn/string-size-test.cpp unicorn/string-size.hpp \
   unicorn/core.hpp $(LIBROOT)/prion-lib/prion/core.hpp unicorn/character.hpp \
   unicorn/property-values.hpp unicorn/segment.hpp unicorn/utf.hpp \

@@ -30,7 +30,7 @@ namespace Unicorn {
                 else
                     str.append(pad_chars, char(c));
             } else {
-                auto padding = str_chars<char>(pad_chars, c);
+                auto padding = str_chars(pad_chars, c);
                 if (side == 'L')
                     str.insert(0, padding);
                 else
@@ -462,11 +462,6 @@ namespace Unicorn {
         str.swap(dst);
     }
 
-    void str_repeat_in(u8string& str, size_t n) {
-        auto dst = str_repeat(str, n);
-        str.swap(dst);
-    }
-
     u8string str_replace(const u8string& str, const u8string& target, const u8string& sub, size_t n) {
         if (target.empty() || n == 0)
             return str;
@@ -645,7 +640,7 @@ namespace Unicorn {
     }
 
     u8string str_unify_lines(const u8string& str, char32_t newline) {
-        return str_unify_lines(str, str_char<char>(newline));
+        return str_unify_lines(str, str_char(newline));
     }
 
     u8string str_unify_lines(const u8string& str) {
@@ -658,7 +653,7 @@ namespace Unicorn {
     }
 
     void str_unify_lines_in(u8string& str, char32_t newline) {
-        str_unify_lines_in(str, str_char<char>(newline));
+        str_unify_lines_in(str, str_char(newline));
     }
 
     void str_unify_lines_in(u8string& str) {

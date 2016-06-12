@@ -52,7 +52,7 @@ namespace Unicorn {
             Version v;
             auto& table = UnicornDetail::unicode_version_table().table;
             for (auto& entry: table) {
-                if (unassigned.match(str_char<char>(entry.second)))
+                if (unassigned.match(str_char(entry.second)))
                     break;
                 v = entry.first;
             }

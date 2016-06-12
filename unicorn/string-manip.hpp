@@ -122,7 +122,6 @@ namespace Unicorn {
     u8string str_remove(const u8string& str, const u8string& chars);
     void str_remove_in(u8string& str, char32_t c);
     void str_remove_in(u8string& str, const u8string& chars);
-    void str_repeat_in(u8string& str, size_t n);
     u8string str_replace(const u8string& str, const u8string& target, const u8string& sub, size_t n = npos);
     void str_replace_in(u8string& str, const u8string& target, const u8string& sub, size_t n = npos);
     u8string str_squeeze(const u8string& str);

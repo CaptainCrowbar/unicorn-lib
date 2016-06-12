@@ -48,7 +48,7 @@ namespace Unicorn {
                 }
             }
             if (token.count == 0)
-                throw SyntaxError(str_char<char>(u), token.offset);
+                throw SyntaxError(str_char(u), token.offset);
             if (token.tag)
                 break;
         }
@@ -90,7 +90,7 @@ namespace Unicorn {
         lexemes.push_back(e);
         u8string s;
         for (size_t i = 0; i < prefix_table.size(); ++i) {
-            s = str_char<char>(i);
+            s = str_char(i);
             if (pattern.anchor(s).full_or_partial())
                 prefix_table[i].push_back(e);
         }

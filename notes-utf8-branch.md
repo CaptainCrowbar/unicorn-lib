@@ -23,33 +23,19 @@
 * _Level 6_
     * [done] `normal -> character, core, utf`
     * **[TODO]** `segment -> character, core, utf`
-    * **[TODO]** `string-forward -> character, core, utf`
-        * `str_append()`, `str_append_char()`, `str_append_chars()` Keep these as templates but UTF-8 output only
-        * `str_char()`, `str_chars()` UTF-8 output only; this will require changes elsewhere
-        * Others - Make UTF-8 only
+    * [done] `string-forward -> character, core, utf`
 * _Level 7_
-    * **[TODO]** `string-size -> character, core, segment, string-forward, utf`
-        * Keep all of these as templates
+    * [unchanged] `string-size -> character, core, segment, string-forward, utf`
 * _Level 8_
-    * **[TODO]** `string-property -> character, core, string-forward, string-size, utf`
-        * `str_char_at()`, `str_first_char()` Keep these as templates
-        * Others - Make UTF-8 only
+    * [done] `string-property -> character, core, string-forward, string-size, utf`
 * _Level 9_
     * [done] `string-algorithm -> character, core, string-forward, string-property, string-size, utf`
-        * Make all of these UTF-8 only
     * [done] `string-case -> character, core, segment, string-forward, string-property, string-size, utf`
-        * Make all of these UTF-8 only
     * [done] `string-conversion -> character, core, string-forward, string-property, string-size, utf`
-        * Make all of these UTF-8 only
     * [done] `string-escape -> character, core, string-forward, string-property, string-size, utf`
-        * Make all of these UTF-8 only
 * _Level 10_
     * [done] `string-compare -> character, core, string-algorithm, string-case, string-forward, utf`
-        * `StringCompare` Delete
-        * Others - Make UTF-8 only
     * [done] `string-manip -> character, core, string-algorithm, string-forward, string-property, string-size, utf`
-        * `str_concat()`, `str_concat_with()` UTF-8 output only, but keep the generic input
-        * Others - Make UTF-8 only
 * _Level 11_
     * [unchanged] `string -> string-algorithm, string-case, string-compare, string-conversion, string-escape, string-manip, string-property, string-size`
 * _Level 12_

@@ -133,10 +133,10 @@ namespace Unicorn {
     template <typename R, typename P> inline u8string format_type(std::chrono::duration<R, P> t, uint64_t /*flags*/, int prec)
         { return format_time(t, prec); }
 
-    inline u8string format_type(char t, uint64_t flags, int prec)                { return format_type(str_char<char>(t), flags, prec); }
-    inline u8string format_type(char16_t t, uint64_t flags, int prec)            { return format_type(str_char<char>(t), flags, prec); }
-    inline u8string format_type(char32_t t, uint64_t flags, int prec)            { return format_type(str_char<char>(t), flags, prec); }
-    inline u8string format_type(wchar_t t, uint64_t flags, int prec)             { return format_type(str_char<char>(t), flags, prec); }
+    inline u8string format_type(char t, uint64_t flags, int prec)                { return format_type(str_char(t), flags, prec); }
+    inline u8string format_type(char16_t t, uint64_t flags, int prec)            { return format_type(str_char(t), flags, prec); }
+    inline u8string format_type(char32_t t, uint64_t flags, int prec)            { return format_type(str_char(t), flags, prec); }
+    inline u8string format_type(wchar_t t, uint64_t flags, int prec)             { return format_type(str_char(t), flags, prec); }
     inline u8string format_type(signed char t, uint64_t flags, int prec)         { return UnicornDetail::format_int(t, flags, prec); }
     inline u8string format_type(unsigned char t, uint64_t flags, int prec)       { return UnicornDetail::format_int(t, flags, prec); }
     inline u8string format_type(short t, uint64_t flags, int prec)               { return UnicornDetail::format_int(t, flags, prec); }

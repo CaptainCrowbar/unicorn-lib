@@ -144,7 +144,7 @@ namespace {
             TEST_EQUAL(result, stripped); \
         } while (false)
 
-    void check_word_segmentation_utf8() {
+    void check_word_segmentation() {
 
         WORD_SEGMENTATION_TEST("", "", "", "");
         WORD_SEGMENTATION_TEST("Hello world", "[Hello][ ][world]", "[Hello][world]", "[Hello][world]");
@@ -185,89 +185,7 @@ namespace {
 
     }
 
-    void check_word_segmentation_utf16() {
-
-        WORD_SEGMENTATION_TEST(u"", u"", u"", u"");
-        WORD_SEGMENTATION_TEST(u"Hello world", u"[Hello][ ][world]", u"[Hello][world]", u"[Hello][world]");
-        WORD_SEGMENTATION_TEST(u"Hello-world", u"[Hello][-][world]", u"[Hello][-][world]", u"[Hello][world]");
-
-        WORD_SEGMENTATION_TEST(
-
-            u"\"Don't panic!\" - Douglas Adams",
-
-            u"[\"]"
-            u"[Don't]"
-            u"[ ]"
-            u"[panic]"
-            u"[!]"
-            u"[\"]"
-            u"[ ]"
-            u"[-]"
-            u"[ ]"
-            u"[Douglas]"
-            u"[ ]"
-            u"[Adams]",
-
-            u"[\"]"
-            u"[Don't]"
-            u"[panic]"
-            u"[!]"
-            u"[\"]"
-            u"[-]"
-            u"[Douglas]"
-            u"[Adams]",
-
-            u"[Don't]"
-            u"[panic]"
-            u"[Douglas]"
-            u"[Adams]"
-
-        );
-
-    }
-
-    void check_word_segmentation_utf32() {
-
-        WORD_SEGMENTATION_TEST(U"", U"", U"", U"");
-        WORD_SEGMENTATION_TEST(U"Hello world", U"[Hello][ ][world]", U"[Hello][world]", U"[Hello][world]");
-        WORD_SEGMENTATION_TEST(U"Hello-world", U"[Hello][-][world]", U"[Hello][-][world]", U"[Hello][world]");
-
-        WORD_SEGMENTATION_TEST(
-
-            U"\"Don't panic!\" - Douglas Adams",
-
-            U"[\"]"
-            U"[Don't]"
-            U"[ ]"
-            U"[panic]"
-            U"[!]"
-            U"[\"]"
-            U"[ ]"
-            U"[-]"
-            U"[ ]"
-            U"[Douglas]"
-            U"[ ]"
-            U"[Adams]",
-
-            U"[\"]"
-            U"[Don't]"
-            U"[panic]"
-            U"[!]"
-            U"[\"]"
-            U"[-]"
-            U"[Douglas]"
-            U"[Adams]",
-
-            U"[Don't]"
-            U"[panic]"
-            U"[Douglas]"
-            U"[Adams]"
-
-        );
-
-    }
-
-    void check_line_segmentation_utf8() {
+    void check_line_segmentation() {
 
         // Line breaking characters:
         // U+000A line feed
@@ -317,89 +235,7 @@ namespace {
 
     }
 
-    void check_line_segmentation_utf16() {
-
-        BLOCK_SEGMENTATION_TEST(line_range, 0, u"", u"", u"");
-        BLOCK_SEGMENTATION_TEST(line_range, 0, u"\n", u"[\n]", u"[]");
-        BLOCK_SEGMENTATION_TEST(line_range, 0, u"\r", u"[\r]", u"[]");
-        BLOCK_SEGMENTATION_TEST(line_range, 0, u"\r\n", u"[\r\n]", u"[]");
-        BLOCK_SEGMENTATION_TEST(line_range, 0, u"\n\r", u"[\n][\r]", u"[][]");
-        BLOCK_SEGMENTATION_TEST(line_range, 0, u"Hello world", u"[Hello world]", u"[Hello world]");
-        BLOCK_SEGMENTATION_TEST(line_range, 0, u"Hello world\n", u"[Hello world\n]", u"[Hello world]");
-        BLOCK_SEGMENTATION_TEST(line_range, 0, u"Hello world\r", u"[Hello world\r]", u"[Hello world]");
-        BLOCK_SEGMENTATION_TEST(line_range, 0, u"Hello world\r\n", u"[Hello world\r\n]", u"[Hello world]");
-        BLOCK_SEGMENTATION_TEST(line_range, 0, u"Hello world\n\r", u"[Hello world\n][\r]", u"[Hello world][]");
-        BLOCK_SEGMENTATION_TEST(line_range, 0, u"Hello\nworld\n", u"[Hello\n][world\n]", u"[Hello][world]");
-        BLOCK_SEGMENTATION_TEST(line_range, 0, u"Hello\vworld\v", u"[Hello\v][world\v]", u"[Hello][world]");
-        BLOCK_SEGMENTATION_TEST(line_range, 0, u"Hello\fworld\f", u"[Hello\f][world\f]", u"[Hello][world]");
-        BLOCK_SEGMENTATION_TEST(line_range, 0, u"Hello\rworld\r", u"[Hello\r][world\r]", u"[Hello][world]");
-        BLOCK_SEGMENTATION_TEST(line_range, 0, u"Hello\u0085world\u0085", u"[Hello\u0085][world\u0085]", u"[Hello][world]");
-        BLOCK_SEGMENTATION_TEST(line_range, 0, u"Hello\u2028world\u2028", u"[Hello\u2028][world\u2028]", u"[Hello][world]");
-        BLOCK_SEGMENTATION_TEST(line_range, 0, u"Hello\u2029world\u2029", u"[Hello\u2029][world\u2029]", u"[Hello][world]");
-
-        BLOCK_SEGMENTATION_TEST(line_range, 0,
-
-            u"Last night I saw upon the stair\r\n"
-            u"A little man who wasn't there\r\n"
-            u"He wasn't there again today\r\n"
-            u"He must be from the NSA\r\n",
-
-            u"[Last night I saw upon the stair\r\n]"
-            u"[A little man who wasn't there\r\n]"
-            u"[He wasn't there again today\r\n]"
-            u"[He must be from the NSA\r\n]",
-
-            u"[Last night I saw upon the stair]"
-            u"[A little man who wasn't there]"
-            u"[He wasn't there again today]"
-            u"[He must be from the NSA]"
-
-        );
-
-    }
-
-    void check_line_segmentation_utf32() {
-
-        BLOCK_SEGMENTATION_TEST(line_range, 0, U"", U"", U"");
-        BLOCK_SEGMENTATION_TEST(line_range, 0, U"\n", U"[\n]", U"[]");
-        BLOCK_SEGMENTATION_TEST(line_range, 0, U"\r", U"[\r]", U"[]");
-        BLOCK_SEGMENTATION_TEST(line_range, 0, U"\r\n", U"[\r\n]", U"[]");
-        BLOCK_SEGMENTATION_TEST(line_range, 0, U"\n\r", U"[\n][\r]", U"[][]");
-        BLOCK_SEGMENTATION_TEST(line_range, 0, U"Hello world", U"[Hello world]", U"[Hello world]");
-        BLOCK_SEGMENTATION_TEST(line_range, 0, U"Hello world\n", U"[Hello world\n]", U"[Hello world]");
-        BLOCK_SEGMENTATION_TEST(line_range, 0, U"Hello world\r", U"[Hello world\r]", U"[Hello world]");
-        BLOCK_SEGMENTATION_TEST(line_range, 0, U"Hello world\r\n", U"[Hello world\r\n]", U"[Hello world]");
-        BLOCK_SEGMENTATION_TEST(line_range, 0, U"Hello world\n\r", U"[Hello world\n][\r]", U"[Hello world][]");
-        BLOCK_SEGMENTATION_TEST(line_range, 0, U"Hello\nworld\n", U"[Hello\n][world\n]", U"[Hello][world]");
-        BLOCK_SEGMENTATION_TEST(line_range, 0, U"Hello\vworld\v", U"[Hello\v][world\v]", U"[Hello][world]");
-        BLOCK_SEGMENTATION_TEST(line_range, 0, U"Hello\fworld\f", U"[Hello\f][world\f]", U"[Hello][world]");
-        BLOCK_SEGMENTATION_TEST(line_range, 0, U"Hello\rworld\r", U"[Hello\r][world\r]", U"[Hello][world]");
-        BLOCK_SEGMENTATION_TEST(line_range, 0, U"Hello\u0085world\u0085", U"[Hello\u0085][world\u0085]", U"[Hello][world]");
-        BLOCK_SEGMENTATION_TEST(line_range, 0, U"Hello\u2028world\u2028", U"[Hello\u2028][world\u2028]", U"[Hello][world]");
-        BLOCK_SEGMENTATION_TEST(line_range, 0, U"Hello\u2029world\u2029", U"[Hello\u2029][world\u2029]", U"[Hello][world]");
-
-        BLOCK_SEGMENTATION_TEST(line_range, 0,
-
-            U"Last night I saw upon the stair\r\n"
-            U"A little man who wasn't there\r\n"
-            U"He wasn't there again today\r\n"
-            U"He must be from the NSA\r\n",
-
-            U"[Last night I saw upon the stair\r\n]"
-            U"[A little man who wasn't there\r\n]"
-            U"[He wasn't there again today\r\n]"
-            U"[He must be from the NSA\r\n]",
-
-            U"[Last night I saw upon the stair]"
-            U"[A little man who wasn't there]"
-            U"[He wasn't there again today]"
-            U"[He must be from the NSA]"
-
-        );
-
-    }
-
-    void check_paragraph_segmentation_utf8() {
+    void check_paragraph_segmentation() {
 
         BLOCK_SEGMENTATION_TEST(paragraph_range, 0, "", "", "");
 
@@ -435,78 +271,6 @@ namespace {
 
     }
 
-    void check_paragraph_segmentation_utf16() {
-
-        BLOCK_SEGMENTATION_TEST(paragraph_range, 0, u"", u"", u"");
-
-        BLOCK_SEGMENTATION_TEST(paragraph_range, unicode_paras, u"Hello\n\nworld\n\n", u"[Hello\n\nworld\n\n]", u"[Hello\n\nworld\n\n]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, unicode_paras, u"Hello\r\rworld\r\r", u"[Hello\r\rworld\r\r]", u"[Hello\r\rworld\r\r]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, unicode_paras, u"Hello\r\nworld\r\n", u"[Hello\r\nworld\r\n]", u"[Hello\r\nworld\r\n]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, unicode_paras, u"Hello\n\rworld\n\r", u"[Hello\n\rworld\n\r]", u"[Hello\n\rworld\n\r]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, unicode_paras, u"Hello\v\vworld\v\v", u"[Hello\v\vworld\v\v]", u"[Hello\v\vworld\v\v]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, unicode_paras, u"Hello\f\fworld\f\f", u"[Hello\f\fworld\f\f]", u"[Hello\f\fworld\f\f]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, unicode_paras, u"Hello\u0085\u0085world\u0085\u0085", u"[Hello\u0085\u0085world\u0085\u0085]", u"[Hello\u0085\u0085world\u0085\u0085]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, unicode_paras, u"Hello\u2028\u2028world\u2028\u2028", u"[Hello\u2028\u2028world\u2028\u2028]", u"[Hello\u2028\u2028world\u2028\u2028]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, unicode_paras, u"Hello\u2029\u2029world\u2029\u2029", u"[Hello\u2029][\u2029][world\u2029][\u2029]", u"[Hello][][world][]");
-
-        BLOCK_SEGMENTATION_TEST(paragraph_range, line_paras, u"Hello\n\nworld\n\n", u"[Hello\n][\n][world\n][\n]", u"[Hello][][world][]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, line_paras, u"Hello\r\rworld\r\r", u"[Hello\r][\r][world\r][\r]", u"[Hello][][world][]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, line_paras, u"Hello\r\nworld\r\n", u"[Hello\r\n][world\r\n]", u"[Hello][world]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, line_paras, u"Hello\n\rworld\n\r", u"[Hello\n][\r][world\n][\r]", u"[Hello][][world][]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, line_paras, u"Hello\v\vworld\v\v", u"[Hello\v][\v][world\v][\v]", u"[Hello][][world][]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, line_paras, u"Hello\f\fworld\f\f", u"[Hello\f\fworld\f\f]", u"[Hello\f\fworld\f\f]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, line_paras, u"Hello\u0085\u0085world\u0085\u0085", u"[Hello\u0085][\u0085][world\u0085][\u0085]", u"[Hello][][world][]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, line_paras, u"Hello\u2028\u2028world\u2028\u2028", u"[Hello\u2028\u2028world\u2028\u2028]", u"[Hello\u2028\u2028world\u2028\u2028]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, line_paras, u"Hello\u2029\u2029world\u2029\u2029", u"[Hello\u2029][\u2029][world\u2029][\u2029]", u"[Hello][][world][]");
-
-        BLOCK_SEGMENTATION_TEST(paragraph_range, multiline_paras, u"Hello\n\nworld\n\n", u"[Hello\n\n][world\n\n]", u"[Hello][world]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, multiline_paras, u"Hello\r\rworld\r\r", u"[Hello\r\r][world\r\r]", u"[Hello][world]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, multiline_paras, u"Hello\r\nworld\r\n", u"[Hello\r\nworld\r\n]", u"[Hello\r\nworld\r\n]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, multiline_paras, u"Hello\n\rworld\n\r", u"[Hello\n\r][world\n\r]", u"[Hello][world]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, multiline_paras, u"Hello\v\vworld\v\v", u"[Hello\v\v][world\v\v]", u"[Hello][world]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, multiline_paras, u"Hello\f\fworld\f\f", u"[Hello\f\fworld\f\f]", u"[Hello\f\fworld\f\f]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, multiline_paras, u"Hello\u0085\u0085world\u0085\u0085", u"[Hello\u0085\u0085][world\u0085\u0085]", u"[Hello][world]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, multiline_paras, u"Hello\u2028\u2028world\u2028\u2028", u"[Hello\u2028\u2028world\u2028\u2028]", u"[Hello\u2028\u2028world\u2028\u2028]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, multiline_paras, u"Hello\u2029\u2029world\u2029\u2029", u"[Hello\u2029][\u2029][world\u2029][\u2029]", u"[Hello][][world][]");
-
-    }
-
-    void check_paragraph_segmentation_utf32() {
-
-        BLOCK_SEGMENTATION_TEST(paragraph_range, 0, U"", U"", U"");
-
-        BLOCK_SEGMENTATION_TEST(paragraph_range, unicode_paras, U"Hello\n\nworld\n\n", U"[Hello\n\nworld\n\n]", U"[Hello\n\nworld\n\n]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, unicode_paras, U"Hello\r\rworld\r\r", U"[Hello\r\rworld\r\r]", U"[Hello\r\rworld\r\r]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, unicode_paras, U"Hello\r\nworld\r\n", U"[Hello\r\nworld\r\n]", U"[Hello\r\nworld\r\n]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, unicode_paras, U"Hello\n\rworld\n\r", U"[Hello\n\rworld\n\r]", U"[Hello\n\rworld\n\r]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, unicode_paras, U"Hello\v\vworld\v\v", U"[Hello\v\vworld\v\v]", U"[Hello\v\vworld\v\v]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, unicode_paras, U"Hello\f\fworld\f\f", U"[Hello\f\fworld\f\f]", U"[Hello\f\fworld\f\f]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, unicode_paras, U"Hello\u0085\u0085world\u0085\u0085", U"[Hello\u0085\u0085world\u0085\u0085]", U"[Hello\u0085\u0085world\u0085\u0085]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, unicode_paras, U"Hello\u2028\u2028world\u2028\u2028", U"[Hello\u2028\u2028world\u2028\u2028]", U"[Hello\u2028\u2028world\u2028\u2028]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, unicode_paras, U"Hello\u2029\u2029world\u2029\u2029", U"[Hello\u2029][\u2029][world\u2029][\u2029]", U"[Hello][][world][]");
-
-        BLOCK_SEGMENTATION_TEST(paragraph_range, line_paras, U"Hello\n\nworld\n\n", U"[Hello\n][\n][world\n][\n]", U"[Hello][][world][]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, line_paras, U"Hello\r\rworld\r\r", U"[Hello\r][\r][world\r][\r]", U"[Hello][][world][]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, line_paras, U"Hello\r\nworld\r\n", U"[Hello\r\n][world\r\n]", U"[Hello][world]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, line_paras, U"Hello\n\rworld\n\r", U"[Hello\n][\r][world\n][\r]", U"[Hello][][world][]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, line_paras, U"Hello\v\vworld\v\v", U"[Hello\v][\v][world\v][\v]", U"[Hello][][world][]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, line_paras, U"Hello\f\fworld\f\f", U"[Hello\f\fworld\f\f]", U"[Hello\f\fworld\f\f]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, line_paras, U"Hello\u0085\u0085world\u0085\u0085", U"[Hello\u0085][\u0085][world\u0085][\u0085]", U"[Hello][][world][]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, line_paras, U"Hello\u2028\u2028world\u2028\u2028", U"[Hello\u2028\u2028world\u2028\u2028]", U"[Hello\u2028\u2028world\u2028\u2028]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, line_paras, U"Hello\u2029\u2029world\u2029\u2029", U"[Hello\u2029][\u2029][world\u2029][\u2029]", U"[Hello][][world][]");
-
-        BLOCK_SEGMENTATION_TEST(paragraph_range, multiline_paras, U"Hello\n\nworld\n\n", U"[Hello\n\n][world\n\n]", U"[Hello][world]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, multiline_paras, U"Hello\r\rworld\r\r", U"[Hello\r\r][world\r\r]", U"[Hello][world]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, multiline_paras, U"Hello\r\nworld\r\n", U"[Hello\r\nworld\r\n]", U"[Hello\r\nworld\r\n]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, multiline_paras, U"Hello\n\rworld\n\r", U"[Hello\n\r][world\n\r]", U"[Hello][world]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, multiline_paras, U"Hello\v\vworld\v\v", U"[Hello\v\v][world\v\v]", U"[Hello][world]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, multiline_paras, U"Hello\f\fworld\f\f", U"[Hello\f\fworld\f\f]", U"[Hello\f\fworld\f\f]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, multiline_paras, U"Hello\u0085\u0085world\u0085\u0085", U"[Hello\u0085\u0085][world\u0085\u0085]", U"[Hello][world]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, multiline_paras, U"Hello\u2028\u2028world\u2028\u2028", U"[Hello\u2028\u2028world\u2028\u2028]", U"[Hello\u2028\u2028world\u2028\u2028]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, multiline_paras, U"Hello\u2029\u2029world\u2029\u2029", U"[Hello\u2029][\u2029][world\u2029][\u2029]", U"[Hello][][world][]");
-
-    }
-
 }
 
 TEST_MODULE(unicorn, segment) {
@@ -515,14 +279,8 @@ TEST_MODULE(unicorn, segment) {
     segmentation_test<SplitWords>("Word break test", UnicornDetail::word_break_test_table);
     segmentation_test<SplitSentences>("Sentence break test", UnicornDetail::sentence_break_test_table);
 
-    check_word_segmentation_utf8();
-    check_word_segmentation_utf16();
-    check_word_segmentation_utf32();
-    check_line_segmentation_utf8();
-    check_line_segmentation_utf16();
-    check_line_segmentation_utf32();
-    check_paragraph_segmentation_utf8();
-    check_paragraph_segmentation_utf16();
-    check_paragraph_segmentation_utf32();
+    check_word_segmentation();
+    check_line_segmentation();
+    check_paragraph_segmentation();
 
 }

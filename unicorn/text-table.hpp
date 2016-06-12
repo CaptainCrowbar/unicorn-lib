@@ -19,9 +19,9 @@ namespace Unicorn {
         Table(): formats(), cells(1) {}
         template <typename T> Table& operator<<(const T& t) { add_cell(t); return *this; }
         Table& operator<<(char t) { character_code(t); return *this; }
-        Table& operator<<(char16_t t) { add_str(str_char<char>(t)); return *this; }
-        Table& operator<<(char32_t t) { add_str(str_char<char>(t)); return *this; }
-        Table& operator<<(wchar_t t) { add_str(str_char<char>(t)); return *this; }
+        Table& operator<<(char16_t t) { add_str(str_char(t)); return *this; }
+        Table& operator<<(char32_t t) { add_str(str_char(t)); return *this; }
+        Table& operator<<(wchar_t t) { add_str(str_char(t)); return *this; }
         Table& operator<<(char* t) { add_str(cstr(t)); return *this; }
         Table& operator<<(char16_t* t) { add_str(to_utf8(cstr(t))); return *this; }
         Table& operator<<(char32_t* t) { add_str(to_utf8(cstr(t))); return *this; }

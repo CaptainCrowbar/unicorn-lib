@@ -75,17 +75,17 @@ namespace {
 
     void check_chars() {
 
-        TEST_EQUAL(str_char<char>(U'A'), "A");
-        TEST_EQUAL(str_char<char>(0x430), "\xd0\xb0");
-        TEST_EQUAL(str_char<char>(0x4e8c), "\xe4\xba\x8c");
-        TEST_EQUAL(str_char<char>(0x10302), "\xf0\x90\x8c\x82");
-        TEST_EQUAL(str_char<char>(0x10fffd), "\xf4\x8f\xbf\xbd");
+        TEST_EQUAL(str_char(U'A'), "A");
+        TEST_EQUAL(str_char(0x430), "\xd0\xb0");
+        TEST_EQUAL(str_char(0x4e8c), "\xe4\xba\x8c");
+        TEST_EQUAL(str_char(0x10302), "\xf0\x90\x8c\x82");
+        TEST_EQUAL(str_char(0x10fffd), "\xf4\x8f\xbf\xbd");
 
-        TEST_EQUAL(str_chars<char>(3, U'A'), "AAA");
-        TEST_EQUAL(str_chars<char>(3, 0x430), "\xd0\xb0\xd0\xb0\xd0\xb0");
-        TEST_EQUAL(str_chars<char>(3, 0x4e8c), "\xe4\xba\x8c\xe4\xba\x8c\xe4\xba\x8c");
-        TEST_EQUAL(str_chars<char>(3, 0x10302), "\xf0\x90\x8c\x82\xf0\x90\x8c\x82\xf0\x90\x8c\x82");
-        TEST_EQUAL(str_chars<char>(3, 0x10fffd), "\xf4\x8f\xbf\xbd\xf4\x8f\xbf\xbd\xf4\x8f\xbf\xbd");
+        TEST_EQUAL(str_chars(3, U'A'), "AAA");
+        TEST_EQUAL(str_chars(3, 0x430), "\xd0\xb0\xd0\xb0\xd0\xb0");
+        TEST_EQUAL(str_chars(3, 0x4e8c), "\xe4\xba\x8c\xe4\xba\x8c\xe4\xba\x8c");
+        TEST_EQUAL(str_chars(3, 0x10302), "\xf0\x90\x8c\x82\xf0\x90\x8c\x82\xf0\x90\x8c\x82");
+        TEST_EQUAL(str_chars(3, 0x10fffd), "\xf4\x8f\xbf\xbd\xf4\x8f\xbf\xbd\xf4\x8f\xbf\xbd");
 
     }
 

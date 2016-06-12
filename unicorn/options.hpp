@@ -201,7 +201,7 @@ namespace Unicorn {
     bool Options::parse(int argc, C** argv, std::ostream& out, uint32_t flags) {
         vector<basic_string<C>> args(argv, argv + argc);
         if (flags & opt_quoted)
-            return parse(str_join(args, str_char<C>(U' ')), out, flags);
+            return parse(str_join(args, basic_string<C>{C(' ')}), out, flags);
         else
             return parse(args, out, flags);
     }
