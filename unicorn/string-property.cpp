@@ -1,6 +1,4 @@
-#include "unicorn/string-property.hpp"
-#include "unicorn/character.hpp"
-#include "unicorn/string-forward.hpp"
+#include "unicorn/string.hpp"
 
 namespace Unicorn {
 

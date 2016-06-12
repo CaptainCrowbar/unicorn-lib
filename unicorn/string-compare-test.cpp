@@ -1,4 +1,4 @@
-#include "unicorn/string-compare.hpp"
+#include "unicorn/string.hpp"
 #include "unicorn/core.hpp"
 #include "prion/unit-test.hpp"
 #include <string>

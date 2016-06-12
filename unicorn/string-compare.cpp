@@ -1,11 +1,4 @@
-#include "unicorn/string-compare.hpp"
-#include "unicorn/character.hpp"
-#include "unicorn/string-algorithm.hpp"
-#include "unicorn/string-case.hpp"
-#include "unicorn/string-forward.hpp"
-#include <algorithm>
-#include <cstring>
-#include <iterator>
+#include "unicorn/string.hpp"
 
 namespace Unicorn {
 

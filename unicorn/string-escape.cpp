@@ -1,13 +1,4 @@
-#include "unicorn/string-escape.hpp"
-#include "unicorn/character.hpp"
-#include "unicorn/string-forward.hpp"
-#include "unicorn/string-property.hpp"
-#include <algorithm>
-#include <cstring>
-#include <functional>
-#include <iterator>
-#include <stdexcept>
-#include <utility>
+#include "unicorn/string.hpp"
 
 namespace Unicorn {
 

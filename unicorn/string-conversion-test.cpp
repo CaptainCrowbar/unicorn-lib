@@ -1,4 +1,4 @@
-#include "unicorn/string-conversion.hpp"
+#include "unicorn/string.hpp"
 #include "unicorn/core.hpp"
 #include "unicorn/character.hpp"
 #include "unicorn/utf.hpp"
