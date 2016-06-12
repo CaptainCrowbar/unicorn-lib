@@ -22,7 +22,7 @@
     * **[TODO]** `utf -> character, core`
 * _Level 6_
     * [done] `normal -> character, core, utf`
-    * **[TODO]** `segment -> character, core, utf`
+    * [unchanged] `segment -> character, core, utf`
     * [done] `string-forward -> character, core, utf`
 * _Level 7_
     * [unchanged] `string-size -> character, core, segment, string-forward, utf`

@@ -25,7 +25,8 @@ namespace {
     struct SplitGraphemes {
         template <typename String>
         void operator()(const String& src, vector<String>& dst) const {
-            for (auto& segment: grapheme_range(src))
+            auto range = grapheme_range(src);
+            for (auto& segment: range)
                 dst.push_back(u_str(segment));
         }
     };
@@ -33,7 +34,8 @@ namespace {
     struct SplitWords {
         template <typename String>
         void operator()(const String& src, vector<String>& dst) const {
-            for (auto& segment: word_range(src))
+            auto range = word_range(src);
+            for (auto& segment: range)
                 dst.push_back(u_str(segment));
         }
     };
@@ -41,7 +43,8 @@ namespace {
     struct SplitSentences {
         template <typename String>
         void operator()(const String& src, vector<String>& dst) const {
-            for (auto& segment: sentence_range(src))
+            auto range = sentence_range(src);
+            for (auto& segment: range)
                 dst.push_back(u_str(segment));
         }
     };
