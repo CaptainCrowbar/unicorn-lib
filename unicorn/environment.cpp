@@ -173,7 +173,14 @@ namespace Unicorn {
         NativeString key, value, kv;
         for (; *ptr != nullptr; ++ptr) {
             kv = *ptr;
-            str_partition_at(kv, key, value, PRI_CSTR("=", NativeCharacter));
+            size_t cut = kv.find(NativeCharacter('='));
+            if (cut == npos) {
+                key = kv;
+                value.clear();
+            } else {
+                key = kv.substr(0, cut);
+                value = kv.substr(cut + 1, npos);
+            }
             env[key] = value;
         }
         map.swap(env);
