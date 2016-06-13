@@ -113,7 +113,7 @@ following usage guide:
 ## Compatibility ##
 
 Unicorn is written in C++14; you will need an up-to-date C++ compiler,
-probably a recent version of Clang or GCC. I developed it mainly on Mac OS X,
+probably a recent version of Clang or GCC. I developed it mainly on macOS,
 currently using Clang 7.0. All test builds are made using strict compilation
 mode (`-Wall -Wextra -Werror`).
 

@@ -41,9 +41,9 @@ NTFS file system, file names are nominally UTF-16 (with a short list of
 disallowed characters), but not all of the Win32 wide character API functions
 that deal with files check for valid encoding; it's not hard to create a file
 whose name is an arbitrary sequence of 16-bit integers. The HFS+ file system
-used by Apple on Mac OS X and iOS appears to be the only widely used file
-system that actually does enforce valid Unicode names at the file system
-level, although it then proceeds to complicate matters by using a proprietary
+used by Apple on macOS and iOS appears to be the only widely used file system
+that actually does enforce valid Unicode names at the file system level,
+although it then proceeds to complicate matters by using a proprietary
 normalization scheme that does not match any of the four standard ones (and
 even on a Mac you need to be careful in the presence of remote file systems
 that may be on a different OS).</p>
