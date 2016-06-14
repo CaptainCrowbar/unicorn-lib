@@ -260,7 +260,7 @@ namespace Unicorn {
 
     #if defined(PRI_TARGET_UNIX)
 
-        u8string native_current_directory() {
+        u8string current_directory() {
             u8string name(256, '\0');
             for (;;) {
                 if (getcwd(&name[0], name.size()))
@@ -269,6 +269,9 @@ namespace Unicorn {
                     throw std::system_error(errno, std::generic_category());
                 name.resize(2 * name.size());
             }
+            size_t n = name.find('\0');
+            if (n != npos)
+                name.resize(n);
             return name;
         }
 

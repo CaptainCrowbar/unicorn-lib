@@ -168,7 +168,7 @@ namespace Unicorn {
 
     #if defined(PRI_TARGET_UNIX)
 
-        u8string native_current_directory();
+        u8string current_directory();
         bool file_exists(const u8string& file);
         FileId file_id(const u8string& file, uint32_t flags = 0);
         bool file_is_directory(const u8string& file);
@@ -176,7 +176,7 @@ namespace Unicorn {
         bool file_is_symlink(const u8string& file);
         uint64_t file_size(const u8string& file, uint32_t flags = 0);
         u8string resolve_symlink(const u8string& file);
-        inline u8string current_directory() { return native_current_directory(); }
+        inline u8string native_current_directory() { return current_directory(); }
 
     #else
 
