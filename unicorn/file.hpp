@@ -129,7 +129,7 @@ namespace Unicorn {
     u8string file_path(const u8string& file1, const u8string& file2, Args... args) {
         using namespace UnicornDetail;
         u8string prefix = normalize_path(file1), suffix = normalize_path(file2);
-        if (prefix.empty() || ! file_is_relative(suffix))
+        if (prefix.empty() || (! suffix.empty() && ! file_is_relative(suffix)))
             return file_path(suffix, args...);
         if (suffix.empty())
             return file_path(prefix, args...);
@@ -149,7 +149,7 @@ namespace Unicorn {
         wstring file_path(const wstring& file1, const wstring& file2, Args... args) {
             using namespace UnicornDetail;
             wstring prefix = normalize_path(file1), suffix = normalize_path(file2);
-            if (prefix.empty() || ! file_is_relative(suffix))
+            if (prefix.empty() || (! suffix.empty() && ! file_is_relative(suffix)))
                 return file_path(suffix, args...);
             if (suffix.empty())
                 return file_path(prefix, args...);

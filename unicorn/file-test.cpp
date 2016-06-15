@@ -253,6 +253,8 @@ namespace {
             TEST_EQUAL(file_path("hello.txt"), "hello.txt");
             TEST_EQUAL(file_path("abc/def/hello.txt"), "abc/def/hello.txt");
             TEST_EQUAL(file_path("", ""), "");
+            TEST_EQUAL(file_path("hello", ""), "hello");
+            TEST_EQUAL(file_path("", "world"), "world");
             TEST_EQUAL(file_path("hello", "world"), "hello/world");
             TEST_EQUAL(file_path("hello", "world/"), "hello/world/");
             TEST_EQUAL(file_path("hello", "/world"), "/world");
@@ -298,6 +300,8 @@ namespace {
             TEST_EQUAL(file_path("hello.txt"), "hello.txt");
             TEST_EQUAL(file_path("abc\\def\\hello.txt"), "abc\\def\\hello.txt");
             TEST_EQUAL(file_path("", ""), "");
+            TEST_EQUAL(file_path("hello", ""), "hello");
+            TEST_EQUAL(file_path("", "world"), "world");
             TEST_EQUAL(file_path("hello", "world"), "hello\\world");
             TEST_EQUAL(file_path("hello", "world\\"), "hello\\world\\");
             TEST_EQUAL(file_path("hello", "C:\\world"), "C:\\world");
