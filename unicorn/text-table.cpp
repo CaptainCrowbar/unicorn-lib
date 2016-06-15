@@ -9,7 +9,7 @@ using namespace std::literals;
 
 namespace Unicorn {
 
-    void Table::add_str(const u8string& t) {
+    void TextTable::add_str(const u8string& t) {
         size_t index = cells.back().size();
         u8string cell;
         if (index < formats.size() && ! formats[index].format().empty())
@@ -19,7 +19,7 @@ namespace Unicorn {
         cells.back().push_back(str_trim(cell));
     }
 
-    void Table::character_code(char c) {
+    void TextTable::character_code(char c) {
         switch (c) {
             case '\f': // eol + reset formats
                 force_break();
@@ -50,12 +50,12 @@ namespace Unicorn {
         }
     }
 
-    void Table::force_break() {
+    void TextTable::force_break() {
         if (! cells.back().empty())
             cells.push_back({});
     }
 
-    void Table::write_table(const layout_spec& spec, vector<u8string>& lines) const {
+    void TextTable::write_table(const layout_spec& spec, vector<u8string>& lines) const {
         const size_t ditto_size = str_length(spec.ditto, spec.flags),
             empty_size = str_length(spec.empty, spec.flags);
         lines.resize(cells.size(), u8string(spec.margin, ' '));

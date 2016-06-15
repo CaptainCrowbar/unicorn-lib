@@ -11,11 +11,11 @@
 <ul>
 <li><code>#include "unicorn/text-table.hpp"</code></li>
 </ul>
-<p><code>Unicorn::</code><strong><code>Table</code></strong> is a utility class for simple table layout in fixed width
-text, a task often useful in formatting the output from command line programs
-and similar utilities.</p>
+<p><code>Unicorn::</code><strong><code>TextTable</code></strong> is a utility class for simple table layout in fixed
+width text, a task often useful in formatting the output from command line
+programs and similar utilities.</p>
 <p>Example:</p>
-<pre><code>Table tab;
+<pre><code>TextTable tab;
 tab &lt;&lt; "Name" &lt;&lt; "Number" &lt;&lt; "Hex" &lt;&lt; "Float" &lt;&lt; '\n'
     &lt;&lt; '=';
 tab.format("", "", "0x$1x3", "$1fs2");
@@ -33,28 +33,28 @@ James Bond        7       0x007  +7.00
 Douglas Adams     42      0x02a  +42.00
 Maxwell Smart     86      0x056  +86.00
 </code></pre>
-<h2 id="table-class">Table class</h2>
+<h2 id="texttable-class">TextTable class</h2>
 <div class="defns">
 <ul>
-<li><code>Table::</code><strong><code>Table</code></strong><code>()</code></li>
-<li><code>Table::</code><strong><code>Table</code></strong><code>(const Table&amp; t)</code></li>
-<li><code>Table::</code><strong><code>Table</code></strong><code>(Table&amp;&amp; t) noexcept</code></li>
-<li><code>Table::</code><strong><code>~Table</code></strong><code>() noexcept</code></li>
-<li><code>Table&amp; Table::</code><strong><code>operator=</code></strong><code>(const Table&amp; t)</code></li>
-<li><code>Table&amp; Table::</code><strong><code>operator=</code></strong><code>(Table&amp;&amp; t) noexcept</code></li>
+<li><code>TextTable::</code><strong><code>TextTable</code></strong><code>()</code></li>
+<li><code>TextTable::</code><strong><code>TextTable</code></strong><code>(const TextTable&amp; t)</code></li>
+<li><code>TextTable::</code><strong><code>TextTable</code></strong><code>(TextTable&amp;&amp; t) noexcept</code></li>
+<li><code>TextTable::</code><strong><code>~TextTable</code></strong><code>() noexcept</code></li>
+<li><code>TextTable&amp; TextTable::</code><strong><code>operator=</code></strong><code>(const TextTable&amp; t)</code></li>
+<li><code>TextTable&amp; TextTable::</code><strong><code>operator=</code></strong><code>(TextTable&amp;&amp; t) noexcept</code></li>
 </ul>
 <p>Life cycle functions.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>void Table::</code><strong><code>clear</code></strong><code>() noexcept</code></li>
+<li><code>void TextTable::</code><strong><code>clear</code></strong><code>() noexcept</code></li>
 </ul>
 <p>Clears all cell data and formatting settings from the table (i.e. resets the
 table to its default constructed state).</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename... FS&gt; void Table::</code><strong><code>format</code></strong><code>(const u8string&amp; f, const FS&amp;... fs)</code></li>
+<li><code>template &lt;typename... FS&gt; void TextTable::</code><strong><code>format</code></strong><code>(const u8string&amp; f, const FS&amp;... fs)</code></li>
 </ul>
 <p>This sets up formatting for the table's columns, using the formatting codes
 defined in <a href="format.html"><code>unicorn/format</code></a>. Each formatting element should be
@@ -67,14 +67,14 @@ existing cells already in the table will not be reformatted.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename T&gt; Table&amp; Table::</code><strong><code>operator&lt;&lt;</code></strong><code>(const T&amp; t)</code></li>
+<li><code>template &lt;typename T&gt; TextTable&amp; TextTable::</code><strong><code>operator&lt;&lt;</code></strong><code>(const T&amp; t)</code></li>
 </ul>
 <p>Adds a data cell to the table. The cell will be formatted according to the
 current column's formatting code, if one has been set.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>Table&amp; Table::</code><strong><code>operator&lt;&lt;</code></strong><code>(char c)</code></li>
+<li><code>TextTable&amp; TextTable::</code><strong><code>operator&lt;&lt;</code></strong><code>(char c)</code></li>
 </ul>
 <p>Single character insertion is used to request various miscellaneous control operations, as
 described in the table below.</p>
@@ -115,9 +115,9 @@ width of each column. Otherwise, the insertion operator will throw
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename... Args&gt; u8string Table::</code><strong><code>str</code></strong><code>(const Args&amp;... args) const</code></li>
-<li><code>template &lt;typename... Args&gt; void Table::</code><strong><code>write</code></strong><code>(std::ostream&amp; out, const Args&amp;... args) const</code></li>
-<li><code>std::ostream&amp;</code> <strong><code>operator&lt;&lt;</code></strong><code>(std::ostream&amp; out, const Table&amp; tab)</code></li>
+<li><code>template &lt;typename... Args&gt; u8string TextTable::</code><strong><code>str</code></strong><code>(const Args&amp;... args) const</code></li>
+<li><code>template &lt;typename... Args&gt; void TextTable::</code><strong><code>write</code></strong><code>(std::ostream&amp; out, const Args&amp;... args) const</code></li>
+<li><code>std::ostream&amp;</code> <strong><code>operator&lt;&lt;</code></strong><code>(std::ostream&amp; out, const TextTable&amp; tab)</code></li>
 </ul>
 <p>These format the table to a string or an output stream.</p>
 <p>By default, string lengths are measured in grapheme units (user perceived

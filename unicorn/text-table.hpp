@@ -14,26 +14,26 @@ namespace Unicorn {
     constexpr Kwarg<size_t> tab_margin, tab_spacing;
     constexpr Kwarg<u8string> tab_ditto, tab_empty;
 
-    class Table {
+    class TextTable {
     public:
-        Table(): formats(), cells(1) {}
-        template <typename T> Table& operator<<(const T& t) { add_cell(t); return *this; }
-        Table& operator<<(char t) { character_code(t); return *this; }
-        Table& operator<<(char16_t t) { add_str(str_char(t)); return *this; }
-        Table& operator<<(char32_t t) { add_str(str_char(t)); return *this; }
-        Table& operator<<(wchar_t t) { add_str(str_char(t)); return *this; }
-        Table& operator<<(char* t) { add_str(cstr(t)); return *this; }
-        Table& operator<<(char16_t* t) { add_str(to_utf8(cstr(t))); return *this; }
-        Table& operator<<(char32_t* t) { add_str(to_utf8(cstr(t))); return *this; }
-        Table& operator<<(wchar_t* t) { add_str(to_utf8(cstr(t))); return *this; }
-        Table& operator<<(const char* t) { add_str(cstr(t)); return *this; }
-        Table& operator<<(const char16_t* t) { add_str(to_utf8(cstr(t))); return *this; }
-        Table& operator<<(const char32_t* t) { add_str(to_utf8(cstr(t))); return *this; }
-        Table& operator<<(const wchar_t* t) { add_str(to_utf8(cstr(t))); return *this; }
-        Table& operator<<(const u8string& t) { add_str(t); return *this; }
-        Table& operator<<(const u16string& t) { add_str(to_utf8(t)); return *this; }
-        Table& operator<<(const u32string& t) { add_str(to_utf8(t)); return *this; }
-        Table& operator<<(const wstring& t) { add_str(to_utf8(t)); return *this; }
+        TextTable(): formats(), cells(1) {}
+        template <typename T> TextTable& operator<<(const T& t) { add_cell(t); return *this; }
+        TextTable& operator<<(char t) { character_code(t); return *this; }
+        TextTable& operator<<(char16_t t) { add_str(str_char(t)); return *this; }
+        TextTable& operator<<(char32_t t) { add_str(str_char(t)); return *this; }
+        TextTable& operator<<(wchar_t t) { add_str(str_char(t)); return *this; }
+        TextTable& operator<<(char* t) { add_str(cstr(t)); return *this; }
+        TextTable& operator<<(char16_t* t) { add_str(to_utf8(cstr(t))); return *this; }
+        TextTable& operator<<(char32_t* t) { add_str(to_utf8(cstr(t))); return *this; }
+        TextTable& operator<<(wchar_t* t) { add_str(to_utf8(cstr(t))); return *this; }
+        TextTable& operator<<(const char* t) { add_str(cstr(t)); return *this; }
+        TextTable& operator<<(const char16_t* t) { add_str(to_utf8(cstr(t))); return *this; }
+        TextTable& operator<<(const char32_t* t) { add_str(to_utf8(cstr(t))); return *this; }
+        TextTable& operator<<(const wchar_t* t) { add_str(to_utf8(cstr(t))); return *this; }
+        TextTable& operator<<(const u8string& t) { add_str(t); return *this; }
+        TextTable& operator<<(const u16string& t) { add_str(to_utf8(t)); return *this; }
+        TextTable& operator<<(const u32string& t) { add_str(to_utf8(t)); return *this; }
+        TextTable& operator<<(const wstring& t) { add_str(to_utf8(t)); return *this; }
         void clear() noexcept { cells.clear(); cells.resize(1); formats.clear(); }
         template <typename... FS> void format(const u8string& f, const FS&... fs) { format(f); format(fs...); }
         void format(const u8string& f) { formats.push_back(Format(f)); }
@@ -59,7 +59,7 @@ namespace Unicorn {
     };
 
     template <typename... Args>
-    u8string Table::str(const Args&... args) const {
+    u8string TextTable::str(const Args&... args) const {
         auto spec = parse_args(args...);
         vector<u8string> lines;
         write_table(spec, lines);
@@ -70,7 +70,7 @@ namespace Unicorn {
     }
 
     template <typename... Args>
-    void Table::write(std::ostream& out, const Args&... args) const {
+    void TextTable::write(std::ostream& out, const Args&... args) const {
         auto spec = parse_args(args...);
         vector<u8string> lines;
         write_table(spec, lines);
@@ -79,7 +79,7 @@ namespace Unicorn {
     }
 
     template <typename T>
-    void Table::add_cell(const T& t) {
+    void TextTable::add_cell(const T& t) {
         size_t index = cells.back().size();
         u8string cell;
         if (index < formats.size() && ! formats[index].format().empty())
@@ -90,7 +90,7 @@ namespace Unicorn {
     }
 
     template <typename... Args>
-    Table::layout_spec Table::parse_args(const Args&... args) {
+    TextTable::layout_spec TextTable::parse_args(const Args&... args) {
         layout_spec spec;
         kwget(tab_flags, spec.flags, args...);
         kwget(tab_ditto, spec.ditto, args...);
@@ -101,7 +101,7 @@ namespace Unicorn {
         return spec;
     }
 
-    inline std::ostream& operator<<(std::ostream& out, const Table& tab) {
+    inline std::ostream& operator<<(std::ostream& out, const TextTable& tab) {
         tab.write(out);
         return out;
     }

@@ -11,7 +11,7 @@ namespace {
 
     void check_layout() {
 
-        Table tab;
+        TextTable tab;
         u8string s;
 
         TRY(s = tab.str());
@@ -97,7 +97,7 @@ namespace {
 
     void check_unicode_length() {
 
-        Table tab;
+        TextTable tab;
         u8string s;
 
         TRY(tab << u8"UPPER" << u8"lower" << u8"..." << '\n');
@@ -121,7 +121,7 @@ namespace {
 
     void check_utf_strings() {
 
-        Table tab;
+        TextTable tab;
         u8string s;
 
         TRY(tab << 1 << u8"abcde" << u8"αβγδε" << '\n');
@@ -148,7 +148,7 @@ namespace {
 
     void check_example_from_docs() {
 
-        Table tab;
+        TextTable tab;
         u8string s;
 
         TRY(tab << "Name" << "Number" << "Hex" << "Float" << '\n'

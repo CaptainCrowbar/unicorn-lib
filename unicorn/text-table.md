@@ -4,13 +4,13 @@ _Unicode library for C++ by Ross Smith_
 
 * `#include "unicorn/text-table.hpp"`
 
-`Unicorn::`**`Table`** is a utility class for simple table layout in fixed width
-text, a task often useful in formatting the output from command line programs
-and similar utilities.
+`Unicorn::`**`TextTable`** is a utility class for simple table layout in fixed
+width text, a task often useful in formatting the output from command line
+programs and similar utilities.
 
 Example:
 
-    Table tab;
+    TextTable tab;
     tab << "Name" << "Number" << "Hex" << "Float" << '\n'
         << '=';
     tab.format("", "", "0x$1x3", "$1fs2");
@@ -29,23 +29,23 @@ Output:
     Douglas Adams     42      0x02a  +42.00
     Maxwell Smart     86      0x056  +86.00
 
-## Table class ##
+## TextTable class ##
 
-* `Table::`**`Table`**`()`
-* `Table::`**`Table`**`(const Table& t)`
-* `Table::`**`Table`**`(Table&& t) noexcept`
-* `Table::`**`~Table`**`() noexcept`
-* `Table& Table::`**`operator=`**`(const Table& t)`
-* `Table& Table::`**`operator=`**`(Table&& t) noexcept`
+* `TextTable::`**`TextTable`**`()`
+* `TextTable::`**`TextTable`**`(const TextTable& t)`
+* `TextTable::`**`TextTable`**`(TextTable&& t) noexcept`
+* `TextTable::`**`~TextTable`**`() noexcept`
+* `TextTable& TextTable::`**`operator=`**`(const TextTable& t)`
+* `TextTable& TextTable::`**`operator=`**`(TextTable&& t) noexcept`
 
 Life cycle functions.
 
-* `void Table::`**`clear`**`() noexcept`
+* `void TextTable::`**`clear`**`() noexcept`
 
 Clears all cell data and formatting settings from the table (i.e. resets the
 table to its default constructed state).
 
-* `template <typename... FS> void Table::`**`format`**`(const u8string& f, const FS&... fs)`
+* `template <typename... FS> void TextTable::`**`format`**`(const u8string& f, const FS&... fs)`
 
 This sets up formatting for the table's columns, using the formatting codes
 defined in [`unicorn/format`](format.html). Each formatting element should be
@@ -56,12 +56,12 @@ without namespace qualification, so user defined overloads will be found).
 Formatting is applied to cell data entered after a call to `format()`;
 existing cells already in the table will not be reformatted.
 
-* `template <typename T> Table& Table::`**`operator<<`**`(const T& t)`
+* `template <typename T> TextTable& TextTable::`**`operator<<`**`(const T& t)`
 
 Adds a data cell to the table. The cell will be formatted according to the
 current column's formatting code, if one has been set.
 
-* `Table& Table::`**`operator<<`**`(char c)`
+* `TextTable& TextTable::`**`operator<<`**`(char c)`
 
 Single character insertion is used to request various miscellaneous control operations, as
 described in the table below.
@@ -83,9 +83,9 @@ a horizontal rule across the table, by repeating the character to match the
 width of each column. Otherwise, the insertion operator will throw
 `std::invalid_argument`.
 
-* `template <typename... Args> u8string Table::`**`str`**`(const Args&... args) const`
-* `template <typename... Args> void Table::`**`write`**`(std::ostream& out, const Args&... args) const`
-* `std::ostream&` **`operator<<`**`(std::ostream& out, const Table& tab)`
+* `template <typename... Args> u8string TextTable::`**`str`**`(const Args&... args) const`
+* `template <typename... Args> void TextTable::`**`write`**`(std::ostream& out, const Args&... args) const`
+* `std::ostream&` **`operator<<`**`(std::ostream& out, const TextTable& tab)`
 
 These format the table to a string or an output stream.
 
