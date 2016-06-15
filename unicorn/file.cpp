@@ -549,7 +549,7 @@ namespace Unicorn {
         }
 
         wstring resolve_path(const wstring& file) {
-            return trim_dots(get_full_path(get_long_path(normalize_path(file))));
+            return trim_dots(get_full_path(get_long_path(UnicornDetail::normalize_path(file))));
         }
 
         wstring resolve_symlink(const wstring& file) {
