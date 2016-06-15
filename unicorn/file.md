@@ -265,6 +265,15 @@ be zero on some systems) is returned; if the `fs_recurse` flag is supplied,
 the directory's contents will be recursively scanned (symbolic links are not
 followed).
 
+* `u8string` **`resolve_path`**`(const u8string& file)`
+* `NativeString` **`resolve_path`**`(const NativeString& file)`
+
+Resolves a relative path to an absolute one. On Unix this includes resolving
+the `"~"` home directory convention. This will not resolve symlinks in the
+path. It will remove redundant path components such as a trailing `"/."`, and
+on Windows it will expand short file names to long ones, so a path that was
+already absolute will not necessarily be returned unchanged.
+
 * `u8string` **`resolve_symlink`**`(const u8string& file)`
 * `NativeString` **`resolve_symlink`**`(const NativeString& file)`
 

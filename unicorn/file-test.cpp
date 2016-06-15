@@ -3,6 +3,7 @@
 #include "unicorn/utf.hpp"
 #include "prion/unit-test.hpp"
 #include <algorithm>
+#include <cstdlib>
 #include <fstream>
 #include <string>
 #include <system_error>
@@ -323,6 +324,42 @@ namespace {
 
     }
 
+    void check_path_resolution() {
+
+        u8string cwd = current_directory(), res;
+
+        #if defined(PRI_TARGET_UNIX)
+            u8string home = cstr(getenv("HOME"));
+        #endif
+
+        vector<pair<u8string, u8string>> tests = {
+            #if defined(PRI_TARGET_UNIX)
+                {  "",             "",                   },
+                {  "Makefile",     cwd + "/Makefile",    },
+                {  ".",            cwd,                  },
+                {  "./Makefile",   cwd + "/Makefile",    },
+                {  "~",            home,                 },
+                {  "~/Documents",  home + "/Documents",  },
+                {  "/",            "/",                  },
+                {  "/usr",         "/usr",               },
+                {  "/usr/local",   "/usr/local",         },
+            #else
+                {  "",             "",                  },
+                {  "Makefile",     cwd + "\\Makefile",  },
+                {  ".",            cwd,                 },
+                {  ".\\Makefile",  cwd + "\\Makefile",  },
+                {  "C:\\",         "C:\\",              },
+                {  "C:\\Windows",  "C:\\Windows",       },
+            #endif
+        };
+
+        for (auto& test: tests) {
+            TRY(res = resolve_path(test.first));
+            TEST_EQUAL(res, test.second);
+        }
+
+    }
+
     void check_file_system_operations() {
 
         u8string d1, d2, d3, f1, f2, f3, f4;
@@ -517,6 +554,7 @@ TEST_MODULE(unicorn, file) {
     check_legal_file_names();
     check_file_name_operations();
     check_file_path_operations();
+    check_path_resolution();
     check_file_system_operations();
 
 }

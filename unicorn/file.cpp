@@ -8,6 +8,7 @@
 
 #if defined(PRI_TARGET_UNIX)
     #include <dirent.h>
+    #include <pwd.h>
     #include <sys/types.h>
     #include <unistd.h>
 #else
@@ -258,7 +259,61 @@ namespace Unicorn {
 
     // File system query functions
 
+    namespace {
+
+        template <typename C>
+        basic_string<C> trim_dots(basic_string<C> file) {
+            static const basic_string<C> sds = {native_file_delimiter, C('.'), native_file_delimiter};
+            while (file.size() > 2 && file[0] == C('.') && file[1] == native_file_delimiter)
+                file.erase(0, 2);
+            while (file.size() > 2 && file.end()[-1] == C('.') && file.end()[-2] == native_file_delimiter)
+                file.resize(file.size() - 2);
+            size_t pos = 0;
+            while (pos < file.size()) {
+                pos = file.find(sds, pos);
+                if (pos == npos)
+                    break;
+                file.erase(pos, 2);
+            }
+            if (! file.empty() && ! file_is_root(file) && file.back() == native_file_delimiter)
+                file.pop_back();
+            return file;
+        }
+
+    }
+
     #if defined(PRI_TARGET_UNIX)
+
+        namespace {
+
+            template <typename Getpw, typename T>
+            u8string call_getpw(Getpw* getpw, T arg) {
+                vector<char> workbuf(1024);
+                passwd pwdbuf;
+                passwd* pwdptr = nullptr;
+                for (;;) {
+                    int rc = getpw(arg, &pwdbuf, &workbuf[0], workbuf.size(), &pwdptr);
+                    if (rc == 0)
+                        return cstr(pwdptr->pw_dir);
+                    if (rc != ERANGE)
+                        return {};
+                    workbuf.resize(2 * workbuf.size());
+                }
+            }
+
+            u8string user_home(const u8string& user) {
+                u8string home;
+                if (user.empty()) {
+                    home = cstr(getenv("HOME"));
+                    if (home.empty())
+                        home = call_getpw(getpwuid_r, getuid());
+                } else {
+                    home = call_getpw(getpwnam_r, user.data());
+                }
+                return home;
+            }
+
+        }
 
         u8string current_directory() {
             u8string name(256, '\0');
@@ -320,6 +375,41 @@ namespace Unicorn {
             return bytes;
         }
 
+        u8string resolve_path(const u8string& file) {
+            u8string result = file;
+            size_t pos = 0;
+            // Three or more leading slashes are equivalent to one (Posix)
+            if (result.size() >= 3) {
+                pos = result.find_first_not_of('/');
+                if (pos >= 3)
+                    result.erase(0, pos - 1);
+            }
+            // Elsewhere replace all multiple slashes with one
+            pos = 1;
+            while (pos < result.size()) {
+                pos = result.find("//", pos);
+                if (pos == npos)
+                    break;
+                result.erase(pos, 1);
+            }
+            // Replace ~[user] with the home directory
+            if (result[0] == '~') {
+                u8string user, tail;
+                pos = result.find('/');
+                user = result.substr(1, pos - 1);
+                if (pos != npos)
+                    tail = result.substr(pos + 1, npos);
+                u8string head = user_home(user);
+                if (! head.empty())
+                    result = file_path(head, tail);
+            }
+            // Insert the current directory
+            if (! result.empty() && file_is_relative(result))
+                result = file_path(current_directory(), result);
+            // Strip redundant dot entries in path
+            return trim_dots(result);
+        }
+
         u8string resolve_symlink(const u8string& file) {
             if (! file_is_symlink(file))
                 return file;
@@ -340,6 +430,44 @@ namespace Unicorn {
         }
 
     #else
+
+        namespace {
+
+            wstring get_long_path(const wstring& file) {
+                if (file.empty())
+                    return {};
+                wstring buf;
+                buf.resize(1024);
+                for (;;) {
+                    auto rc = GetLongPathNameW(file.data(), &buf[0], buf.size());
+                    if (rc == 0)
+                        return file;
+                    if (rc < buf.size()) {
+                        buf.resize(rc);
+                        return buf;
+                    }
+                    buf.resize(2 * buf.size());
+                }
+            }
+
+            wstring get_full_path(const wstring& file) {
+                if (file.empty())
+                    return {};
+                wstring buf;
+                buf.resize(1024);
+                for (;;) {
+                    auto rc = GetFullPathNameW(file.data(), buf.size(), &buf[0], nullptr);
+                    if (rc == 0)
+                        return file;
+                    if (rc < buf.size()) {
+                        buf.resize(rc);
+                        return buf;
+                    }
+                    buf.resize(2 * buf.size());
+                }
+            }
+
+        }
 
         wstring native_current_directory() {
             wstring name(256, L'\0');
@@ -418,6 +546,10 @@ namespace Unicorn {
                 for (auto& child: directory(file, fs_fullname | fs_hidden))
                     bytes += file_size(child, fs_recurse);
             return bytes;
+        }
+
+        wstring resolve_path(const wstring& file) {
+            return trim_dots(get_full_path(get_long_path(normalize_path(file))));
         }
 
         wstring resolve_symlink(const wstring& file) {

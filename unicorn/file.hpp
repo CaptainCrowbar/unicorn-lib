@@ -175,6 +175,7 @@ namespace Unicorn {
         bool file_is_hidden(const u8string& file);
         bool file_is_symlink(const u8string& file);
         uint64_t file_size(const u8string& file, uint32_t flags = 0);
+        u8string resolve_path(const u8string& file);
         u8string resolve_symlink(const u8string& file);
         inline u8string native_current_directory() { return current_directory(); }
 
@@ -187,6 +188,7 @@ namespace Unicorn {
         bool file_is_hidden(const wstring& file);
         bool file_is_symlink(const wstring& file);
         uint64_t file_size(const wstring& file, uint32_t flags = 0);
+        wstring resolve_path(const wstring& file);
         wstring resolve_symlink(const wstring& file);
         inline u8string current_directory() { return to_utf8(native_current_directory()); }
         inline bool file_exists(const u8string& file) { return file_exists(to_wstring(file)); }
@@ -195,6 +197,7 @@ namespace Unicorn {
         inline bool file_is_hidden(const u8string& file) { return file_is_hidden(to_wstring(file)); }
         inline bool file_is_symlink(const u8string& file) { return file_is_symlink(to_wstring(file)); }
         inline uint64_t file_size(const u8string& file, uint32_t flags = 0) { return file_size(to_wstring(file), flags); }
+        inline u8string resolve_path(const u8string& file) { return to_utf8(resolve_path(to_wstring(file))); }
         inline u8string resolve_symlink(const u8string& file) { return to_utf8(resolve_symlink(to_wstring(file))); }
 
     #endif

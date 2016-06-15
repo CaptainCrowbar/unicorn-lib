@@ -317,6 +317,17 @@ followed).</p>
 </div>
 <div class="defns">
 <ul>
+<li><code>u8string</code> <strong><code>resolve_path</code></strong><code>(const u8string&amp; file)</code></li>
+<li><code>NativeString</code> <strong><code>resolve_path</code></strong><code>(const NativeString&amp; file)</code></li>
+</ul>
+<p>Resolves a relative path to an absolute one. On Unix this includes resolving
+the <code>"~"</code> home directory convention. This will not resolve symlinks in the
+path. It will remove redundant path components such as a trailing <code>"/."</code>, and
+on Windows it will expand short file names to long ones, so a path that was
+already absolute will not necessarily be returned unchanged.</p>
+</div>
+<div class="defns">
+<ul>
 <li><code>u8string</code> <strong><code>resolve_symlink</code></strong><code>(const u8string&amp; file)</code></li>
 <li><code>NativeString</code> <strong><code>resolve_symlink</code></strong><code>(const NativeString&amp; file)</code></li>
 </ul>
