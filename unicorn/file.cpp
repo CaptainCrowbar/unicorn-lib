@@ -347,8 +347,10 @@ namespace Unicorn {
                 auto rc = GetCurrentDirectoryW(name.size(), &name[0]);
                 if (rc == 0)
                     throw std::system_error(GetLastError(), windows_category());
-                if (rc < name.size())
+                if (rc < name.size()) {
+                    name.resize(rc);
                     break;
+                }
                 name.resize(2 * name.size());
             }
             return name;
