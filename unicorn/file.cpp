@@ -327,6 +327,7 @@ namespace Unicorn {
             size_t n = name.find('\0');
             if (n != npos)
                 name.resize(n);
+            name.shrink_to_fit();
             return name;
         }
 
@@ -549,7 +550,9 @@ namespace Unicorn {
         }
 
         wstring resolve_path(const wstring& file) {
-            return trim_dots(get_full_path(get_long_path(UnicornDetail::normalize_path(file))));
+            auto path = trim_dots(get_full_path(get_long_path(UnicornDetail::normalize_path(file))));
+            path.shrink_to_fit();
+            return path;
         }
 
         wstring resolve_symlink(const wstring& file) {
