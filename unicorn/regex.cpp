@@ -134,7 +134,7 @@ namespace Unicorn {
         u8string errmsg = message.empty() ? translate(error) : message;
         if (! errmsg.empty())
             text += ": " + errmsg;
-        text += "; pattern: " + quote(pattern, true);
+        text += "; pattern: " + uquote(pattern);
         return text;
     }
 

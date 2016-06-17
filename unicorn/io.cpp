@@ -16,7 +16,7 @@ namespace Unicorn {
         using SharedFile = shared_ptr<FILE>;
 
         void checked_fclose(FILE* f) { if (f) fclose(f); }
-        template <typename C> u8string quote_file(const basic_string<C>& name) { return quote(to_utf8(name), true); }
+        template <typename C> u8string quote_file(const basic_string<C>& name) { return uquote(to_utf8(name)); }
 
         SharedFile shared_fopen(const NativeString& file, const NativeString& mode, bool check) {
             FILE* f =

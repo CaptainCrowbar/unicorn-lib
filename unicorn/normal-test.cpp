@@ -1,5 +1,6 @@
 #include "unicorn/core.hpp"
 #include "unicorn/character.hpp"
+#include "unicorn/format.hpp"
 #include "unicorn/normal.hpp"
 #include "unicorn/string.hpp"
 #include "unicorn/ucd-tables.hpp"
@@ -10,8 +11,9 @@
 #include <string>
 #include <utility>
 
-using namespace std::literals;
 using namespace Unicorn;
+using namespace Unicorn::Literals;
+using namespace std::literals;
 
 namespace {
 
@@ -22,8 +24,7 @@ namespace {
         TRY(norm = normalize(orig, form));
         TEST_EQUAL(norm, expect);
         if (norm != expect)
-            FAIL("Failed normalization test " + dec(line) + ": " + to_str(form) + " "
-                + quote(orig, true) + " => " + quote(expect, true));
+            FAIL("Failed normalization test $1: $2 $3q => $4q"_fmt(line, form, orig, expect));
     }
 
 }

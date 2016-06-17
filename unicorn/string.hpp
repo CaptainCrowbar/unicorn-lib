@@ -756,7 +756,7 @@ namespace Unicorn {
             size_t endpos = src.find_first_not_of(base == 16 ? hex_chars : dec_chars, offset);
             if (endpos == offset) {
                 if (flags & err_throw)
-                    throw std::invalid_argument("Invalid integer: " + quote(to_utf8(start.str())));
+                    throw std::invalid_argument("Invalid integer: " + uquote(to_utf8(start.str())));
                 t = T(0);
                 return start;
             }
@@ -775,11 +775,11 @@ namespace Unicorn {
                 stop = utf_iterator(src, offset + len);
                 if (len == 0) {
                     if (flags & err_throw)
-                        throw std::invalid_argument("Invalid integer: " + quote(fragment));
+                        throw std::invalid_argument("Invalid integer: " + uquote(fragment));
                     t = T(0);
                 } else if (err == ERANGE || value < min_value || value > max_value) {
                     if (flags & err_throw)
-                        throw std::range_error("Integer out of range: " + quote(fragment));
+                        throw std::range_error("Integer out of range: " + uquote(fragment));
                     t = sign_of(value) == 1 ? max_value : min_value;
                 } else {
                     t = value;
@@ -794,11 +794,11 @@ namespace Unicorn {
                 stop = utf_iterator(src, offset + len);
                 if (len == 0) {
                     if (flags & err_throw)
-                        throw std::invalid_argument("Invalid integer: " + quote(fragment));
+                        throw std::invalid_argument("Invalid integer: " + uquote(fragment));
                     t = T(0);
                 } else if (err == ERANGE || value > max_value) {
                     if (flags & err_throw)
-                        throw std::range_error("Integer out of range: " + quote(fragment));
+                        throw std::range_error("Integer out of range: " + uquote(fragment));
                     t = max_value;
                 } else {
                     t = value;
@@ -890,7 +890,7 @@ namespace Unicorn {
         size_t endpos = src.find_first_not_of("+-.0123456789Ee", offset);
         if (endpos == offset) {
             if (flags & err_throw)
-                throw std::invalid_argument("Invalid number: " + quote(start.str()));
+                throw std::invalid_argument("Invalid number: " + uquote(start.str()));
             t = T(0);
             return start;
         }
@@ -903,11 +903,11 @@ namespace Unicorn {
         auto stop = utf_iterator(src, offset + len);
         if (len == 0) {
             if (flags & err_throw)
-                throw std::invalid_argument("Invalid number: " + quote(fragment));
+                throw std::invalid_argument("Invalid number: " + uquote(fragment));
             t = T(0);
         } else if (value == traits::huge_val || value == - traits::huge_val) {
             if (flags & err_throw)
-                throw std::range_error("Number out of range: " + quote(fragment));
+                throw std::range_error("Number out of range: " + uquote(fragment));
             t = value > T(0) ? max_value : - max_value;
         } else {
             t = value;

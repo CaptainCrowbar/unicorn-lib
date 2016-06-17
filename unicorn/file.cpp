@@ -22,7 +22,7 @@ namespace Unicorn {
 
     namespace {
 
-        template <typename C> u8string quote_file(const basic_string<C>& name) { return quote(to_utf8(name), true); }
+        template <typename C> u8string quote_file(const basic_string<C>& name) { return uquote(to_utf8(name)); }
         u8string file_pair(const NativeString& f1, const NativeString& f2) { return quote_file(f1) + " -> " + quote_file(f2); }
 
         #if defined(PRI_TARGET_UNIX)
