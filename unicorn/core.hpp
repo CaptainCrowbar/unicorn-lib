@@ -6,6 +6,10 @@
 #include <stdexcept>
 #include <string>
 
+PRI_LDLIB(unicorn)
+PRI_LDLIB(pcre)
+PRI_LDLIB(z)
+
 namespace Unicorn {
 
     using namespace Prion;
