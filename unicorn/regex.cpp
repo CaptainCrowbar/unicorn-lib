@@ -405,6 +405,18 @@ namespace Unicorn {
         return v;
     }
 
+    void Regex::do_transform(const u8string& src, u8string& dst, string_transform f, size_t n) const {
+        auto matches = grep(src);
+        auto m = matches.begin(), end = matches.end();
+        size_t prev = 0;
+        for (size_t i = 0; i < n && m != end; ++i, ++m) {
+            dst.append(src, prev, m->offset() - prev);
+            dst += f(m->str());
+            prev = m->endpos();
+        }
+        dst.append(src, prev, npos);
+    }
+
     Match Regex::exec(const u8string& text, size_t offset, int anchors) const {
         Match m;
         m.init(*this, text);

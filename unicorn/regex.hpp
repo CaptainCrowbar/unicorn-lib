@@ -3,6 +3,7 @@
 #include "unicorn/core.hpp"
 #include "unicorn/utf.hpp"
 #include <algorithm>
+#include <functional>
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -159,6 +160,8 @@ namespace Unicorn {
         uint32_t flags() const noexcept { return fset; }
         SplitRange split(const u8string& text) const;
         void swap(Regex& r) noexcept;
+        template <typename F> u8string transform(const u8string& text, F f, size_t n = npos) const;
+        template <typename F> void transform_in(u8string& text, F f, size_t n = npos) const;
         static u8string escape(const u8string& str);
         static Version pcre_version() noexcept;
         static Version unicode_version() noexcept;
@@ -167,11 +170,27 @@ namespace Unicorn {
     private:
         friend class MatchIterator;
         friend class Match;
+        using string_transform = function<u8string(const u8string&)>;
         u8string pat;
         uint32_t fset = 0;
         UnicornDetail::PcreRef ref;
+        void do_transform(const u8string& src, u8string& dst, string_transform f, size_t n) const;
         Match exec(const u8string& text, size_t offset, int anchors) const;
     };
+
+    template <typename F>
+    u8string Regex::transform(const u8string& text, F f, size_t n) const {
+        u8string dst;
+        do_transform(text, dst, string_transform(f), n);
+        return dst;
+    }
+
+    template <typename F>
+    void Regex::transform_in(u8string& text, F f, size_t n) const {
+        u8string dst;
+        do_transform(text, dst, string_transform(f), n);
+        text = move(dst);
+    }
 
     inline void swap(Regex& lhs, Regex& rhs) noexcept { lhs.swap(rhs); }
 

@@ -548,6 +548,14 @@ string using regex matches as delimiters. Refer to the <code>SplitIterator</code
 </div>
 <div class="defns">
 <ul>
+<li><code>template &lt;typename F&gt; u8string Regex::</code><strong><code>transform</code></strong><code>(const u8string&amp; text, F f, size_t n = npos) const</code></li>
+<li><code>template &lt;typename F&gt; void Regex::</code><strong><code>transform_in</code></strong><code>(u8string&amp; text, F f, size_t n = npos) const</code></li>
+</ul>
+<p>Apply a string transformation to each match (or the first <code>n</code> matches) in the
+text. Each matching substring <code>s</code> in <code>text</code> is replaced by <code>f(s)</code>.</p>
+</div>
+<div class="defns">
+<ul>
 <li><code>static u8string Regex::</code><strong><code>escape</code></strong><code>(const u8string&amp; str)</code></li>
 </ul>
 <p>Returns a copy of the argument string, modified by inserting escape characters

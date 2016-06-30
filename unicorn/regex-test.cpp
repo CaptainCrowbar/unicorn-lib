@@ -447,6 +447,22 @@ namespace {
 
     }
 
+    void check_regex_transform() {
+
+        Regex r;
+        u8string s1 = "Hello world", s2;
+        auto f = [] (const u8string& s) { return s + s; };
+
+        TRY(r = Regex("\\w+"));
+        TRY(s2 = r.transform(s1, f));
+        TEST_EQUAL(s2, "HelloHello worldworld");
+        TRY(s2 = r.transform(s1, f, 1));
+        TEST_EQUAL(s2, "HelloHello world");
+        TRY(r.transform_in(s1, f));
+        TEST_EQUAL(s1, "HelloHello worldworld");
+
+    }
+
     void check_string_escaping() {
 
         TEST_EQUAL(Regex::escape(""), "");
@@ -560,6 +576,7 @@ TEST_MODULE(unicorn, regex) {
     check_match_ranges();
     check_split_ranges();
     check_regex_formatting();
+    check_regex_transform();
     check_string_escaping();
     check_byte_regex();
     check_regex_literals();

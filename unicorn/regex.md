@@ -334,6 +334,12 @@ string using regex matches as delimiters. Refer to the `SplitIterator` class
 
 Swap two regex objects.
 
+* `template <typename F> u8string Regex::`**`transform`**`(const u8string& text, F f, size_t n = npos) const`
+* `template <typename F> void Regex::`**`transform_in`**`(u8string& text, F f, size_t n = npos) const`
+
+Apply a string transformation to each match (or the first `n` matches) in the
+text. Each matching substring `s` in `text` is replaced by `f(s)`.
+
 * `static u8string Regex::`**`escape`**`(const u8string& str)`
 
 Returns a copy of the argument string, modified by inserting escape characters
