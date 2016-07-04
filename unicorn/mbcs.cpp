@@ -150,11 +150,6 @@ namespace Unicorn {
             }
         }
 
-        bool big_endian() noexcept {
-            static constexpr uint16_t x = 1;
-            return *reinterpret_cast<const uint8_t*>(&x) == 0;
-        }
-
         char16_t reverse_char16(char16_t c) {
             auto p = reinterpret_cast<uint8_t*>(&c);
             std::swap(p[0], p[1]);
@@ -180,17 +175,15 @@ namespace Unicorn {
             auto smashed = smash_name(name, true);
             auto match = match_unicode.match(smashed);
             if (match) {
-                u8string m1 = match[1], m2 = match[2];
-                bool swap = false;
-                if (m2 == "be")
-                    swap = ! big_endian();
-                else if (m2 == "le")
-                    swap = big_endian();
-                else if (m2 == "swapped")
-                    swap = true;
+                u8string m1 = match[1];
                 if (m1 == "utf8")
                     return utf8_tag;
-                else if (m1 == "utf16")
+                u8string m2 = match[2];
+                bool swap = false;
+                swap = (m2 == "be" && little_endian_target)
+                    || (m2 == "le" && big_endian_target)
+                    || m2 == "swapped";
+                if (m1 == "utf16")
                     return swap ? utf16swap_tag : utf16_tag;
                 else if (m1 == "utf32" || m1 == "ucs4")
                     return swap ? utf32swap_tag : utf32_tag;
