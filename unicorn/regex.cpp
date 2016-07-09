@@ -148,35 +148,35 @@ namespace Unicorn {
     // Regex match class
 
     u8string Match::first() const {
-        if (! matched() || ! this->text)
+        if (! matched() || ! text)
             return {};
         size_t n = groups();
         for (size_t i = 1; i < n; ++i)
-            if (is_group(i) && this->ofs[2 * i + 1] > this->ofs[2 * i])
-                return this->text->substr(this->ofs[2 * i], this->ofs[2 * i + 1] - this->ofs[2 * i]);
+            if (is_group(i) && ofs[2 * i + 1] > ofs[2 * i])
+                return text->substr(ofs[2 * i], ofs[2 * i + 1] - ofs[2 * i]);
         return {};
     }
 
     u8string Match::last() const {
-        if (! matched() || ! this->text)
+        if (! matched() || ! text)
             return {};
         size_t n = groups();
         for (size_t i = n - 1; i > 0; --i)
-            if (is_group(i) && this->ofs[2 * i + 1] > this->ofs[2 * i])
-                return this->text->substr(this->ofs[2 * i], this->ofs[2 * i + 1] - this->ofs[2 * i]);
+            if (is_group(i) && ofs[2 * i + 1] > ofs[2 * i])
+                return text->substr(ofs[2 * i], ofs[2 * i + 1] - ofs[2 * i]);
         return {};
     }
 
     u8string::const_iterator Match::s_begin(size_t i) const noexcept {
-        if (this->text && is_group(i))
-            return this->text->begin() + offset(i);
+        if (text && is_group(i))
+            return text->begin() + offset(i);
         else
             return {};
     }
 
     u8string::const_iterator Match::s_end(size_t i) const noexcept {
-        if (this->text && is_group(i))
-            return this->text->begin() + endpos(i);
+        if (text && is_group(i))
+            return text->begin() + endpos(i);
         else
             return {};
     }
@@ -190,23 +190,23 @@ namespace Unicorn {
     }
 
     u8string Match::str(size_t i) const {
-        if (this->text && is_group(i))
-            return this->text->substr(this->ofs[2 * i],
-                this->ofs[2 * i + 1] - this->ofs[2 * i]);
+        if (text && is_group(i))
+            return text->substr(ofs[2 * i],
+                ofs[2 * i + 1] - ofs[2 * i]);
         else
             return {};
     }
 
     Utf8Iterator Match::u_begin(size_t i) const noexcept {
-        if (this->text && is_group(i))
-            return Utf8Iterator(*this->text, offset(i));
+        if (text && is_group(i))
+            return Utf8Iterator(*text, offset(i));
         else
             return {};
     }
 
     Utf8Iterator Match::u_end(size_t i) const noexcept {
-        if (this->text && is_group(i))
-            return Utf8Iterator(*this->text, endpos(i));
+        if (text && is_group(i))
+            return Utf8Iterator(*text, endpos(i));
         else
             return {};
     }
