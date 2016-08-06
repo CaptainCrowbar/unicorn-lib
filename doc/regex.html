@@ -551,8 +551,10 @@ string using regex matches as delimiters. Refer to the <code>SplitIterator</code
 <li><code>template &lt;typename F&gt; u8string Regex::</code><strong><code>transform</code></strong><code>(const u8string&amp; text, F f, size_t n = npos) const</code></li>
 <li><code>template &lt;typename F&gt; void Regex::</code><strong><code>transform_in</code></strong><code>(u8string&amp; text, F f, size_t n = npos) const</code></li>
 </ul>
-<p>Apply a string transformation to each match (or the first <code>n</code> matches) in the
-text. Each matching substring <code>s</code> in <code>text</code> is replaced by <code>f(s)</code>.</p>
+<p>Apply a user supplied transformation to each match (or the first <code>n</code> matches)
+in the text. Each match <code>m</code> in <code>text</code> is replaced by <code>f(m)</code>. The
+transformation function can take either a <code>string</code> or a <code>Match</code> as its
+argument, but must return a <code>string</code> (or something convertible to a <code>string</code>).</p>
 </div>
 <div class="defns">
 <ul>

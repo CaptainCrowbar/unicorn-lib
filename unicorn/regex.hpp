@@ -7,6 +7,7 @@
 #include <memory>
 #include <stdexcept>
 #include <string>
+#include <type_traits>
 #include <vector>
 
 namespace Unicorn {
@@ -170,25 +171,47 @@ namespace Unicorn {
     private:
         friend class MatchIterator;
         friend class Match;
-        using string_transform = function<u8string(const u8string&)>;
         u8string pat;
         uint32_t fset = 0;
         UnicornDetail::PcreRef ref;
-        void do_transform(const u8string& src, u8string& dst, string_transform f, size_t n) const;
         Match exec(const u8string& text, size_t offset, int anchors) const;
     };
+
+    namespace UnicornDetail {
+
+        void regex_match_transform(const Regex& re, const u8string& src, u8string& dst, function<u8string(const Match&)> f, size_t n);
+        void regex_string_transform(const Regex& re, const u8string& src, u8string& dst, function<u8string(const u8string&)> f, size_t n);
+
+        template <typename F, bool S = std::is_convertible<F, function<u8string(const u8string&)>>::value>
+        struct RegexTransform ;
+
+        template <typename F>
+        struct RegexTransform<F, false> {
+            void operator()(const Regex& re, const u8string& src, u8string& dst, F f, size_t n) const {
+                regex_match_transform(re, src, dst, f, n);
+            }
+        };
+
+        template <typename F>
+        struct RegexTransform<F, true> {
+            void operator()(const Regex& re, const u8string& src, u8string& dst, F f, size_t n) const {
+                regex_string_transform(re, src, dst, f, n);
+            }
+        };
+
+    }
 
     template <typename F>
     u8string Regex::transform(const u8string& text, F f, size_t n) const {
         u8string dst;
-        do_transform(text, dst, string_transform(f), n);
+        UnicornDetail::RegexTransform<F>()(*this, text, dst, f, n);
         return dst;
     }
 
     template <typename F>
     void Regex::transform_in(u8string& text, F f, size_t n) const {
         u8string dst;
-        do_transform(text, dst, string_transform(f), n);
+        UnicornDetail::RegexTransform<F>()(*this, text, dst, f, n);
         text = move(dst);
     }
 

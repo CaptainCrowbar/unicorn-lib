@@ -405,18 +405,6 @@ namespace Unicorn {
         return v;
     }
 
-    void Regex::do_transform(const u8string& src, u8string& dst, string_transform f, size_t n) const {
-        auto matches = grep(src);
-        auto m = matches.begin(), end = matches.end();
-        size_t prev = 0;
-        for (size_t i = 0; i < n && m != end; ++i, ++m) {
-            dst.append(src, prev, m->offset() - prev);
-            dst += f(m->str());
-            prev = m->endpos();
-        }
-        dst.append(src, prev, npos);
-    }
-
     Match Regex::exec(const u8string& text, size_t offset, int anchors) const {
         Match m;
         m.init(*this, text);
@@ -430,6 +418,34 @@ namespace Unicorn {
 
     bool operator<(const Regex& lhs, const Regex& rhs) noexcept {
         return lhs.pat == rhs.pat ? lhs.fset < rhs.fset : lhs.pat < rhs.pat;
+    }
+
+    namespace UnicornDetail {
+
+        void regex_match_transform(const Regex& re, const u8string& src, u8string& dst, function<u8string(const Match&)> f, size_t n) {
+            auto matches = re.grep(src);
+            auto m = matches.begin(), end = matches.end();
+            size_t prev = 0;
+            for (size_t i = 0; i < n && m != end; ++i, ++m) {
+                dst.append(src, prev, m->offset() - prev);
+                dst += f(*m);
+                prev = m->endpos();
+            }
+            dst.append(src, prev, npos);
+        }
+
+        void regex_string_transform(const Regex& re, const u8string& src, u8string& dst, function<u8string(const u8string&)> f, size_t n) {
+            auto matches = re.grep(src);
+            auto m = matches.begin(), end = matches.end();
+            size_t prev = 0;
+            for (size_t i = 0; i < n && m != end; ++i, ++m) {
+                dst.append(src, prev, m->offset() - prev);
+                dst += f(m->str());
+                prev = m->endpos();
+            }
+            dst.append(src, prev, npos);
+        }
+
     }
 
     // Regex formatting class

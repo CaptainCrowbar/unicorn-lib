@@ -337,8 +337,10 @@ Swap two regex objects.
 * `template <typename F> u8string Regex::`**`transform`**`(const u8string& text, F f, size_t n = npos) const`
 * `template <typename F> void Regex::`**`transform_in`**`(u8string& text, F f, size_t n = npos) const`
 
-Apply a string transformation to each match (or the first `n` matches) in the
-text. Each matching substring `s` in `text` is replaced by `f(s)`.
+Apply a user supplied transformation to each match (or the first `n` matches)
+in the text. Each match `m` in `text` is replaced by `f(m)`. The
+transformation function can take either a `string` or a `Match` as its
+argument, but must return a `string` (or something convertible to a `string`).
 
 * `static u8string Regex::`**`escape`**`(const u8string& str)`
 

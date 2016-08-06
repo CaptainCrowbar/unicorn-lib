@@ -450,16 +450,27 @@ namespace {
     void check_regex_transform() {
 
         Regex r;
-        u8string s1 = "Hello world", s2;
-        auto f = [] (const u8string& s) { return s + s; };
+        u8string s1, s2;
+        auto sf = [] (const u8string& s) { return s + s; };
+        auto mf = [] (const Match& m) { return m.first() + m.last(); };
 
+        s1 = "Hello world";
         TRY(r = Regex("\\w+"));
-        TRY(s2 = r.transform(s1, f));
+        TRY(s2 = r.transform(s1, sf));
         TEST_EQUAL(s2, "HelloHello worldworld");
-        TRY(s2 = r.transform(s1, f, 1));
+        TRY(s2 = r.transform(s1, sf, 1));
         TEST_EQUAL(s2, "HelloHello world");
-        TRY(r.transform_in(s1, f));
+        TRY(r.transform_in(s1, sf));
         TEST_EQUAL(s1, "HelloHello worldworld");
+
+        s1 = "Hello world";
+        TRY(r = Regex("(\\w)(\\w+)(\\w)"));
+        TRY(s2 = r.transform(s1, mf));
+        TEST_EQUAL(s2, "Ho wd");
+        TRY(s2 = r.transform(s1, mf, 1));
+        TEST_EQUAL(s2, "Ho world");
+        TRY(r.transform_in(s1, mf));
+        TEST_EQUAL(s1, "Ho wd");
 
     }
 
