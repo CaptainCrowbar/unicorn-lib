@@ -15,14 +15,11 @@ namespace {
 
     class TempFile {
     public:
+        PRI_NO_COPY_MOVE(TempFile)
         explicit TempFile(const u8string& file): f(file) {}
         ~TempFile() { remove(f.data()); }
     private:
         u8string f;
-        TempFile(const TempFile&) = delete;
-        TempFile(TempFile&&) = delete;
-        TempFile& operator=(const TempFile&) = delete;
-        TempFile& operator=(TempFile&&) = delete;
     };
 
     const u8string testfile = "__test__";

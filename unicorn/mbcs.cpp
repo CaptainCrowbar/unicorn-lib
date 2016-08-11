@@ -38,16 +38,13 @@ namespace Unicorn {
 
             struct Iconv {
             public:
+                PRI_NO_COPY_MOVE(Iconv)
                 iconv_t cd;
                 Iconv(const u8string& from, const u8string& to) { cd = iconv_open(to.data(), from.data()); }
                 ~Iconv() { if (*this) iconv_close(cd); }
                 explicit operator bool() const { return cd != iconv_t(-1); }
                 bool operator!() const { return cd == iconv_t(-1); }
                 void reset() { if (*this) iconv(cd, nullptr, nullptr, nullptr, nullptr); }
-                Iconv(const Iconv&) = delete;
-                Iconv(Iconv&&) = delete;
-                Iconv& operator=(const Iconv&) = delete;
-                Iconv& operator=(Iconv&&) = delete;
             };
 
             bool valid_iconv(u8string tag) { return bool(Iconv(tag, "utf-8"s)); }
