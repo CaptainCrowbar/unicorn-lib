@@ -663,10 +663,10 @@ unescaping the resulting strings.
 Conversions from a string to an integer (in decimal or hexadecimal) or a
 floating point number. In each set of four overloaded functions, the first two
 versions write the result into a variable passed by reference, and return the
-number of characters read from the string, or an iterator marking the end of
-the number; the last two versions return the result, require the return type
-to be explicitly specified at the call site, and do not return any indication
-of where the number ended.
+number of bytes read from the string, or an iterator marking the end of the
+number; the last two versions return the result, require the return type to be
+explicitly specified at the call site, and do not return any indication of
+where the number ended.
 
 Any characters after a valid number are ignored. Note that, unlike the
 otherwise similar `strtol()` and related functions, these do not skip leading
