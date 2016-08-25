@@ -12,7 +12,7 @@ using namespace Unicorn;
 
 namespace {
 
-    void check_decimal_integers() {
+    void check_decimal_integer_conversion() {
 
         u8string s;
         int8_t i8;
@@ -110,37 +110,45 @@ namespace {
         TEST_THROW(str_to_int<int8_t>("hello"s, err_throw), std::invalid_argument);
         TEST_THROW(str_to_int<int8_t>("128"s, err_throw), std::range_error);
         TEST_THROW(str_to_int<int8_t>("-129"s, err_throw), std::range_error);
+        TEST_THROW(str_to_int<int8_t>("42xyz"s, err_throw), std::invalid_argument);
         TEST_THROW(str_to_int<uint8_t>(""s, err_throw), std::invalid_argument);
         TEST_THROW(str_to_int<uint8_t>("hello"s, err_throw), std::invalid_argument);
         TEST_THROW(str_to_int<uint8_t>("256"s, err_throw), std::range_error);
+        TEST_THROW(str_to_int<uint8_t>("42xyz"s, err_throw), std::invalid_argument);
 
         TEST_THROW(str_to_int<int16_t>(""s, err_throw), std::invalid_argument);
         TEST_THROW(str_to_int<int16_t>("hello"s, err_throw), std::invalid_argument);
         TEST_THROW(str_to_int<int16_t>("32768"s, err_throw), std::range_error);
         TEST_THROW(str_to_int<int16_t>("-32769"s, err_throw), std::range_error);
+        TEST_THROW(str_to_int<int16_t>("42xyz"s, err_throw), std::invalid_argument);
         TEST_THROW(str_to_int<uint16_t>(""s, err_throw), std::invalid_argument);
         TEST_THROW(str_to_int<uint16_t>("hello"s, err_throw), std::invalid_argument);
         TEST_THROW(str_to_int<uint16_t>("65536"s, err_throw), std::range_error);
+        TEST_THROW(str_to_int<uint16_t>("42xyz"s, err_throw), std::invalid_argument);
 
         TEST_THROW(str_to_int<int32_t>(""s, err_throw), std::invalid_argument);
         TEST_THROW(str_to_int<int32_t>("hello"s, err_throw), std::invalid_argument);
         TEST_THROW(str_to_int<int32_t>("2147483648"s, err_throw), std::range_error);
         TEST_THROW(str_to_int<int32_t>("-2147483649"s, err_throw), std::range_error);
+        TEST_THROW(str_to_int<int32_t>("42xyz"s, err_throw), std::invalid_argument);
         TEST_THROW(str_to_int<uint32_t>(""s, err_throw), std::invalid_argument);
         TEST_THROW(str_to_int<uint32_t>("hello"s, err_throw), std::invalid_argument);
         TEST_THROW(str_to_int<uint32_t>("4294967296"s, err_throw), std::range_error);
+        TEST_THROW(str_to_int<uint32_t>("42xyz"s, err_throw), std::invalid_argument);
 
         TEST_THROW(str_to_int<int64_t>(""s, err_throw), std::invalid_argument);
         TEST_THROW(str_to_int<int64_t>("hello"s, err_throw), std::invalid_argument);
         TEST_THROW(str_to_int<int64_t>("9223372036854775808"s, err_throw), std::range_error);
         TEST_THROW(str_to_int<int64_t>("-9223372036854775809"s, err_throw), std::range_error);
+        TEST_THROW(str_to_int<int64_t>("42xyz"s, err_throw), std::invalid_argument);
         TEST_THROW(str_to_int<uint64_t>(""s, err_throw), std::invalid_argument);
         TEST_THROW(str_to_int<uint64_t>("hello"s, err_throw), std::invalid_argument);
         TEST_THROW(str_to_int<uint64_t>("18446744073709551616"s, err_throw), std::range_error);
+        TEST_THROW(str_to_int<uint64_t>("42xyz"s, err_throw), std::invalid_argument);
 
     }
 
-    void check_hexadecimal_integers() {
+    void check_hexadecimal_integer_conversion() {
 
         u8string s = "ffxyz";
         int8_t i8;
@@ -214,37 +222,45 @@ namespace {
         TEST_THROW(hex_to_int<int8_t>("hello"s, err_throw), std::invalid_argument);
         TEST_THROW(hex_to_int<int8_t>("80"s, err_throw), std::range_error);
         TEST_THROW(hex_to_int<int8_t>("-81"s, err_throw), std::range_error);
+        TEST_THROW(hex_to_int<int8_t>("42xyz"s, err_throw), std::invalid_argument);
         TEST_THROW(hex_to_int<uint8_t>(""s, err_throw), std::invalid_argument);
         TEST_THROW(hex_to_int<uint8_t>("hello"s, err_throw), std::invalid_argument);
         TEST_THROW(hex_to_int<uint8_t>("100"s, err_throw), std::range_error);
+        TEST_THROW(hex_to_int<uint8_t>("42xyz"s, err_throw), std::invalid_argument);
 
         TEST_THROW(hex_to_int<int16_t>(""s, err_throw), std::invalid_argument);
         TEST_THROW(hex_to_int<int16_t>("hello"s, err_throw), std::invalid_argument);
         TEST_THROW(hex_to_int<int16_t>("8000"s, err_throw), std::range_error);
         TEST_THROW(hex_to_int<int16_t>("-8001"s, err_throw), std::range_error);
+        TEST_THROW(hex_to_int<int16_t>("42xyz"s, err_throw), std::invalid_argument);
         TEST_THROW(hex_to_int<uint16_t>(""s, err_throw), std::invalid_argument);
         TEST_THROW(hex_to_int<uint16_t>("hello"s, err_throw), std::invalid_argument);
         TEST_THROW(hex_to_int<uint16_t>("10000"s, err_throw), std::range_error);
+        TEST_THROW(hex_to_int<uint16_t>("42xyz"s, err_throw), std::invalid_argument);
 
         TEST_THROW(hex_to_int<int32_t>(""s, err_throw), std::invalid_argument);
         TEST_THROW(hex_to_int<int32_t>("hello"s, err_throw), std::invalid_argument);
         TEST_THROW(hex_to_int<int32_t>("80000000"s, err_throw), std::range_error);
         TEST_THROW(hex_to_int<int32_t>("-80000001"s, err_throw), std::range_error);
+        TEST_THROW(hex_to_int<int32_t>("42xyz"s, err_throw), std::invalid_argument);
         TEST_THROW(hex_to_int<uint32_t>(""s, err_throw), std::invalid_argument);
         TEST_THROW(hex_to_int<uint32_t>("hello"s, err_throw), std::invalid_argument);
         TEST_THROW(hex_to_int<uint32_t>("100000000"s, err_throw), std::range_error);
+        TEST_THROW(hex_to_int<uint32_t>("42xyz"s, err_throw), std::invalid_argument);
 
         TEST_THROW(hex_to_int<int64_t>(""s, err_throw), std::invalid_argument);
         TEST_THROW(hex_to_int<int64_t>("hello"s, err_throw), std::invalid_argument);
         TEST_THROW(hex_to_int<int64_t>("8000000000000000"s, err_throw), std::range_error);
         TEST_THROW(hex_to_int<int64_t>("-8000000000000001"s, err_throw), std::range_error);
+        TEST_THROW(hex_to_int<int64_t>("42xyz"s, err_throw), std::invalid_argument);
         TEST_THROW(hex_to_int<uint64_t>(""s, err_throw), std::invalid_argument);
         TEST_THROW(hex_to_int<uint64_t>("hello"s, err_throw), std::invalid_argument);
         TEST_THROW(hex_to_int<uint64_t>("10000000000000000"s, err_throw), std::range_error);
+        TEST_THROW(hex_to_int<uint64_t>("42xyz"s, err_throw), std::invalid_argument);
 
     }
 
-    void check_floating_point() {
+    void check_floating_point_conversion() {
 
         u8string s;
         float f;
@@ -287,6 +303,7 @@ namespace {
         TEST_THROW(str_to_float<double>("hello"s, err_throw), std::invalid_argument);
         TEST_THROW(str_to_float<double>("1e9999"s, err_throw), std::range_error);
         TEST_THROW(str_to_float<double>("-1e9999"s, err_throw), std::range_error);
+        TEST_THROW(str_to_float<double>("42xyz"s, err_throw), std::invalid_argument);
 
         s = "123456";     TEST_EQUAL(str_to_float<double>(utf_iterator(s, 3)), 456);
         s = "123456.75";  TEST_EQUAL(str_to_float<double>(utf_iterator(s, 3)), 456.75);
@@ -298,8 +315,8 @@ namespace {
 
 TEST_MODULE(unicorn, string_conversion) {
 
-    check_decimal_integers();
-    check_hexadecimal_integers();
-    check_floating_point();
+    check_decimal_integer_conversion();
+    check_hexadecimal_integer_conversion();
+    check_floating_point_conversion();
 
 }

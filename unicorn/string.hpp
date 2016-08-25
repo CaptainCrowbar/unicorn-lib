@@ -773,9 +773,11 @@ namespace Unicorn {
                 int err = errno;
                 size_t len = endptr - fragment.data();
                 stop = utf_iterator(src, offset + len);
+                if ((flags & err_throw) && stop != utf_end(src))
+                    throw std::invalid_argument("Invalid integer: " + uquote(fragment));
                 if (len == 0) {
                     if (flags & err_throw)
-                        throw std::invalid_argument("Invalid integer: " + uquote(fragment));
+                        throw std::invalid_argument("Invalid integer: " + uquote(u_str(start, utf_end(src))));
                     t = T(0);
                 } else if (err == ERANGE || value < min_value || value > max_value) {
                     if (flags & err_throw)
@@ -792,6 +794,8 @@ namespace Unicorn {
                 int err = errno;
                 size_t len = endptr - fragment.data();
                 stop = utf_iterator(src, offset + len);
+                if ((flags & err_throw) && stop != utf_end(src))
+                        throw std::invalid_argument("Invalid integer: " + uquote(u_str(start, utf_end(src))));
                 if (len == 0) {
                     if (flags & err_throw)
                         throw std::invalid_argument("Invalid integer: " + uquote(fragment));
@@ -901,6 +905,8 @@ namespace Unicorn {
         T value = traits::str_to_t(fragment.data(), &endptr);
         size_t len = endptr - fragment.data();
         auto stop = utf_iterator(src, offset + len);
+        if ((flags & err_throw) && stop != utf_end(src))
+            throw std::invalid_argument("Invalid number: " + uquote(u_str(start, utf_end(src))));
         if (len == 0) {
             if (flags & err_throw)
                 throw std::invalid_argument("Invalid number: " + uquote(fragment));

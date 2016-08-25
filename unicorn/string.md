@@ -677,6 +677,8 @@ The only flag recognised is `err_throw`. By default, a value out of range for
 the return type will be clamped to the nearest end of its valid range, and the
 result will be zero if the string does not contain a valid number. If
 `err_throw` is set, an invalid number will throw `std::invalid_argument`, and
-a result out of range will throw `std::range_error`. In the versions that take
-the result as a reference argument, this will be left unchanged if an
-exception is thrown.
+a result out of range will throw `std::range_error`. The versions that return
+the result by value will also throw `std::invalid_argument` if `err_throw` is
+set and there are any other characters following the number. In the versions
+that take the result as a reference argument, this will be left unchanged if
+an exception is thrown.
