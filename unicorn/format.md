@@ -156,7 +156,7 @@ Flag              | Letter  | Description
 **`fx_decimal`**  |`n`      | Format as a decimal number (default)
 **`fx_binary`**   |`b`      | Format as a binary number
 **`fx_hex`**      |`x`      | Format as a hexadecimal number
-**`fx_roman`**    |`r`      | Format as a roman numeral
+**`fx_roman`**    |`r`      | Format as a Roman numeral
 **`fx_sign`**     |`s`      | Always show a sign
 **`fx_signz`**    |`S`      | Always show a sign unless the value is zero
 
