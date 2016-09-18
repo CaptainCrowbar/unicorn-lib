@@ -37,10 +37,10 @@ namespace Unicorn {
     constexpr uint64_t fx_fixed     = letter_to_mask('f');  // Fixed point notation            --   --    --   float  --    --      --
     constexpr uint64_t fx_general   = letter_to_mask('g');  // Use the shorter of d or e       --   --    --   float  --    --      --
     constexpr uint64_t fx_stripz    = letter_to_mask('z');  // Strip trailing zeros            --   --    --   float  --    --      --
+    constexpr uint64_t fx_escape    = letter_to_mask('e');  // Escape if C0/C1 control         --   --    --   --     char  string  --
     constexpr uint64_t fx_ascii     = letter_to_mask('a');  // Escape if not printable ASCII   --   --    --   --     char  string  --
-    constexpr uint64_t fx_escape    = letter_to_mask('c');  // Escape if C0/C1 control         --   --    --   --     char  string  --
     constexpr uint64_t fx_quote     = letter_to_mask('q');  // Quote string, escape C0/C1      --   --    --   --     char  string  --
-    constexpr uint64_t fx_ascquote  = letter_to_mask('o');  // Quote string, escape non-ASCII  --   --    --   --     char  string  --
+    constexpr uint64_t fx_ascquote  = letter_to_mask('Q');  // Quote string, escape non-ASCII  --   --    --   --     char  string  --
     constexpr uint64_t fx_hex8      = letter_to_mask('u');  // Hex UTF-8 bytes                 --   --    --   --     char  string  --
     constexpr uint64_t fx_hex16     = letter_to_mask('v');  // Hex UTF-16 code units           --   --    --   --     char  string  --
     constexpr uint64_t fx_iso       = letter_to_mask('t');  // ISO 8601 with T delimiter       --   --    --   --     --    --      date

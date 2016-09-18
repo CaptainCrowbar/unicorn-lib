@@ -321,100 +321,100 @@ namespace {
 
     void check_character_formatting() {
 
+        // e, fx_escape    = Escape if C0/C1 control
         // a, fx_ascii     = Escape if not printable ASCII
-        // c, fx_escape    = Escape if C0/C1 control
-        // n, fx_decimal   = Decimal number
         // q, fx_quote     = Quote string, escape C0/C1
-        // o, fx_ascquote  = Quote string, escape non-ASCII
+        // Q, fx_ascquote  = Quote string, escape non-ASCII
+        // n, fx_decimal   = Decimal number
         // x, fx_hex       = Hexadecimal number
         // u, fx_hex8      = Hex UTF-8 bytes
         // v, fx_hex16     = Hex UTF-16 code units
 
         TEST_EQUAL(format_str('\t'), "\t");
+        TEST_EQUAL(format_str('\t', "e"), "\\t");
         TEST_EQUAL(format_str('\t', "a"), "\\t");
-        TEST_EQUAL(format_str('\t', "c"), "\\t");
         TEST_EQUAL(format_str('\t', "q"), "\"\\t\"");
-        TEST_EQUAL(format_str('\t', "o"), "\"\\t\"");
+        TEST_EQUAL(format_str('\t', "Q"), "\"\\t\"");
         TEST_EQUAL(format_str('\t', "n"), "9");
         TEST_EQUAL(format_str('\t', "u"), "09");
         TEST_EQUAL(format_str('\t', "v"), "0009");
         TEST_EQUAL(format_str('\t', "x"), "9");
 
         TEST_EQUAL(format_str('A'), "A");
+        TEST_EQUAL(format_str('A', "e"), "A");
         TEST_EQUAL(format_str('A', "a"), "A");
-        TEST_EQUAL(format_str('A', "c"), "A");
         TEST_EQUAL(format_str('A', "q"), "\"A\"");
-        TEST_EQUAL(format_str('A', "o"), "\"A\"");
+        TEST_EQUAL(format_str('A', "Q"), "\"A\"");
         TEST_EQUAL(format_str('A', "n"), "65");
         TEST_EQUAL(format_str('A', "u"), "41");
         TEST_EQUAL(format_str('A', "v"), "0041");
         TEST_EQUAL(format_str('A', "x"), "41");
 
         TEST_EQUAL(format_str(u'\t'), "\t");
+        TEST_EQUAL(format_str(u'\t', "e"), "\\t");
         TEST_EQUAL(format_str(u'\t', "a"), "\\t");
-        TEST_EQUAL(format_str(u'\t', "c"), "\\t");
         TEST_EQUAL(format_str(u'\t', "q"), "\"\\t\"");
-        TEST_EQUAL(format_str(u'\t', "o"), "\"\\t\"");
+        TEST_EQUAL(format_str(u'\t', "Q"), "\"\\t\"");
         TEST_EQUAL(format_str(u'\t', "n"), "9");
         TEST_EQUAL(format_str(u'\t', "u"), "09");
         TEST_EQUAL(format_str(u'\t', "v"), "0009");
         TEST_EQUAL(format_str(u'\t', "x"), "9");
 
         TEST_EQUAL(format_str(u'A'), "A");
+        TEST_EQUAL(format_str(u'A', "e"), "A");
         TEST_EQUAL(format_str(u'A', "a"), "A");
-        TEST_EQUAL(format_str(u'A', "c"), "A");
         TEST_EQUAL(format_str(u'A', "q"), "\"A\"");
-        TEST_EQUAL(format_str(u'A', "o"), "\"A\"");
+        TEST_EQUAL(format_str(u'A', "Q"), "\"A\"");
         TEST_EQUAL(format_str(u'A', "n"), "65");
         TEST_EQUAL(format_str(u'A', "u"), "41");
         TEST_EQUAL(format_str(u'A', "v"), "0041");
         TEST_EQUAL(format_str(u'A', "x"), "41");
 
         TEST_EQUAL(format_str(u'€'), u8"€");
+        TEST_EQUAL(format_str(u'€', "e"), u8"€");
         TEST_EQUAL(format_str(u'€', "a"), "\\x{20ac}");
-        TEST_EQUAL(format_str(u'€', "c"), u8"€");
         TEST_EQUAL(format_str(u'€', "q"), u8"\"€\"");
-        TEST_EQUAL(format_str(u'€', "o"), "\"\\x{20ac}\"");
+        TEST_EQUAL(format_str(u'€', "Q"), "\"\\x{20ac}\"");
         TEST_EQUAL(format_str(u'€', "n"), "8364");
         TEST_EQUAL(format_str(u'€', "u"), "e2 82 ac");
         TEST_EQUAL(format_str(u'€', "v"), "20ac");
         TEST_EQUAL(format_str(u'€', "x"), "20ac");
 
         TEST_EQUAL(format_str(U'\t'), "\t");
+        TEST_EQUAL(format_str(U'\t', "e"), "\\t");
         TEST_EQUAL(format_str(U'\t', "a"), "\\t");
-        TEST_EQUAL(format_str(U'\t', "c"), "\\t");
         TEST_EQUAL(format_str(U'\t', "q"), "\"\\t\"");
-        TEST_EQUAL(format_str(U'\t', "o"), "\"\\t\"");
+        TEST_EQUAL(format_str(U'\t', "Q"), "\"\\t\"");
         TEST_EQUAL(format_str(U'\t', "n"), "9");
         TEST_EQUAL(format_str(U'\t', "u"), "09");
         TEST_EQUAL(format_str(U'\t', "v"), "0009");
         TEST_EQUAL(format_str(U'\t', "x"), "9");
 
         TEST_EQUAL(format_str(U'A'), "A");
+        TEST_EQUAL(format_str(U'A', "e"), "A");
         TEST_EQUAL(format_str(U'A', "a"), "A");
-        TEST_EQUAL(format_str(U'A', "c"), "A");
         TEST_EQUAL(format_str(U'A', "q"), "\"A\"");
-        TEST_EQUAL(format_str(U'A', "o"), "\"A\"");
+        TEST_EQUAL(format_str(U'A', "Q"), "\"A\"");
         TEST_EQUAL(format_str(U'A', "n"), "65");
         TEST_EQUAL(format_str(U'A', "u"), "41");
         TEST_EQUAL(format_str(U'A', "v"), "0041");
         TEST_EQUAL(format_str(U'A', "x"), "41");
 
         TEST_EQUAL(format_str(U'€'), u8"€");
+        TEST_EQUAL(format_str(U'€', "e"), u8"€");
         TEST_EQUAL(format_str(U'€', "a"), "\\x{20ac}");
-        TEST_EQUAL(format_str(U'€', "c"), u8"€");
         TEST_EQUAL(format_str(U'€', "q"), u8"\"€\"");
-        TEST_EQUAL(format_str(U'€', "o"), "\"\\x{20ac}\"");
+        TEST_EQUAL(format_str(U'€', "Q"), "\"\\x{20ac}\"");
         TEST_EQUAL(format_str(U'€', "n"), "8364");
         TEST_EQUAL(format_str(U'€', "u"), "e2 82 ac");
         TEST_EQUAL(format_str(U'€', "v"), "20ac");
         TEST_EQUAL(format_str(U'€', "x"), "20ac");
 
         TEST_EQUAL(format_str(char32_t(0x10fffd)), "\xf4\x8f\xbf\xbd");
+        TEST_EQUAL(format_str(char32_t(0x10fffd), "e"), "\xf4\x8f\xbf\xbd");
         TEST_EQUAL(format_str(char32_t(0x10fffd), "a"), "\\x{10fffd}");
-        TEST_EQUAL(format_str(char32_t(0x10fffd), "c"), "\xf4\x8f\xbf\xbd");
         TEST_EQUAL(format_str(char32_t(0x10fffd), "q"), "\"\xf4\x8f\xbf\xbd\"");
-        TEST_EQUAL(format_str(char32_t(0x10fffd), "o"), "\"\\x{10fffd}\"");
+        TEST_EQUAL(format_str(char32_t(0x10fffd), "Q"), "\"\\x{10fffd}\"");
         TEST_EQUAL(format_str(char32_t(0x10fffd), "n"), "1114109");
         TEST_EQUAL(format_str(char32_t(0x10fffd), "u"), "f4 8f bf bd");
         TEST_EQUAL(format_str(char32_t(0x10fffd), "v"), "dbff dffd");
@@ -424,100 +424,100 @@ namespace {
 
     void check_string_formatting() {
 
+        // e, fx_escape    = Escape if C0/C1 control
         // a, fx_ascii     = Escape if not printable ASCII
-        // c, fx_escape    = Escape if C0/C1 control
-        // d, fx_decimal   = Decimal number
         // q, fx_quote     = Quote string, escape C0/C1
-        // o, fx_ascquote  = Quote string, escape non-ASCII
+        // Q, fx_ascquote  = Quote string, escape non-ASCII
+        // d, fx_decimal   = Decimal number
         // x, fx_hex       = Hexadecimal number
         // u, fx_hex8      = Hex UTF-8 bytes
         // v, fx_hex16     = Hex UTF-16 code units
 
         TEST_EQUAL(format_str(""s), "");
+        TEST_EQUAL(format_str(""s, "e"), "");
         TEST_EQUAL(format_str(""s, "a"), "");
-        TEST_EQUAL(format_str(""s, "c"), "");
         TEST_EQUAL(format_str(""s, "q"), "\"\"");
-        TEST_EQUAL(format_str(""s, "o"), "\"\"");
+        TEST_EQUAL(format_str(""s, "Q"), "\"\"");
         TEST_EQUAL(format_str(""s, "n"), "");
         TEST_EQUAL(format_str(""s, "u"), "");
         TEST_EQUAL(format_str(""s, "v"), "");
         TEST_EQUAL(format_str(""s, "x"), "");
 
         TEST_EQUAL(format_str("Hello"s), "Hello");
+        TEST_EQUAL(format_str("Hello"s, "e"), "Hello");
         TEST_EQUAL(format_str("Hello"s, "a"), "Hello");
-        TEST_EQUAL(format_str("Hello"s, "c"), "Hello");
         TEST_EQUAL(format_str("Hello"s, "q"), "\"Hello\"");
-        TEST_EQUAL(format_str("Hello"s, "o"), "\"Hello\"");
+        TEST_EQUAL(format_str("Hello"s, "Q"), "\"Hello\"");
         TEST_EQUAL(format_str("Hello"s, "n"), "72 101 108 108 111");
         TEST_EQUAL(format_str("Hello"s, "u"), "48 65 6c 6c 6f");
         TEST_EQUAL(format_str("Hello"s, "v"), "0048 0065 006c 006c 006f");
         TEST_EQUAL(format_str("Hello"s, "x"), "48 65 6c 6c 6f");
 
         TEST_EQUAL(format_str(u8"§€ αβγ\n"s), u8"§€ αβγ\n");
+        TEST_EQUAL(format_str(u8"§€ αβγ\n"s, "e"), u8"§€ αβγ\\n");
         TEST_EQUAL(format_str(u8"§€ αβγ\n"s, "a"), "\\xa7\\x{20ac} \\x{3b1}\\x{3b2}\\x{3b3}\\n");
-        TEST_EQUAL(format_str(u8"§€ αβγ\n"s, "c"), u8"§€ αβγ\\n");
         TEST_EQUAL(format_str(u8"§€ αβγ\n"s, "q"), u8"\"§€ αβγ\\n\"");
-        TEST_EQUAL(format_str(u8"§€ αβγ\n"s, "o"), "\"\\xa7\\x{20ac} \\x{3b1}\\x{3b2}\\x{3b3}\\n\"");
+        TEST_EQUAL(format_str(u8"§€ αβγ\n"s, "Q"), "\"\\xa7\\x{20ac} \\x{3b1}\\x{3b2}\\x{3b3}\\n\"");
         TEST_EQUAL(format_str(u8"§€ αβγ\n"s, "n"), "167 8364 32 945 946 947 10");
         TEST_EQUAL(format_str(u8"§€ αβγ\n"s, "u"), "c2 a7 e2 82 ac 20 ce b1 ce b2 ce b3 0a");
         TEST_EQUAL(format_str(u8"§€ αβγ\n"s, "v"), "00a7 20ac 0020 03b1 03b2 03b3 000a");
         TEST_EQUAL(format_str(u8"§€ αβγ\n"s, "x"), "a7 20ac 20 3b1 3b2 3b3 a");
 
         TEST_EQUAL(format_str(u""s), "");
+        TEST_EQUAL(format_str(u""s, "e"), "");
         TEST_EQUAL(format_str(u""s, "a"), "");
-        TEST_EQUAL(format_str(u""s, "c"), "");
         TEST_EQUAL(format_str(u""s, "q"), "\"\"");
-        TEST_EQUAL(format_str(u""s, "o"), "\"\"");
+        TEST_EQUAL(format_str(u""s, "Q"), "\"\"");
         TEST_EQUAL(format_str(u""s, "n"), "");
         TEST_EQUAL(format_str(u""s, "u"), "");
         TEST_EQUAL(format_str(u""s, "v"), "");
         TEST_EQUAL(format_str(u""s, "x"), "");
 
         TEST_EQUAL(format_str(u"Hello"s), "Hello");
+        TEST_EQUAL(format_str(u"Hello"s, "e"), "Hello");
         TEST_EQUAL(format_str(u"Hello"s, "a"), "Hello");
-        TEST_EQUAL(format_str(u"Hello"s, "c"), "Hello");
         TEST_EQUAL(format_str(u"Hello"s, "q"), "\"Hello\"");
-        TEST_EQUAL(format_str(u"Hello"s, "o"), "\"Hello\"");
+        TEST_EQUAL(format_str(u"Hello"s, "Q"), "\"Hello\"");
         TEST_EQUAL(format_str(u"Hello"s, "n"), "72 101 108 108 111");
         TEST_EQUAL(format_str(u"Hello"s, "u"), "48 65 6c 6c 6f");
         TEST_EQUAL(format_str(u"Hello"s, "v"), "0048 0065 006c 006c 006f");
         TEST_EQUAL(format_str(u"Hello"s, "x"), "48 65 6c 6c 6f");
 
         TEST_EQUAL(format_str(u"§€ αβγ\n"s), u8"§€ αβγ\n");
+        TEST_EQUAL(format_str(u"§€ αβγ\n"s, "e"), u8"§€ αβγ\\n");
         TEST_EQUAL(format_str(u"§€ αβγ\n"s, "a"), "\\xa7\\x{20ac} \\x{3b1}\\x{3b2}\\x{3b3}\\n");
-        TEST_EQUAL(format_str(u"§€ αβγ\n"s, "c"), u8"§€ αβγ\\n");
         TEST_EQUAL(format_str(u"§€ αβγ\n"s, "q"), u8"\"§€ αβγ\\n\"");
-        TEST_EQUAL(format_str(u"§€ αβγ\n"s, "o"), "\"\\xa7\\x{20ac} \\x{3b1}\\x{3b2}\\x{3b3}\\n\"");
+        TEST_EQUAL(format_str(u"§€ αβγ\n"s, "Q"), "\"\\xa7\\x{20ac} \\x{3b1}\\x{3b2}\\x{3b3}\\n\"");
         TEST_EQUAL(format_str(u"§€ αβγ\n"s, "n"), "167 8364 32 945 946 947 10");
         TEST_EQUAL(format_str(u"§€ αβγ\n"s, "u"), "c2 a7 e2 82 ac 20 ce b1 ce b2 ce b3 0a");
         TEST_EQUAL(format_str(u"§€ αβγ\n"s, "v"), "00a7 20ac 0020 03b1 03b2 03b3 000a");
         TEST_EQUAL(format_str(u"§€ αβγ\n"s, "x"), "a7 20ac 20 3b1 3b2 3b3 a");
 
         TEST_EQUAL(format_str(U""s), "");
+        TEST_EQUAL(format_str(U""s, "e"), "");
         TEST_EQUAL(format_str(U""s, "a"), "");
-        TEST_EQUAL(format_str(U""s, "c"), "");
         TEST_EQUAL(format_str(U""s, "q"), "\"\"");
-        TEST_EQUAL(format_str(U""s, "o"), "\"\"");
+        TEST_EQUAL(format_str(U""s, "Q"), "\"\"");
         TEST_EQUAL(format_str(U""s, "n"), "");
         TEST_EQUAL(format_str(U""s, "u"), "");
         TEST_EQUAL(format_str(U""s, "v"), "");
         TEST_EQUAL(format_str(U""s, "x"), "");
 
         TEST_EQUAL(format_str(U"Hello"s), "Hello");
+        TEST_EQUAL(format_str(U"Hello"s, "e"), "Hello");
         TEST_EQUAL(format_str(U"Hello"s, "a"), "Hello");
-        TEST_EQUAL(format_str(U"Hello"s, "c"), "Hello");
         TEST_EQUAL(format_str(U"Hello"s, "q"), "\"Hello\"");
-        TEST_EQUAL(format_str(U"Hello"s, "o"), "\"Hello\"");
+        TEST_EQUAL(format_str(U"Hello"s, "Q"), "\"Hello\"");
         TEST_EQUAL(format_str(U"Hello"s, "n"), "72 101 108 108 111");
         TEST_EQUAL(format_str(U"Hello"s, "u"), "48 65 6c 6c 6f");
         TEST_EQUAL(format_str(U"Hello"s, "v"), "0048 0065 006c 006c 006f");
         TEST_EQUAL(format_str(U"Hello"s, "x"), "48 65 6c 6c 6f");
 
         TEST_EQUAL(format_str(U"§€ αβγ\n"s), u8"§€ αβγ\n");
+        TEST_EQUAL(format_str(U"§€ αβγ\n"s, "e"), u8"§€ αβγ\\n");
         TEST_EQUAL(format_str(U"§€ αβγ\n"s, "a"), "\\xa7\\x{20ac} \\x{3b1}\\x{3b2}\\x{3b3}\\n");
-        TEST_EQUAL(format_str(U"§€ αβγ\n"s, "c"), u8"§€ αβγ\\n");
         TEST_EQUAL(format_str(U"§€ αβγ\n"s, "q"), u8"\"§€ αβγ\\n\"");
-        TEST_EQUAL(format_str(U"§€ αβγ\n"s, "o"), "\"\\xa7\\x{20ac} \\x{3b1}\\x{3b2}\\x{3b3}\\n\"");
+        TEST_EQUAL(format_str(U"§€ αβγ\n"s, "Q"), "\"\\xa7\\x{20ac} \\x{3b1}\\x{3b2}\\x{3b3}\\n\"");
         TEST_EQUAL(format_str(U"§€ αβγ\n"s, "n"), "167 8364 32 945 946 947 10");
         TEST_EQUAL(format_str(U"§€ αβγ\n"s, "u"), "c2 a7 e2 82 ac 20 ce b1 ce b2 ce b3 0a");
         TEST_EQUAL(format_str(U"§€ αβγ\n"s, "v"), "00a7 20ac 0020 03b1 03b2 03b3 000a");

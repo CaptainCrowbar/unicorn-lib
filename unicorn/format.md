@@ -183,10 +183,10 @@ types.
 
 Flag               | Letter  | Description
 ----               | ------  | -----------
+**`fx_escape`**    |`e`      | Escape C0 and C1 control characters
 **`fx_ascii`**     |`a`      | Escape all characters except printable ASCII
-**`fx_escape`**    |`c`      | Escape C0 and C1 control characters
 **`fx_quote`**     |`q`      | Quote the string, and escape C0 and C1 controls
-**`fx_ascquote`**  |`o`      | Quote the string, and escape non-ASCII characters
+**`fx_ascquote`**  |`Q`      | Quote the string, and escape non-ASCII characters
 **`fx_decimal`**   |`n`      | Format characters as decimal numbers
 **`fx_hex`**       |`x`      | Format characters as hexadecimal numbers
 **`fx_hex8`**      |`u`      | Format characters as hex UTF-8 code units
