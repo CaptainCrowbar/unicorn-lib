@@ -88,6 +88,15 @@ namespace Unicorn {
         constexpr auto east_asian_flags = narrow_context | wide_context;
         constexpr auto all_length_flags = character_units | grapheme_units | east_asian_flags;
 
+        inline bool char_is_advancing(char32_t c) {
+            return char_general_category(c) != GC::Mn;
+        }
+
+        template <typename C>
+        inline bool grapheme_is_advancing(Irange<UtfIterator<C>> g) {
+            return ! g.empty() && char_is_advancing(*g.begin());
+        }
+
         inline void check_length_flags(uint32_t& flags) {
             if (bits_set(flags & (character_units | grapheme_units)) > 1
                     || bits_set(flags & (character_units | east_asian_flags)) > 1)
@@ -99,7 +108,10 @@ namespace Unicorn {
         class EastAsianCount {
         public:
             explicit EastAsianCount(uint32_t flags) noexcept: count(), fset(flags) { memset(count, 0, sizeof(count)); }
-            void add(char32_t c) noexcept { ++count[unsigned(east_asian_width(c))]; }
+            void add(char32_t c) noexcept {
+                if (char_is_advancing(c))
+                    ++count[unsigned(east_asian_width(c))];
+            }
             size_t get() const noexcept {
                 size_t default_width = fset & wide_context ? 2 : 1;
                 return count[neut] + count[half] + count[narr] + 2 * count[full] + 2 * count[wide]
@@ -119,6 +131,8 @@ namespace Unicorn {
         template <typename C>
         pair<UtfIterator<C>, bool> find_position(const Irange<UtfIterator<C>>& range, size_t pos, uint32_t flags = 0) {
             check_length_flags(flags);
+            if (pos == 0)
+                return {range.begin(), true};
             if (flags & character_units) {
                 auto i = range.begin();
                 size_t len = 0;
@@ -147,13 +161,15 @@ namespace Unicorn {
                 }
             } else {
                 auto graph = grapheme_range(range);
-                auto g = graph.begin();
                 size_t len = 0;
-                while (g != graph.end() && len < pos) {
-                    ++g;
-                    ++len;
+                for (auto& g: graph) {
+                    if (grapheme_is_advancing(g)) {
+                        ++len;
+                        if (len == pos)
+                            return {g.end(), true};
+                    }
                 }
-                return {g->begin(), len == pos};
+                return {range.end(), len == pos};
             }
         }
 
@@ -176,7 +192,8 @@ namespace Unicorn {
             }
             return eac.get();
         } else {
-            return range_count(grapheme_range(range));
+            auto gr = grapheme_range(range);
+            return std::count_if(gr.begin(), gr.end(), grapheme_is_advancing<C>);
         }
     }
 

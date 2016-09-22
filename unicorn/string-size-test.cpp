@@ -49,16 +49,19 @@ namespace {
         TEST_EQUAL(str_length(u8"aeiou"s, grapheme_units), 5);
         TEST_EQUAL(str_length(u8"áéíóú"s, grapheme_units), 5);                                // precomposed
         TEST_EQUAL(str_length(u8"a\u0301e\u0301i\u0301o\u0301u\u0301"s, grapheme_units), 5);  // decomposed
+        TEST_EQUAL(str_length(u8"\ufe00Hello \ufe01world"s, grapheme_units), 11);             // nonspacing mark
 
         TEST_EQUAL(str_length(u""s, grapheme_units), 0);
         TEST_EQUAL(str_length(u"aeiou"s, grapheme_units), 5);
         TEST_EQUAL(str_length(u"áéíóú"s, grapheme_units), 5);                                // precomposed
         TEST_EQUAL(str_length(u"a\u0301e\u0301i\u0301o\u0301u\u0301"s, grapheme_units), 5);  // decomposed
+        TEST_EQUAL(str_length(u"\ufe00Hello \ufe01world"s, grapheme_units), 11);             // nonspacing mark
 
         TEST_EQUAL(str_length(U""s, grapheme_units), 0);
         TEST_EQUAL(str_length(U"aeiou"s, grapheme_units), 5);
         TEST_EQUAL(str_length(U"áéíóú"s, grapheme_units), 5);                                // precomposed
         TEST_EQUAL(str_length(U"a\u0301e\u0301i\u0301o\u0301u\u0301"s, grapheme_units), 5);  // decomposed
+        TEST_EQUAL(str_length(U"\ufe00Hello \ufe01world"s, grapheme_units), 11);             // nonspacing mark
 
         TEST_EQUAL(str_length(u8"ÀÀÀ"s, narrow_context), 3);                    // neutral
         TEST_EQUAL(str_length(u8"ÀÀÀ"s, wide_context), 3);                      // neutral

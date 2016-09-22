@@ -85,11 +85,14 @@ normally obtain it by calling `str_length()` (or a related function such as
 By default, a string's length is a count of characters (Unicode scalar
 values); you can also select a count of grapheme clusters (user-perceived
 characters; see [`unicorn/segment`](segment.html)), or calculate the East
-Asian width. The two options for East Asian width determine how ambiguous
-width characters are handled, defaulting to narrow (one unit) or wide (two
-units). The `grapheme_units` flag can be combined with either of the East
-Asian width options, giving a size based on the width of the base character of
-each grapheme cluster.
+Asian width.
+
+If the `grapheme_units` flag is selected, nonspacing marks are counted as zero
+width. The two options for East Asian width determine how ambiguous width
+characters are handled, defaulting to narrow (one unit) or wide (two units).
+The `grapheme_units` flag can be combined with either of the East Asian width
+options, giving a size based on the width of the base character of each
+grapheme cluster.
 
 * `template <typename C> size_t` **`str_length`**`(const basic_string<C>& str, uint32_t flags = 0)`
 * `template <typename C> size_t` **`str_length`**`(const Irange<UtfIterator<C>>& range, uint32_t flags = 0)`

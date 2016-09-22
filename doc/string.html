@@ -112,11 +112,13 @@ normally obtain it by calling <code>str_length()</code> (or a related function s
 <p>By default, a string's length is a count of characters (Unicode scalar
 values); you can also select a count of grapheme clusters (user-perceived
 characters; see <a href="segment.html"><code>unicorn/segment</code></a>), or calculate the East
-Asian width. The two options for East Asian width determine how ambiguous
-width characters are handled, defaulting to narrow (one unit) or wide (two
-units). The <code>grapheme_units</code> flag can be combined with either of the East
-Asian width options, giving a size based on the width of the base character of
-each grapheme cluster.</p>
+Asian width.</p>
+<p>If the <code>grapheme_units</code> flag is selected, nonspacing marks are counted as zero
+width. The two options for East Asian width determine how ambiguous width
+characters are handled, defaulting to narrow (one unit) or wide (two units).
+The <code>grapheme_units</code> flag can be combined with either of the East Asian width
+options, giving a size based on the width of the base character of each
+grapheme cluster.</p>
 <div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; size_t</code> <strong><code>str_length</code></strong><code>(const basic_string&lt;C&gt;&amp; str, uint32_t flags = 0)</code></li>
