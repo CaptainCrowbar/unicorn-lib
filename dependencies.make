@@ -153,14 +153,6 @@ build/$(TARGET)/string-size-test.o: unicorn/string-size-test.cpp unicorn/string.
   unicorn/character.hpp unicorn/core.hpp $(LIBROOT)/prion-lib/prion/core.hpp \
   unicorn/property-values.hpp unicorn/segment.hpp unicorn/utf.hpp \
   $(LIBROOT)/prion-lib/prion/unit-test.hpp
-build/$(TARGET)/text-table-test.o: unicorn/text-table-test.cpp unicorn/core.hpp \
-  $(LIBROOT)/prion-lib/prion/core.hpp unicorn/text-table.hpp unicorn/format.hpp \
-  unicorn/character.hpp unicorn/property-values.hpp unicorn/string.hpp \
-  unicorn/segment.hpp unicorn/utf.hpp $(LIBROOT)/prion-lib/prion/unit-test.hpp
-build/$(TARGET)/text-table.o: unicorn/text-table.cpp unicorn/text-table.hpp \
-  unicorn/core.hpp $(LIBROOT)/prion-lib/prion/core.hpp unicorn/format.hpp \
-  unicorn/character.hpp unicorn/property-values.hpp unicorn/string.hpp \
-  unicorn/segment.hpp unicorn/utf.hpp
 build/$(TARGET)/ucd-bidi-tables.o: unicorn/ucd-bidi-tables.cpp unicorn/ucd-tables.hpp \
   $(LIBROOT)/prion-lib/prion/core.hpp unicorn/property-values.hpp
 build/$(TARGET)/ucd-block-tables.o: unicorn/ucd-block-tables.cpp unicorn/ucd-tables.hpp \

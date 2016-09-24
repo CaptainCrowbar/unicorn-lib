@@ -14,5 +14,4 @@
 #include "unicorn/regex.hpp"
 #include "unicorn/segment.hpp"
 #include "unicorn/string.hpp"
-#include "unicorn/text-table.hpp"
 #include "unicorn/utf.hpp"
