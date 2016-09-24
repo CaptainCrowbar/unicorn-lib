@@ -137,7 +137,7 @@ Constants corresponding to the standard GC values. Each constant is
 numerically equal to a 16-bit integer composed from the ASCII values of the
 two letters in the category's standard abbreviation.
 
-* `uint16_t` **`char_general_category`**`(char32_t c) noexcept`
+* `GC` **`char_general_category`**`(char32_t c) noexcept`
 
 Returns the general category of a character.
 
@@ -167,7 +167,7 @@ These perform the same checks as the similarly named functions above, except
 that the underscore character is counted as a letter instead of a punctuation
 mark.
 
-* `function<bool(char32_t)>` **`gc_predicate`**`(uint16_t cat)`
+* `function<bool(char32_t)>` **`gc_predicate`**`(GC cat)`
 * `function<bool(char32_t)>` **`gc_predicate`**`(const u8string& cat)`
 * `function<bool(char32_t)>` **`gc_predicate`**`(const char* cat)`
 
@@ -179,20 +179,20 @@ connector punctuation, or dash punctuation. Following the convention suggested
 by the Unicode standard, the special category `"LC"` or `"L&"` tests for a
 cased letter, i.e. equivalent to `"Lltu"`.
 
-* `u8string` **`decode_gc`**`(uint16_t cat)`
-* `constexpr uint16_t` **`encode_gc`**`(char c1, char c2) noexcept`
-* `constexpr uint16_t` **`encode_gc`**`(const char* cat) noexcept`
-* `uint16_t` **`encode_gc`**`(const u8string& cat) noexcept`
+* `u8string` **`decode_gc`**`(GC cat)`
+* `constexpr GC` **`encode_gc`**`(char c1, char c2) noexcept`
+* `constexpr GC` **`encode_gc`**`(const char* cat) noexcept`
+* `GC` **`encode_gc`**`(const u8string& cat) noexcept`
 
 These convert between a GC abbreviation (passed as either a pair of letters or
 a string) and its integer code. The result of `encode_gc()` is unspecified if
 the arguments are invalid.
 
-* `vector<uint16_t>` **`gc_list`**`()`
+* `vector<GC>` **`gc_list`**`()`
 
 Returns a list of all valid general categories, in alphabetical order.
 
-* `const char*` **`gc_name`**`(uint16_t cat) noexcept`
+* `const char*` **`gc_name`**`(GC cat) noexcept`
 
 Returns the description of the general category, as shown in the list above.
 

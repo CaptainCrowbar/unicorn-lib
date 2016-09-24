@@ -190,7 +190,7 @@ two letters in the category's standard abbreviation.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>uint16_t</code> <strong><code>char_general_category</code></strong><code>(char32_t c) noexcept</code></li>
+<li><code>GC</code> <strong><code>char_general_category</code></strong><code>(char32_t c) noexcept</code></li>
 </ul>
 <p>Returns the general category of a character.</p>
 </div>
@@ -228,7 +228,7 @@ mark.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>function&lt;bool(char32_t)&gt;</code> <strong><code>gc_predicate</code></strong><code>(uint16_t cat)</code></li>
+<li><code>function&lt;bool(char32_t)&gt;</code> <strong><code>gc_predicate</code></strong><code>(GC cat)</code></li>
 <li><code>function&lt;bool(char32_t)&gt;</code> <strong><code>gc_predicate</code></strong><code>(const u8string&amp; cat)</code></li>
 <li><code>function&lt;bool(char32_t)&gt;</code> <strong><code>gc_predicate</code></strong><code>(const char* cat)</code></li>
 </ul>
@@ -242,10 +242,10 @@ cased letter, i.e. equivalent to <code>"Lltu"</code>.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>u8string</code> <strong><code>decode_gc</code></strong><code>(uint16_t cat)</code></li>
-<li><code>constexpr uint16_t</code> <strong><code>encode_gc</code></strong><code>(char c1, char c2) noexcept</code></li>
-<li><code>constexpr uint16_t</code> <strong><code>encode_gc</code></strong><code>(const char* cat) noexcept</code></li>
-<li><code>uint16_t</code> <strong><code>encode_gc</code></strong><code>(const u8string&amp; cat) noexcept</code></li>
+<li><code>u8string</code> <strong><code>decode_gc</code></strong><code>(GC cat)</code></li>
+<li><code>constexpr GC</code> <strong><code>encode_gc</code></strong><code>(char c1, char c2) noexcept</code></li>
+<li><code>constexpr GC</code> <strong><code>encode_gc</code></strong><code>(const char* cat) noexcept</code></li>
+<li><code>GC</code> <strong><code>encode_gc</code></strong><code>(const u8string&amp; cat) noexcept</code></li>
 </ul>
 <p>These convert between a GC abbreviation (passed as either a pair of letters or
 a string) and its integer code. The result of <code>encode_gc()</code> is unspecified if
@@ -253,13 +253,13 @@ the arguments are invalid.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>vector&lt;uint16_t&gt;</code> <strong><code>gc_list</code></strong><code>()</code></li>
+<li><code>vector&lt;GC&gt;</code> <strong><code>gc_list</code></strong><code>()</code></li>
 </ul>
 <p>Returns a list of all valid general categories, in alphabetical order.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>const char*</code> <strong><code>gc_name</code></strong><code>(uint16_t cat) noexcept</code></li>
+<li><code>const char*</code> <strong><code>gc_name</code></strong><code>(GC cat) noexcept</code></li>
 </ul>
 <p>Returns the description of the general category, as shown in the list above.</p>
 </div>
