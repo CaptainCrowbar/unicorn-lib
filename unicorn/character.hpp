@@ -65,54 +65,49 @@ namespace Unicorn {
 
     // General category
 
-    inline u8string decode_gc(uint16_t cat) { return {char((cat >> 8) & 0xff), char(cat & 0xff)}; }
-    constexpr uint16_t encode_gc(char c1, char c2) noexcept { return uint16_t((uint16_t(uint8_t(c1)) << 8) + uint8_t(c2)); }
-    constexpr uint16_t encode_gc(const char* cat) noexcept { return cat && *cat ? encode_gc(cat[0], cat[1]) : 0; }
-    inline uint16_t encode_gc(const u8string& cat) noexcept { return encode_gc(cat.data()); }
-    vector<uint16_t> gc_list();
-    const char* gc_name(uint16_t cat) noexcept;
+    namespace unicornDetail {
 
-    namespace GC {
-
-        enum GC: uint16_t {
-            Cc = encode_gc("Cc"),  // Other: Control
-            Cf = encode_gc("Cf"),  // Other: Format
-            Cn = encode_gc("Cn"),  // Other: Unassigned
-            Co = encode_gc("Co"),  // Other: Private use
-            Cs = encode_gc("Cs"),  // Other: Surrogate
-            Ll = encode_gc("Ll"),  // Letter: Lowercase letter
-            Lm = encode_gc("Lm"),  // Letter: Modifier letter
-            Lo = encode_gc("Lo"),  // Letter: Other letter
-            Lt = encode_gc("Lt"),  // Letter: Titlecase letter
-            Lu = encode_gc("Lu"),  // Letter: Uppercase letter
-            Mc = encode_gc("Mc"),  // Mark: Spacing mark
-            Me = encode_gc("Me"),  // Mark: Enclosing mark
-            Mn = encode_gc("Mn"),  // Mark: Nonspacing mark
-            Nd = encode_gc("Nd"),  // Number: Decimal number
-            Nl = encode_gc("Nl"),  // Number: Letter number
-            No = encode_gc("No"),  // Number: Other number
-            Pc = encode_gc("Pc"),  // Punctuation: Connector punctuation
-            Pd = encode_gc("Pd"),  // Punctuation: Dash punctuation
-            Pe = encode_gc("Pe"),  // Punctuation: Close punctuation
-            Pf = encode_gc("Pf"),  // Punctuation: Final punctuation
-            Pi = encode_gc("Pi"),  // Punctuation: Initial punctuation
-            Po = encode_gc("Po"),  // Punctuation: Other punctuation
-            Ps = encode_gc("Ps"),  // Punctuation: Open punctuation
-            Sc = encode_gc("Sc"),  // Symbol: Currency symbol
-            Sk = encode_gc("Sk"),  // Symbol: Modifier symbol
-            Sm = encode_gc("Sm"),  // Symbol: Math symbol
-            So = encode_gc("So"),  // Symbol: Other symbol
-            Zl = encode_gc("Zl"),  // Separator: Line separator
-            Zp = encode_gc("Zp"),  // Separator: Paragraph separator
-            Zs = encode_gc("Zs"),  // Separator: Space separator
-        };
-
-        inline std::ostream& operator<<(std::ostream& o, GC cat) { return o << decode_gc(cat); }
+        constexpr uint16_t encode_gc(char c1, char c2) noexcept {
+            return uint16_t((uint16_t(uint8_t(c1)) << 8) + uint8_t(c2));
+        }
 
     }
 
-    uint16_t char_general_category(char32_t c) noexcept;
-    inline char char_primary_category(char32_t c) noexcept { return char(char_general_category(c) >> 8); }
+    enum class GC: uint16_t {
+        Cc = unicornDetail::encode_gc('C','c'),  // Other: Control
+        Cf = unicornDetail::encode_gc('C','f'),  // Other: Format
+        Cn = unicornDetail::encode_gc('C','n'),  // Other: Unassigned
+        Co = unicornDetail::encode_gc('C','o'),  // Other: Private use
+        Cs = unicornDetail::encode_gc('C','s'),  // Other: Surrogate
+        Ll = unicornDetail::encode_gc('L','l'),  // Letter: Lowercase letter
+        Lm = unicornDetail::encode_gc('L','m'),  // Letter: Modifier letter
+        Lo = unicornDetail::encode_gc('L','o'),  // Letter: Other letter
+        Lt = unicornDetail::encode_gc('L','t'),  // Letter: Titlecase letter
+        Lu = unicornDetail::encode_gc('L','u'),  // Letter: Uppercase letter
+        Mc = unicornDetail::encode_gc('M','c'),  // Mark: Spacing mark
+        Me = unicornDetail::encode_gc('M','e'),  // Mark: Enclosing mark
+        Mn = unicornDetail::encode_gc('M','n'),  // Mark: Nonspacing mark
+        Nd = unicornDetail::encode_gc('N','d'),  // Number: Decimal number
+        Nl = unicornDetail::encode_gc('N','l'),  // Number: Letter number
+        No = unicornDetail::encode_gc('N','o'),  // Number: Other number
+        Pc = unicornDetail::encode_gc('P','c'),  // Punctuation: Connector punctuation
+        Pd = unicornDetail::encode_gc('P','d'),  // Punctuation: Dash punctuation
+        Pe = unicornDetail::encode_gc('P','e'),  // Punctuation: Close punctuation
+        Pf = unicornDetail::encode_gc('P','f'),  // Punctuation: Final punctuation
+        Pi = unicornDetail::encode_gc('P','i'),  // Punctuation: Initial punctuation
+        Po = unicornDetail::encode_gc('P','o'),  // Punctuation: Other punctuation
+        Ps = unicornDetail::encode_gc('P','s'),  // Punctuation: Open punctuation
+        Sc = unicornDetail::encode_gc('S','c'),  // Symbol: Currency symbol
+        Sk = unicornDetail::encode_gc('S','k'),  // Symbol: Modifier symbol
+        Sm = unicornDetail::encode_gc('S','m'),  // Symbol: Math symbol
+        So = unicornDetail::encode_gc('S','o'),  // Symbol: Other symbol
+        Zl = unicornDetail::encode_gc('Z','l'),  // Separator: Line separator
+        Zp = unicornDetail::encode_gc('Z','p'),  // Separator: Paragraph separator
+        Zs = unicornDetail::encode_gc('Z','s'),  // Separator: Space separator
+    };
+
+    GC char_general_category(char32_t c) noexcept;
+    inline char char_primary_category(char32_t c) noexcept { return char(uint16_t(char_general_category(c)) >> 8); }
     inline bool char_is_alphanumeric(char32_t c) noexcept { auto g = char_primary_category(c); return g == 'L' || g == 'N'; }
     inline bool char_is_alphanumeric_w(char32_t c) noexcept { return char_is_alphanumeric(c) || c == U'_'; }
     inline bool char_is_control(char32_t c) noexcept { return char_general_category(c) == GC::Cc; }
@@ -126,9 +121,18 @@ namespace Unicorn {
     inline bool char_is_symbol(char32_t c) noexcept { return char_primary_category(c) == 'S'; }
     inline bool char_is_separator(char32_t c) noexcept { return char_primary_category(c) == 'Z'; }
 
-    function<bool(char32_t)> gc_predicate(uint16_t cat);
+    function<bool(char32_t)> gc_predicate(GC cat);
     function<bool(char32_t)> gc_predicate(const u8string& cat);
     function<bool(char32_t)> gc_predicate(const char* cat);
+
+    inline u8string decode_gc(GC cat) { return {char((uint16_t(cat) >> 8) & 0xff), char(uint16_t(cat) & 0xff)}; }
+    constexpr GC encode_gc(char c1, char c2) noexcept { return GC(unicornDetail::encode_gc(c1, c2)); }
+    constexpr GC encode_gc(const char* cat) noexcept { return cat && *cat ? encode_gc(cat[0], cat[1]) : GC(); }
+    inline GC encode_gc(const u8string& cat) noexcept { return encode_gc(cat.data()); }
+    vector<GC> gc_list();
+    const char* gc_name(GC cat) noexcept;
+
+    inline std::ostream& operator<<(std::ostream& o, GC cat) { return o << decode_gc(cat); }
 
     // Boolean properties
 

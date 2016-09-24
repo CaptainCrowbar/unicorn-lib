@@ -65,7 +65,7 @@ namespace Unicorn {
 
     namespace {
 
-        using CategoryTable = vector<pair<uint16_t, uint16_t>>;
+        using CategoryTable = vector<pair<GC, GC>>;
 
         function<bool(char32_t)> make_category_function(const CategoryTable& table) {
             return [=] (char32_t c) {
@@ -79,7 +79,7 @@ namespace Unicorn {
 
         CategoryTable make_category_table(const char* cat, size_t n) {
             CategoryTable table;
-            static constexpr auto L0 = encode_gc('L', 0);
+            static constexpr auto L0 = uint16_t('L') << 8;
             if (! cat)
                 return table;
             int entries = 0;
@@ -88,13 +88,13 @@ namespace Unicorn {
                 char c = cat[i];
                 if (ascii_isalpha(c)) {
                     if (prefix == 0) {
-                        prefix = encode_gc(ascii_toupper(c), 0);
+                        prefix = uint16_t(encode_gc(ascii_toupper(c), 0));
                     } else if ((c == 'C' || c == 'c') && prefix == L0) {
                         table.push_back({GC::Ll, GC::Ll});
                         table.push_back({GC::Lt, GC::Lu});
                         entries += 2;
                     } else {
-                        uint16_t code = prefix + uint8_t(ascii_tolower(c));
+                        GC code = GC(prefix + uint8_t(ascii_tolower(c)));
                         table.push_back({code, code});
                         ++entries;
                     }
@@ -106,19 +106,23 @@ namespace Unicorn {
                     }
                 } else {
                     if (entries == 0 && prefix != 0)
-                        table.push_back({prefix, prefix + 0xff});
+                        table.push_back({GC(prefix), GC(prefix + 0xff)});
                     entries = 0;
                     prefix = 0;
                 }
             }
             if (entries == 0 && prefix != 0)
-                table.push_back({prefix, prefix + 0xff});
+                table.push_back({GC(prefix), GC(prefix + 0xff)});
             return table;
         }
 
     }
 
-    vector<uint16_t> gc_list() {
+    GC char_general_category(char32_t c) noexcept {
+        return GC(sparse_table_lookup(UnicornDetail::general_category_table, c));
+    }
+
+    vector<GC> gc_list() {
         return {
             GC::Cc, GC::Cf, GC::Cn, GC::Co, GC::Cs,
             GC::Ll, GC::Lm, GC::Lo, GC::Lt, GC::Lu,
@@ -130,7 +134,7 @@ namespace Unicorn {
         };
     }
 
-    const char* gc_name(uint16_t cat) noexcept {
+    const char* gc_name(GC cat) noexcept {
         switch (cat) {
             case GC::Cc:  return "control";
             case GC::Cf:  return "format";
@@ -166,11 +170,7 @@ namespace Unicorn {
         }
     }
 
-    uint16_t char_general_category(char32_t c) noexcept {
-        return sparse_table_lookup(UnicornDetail::general_category_table, c);
-    }
-
-    function<bool(char32_t)> gc_predicate(uint16_t cat) {
+    function<bool(char32_t)> gc_predicate(GC cat) {
         CategoryTable table;
         table.push_back({cat, cat});
         return make_category_function(table);

@@ -176,17 +176,30 @@ namespace {
 
     void check_general_category() {
 
-        TEST_EQUAL(decode_gc(0x436e), "Cn");
-        TEST_EQUAL(decode_gc(0x4c75), "Lu");
+        TEST_COMPARE(GC::Cc, ==, GC::Cc);
+        TEST_COMPARE(GC::Cc, <=, GC::Cc);
+        TEST_COMPARE(GC::Cc, >=, GC::Cc);
+        TEST_COMPARE(GC::Cc, !=, GC::Zs);
+        TEST_COMPARE(GC::Cc, <, GC::Zs);
+        TEST_COMPARE(GC::Cc, <=, GC::Zs);
+        TEST_COMPARE(GC::Zs, !=, GC::Cc);
+        TEST_COMPARE(GC::Zs, >, GC::Cc);
+        TEST_COMPARE(GC::Zs, >=, GC::Cc);
+        TEST_COMPARE(GC::Zs, ==, GC::Zs);
+        TEST_COMPARE(GC::Zs, <=, GC::Zs);
+        TEST_COMPARE(GC::Zs, >=, GC::Zs);
 
-        TEST_EQUAL(encode_gc('C', 'n'), 0x436e);
-        TEST_EQUAL(encode_gc('L', 'u'), 0x4c75);
-        TEST_EQUAL(encode_gc(""), 0);
-        TEST_EQUAL(encode_gc("Cn"), 0x436e);
-        TEST_EQUAL(encode_gc("Lu"), 0x4c75);
-        TEST_EQUAL(encode_gc(""s), 0);
-        TEST_EQUAL(encode_gc("Cn"s), 0x436e);
-        TEST_EQUAL(encode_gc("Lu"s), 0x4c75);
+        TEST_EQUAL(decode_gc(GC(0x436e)), "Cn");
+        TEST_EQUAL(decode_gc(GC(0x4c75)), "Lu");
+
+        TEST_EQUAL(encode_gc('C', 'n'), GC(0x436e));
+        TEST_EQUAL(encode_gc('L', 'u'), GC(0x4c75));
+        TEST_EQUAL(encode_gc(""), GC(0));
+        TEST_EQUAL(encode_gc("Cn"), GC(0x436e));
+        TEST_EQUAL(encode_gc("Lu"), GC(0x4c75));
+        TEST_EQUAL(encode_gc(""s), GC(0));
+        TEST_EQUAL(encode_gc("Cn"s), GC(0x436e));
+        TEST_EQUAL(encode_gc("Lu"s), GC(0x4c75));
 
         TEST_EQUAL(to_str(GC::Cc), "Cc");
         TEST_EQUAL(to_str(GC::Cf), "Cf");
@@ -671,7 +684,7 @@ namespace {
         TEST(! char_is_punctuation('a'));   TEST(! char_is_punctuation_w('a'));
         TEST(! char_is_punctuation('z'));   TEST(! char_is_punctuation_w('z'));
 
-        vector<uint16_t> v;
+        vector<GC> v;
         TRY(v = gc_list());
         TEST_EQUAL(v.size(), 30);
         TEST_EQUAL(v.at(0), GC::Cc);

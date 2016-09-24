@@ -126,14 +126,9 @@ means that 8 bit code points are negative when stored in a <code>char</code>, an
 them directly to an unsigned integer will give the wrong answer.</p>
 </div>
 <h2 id="general-category">General category</h2>
-<p>The General Category property is commonly presented as a two-letter
-abbreviation. To avoid too many allocations of short strings, functions in
-this library that use GC represent it as a 16-bit integer, which simply
-contains the ASCII code points of the two letters.</p>
 <div class="defns">
 <ul>
-<li><code>namespace</code> <strong><code>GC</code></strong><ul>
-<li><code>enum</code> <strong><code>GC</code></strong><code>: uint16_t</code><ul>
+<li><code>enum class</code> <strong><code>GC</code></strong><code>: uint16_t</code><ul>
 <li><em>Miscellaneous</em><ul>
 <li><strong><code>Cc</code></strong> <em>[control]</em></li>
 <li><strong><code>Cf</code></strong> <em>[format]</em></li>
@@ -189,11 +184,9 @@ contains the ASCII code points of the two letters.</p>
 </li>
 <li><code>std::ostream&amp;</code> <strong><code>operator&lt;&lt;</code></strong><code>(std::ostream&amp; o, GC cat)</code></li>
 </ul>
-</li>
-</ul>
-<p>Constants corresponding to the standard GC values. All of these are of the
-type <code>static constexpr uint16_t</code>. These are declared in a namespace, instead
-of an <code>enum class</code>, to make integer comparisons easier.</p>
+<p>Constants corresponding to the standard GC values. Each constant is
+numerically equal to a 16-bit integer composed from the ASCII values of the
+two letters in the category's standard abbreviation.</p>
 </div>
 <div class="defns">
 <ul>
@@ -255,7 +248,8 @@ cased letter, i.e. equivalent to <code>"Lltu"</code>.</p>
 <li><code>uint16_t</code> <strong><code>encode_gc</code></strong><code>(const u8string&amp; cat) noexcept</code></li>
 </ul>
 <p>These convert between a GC abbreviation (passed as either a pair of letters or
-a string) and its integer code.</p>
+a string) and its integer code. The result of <code>encode_gc()</code> is unspecified if
+the arguments are invalid.</p>
 </div>
 <div class="defns">
 <ul>

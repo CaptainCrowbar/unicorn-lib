@@ -93,55 +93,49 @@ them directly to an unsigned integer will give the wrong answer.
 
 ## General category ##
 
-The General Category property is commonly presented as a two-letter
-abbreviation. To avoid too many allocations of short strings, functions in
-this library that use GC represent it as a 16-bit integer, which simply
-contains the ASCII code points of the two letters.
+* `enum class` **`GC`**`: uint16_t`
+    * _Miscellaneous_
+        * **`Cc`** _[control]_
+        * **`Cf`** _[format]_
+        * **`Cn`** _[unassigned]_
+        * **`Co`** _[private use]_
+        * **`Cs`** _[surrogate]_
+    * _Letters_
+        * **`Ll`** _[lowercase letter]_
+        * **`Lm`** _[modifier letter]_
+        * **`Lo`** _[other letter]_
+        * **`Lt`** _[titlecase letter]_
+        * **`Lu`** _[uppercase letter]_
+    * _Marks_
+        * **`Mc`** _[spacing mark]_
+        * **`Me`** _[enclosing mark]_
+        * **`Mn`** _[nonspacing mark]_
+    * _Numbers_
+        * **`Nd`** _[decimal number]_
+        * **`Nl`** _[letter number]_
+        * **`No`** _[other number]_
+    * _Punctuation_
+        * **`Pc`** _[connector punctuation]_
+        * **`Pd`** _[dash punctuation]_
+        * **`Pe`** _[close punctuation]_
+        * **`Pf`** _[final punctuation]_
+        * **`Pi`** _[initial punctuation]_
+        * **`Po`** _[other punctuation]_
+        * **`Ps`** _[open punctuation]_
+    * _Symbols_
+        * **`Sc`** _[currency symbol]_
+        * **`Sk`** _[modifier symbol]_
+        * **`Sm`** _[math symbol]_
+        * **`So`** _[other symbol]_
+    * _Separators_
+        * **`Zl`** _[line separator]_
+        * **`Zp`** _[paragraph separator]_
+        * **`Zs`** _[space separator]_
+* `std::ostream&` **`operator<<`**`(std::ostream& o, GC cat)`
 
-* `namespace` **`GC`**
-    * `enum` **`GC`**`: uint16_t`
-        * _Miscellaneous_
-            * **`Cc`** _[control]_
-            * **`Cf`** _[format]_
-            * **`Cn`** _[unassigned]_
-            * **`Co`** _[private use]_
-            * **`Cs`** _[surrogate]_
-        * _Letters_
-            * **`Ll`** _[lowercase letter]_
-            * **`Lm`** _[modifier letter]_
-            * **`Lo`** _[other letter]_
-            * **`Lt`** _[titlecase letter]_
-            * **`Lu`** _[uppercase letter]_
-        * _Marks_
-            * **`Mc`** _[spacing mark]_
-            * **`Me`** _[enclosing mark]_
-            * **`Mn`** _[nonspacing mark]_
-        * _Numbers_
-            * **`Nd`** _[decimal number]_
-            * **`Nl`** _[letter number]_
-            * **`No`** _[other number]_
-        * _Punctuation_
-            * **`Pc`** _[connector punctuation]_
-            * **`Pd`** _[dash punctuation]_
-            * **`Pe`** _[close punctuation]_
-            * **`Pf`** _[final punctuation]_
-            * **`Pi`** _[initial punctuation]_
-            * **`Po`** _[other punctuation]_
-            * **`Ps`** _[open punctuation]_
-        * _Symbols_
-            * **`Sc`** _[currency symbol]_
-            * **`Sk`** _[modifier symbol]_
-            * **`Sm`** _[math symbol]_
-            * **`So`** _[other symbol]_
-        * _Separators_
-            * **`Zl`** _[line separator]_
-            * **`Zp`** _[paragraph separator]_
-            * **`Zs`** _[space separator]_
-    * `std::ostream&` **`operator<<`**`(std::ostream& o, GC cat)`
-
-Constants corresponding to the standard GC values. All of these are of the
-type `static constexpr uint16_t`. These are declared in a namespace, instead
-of an `enum class`, to make integer comparisons easier.
+Constants corresponding to the standard GC values. Each constant is
+numerically equal to a 16-bit integer composed from the ASCII values of the
+two letters in the category's standard abbreviation.
 
 * `uint16_t` **`char_general_category`**`(char32_t c) noexcept`
 
@@ -191,7 +185,8 @@ cased letter, i.e. equivalent to `"Lltu"`.
 * `uint16_t` **`encode_gc`**`(const u8string& cat) noexcept`
 
 These convert between a GC abbreviation (passed as either a pair of letters or
-a string) and its integer code.
+a string) and its integer code. The result of `encode_gc()` is unspecified if
+the arguments are invalid.
 
 * `vector<uint16_t>` **`gc_list`**`()`
 
