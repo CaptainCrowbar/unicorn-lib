@@ -14,8 +14,8 @@ namespace {
 
     void check_basic_options(Options& opt1) {
 
-        opt1 = Options("App version 1.0", "Intro", "Outro");
-        Options opt2("Blank");
+        opt1 = Options("App version 1.0");
+        Options opt2;
         u8string cmdline;
 
         TEST_EQUAL(opt1.version(), "App version 1.0");
@@ -39,15 +39,11 @@ namespace {
                 "\n"
                 "App version 1.0\n"
                 "\n"
-                "Intro\n"
-                "\n"
                 "Options:\n"
                 "    --alpha, -a <arg>   = Alpha option (default \"ABC\")\n"
                 "    --number, -n <arg>  = Number option (default 123)\n"
                 "    --help, -h          = Show usage information\n"
                 "    --version, -v       = Show version information\n"
-                "\n"
-                "Outro\n"
                 "\n"
             );
         }
@@ -435,8 +431,6 @@ namespace {
                 "\n"
                 "App version 1.0\n"
                 "\n"
-                "Intro\n"
-                "\n"
                 "Options:\n"
                 "    --alpha, -a <arg>     = Alpha option (default \"ABC\")\n"
                 "    --number, -n <arg>    = Number option (default 123)\n"
@@ -448,8 +442,6 @@ namespace {
                 "    [--tail] <arg> ...    = Other anonymous arguments\n"
                 "    --help, -h            = Show usage information\n"
                 "    --version, -v         = Show version information\n"
-                "\n"
-                "Outro\n"
                 "\n"
             );
         }
@@ -464,8 +456,6 @@ namespace {
                 "\n"
                 "App version 1.0\n"
                 "\n"
-                "Intro\n"
-                "\n"
                 "Options:\n"
                 "    --alpha, -a <arg>     = Alpha option (default \"ABC\")\n"
                 "    --number, -n <arg>    = Number option (default 123)\n"
@@ -478,10 +468,77 @@ namespace {
                 "    --help, -h            = Show usage information\n"
                 "    --version, -v         = Show version information\n"
                 "\n"
-                "Outro\n"
-                "\n"
             );
         }
+
+    }
+
+    void check_inserted_info() {
+
+        Options opt("App version 1.0");
+        u8string help;
+
+        TRY(opt = Options("App 1.0"));
+        TRY(opt.add("Intro"));
+        TRY(opt.add("alpha", "Alpha option"));
+        TRY(help = opt.help());
+        TEST_EQUAL(help,
+            "\n"
+            "App 1.0\n"
+            "\n"
+            "Intro\n"
+            "\n"
+            "Options:\n"
+            "    --alpha <arg>  = Alpha option\n"
+            "\n"
+        );
+
+        TRY(opt = Options("App 1.0"));
+        TRY(opt.add("alpha", "Alpha option"));
+        TRY(opt.add("Outro"));
+        TRY(help = opt.help());
+        TEST_EQUAL(help,
+            "\n"
+            "App 1.0\n"
+            "\n"
+            "Options:\n"
+            "    --alpha <arg>  = Alpha option\n"
+            "\n"
+            "Outro\n"
+            "\n"
+        );
+
+        TRY(opt = Options("App 1.0"));
+        TRY(opt.add("Intro"));
+        TRY(opt.add("alpha", "Alpha option"));
+        TRY(opt.add("Some info."));
+        TRY(opt.add("bravo", "Bravo option"));
+        TRY(opt.add("charlie", "Charlie option"));
+        TRY(opt.add("Some more info."));
+        TRY(opt.add("delta", "Delta option"));
+        TRY(opt.add("Outro"));
+        TRY(help = opt.help());
+        TEST_EQUAL(help,
+            "\n"
+            "App 1.0\n"
+            "\n"
+            "Intro\n"
+            "\n"
+            "Options:\n"
+            "    --alpha <arg>    = Alpha option\n"
+            "\n"
+            "Some info.\n"
+            "\n"
+            "    --bravo <arg>    = Bravo option\n"
+            "    --charlie <arg>  = Charlie option\n"
+            "\n"
+            "Some more info.\n"
+            "\n"
+            "    --delta <arg>    = Delta option\n"
+            "\n"
+            "Outro\n"
+            "\n"
+        );
 
     }
 
@@ -489,7 +546,7 @@ namespace {
 
 TEST_MODULE(unicorn, options) {
 
-    Options opt1("Blank");
+    Options opt1;
 
     check_basic_options(opt1);
     check_boolean_options(opt1);
@@ -499,5 +556,6 @@ TEST_MODULE(unicorn, options) {
     check_group_options();
     check_argument_patterns();
     check_help(opt1);
+    check_inserted_info();
 
 }

@@ -60,31 +60,36 @@ option specification.
 Thrown by `Options::add()` during the creation of an option specification, to
 report an invalid combination of properties.
 
-* `explicit Options::`**`Options`**`(const u8string& info, const u8string& head = {}, const u8string& tail = {})`
+* `explicit Options::`**`Options`**`(const u8string& info)`
 
 Constructor to initialize an option specification. The `info` argument is a
 string containing the basic description of the program, typically something
 like `"Foobar 1.0 - Goes ding when there's stuff"`; this will be returned if
-the user calls it with the `"--version"` option. The optional `head` and
-`tail` arguments are extra text that will be printed before and after the
-option list when the full `"--help"` option is invoked.
+the user calls it with the `"--version"` option.
 
+* `Options::`**`Options`**`() noexcept`
 * `Options::`**`Options`**`(const Options& opt)`
 * `Options::`**`Options`**`(Options&& opt) noexcept`
 * `Options::`**`~Options`**`() noexcept`
 * `Options& Options::`**`operator=`**`(const Options& opt)`
 * `Options& Options::`**`operator=`**`(Options&& opt) noexcept`
 
-Other life cycle functions.
+Other life cycle functions. (The default constructor should not normally be
+used and is supplied only to enable move initialization in certain scenarios.)
 
-* `template <typename... Args> void Options::`**`add`**`(const u8string& name, const u8string& info, const Args&... args)`
+* `Options& Options::`**`add`**`(const u8string& info)`
+* `template <typename... Args> Options& Options::`**`add`**`(const u8string& name, const u8string& info, const Args&... args)`
 
-Adds an option to the parser. The `name` argument is the full name of the
-option, which users can invoke with `"--name"` (the option name can be
-supplied to the `add()` function with or without the leading hyphens). The
-`info` string is the description of the option that will be presented to the
-user when help is requested. These may be followed by optional keyword
-arguments, as listed below.
+The first version adds some information text to the option list. This will be
+reproduced verbatim at the corresponding point among the options listed in the
+help text.
+
+The second version adds an option to the parser. The `name` argument is the
+full name of the option, which users can invoke with `"--name"` (the option
+name can be supplied to the `add()` function with or without the leading
+hyphens). The `info` string is the description of the option that will be
+presented to the user when help is requested. These may be followed by
+optional keyword arguments, as listed below.
 
 Keyword            | Type        | Description
 -------            | ----        | -----------
@@ -102,19 +107,19 @@ Keyword            | Type        | Description
 
 Boolean options can be supplied in negated form, by giving a name starting
 with `"--no-"` (or `"no-"`). This creates a boolean option whose default value
-is `true`.
+is `true`; the `"--no-whatever"` form can be used to switch it off.
 
-The `add()` function will throw `SpecError` if any of the following is true:
+Adding an option will throw `SpecError` if any of the following is true:
 
 * The option name has less than two characters (not counting any leading hyphens).
-* The info string is empty.
+* The name or abbreviation has already been used by an earlier entry.
+* The info string is empty (this also applies to the first version of `add()`).
 * An abbreviation is supplied that is longer than one character (not counting a leading hyphen), or is not alphanumeric.
 * An option starting with `"--no-"` is not boolean or has an abbreviation.
 * The `opt_bool` tag is combined with `opt_anon`, `opt_default`, `opt_multi`, `opt_pattern`, or `opt_require`.
-* The `opt_require` tag is combined with `opt_default` or `opt_group`.
+* The `opt_require` tag is combined with `opt_bool`, `opt_default`, or `opt_group`.
 * More than one of `opt_float`, `opt_int`, `opt_pattern`, and `opt_uint` is supplied.
 * The `opt_default` and `opt_pattern` tags are both present, but the default value does not match the pattern.
-* The name or abbreviation has already been used by an earlier entry.
 
 Do not explicitly add the standard `"--help"` and `"--version"` boolean
 options; these will be added automatically. They will be given the
@@ -149,7 +154,7 @@ supplied as a vector of strings, as a single combined string that will be
 split apart during parsing, or as the standard `(argc,argv)` arguments from
 `main()` (or a similar source such as the UTF-16 `_wmain()` often used on
 Windows). Normally the supplied argument list is assumed to start with the
-command name (which will be discarded); use the `Options::noprefix` flag to
+command name (which will be discarded); use the `opt_noprefix` flag to
 override this.
 
 Boolean options will be recognised in normal or negated form (e.g. `"--magic"`

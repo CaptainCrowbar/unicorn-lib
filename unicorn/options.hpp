@@ -83,10 +83,10 @@ namespace Unicorn {
             explicit SpecError(const u8string& option);
             SpecError(const u8string& details, const u8string& option);
         };
-        explicit Options(const u8string& info, const u8string& head = {}, const u8string& tail = {}):
-            app_info(str_trim(info)), help_auto(false),
-            help_head(str_trim(head)), help_tail(str_trim(tail)), opts() {}
-        template <typename... Args> void add(const u8string& name, const u8string& info, const Args&... args);
+        Options() = default;
+        explicit Options(const u8string& info): app_info(str_trim(info)) {}
+        Options& add(const u8string& info);
+        template <typename... Args> Options& add(const u8string& name, const u8string& info, const Args&... args);
         void autohelp() noexcept { help_auto = true; }
         u8string help() const;
         u8string version() const { return app_info; }
@@ -119,9 +119,7 @@ namespace Unicorn {
         };
         using option_list = vector<option_type>;
         u8string app_info;
-        bool help_auto;
-        u8string help_head;
-        u8string help_tail;
+        bool help_auto = false;
         option_list opts;
         void add_option(option_type opt);
         size_t find_index(u8string name, bool found = false) const;
@@ -144,7 +142,7 @@ namespace Unicorn {
     };
 
     template <typename... Args>
-    void Options::add(const u8string& name, const u8string& info, const Args&... args) {
+    Options& Options::add(const u8string& name, const u8string& info, const Args&... args) {
         option_type opt;
         u8string pat;
         opt.name = name;
@@ -162,6 +160,7 @@ namespace Unicorn {
         kwget(opt_pattern, pat, args...);
         opt.pattern = Regex(pat);
         add_option(opt);
+        return *this;
     }
 
     template <typename T>

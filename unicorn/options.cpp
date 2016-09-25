@@ -55,68 +55,96 @@ namespace Unicorn {
     Options::SpecError::SpecError(const u8string& details, const u8string& option):
     std::runtime_error("$1: $2q"_fmt(details, option)) {}
 
+    Options& Options::add(const u8string& info) {
+        if (info.empty())
+            throw SpecError("Empty string");
+        option_type opt;
+        opt.info = str_trim_right(info);
+        opts.push_back(opt);
+        return *this;
+    }
+
     u8string Options::help() const {
-        u8string text = "\n$1\n\n"_fmt(app_info);
-        if (! help_head.empty())
-            text += "$1\n\n"_fmt(help_head);
-        text += "Options:\n";
+        static constexpr auto length_flags = grapheme_units | narrow_context;
+        u8string text = "\n" + app_info + "\n";
         string_list prefixes, suffixes;
         vector<size_t> lengths;
         for (auto& opt: opts) {
-            u8string prefix;
-            if (opt.is_anon)
-                prefix += "[";
-            prefix += "--";
-            if (opt.is_boolean && opt.defval == "1")
-                prefix += "no-";
-            prefix += opt.name;
-            if (! opt.abbrev.empty())
-                prefix += ", -"s + opt.abbrev;
-            if (opt.is_anon)
-                prefix += "]";
-            if (! opt.is_boolean) {
-                prefix += " <";
-                if (opt.is_integer || opt.is_uinteger || opt.is_float)
-                    prefix += "num";
-                else
-                    prefix += "arg";
-                prefix += ">";
-                if (opt.is_multiple)
-                    prefix += " ...";
-            }
-            u8string suffix = opt.info, extra;
-            if (opt.is_required) {
-                extra = "required";
-            } else if (! opt.defval.empty() && ! opt.is_boolean && opt.info.find("default") == npos) {
-                extra = "default ";
-                if (match_integer.match(opt.defval) || match_float.match(opt.defval))
-                    extra += opt.defval;
-                else
-                    extra += "$1q"_fmt(opt.defval);
-            }
-            if (! extra.empty()) {
-                if (suffix.back() == ')') {
-                    suffix.pop_back();
-                    suffix += "; ";
-                } else {
-                    suffix += " (";
+            u8string prefix, suffix;
+            size_t length = 0;
+            if (! opt.name.empty()) {
+                if (opt.is_anon)
+                    prefix += "[";
+                prefix += "--";
+                if (opt.is_boolean && opt.defval == "1")
+                    prefix += "no-";
+                prefix += opt.name;
+                if (! opt.abbrev.empty())
+                    prefix += ", -"s + opt.abbrev;
+                if (opt.is_anon)
+                    prefix += "]";
+                if (! opt.is_boolean) {
+                    prefix += " <";
+                    if (opt.is_integer || opt.is_uinteger || opt.is_float)
+                        prefix += "num";
+                    else
+                        prefix += "arg";
+                    prefix += ">";
+                    if (opt.is_multiple)
+                        prefix += " ...";
                 }
-                suffix += extra + ")";
+                length = str_length(prefix, length_flags);
+                u8string extra;
+                if (opt.is_required) {
+                    extra = "required";
+                } else if (! opt.defval.empty() && ! opt.is_boolean && opt.info.find("default") == npos) {
+                    extra = "default ";
+                    if (match_integer.match(opt.defval) || match_float.match(opt.defval))
+                        extra += opt.defval;
+                    else
+                        extra += "$1q"_fmt(opt.defval);
+                }
+                suffix = opt.info;
+                if (! extra.empty()) {
+                    if (suffix.back() == ')') {
+                        suffix.pop_back();
+                        suffix += "; ";
+                    } else {
+                        suffix += " (";
+                    }
+                    suffix += extra + ")";
+                }
             }
             prefixes.push_back(prefix);
             suffixes.push_back(suffix);
-            lengths.push_back(str_length(prefix, grapheme_units));
+            lengths.push_back(length);
         }
         size_t maxlen = 0;
         if (! opts.empty())
             maxlen = *std::max_element(lengths.begin(), lengths.end());
-        for (size_t i = 0; i < opts.size(); ++i)
-            text += "    $1  = $2\n"_fmt(str_pad_right(prefixes[i], maxlen, U' ', grapheme_units), suffixes[i]);
-        if (opts.empty())
-            text += "    None\n";
+        bool opthdr = false, was_info = true;
+        for (size_t i = 0; i < opts.size(); ++i) {
+            bool is_info = opts[i].name.empty();
+            if (is_info || was_info)
+                text += "\n";
+            if (is_info) {
+                text += opts[i].info + "\n";
+            } else {
+                if (! opthdr) {
+                    text += "Options:\n";
+                    opthdr = true;
+                }
+                u8string prefix = str_pad_right(prefixes[i], maxlen, U' ', length_flags);
+                text += "    $1  = $2\n"_fmt(prefix, suffixes[i]);
+            }
+            was_info = is_info;
+        }
+        if (! opthdr) {
+            if (was_info)
+                text += "\n";
+            text += "Options:\n    None\n";
+        }
         text += "\n";
-        if (! help_tail.empty())
-            text += "$1\n\n"_fmt(help_tail);
         return text;
     }
 

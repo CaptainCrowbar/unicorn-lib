@@ -74,35 +74,39 @@ report an invalid combination of properties.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>explicit Options::</code><strong><code>Options</code></strong><code>(const u8string&amp; info, const u8string&amp; head = {}, const u8string&amp; tail = {})</code></li>
+<li><code>explicit Options::</code><strong><code>Options</code></strong><code>(const u8string&amp; info)</code></li>
 </ul>
 <p>Constructor to initialize an option specification. The <code>info</code> argument is a
 string containing the basic description of the program, typically something
 like <code>"Foobar 1.0 - Goes ding when there's stuff"</code>; this will be returned if
-the user calls it with the <code>"--version"</code> option. The optional <code>head</code> and
-<code>tail</code> arguments are extra text that will be printed before and after the
-option list when the full <code>"--help"</code> option is invoked.</p>
+the user calls it with the <code>"--version"</code> option.</p>
 </div>
 <div class="defns">
 <ul>
+<li><code>Options::</code><strong><code>Options</code></strong><code>() noexcept</code></li>
 <li><code>Options::</code><strong><code>Options</code></strong><code>(const Options&amp; opt)</code></li>
 <li><code>Options::</code><strong><code>Options</code></strong><code>(Options&amp;&amp; opt) noexcept</code></li>
 <li><code>Options::</code><strong><code>~Options</code></strong><code>() noexcept</code></li>
 <li><code>Options&amp; Options::</code><strong><code>operator=</code></strong><code>(const Options&amp; opt)</code></li>
 <li><code>Options&amp; Options::</code><strong><code>operator=</code></strong><code>(Options&amp;&amp; opt) noexcept</code></li>
 </ul>
-<p>Other life cycle functions.</p>
+<p>Other life cycle functions. (The default constructor should not normally be
+used and is supplied only to enable move initialization in certain scenarios.)</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename... Args&gt; void Options::</code><strong><code>add</code></strong><code>(const u8string&amp; name, const u8string&amp; info, const Args&amp;... args)</code></li>
+<li><code>Options&amp; Options::</code><strong><code>add</code></strong><code>(const u8string&amp; info)</code></li>
+<li><code>template &lt;typename... Args&gt; Options&amp; Options::</code><strong><code>add</code></strong><code>(const u8string&amp; name, const u8string&amp; info, const Args&amp;... args)</code></li>
 </ul>
-<p>Adds an option to the parser. The <code>name</code> argument is the full name of the
-option, which users can invoke with <code>"--name"</code> (the option name can be
-supplied to the <code>add()</code> function with or without the leading hyphens). The
-<code>info</code> string is the description of the option that will be presented to the
-user when help is requested. These may be followed by optional keyword
-arguments, as listed below.</p>
+<p>The first version adds some information text to the option list. This will be
+reproduced verbatim at the corresponding point among the options listed in the
+help text.</p>
+<p>The second version adds an option to the parser. The <code>name</code> argument is the
+full name of the option, which users can invoke with <code>"--name"</code> (the option
+name can be supplied to the <code>add()</code> function with or without the leading
+hyphens). The <code>info</code> string is the description of the option that will be
+presented to the user when help is requested. These may be followed by
+optional keyword arguments, as listed below.</p>
 <table>
 <thead>
 <tr>
@@ -171,18 +175,18 @@ arguments, as listed below.</p>
 </table>
 <p>Boolean options can be supplied in negated form, by giving a name starting
 with <code>"--no-"</code> (or <code>"no-"</code>). This creates a boolean option whose default value
-is <code>true</code>.</p>
-<p>The <code>add()</code> function will throw <code>SpecError</code> if any of the following is true:</p>
+is <code>true</code>; the <code>"--no-whatever"</code> form can be used to switch it off.</p>
+<p>Adding an option will throw <code>SpecError</code> if any of the following is true:</p>
 <ul>
 <li>The option name has less than two characters (not counting any leading hyphens).</li>
-<li>The info string is empty.</li>
+<li>The name or abbreviation has already been used by an earlier entry.</li>
+<li>The info string is empty (this also applies to the first version of <code>add()</code>).</li>
 <li>An abbreviation is supplied that is longer than one character (not counting a leading hyphen), or is not alphanumeric.</li>
 <li>An option starting with <code>"--no-"</code> is not boolean or has an abbreviation.</li>
 <li>The <code>opt_bool</code> tag is combined with <code>opt_anon</code>, <code>opt_default</code>, <code>opt_multi</code>, <code>opt_pattern</code>, or <code>opt_require</code>.</li>
-<li>The <code>opt_require</code> tag is combined with <code>opt_default</code> or <code>opt_group</code>.</li>
+<li>The <code>opt_require</code> tag is combined with <code>opt_bool</code>, <code>opt_default</code>, or <code>opt_group</code>.</li>
 <li>More than one of <code>opt_float</code>, <code>opt_int</code>, <code>opt_pattern</code>, and <code>opt_uint</code> is supplied.</li>
 <li>The <code>opt_default</code> and <code>opt_pattern</code> tags are both present, but the default value does not match the pattern.</li>
-<li>The name or abbreviation has already been used by an earlier entry.</li>
 </ul>
 <p>Do not explicitly add the standard <code>"--help"</code> and <code>"--version"</code> boolean
 options; these will be added automatically. They will be given the
@@ -222,7 +226,7 @@ supplied as a vector of strings, as a single combined string that will be
 split apart during parsing, or as the standard <code>(argc,argv)</code> arguments from
 <code>main()</code> (or a similar source such as the UTF-16 <code>_wmain()</code> often used on
 Windows). Normally the supplied argument list is assumed to start with the
-command name (which will be discarded); use the <code>Options::noprefix</code> flag to
+command name (which will be discarded); use the <code>opt_noprefix</code> flag to
 override this.</p>
 <p>Boolean options will be recognised in normal or negated form (e.g. <code>"--magic"</code>
 vs <code>"--no-magic"</code>). Integer options will accept hexadecimal options prefixed
