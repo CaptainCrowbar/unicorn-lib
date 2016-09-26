@@ -3,7 +3,9 @@
 #include "unicorn/mbcs.hpp"
 #include "unicorn/regex.hpp"
 #include <cerrno>
+#include <chrono>
 #include <cstdio>
+#include <random>
 #include <system_error>
 
 #if defined(PRI_TARGET_UNIX)
@@ -635,15 +637,43 @@ namespace Unicorn {
                 return MoveFileW(src.c_str(), dst.c_str()) != 0;
             }
 
+            // File deletion on Windows is asynchronous; DeleteFile() and
+            // RemoveDirectory() may return before the file is actually
+            // deleted. Borrowing the idea from Boost here: rename the file to
+            // a random name first, so the original is gone before we return.
+
+            class RandomName {
+            public:
+                RandomName():
+                    rng(uint32_t(std::chrono::high_resolution_clock::now().time_since_epoch().count())) {}
+                u8string operator()() {
+                    auto lock = make_lock(mtx);
+                    auto uuid = ruuid(rng);
+                    return uuid.str();
+                }
+            private:
+                Mutex mtx;
+                std::minstd_rand rng;
+                RandomUuid ruuid;
+            };
+
             void remove_file_helper(const wstring& file) {
-                bool dir = file_is_directory(file), ok;
+                static RandomName rname;
+                wstring parent = split_path(file).first;
+                wstring tempname = file_path(parent, to_wstring(rname() + ".deleted"));
+                if (MoveFileW(file.data(), tempname.data()) == 0)
+                    tempname = file;
+                bool dir = file_is_directory(tempname), ok;
                 if (dir)
-                    ok = RemoveDirectoryW(file.data());
+                    ok = RemoveDirectoryW(tempname.data());
                 else
-                    ok = DeleteFileW(file.data());
+                    ok = DeleteFileW(tempname.data());
                 auto error = GetLastError();
-                if (! ok && error != ERROR_FILE_NOT_FOUND)
-                    throw std::system_error(error, windows_category(), quote_file(file));
+                if (! ok) {
+                    MoveFileW(tempname.data(), file.data());
+                    if (error != ERROR_FILE_NOT_FOUND)
+                        throw std::system_error(error, windows_category(), quote_file(file));
+                }
             }
 
         #endif
