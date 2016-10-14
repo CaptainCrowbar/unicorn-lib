@@ -30,12 +30,26 @@ namespace Unicorn {
 
     // Types
 
-    using FileId =
-        #if defined(PRI_TARGET_UNIX)
-            std::conditional_t<(sizeof(dev_t) + sizeof(ino_t) > 8), uint128_t, uint64_t>;
-        #else
-            uint64_t;
-        #endif
+    #if defined(PRI_TARGET_UNIX)
+
+        struct FileId:
+        public LessThanComparable<FileId> {
+            constexpr FileId() = default;
+            constexpr FileId(uint64_t h, uint64_t l) noexcept: hi(h), lo(l) {}
+            uint64_t hi = 0, lo = 0;
+            size_t hash() const noexcept;
+        };
+
+        bool operator==(const FileId& lhs, const FileId& rhs) noexcept;
+        bool operator<(const FileId& lhs, const FileId& rhs) noexcept;
+        std::istream& operator>>(std::istream& in, FileId& f);
+        std::ostream& operator<<(std::ostream& out, const FileId& f);
+
+    #else
+
+        using FileId = uint64_t;
+
+    #endif
 
     // System dependencies
 
@@ -275,3 +289,7 @@ namespace Unicorn {
     #endif
 
 }
+
+#if defined(PRI_TARGET_UNIX)
+    PRI_DEFINE_STD_HASH(Unicorn::FileId)
+#endif

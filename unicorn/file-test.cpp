@@ -373,12 +373,12 @@ namespace {
         TEST(! file_exists(""s));
         TEST(! file_exists("no such file"s));
 
-        TEST_EQUAL(file_id(""s), 0);
-        TEST_EQUAL(file_id("no such file"s), 0);
+        TEST_EQUAL(file_id(""s), FileId());
+        TEST_EQUAL(file_id("no such file"s), FileId());
         TRY(id1 = file_id("Makefile"s));
         TRY(id2 = file_id("unicorn"s));
-        TEST_COMPARE(id1, >, 0);
-        TEST_COMPARE(id2, >, 0);
+        TEST_COMPARE(id1, >, FileId());
+        TEST_COMPARE(id2, >, FileId());
         TEST_COMPARE(id1, !=, id2);
 
         TEST(file_is_directory("."s));

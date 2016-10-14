@@ -79,6 +79,41 @@ namespace Unicorn {
 
     }
 
+    // Types
+
+    #if defined(PRI_TARGET_UNIX)
+
+        size_t FileId::hash() const noexcept {
+            return hash_value(hi, lo);
+        }
+
+        bool operator==(const FileId& lhs, const FileId& rhs) noexcept {
+            return lhs.hi == rhs.hi && lhs.lo == rhs.lo;
+        }
+
+        bool operator<(const FileId& lhs, const FileId& rhs) noexcept {
+            return lhs.hi < rhs.hi || (lhs.hi == rhs.hi && lhs.lo < rhs.lo);
+        }
+
+        std::istream& operator>>(std::istream& in, FileId& f) {
+            u8string s(32, '0');
+            for (char& c: s) {
+                auto x = in.get();
+                if (x == EOF)
+                    break;
+                c = char(x);
+            }
+            f.hi = hexnum(s.substr(0, 16));
+            f.lo = hexnum(s.substr(16, 16));
+            return in;
+        }
+
+        std::ostream& operator<<(std::ostream& out, const FileId& f) {
+            return out << hex(f.hi, 16) << hex(f.lo, 16);
+        }
+
+    #endif
+
     // File name operations
 
     namespace {
@@ -346,10 +381,10 @@ namespace Unicorn {
             else
                 rc = lstat(file.data(), &s);
             if (rc != 0)
-                return 0;
-            auto dev = FileId(s.st_dev);
-            auto ino = FileId(s.st_ino);
-            return (dev << (8 * sizeof(ino_t))) + ino;
+                return {};
+            auto dev = uint64_t(s.st_dev);
+            auto ino = uint64_t(s.st_ino);
+            return {dev, ino};
         }
 
         bool file_is_directory(const u8string& file) {

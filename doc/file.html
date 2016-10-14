@@ -114,10 +114,11 @@ of <code>"/foo/bar/hello.txt"</code> is <code>"hello.txt"</code>).</p>
 <h2 id="types">Types</h2>
 <div class="defns">
 <ul>
-<li><code>using</code> <strong><code>FileId</code></strong> <code>= [unsigned integer type]</code></li>
+<li><code>typename</code> <strong><code>FileId</code></strong></li>
 </ul>
-<p>The file identifier returned by the <code>file_id()</code> function. Note that this will
-be a non-standard 128-bit integer on many systems.</p>
+<p>The file identifier returned by the <code>file_id()</code> function. On some systems this
+will be an integer type; on others it will be a class type. It will support
+all comparison operators, I/O using <code>&lt;&lt;</code> and <code>&gt;&gt;</code> operators, and <code>std::hash</code>.</p>
 </div>
 <h2 id="system-dependencies">System dependencies</h2>
 <div class="defns">

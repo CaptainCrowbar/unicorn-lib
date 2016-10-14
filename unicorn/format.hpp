@@ -147,8 +147,6 @@ namespace Unicorn {
     inline u8string format_type(unsigned long t, uint64_t flags, int prec)       { return UnicornDetail::format_int(t, flags, prec); }
     inline u8string format_type(long long t, uint64_t flags, int prec)           { return UnicornDetail::format_int(t, flags, prec); }
     inline u8string format_type(unsigned long long t, uint64_t flags, int prec)  { return UnicornDetail::format_int(t, flags, prec); }
-    inline u8string format_type(int128_t t, uint64_t flags, int prec)            { return UnicornDetail::format_int(t, flags, prec); }
-    inline u8string format_type(uint128_t t, uint64_t flags, int prec)           { return UnicornDetail::format_int(t, flags, prec); }
     inline u8string format_type(float t, uint64_t flags, int prec)               { return UnicornDetail::format_float(t, flags, prec); }
     inline u8string format_type(double t, uint64_t flags, int prec)              { return UnicornDetail::format_float(t, flags, prec); }
     inline u8string format_type(long double t, uint64_t flags, int prec)         { return UnicornDetail::format_float(t, flags, prec); }

@@ -75,10 +75,11 @@ Flags recognised by some of the functions in this module.
 
 ## Types ##
 
-* `using` **`FileId`** `= [unsigned integer type]`
+* `typename` **`FileId`**
 
-The file identifier returned by the `file_id()` function. Note that this will
-be a non-standard 128-bit integer on many systems.
+The file identifier returned by the `file_id()` function. On some systems this
+will be an integer type; on others it will be a class type. It will support
+all comparison operators, I/O using `<<` and `>>` operators, and `std::hash`.
 
 ## System dependencies ##
 

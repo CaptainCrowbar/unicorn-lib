@@ -98,27 +98,6 @@ namespace {
         TEST_EQUAL(format_str(8888, "r"), "MMMMMMMMDCCCLXXXVIII");
         TEST_EQUAL(format_str(9999, "r"), "MMMMMMMMMCMXCIX");
 
-        static constexpr auto max_int128_t = 0x7fffffffffffffffffffffffffffffff_s128;
-        static constexpr auto max_uint128_t = 0xffffffffffffffffffffffffffffffff_u128;
-
-        TEST_EQUAL(format_str(0_s128), "0");
-        TEST_EQUAL(format_str(42_s128), "42");
-        TEST_EQUAL(format_str(-42_s128), "-42");
-        TEST_EQUAL(format_str(max_int128_t), "170141183460469231731687303715884105727");
-        TEST_EQUAL(format_str(max_int128_t, "n"), "170141183460469231731687303715884105727");
-        TEST_EQUAL(format_str(max_int128_t, "b"), u8string(127, '1'));
-        TEST_EQUAL(format_str(max_int128_t, "x"), "7fffffffffffffffffffffffffffffff");
-        TEST_EQUAL(format_str(max_int128_t, "40"), "0170141183460469231731687303715884105727");
-        TEST_EQUAL(format_str(max_int128_t, "x40"), "000000007fffffffffffffffffffffffffffffff");
-        TEST_EQUAL(format_str(0_u128), "0");
-        TEST_EQUAL(format_str(42_u128), "42");
-        TEST_EQUAL(format_str(max_uint128_t), "340282366920938463463374607431768211455");
-        TEST_EQUAL(format_str(max_uint128_t, "n"), "340282366920938463463374607431768211455");
-        TEST_EQUAL(format_str(max_uint128_t, "b"), u8string(128, '1'));
-        TEST_EQUAL(format_str(max_uint128_t, "x"), "ffffffffffffffffffffffffffffffff");
-        TEST_EQUAL(format_str(max_uint128_t, "40"), "0340282366920938463463374607431768211455");
-        TEST_EQUAL(format_str(max_uint128_t, "x40"), "00000000ffffffffffffffffffffffffffffffff");
-
     }
 
     void check_floating_point_formatting() {

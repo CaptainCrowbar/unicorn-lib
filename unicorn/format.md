@@ -33,7 +33,7 @@ listed here; their behaviour is described in more detail below.
 
 * <!-- TEXT --> `bool`
 * `char`, `char16_t`, `char32_t`, `wchar_t`
-* `signed char`, `unsigned char`, `short`, `unsigned short`, `int`, `unsigned`, `long`, `unsigned long`, `long long`, `unsigned long long`, `int128_t`, `uint128_t`
+* `signed char`, `unsigned char`, `short`, `unsigned short`, `int`, `unsigned`, `long`, `unsigned long`, `long long`, `unsigned long long`
 * `float`, `double`, `long double`
 * `[const] char*`, `[const] char16_t*`, `[const] char32_t*`, `[const] wchar_t*`
 * `u8string`, `u16string`, `u32string`, `wstring`
