@@ -208,6 +208,10 @@ namespace {
         v = {"Hello"};                  TEST_EQUAL(str_join(v, "<*>"s), "Hello");
         v = {"Hello","world"};          TEST_EQUAL(str_join(v, "<*>"s), "Hello<*>world");
         v = {"Hello","world","again"};  TEST_EQUAL(str_join(v, "<*>"s), "Hello<*>world<*>again");
+        v.clear();                      TEST_EQUAL(str_join(v, "\n", true), "");
+        v = {"Hello"};                  TEST_EQUAL(str_join(v, "\n", true), "Hello\n");
+        v = {"Hello","world"};          TEST_EQUAL(str_join(v, "\n", true), "Hello\nworld\n");
+        v = {"Hello","world","again"};  TEST_EQUAL(str_join(v, "\n", true), "Hello\nworld\nagain\n");
 
     }
 

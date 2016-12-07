@@ -517,21 +517,17 @@ namespace Unicorn {
     }
 
     template <typename FwdRange>
-    u8string str_join(const FwdRange& r, const u8string& delim) {
+    u8string str_join(const FwdRange& r, const u8string& delim, bool term = false) {
         using std::begin;
         using std::end;
-        u8string s;
-        auto i = begin(r), e = end(r);
-        if (i != e) {
-            s = *i;
-            ++i;
+        u8string dst;
+        for (auto& s: r) {
+            dst += s;
+            dst += delim;
         }
-        while (i != e) {
-            s += delim;
-            s += *i;
-            ++i;
-        }
-        return s;
+        if (! term && ! dst.empty() && ! delim.empty())
+            dst.resize(dst.size() - delim.size());
+        return dst;
     }
 
     template <typename FwdRange>

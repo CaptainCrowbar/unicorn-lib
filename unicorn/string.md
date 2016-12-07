@@ -351,11 +351,13 @@ iterators delimiting the newly inserted replacement string within the updated
 `dst`.
 
 * `template <typename FwdRange> u8string` **`str_join`**`(const FwdRange& r)`
-* `template <typename FwdRange> u8string` **`str_join`**`(const FwdRange& r, const u8string& delim)`
+* `template <typename FwdRange> u8string` **`str_join`**`(const FwdRange& r, const u8string& delim, bool term = false)`
 
 These concatenate a list of strings, optionally inserting a delimiter between
 each pair of strings. The value type of the range must be `u8string` or
-convertible to it.
+convertible to it. If the `term` argument is set, an extra delimiter will be
+added after the last element (useful when joining lines to form a text that
+would be expected to end with a line break).
 
 * `u8string` **`str_pad_left`**`(const u8string& str, size_t length, char32_t c = U' ', uint32_t flags = 0)`
 * `void` **`str_pad_left_in`**`(u8string& str, size_t length, char32_t c = U' ', uint32_t flags = 0)`

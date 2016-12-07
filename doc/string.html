@@ -421,11 +421,13 @@ iterators delimiting the newly inserted replacement string within the updated
 <div class="defns">
 <ul>
 <li><code>template &lt;typename FwdRange&gt; u8string</code> <strong><code>str_join</code></strong><code>(const FwdRange&amp; r)</code></li>
-<li><code>template &lt;typename FwdRange&gt; u8string</code> <strong><code>str_join</code></strong><code>(const FwdRange&amp; r, const u8string&amp; delim)</code></li>
+<li><code>template &lt;typename FwdRange&gt; u8string</code> <strong><code>str_join</code></strong><code>(const FwdRange&amp; r, const u8string&amp; delim, bool term = false)</code></li>
 </ul>
 <p>These concatenate a list of strings, optionally inserting a delimiter between
 each pair of strings. The value type of the range must be <code>u8string</code> or
-convertible to it.</p>
+convertible to it. If the <code>term</code> argument is set, an extra delimiter will be
+added after the last element (useful when joining lines to form a text that
+would be expected to end with a line break).</p>
 </div>
 <div class="defns">
 <ul>
