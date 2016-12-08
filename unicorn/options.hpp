@@ -96,7 +96,7 @@ namespace Unicorn {
         template <typename T> T get(const u8string& name) const
             { return UnicornDetail::ArgConv<T>()(str_join(find_values(name), " ")); }
         template <typename T> vector<T> get_list(const u8string& name) const;
-        bool has(const u8string& name) const { return find_index(name, true) != npos; }
+        bool has(const u8string& name) const;
     private:
         using string_list = vector<u8string>;
         enum class help_mode { none, version, usage };
@@ -122,7 +122,7 @@ namespace Unicorn {
         bool help_auto = false;
         option_list opts;
         void add_option(option_type opt);
-        size_t find_index(u8string name, bool found = false) const;
+        size_t find_index(u8string name, bool require = false) const;
         string_list find_values(const u8string& name) const;
         help_mode parse_args(string_list args, uint32_t flags);
         void add_help_version();

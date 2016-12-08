@@ -148,6 +148,11 @@ namespace Unicorn {
         return text;
     }
 
+    bool Options::has(const u8string& name) const {
+        size_t i = find_index(name, true);
+        return i != npos && opts[i].found;
+    }
+
     void Options::add_option(option_type opt) {
         u8string tag = opt.name;
         str_trim_in(opt.name, "-");
@@ -183,7 +188,7 @@ namespace Unicorn {
         opts.push_back(opt);
     }
 
-    size_t Options::find_index(u8string name, bool found) const {
+    size_t Options::find_index(u8string name, bool require) const {
         str_trim_in(name, "-");
         if (name.substr(0, 3) == "no-")
             name.erase(0, 3);
@@ -191,14 +196,16 @@ namespace Unicorn {
             return npos;
         auto i = std::find_if(opts.begin(), opts.end(),
             [=] (const auto& o) { return o.name == name || o.abbrev == name; });
-        if (i == opts.end() || (found && ! i->found))
-            return npos;
-        else
+        if (i != opts.end())
             return i - opts.begin();
+        else if (require)
+            throw SpecError("--" + name);
+        else
+            return npos;
     }
 
     Options::string_list Options::find_values(const u8string& name) const {
-        size_t i = find_index(name);
+        size_t i = find_index(name, true);
         return i != npos ? opts[i].values : string_list();
     }
 

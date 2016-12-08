@@ -58,6 +58,9 @@ namespace {
             TEST_EQUAL(opt2.get<u8string>("alpha"), "ABC");
             TEST(! opt2.has("number"));
             TEST_EQUAL(opt2.get<int>("number"), 123);
+            TEST_THROW_MATCH(opt2.has("nonexistent"), Options::SpecError, ": \"--nonexistent\"$");
+            TEST_THROW_MATCH(opt2.get<u8string>("nonexistent"), Options::SpecError, ": \"--nonexistent\"$");
+            TEST_THROW_MATCH(opt2.get_list<u8string>("nonexistent"), Options::SpecError, ": \"--nonexistent\"$");
         }
 
         TRY(opt2 = opt1);

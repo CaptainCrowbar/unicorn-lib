@@ -215,3 +215,6 @@ behaviour is otherwise the same as `get()`.
 
 The `has()` function simply indicates whether an option was present on the
 command line.
+
+All of these will throw `SpecError` if the `name` string does not match one of
+the registered options.
