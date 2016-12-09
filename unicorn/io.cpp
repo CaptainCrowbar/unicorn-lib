@@ -177,6 +177,7 @@ namespace Unicorn {
         static Mutex stdout_mutex;
         static Mutex stderr_mutex;
         if (bits_set(flags & (err_replace | err_throw)) > 1
+                || bits_set(flags & (io_append | io_protect)) > 1
                 || bits_set(flags & (io_autoline | io_writeline)) > 1
                 || bits_set(flags & (io_crlf | io_lf)) > 1
                 || bits_set(flags & (io_linebuf | io_unbuf)) > 1
@@ -192,6 +193,8 @@ namespace Unicorn {
             impl->handle.reset(stdout, do_nothing);
         else if ((flags & io_stderr) && (file.empty() || file == dashfile))
             impl->handle.reset(stderr, do_nothing);
+        else if ((flags & io_protect) && file_exists(file))
+            throw std::system_error(std::make_error_code(std::errc::file_exists), quote_file(file));
         else
             impl->handle = shared_fopen(file,
                 flags & io_append ? PRI_CSTR("ab", NativeCharacter) : PRI_CSTR("wb", NativeCharacter), true);

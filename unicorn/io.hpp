@@ -35,11 +35,12 @@ namespace Unicorn {
     constexpr uint32_t io_stdout     = 1ul << 12;  // Default to stdout
     constexpr uint32_t io_stderr     = 1ul << 13;  // Default to stderr
     constexpr uint32_t io_append     = 1ul << 14;  // Append to file
-    constexpr uint32_t io_linebuf    = 1ul << 15;  // Line buffered output
-    constexpr uint32_t io_unbuf      = 1ul << 16;  // Unbuffered output
-    constexpr uint32_t io_writeline  = 1ul << 17;  // Write LF after every write
-    constexpr uint32_t io_autoline   = 1ul << 18;  // Write LF if not already there
-    constexpr uint32_t io_mutex      = 1ul << 19;  // Hold per-file mutex while writing
+    constexpr uint32_t io_protect    = 1ul << 15;  // Fail if the file already exists
+    constexpr uint32_t io_linebuf    = 1ul << 16;  // Line buffered output
+    constexpr uint32_t io_unbuf      = 1ul << 17;  // Unbuffered output
+    constexpr uint32_t io_writeline  = 1ul << 18;  // Write LF after every write
+    constexpr uint32_t io_autoline   = 1ul << 19;  // Write LF if not already there
+    constexpr uint32_t io_mutex      = 1ul << 20;  // Hold per-file mutex while writing
 
     // File input iterator
 

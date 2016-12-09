@@ -357,6 +357,8 @@ namespace {
         TRY(load_file(testfile, s));
         TEST_EQUAL(s, "Hello world\nGoodbye\n");
 
+        TEST_THROW(FileWriter(testfile, io_protect), std::system_error);
+
         vec = {"Hello world\n", "Goodbye\n"};
         TRY(writer = FileWriter(testfile, io_lf));
         TRY(std::copy(vec.begin(), vec.end(), writer));

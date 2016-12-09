@@ -133,6 +133,7 @@ Flag                | Description
 **`io_stdout`**     | Write to standard output if the file name is `"-"` or an empty string
 **`io_stderr`**     | Write to standard error if the file name is `"-"` or an empty string
 **`io_append`**     | Open an existing file for appending instead of overwriting it
+**`io_protect`**    | Throw `system_error(file_exists)` if the file already exists
 **`io_bom`**        | Insert a leading byte order mark if the first output string does not contain one
 **`io_lf`**         | Convert all line breaks to `LF`
 **`io_crlf`**       | Convert all line breaks to `CR+LF`

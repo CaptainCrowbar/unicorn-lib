@@ -209,6 +209,10 @@ error handling flags on output.</p>
 <td>Open an existing file for appending instead of overwriting it</td>
 </tr>
 <tr>
+<td><strong><code>io_protect</code></strong></td>
+<td>Throw <code>system_error(file_exists)</code> if the file already exists</td>
+</tr>
+<tr>
 <td><strong><code>io_bom</code></strong></td>
 <td>Insert a leading byte order mark if the first output string does not contain one</td>
 </tr>
