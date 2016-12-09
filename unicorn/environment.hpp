@@ -9,11 +9,22 @@
 
 namespace Unicorn {
 
+    // Constants
+
+    constexpr uint32_t posix_env = 1;
+    constexpr uint32_t windows_env = 2;
+
+    #if defined(PRI_TARGET_UNIX)
+        constexpr uint32_t native_env = posix_env;
+    #else
+        constexpr uint32_t native_env = windows_env;
+    #endif
 
     // Functions
 
     #if defined(PRI_TARGET_UNIX)
 
+        string expand_env(const string& src, uint32_t flags = native_env);
         string get_env(const string& name);
         bool has_env(const string& name);
         void set_env(const string& name, const string& value);
@@ -21,10 +32,15 @@ namespace Unicorn {
 
     #else
 
+        wstring expand_env(const wstring& src, uint32_t flags = native_env);
         wstring get_env(const wstring& name);
         bool has_env(const wstring& name);
         void set_env(const wstring& name, const wstring& value);
         void unset_env(const wstring& name);
+
+        inline u8string expand_env(const u8string& src, uint32_t flags = native_env) {
+            return to_utf8(expand_env(to_wstring(src, err_replace), flags), err_replace);
+        }
 
         inline u8string get_env(const u8string& name) {
             return to_utf8(get_env(to_wstring(name, err_replace)), err_replace);
@@ -72,12 +88,14 @@ namespace Unicorn {
         Environment& operator=(const Environment& env);
         Environment& operator=(Environment&& env) noexcept;
         NativeString operator[](const NativeString& name) { return get(name); }
+        NativeString expand(const NativeString& src, uint32_t flags = native_env);
         NativeString get(const NativeString& name);
         bool has(const NativeString& name);
         void set(const NativeString& name, const NativeString& value);
         void unset(const NativeString& name);
         #if defined(PRI_TARGET_WINDOWS)
             u8string operator[](const u8string& name) { return get(name); }
+            u8string expand(const u8string& src, uint32_t flags = native_env);
             u8string get(const u8string& name);
             bool has(const u8string& name);
             void set(const u8string& name, const u8string& value);

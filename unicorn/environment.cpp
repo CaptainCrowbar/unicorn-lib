@@ -30,9 +30,106 @@ namespace Unicorn {
                 throw std::invalid_argument("Invalid environment variable value");
         }
 
+        template <typename C>
+        basic_string<C> expand_posix_var(const basic_string<C>& src, size_t& ofs, Environment* env) {
+            using S = basic_string<C>;
+            if (src.size() - ofs == 1) {
+                ++ofs;
+                return "$";
+            }
+            S name;
+            size_t end = ofs;
+            if (src[ofs + 1] == '$') {
+                ofs += 2;
+                return "$";
+            } else if (src[ofs + 1] == '{') {
+                end = src.find('}', ofs + 2);
+                if (end == npos) {
+                    ofs += 2;
+                    return "${";
+                }
+                name = src.substr(ofs + 2, end - ofs - 2);
+                ofs = end + 1;
+            } else {
+                size_t end = ofs + 1;
+                while (end < src.size() && char_is_alphanumeric_w(src[end]))
+                    ++end;
+                if (end - ofs == 1) {
+                    ++ofs;
+                    return "$";
+                }
+                name = src.substr(ofs + 1, end - ofs - 1);
+                ofs = end;
+            }
+            if (env)
+                return env->get(name);
+            else
+                return get_env(name);
+        }
+
+        template <typename C>
+        basic_string<C> expand_windows_var(const basic_string<C>& src, size_t& ofs, Environment* env) {
+            using S = basic_string<C>;
+            if (src.size() - ofs == 1) {
+                ++ofs;
+                return "%";
+            }
+            S name;
+            size_t end = ofs;
+            if (src[ofs + 1] == '%') {
+                ofs += 2;
+                return "%";
+            } else {
+                end = src.find('%', ofs + 1);
+                if (end == npos) {
+                    ++ofs;
+                    return "%";
+                }
+                name = src.substr(ofs + 1, end - ofs - 1);
+                ofs = end + 1;
+            }
+            if (env)
+                return env->get(name);
+            else
+                return get_env(name);
+        }
+
+        template <typename C>
+        basic_string<C> do_expand_env(const basic_string<C>& src, uint32_t flags, Environment* env) {
+            using S = basic_string<C>;
+            S delims;
+            if (flags & posix_env)
+                delims += C('$');
+            if (flags & windows_env)
+                delims += C('%');
+            if (delims.empty() || src.empty())
+                return src;
+            S dst;
+            size_t i = 0;
+            while (i < src.size()) {
+                size_t j = src.find_first_of(delims, i);
+                if (j == npos) {
+                    dst.append(src, i, npos);
+                    break;
+                }
+                if (j > i)
+                    dst.append(src, i, j - i);
+                if (src[j] == '$')
+                    dst += expand_posix_var(src, j, env);
+                else
+                    dst += expand_windows_var(src, j, env);
+                i = j;
+            }
+            return dst;
+        }
+
     }
 
     #if defined(PRI_TARGET_UNIX)
+
+        string expand_env(const string& src, uint32_t flags) {
+            return do_expand_env(src, flags, nullptr);
+        }
 
         string get_env(const string& name) {
             check_env(name);
@@ -61,6 +158,10 @@ namespace Unicorn {
         }
 
     #else
+
+        wstring expand_env(const wstring& src, uint32_t flags) {
+            return do_expand_env(src, flags, nullptr);
+        }
 
         wstring get_env(const wstring& name) {
             check_env(name);
@@ -118,6 +219,10 @@ namespace Unicorn {
         return *this;
     }
 
+    NativeString Environment::expand(const NativeString& src, uint32_t flags) {
+        return do_expand_env(src, flags, this);
+    }
+
     NativeString Environment::get(const NativeString& name) {
         auto it = map.find(name);
         return it == map.end() ? NativeString() : it->second;
@@ -138,6 +243,10 @@ namespace Unicorn {
     }
 
     #if defined(PRI_TARGET_WINDOWS)
+
+        u8string Environment::expand(const u8string& src, uint32_t flags) {
+            return do_expand_env(src, flags, this);
+        }
 
         u8string Environment::get(const u8string& name) {
             return to_utf8(get(to_wstring(name)));

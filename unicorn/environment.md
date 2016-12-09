@@ -36,12 +36,34 @@ The native environment variable APIs are usually not threadsafe; all of the
 functions in this module ensure thread safety internally by locking a common
 global mutex.
 
+## Constants ##
+
+`constexpr uint32_t` **`posix_env`**
+`constexpr uint32_t` **`windows_env`**
+`constexpr uint32_t` **`native_env`**
+
+Bitmask constants indicating how environment variable expansion is to be done
+in `expand_env()` and `Environment::expand()`. The `native_env` constant will
+be equal to either `posix_env` or `windows_env`, depending on the operating
+system.
+
 ## Functions ##
 
 All of these functions can throw `std::invalid_argument` if an environment
 variable name passed in is empty or contains an equals sign, or
 `std::system_error` if anything goes wrong with the underlying system API
 call.
+
+* `NativeString` **`expand_env`**`(const NativeString& src, uint32_t flags = native_env)`
+* `u8string` **`expand_env`**`(const u8string& src, uint32_t flags = native_env)`
+
+Expand environment variable references in a string. The `flags` argument
+indicates whether to follow the Posix convention (`"$VAR"` or `"${VAR}"`) or
+the Windows convention (`"%VAR%"`); the flags can be combined to recognise
+both. Nonexistent environment variables will be replaced with an empty string.
+In the absence of braces, a Posix variable name is assumed be the longest
+substring of alphanumeric characters (including the underscore) following the
+dollar sign.
 
 * `NativeString` **`get_env`**`(const NativeString& name)`
 * `u8string` **`get_env`**`(const u8string& name)`
@@ -93,6 +115,8 @@ constructed `Environment` object will be empty.
 
 * `NativeString Environment::`**`operator[]`**`(const NativeString& name)`
 * `u8string Environment::`**`operator[]`**`(const u8string& name)`
+* `NativeString Environment::`**`expand`**`(const NativeString& src, uint32_t flags = native_env)`
+* `u8string Environment::`**`expand`**`(const u8string& src, uint32_t flags = native_env)`
 * `NativeString Environment::`**`get`**`(const NativeString& name)`
 * `u8string Environment::`**`get`**`(const u8string& name)`
 * `bool Environment::`**`has`**`(const NativeString& name)`
