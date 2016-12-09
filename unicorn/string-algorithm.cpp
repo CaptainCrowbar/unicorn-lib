@@ -15,10 +15,10 @@ namespace Unicorn {
         if (n == 0)
             return 0;
         size_t pos = start + n;
-        if (! is_following_unit(s1[pos]) && ! is_following_unit(s2[pos]))
+        if (! is_nonstart_unit(s1[pos]) && ! is_nonstart_unit(s2[pos]))
             return n;
         --pos;
-        while (pos > start && is_following_unit(s1[pos]))
+        while (pos > start && is_nonstart_unit(s1[pos]))
             --pos;
         return pos - start;
     }

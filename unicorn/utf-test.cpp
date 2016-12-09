@@ -183,52 +183,52 @@ namespace {
             }
         }
 
-        c = '\x00';  TEST(is_single_unit(c));    TEST(! is_start_unit(c));  TEST(! is_following_unit(c));  TEST(! is_invalid_unit(c));
-        c = '\x7f';  TEST(is_single_unit(c));    TEST(! is_start_unit(c));  TEST(! is_following_unit(c));  TEST(! is_invalid_unit(c));
-        c = '\x80';  TEST(! is_single_unit(c));  TEST(! is_start_unit(c));  TEST(is_following_unit(c));    TEST(! is_invalid_unit(c));
-        c = '\xbf';  TEST(! is_single_unit(c));  TEST(! is_start_unit(c));  TEST(is_following_unit(c));    TEST(! is_invalid_unit(c));
-        c = '\xc0';  TEST(! is_single_unit(c));  TEST(! is_start_unit(c));  TEST(! is_following_unit(c));  TEST(is_invalid_unit(c));
-        c = '\xc1';  TEST(! is_single_unit(c));  TEST(! is_start_unit(c));  TEST(! is_following_unit(c));  TEST(is_invalid_unit(c));
-        c = '\xc2';  TEST(! is_single_unit(c));  TEST(is_start_unit(c));    TEST(! is_following_unit(c));  TEST(! is_invalid_unit(c));
-        c = '\xf4';  TEST(! is_single_unit(c));  TEST(is_start_unit(c));    TEST(! is_following_unit(c));  TEST(! is_invalid_unit(c));
-        c = '\xf5';  TEST(! is_single_unit(c));  TEST(! is_start_unit(c));  TEST(! is_following_unit(c));  TEST(is_invalid_unit(c));
-        c = '\xff';  TEST(! is_single_unit(c));  TEST(! is_start_unit(c));  TEST(! is_following_unit(c));  TEST(is_invalid_unit(c));
+        c = '\x00';  TEST(is_single_unit(c));    TEST(! is_start_unit(c));  TEST(! is_nonstart_unit(c));  TEST(! is_invalid_unit(c));
+        c = '\x7f';  TEST(is_single_unit(c));    TEST(! is_start_unit(c));  TEST(! is_nonstart_unit(c));  TEST(! is_invalid_unit(c));
+        c = '\x80';  TEST(! is_single_unit(c));  TEST(! is_start_unit(c));  TEST(is_nonstart_unit(c));    TEST(! is_invalid_unit(c));
+        c = '\xbf';  TEST(! is_single_unit(c));  TEST(! is_start_unit(c));  TEST(is_nonstart_unit(c));    TEST(! is_invalid_unit(c));
+        c = '\xc0';  TEST(! is_single_unit(c));  TEST(! is_start_unit(c));  TEST(! is_nonstart_unit(c));  TEST(is_invalid_unit(c));
+        c = '\xc1';  TEST(! is_single_unit(c));  TEST(! is_start_unit(c));  TEST(! is_nonstart_unit(c));  TEST(is_invalid_unit(c));
+        c = '\xc2';  TEST(! is_single_unit(c));  TEST(is_start_unit(c));    TEST(! is_nonstart_unit(c));  TEST(! is_invalid_unit(c));
+        c = '\xf4';  TEST(! is_single_unit(c));  TEST(is_start_unit(c));    TEST(! is_nonstart_unit(c));  TEST(! is_invalid_unit(c));
+        c = '\xf5';  TEST(! is_single_unit(c));  TEST(! is_start_unit(c));  TEST(! is_nonstart_unit(c));  TEST(is_invalid_unit(c));
+        c = '\xff';  TEST(! is_single_unit(c));  TEST(! is_start_unit(c));  TEST(! is_nonstart_unit(c));  TEST(is_invalid_unit(c));
 
-        t = 0;       TEST(is_single_unit(t));    TEST(! is_start_unit(t));  TEST(! is_following_unit(t));  TEST(! is_invalid_unit(t));
-        t = 0xd7ff;  TEST(is_single_unit(t));    TEST(! is_start_unit(t));  TEST(! is_following_unit(t));  TEST(! is_invalid_unit(t));
-        t = 0xd800;  TEST(! is_single_unit(t));  TEST(is_start_unit(t));    TEST(! is_following_unit(t));  TEST(! is_invalid_unit(t));
-        t = 0xdbff;  TEST(! is_single_unit(t));  TEST(is_start_unit(t));    TEST(! is_following_unit(t));  TEST(! is_invalid_unit(t));
-        t = 0xdc00;  TEST(! is_single_unit(t));  TEST(! is_start_unit(t));  TEST(is_following_unit(t));    TEST(! is_invalid_unit(t));
-        t = 0xdfff;  TEST(! is_single_unit(t));  TEST(! is_start_unit(t));  TEST(is_following_unit(t));    TEST(! is_invalid_unit(t));
-        t = 0xe000;  TEST(is_single_unit(t));    TEST(! is_start_unit(t));  TEST(! is_following_unit(t));  TEST(! is_invalid_unit(t));
-        t = 0xffff;  TEST(is_single_unit(t));    TEST(! is_start_unit(t));  TEST(! is_following_unit(t));  TEST(! is_invalid_unit(t));
+        t = 0;       TEST(is_single_unit(t));    TEST(! is_start_unit(t));  TEST(! is_nonstart_unit(t));  TEST(! is_invalid_unit(t));
+        t = 0xd7ff;  TEST(is_single_unit(t));    TEST(! is_start_unit(t));  TEST(! is_nonstart_unit(t));  TEST(! is_invalid_unit(t));
+        t = 0xd800;  TEST(! is_single_unit(t));  TEST(is_start_unit(t));    TEST(! is_nonstart_unit(t));  TEST(! is_invalid_unit(t));
+        t = 0xdbff;  TEST(! is_single_unit(t));  TEST(is_start_unit(t));    TEST(! is_nonstart_unit(t));  TEST(! is_invalid_unit(t));
+        t = 0xdc00;  TEST(! is_single_unit(t));  TEST(! is_start_unit(t));  TEST(is_nonstart_unit(t));    TEST(! is_invalid_unit(t));
+        t = 0xdfff;  TEST(! is_single_unit(t));  TEST(! is_start_unit(t));  TEST(is_nonstart_unit(t));    TEST(! is_invalid_unit(t));
+        t = 0xe000;  TEST(is_single_unit(t));    TEST(! is_start_unit(t));  TEST(! is_nonstart_unit(t));  TEST(! is_invalid_unit(t));
+        t = 0xffff;  TEST(is_single_unit(t));    TEST(! is_start_unit(t));  TEST(! is_nonstart_unit(t));  TEST(! is_invalid_unit(t));
 
-        u = 0;       TEST(is_single_unit(u));    TEST(! is_start_unit(u));  TEST(! is_following_unit(u));  TEST(! is_invalid_unit(u));
-        u = 0xd7ff;  TEST(is_single_unit(u));    TEST(! is_start_unit(u));  TEST(! is_following_unit(u));  TEST(! is_invalid_unit(u));
-        u = 0xd800;  TEST(! is_single_unit(u));  TEST(! is_start_unit(u));  TEST(! is_following_unit(u));  TEST(is_invalid_unit(u));
-        u = 0xdfff;  TEST(! is_single_unit(u));  TEST(! is_start_unit(u));  TEST(! is_following_unit(u));  TEST(is_invalid_unit(u));
-        u = 0xe000;  TEST(is_single_unit(u));    TEST(! is_start_unit(u));  TEST(! is_following_unit(u));  TEST(! is_invalid_unit(u));
-        u = 0xffff;  TEST(is_single_unit(u));    TEST(! is_start_unit(u));  TEST(! is_following_unit(u));  TEST(! is_invalid_unit(u));
+        u = 0;       TEST(is_single_unit(u));    TEST(! is_start_unit(u));  TEST(! is_nonstart_unit(u));  TEST(! is_invalid_unit(u));
+        u = 0xd7ff;  TEST(is_single_unit(u));    TEST(! is_start_unit(u));  TEST(! is_nonstart_unit(u));  TEST(! is_invalid_unit(u));
+        u = 0xd800;  TEST(! is_single_unit(u));  TEST(! is_start_unit(u));  TEST(! is_nonstart_unit(u));  TEST(is_invalid_unit(u));
+        u = 0xdfff;  TEST(! is_single_unit(u));  TEST(! is_start_unit(u));  TEST(! is_nonstart_unit(u));  TEST(is_invalid_unit(u));
+        u = 0xe000;  TEST(is_single_unit(u));    TEST(! is_start_unit(u));  TEST(! is_nonstart_unit(u));  TEST(! is_invalid_unit(u));
+        u = 0xffff;  TEST(is_single_unit(u));    TEST(! is_start_unit(u));  TEST(! is_nonstart_unit(u));  TEST(! is_invalid_unit(u));
 
-        w = 0;       TEST(is_single_unit(w));    TEST(! is_start_unit(w));  TEST(! is_following_unit(w));  TEST(! is_invalid_unit(w));
-        w = 0xd7ff;  TEST(is_single_unit(w));    TEST(! is_start_unit(w));  TEST(! is_following_unit(w));  TEST(! is_invalid_unit(w));
+        w = 0;       TEST(is_single_unit(w));    TEST(! is_start_unit(w));  TEST(! is_nonstart_unit(w));  TEST(! is_invalid_unit(w));
+        w = 0xd7ff;  TEST(is_single_unit(w));    TEST(! is_start_unit(w));  TEST(! is_nonstart_unit(w));  TEST(! is_invalid_unit(w));
 
         if (sizeof(wchar_t) == 2) {
 
-            w = 0xd800;  TEST(! is_single_unit(w));  TEST(is_start_unit(w));    TEST(! is_following_unit(w));  TEST(! is_invalid_unit(w));
-            w = 0xdbff;  TEST(! is_single_unit(w));  TEST(is_start_unit(w));    TEST(! is_following_unit(w));  TEST(! is_invalid_unit(w));
-            w = 0xdc00;  TEST(! is_single_unit(w));  TEST(! is_start_unit(w));  TEST(is_following_unit(w));    TEST(! is_invalid_unit(w));
-            w = 0xdfff;  TEST(! is_single_unit(w));  TEST(! is_start_unit(w));  TEST(is_following_unit(w));    TEST(! is_invalid_unit(w));
+            w = 0xd800;  TEST(! is_single_unit(w));  TEST(is_start_unit(w));    TEST(! is_nonstart_unit(w));  TEST(! is_invalid_unit(w));
+            w = 0xdbff;  TEST(! is_single_unit(w));  TEST(is_start_unit(w));    TEST(! is_nonstart_unit(w));  TEST(! is_invalid_unit(w));
+            w = 0xdc00;  TEST(! is_single_unit(w));  TEST(! is_start_unit(w));  TEST(is_nonstart_unit(w));    TEST(! is_invalid_unit(w));
+            w = 0xdfff;  TEST(! is_single_unit(w));  TEST(! is_start_unit(w));  TEST(is_nonstart_unit(w));    TEST(! is_invalid_unit(w));
 
         } else {
 
-            w = 0xd800;  TEST(! is_single_unit(w));  TEST(! is_start_unit(w));  TEST(! is_following_unit(w));  TEST(is_invalid_unit(w));
-            w = 0xdfff;  TEST(! is_single_unit(w));  TEST(! is_start_unit(w));  TEST(! is_following_unit(w));  TEST(is_invalid_unit(w));
+            w = 0xd800;  TEST(! is_single_unit(w));  TEST(! is_start_unit(w));  TEST(! is_nonstart_unit(w));  TEST(is_invalid_unit(w));
+            w = 0xdfff;  TEST(! is_single_unit(w));  TEST(! is_start_unit(w));  TEST(! is_nonstart_unit(w));  TEST(is_invalid_unit(w));
 
         }
 
-        w = 0xe000;  TEST(is_single_unit(w));    TEST(! is_start_unit(w));  TEST(! is_following_unit(w));  TEST(! is_invalid_unit(w));
-        w = 0xffff;  TEST(is_single_unit(w));    TEST(! is_start_unit(w));  TEST(! is_following_unit(w));  TEST(! is_invalid_unit(w));
+        w = 0xe000;  TEST(is_single_unit(w));    TEST(! is_start_unit(w));  TEST(! is_nonstart_unit(w));  TEST(! is_invalid_unit(w));
+        w = 0xffff;  TEST(is_single_unit(w));    TEST(! is_start_unit(w));  TEST(! is_nonstart_unit(w));  TEST(! is_invalid_unit(w));
 
     }
 

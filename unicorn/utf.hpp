@@ -168,7 +168,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    bool is_following_unit(C c) {
+    bool is_nonstart_unit(C c) {
         return (sizeof(C) == 1 && uint8_t(c) >= 0x80 && uint8_t(c) <= 0xbf)
             || (sizeof(C) == 2 && char_is_low_surrogate(c));
     }

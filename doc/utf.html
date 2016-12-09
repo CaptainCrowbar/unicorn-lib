@@ -107,7 +107,7 @@ Unicode character.</p>
 <ul>
 <li><code>template &lt;typename C&gt; bool</code> <strong><code>is_single_unit</code></strong><code>(C c)</code> <em>-- This code unit represents a character by itself</em></li>
 <li><code>template &lt;typename C&gt; bool</code> <strong><code>is_start_unit</code></strong><code>(C c)</code> <em>-- This is the first code unit of a multi-unit character</em></li>
-<li><code>template &lt;typename C&gt; bool</code> <strong><code>is_following_unit</code></strong><code>(C c)</code> <em>-- This is the second or subsequent code unit of a multi-unit character</em></li>
+<li><code>template &lt;typename C&gt; bool</code> <strong><code>is_nonstart_unit</code></strong><code>(C c)</code> <em>-- This is the second or subsequent code unit of a multi-unit character</em></li>
 <li><code>template &lt;typename C&gt; bool</code> <strong><code>is_invalid_unit</code></strong><code>(C c)</code> <em>-- This value is not a legal code unit</em></li>
 <li><code>template &lt;typename C&gt; bool</code> <strong><code>is_initial_unit</code></strong><code>(C c)</code> <em>-- Either a single unit or a start unit</em></li>
 </ul>
