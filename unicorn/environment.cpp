@@ -33,20 +33,25 @@ namespace Unicorn {
         template <typename C>
         basic_string<C> expand_posix_var(const basic_string<C>& src, size_t& ofs, Environment* env) {
             using S = basic_string<C>;
+            static constexpr C c_dollar = C('$');
+            static constexpr C c_lbrace = C('{');
+            static constexpr C c_rbrace = C('}');
+            static const S s_dollar = {c_dollar};
+            static const S s_dollar_lbrace = {c_dollar, c_lbrace};
             if (src.size() - ofs == 1) {
                 ++ofs;
-                return "$";
+                return s_dollar;
             }
             S name;
             size_t end = ofs;
-            if (src[ofs + 1] == '$') {
+            if (src[ofs + 1] == c_dollar) {
                 ofs += 2;
-                return "$";
-            } else if (src[ofs + 1] == '{') {
-                end = src.find('}', ofs + 2);
+                return s_dollar;
+            } else if (src[ofs + 1] == c_lbrace) {
+                end = src.find(c_rbrace, ofs + 2);
                 if (end == npos) {
                     ofs += 2;
-                    return "${";
+                    return s_dollar_lbrace;
                 }
                 name = src.substr(ofs + 2, end - ofs - 2);
                 ofs = end + 1;
@@ -56,7 +61,7 @@ namespace Unicorn {
                     ++end;
                 if (end - ofs == 1) {
                     ++ofs;
-                    return "$";
+                    return s_dollar;
                 }
                 name = src.substr(ofs + 1, end - ofs - 1);
                 ofs = end;
@@ -70,20 +75,22 @@ namespace Unicorn {
         template <typename C>
         basic_string<C> expand_windows_var(const basic_string<C>& src, size_t& ofs, Environment* env) {
             using S = basic_string<C>;
+            static constexpr C c_percent = C('%');
+            static const S s_percent = {c_percent};
             if (src.size() - ofs == 1) {
                 ++ofs;
-                return "%";
+                return s_percent;
             }
             S name;
             size_t end = ofs;
-            if (src[ofs + 1] == '%') {
+            if (src[ofs + 1] == c_percent) {
                 ofs += 2;
-                return "%";
+                return s_percent;
             } else {
-                end = src.find('%', ofs + 1);
+                end = src.find(c_percent, ofs + 1);
                 if (end == npos) {
                     ++ofs;
-                    return "%";
+                    return s_percent;
                 }
                 name = src.substr(ofs + 1, end - ofs - 1);
                 ofs = end + 1;
@@ -97,11 +104,13 @@ namespace Unicorn {
         template <typename C>
         basic_string<C> do_expand_env(const basic_string<C>& src, uint32_t flags, Environment* env) {
             using S = basic_string<C>;
+            static constexpr C c_dollar = C('$');
+            static constexpr C c_percent = C('%');
             S delims;
             if (flags & posix_env)
-                delims += C('$');
+                delims += c_dollar;
             if (flags & windows_env)
-                delims += C('%');
+                delims += c_percent;
             if (delims.empty() || src.empty())
                 return src;
             S dst;
@@ -114,7 +123,7 @@ namespace Unicorn {
                 }
                 if (j > i)
                     dst.append(src, i, j - i);
-                if (src[j] == '$')
+                if (src[j] == c_dollar)
                     dst += expand_posix_var(src, j, env);
                 else
                     dst += expand_windows_var(src, j, env);
