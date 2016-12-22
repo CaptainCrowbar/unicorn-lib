@@ -138,6 +138,7 @@ namespace Unicorn {
         template <typename C> static u8string arg_convert(const basic_string<C>& str, uint32_t /*flags*/)
             { return to_utf8(str); }
         static u8string arg_convert(const string& str, uint32_t flags);
+        static void add_arg_to_opt(const u8string& arg, option_type& opt);
         static void unquote(const u8string& src, string_list& dst);
     };
 

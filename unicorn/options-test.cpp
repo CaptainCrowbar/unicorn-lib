@@ -330,8 +330,8 @@ namespace {
     void check_argument_patterns() {
 
         Options opt1("App");
-        TRY(opt1.add("alpha", "Alpha", opt_default="Hello", opt_pattern="[[:alpha:]]+"));
-        TRY(opt1.add("number", "Number", opt_default="42", opt_pattern="\\d+"));
+        TRY(opt1.add("alpha", "Alpha", opt_abbrev="a", opt_anon, opt_default="Hello", opt_multi, opt_pattern="[[:alpha:]]+"));
+        TRY(opt1.add("number", "Number", opt_abbrev="n", opt_default="42", opt_multi, opt_pattern="\\d+"));
         TEST_THROW_MATCH(opt1.add("word", "Word", opt_default="*", opt_pattern="\\w+"), Options::SpecError, ": \"word\"$");
 
         Options opt2("Blank");
@@ -344,12 +344,30 @@ namespace {
         TEST_EQUAL(opt2.get<int>("number"), 123);
 
         TRY(opt2 = opt1);
+        cmdline = "app abc -n 123";
+        TEST(! opt2.parse(cmdline, nowhere));
+        TEST_EQUAL(opt2.get<u8string>("alpha"), "abc");
+        TEST_EQUAL(opt2.get<int>("number"), 123);
+
+        TRY(opt2 = opt1);
         cmdline = "app --alpha 123";
         TEST_THROW_MATCH(opt2.parse(cmdline), Options::CommandError, ": \"--alpha\", \"123\"$");
 
         TRY(opt2 = opt1);
         cmdline = "app --number abc";
         TEST_THROW_MATCH(opt2.parse(cmdline), Options::CommandError, ": \"--number\", \"abc\"$");
+
+        TRY(opt2 = opt1);
+        cmdline = "app -a abc 123 -n 456";
+        TEST_THROW_MATCH(opt2.parse(cmdline), Options::CommandError, ": \"--alpha\", \"123\"$");
+
+        TRY(opt2 = opt1);
+        cmdline = "app -a abc -n 123 def";
+        TEST_THROW_MATCH(opt2.parse(cmdline), Options::CommandError, ": \"--number\", \"def\"$");
+
+        TRY(opt2 = opt1);
+        cmdline = "app abc 123";
+        TEST_THROW_MATCH(opt2.parse(cmdline), Options::CommandError, ": \"--alpha\", \"123\"$");
 
         opt1 = Options("App");
         TRY(opt1.add("int", "Integer", opt_int, opt_abbrev="i"));

@@ -324,9 +324,9 @@ namespace Unicorn {
             opt.found = true;
             if (opt.is_boolean) {
                 if (args[a].substr(0, 5) == "--no-")
-                    opt.values.push_back("0");
+                    add_arg_to_opt("0", opt);
                 else
-                    opt.values.push_back("1");
+                    add_arg_to_opt("1", opt);
                 args.erase(args.begin() + a);
             } else {
                 size_t n = 1, max_n = 1;
@@ -334,12 +334,8 @@ namespace Unicorn {
                     max_n = args.size() - a;
                 else
                     max_n = std::min(size_t(2), args.size() - a);
-                for (; n < max_n && arg_type(args[a + n]) == is_argument; ++n) {
-                    auto& arg(args[a + n]);
-                    if (! opt.pattern.empty() && (opt.is_required || ! arg.empty()) && ! opt.pattern.match(arg))
-                        throw CommandError("Invalid argument to option", args[a], arg);
-                    opt.values.push_back(arg);
-                }
+                for (; n < max_n && arg_type(args[a + n]) == is_argument; ++n)
+                    add_arg_to_opt(args[a + n], opt);
                 args.erase(args.begin() + a, args.begin() + a + n);
             }
         }
@@ -350,16 +346,13 @@ namespace Unicorn {
         for (auto& opt: opts) {
             if (args.empty())
                 break;
-            if (opt.is_anon) {
-                opt.found = true;
-                if (opt.is_multiple) {
-                    opt.values.insert(opt.values.end(), args.begin(), args.end());
-                    args.clear();
-                } else {
-                    opt.values.push_back(args[0]);
-                    args.erase(args.begin());
-                }
-            }
+            if (! opt.is_anon)
+                continue;
+            opt.found = true;
+            size_t n = opt.is_multiple ? args.size() : 1;
+            for (size_t i = 0; i < n; ++i)
+                add_arg_to_opt(args[i], opt);
+            args.erase(args.begin(), args.begin() + n);
         }
         if (! args.empty())
             throw CommandError("Unexpected argument", args[0]);
@@ -374,7 +367,7 @@ namespace Unicorn {
     void Options::supply_defaults() {
         for (auto& opt: opts)
             if (opt.values.empty() && ! opt.defval.empty())
-                opt.values.push_back(opt.defval);
+                add_arg_to_opt(opt.defval, opt);
     }
 
     void Options::send_help(std::ostream& out, help_mode mode) const {
@@ -394,6 +387,12 @@ namespace Unicorn {
         u8string utf8;
         import_string(str, utf8, local_encoding());
         return utf8;
+    }
+
+    void Options::add_arg_to_opt(const u8string& arg, option_type& opt) {
+        if (! opt.pattern.empty() && (opt.is_required || ! arg.empty()) && ! opt.pattern.match(arg))
+            throw CommandError("Invalid argument to option", "--" + opt.name, arg);
+        opt.values.push_back(arg);
     }
 
     void Options::unquote(const u8string& src, string_list& dst) {
