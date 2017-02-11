@@ -407,6 +407,9 @@ namespace Unicorn {
     void str_remove_in(u8string& str, const u8string& chars);
     u8string str_replace(const u8string& str, const u8string& target, const u8string& sub, size_t n = npos);
     void str_replace_in(u8string& str, const u8string& target, const u8string& sub, size_t n = npos);
+    vector<u8string> str_splitv(const u8string& src);
+    vector<u8string> str_splitv_at(const u8string& src, const u8string& delim);
+    vector<u8string> str_splitv_by(const u8string& src, const u8string& delim);
     u8string str_squeeze(const u8string& str);
     u8string str_squeeze(const u8string& str, const u8string& chars);
     u8string str_squeeze_trim(const u8string& str);

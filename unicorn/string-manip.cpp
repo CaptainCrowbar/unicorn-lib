@@ -553,6 +553,24 @@ namespace Unicorn {
         str.swap(result);
     }
 
+    vector<u8string> str_splitv(const u8string& src) {
+        vector<u8string> v;
+        str_split(src, append(v));
+        return v;
+    }
+
+    vector<u8string> str_splitv_at(const u8string& src, const u8string& delim) {
+        vector<u8string> v;
+        str_split_at(src, append(v), delim);
+        return v;
+    }
+
+    vector<u8string> str_splitv_by(const u8string& src, const u8string& delim) {
+        vector<u8string> v;
+        str_split_by(src, append(v), delim);
+        return v;
+    }
+
     u8string str_squeeze(const u8string& str) {
         u8string dst;
         squeeze_helper(str, dst, false);

@@ -37,6 +37,28 @@ namespace {
         TRY(str_split_by("“”,“€uro”,“∈lement”"s, overwrite(v), "“”,"));   TEST_EQUAL(v.size(), 2);  TEST_EQUAL(str_join(v, "/"), "€uro/∈lement");
         TRY(str_split_by("“”,“€uro”,“∈lement”"s, overwrite(v), "“”,"s));  TEST_EQUAL(v.size(), 2);  TEST_EQUAL(str_join(v, "/"), "€uro/∈lement");
 
+        TRY(v = str_splitv(""s));                      TEST_EQUAL(v.size(), 0);  TEST_EQUAL(str_join(v, "/"), "");
+        TRY(v = str_splitv("Hello"s));                 TEST_EQUAL(v.size(), 1);  TEST_EQUAL(str_join(v, "/"), "Hello");
+        TRY(v = str_splitv("Hello world"s));           TEST_EQUAL(v.size(), 2);  TEST_EQUAL(str_join(v, "/"), "Hello/world");
+        TRY(v = str_splitv("\t Hello \t world \t"s));  TEST_EQUAL(v.size(), 2);  TEST_EQUAL(str_join(v, "/"), "Hello/world");
+
+        TRY(v = str_splitv_at(""s, "<>"));                        TEST_EQUAL(v.size(), 1);  TEST_EQUAL(str_join(v, "/"), "");
+        TRY(v = str_splitv_at("<>"s, "<>"));                      TEST_EQUAL(v.size(), 2);  TEST_EQUAL(str_join(v, "/"), "/");
+        TRY(v = str_splitv_at("<><>"s, "<>"));                    TEST_EQUAL(v.size(), 3);  TEST_EQUAL(str_join(v, "/"), "//");
+        TRY(v = str_splitv_at("Hello"s, "<>"));                   TEST_EQUAL(v.size(), 1);  TEST_EQUAL(str_join(v, "/"), "Hello");
+        TRY(v = str_splitv_at("<>Hello<>"s, "<>"));               TEST_EQUAL(v.size(), 3);  TEST_EQUAL(str_join(v, "/"), "/Hello/");
+        TRY(v = str_splitv_at("<><>Hello<><>"s, "<>"));           TEST_EQUAL(v.size(), 5);  TEST_EQUAL(str_join(v, "/"), "//Hello//");
+        TRY(v = str_splitv_at("Hello<>world"s, "<>"));            TEST_EQUAL(v.size(), 2);  TEST_EQUAL(str_join(v, "/"), "Hello/world");
+        TRY(v = str_splitv_at("<>Hello<>world<>"s, "<>"));        TEST_EQUAL(v.size(), 4);  TEST_EQUAL(str_join(v, "/"), "/Hello/world/");
+        TRY(v = str_splitv_at("<><>Hello<><>world<><>"s, "<>"));  TEST_EQUAL(v.size(), 7);  TEST_EQUAL(str_join(v, "/"), "//Hello//world//");
+
+        TRY(v = str_splitv_by("**Hello**world**"s, "*"));        TEST_EQUAL(v.size(), 2);  TEST_EQUAL(str_join(v, "/"), "Hello/world");
+        TRY(v = str_splitv_by("**Hello**world**"s, "*"s));       TEST_EQUAL(v.size(), 2);  TEST_EQUAL(str_join(v, "/"), "Hello/world");
+        TRY(v = str_splitv_by("*****"s, "@*"));                  TEST_EQUAL(v.size(), 0);  TEST_EQUAL(str_join(v, "/"), "");
+        TRY(v = str_splitv_by("*****"s, "@*"s));                 TEST_EQUAL(v.size(), 0);  TEST_EQUAL(str_join(v, "/"), "");
+        TRY(v = str_splitv_by("“”,“€uro”,“∈lement”"s, "“”,"));   TEST_EQUAL(v.size(), 2);  TEST_EQUAL(str_join(v, "/"), "€uro/∈lement");
+        TRY(v = str_splitv_by("“”,“€uro”,“∈lement”"s, "“”,"s));  TEST_EQUAL(v.size(), 2);  TEST_EQUAL(str_join(v, "/"), "€uro/∈lement");
+
         TRY(str_split_lines(""s, overwrite(v)));              TEST_EQUAL(v.size(), 0);  TEST_EQUAL(str_join(v, "/"), "");
         TRY(str_split_lines("\n"s, overwrite(v)));            TEST_EQUAL(v.size(), 1);  TEST_EQUAL(str_join(v, "/"), "");
         TRY(str_split_lines("\n\n"s, overwrite(v)));          TEST_EQUAL(v.size(), 2);  TEST_EQUAL(str_join(v, "/"), "/");

@@ -414,16 +414,20 @@ are replaced. The string will be returned unchanged if `target` is empty or
 * `template <typename OutIter> void` **`str_split`**`(const u8string& src, OutIter dst)`
 * `template <typename OutIter> void` **`str_split_at`**`(const u8string& src, OutIter dst, const u8string& delim)`
 * `template <typename OutIter> void` **`str_split_by`**`(const u8string& src, OutIter dst, const u8string& delim)`
+* `vector<u8string>` **`str_splitv`**`(const u8string& src)`
+* `vector<u8string>` **`str_splitv_at`**`(const u8string& src, const u8string& delim)`
+* `vector<u8string>` **`str_splitv_by`**`(const u8string& src, const u8string& delim)`
 
 These split a string into substrings, using the specified delimiter to mark
 the substring boundaries, and copying the resulting substrings into the
-destination defined by the output iterator. The `str_split()` function splits
-the string on each contiguous sequence of whitespace characters;
-`str_split_at()` splits it at each occurrence of the `delim` string; and
-`str_split_by()` splits it at each contiguous sequence of characters that are
-in the `delim` list. Nothing will be written if the original source string is
-empty; if the delimiter string is empty (but the source string is not), a
-single string will be written.
+destination defined by the output iterator. The `splitv` versions return a
+vector instead of writing to an existing container. The `str_split[v]()`
+function splits the string on each contiguous sequence of whitespace
+characters; `str_split[v]_at()` splits it at each occurrence of the `delim`
+string; and `str_split[v]_by()` splits it at each contiguous sequence of
+characters that are in the `delim` list. Nothing will be written if the
+original source string is empty; if the delimiter string is empty (but the
+source string is not), a single string will be written.
 
 * `template <typename OutIter> void` **`str_split_lines`**`(const u8string& src, OutIter dst)`
 

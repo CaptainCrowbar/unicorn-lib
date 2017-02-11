@@ -496,16 +496,20 @@ are replaced. The string will be returned unchanged if <code>target</code> is em
 <li><code>template &lt;typename OutIter&gt; void</code> <strong><code>str_split</code></strong><code>(const u8string&amp; src, OutIter dst)</code></li>
 <li><code>template &lt;typename OutIter&gt; void</code> <strong><code>str_split_at</code></strong><code>(const u8string&amp; src, OutIter dst, const u8string&amp; delim)</code></li>
 <li><code>template &lt;typename OutIter&gt; void</code> <strong><code>str_split_by</code></strong><code>(const u8string&amp; src, OutIter dst, const u8string&amp; delim)</code></li>
+<li><code>vector&lt;u8string&gt;</code> <strong><code>str_splitv</code></strong><code>(const u8string&amp; src)</code></li>
+<li><code>vector&lt;u8string&gt;</code> <strong><code>str_splitv_at</code></strong><code>(const u8string&amp; src, const u8string&amp; delim)</code></li>
+<li><code>vector&lt;u8string&gt;</code> <strong><code>str_splitv_by</code></strong><code>(const u8string&amp; src, const u8string&amp; delim)</code></li>
 </ul>
 <p>These split a string into substrings, using the specified delimiter to mark
 the substring boundaries, and copying the resulting substrings into the
-destination defined by the output iterator. The <code>str_split()</code> function splits
-the string on each contiguous sequence of whitespace characters;
-<code>str_split_at()</code> splits it at each occurrence of the <code>delim</code> string; and
-<code>str_split_by()</code> splits it at each contiguous sequence of characters that are
-in the <code>delim</code> list. Nothing will be written if the original source string is
-empty; if the delimiter string is empty (but the source string is not), a
-single string will be written.</p>
+destination defined by the output iterator. The <code>splitv</code> versions return a
+vector instead of writing to an existing container. The <code>str_split[v]()</code>
+function splits the string on each contiguous sequence of whitespace
+characters; <code>str_split[v]_at()</code> splits it at each occurrence of the <code>delim</code>
+string; and <code>str_split[v]_by()</code> splits it at each contiguous sequence of
+characters that are in the <code>delim</code> list. Nothing will be written if the
+original source string is empty; if the delimiter string is empty (but the
+source string is not), a single string will be written.</p>
 </div>
 <div class="defns">
 <ul>
