@@ -5,6 +5,7 @@
 #include <memory>
 #include <stdexcept>
 #include <string>
+#include <type_traits>
 
 PRI_LDLIB(unicorn)
 PRI_LDLIB(pcre)
@@ -59,11 +60,9 @@ namespace Unicorn {
 
     // Basic character types
 
-    template <typename C> struct IsCharacterType { static constexpr bool value = false; };
-    template <> struct IsCharacterType<char> { static constexpr bool value = true; };
-    template <> struct IsCharacterType<char16_t> { static constexpr bool value = true; };
-    template <> struct IsCharacterType<char32_t> { static constexpr bool value = true; };
-    template <> struct IsCharacterType<wchar_t> { static constexpr bool value = true; };
+    template <typename T> constexpr bool is_character_type =
+        std::is_same<T, char>::value || std::is_same<T, char16_t>::value
+        || std::is_same<T, char32_t>::value || std::is_same<T, wchar_t>::value;
 
     #if defined(PRI_TARGET_UNIX)
         using NativeCharacter = char;

@@ -12,15 +12,15 @@ namespace {
 
     void check_character_types() {
 
-        TEST(IsCharacterType<char>::value);
-        TEST(IsCharacterType<char16_t>::value);
-        TEST(IsCharacterType<char32_t>::value);
-        TEST(IsCharacterType<wchar_t>::value);
-        TEST(! IsCharacterType<signed char>::value);
-        TEST(! IsCharacterType<unsigned char>::value);
-        TEST(! IsCharacterType<void>::value);
-        TEST(! IsCharacterType<int>::value);
-        TEST(! IsCharacterType<string>::value);
+        TEST(is_character_type<char>);
+        TEST(is_character_type<char16_t>);
+        TEST(is_character_type<char32_t>);
+        TEST(is_character_type<wchar_t>);
+        TEST(! is_character_type<signed char>);
+        TEST(! is_character_type<unsigned char>);
+        TEST(! is_character_type<void>);
+        TEST(! is_character_type<int>);
+        TEST(! is_character_type<string>);
 
     }
 

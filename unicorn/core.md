@@ -53,11 +53,10 @@ is currently defined only for native Windows builds).
 One of these is defined to indicate which UTF encoding the system's `wstring`
 class uses.
 
-* `template <typename C> struct` **`IsCharacterType`**
-    * `static constexpr bool IsCharacterType::`**`value`**
+* `template <typename T> constexpr bool` **`is_character_type`**
 
-The `value` flag is true if `C` is one of the character types recognized by
-the Unicorn library (`char`, `char16_t`, `char32_t`, or `wchar_t`).
+True if `T` is one of the character types recognized by the Unicorn library
+(`char`, `char16_t`, `char32_t`, or `wchar_t`).
 
 * `using` **`NativeCharacter`** `= [char on Unix, wchar_t on Windows]`
 * `using` **`NativeString`** `= [string on Unix, wstring on Windows]`

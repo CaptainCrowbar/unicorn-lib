@@ -81,13 +81,10 @@ class uses.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; struct</code> <strong><code>IsCharacterType</code></strong><ul>
-<li><code>static constexpr bool IsCharacterType::</code><strong><code>value</code></strong></li>
+<li><code>template &lt;typename T&gt; constexpr bool</code> <strong><code>is_character_type</code></strong></li>
 </ul>
-</li>
-</ul>
-<p>The <code>value</code> flag is true if <code>C</code> is one of the character types recognized by
-the Unicorn library (<code>char</code>, <code>char16_t</code>, <code>char32_t</code>, or <code>wchar_t</code>).</p>
+<p>True if <code>T</code> is one of the character types recognized by the Unicorn library
+(<code>char</code>, <code>char16_t</code>, <code>char32_t</code>, or <code>wchar_t</code>).</p>
 </div>
 <div class="defns">
 <ul>
