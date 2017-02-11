@@ -113,15 +113,15 @@ TEST_MODULE(unicorn, normal) {
 
         auto thread_count = Thread::cpu_threads();
         auto per_thread = norm_tests / thread_count + 1;
-        vector<shared_ptr<Thread>> threads;
+        vector<unique_ptr<Thread>> threads;
         for (size_t base = 0; base < norm_tests; base += per_thread)
-            threads.push_back(make_shared<Thread>([=] { do_main_tests(base, base + per_thread); }));
+            threads.push_back(make_unique<Thread>([=] { do_main_tests(base, base + per_thread); }));
         for (auto& t: threads)
             t->wait();
         threads.clear();
         per_thread = identity_chars.size() / thread_count + 1;
         for (size_t base = 0; base < identity_chars.size(); base += per_thread)
-            threads.push_back(make_shared<Thread>([=] { do_identity_tests(identity_chars, base, base + per_thread); }));
+            threads.push_back(make_unique<Thread>([=] { do_identity_tests(identity_chars, base, base + per_thread); }));
         for (auto& t: threads)
             t->wait();
 
