@@ -64,7 +64,7 @@ namespace Unicorn {
         std::is_same<T, char>::value || std::is_same<T, char16_t>::value
         || std::is_same<T, char32_t>::value || std::is_same<T, wchar_t>::value;
 
-    #if defined(PRI_TARGET_UNIX)
+    #ifdef _XOPEN_SOURCE
         using NativeCharacter = char;
     #else
         #define UNICORN_NATIVE_WCHAR 1

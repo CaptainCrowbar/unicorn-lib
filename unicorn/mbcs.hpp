@@ -13,7 +13,7 @@ namespace Unicorn {
         // These are only exposed in the header to enable testing
 
         using EncodingTag =
-            #if defined(PRI_TARGET_UNIX)
+            #ifdef _XOPEN_SOURCE
                 u8string;
             #else
                 uint32_t;

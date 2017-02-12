@@ -12,7 +12,7 @@
 #include <utility>
 #include <vector>
 
-#if defined(PRI_TARGET_UNIX)
+#ifdef _XOPEN_SOURCE
     #include <sys/stat.h>
 #endif
 
@@ -30,7 +30,7 @@ namespace Unicorn {
 
     // Types
 
-    #if defined(PRI_TARGET_UNIX)
+    #ifdef _XOPEN_SOURCE
 
         struct FileId:
         public LessThanComparable<FileId> {
@@ -53,7 +53,7 @@ namespace Unicorn {
 
     // System dependencies
 
-    #if defined(PRI_TARGET_UNIX)
+    #ifdef _XOPEN_SOURCE
         constexpr char file_delimiter = '/';
         constexpr char native_file_delimiter = '/';
     #else
@@ -65,7 +65,7 @@ namespace Unicorn {
 
     namespace UnicornDetail {
 
-        #if defined(PRI_TARGET_UNIX)
+        #ifdef _XOPEN_SOURCE
 
             inline u8string normalize_path(const u8string& path) {
                 return path;
@@ -98,9 +98,9 @@ namespace Unicorn {
     inline bool is_legal_windows_leaf_name(const u8string& file) { return is_legal_windows_leaf_name(to_wstring(file)); }
     inline bool is_legal_windows_path_name(const u8string& file) { return is_legal_windows_path_name(to_wstring(file)); }
 
-    #if defined(PRI_TARGET_UNIX)
+    #ifdef _XOPEN_SOURCE
 
-        #if defined(PRI_TARGET_APPLE)
+        #ifdef __APPLE__
 
             inline bool is_legal_leaf_name(const u8string& file) { return is_legal_mac_leaf_name(file); }
             inline bool is_legal_path_name(const u8string& file) { return is_legal_mac_path_name(file); }
@@ -155,7 +155,7 @@ namespace Unicorn {
     pair<u8string, u8string> split_path(const u8string& file, uint32_t flags = 0);
     pair<u8string, u8string> split_file(const u8string& file);
 
-    #if defined(PRI_TARGET_WINDOWS)
+    #ifndef _XOPEN_SOURCE
 
         inline wstring file_path(const wstring& file) { return UnicornDetail::normalize_path(file); }
 
@@ -180,7 +180,7 @@ namespace Unicorn {
 
     // File system query functions
 
-    #if defined(PRI_TARGET_UNIX)
+    #ifdef _XOPEN_SOURCE
 
         u8string current_directory();
         bool file_exists(const u8string& file);
@@ -224,7 +224,7 @@ namespace Unicorn {
     void move_file(const NativeString& src, const NativeString& dst, uint32_t flags = 0);
     void remove_file(const NativeString& file, uint32_t flags = 0);
 
-    #if defined(PRI_TARGET_WINDOWS)
+    #ifndef _XOPEN_SOURCE
 
         inline void copy_file(const u8string& src, const u8string& dst, uint32_t flags = 0)
             { return copy_file(to_wstring(src), to_wstring(dst), flags); }
@@ -263,7 +263,7 @@ namespace Unicorn {
     inline Irange<NativeDirectoryIterator> directory(const NativeString& dir, uint32_t flags = 0)
         { return {NativeDirectoryIterator(dir, flags), NativeDirectoryIterator()}; }
 
-    #if defined(PRI_TARGET_UNIX)
+    #ifdef _XOPEN_SOURCE
 
         using DirectoryIterator = NativeDirectoryIterator;
 
@@ -290,6 +290,6 @@ namespace Unicorn {
 
 }
 
-#if defined(PRI_TARGET_UNIX)
+#ifdef _XOPEN_SOURCE
     PRI_DEFINE_STD_HASH(Unicorn::FileId)
 #endif

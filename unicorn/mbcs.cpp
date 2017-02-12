@@ -10,7 +10,7 @@
 #include <map>
 #include <unordered_map>
 
-#if defined(PRI_TARGET_UNIX)
+#ifdef _XOPEN_SOURCE
     #include <iconv.h>
 #else
     #include <windows.h>
@@ -28,7 +28,7 @@ namespace Unicorn {
         using UnicornDetail::guess_utf;
         using UnicornDetail::lookup_encoding;
 
-        #if defined(PRI_TARGET_UNIX)
+        #ifdef _XOPEN_SOURCE
 
             constexpr const char* utf8_tag       = "utf-8";
             constexpr const char* utf16_tag      = "utf-16";
@@ -165,7 +165,7 @@ namespace Unicorn {
             static const auto match_codepage = "(?:cp|dos|ibm|ms|windows)-?(\\d+)"_re_i;
             static const auto match_integer = "\\d+"_re;
             static const auto match_unicode = "(?:cs|x)?(?:iso10646)?((?:ucs|utf)\\d+)(be|le|internal|swapped)?"_re;
-            #if defined(PRI_TARGET_UNIX)
+            #ifdef _XOPEN_SOURCE
                 static const vector<u8string> codepage_prefixes {"cp","dos","ibm","ms","windows-"};
             #endif
             // Check for UTF encodings
@@ -185,7 +185,7 @@ namespace Unicorn {
                 else if (m1 == "utf32" || m1 == "ucs4")
                     return swap ? utf32swap_tag : utf32_tag;
             }
-            #if defined(PRI_TARGET_UNIX)
+            #ifdef _XOPEN_SOURCE
                 // Try using the name directly in iconv()
                 if (valid_iconv(name))
                     return name;
@@ -201,7 +201,7 @@ namespace Unicorn {
             if (match || match_integer.match(current)) {
                 // Name is an integer, presumably a code page
                 auto page = uint32_t(decnum(current));
-                #if defined(PRI_TARGET_UNIX)
+                #ifdef _XOPEN_SOURCE
                     // Look the number up in the {codepage => charset} map
                     csp = map[page];
                     if (! csp) {
@@ -224,7 +224,7 @@ namespace Unicorn {
                 // Look the name up in the {normalized name => charset} map
                 csp = map[smash_name(current, true)];
                 if (! csp) {
-                    #if defined(PRI_TARGET_UNIX)
+                    #ifdef _XOPEN_SOURCE
                         // If not found, try variations against iconv()
                         if (valid_iconv(current))
                             return current;
@@ -239,7 +239,7 @@ namespace Unicorn {
                 }
             }
             // If we reach here, we have identified a charset record
-            #if defined(PRI_TARGET_UNIX)
+            #ifdef _XOPEN_SOURCE
                 // For each name in the charset's name list, try variations against iconv()
                 for (auto& nm: name_range(csp->names))
                     if (valid_iconv(nm))
@@ -263,7 +263,7 @@ namespace Unicorn {
             return EncodingTag();
         }
 
-        #if defined(PRI_TARGET_UNIX)
+        #ifdef _XOPEN_SOURCE
 
             void native_recode(const string& src, string& dst, const u8string& from, const u8string& to,
                     const u8string& tag, uint32_t flags) {
@@ -309,7 +309,7 @@ namespace Unicorn {
                 flags = err_replace;
         }
 
-        #if defined(PRI_TARGET_UNIX)
+        #ifdef _XOPEN_SOURCE
 
             void native_import(const string& src, string& dst, u8string tag, uint32_t flags) {
                 native_recode(src, dst, tag, "utf-8"s, tag, flags);
@@ -507,10 +507,10 @@ namespace Unicorn {
             if (name.empty())
                 throw UnknownEncoding();
             if (flags & mb_strict)
-                #if defined(PRI_TARGET_WINDOWS)
-                    return EncodingTag(decnum(name));
-                #else
+                #ifdef _XOPEN_SOURCE
                     return name;
+                #else
+                    return EncodingTag(decnum(name));
                 #endif
             auto lcname = ascii_lowercase(name);
             if (lcname == "char")
@@ -526,7 +526,7 @@ namespace Unicorn {
                     return it->second;
             }
             auto tag = EncodingTag();
-            #if defined(PRI_TARGET_WINDOWS)
+            #ifdef _WIN32
                 if (lcname.find_first_not_of("0123456789") == npos)
                     tag = lookup_encoding(uint32_t(decnum(lcname)));
             #endif
@@ -545,10 +545,10 @@ namespace Unicorn {
             if (page == 0)
                 throw UnknownEncoding();
             if (flags & mb_strict)
-                #if defined(PRI_TARGET_WINDOWS)
-                    return page;
-                #else
+                #ifdef _XOPEN_SOURCE
                     return dec(page);
+                #else
+                    return page;
                 #endif
             {
                 MutexLock lock(mtx);
@@ -557,7 +557,7 @@ namespace Unicorn {
                     return it->second;
             }
             auto tag = EncodingTag();
-            #if defined(PRI_TARGET_UNIX)
+            #ifdef _XOPEN_SOURCE
                 tag = lookup_encoding(dec(page));
             #else
                 if (page == utf8_tag || page == utf16_tag || page == utf16swap_tag
@@ -608,7 +608,7 @@ namespace Unicorn {
     // Utility functions
 
     u8string local_encoding(const u8string& default_encoding) {
-        #if defined(PRI_TARGET_UNIX)
+        #ifdef _XOPEN_SOURCE
             static constexpr const char* locale_vars[] {"LC_ALL", "LC_CTYPE", "LANG"};
             u8string name;
             for (auto key: locale_vars) {

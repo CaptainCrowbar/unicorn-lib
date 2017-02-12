@@ -12,7 +12,7 @@
 using namespace std::literals;
 using namespace Unicorn;
 
-#if defined(PRI_TARGET_UNIX)
+#ifdef _XOPEN_SOURCE
     #define SLASH "/"
 #else
     #define SLASH "\\\\"
@@ -74,7 +74,7 @@ namespace {
 
     void check_file_name_operations() {
 
-        #if defined(PRI_TARGET_UNIX)
+        #ifdef _XOPEN_SOURCE
 
             TEST(! file_is_absolute(""s));
             TEST(file_is_absolute("/"s));
@@ -229,7 +229,7 @@ namespace {
         TRY(p = split_path(".hello"s));     TEST_EQUAL(p.first, "");        TEST_EQUAL(p.second, ".hello");
         TRY(p = split_file(".hello"s));     TEST_EQUAL(p.first, ".hello");  TEST_EQUAL(p.second, "");
 
-        #if defined(PRI_TARGET_UNIX)
+        #ifdef _XOPEN_SOURCE
 
             TRY(p = split_path("/hello.txt"s));                            TEST_EQUAL(p.first, "/");            TEST_EQUAL(p.second, "hello.txt");
             TRY(p = split_path("/hello.txt"s, fs_fullname));               TEST_EQUAL(p.first, "/");            TEST_EQUAL(p.second, "hello.txt");
@@ -328,12 +328,12 @@ namespace {
 
         u8string cwd = current_directory(), res;
 
-        #if defined(PRI_TARGET_UNIX)
+        #ifdef _XOPEN_SOURCE
             u8string home = cstr(getenv("HOME"));
         #endif
 
         vector<pair<u8string, u8string>> tests = {
-            #if defined(PRI_TARGET_UNIX)
+            #ifdef _XOPEN_SOURCE
                 {  "",             "",                   },
                 {  "Makefile",     cwd + "/Makefile",    },
                 {  ".",            cwd,                  },
@@ -387,7 +387,7 @@ namespace {
         TEST(! file_is_directory("Makefile"s));
         TEST(! file_is_directory(""s));
         TEST(! file_is_directory("no such file"s));
-        #if defined(PRI_TARGET_UNIX)
+        #ifdef _XOPEN_SOURCE
             TEST(file_is_directory("/"s));
         #else
             TEST(file_is_directory("C:\\"s));
@@ -398,7 +398,7 @@ namespace {
         TEST(! file_is_hidden("unicorn"s));
         TEST(! file_is_hidden("Makefile"s));
         TEST(! file_is_hidden("no such file"s));
-        #if defined(PRI_TARGET_UNIX)
+        #ifdef _XOPEN_SOURCE
             TEST(! file_is_hidden("/"s));
         #else
             TEST(! file_is_hidden("C:\\"s));
@@ -409,7 +409,7 @@ namespace {
         TEST(! file_is_symlink("unicorn"s));
         TEST(! file_is_symlink("Makefile"s));
         TEST(! file_is_symlink("no such file"s));
-        #if defined(PRI_TARGET_UNIX)
+        #ifdef _XOPEN_SOURCE
             TEST(! file_is_symlink("/"s));
         #else
             TEST(! file_is_symlink("C:\\"s));

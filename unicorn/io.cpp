@@ -20,7 +20,7 @@ namespace Unicorn {
 
         SharedFile shared_fopen(const NativeString& file, const NativeString& mode, bool check) {
             FILE* f =
-                #if defined(PRI_TARGET_UNIX)
+                #ifdef _XOPEN_SOURCE
                     fopen
                 #else
                     _wfopen

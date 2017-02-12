@@ -103,7 +103,7 @@ TEST_MODULE(unicorn, normal) {
         for (char32_t u = row.key; u <= row.value; ++u)
             identity_chars.push_back(u);
 
-    #if defined(PRI_TARGET_CYGWIN)
+    #ifdef __CYGWIN__
 
         // Multithreaded version seems to have problems on Cygwin
         do_main_tests(0, norm_tests);

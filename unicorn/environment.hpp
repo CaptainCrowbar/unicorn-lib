@@ -14,7 +14,7 @@ namespace Unicorn {
     constexpr uint32_t posix_env = 1;
     constexpr uint32_t windows_env = 2;
 
-    #if defined(PRI_TARGET_UNIX)
+    #ifdef _XOPEN_SOURCE
         constexpr uint32_t native_env = posix_env;
     #else
         constexpr uint32_t native_env = windows_env;
@@ -22,7 +22,7 @@ namespace Unicorn {
 
     // Functions
 
-    #if defined(PRI_TARGET_UNIX)
+    #ifdef _XOPEN_SOURCE
 
         string expand_env(const string& src, uint32_t flags = native_env);
         string get_env(const string& name);
@@ -93,7 +93,7 @@ namespace Unicorn {
         bool has(const NativeString& name);
         void set(const NativeString& name, const NativeString& value);
         void unset(const NativeString& name);
-        #if defined(PRI_TARGET_WINDOWS)
+        #ifndef _XOPEN_SOURCE
             u8string operator[](const u8string& name) { return get(name); }
             u8string expand(const u8string& src, uint32_t flags = native_env);
             u8string get(const u8string& name);

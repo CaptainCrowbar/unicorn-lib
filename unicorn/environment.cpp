@@ -4,7 +4,7 @@
 #include <cstdlib>
 #include <system_error>
 
-#if defined(PRI_TARGET_UNIX)
+#ifdef _XOPEN_SOURCE
     extern char** environ;
 #else
     extern wchar_t** _wenviron;
@@ -134,7 +134,7 @@ namespace Unicorn {
 
     }
 
-    #if defined(PRI_TARGET_UNIX)
+    #ifdef _XOPEN_SOURCE
 
         string expand_env(const string& src, uint32_t flags) {
             return do_expand_env(src, flags, nullptr);
@@ -251,7 +251,7 @@ namespace Unicorn {
         map.erase(name);
     }
 
-    #if defined(PRI_TARGET_WINDOWS)
+    #ifndef _XOPEN_SOURCE
 
         u8string Environment::expand(const u8string& src, uint32_t flags) {
             return do_expand_env(src, flags, this);
@@ -278,7 +278,7 @@ namespace Unicorn {
     void Environment::load() {
         deconstruct();
         auto ptr =
-            #if defined(PRI_TARGET_UNIX)
+            #ifdef _XOPEN_SOURCE
                 environ;
             #else
                 _wenviron;

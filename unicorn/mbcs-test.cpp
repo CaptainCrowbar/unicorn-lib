@@ -6,7 +6,7 @@
 #include <iostream>
 #include <string>
 
-#if defined(PRI_TARGET_WINDOWS)
+#ifdef _WIN32
     #include <windows.h>
 #endif
 
@@ -65,7 +65,7 @@ namespace {
 
     void check_encoding_queries() {
 
-        #if defined(PRI_TARGET_UNIX)
+        #ifdef _XOPEN_SOURCE
 
             TEST_EQUAL(lookup_encoding(20127), "us-ascii");
             TEST_EQUAL(lookup_encoding("ASCII"), "ascii");
@@ -122,7 +122,7 @@ namespace {
         TEST_THROW(import_string(euro_windows1252, s8, 65001, err_throw), EncodingError);
 
         // Error detection is not reliable on Windows
-        #if defined(PRI_TARGET_UNIX)
+        #ifdef _XOPEN_SOURCE
             TEST_THROW(import_string(euro_utf8, s8, "ascii", err_throw), EncodingError);
             TEST_THROW(import_string(euro_utf8, s8, 20127, err_throw), EncodingError);
         #endif
@@ -164,7 +164,7 @@ namespace {
         TEST_THROW(export_string(euro_utf8 + '\xff', s, "utf-8", err_throw), EncodingError);
         TEST_THROW(export_string(euro_utf8 + '\xff', s, 65001, err_throw), EncodingError);
 
-        #if defined(PRI_TARGET_UNIX)
+        #ifdef _XOPEN_SOURCE
             TEST_THROW(export_string(euro_utf8, s, "ascii", err_throw), EncodingError);
             TEST_THROW(export_string(euro_utf8, s, 20127, err_throw), EncodingError);
         #endif

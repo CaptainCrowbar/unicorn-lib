@@ -8,7 +8,7 @@
 #include <random>
 #include <system_error>
 
-#if defined(PRI_TARGET_UNIX)
+#ifdef _XOPEN_SOURCE
     #include <dirent.h>
     #include <pwd.h>
     #include <sys/types.h>
@@ -27,7 +27,7 @@ namespace Unicorn {
         template <typename C> u8string quote_file(const basic_string<C>& name) { return uquote(to_utf8(name)); }
         u8string file_pair(const NativeString& f1, const NativeString& f2) { return quote_file(f1) + " -> " + quote_file(f2); }
 
-        #if defined(PRI_TARGET_UNIX)
+        #ifdef _XOPEN_SOURCE
 
             class Cstdio {
             public:
@@ -81,7 +81,7 @@ namespace Unicorn {
 
     // Types
 
-    #if defined(PRI_TARGET_UNIX)
+    #ifdef _XOPEN_SOURCE
 
         size_t FileId::hash() const noexcept {
             return hash_value(hi, lo);
@@ -123,7 +123,7 @@ namespace Unicorn {
         constexpr const char* windows_illegal_names  = R"((AUX|COM[1-9]|CON|LPT[1-9]|NUL|PRN)(\.[^.]*)?)";
         constexpr uint32_t match_flags               = rx_byte | rx_caseless | rx_noautocapture;
 
-        #if defined(PRI_TARGET_WINDOWS)
+        #ifndef _XOPEN_SOURCE
             constexpr const char* windows_root            = R"((\\\\\?\\)*([A-Z]:\\|\\{2,}[^?\\]+\\?|\\+))";
             constexpr const char* windows_drive_absolute  = R"(\\[^\\])";
             constexpr const char* windows_drive_relative  = R"([A-Z]:(?!\\))";
@@ -172,7 +172,7 @@ namespace Unicorn {
             && ! illegal_pattern.search(norm);
     }
 
-    #if defined(PRI_TARGET_UNIX)
+    #ifdef _XOPEN_SOURCE
 
         bool file_is_absolute(const u8string& file) {
             return file[0] == '/';
@@ -219,7 +219,7 @@ namespace Unicorn {
     pair<u8string, u8string> split_path(const u8string& file, uint32_t flags) {
         auto nfile = UnicornDetail::normalize_path(file);
         auto cut = nfile.find_last_of(file_delimiter);
-        #if defined(PRI_TARGET_WINDOWS)
+        #ifndef _XOPEN_SOURCE
             if (cut == 2 && file[1] == ':' && ascii_isalpha(file[0]))
                 return {nfile.substr(0, 3), nfile.substr(3, npos)};
             else if (cut == npos && file[1] == ':' && ascii_isalpha(file[0]))
@@ -238,7 +238,7 @@ namespace Unicorn {
     pair<u8string, u8string> split_file(const u8string& file) {
         auto nfile = UnicornDetail::normalize_path(file);
         auto cut = nfile.find_last_of(file_delimiter);
-        #if defined(PRI_TARGET_WINDOWS)
+        #ifndef _XOPEN_SOURCE
             if (cut == npos && ascii_isalpha(file[0]) && file[1] == ':')
                 cut = 1;
         #endif
@@ -255,7 +255,7 @@ namespace Unicorn {
             return {nfile.substr(cut, npos), {}};
     }
 
-    #if defined(PRI_TARGET_WINDOWS)
+    #ifndef _XOPEN_SOURCE
 
         pair<wstring, wstring> split_path(const wstring& file, uint32_t flags) {
             auto nfile = UnicornDetail::normalize_path(file);
@@ -319,7 +319,7 @@ namespace Unicorn {
 
     }
 
-    #if defined(PRI_TARGET_UNIX)
+    #ifdef _XOPEN_SOURCE
 
         namespace {
 
@@ -618,7 +618,7 @@ namespace Unicorn {
 
     namespace {
 
-        #if defined(PRI_TARGET_UNIX)
+        #ifdef _XOPEN_SOURCE
 
             constexpr int fail_exists = EEXIST;
             constexpr int fail_not_found = ENOENT;
@@ -818,7 +818,7 @@ namespace Unicorn {
 
     // Directory iterators
 
-    #if defined(PRI_TARGET_UNIX)
+    #ifdef _XOPEN_SOURCE
 
         struct NativeDirectoryIterator::impl_type {
             dirent entry;

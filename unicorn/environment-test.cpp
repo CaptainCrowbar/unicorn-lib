@@ -15,7 +15,7 @@ namespace {
         TEST(has_env("PATH"));
         TRY(s = get_env("PATH"));
         TEST(! s.empty());
-        #if defined(PRI_TARGET_UNIX)
+        #ifdef _XOPEN_SOURCE
             TEST_MATCH(s, "^(.+:)?/usr/bin(:.+)?$");
         #else
             TEST_MATCH(s, "^(.+;)C:\\\\Windows(;.+)?$");
@@ -70,7 +70,7 @@ namespace {
         TEST_COMPARE(env.size(), >, 0);
         TEST(env.has("PATH"));
         TRY(s = env["PATH"]);
-        #if defined(PRI_TARGET_UNIX)
+        #ifdef _XOPEN_SOURCE
             TEST_MATCH(s, "^(.+:)?/usr/bin(:.+)?$");
         #else
             TEST_MATCH(s, "^(.+;)C:\\\\Windows(;.+)?$");

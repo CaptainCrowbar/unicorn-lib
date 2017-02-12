@@ -329,7 +329,7 @@ namespace {
         TEST_EQUAL(s, u8"Hello €urope\nGoodbye\n");
 
         // Error detection is not reliable on Windows
-        #if defined(PRI_TARGET_UNIX)
+        #ifdef _XOPEN_SOURCE
             vec = {u8"Hello €urope\n", "Goodbye\n"};
             TRY(writer = FileWriter(testfile, err_throw, "ascii"s));
             TEST_THROW(std::copy(vec.begin(), vec.end(), writer), EncodingError);
