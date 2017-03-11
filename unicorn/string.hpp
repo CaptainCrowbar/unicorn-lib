@@ -798,7 +798,7 @@ namespace Unicorn {
                 } else if (err == ERANGE || value < min_value || value > max_value) {
                     if (flags & err_throw)
                         throw std::range_error("Integer out of range: " + uquote(fragment));
-                    t = sign_of(value) == 1 ? max_value : min_value;
+                    t = value > T() ? max_value : min_value;
                 } else {
                     t = value;
                 }
