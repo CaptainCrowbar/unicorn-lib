@@ -61,6 +61,7 @@ namespace Unicorn {
 
         #endif
 
+        static constexpr uint32_t no_recurse = uint32_t(1) << 31;
         static constexpr auto wchar_tag = sizeof(wchar_t) == 2 ? utf16_tag : utf32_tag;
 
         u8string smash_name(const u8string& name, bool stripz) {
@@ -526,9 +527,9 @@ namespace Unicorn {
                     return it->second;
             }
             auto tag = EncodingTag();
-            #ifdef _WIN32
-                if (lcname.find_first_not_of("0123456789") == npos)
-                    tag = lookup_encoding(uint32_t(decnum(lcname)));
+            #ifndef _XOPEN_SOURCE
+                if (lcname.find_first_not_of("0123456789") == npos && ! (flags & no_recurse))
+                    tag = lookup_encoding(uint32_t(decnum(lcname)), no_recurse);
             #endif
             if (tag == EncodingTag())
                 tag = find_encoding(lcname);
@@ -558,7 +559,8 @@ namespace Unicorn {
             }
             auto tag = EncodingTag();
             #ifdef _XOPEN_SOURCE
-                tag = lookup_encoding(dec(page));
+                if (! (flags & no_recurse))
+                    tag = lookup_encoding(dec(page), no_recurse);
             #else
                 if (page == utf8_tag || page == utf16_tag || page == utf16swap_tag
                         || page == utf32_tag || page == utf32swap_tag || valid_codepage(page))
