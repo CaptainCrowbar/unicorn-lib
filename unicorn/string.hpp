@@ -798,9 +798,9 @@ namespace Unicorn {
                 } else if (err == ERANGE || value < min_value || value > max_value) {
                     if (flags & err_throw)
                         throw std::range_error("Integer out of range: " + uquote(fragment));
-                    t = value > T() ? max_value : min_value;
+                    t = T(value > 0 ? max_value : min_value);
                 } else {
-                    t = value;
+                    t = T(value);
                 }
             } else {
                 static constexpr auto max_value = static_cast<unsigned long long>(std::numeric_limits<T>::max());
@@ -819,9 +819,9 @@ namespace Unicorn {
                 } else if (err == ERANGE || value > max_value) {
                     if (flags & err_throw)
                         throw std::range_error("Integer out of range: " + uquote(fragment));
-                    t = max_value;
+                    t = T(max_value);
                 } else {
-                    t = value;
+                    t = T(value);
                 }
             }
             return stop;
