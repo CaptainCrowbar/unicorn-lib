@@ -257,9 +257,9 @@ namespace Unicorn {
     // Regular expression class
 
     Regex::Regex(const u8string& pattern, uint32_t flags) {
-        if (bits_set(flags & (rx_newlineanycrlf | rx_newlinecr | rx_newlinecrlf | rx_newlinelf)) > 1
-                || bits_set(flags & (rx_notempty | rx_notemptyatstart)) > 1
-                || bits_set(flags & (rx_partialhard | rx_partialsoft)) > 1)
+        if (ibits(flags & (rx_newlineanycrlf | rx_newlinecr | rx_newlinecrlf | rx_newlinelf)) > 1
+                || ibits(flags & (rx_notempty | rx_notemptyatstart)) > 1
+                || ibits(flags & (rx_partialhard | rx_partialsoft)) > 1)
             throw std::invalid_argument("Inconsistent regex flags");
         pat = pattern;
         fset = flags;

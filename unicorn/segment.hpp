@@ -121,7 +121,7 @@ namespace Unicorn {
 
     template <typename C> Irange<WordIterator<C>>
     word_range(const UtfIterator<C>& i, const UtfIterator<C>& j, uint32_t flags = 0) {
-        if (bits_set(flags & (unicode_words | graphic_words | alpha_words)) > 1)
+        if (ibits(flags & (unicode_words | graphic_words | alpha_words)) > 1)
             throw std::invalid_argument("Inconsistent word breaking flags");
         return {{i, j, flags}, {j, j, flags}};
     }
@@ -273,7 +273,7 @@ namespace Unicorn {
     template <typename C>
     Irange<BlockSegmentIterator<C>> line_range(const UtfIterator<C>& i, const UtfIterator<C>& j, uint32_t flags = 0) {
         using namespace UnicornDetail;
-        if (bits_set(flags & (keep_breaks | strip_breaks)) > 1)
+        if (ibits(flags & (keep_breaks | strip_breaks)) > 1)
             throw std::invalid_argument("Inconsistent line breaking flags");
         return {{i, j, flags, find_end_of_line}, {j, j, flags, find_end_of_line}};
     }
@@ -295,8 +295,8 @@ namespace Unicorn {
     template <typename C>
     Irange<BlockSegmentIterator<C>> paragraph_range(const UtfIterator<C>& i, const UtfIterator<C>& j, uint32_t flags = 0) {
         using namespace UnicornDetail;
-        if (bits_set(flags & (keep_breaks | strip_breaks)) > 1
-                || bits_set(flags & (multiline_paras | line_paras | unicode_paras)) > 1)
+        if (ibits(flags & (keep_breaks | strip_breaks)) > 1
+                || ibits(flags & (multiline_paras | line_paras | unicode_paras)) > 1)
             throw std::invalid_argument("Inconsistent paragraph breaking flags");
         FindBlockFunction<C> f;
         if (flags & unicode_paras)

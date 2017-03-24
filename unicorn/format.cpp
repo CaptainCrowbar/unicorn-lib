@@ -192,7 +192,7 @@ namespace Unicorn {
             using std::fabs;
             static constexpr auto format_flags = fx_digits | fx_exp | fx_fixed | fx_general;
             static constexpr auto sign_flags = fx_sign | fx_signz;
-            if (bits_set(flags & format_flags) > 1 || bits_set(flags & sign_flags) > 1)
+            if (ibits(flags & format_flags) > 1 || ibits(flags & sign_flags) > 1)
                 throw std::invalid_argument("Inconsistent formatting flags");
             if (prec < 0)
                 prec = 6;
@@ -236,9 +236,9 @@ namespace Unicorn {
         // Alignment and padding
 
         u8string format_align(u8string src, uint64_t flags, size_t width, char32_t pad) {
-            if (bits_set(flags & (fx_left | fx_centre | fx_right)) > 1)
+            if (ibits(flags & (fx_left | fx_centre | fx_right)) > 1)
                 throw std::invalid_argument("Inconsistent formatting alignment flags");
-            if (bits_set(flags & (fx_lower | fx_title | fx_upper)) > 1)
+            if (ibits(flags & (fx_lower | fx_title | fx_upper)) > 1)
                 throw std::invalid_argument("Inconsistent formatting case conversion flags");
             if (flags & fx_lower)
                 str_lowercase_in(src);
@@ -269,7 +269,7 @@ namespace Unicorn {
 
     u8string format_type(bool t, uint64_t flags, int /*prec*/) {
         static constexpr auto format_flags = fx_binary | fx_tf | fx_yesno;
-        if (bits_set(flags & format_flags) > 1)
+        if (ibits(flags & format_flags) > 1)
             throw std::invalid_argument("Inconsistent formatting flags");
         if (flags & fx_binary)
             return t ? "1" : "0";
@@ -282,7 +282,7 @@ namespace Unicorn {
     u8string format_type(const u8string& t, uint64_t flags, int prec) {
         using namespace UnicornDetail;
         static constexpr auto format_flags = fx_ascii | fx_ascquote | fx_escape | fx_decimal | fx_hex | fx_hex8 | fx_hex16 | fx_quote;
-        if (bits_set(flags & format_flags) > 1)
+        if (ibits(flags & format_flags) > 1)
             throw std::invalid_argument("Inconsistent formatting flags");
         if (flags & fx_quote)
             return string_escape(t, fx_quote);
@@ -306,7 +306,7 @@ namespace Unicorn {
 
     u8string format_type(system_clock::time_point t, uint64_t flags, int prec) {
         static constexpr auto format_flags = fx_iso | fx_common;
-        if (bits_set(flags & format_flags) > 1)
+        if (ibits(flags & format_flags) > 1)
             throw std::invalid_argument("Inconsistent formatting flags");
         auto zone = flags & fx_local ? Zone::local : Zone::utc;
         if (flags & fx_common)

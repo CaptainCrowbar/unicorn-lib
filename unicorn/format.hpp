@@ -83,7 +83,7 @@ namespace Unicorn {
             static constexpr auto sign_flags = fx_sign | fx_signz;
             if ((flags & float_flags) && ! (flags & int_flags))
                 return format_float(t, flags, prec);
-            if (bits_set(flags & int_flags) > 1 || bits_set(flags & sign_flags) > 1)
+            if (ibits(flags & int_flags) > 1 || ibits(flags & sign_flags) > 1)
                 throw std::invalid_argument("Inconsistent integer formatting flags");
             char sign = 0;
             if (t > static_cast<T>(0)) {

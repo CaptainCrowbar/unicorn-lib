@@ -68,8 +68,8 @@ namespace Unicorn {
 
     void FileReader::init(const NativeString& file, uint32_t flags, const u8string& enc, const u8string& eol) {
         static const NativeString dashfile = PRI_CSTR("-", NativeCharacter);
-        if (bits_set(flags & (err_replace | err_throw)) > 1
-                || bits_set(flags & (io_crlf | io_lf | io_striplf | io_striptws | io_stripws)) > 1)
+        if (ibits(flags & (err_replace | err_throw)) > 1
+                || ibits(flags & (io_crlf | io_lf | io_striplf | io_striptws | io_stripws)) > 1)
             throw std::invalid_argument("Inconsistent file I/O flags");
         impl = make_shared<impl_type>();
         impl->name = file;
@@ -176,12 +176,12 @@ namespace Unicorn {
         static const NativeString dashfile{PRI_CHAR('-', NativeCharacter)};
         static Mutex stdout_mutex;
         static Mutex stderr_mutex;
-        if (bits_set(flags & (err_replace | err_throw)) > 1
-                || bits_set(flags & (io_append | io_protect)) > 1
-                || bits_set(flags & (io_autoline | io_writeline)) > 1
-                || bits_set(flags & (io_crlf | io_lf)) > 1
-                || bits_set(flags & (io_linebuf | io_unbuf)) > 1
-                || bits_set(flags & (io_stderr | io_stdout)) > 1)
+        if (ibits(flags & (err_replace | err_throw)) > 1
+                || ibits(flags & (io_append | io_protect)) > 1
+                || ibits(flags & (io_autoline | io_writeline)) > 1
+                || ibits(flags & (io_crlf | io_lf)) > 1
+                || ibits(flags & (io_linebuf | io_unbuf)) > 1
+                || ibits(flags & (io_stderr | io_stdout)) > 1)
             throw std::invalid_argument("Inconsistent file I/O flags");
         impl = make_shared<impl_type>();
         impl->name = file;

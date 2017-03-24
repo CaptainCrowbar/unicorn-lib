@@ -98,10 +98,10 @@ namespace Unicorn {
         }
 
         inline void check_length_flags(uint32_t& flags) {
-            if (bits_set(flags & (character_units | grapheme_units)) > 1
-                    || bits_set(flags & (character_units | east_asian_flags)) > 1)
+            if (ibits(flags & (character_units | grapheme_units)) > 1
+                    || ibits(flags & (character_units | east_asian_flags)) > 1)
                 throw std::invalid_argument("Inconsistent string length flags");
-            if (bits_set(flags & all_length_flags) == 0)
+            if (ibits(flags & all_length_flags) == 0)
                 flags |= character_units;
         }
 

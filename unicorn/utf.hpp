@@ -194,10 +194,10 @@ namespace Unicorn {
         using string_type = basic_string<C>;
         UtfIterator() noexcept { static const string_type dummy; sptr = &dummy; }
         explicit UtfIterator(const string_type& src): sptr(&src)
-            { if (bits_set(fset & err_flags) == 0) fset |= err_ignore; ++*this; }
+            { if (ibits(fset & err_flags) == 0) fset |= err_ignore; ++*this; }
         UtfIterator(const string_type& src, size_t offset, uint32_t flags = 0):
             sptr(&src), ofs(std::min(offset, src.size())), fset(flags)
-            { if (bits_set(fset & err_flags) == 0) fset |= err_ignore; ++*this; }
+            { if (ibits(fset & err_flags) == 0) fset |= err_ignore; ++*this; }
         const char32_t& operator*() const noexcept { return u; }
         UtfIterator& operator++();
         UtfIterator& operator--();
@@ -318,9 +318,9 @@ namespace Unicorn {
         using string_type = basic_string<C>;
         UtfWriter() noexcept {}
         explicit UtfWriter(string_type& dst) noexcept:
-            sptr(&dst) { if (bits_set(fset & err_flags) == 0) fset |= err_ignore; }
+            sptr(&dst) { if (ibits(fset & err_flags) == 0) fset |= err_ignore; }
         UtfWriter(string_type& dst, uint32_t flags) noexcept:
-            sptr(&dst), fset(flags) { if (bits_set(fset & err_flags) == 0) fset |= err_ignore; }
+            sptr(&dst), fset(flags) { if (ibits(fset & err_flags) == 0) fset |= err_ignore; }
         UtfWriter& operator=(char32_t u);
         bool valid() const noexcept { return ok; }
     private:
@@ -374,7 +374,7 @@ namespace Unicorn {
             void operator()(const C1* src, size_t n, basic_string<C2>& dst, uint32_t flags) const {
                 if (! src)
                     return;
-                if (bits_set(flags & err_flags) == 0)
+                if (ibits(flags & err_flags) == 0)
                     flags |= err_ignore;
                 size_t pos = 0;
                 char32_t u = 0;
@@ -398,7 +398,7 @@ namespace Unicorn {
             void operator()(const C1* src, size_t n, u32string& dst, uint32_t flags) const {
                 if (! src)
                     return;
-                if (bits_set(flags & err_flags) == 0)
+                if (ibits(flags & err_flags) == 0)
                     flags |= err_ignore;
                 size_t pos = 0;
                 char32_t u = 0;
@@ -427,7 +427,7 @@ namespace Unicorn {
             void operator()(const char32_t* src, size_t n, basic_string<C2>& dst, uint32_t flags) const {
                 if (! src)
                     return;
-                if (bits_set(flags & err_flags) == 0)
+                if (ibits(flags & err_flags) == 0)
                     flags |= err_ignore;
                 char32_t u = 0;
                 C2 buf[UtfEncoding<C2>::max_units];
@@ -451,7 +451,7 @@ namespace Unicorn {
             void operator()(const C* src, size_t n, basic_string<C>& dst, uint32_t flags) const {
                 if (! src)
                     return;
-                if (bits_set(flags & err_flags) == 0)
+                if (ibits(flags & err_flags) == 0)
                     flags |= err_ignore;
                 size_t pos = 0;
                 char32_t u = 0;
@@ -484,7 +484,7 @@ namespace Unicorn {
             void operator()(const char32_t* src, size_t n, u32string& dst, uint32_t flags) const {
                 if (! src)
                     return;
-                if (bits_set(flags & err_flags) == 0)
+                if (ibits(flags & err_flags) == 0)
                     flags |= err_ignore;
                 for (size_t pos = 0; pos < n; ++pos) {
                     if (n == npos && src[pos] == 0)
