@@ -40,7 +40,7 @@ listed here; their behaviour is described in more detail below.
 * `std::chrono::duration<R, P>`, `std::chrono::system_clock::time_point`
 * `Prion::Uuid`, `Prion::Version`
 
-* <!-- DEFN--> `template <typename T> u8string` **`format_str`**`(const T& t, uint64_t flags = 0, int prec = -1, size_t width = 0, char32_t pad = U' ')`
+* <!-- DEFN --> `template <typename T> u8string` **`format_str`**`(const T& t, uint64_t flags = 0, int prec = -1, size_t width = 0, char32_t pad = U' ')`
 * `template <typename T> u8string` **`format_str`**`(const T& t, const u8string& flags)`
 * `template <typename T> u8string` **`format_str`**`(const T& t, const char* flags)`
 
