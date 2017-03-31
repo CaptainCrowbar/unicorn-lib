@@ -17,7 +17,7 @@ namespace Unicorn {
         if (text.empty())
             s += "EOF";
         else
-            s += uquote(text);
+            s += quote(text);
         return s;
     }
 
