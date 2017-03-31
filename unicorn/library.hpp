@@ -6,7 +6,6 @@
 #include "unicorn/file.hpp"
 #include "unicorn/format.hpp"
 #include "unicorn/io.hpp"
-#include "unicorn/lexer.hpp"
 #include "unicorn/mbcs.hpp"
 #include "unicorn/normal.hpp"
 #include "unicorn/options.hpp"

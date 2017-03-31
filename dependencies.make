@@ -42,15 +42,6 @@ build/$(TARGET)/io.o: unicorn/io.cpp unicorn/io.hpp unicorn/core.hpp \
   unicorn/property-values.hpp unicorn/file.hpp unicorn/string.hpp \
   unicorn/segment.hpp unicorn/utf.hpp unicorn/format.hpp \
   unicorn/mbcs.hpp
-build/$(TARGET)/lexer-test.o: unicorn/lexer-test.cpp unicorn/core.hpp \
-  $(LIBROOT)/prion-lib/prion/core.hpp unicorn/lexer.hpp unicorn/character.hpp \
-  unicorn/property-values.hpp unicorn/regex.hpp unicorn/utf.hpp \
-  unicorn/string.hpp unicorn/segment.hpp \
-  $(LIBROOT)/prion-lib/prion/unit-test.hpp
-build/$(TARGET)/lexer.o: unicorn/lexer.cpp unicorn/lexer.hpp unicorn/core.hpp \
-  $(LIBROOT)/prion-lib/prion/core.hpp unicorn/character.hpp \
-  unicorn/property-values.hpp unicorn/regex.hpp unicorn/utf.hpp \
-  unicorn/string.hpp unicorn/segment.hpp
 build/$(TARGET)/mbcs-test.o: unicorn/mbcs-test.cpp unicorn/core.hpp \
   $(LIBROOT)/prion-lib/prion/core.hpp unicorn/mbcs.hpp unicorn/utf.hpp \
   unicorn/character.hpp unicorn/property-values.hpp \
