@@ -232,36 +232,36 @@ namespace {
         TEST_EQUAL(to_str(GC::Zp), "Zp");
         TEST_EQUAL(to_str(GC::Zs), "Zs");
 
-        TEST_EQUAL(u8string(gc_name(GC::Cc)), "control"s);
-        TEST_EQUAL(u8string(gc_name(GC::Cf)), "format"s);
-        TEST_EQUAL(u8string(gc_name(GC::Cn)), "unassigned"s);
-        TEST_EQUAL(u8string(gc_name(GC::Co)), "private use"s);
-        TEST_EQUAL(u8string(gc_name(GC::Cs)), "surrogate"s);
-        TEST_EQUAL(u8string(gc_name(GC::Ll)), "lowercase letter"s);
-        TEST_EQUAL(u8string(gc_name(GC::Lm)), "modifier letter"s);
-        TEST_EQUAL(u8string(gc_name(GC::Lo)), "other letter"s);
-        TEST_EQUAL(u8string(gc_name(GC::Lt)), "titlecase letter"s);
-        TEST_EQUAL(u8string(gc_name(GC::Lu)), "uppercase letter"s);
-        TEST_EQUAL(u8string(gc_name(GC::Mc)), "spacing mark"s);
-        TEST_EQUAL(u8string(gc_name(GC::Me)), "enclosing mark"s);
-        TEST_EQUAL(u8string(gc_name(GC::Mn)), "nonspacing mark"s);
-        TEST_EQUAL(u8string(gc_name(GC::Nd)), "decimal number"s);
-        TEST_EQUAL(u8string(gc_name(GC::Nl)), "letter number"s);
-        TEST_EQUAL(u8string(gc_name(GC::No)), "other number"s);
-        TEST_EQUAL(u8string(gc_name(GC::Pc)), "connector punctuation"s);
-        TEST_EQUAL(u8string(gc_name(GC::Pd)), "dash punctuation"s);
-        TEST_EQUAL(u8string(gc_name(GC::Pe)), "close punctuation"s);
-        TEST_EQUAL(u8string(gc_name(GC::Pf)), "final punctuation"s);
-        TEST_EQUAL(u8string(gc_name(GC::Pi)), "initial punctuation"s);
-        TEST_EQUAL(u8string(gc_name(GC::Po)), "other punctuation"s);
-        TEST_EQUAL(u8string(gc_name(GC::Ps)), "open punctuation"s);
-        TEST_EQUAL(u8string(gc_name(GC::Sc)), "currency symbol"s);
-        TEST_EQUAL(u8string(gc_name(GC::Sk)), "modifier symbol"s);
-        TEST_EQUAL(u8string(gc_name(GC::Sm)), "math symbol"s);
-        TEST_EQUAL(u8string(gc_name(GC::So)), "other symbol"s);
-        TEST_EQUAL(u8string(gc_name(GC::Zl)), "line separator"s);
-        TEST_EQUAL(u8string(gc_name(GC::Zp)), "paragraph separator"s);
-        TEST_EQUAL(u8string(gc_name(GC::Zs)), "space separator"s);
+        TEST_EQUAL(U8string(gc_name(GC::Cc)), "control"s);
+        TEST_EQUAL(U8string(gc_name(GC::Cf)), "format"s);
+        TEST_EQUAL(U8string(gc_name(GC::Cn)), "unassigned"s);
+        TEST_EQUAL(U8string(gc_name(GC::Co)), "private use"s);
+        TEST_EQUAL(U8string(gc_name(GC::Cs)), "surrogate"s);
+        TEST_EQUAL(U8string(gc_name(GC::Ll)), "lowercase letter"s);
+        TEST_EQUAL(U8string(gc_name(GC::Lm)), "modifier letter"s);
+        TEST_EQUAL(U8string(gc_name(GC::Lo)), "other letter"s);
+        TEST_EQUAL(U8string(gc_name(GC::Lt)), "titlecase letter"s);
+        TEST_EQUAL(U8string(gc_name(GC::Lu)), "uppercase letter"s);
+        TEST_EQUAL(U8string(gc_name(GC::Mc)), "spacing mark"s);
+        TEST_EQUAL(U8string(gc_name(GC::Me)), "enclosing mark"s);
+        TEST_EQUAL(U8string(gc_name(GC::Mn)), "nonspacing mark"s);
+        TEST_EQUAL(U8string(gc_name(GC::Nd)), "decimal number"s);
+        TEST_EQUAL(U8string(gc_name(GC::Nl)), "letter number"s);
+        TEST_EQUAL(U8string(gc_name(GC::No)), "other number"s);
+        TEST_EQUAL(U8string(gc_name(GC::Pc)), "connector punctuation"s);
+        TEST_EQUAL(U8string(gc_name(GC::Pd)), "dash punctuation"s);
+        TEST_EQUAL(U8string(gc_name(GC::Pe)), "close punctuation"s);
+        TEST_EQUAL(U8string(gc_name(GC::Pf)), "final punctuation"s);
+        TEST_EQUAL(U8string(gc_name(GC::Pi)), "initial punctuation"s);
+        TEST_EQUAL(U8string(gc_name(GC::Po)), "other punctuation"s);
+        TEST_EQUAL(U8string(gc_name(GC::Ps)), "open punctuation"s);
+        TEST_EQUAL(U8string(gc_name(GC::Sc)), "currency symbol"s);
+        TEST_EQUAL(U8string(gc_name(GC::Sk)), "modifier symbol"s);
+        TEST_EQUAL(U8string(gc_name(GC::Sm)), "math symbol"s);
+        TEST_EQUAL(U8string(gc_name(GC::So)), "other symbol"s);
+        TEST_EQUAL(U8string(gc_name(GC::Zl)), "line separator"s);
+        TEST_EQUAL(U8string(gc_name(GC::Zp)), "paragraph separator"s);
+        TEST_EQUAL(U8string(gc_name(GC::Zs)), "space separator"s);
 
         TEST_EQUAL(char_general_category(0), encode_gc("Cc"));
         TEST_EQUAL(char_general_category(0x9), encode_gc("Cc"));
@@ -684,7 +684,7 @@ namespace {
         TEST(! char_is_punctuation('a'));   TEST(! char_is_punctuation_w('a'));
         TEST(! char_is_punctuation('z'));   TEST(! char_is_punctuation_w('z'));
 
-        vector<GC> v;
+        std::vector<GC> v;
         TRY(v = gc_list());
         TEST_EQUAL(v.size(), 30);
         TEST_EQUAL(v.at(0), GC::Cc);
@@ -1011,7 +1011,7 @@ namespace {
         TEST_EQUAL(char_block(0x10fffd), "Supplementary Private Use Area-B");
         TEST_EQUAL(char_block(0x110000), "");
 
-        vector<BlockInfo> blocks;
+        std::vector<BlockInfo> blocks;
 
         TRY(blocks = unicode_block_list());
         TEST(! blocks.empty());
@@ -1275,21 +1275,21 @@ namespace {
                 size_t n; \
                 TRY(n = mode ## _decomposition(char_to_uint(chr), buf)); \
                 TEST_EQUAL(n, length); \
-                u32string decomp(buf + 0, buf + n); \
+                std::u32string decomp(buf + 0, buf + n); \
                 TEST_EQUAL(decomp, expect); \
             } while (false)
 
-        DECOMPOSITION_TEST(canonical, 'A', 0, u32string{});
-        DECOMPOSITION_TEST(canonical, 0xc0, 2, (u32string{'A',0x300}));
-        DECOMPOSITION_TEST(canonical, 0xff, 2, (u32string{'y',0x308}));
-        DECOMPOSITION_TEST(compatibility, 'A', 0, u32string{});
-        DECOMPOSITION_TEST(compatibility, 0xb5, 1, (u32string{0x3bc}));
-        DECOMPOSITION_TEST(compatibility, 0xbd, 3, (u32string{'1',0x2044,'2'}));
+        DECOMPOSITION_TEST(canonical, 'A', 0, std::u32string{});
+        DECOMPOSITION_TEST(canonical, 0xc0, 2, (std::u32string{'A',0x300}));
+        DECOMPOSITION_TEST(canonical, 0xff, 2, (std::u32string{'y',0x308}));
+        DECOMPOSITION_TEST(compatibility, 'A', 0, std::u32string{});
+        DECOMPOSITION_TEST(compatibility, 0xb5, 1, (std::u32string{0x3bc}));
+        DECOMPOSITION_TEST(compatibility, 0xbd, 3, (std::u32string{'1',0x2044,'2'}));
         DECOMPOSITION_TEST(compatibility, 0xfdfa, 18,
-            (u32string{0x635,0x644,0x649,' ',0x627,0x644,0x644,0x647,' ',
+            (std::u32string{0x635,0x644,0x649,' ',0x627,0x644,0x644,0x647,' ',
             0x639,0x644,0x64a,0x647,' ',0x648,0x633,0x644,0x645}));
-        DECOMPOSITION_TEST(canonical, 0xd4db, 2, (u32string{0xd4cc,0x11b6}));
-        DECOMPOSITION_TEST(canonical, 0xd4cc, 2, (u32string{0x1111,0x1171}));
+        DECOMPOSITION_TEST(canonical, 0xd4db, 2, (std::u32string{0xd4cc,0x11b6}));
+        DECOMPOSITION_TEST(canonical, 0xd4cc, 2, (std::u32string{0x1111,0x1171}));
 
         TEST_EQUAL(canonical_composition(0x41, 0x42), 0);
         TEST_EQUAL(canonical_composition(0x41, 0x300), 0xc0);
@@ -1694,9 +1694,9 @@ namespace {
         for (char32_t c = 0; c <= 0x110000; ++c)
             char_is_latin1(c);
 
-        #define CALL_ALL_THE_PROPERTIES(function) \
+        #define CALL_ALL_THE_PROPERTIES(func) \
             for (char32_t c = 0; c <= 0x110000; ++c) \
-                function(c);
+                func(c);
 
         CALL_ALL_THE_PROPERTIES(char_is_latin1);
         CALL_ALL_THE_PROPERTIES(char_is_surrogate);
@@ -1762,9 +1762,9 @@ namespace {
 
         char32_t buf[100];
 
-        #define DECOMPOSE_ALL_THE_THINGS(function) \
+        #define DECOMPOSE_ALL_THE_THINGS(func) \
             for (char32_t c = 0; c <= 0x110000; ++c) \
-                function(c, buf);
+                func(c, buf);
 
         DECOMPOSE_ALL_THE_THINGS(char_to_full_uppercase);
         DECOMPOSE_ALL_THE_THINGS(char_to_full_lowercase);

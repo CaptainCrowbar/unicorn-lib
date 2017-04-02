@@ -17,10 +17,10 @@ using namespace std::literals;
 
 namespace {
 
-    void norm_test(const vector<u8string>& u8data, size_t line, NormalizationForm form, size_t i, size_t j) {
+    void norm_test(const std::vector<U8string>& u8data, size_t line, NormalizationForm form, size_t i, size_t j) {
         auto& orig(u8data[i]);
         auto& expect(u8data[j]);
-        u8string norm;
+        U8string norm;
         TRY(norm = normalize(orig, form));
         TEST_EQUAL(norm, expect);
         if (norm != expect)
@@ -37,21 +37,21 @@ namespace {
     void do_main_tests(size_t b, size_t e) {
         e = std::min(e, range_count(normalization_test_table));
         b = std::min(b, e);
-        vector<u8string> hexcodes;
-        vector<u32string> u32data;
+        std::vector<U8string> hexcodes;
+        std::vector<std::u32string> u32data;
         auto row_iter = std::begin(normalization_test_table) + b;
         for (size_t line = b; line < e; ++line) {
             auto& row = *row_iter++; // const std::array<char const*, 5>&
             u32data.clear();
             for (auto&& field: row) {
-                u32data.push_back(u32string());
-                str_split(u8string(field), overwrite(hexcodes));
+                u32data.push_back(std::u32string());
+                str_split(U8string(field), overwrite(hexcodes));
                 for (auto&& hc: hexcodes)
                     u32data.back() += char32_t(strtoul(hc.data(), nullptr, 16));
             }
             TEST_EQUAL(u32data.size(), 5);
             if (u32data.size() == 5) {
-                vector<u8string> u8data;
+                std::vector<U8string> u8data;
                 for (auto& u: u32data)
                     u8data.push_back(to_utf8(u));
                 norm_test(u8data, line, NFC, 0, 1);
@@ -78,11 +78,11 @@ namespace {
         }
     }
 
-    void do_identity_tests(const vector<char32_t>& uchars, size_t b, size_t e) {
+    void do_identity_tests(const std::vector<char32_t>& uchars, size_t b, size_t e) {
         e = std::min(e, uchars.size());
         b = std::min(b, e);
-        u8string s;
-        u32string us;
+        U8string s;
+        std::u32string us;
         for (size_t i = b; i < e; ++i) {
             us = {uchars[i]};
             s = to_utf8(us);
@@ -98,7 +98,7 @@ namespace {
 TEST_MODULE(unicorn, normal) {
 
     auto norm_tests = range_count(normalization_test_table);
-    vector<char32_t> identity_chars;
+    std::vector<char32_t> identity_chars;
     for (auto&& row: normalization_identity_table)
         for (char32_t u = row.key; u <= row.value; ++u)
             identity_chars.push_back(u);
@@ -113,15 +113,15 @@ TEST_MODULE(unicorn, normal) {
 
         auto thread_count = Thread::cpu_threads();
         auto per_thread = norm_tests / thread_count + 1;
-        vector<unique_ptr<Thread>> threads;
+        std::vector<std::unique_ptr<Thread>> threads;
         for (size_t base = 0; base < norm_tests; base += per_thread)
-            threads.push_back(make_unique<Thread>([=] { do_main_tests(base, base + per_thread); }));
+            threads.push_back(std::make_unique<Thread>([=] { do_main_tests(base, base + per_thread); }));
         for (auto& t: threads)
             t->wait();
         threads.clear();
         per_thread = identity_chars.size() / thread_count + 1;
         for (size_t base = 0; base < identity_chars.size(); base += per_thread)
-            threads.push_back(make_unique<Thread>([=] { do_identity_tests(identity_chars, base, base + per_thread); }));
+            threads.push_back(std::make_unique<Thread>([=] { do_identity_tests(identity_chars, base, base + per_thread); }));
         for (auto& t: threads)
             t->wait();
 

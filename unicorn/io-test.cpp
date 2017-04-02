@@ -16,19 +16,19 @@ namespace {
     class TempFile {
     public:
         PRI_NO_COPY_MOVE(TempFile)
-        explicit TempFile(const u8string& file): f(file) {}
+        explicit TempFile(const U8string& file): f(file) {}
         ~TempFile() { remove(f.data()); }
     private:
-        u8string f;
+        U8string f;
     };
 
-    const u8string testfile = "__test__";
-    const u8string nonesuch = "__no_such_file__";
+    const U8string testfile = "__test__";
+    const U8string nonesuch = "__no_such_file__";
 
     void check_file_reader() {
 
-        using u8vector = vector<u8string>;
-        u8string s;
+        using u8vector = std::vector<U8string>;
+        U8string s;
         u8vector vec;
         Irange<FileReader> range;
         TempFile tempfile(testfile);
@@ -292,8 +292,8 @@ namespace {
 
     void check_file_writer() {
 
-        string s;
-        vector<u8string> vec;
+        std::string s;
+        std::vector<U8string> vec;
         FileWriter writer;
         TempFile tempfile(testfile);
 

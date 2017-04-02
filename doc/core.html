@@ -49,8 +49,8 @@ derived from this are individually documented.</p>
 <ul>
 <li><code>class</code> <strong><code>EncodingError</code></strong><code>: public std::runtime_error</code><ul>
 <li><code>EncodingError::</code><strong><code>EncodingError</code></strong><code>()</code></li>
-<li><code>explicit EncodingError::</code><strong><code>EncodingError</code></strong><code>(const u8string&amp; encoding, size_t offset = 0, char32_t c = 0)</code></li>
-<li><code>template &lt;typename C&gt; EncodingError::</code><strong><code>EncodingError</code></strong><code>(const u8string&amp; encoding, size_t offset, const C* ptr, size_t n = 1)</code></li>
+<li><code>explicit EncodingError::</code><strong><code>EncodingError</code></strong><code>(const U8string&amp; encoding, size_t offset = 0, char32_t c = 0)</code></li>
+<li><code>template &lt;typename C&gt; EncodingError::</code><strong><code>EncodingError</code></strong><code>(const U8string&amp; encoding, size_t offset, const C* ptr, size_t n = 1)</code></li>
 <li><code>const char* EncodingError::</code><strong><code>encoding</code></strong><code>() noexcept const</code></li>
 <li><code>size_t EncodingError::</code><strong><code>offset</code></strong><code>() const noexcept</code></li>
 </ul>

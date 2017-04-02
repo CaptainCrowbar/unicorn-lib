@@ -21,7 +21,7 @@ namespace Unicorn {
     class InitializationError:
     public std::runtime_error {
     public:
-        explicit InitializationError(const u8string& message):
+        explicit InitializationError(const U8string& message):
             std::runtime_error(message) {}
     };
 
@@ -30,26 +30,26 @@ namespace Unicorn {
     public:
         EncodingError():
             std::runtime_error(prefix({}, 0)), enc(), ofs(0) {}
-        explicit EncodingError(const u8string& encoding, size_t offset = 0, char32_t c = 0):
-            std::runtime_error(prefix(encoding, offset) + hexcode(&c, 1)), enc(make_shared<u8string>(encoding)), ofs(offset) {}
+        explicit EncodingError(const U8string& encoding, size_t offset = 0, char32_t c = 0):
+            std::runtime_error(prefix(encoding, offset) + hexcode(&c, 1)), enc(std::make_shared<U8string>(encoding)), ofs(offset) {}
         template <typename C>
-            EncodingError(const u8string& encoding, size_t offset, const C* ptr, size_t n = 1):
-            std::runtime_error(prefix(encoding, offset) + hexcode(ptr, n)), enc(make_shared<u8string>(encoding)), ofs(offset) {}
+            EncodingError(const U8string& encoding, size_t offset, const C* ptr, size_t n = 1):
+            std::runtime_error(prefix(encoding, offset) + hexcode(ptr, n)), enc(std::make_shared<U8string>(encoding)), ofs(offset) {}
         const char* encoding() const noexcept { static const char c = 0; return enc ? enc->data() : &c; }
         size_t offset() const noexcept { return ofs; }
     private:
-        shared_ptr<u8string> enc;
+        std::shared_ptr<U8string> enc;
         size_t ofs;
-        static u8string prefix(const u8string& encoding, size_t offset);
-        template <typename C> static u8string hexcode(const C* ptr, size_t n);
+        static U8string prefix(const U8string& encoding, size_t offset);
+        template <typename C> static U8string hexcode(const C* ptr, size_t n);
     };
 
     template <typename C>
-    u8string EncodingError::hexcode(const C* ptr, size_t n) {
+    U8string EncodingError::hexcode(const C* ptr, size_t n) {
         using utype = std::make_unsigned_t<C>;
         if (! ptr || ! n)
             return {};
-        u8string s = "; hex";
+        U8string s = "; hex";
         auto uptr = reinterpret_cast<const utype*>(ptr);
         for (size_t i = 0; i < n; ++i) {
             s += ' ';
@@ -79,8 +79,8 @@ namespace Unicorn {
         using WcharEquivalent = char32_t;
     #endif
 
-    using NativeString = basic_string<NativeCharacter>;
-    using WstringEquivalent = basic_string<WcharEquivalent>;
+    using NativeString = std::basic_string<NativeCharacter>;
+    using WstringEquivalent = std::basic_string<WcharEquivalent>;
 
     // Version information
 

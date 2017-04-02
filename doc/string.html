@@ -160,21 +160,21 @@ empty.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>bool</code> <strong><code>str_is_east_asian</code></strong><code>(const u8string&amp; str)</code></li>
+<li><code>bool</code> <strong><code>str_is_east_asian</code></strong><code>(const U8string&amp; str)</code></li>
 </ul>
 <p>True if the string contains any East Asian characters.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>bool</code> <strong><code>str_starts_with</code></strong><code>(const u8string&amp; str, const u8string&amp; prefix) noexcept</code></li>
-<li><code>bool</code> <strong><code>str_ends_with</code></strong><code>(const u8string&amp; str, const u8string&amp; suffix) noexcept</code></li>
+<li><code>bool</code> <strong><code>str_starts_with</code></strong><code>(const U8string&amp; str, const U8string&amp; prefix) noexcept</code></li>
+<li><code>bool</code> <strong><code>str_ends_with</code></strong><code>(const U8string&amp; str, const U8string&amp; suffix) noexcept</code></li>
 </ul>
 <p>These return true if the string starts or ends with the specified substring.</p>
 </div>
 <h2 id="string-comparison">String comparison</h2>
 <div class="defns">
 <ul>
-<li><code>int</code> <strong><code>str_compare_3way</code></strong><code>(const u8string&amp; lhs, const u8string&amp; rhs)</code></li>
+<li><code>int</code> <strong><code>str_compare_3way</code></strong><code>(const U8string&amp; lhs, const U8string&amp; rhs)</code></li>
 </ul>
 <p>This performs a simple lexicographical comparison on the two strings,
 returning 1, 0, or -1 to indicate that the first string is greater than, equal
@@ -182,8 +182,8 @@ to, or less than the second one, respectively.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>bool</code> <strong><code>str_icase_equal</code></strong><code>(const u8string&amp; lhs, const u8string&amp; rhs) const noexcept</code></li>
-<li><code>bool</code> <strong><code>str_icase_compare</code></strong><code>(const u8string&amp; lhs, const u8string&amp; rhs) const noexcept</code></li>
+<li><code>bool</code> <strong><code>str_icase_equal</code></strong><code>(const U8string&amp; lhs, const U8string&amp; rhs) const noexcept</code></li>
+<li><code>bool</code> <strong><code>str_icase_compare</code></strong><code>(const U8string&amp; lhs, const U8string&amp; rhs) const noexcept</code></li>
 </ul>
 <p>Function objects that perform case insensitive string comparison, with
 equality or less-than semantics. These are equivalent to calling
@@ -194,7 +194,7 @@ more efficient if the same string is going to be compared frequently.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>bool</code> <strong><code>str_natural_compare</code></strong><code>(const u8string&amp; lhs, const u8string&amp; rhs) const noexcept</code></li>
+<li><code>bool</code> <strong><code>str_natural_compare</code></strong><code>(const U8string&amp; lhs, const U8string&amp; rhs) const noexcept</code></li>
 </ul>
 <p>This attempts to perform a "natural" (human friendly) comparison between two
 strings. It treats numbers (currently only ASCII digits are recognised) as
@@ -209,8 +209,8 @@ breaker.</p>
 <h2 id="other-string-algorithms">Other string algorithms</h2>
 <div class="defns">
 <ul>
-<li><code>size_t</code> <strong><code>str_common</code></strong><code>(const u8string&amp; s1, const u8string&amp; s2, size_t start = 0) noexcept</code></li>
-<li><code>size_t</code> <strong><code>str_common_utf</code></strong><code>(const u8string&amp; s1, const u8string&amp; s2, size_t start = 0) noexcept</code></li>
+<li><code>size_t</code> <strong><code>str_common</code></strong><code>(const U8string&amp; s1, const U8string&amp; s2, size_t start = 0) noexcept</code></li>
+<li><code>size_t</code> <strong><code>str_common_utf</code></strong><code>(const U8string&amp; s1, const U8string&amp; s2, size_t start = 0) noexcept</code></li>
 </ul>
 <p>These return the count of code units in the longest common prefix of two
 strings, optionally starting at a given offset (or, equivalently, the offset,
@@ -224,8 +224,8 @@ functions will return zero if <code>start</code> is past the end of either strin
 </div>
 <div class="defns">
 <ul>
-<li><code>bool</code> <strong><code>str_expect</code></strong><code>(Utf8Iterator&amp; i, const u8string&amp; prefix)</code></li>
-<li><code>bool</code> <strong><code>str_expect</code></strong><code>(Utf8Iterator&amp; i, const Utf8Iterator&amp; end, const u8string&amp; prefix)</code></li>
+<li><code>bool</code> <strong><code>str_expect</code></strong><code>(Utf8Iterator&amp; i, const U8string&amp; prefix)</code></li>
+<li><code>bool</code> <strong><code>str_expect</code></strong><code>(Utf8Iterator&amp; i, const Utf8Iterator&amp; end, const U8string&amp; prefix)</code></li>
 </ul>
 <p>If the string starting from <code>i</code> starts with <code>prefix</code>, <code>str_expect()</code> updates
 <code>i</code> to point to the end of the prefix and returns <code>true</code>; otherwise, it leaves
@@ -235,10 +235,10 @@ empty.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>Utf8Iterator</code> <strong><code>str_find_char</code></strong><code>(const u8string&amp; str, char32_t c)</code></li>
+<li><code>Utf8Iterator</code> <strong><code>str_find_char</code></strong><code>(const U8string&amp; str, char32_t c)</code></li>
 <li><code>Utf8Iterator</code> <strong><code>str_find_char</code></strong><code>(const Utf8Iterator&amp; begin, const Utf8Iterator&amp; end, char32_t c)</code></li>
 <li><code>Utf8Iterator</code> <strong><code>str_find_char</code></strong><code>(const Irange&lt;Utf8Iterator&gt;&amp; range, char32_t c)</code></li>
-<li><code>Utf8Iterator</code> <strong><code>str_find_last_char</code></strong><code>(const u8string&amp; str, char32_t c)</code></li>
+<li><code>Utf8Iterator</code> <strong><code>str_find_last_char</code></strong><code>(const U8string&amp; str, char32_t c)</code></li>
 <li><code>Utf8Iterator</code> <strong><code>str_find_last_char</code></strong><code>(const Utf8Iterator&amp; begin, const Utf8Iterator&amp; end, char32_t c)</code></li>
 <li><code>Utf8Iterator</code> <strong><code>str_find_last_char</code></strong><code>(const Irange&lt;Utf8Iterator&gt;&amp; range, char32_t c)</code></li>
 </ul>
@@ -247,18 +247,18 @@ specified character, or an end iterator if it is not found.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>Utf8Iterator</code> <strong><code>str_find_first_of</code></strong><code>(const u8string&amp; str, const u8string&amp; target)</code></li>
-<li><code>Utf8Iterator</code> <strong><code>str_find_first_of</code></strong><code>(const Utf8Iterator&amp; begin, const Utf8Iterator&amp; end, const u8string&amp; target)</code></li>
-<li><code>Utf8Iterator</code> <strong><code>str_find_first_of</code></strong><code>(const Irange&lt;Utf8Iterator&gt;&amp; range, const u8string&amp; target)</code></li>
-<li><code>Utf8Iterator</code> <strong><code>str_find_first_not_of</code></strong><code>(const u8string&amp; str, const u8string&amp; target)</code></li>
-<li><code>Utf8Iterator</code> <strong><code>str_find_first_not_of</code></strong><code>(const Utf8Iterator&amp; begin, const Utf8Iterator&amp; end, const u8string&amp; target)</code></li>
-<li><code>Utf8Iterator</code> <strong><code>str_find_first_not_of</code></strong><code>(const Irange&lt;Utf8Iterator&gt;&amp; range, const u8string&amp; target)</code></li>
-<li><code>Utf8Iterator</code> <strong><code>str_find_last_of</code></strong><code>(const u8string&amp; str, const u8string&amp; target)</code></li>
-<li><code>Utf8Iterator</code> <strong><code>str_find_last_of</code></strong><code>(const Utf8Iterator&amp; begin, const Utf8Iterator&amp; end, const u8string&amp; target)</code></li>
-<li><code>Utf8Iterator</code> <strong><code>str_find_last_of</code></strong><code>(const Irange&lt;Utf8Iterator&gt;&amp; range, const u8string&amp; target)</code></li>
-<li><code>Utf8Iterator</code> <strong><code>str_find_last_not_of</code></strong><code>(const u8string&amp; str, const u8string&amp; target)</code></li>
-<li><code>Utf8Iterator</code> <strong><code>str_find_last_not_of</code></strong><code>(const Utf8Iterator&amp; begin, const Utf8Iterator&amp; end, const u8string&amp; target)</code></li>
-<li><code>Utf8Iterator</code> <strong><code>str_find_last_not_of</code></strong><code>(const Irange&lt;Utf8Iterator&gt;&amp; range, const u8string&amp; target)</code></li>
+<li><code>Utf8Iterator</code> <strong><code>str_find_first_of</code></strong><code>(const U8string&amp; str, const U8string&amp; target)</code></li>
+<li><code>Utf8Iterator</code> <strong><code>str_find_first_of</code></strong><code>(const Utf8Iterator&amp; begin, const Utf8Iterator&amp; end, const U8string&amp; target)</code></li>
+<li><code>Utf8Iterator</code> <strong><code>str_find_first_of</code></strong><code>(const Irange&lt;Utf8Iterator&gt;&amp; range, const U8string&amp; target)</code></li>
+<li><code>Utf8Iterator</code> <strong><code>str_find_first_not_of</code></strong><code>(const U8string&amp; str, const U8string&amp; target)</code></li>
+<li><code>Utf8Iterator</code> <strong><code>str_find_first_not_of</code></strong><code>(const Utf8Iterator&amp; begin, const Utf8Iterator&amp; end, const U8string&amp; target)</code></li>
+<li><code>Utf8Iterator</code> <strong><code>str_find_first_not_of</code></strong><code>(const Irange&lt;Utf8Iterator&gt;&amp; range, const U8string&amp; target)</code></li>
+<li><code>Utf8Iterator</code> <strong><code>str_find_last_of</code></strong><code>(const U8string&amp; str, const U8string&amp; target)</code></li>
+<li><code>Utf8Iterator</code> <strong><code>str_find_last_of</code></strong><code>(const Utf8Iterator&amp; begin, const Utf8Iterator&amp; end, const U8string&amp; target)</code></li>
+<li><code>Utf8Iterator</code> <strong><code>str_find_last_of</code></strong><code>(const Irange&lt;Utf8Iterator&gt;&amp; range, const U8string&amp; target)</code></li>
+<li><code>Utf8Iterator</code> <strong><code>str_find_last_not_of</code></strong><code>(const U8string&amp; str, const U8string&amp; target)</code></li>
+<li><code>Utf8Iterator</code> <strong><code>str_find_last_not_of</code></strong><code>(const Utf8Iterator&amp; begin, const Utf8Iterator&amp; end, const U8string&amp; target)</code></li>
+<li><code>Utf8Iterator</code> <strong><code>str_find_last_not_of</code></strong><code>(const Irange&lt;Utf8Iterator&gt;&amp; range, const U8string&amp; target)</code></li>
 </ul>
 <p>These find the first or last character in their subject range that is in, or
 not in, the target list of characters. They return an end iterator if no
@@ -268,7 +268,7 @@ instead of code units.)</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>void</code> <strong><code>str_line_column</code></strong><code>(const u8string&amp; str, size_t offset, size_t&amp; line, size_t&amp; column, uint32_t flags = 0)</code></li>
+<li><code>void</code> <strong><code>str_line_column</code></strong><code>(const U8string&amp; str, size_t offset, size_t&amp; line, size_t&amp; column, uint32_t flags = 0)</code></li>
 </ul>
 <p>Converts a code unit offset (0-based) into a string to a line and column
 number (1-based). The <code>flags</code> argument takes the same values as for
@@ -283,9 +283,9 @@ appended to the string.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>Utf8Iterator</code> <strong><code>str_search</code></strong><code>(const u8string&amp; str, const u8string&amp; target)</code></li>
-<li><code>Utf8Iterator</code> <strong><code>str_search</code></strong><code>(const Utf8Iterator&amp; begin, const Utf8Iterator&amp; end, const u8string&amp; target)</code></li>
-<li><code>Utf8Iterator</code> <strong><code>str_search</code></strong><code>(const Irange&lt;Utf8Iterator&gt;&amp; range, const u8string&amp; target)</code></li>
+<li><code>Utf8Iterator</code> <strong><code>str_search</code></strong><code>(const U8string&amp; str, const U8string&amp; target)</code></li>
+<li><code>Utf8Iterator</code> <strong><code>str_search</code></strong><code>(const Utf8Iterator&amp; begin, const Utf8Iterator&amp; end, const U8string&amp; target)</code></li>
+<li><code>Utf8Iterator</code> <strong><code>str_search</code></strong><code>(const Irange&lt;Utf8Iterator&gt;&amp; range, const U8string&amp; target)</code></li>
 </ul>
 <p>Find the first occurrence of the target substring in the subject range,
 returning an iterator pointing to the beginning of the located substring, or
@@ -304,30 +304,30 @@ characters skipped.</p>
 <h2 id="string-manipulation-functions">String manipulation functions</h2>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>str_append</code></strong><code>(u8string&amp; str, const basic_string&lt;C&gt;&amp; suffix)</code></li>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>str_append</code></strong><code>(u8string&amp; str, const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; suffix)</code></li>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>str_append</code></strong><code>(u8string&amp; str, const UtfIterator&lt;C&gt;&amp; suffix_begin, const UtfIterator&lt;C&gt;&amp; suffix_end)</code></li>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>str_append</code></strong><code>(u8string&amp; str, const C* suffix)</code></li>
-<li><code>template &lt;typename C&gt; void</code> <strong><code>str_append</code></strong><code>(u8string&amp; dst, const C* ptr, size_t n)</code></li>
-<li><code>template &lt;typename C, typename... Chars&gt; void</code> <strong><code>str_append_char</code></strong><code>(u8string&amp; dst, C c, Chars... chars)</code></li>
-<li><code>void</code> <strong><code>str_append_chars</code></strong><code>(u8string&amp; dst, size_t n, char32_t c)</code></li>
+<li><code>template &lt;typename C&gt; void</code> <strong><code>str_append</code></strong><code>(U8string&amp; str, const basic_string&lt;C&gt;&amp; suffix)</code></li>
+<li><code>template &lt;typename C&gt; void</code> <strong><code>str_append</code></strong><code>(U8string&amp; str, const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; suffix)</code></li>
+<li><code>template &lt;typename C&gt; void</code> <strong><code>str_append</code></strong><code>(U8string&amp; str, const UtfIterator&lt;C&gt;&amp; suffix_begin, const UtfIterator&lt;C&gt;&amp; suffix_end)</code></li>
+<li><code>template &lt;typename C&gt; void</code> <strong><code>str_append</code></strong><code>(U8string&amp; str, const C* suffix)</code></li>
+<li><code>template &lt;typename C&gt; void</code> <strong><code>str_append</code></strong><code>(U8string&amp; dst, const C* ptr, size_t n)</code></li>
+<li><code>template &lt;typename C, typename... Chars&gt; void</code> <strong><code>str_append_char</code></strong><code>(U8string&amp; dst, C c, Chars... chars)</code></li>
+<li><code>void</code> <strong><code>str_append_chars</code></strong><code>(U8string&amp; dst, size_t n, char32_t c)</code></li>
 </ul>
 <p>These append one or more characters to a Unicode string, performing any
 necessary encoding conversions.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>u8string&gt;</code> <strong><code>str_char</code></strong><code>(char32_t c)</code></li>
-<li><code>u8string&gt;</code> <strong><code>str_chars</code></strong><code>(size_t n, char32_t c)</code></li>
+<li><code>U8string&gt;</code> <strong><code>str_char</code></strong><code>(char32_t c)</code></li>
+<li><code>U8string&gt;</code> <strong><code>str_chars</code></strong><code>(size_t n, char32_t c)</code></li>
 </ul>
 <p>Return a string containing <code>n</code> copies of the character.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C, typename... Strings&gt; u8string</code> <strong><code>str_concat</code></strong><code>(const basic_string&lt;C&gt;&amp; s, const Strings&amp;... ss)</code></li>
-<li><code>template &lt;typename C, typename... Strings&gt; u8string</code> <strong><code>str_concat</code></strong><code>(const C* s, const Strings&amp;... ss)</code></li>
-<li><code>template &lt;typename C, typename... Strings&gt; u8string</code> <strong><code>str_concat_with</code></strong><code>(const basic_string&lt;C&gt;&amp; delim, const Strings&amp;... ss)</code></li>
-<li><code>template &lt;typename C, typename... Strings&gt; u8string</code> <strong><code>str_concat_with</code></strong><code>(const C* delim, const Strings&amp;... ss)</code></li>
+<li><code>template &lt;typename C, typename... Strings&gt; U8string</code> <strong><code>str_concat</code></strong><code>(const basic_string&lt;C&gt;&amp; s, const Strings&amp;... ss)</code></li>
+<li><code>template &lt;typename C, typename... Strings&gt; U8string</code> <strong><code>str_concat</code></strong><code>(const C* s, const Strings&amp;... ss)</code></li>
+<li><code>template &lt;typename C, typename... Strings&gt; U8string</code> <strong><code>str_concat_with</code></strong><code>(const basic_string&lt;C&gt;&amp; delim, const Strings&amp;... ss)</code></li>
+<li><code>template &lt;typename C, typename... Strings&gt; U8string</code> <strong><code>str_concat_with</code></strong><code>(const C* delim, const Strings&amp;... ss)</code></li>
 </ul>
 <p>These concatenate one or more strings, which can be an arbitrary mixture of
 different Unicode encodings. The <code>str_concat_with()</code> versions insert a
@@ -335,20 +335,20 @@ delimiter between each pair of strings.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>u8string</code> <strong><code>str_drop_prefix</code></strong><code>(const u8string&amp; str, const u8string&amp; prefix)</code></li>
-<li><code>void</code> <strong><code>str_drop_prefix_in</code></strong><code>(u8string&amp; str, const u8string&amp; prefix) noexcept</code></li>
-<li><code>u8string</code> <strong><code>str_drop_suffix</code></strong><code>(const u8string&amp; str, const u8string&amp; suffix)</code></li>
-<li><code>void</code> <strong><code>str_drop_suffix_in</code></strong><code>(u8string&amp; str, const u8string&amp; suffix) noexcept</code></li>
+<li><code>U8string</code> <strong><code>str_drop_prefix</code></strong><code>(const U8string&amp; str, const U8string&amp; prefix)</code></li>
+<li><code>void</code> <strong><code>str_drop_prefix_in</code></strong><code>(U8string&amp; str, const U8string&amp; prefix) noexcept</code></li>
+<li><code>U8string</code> <strong><code>str_drop_suffix</code></strong><code>(const U8string&amp; str, const U8string&amp; suffix)</code></li>
+<li><code>void</code> <strong><code>str_drop_suffix_in</code></strong><code>(U8string&amp; str, const U8string&amp; suffix) noexcept</code></li>
 </ul>
 <p>If the first argument string starts or ends with the given prefix or suffix,
 remove it; otherwise, just return the original string unchanged.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>u8string</code> <strong><code>str_erase_left</code></strong><code>(const u8string&amp; str, size_t length)</code></li>
-<li><code>void</code> <strong><code>str_erase_left_in</code></strong><code>(u8string&amp; str, size_t length) noexcept</code></li>
-<li><code>u8string</code> <strong><code>str_erase_right</code></strong><code>(const u8string&amp; str, size_t length)</code></li>
-<li><code>void</code> <strong><code>str_erase_right_in</code></strong><code>(u8string&amp; str, size_t length) noexcept</code></li>
+<li><code>U8string</code> <strong><code>str_erase_left</code></strong><code>(const U8string&amp; str, size_t length)</code></li>
+<li><code>void</code> <strong><code>str_erase_left_in</code></strong><code>(U8string&amp; str, size_t length) noexcept</code></li>
+<li><code>U8string</code> <strong><code>str_erase_right</code></strong><code>(const U8string&amp; str, size_t length)</code></li>
+<li><code>void</code> <strong><code>str_erase_right_in</code></strong><code>(U8string&amp; str, size_t length) noexcept</code></li>
 </ul>
 <p>Erase the specified number of Unicode characters from the beginning or end of
 the string. These will return an empty string if <code>length</code> is greater than the
@@ -356,12 +356,12 @@ number of characters in <code>str</code>.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>u8string</code> <strong><code>str_expand_tabs</code></strong><code>(const u8string&amp; str)</code></li>
-<li><code>template &lt;typename IntList&gt; u8string</code> <strong><code>str_expand_tabs</code></strong><code>(const u8string&amp; str, const IntList&amp; tabs, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename IntType&gt; u8string</code> <strong><code>str_expand_tabs</code></strong><code>(const u8string&amp; str, initializer_list&lt;IntType&gt; tabs, uint32_t flags = 0)</code></li>
-<li><code>void</code> <strong><code>str_expand_tabs_in</code></strong><code>(u8string&amp; str)</code></li>
-<li><code>template &lt;typename IntList&gt; void</code> <strong><code>str_expand_tabs_in</code></strong><code>(u8string&amp; str, const IntList&amp; tabs, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename IntType&gt; void</code> <strong><code>str_expand_tabs_in</code></strong><code>(u8string&amp; str, initializer_list&lt;IntType&gt; tabs, uint32_t flags = 0)</code></li>
+<li><code>U8string</code> <strong><code>str_expand_tabs</code></strong><code>(const U8string&amp; str)</code></li>
+<li><code>template &lt;typename IntList&gt; U8string</code> <strong><code>str_expand_tabs</code></strong><code>(const U8string&amp; str, const IntList&amp; tabs, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename IntType&gt; U8string</code> <strong><code>str_expand_tabs</code></strong><code>(const U8string&amp; str, initializer_list&lt;IntType&gt; tabs, uint32_t flags = 0)</code></li>
+<li><code>void</code> <strong><code>str_expand_tabs_in</code></strong><code>(U8string&amp; str)</code></li>
+<li><code>template &lt;typename IntList&gt; void</code> <strong><code>str_expand_tabs_in</code></strong><code>(U8string&amp; str, const IntList&amp; tabs, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename IntType&gt; void</code> <strong><code>str_expand_tabs_in</code></strong><code>(U8string&amp; str, initializer_list&lt;IntType&gt; tabs, uint32_t flags = 0)</code></li>
 </ul>
 <p>Expand tab characters to spaces. If the input string contains multiple lines
 (delimited by any of the standard Unicode line break characters), each line
@@ -378,10 +378,10 @@ assumed.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>u8string</code> <strong><code>str_fix_left</code></strong><code>(const u8string&amp; str, size_t length, char32_t c = U' ', uint32_t flags = 0)</code></li>
-<li><code>void</code> <strong><code>str_fix_left_in</code></strong><code>(u8string&amp; str, size_t length, char32_t c = U' ', uint32_t flags = 0)</code></li>
-<li><code>u8string</code> <strong><code>str_fix_right</code></strong><code>(const u8string&amp; str, size_t length, char32_t c = U' ', uint32_t flags = 0)</code></li>
-<li><code>void</code> <strong><code>str_fix_right_in</code></strong><code>(u8string&amp; str, size_t length, char32_t c = U' ', uint32_t flags = 0)</code></li>
+<li><code>U8string</code> <strong><code>str_fix_left</code></strong><code>(const U8string&amp; str, size_t length, char32_t c = U' ', uint32_t flags = 0)</code></li>
+<li><code>void</code> <strong><code>str_fix_left_in</code></strong><code>(U8string&amp; str, size_t length, char32_t c = U' ', uint32_t flags = 0)</code></li>
+<li><code>U8string</code> <strong><code>str_fix_right</code></strong><code>(const U8string&amp; str, size_t length, char32_t c = U' ', uint32_t flags = 0)</code></li>
+<li><code>void</code> <strong><code>str_fix_right_in</code></strong><code>(U8string&amp; str, size_t length, char32_t c = U' ', uint32_t flags = 0)</code></li>
 </ul>
 <p>Pad or truncate a string to a specific length; the character argument <code>c</code> is
 used for padding (converted to UTF-8). The <code>str_fix_left()</code> function anchors
@@ -395,20 +395,20 @@ than the requested length.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>u8string</code> <strong><code>str_insert</code></strong><code>(const Utf8Iterator&amp; dst, const u8string&amp; src)</code></li>
-<li><code>u8string</code> <strong><code>str_insert</code></strong><code>(const Utf8Iterator&amp; dst, const Irange&lt;Utf8Iterator&gt;&amp; src)</code></li>
-<li><code>u8string</code> <strong><code>str_insert</code></strong><code>(const Utf8Iterator&amp; dst, const Utf8Iterator&amp; src_begin, const Utf8Iterator&amp; src_end)</code></li>
-<li><code>u8string</code> <strong><code>str_insert</code></strong><code>(const Irange&lt;Utf8Iterator&gt;&amp; dst, const u8string&amp; src)</code></li>
-<li><code>u8string</code> <strong><code>str_insert</code></strong><code>(const Irange&lt;Utf8Iterator&gt;&amp; dst, const Irange&lt;Utf8Iterator&gt;&amp; src)</code></li>
-<li><code>u8string</code> <strong><code>str_insert</code></strong><code>(const Utf8Iterator&amp; dst_begin, const Utf8Iterator&amp; dst_end, const u8string&amp; src)</code></li>
-<li><code>u8string</code> <strong><code>str_insert</code></strong><code>(const Utf8Iterator&amp; dst_begin, const Utf8Iterator&amp; dst_end, const Utf8Iterator&amp; src_begin, const Utf8Iterator&amp; src_end)</code></li>
-<li><code>Irange&lt;Utf8Iterator&gt;</code> <strong><code>str_insert_in</code></strong><code>(u8string&amp; dst, const Utf8Iterator&amp; where, const u8string&amp; src)</code></li>
-<li><code>Irange&lt;Utf8Iterator&gt;</code> <strong><code>str_insert_in</code></strong><code>(u8string&amp; dst, const Utf8Iterator&amp; where, const Irange&lt;Utf8Iterator&gt;&amp; src)</code></li>
-<li><code>Irange&lt;Utf8Iterator&gt;</code> <strong><code>str_insert_in</code></strong><code>(u8string&amp; dst, const Utf8Iterator&amp; where, const Utf8Iterator&amp; src_begin, const Utf8Iterator&amp; src_end)</code></li>
-<li><code>Irange&lt;Utf8Iterator&gt;</code> <strong><code>str_insert_in</code></strong><code>(u8string&amp; dst, const Irange&lt;Utf8Iterator&gt;&amp; range, const u8string&amp; src)</code></li>
-<li><code>Irange&lt;Utf8Iterator&gt;</code> <strong><code>str_insert_in</code></strong><code>(u8string&amp; dst, const Irange&lt;Utf8Iterator&gt;&amp; range, const Irange&lt;Utf8Iterator&gt;&amp; src)</code></li>
-<li><code>Irange&lt;Utf8Iterator&gt;</code> <strong><code>str_insert_in</code></strong><code>(u8string&amp; dst, const Utf8Iterator&amp; range_begin, const Utf8Iterator&amp; range_end, const u8string&amp; src)</code></li>
-<li><code>Irange&lt;Utf8Iterator&gt;</code> <strong><code>str_insert_in</code></strong><code>(u8string&amp; dst, const Utf8Iterator&amp; range_begin, const Utf8Iterator&amp; range_end, const Utf8Iterator&amp; src_begin, const Utf8Iterator&amp; src_end)</code></li>
+<li><code>U8string</code> <strong><code>str_insert</code></strong><code>(const Utf8Iterator&amp; dst, const U8string&amp; src)</code></li>
+<li><code>U8string</code> <strong><code>str_insert</code></strong><code>(const Utf8Iterator&amp; dst, const Irange&lt;Utf8Iterator&gt;&amp; src)</code></li>
+<li><code>U8string</code> <strong><code>str_insert</code></strong><code>(const Utf8Iterator&amp; dst, const Utf8Iterator&amp; src_begin, const Utf8Iterator&amp; src_end)</code></li>
+<li><code>U8string</code> <strong><code>str_insert</code></strong><code>(const Irange&lt;Utf8Iterator&gt;&amp; dst, const U8string&amp; src)</code></li>
+<li><code>U8string</code> <strong><code>str_insert</code></strong><code>(const Irange&lt;Utf8Iterator&gt;&amp; dst, const Irange&lt;Utf8Iterator&gt;&amp; src)</code></li>
+<li><code>U8string</code> <strong><code>str_insert</code></strong><code>(const Utf8Iterator&amp; dst_begin, const Utf8Iterator&amp; dst_end, const U8string&amp; src)</code></li>
+<li><code>U8string</code> <strong><code>str_insert</code></strong><code>(const Utf8Iterator&amp; dst_begin, const Utf8Iterator&amp; dst_end, const Utf8Iterator&amp; src_begin, const Utf8Iterator&amp; src_end)</code></li>
+<li><code>Irange&lt;Utf8Iterator&gt;</code> <strong><code>str_insert_in</code></strong><code>(U8string&amp; dst, const Utf8Iterator&amp; where, const U8string&amp; src)</code></li>
+<li><code>Irange&lt;Utf8Iterator&gt;</code> <strong><code>str_insert_in</code></strong><code>(U8string&amp; dst, const Utf8Iterator&amp; where, const Irange&lt;Utf8Iterator&gt;&amp; src)</code></li>
+<li><code>Irange&lt;Utf8Iterator&gt;</code> <strong><code>str_insert_in</code></strong><code>(U8string&amp; dst, const Utf8Iterator&amp; where, const Utf8Iterator&amp; src_begin, const Utf8Iterator&amp; src_end)</code></li>
+<li><code>Irange&lt;Utf8Iterator&gt;</code> <strong><code>str_insert_in</code></strong><code>(U8string&amp; dst, const Irange&lt;Utf8Iterator&gt;&amp; range, const U8string&amp; src)</code></li>
+<li><code>Irange&lt;Utf8Iterator&gt;</code> <strong><code>str_insert_in</code></strong><code>(U8string&amp; dst, const Irange&lt;Utf8Iterator&gt;&amp; range, const Irange&lt;Utf8Iterator&gt;&amp; src)</code></li>
+<li><code>Irange&lt;Utf8Iterator&gt;</code> <strong><code>str_insert_in</code></strong><code>(U8string&amp; dst, const Utf8Iterator&amp; range_begin, const Utf8Iterator&amp; range_end, const U8string&amp; src)</code></li>
+<li><code>Irange&lt;Utf8Iterator&gt;</code> <strong><code>str_insert_in</code></strong><code>(U8string&amp; dst, const Utf8Iterator&amp; range_begin, const Utf8Iterator&amp; range_end, const Utf8Iterator&amp; src_begin, const Utf8Iterator&amp; src_end)</code></li>
 </ul>
 <p>These insert a copy of the source string into the destination string, either
 at a specified location or replacing a specified substring. The effect is
@@ -420,21 +420,21 @@ iterators delimiting the newly inserted replacement string within the updated
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename FwdRange&gt; u8string</code> <strong><code>str_join</code></strong><code>(const FwdRange&amp; r)</code></li>
-<li><code>template &lt;typename FwdRange&gt; u8string</code> <strong><code>str_join</code></strong><code>(const FwdRange&amp; r, const u8string&amp; delim, bool term = false)</code></li>
+<li><code>template &lt;typename FwdRange&gt; U8string</code> <strong><code>str_join</code></strong><code>(const FwdRange&amp; r)</code></li>
+<li><code>template &lt;typename FwdRange&gt; U8string</code> <strong><code>str_join</code></strong><code>(const FwdRange&amp; r, const U8string&amp; delim, bool term = false)</code></li>
 </ul>
 <p>These concatenate a list of strings, optionally inserting a delimiter between
-each pair of strings. The value type of the range must be <code>u8string</code> or
+each pair of strings. The value type of the range must be <code>U8string</code> or
 convertible to it. If the <code>term</code> argument is set, an extra delimiter will be
 added after the last element (useful when joining lines to form a text that
 would be expected to end with a line break).</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>u8string</code> <strong><code>str_pad_left</code></strong><code>(const u8string&amp; str, size_t length, char32_t c = U' ', uint32_t flags = 0)</code></li>
-<li><code>void</code> <strong><code>str_pad_left_in</code></strong><code>(u8string&amp; str, size_t length, char32_t c = U' ', uint32_t flags = 0)</code></li>
-<li><code>u8string</code> <strong><code>str_pad_right</code></strong><code>(const u8string&amp; str, size_t length, char32_t c = U' ', uint32_t flags = 0)</code></li>
-<li><code>void</code> <strong><code>str_pad_right_in</code></strong><code>(u8string&amp; str, size_t length, char32_t c = U' ', uint32_t flags = 0)</code></li>
+<li><code>U8string</code> <strong><code>str_pad_left</code></strong><code>(const U8string&amp; str, size_t length, char32_t c = U' ', uint32_t flags = 0)</code></li>
+<li><code>void</code> <strong><code>str_pad_left_in</code></strong><code>(U8string&amp; str, size_t length, char32_t c = U' ', uint32_t flags = 0)</code></li>
+<li><code>U8string</code> <strong><code>str_pad_right</code></strong><code>(const U8string&amp; str, size_t length, char32_t c = U' ', uint32_t flags = 0)</code></li>
+<li><code>void</code> <strong><code>str_pad_right_in</code></strong><code>(U8string&amp; str, size_t length, char32_t c = U' ', uint32_t flags = 0)</code></li>
 </ul>
 <p>Pad a string on the left or right to a specified length; the character
 argument <code>c</code> is used for padding (converted to UTF-8). The string will be
@@ -445,9 +445,9 @@ present), the result will be one unit longer than the requested length.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>bool</code> <strong><code>str_partition</code></strong><code>(const u8string&amp; str, u8string&amp; prefix, u8string&amp; suffix)</code></li>
-<li><code>bool</code> <strong><code>str_partition_at</code></strong><code>(const u8string&amp; str, u8string&amp; prefix, u8string&amp; suffix, const u8string&amp; delim)</code></li>
-<li><code>bool</code> <strong><code>str_partition_by</code></strong><code>(const u8string&amp; str, u8string&amp; prefix, u8string&amp; suffix, const u8string&amp; delim)</code></li>
+<li><code>bool</code> <strong><code>str_partition</code></strong><code>(const U8string&amp; str, U8string&amp; prefix, U8string&amp; suffix)</code></li>
+<li><code>bool</code> <strong><code>str_partition_at</code></strong><code>(const U8string&amp; str, U8string&amp; prefix, U8string&amp; suffix, const U8string&amp; delim)</code></li>
+<li><code>bool</code> <strong><code>str_partition_by</code></strong><code>(const U8string&amp; str, U8string&amp; prefix, U8string&amp; suffix, const U8string&amp; delim)</code></li>
 </ul>
 <p>These split a string into two parts at the first occurrence of a given
 delimiter. If the delimiter is found, the two parts are written into <code>prefix</code>
@@ -462,29 +462,29 @@ treated as never being found.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>u8string</code> <strong><code>str_remove</code></strong><code>(const u8string&amp; str, char32_t c)</code></li>
-<li><code>u8string</code> <strong><code>str_remove</code></strong><code>(const u8string&amp; str, const u8string&amp; chars)</code></li>
-<li><code>template &lt;typename Pred&gt; u8string</code> <strong><code>str_remove_if</code></strong><code>(const u8string&amp; str, Pred p)</code></li>
-<li><code>template &lt;typename Pred&gt; u8string</code> <strong><code>str_remove_if_not</code></strong><code>(const u8string&amp; str, Pred p)</code></li>
-<li><code>void</code> <strong><code>str_remove_in</code></strong><code>(u8string&amp; str, char32_t c)</code></li>
-<li><code>void</code> <strong><code>str_remove_in</code></strong><code>(u8string&amp; str, const u8string&amp; chars)</code></li>
-<li><code>template &lt;typename Pred&gt; void</code> <strong><code>str_remove_in_if</code></strong><code>(u8string&amp; str, Pred p)</code></li>
-<li><code>template &lt;typename Pred&gt; void</code> <strong><code>str_remove_in_if_not</code></strong><code>(u8string&amp; str, Pred p)</code></li>
+<li><code>U8string</code> <strong><code>str_remove</code></strong><code>(const U8string&amp; str, char32_t c)</code></li>
+<li><code>U8string</code> <strong><code>str_remove</code></strong><code>(const U8string&amp; str, const U8string&amp; chars)</code></li>
+<li><code>template &lt;typename Pred&gt; U8string</code> <strong><code>str_remove_if</code></strong><code>(const U8string&amp; str, Pred p)</code></li>
+<li><code>template &lt;typename Pred&gt; U8string</code> <strong><code>str_remove_if_not</code></strong><code>(const U8string&amp; str, Pred p)</code></li>
+<li><code>void</code> <strong><code>str_remove_in</code></strong><code>(U8string&amp; str, char32_t c)</code></li>
+<li><code>void</code> <strong><code>str_remove_in</code></strong><code>(U8string&amp; str, const U8string&amp; chars)</code></li>
+<li><code>template &lt;typename Pred&gt; void</code> <strong><code>str_remove_in_if</code></strong><code>(U8string&amp; str, Pred p)</code></li>
+<li><code>template &lt;typename Pred&gt; void</code> <strong><code>str_remove_in_if_not</code></strong><code>(U8string&amp; str, Pred p)</code></li>
 </ul>
 <p>These remove all occurrences of a specific character, all characters in a set,
 or characters matching (or not matching) a condition from the string.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>u8string</code> <strong><code>str_repeat</code></strong><code>(const u8string&amp; str, size_t n)</code></li>
-<li><code>void</code> <strong><code>str_repeat_in</code></strong><code>(u8string&amp; str, size_t n)</code></li>
+<li><code>U8string</code> <strong><code>str_repeat</code></strong><code>(const U8string&amp; str, size_t n)</code></li>
+<li><code>void</code> <strong><code>str_repeat_in</code></strong><code>(U8string&amp; str, size_t n)</code></li>
 </ul>
 <p>Return a string formed by concatenating <code>n</code> copies of the original string.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>u8string</code> <strong><code>str_replace</code></strong><code>(const u8string&amp; str, const u8string&amp; target, const u8string&amp; sub, size_t n = npos)</code></li>
-<li><code>void</code> <strong><code>str_replace_in</code></strong><code>(u8string&amp; str, const u8string&amp; target, const u8string&amp; sub, size_t n = npos)</code></li>
+<li><code>U8string</code> <strong><code>str_replace</code></strong><code>(const U8string&amp; str, const U8string&amp; target, const U8string&amp; sub, size_t n = npos)</code></li>
+<li><code>void</code> <strong><code>str_replace_in</code></strong><code>(U8string&amp; str, const U8string&amp; target, const U8string&amp; sub, size_t n = npos)</code></li>
 </ul>
 <p>These return a copy of the first argument string, with the first <code>n</code>
 substrings that match <code>target</code> replaced with <code>sub</code>. By default, all matches
@@ -493,12 +493,12 @@ are replaced. The string will be returned unchanged if <code>target</code> is em
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename OutIter&gt; void</code> <strong><code>str_split</code></strong><code>(const u8string&amp; src, OutIter dst)</code></li>
-<li><code>template &lt;typename OutIter&gt; void</code> <strong><code>str_split_at</code></strong><code>(const u8string&amp; src, OutIter dst, const u8string&amp; delim)</code></li>
-<li><code>template &lt;typename OutIter&gt; void</code> <strong><code>str_split_by</code></strong><code>(const u8string&amp; src, OutIter dst, const u8string&amp; delim)</code></li>
-<li><code>vector&lt;u8string&gt;</code> <strong><code>str_splitv</code></strong><code>(const u8string&amp; src)</code></li>
-<li><code>vector&lt;u8string&gt;</code> <strong><code>str_splitv_at</code></strong><code>(const u8string&amp; src, const u8string&amp; delim)</code></li>
-<li><code>vector&lt;u8string&gt;</code> <strong><code>str_splitv_by</code></strong><code>(const u8string&amp; src, const u8string&amp; delim)</code></li>
+<li><code>template &lt;typename OutIter&gt; void</code> <strong><code>str_split</code></strong><code>(const U8string&amp; src, OutIter dst)</code></li>
+<li><code>template &lt;typename OutIter&gt; void</code> <strong><code>str_split_at</code></strong><code>(const U8string&amp; src, OutIter dst, const U8string&amp; delim)</code></li>
+<li><code>template &lt;typename OutIter&gt; void</code> <strong><code>str_split_by</code></strong><code>(const U8string&amp; src, OutIter dst, const U8string&amp; delim)</code></li>
+<li><code>vector&lt;U8string&gt;</code> <strong><code>str_splitv</code></strong><code>(const U8string&amp; src)</code></li>
+<li><code>vector&lt;U8string&gt;</code> <strong><code>str_splitv_at</code></strong><code>(const U8string&amp; src, const U8string&amp; delim)</code></li>
+<li><code>vector&lt;U8string&gt;</code> <strong><code>str_splitv_by</code></strong><code>(const U8string&amp; src, const U8string&amp; delim)</code></li>
 </ul>
 <p>These split a string into substrings, using the specified delimiter to mark
 the substring boundaries, and copying the resulting substrings into the
@@ -513,7 +513,7 @@ source string is not), a single string will be written.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename OutIter&gt; void</code> <strong><code>str_split_lines</code></strong><code>(const u8string&amp; src, OutIter dst)</code></li>
+<li><code>template &lt;typename OutIter&gt; void</code> <strong><code>str_split_lines</code></strong><code>(const U8string&amp; src, OutIter dst)</code></li>
 </ul>
 <p>Splits a string at each line break, copying lines into the output iterator.
 Any character that passes <code>char_is_line_break()</code> is counted as a line break.
@@ -524,14 +524,14 @@ generated at the end if the last character in the input was a line break.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>u8string</code> <strong><code>str_squeeze</code></strong><code>(const u8string&amp; str)</code></li>
-<li><code>u8string</code> <strong><code>str_squeeze</code></strong><code>(const u8string&amp; str, const u8string&amp; chars)</code></li>
-<li><code>u8string</code> <strong><code>str_squeeze_trim</code></strong><code>(const u8string&amp; str)</code></li>
-<li><code>u8string</code> <strong><code>str_squeeze_trim</code></strong><code>(const u8string&amp; str, const u8string&amp; chars)</code></li>
-<li><code>void</code> <strong><code>str_squeeze_in</code></strong><code>(u8string&amp; str)</code></li>
-<li><code>void</code> <strong><code>str_squeeze_in</code></strong><code>(u8string&amp; str, const u8string&amp; chars)</code></li>
-<li><code>void</code> <strong><code>str_squeeze_trim_in</code></strong><code>(u8string&amp; str)</code></li>
-<li><code>void</code> <strong><code>str_squeeze_trim_in</code></strong><code>(u8string&amp; str, const u8string&amp; chars)</code></li>
+<li><code>U8string</code> <strong><code>str_squeeze</code></strong><code>(const U8string&amp; str)</code></li>
+<li><code>U8string</code> <strong><code>str_squeeze</code></strong><code>(const U8string&amp; str, const U8string&amp; chars)</code></li>
+<li><code>U8string</code> <strong><code>str_squeeze_trim</code></strong><code>(const U8string&amp; str)</code></li>
+<li><code>U8string</code> <strong><code>str_squeeze_trim</code></strong><code>(const U8string&amp; str, const U8string&amp; chars)</code></li>
+<li><code>void</code> <strong><code>str_squeeze_in</code></strong><code>(U8string&amp; str)</code></li>
+<li><code>void</code> <strong><code>str_squeeze_in</code></strong><code>(U8string&amp; str, const U8string&amp; chars)</code></li>
+<li><code>void</code> <strong><code>str_squeeze_trim_in</code></strong><code>(U8string&amp; str)</code></li>
+<li><code>void</code> <strong><code>str_squeeze_trim_in</code></strong><code>(U8string&amp; str, const U8string&amp; chars)</code></li>
 </ul>
 <p>These replace every sequence of one or more characters from <code>chars</code> with the
 first character in <code>chars</code>. By default, if <code>chars</code> is not supplied, every
@@ -543,8 +543,8 @@ one character. In all cases, the original string will be left unchanged if
 </div>
 <div class="defns">
 <ul>
-<li><code>u8string</code> <strong><code>str_substring</code></strong><code>(const u8string&amp; str, size_t offset, size_t count = npos)</code></li>
-<li><code>u8string</code> <strong><code>utf_substring</code></strong><code>(const u8string&amp; str, size_t index, size_t length = npos, uint32_t flags = 0)</code></li>
+<li><code>U8string</code> <strong><code>str_substring</code></strong><code>(const U8string&amp; str, size_t offset, size_t count = npos)</code></li>
+<li><code>U8string</code> <strong><code>utf_substring</code></strong><code>(const U8string&amp; str, size_t index, size_t length = npos, uint32_t flags = 0)</code></li>
 </ul>
 <p>These return a substring of the original string. The <code>str_substring()</code>
 function returns the same string as <code>basic_string::substr()</code>, except that an
@@ -556,8 +556,8 @@ argument instead of by code units (the flags are the same as for
 </div>
 <div class="defns">
 <ul>
-<li><code>u8string</code> <strong><code>str_translate</code></strong><code>(const u8string&amp; str, const u8string&amp; target, const u8string&amp; sub)</code></li>
-<li><code>void</code> <strong><code>str_translate_in</code></strong><code>(u8string&amp; str, const u8string&amp; target, const u8string&amp; sub)</code></li>
+<li><code>U8string</code> <strong><code>str_translate</code></strong><code>(const U8string&amp; str, const U8string&amp; target, const U8string&amp; sub)</code></li>
+<li><code>void</code> <strong><code>str_translate_in</code></strong><code>(U8string&amp; str, const U8string&amp; target, const U8string&amp; sub)</code></li>
 </ul>
 <p>These return a copy of the first argument string, with any characters that
 occur in <code>target</code> replaced with the corresponding character in <code>sub</code>. The
@@ -570,30 +570,30 @@ the Unix <code>tr</code> utility.)</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>u8string</code> <strong><code>str_trim</code></strong><code>(const u8string&amp; str)</code></li>
-<li><code>u8string</code> <strong><code>str_trim</code></strong><code>(const u8string&amp; str, const u8string&amp; chars)</code></li>
-<li><code>void</code> <strong><code>str_trim_in</code></strong><code>(u8string&amp; str)</code></li>
-<li><code>void</code> <strong><code>str_trim_in</code></strong><code>(u8string&amp; str, const u8string&amp; chars)</code></li>
-<li><code>u8string</code> <strong><code>str_trim_left</code></strong><code>(const u8string&amp; str)</code></li>
-<li><code>u8string</code> <strong><code>str_trim_left</code></strong><code>(const u8string&amp; str, const u8string&amp; chars)</code></li>
-<li><code>void</code> <strong><code>str_trim_left_in</code></strong><code>(u8string&amp; str)</code></li>
-<li><code>void</code> <strong><code>str_trim_left_in</code></strong><code>(u8string&amp; str, const u8string&amp; chars)</code></li>
-<li><code>u8string</code> <strong><code>str_trim_right</code></strong><code>(const u8string&amp; str)</code></li>
-<li><code>u8string</code> <strong><code>str_trim_right</code></strong><code>(const u8string&amp; str, const u8string&amp; chars)</code></li>
-<li><code>void</code> <strong><code>str_trim_right_in</code></strong><code>(u8string&amp; str)</code></li>
-<li><code>void</code> <strong><code>str_trim_right_in</code></strong><code>(u8string&amp; str, const u8string&amp; chars)</code></li>
-<li><code>template &lt;typename Pred&gt; u8string</code> <strong><code>str_trim_if</code></strong><code>(const u8string&amp; str, Pred p)</code></li>
-<li><code>template &lt;typename Pred&gt; u8string</code> <strong><code>str_trim_if_not</code></strong><code>(const u8string&amp; str, Pred p)</code></li>
-<li><code>template &lt;typename Pred&gt; void</code> <strong><code>str_trim_in_if</code></strong><code>(const u8string&amp; str, Pred p)</code></li>
-<li><code>template &lt;typename Pred&gt; void</code> <strong><code>str_trim_in_if_not</code></strong><code>(const u8string&amp; str, Pred p)</code></li>
-<li><code>template &lt;typename Pred&gt; u8string</code> <strong><code>str_trim_left_if</code></strong><code>(const u8string&amp; str, Pred p)</code></li>
-<li><code>template &lt;typename Pred&gt; u8string</code> <strong><code>str_trim_left_if_not</code></strong><code>(const u8string&amp; str, Pred p)</code></li>
-<li><code>template &lt;typename Pred&gt; void</code> <strong><code>str_trim_left_in_if</code></strong><code>(const u8string&amp; str, Pred p)</code></li>
-<li><code>template &lt;typename Pred&gt; void</code> <strong><code>str_trim_left_in_if_not</code></strong><code>(const u8string&amp; str, Pred p)</code></li>
-<li><code>template &lt;typename Pred&gt; u8string</code> <strong><code>str_trim_right_if</code></strong><code>(const u8string&amp; str, Pred p)</code></li>
-<li><code>template &lt;typename Pred&gt; u8string</code> <strong><code>str_trim_right_if_not</code></strong><code>(const u8string&amp; str, Pred p)</code></li>
-<li><code>template &lt;typename Pred&gt; void</code> <strong><code>str_trim_right_in_if</code></strong><code>(const u8string&amp; str, Pred p)</code></li>
-<li><code>template &lt;typename Pred&gt; void</code> <strong><code>str_trim_right_in_if_not</code></strong><code>(const u8string&amp; str, Pred p)</code></li>
+<li><code>U8string</code> <strong><code>str_trim</code></strong><code>(const U8string&amp; str)</code></li>
+<li><code>U8string</code> <strong><code>str_trim</code></strong><code>(const U8string&amp; str, const U8string&amp; chars)</code></li>
+<li><code>void</code> <strong><code>str_trim_in</code></strong><code>(U8string&amp; str)</code></li>
+<li><code>void</code> <strong><code>str_trim_in</code></strong><code>(U8string&amp; str, const U8string&amp; chars)</code></li>
+<li><code>U8string</code> <strong><code>str_trim_left</code></strong><code>(const U8string&amp; str)</code></li>
+<li><code>U8string</code> <strong><code>str_trim_left</code></strong><code>(const U8string&amp; str, const U8string&amp; chars)</code></li>
+<li><code>void</code> <strong><code>str_trim_left_in</code></strong><code>(U8string&amp; str)</code></li>
+<li><code>void</code> <strong><code>str_trim_left_in</code></strong><code>(U8string&amp; str, const U8string&amp; chars)</code></li>
+<li><code>U8string</code> <strong><code>str_trim_right</code></strong><code>(const U8string&amp; str)</code></li>
+<li><code>U8string</code> <strong><code>str_trim_right</code></strong><code>(const U8string&amp; str, const U8string&amp; chars)</code></li>
+<li><code>void</code> <strong><code>str_trim_right_in</code></strong><code>(U8string&amp; str)</code></li>
+<li><code>void</code> <strong><code>str_trim_right_in</code></strong><code>(U8string&amp; str, const U8string&amp; chars)</code></li>
+<li><code>template &lt;typename Pred&gt; U8string</code> <strong><code>str_trim_if</code></strong><code>(const U8string&amp; str, Pred p)</code></li>
+<li><code>template &lt;typename Pred&gt; U8string</code> <strong><code>str_trim_if_not</code></strong><code>(const U8string&amp; str, Pred p)</code></li>
+<li><code>template &lt;typename Pred&gt; void</code> <strong><code>str_trim_in_if</code></strong><code>(const U8string&amp; str, Pred p)</code></li>
+<li><code>template &lt;typename Pred&gt; void</code> <strong><code>str_trim_in_if_not</code></strong><code>(const U8string&amp; str, Pred p)</code></li>
+<li><code>template &lt;typename Pred&gt; U8string</code> <strong><code>str_trim_left_if</code></strong><code>(const U8string&amp; str, Pred p)</code></li>
+<li><code>template &lt;typename Pred&gt; U8string</code> <strong><code>str_trim_left_if_not</code></strong><code>(const U8string&amp; str, Pred p)</code></li>
+<li><code>template &lt;typename Pred&gt; void</code> <strong><code>str_trim_left_in_if</code></strong><code>(const U8string&amp; str, Pred p)</code></li>
+<li><code>template &lt;typename Pred&gt; void</code> <strong><code>str_trim_left_in_if_not</code></strong><code>(const U8string&amp; str, Pred p)</code></li>
+<li><code>template &lt;typename Pred&gt; U8string</code> <strong><code>str_trim_right_if</code></strong><code>(const U8string&amp; str, Pred p)</code></li>
+<li><code>template &lt;typename Pred&gt; U8string</code> <strong><code>str_trim_right_if_not</code></strong><code>(const U8string&amp; str, Pred p)</code></li>
+<li><code>template &lt;typename Pred&gt; void</code> <strong><code>str_trim_right_in_if</code></strong><code>(const U8string&amp; str, Pred p)</code></li>
+<li><code>template &lt;typename Pred&gt; void</code> <strong><code>str_trim_right_in_if_not</code></strong><code>(const U8string&amp; str, Pred p)</code></li>
 </ul>
 <p>These trim unwanted characters from one or both ends of the string. By
 default, any whitespace characters (according to the Unicode property) are
@@ -604,10 +604,10 @@ Unicode character, i.e. a <code>char32_t</code>, not a code unit.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>u8string</code> <strong><code>str_unify_lines</code></strong><code>(const u8string&amp; str, char32_t newline = U'\n')</code></li>
-<li><code>u8string</code> <strong><code>str_unify_lines</code></strong><code>(const u8string&amp; str, const u8string&amp; newline)</code></li>
-<li><code>void</code> <strong><code>str_unify_lines_in</code></strong><code>(u8string&amp; str, char32_t newline = U'\n')</code></li>
-<li><code>void</code> <strong><code>str_unify_lines_in</code></strong><code>(u8string&amp; str, const u8string&amp; newline)</code></li>
+<li><code>U8string</code> <strong><code>str_unify_lines</code></strong><code>(const U8string&amp; str, char32_t newline = U'\n')</code></li>
+<li><code>U8string</code> <strong><code>str_unify_lines</code></strong><code>(const U8string&amp; str, const U8string&amp; newline)</code></li>
+<li><code>void</code> <strong><code>str_unify_lines_in</code></strong><code>(U8string&amp; str, char32_t newline = U'\n')</code></li>
+<li><code>void</code> <strong><code>str_unify_lines_in</code></strong><code>(U8string&amp; str, const U8string&amp; newline)</code></li>
 </ul>
 <p>These convert all line breaks to the same form, a single <code>LF</code> by default. Any
 Unicode line or paragraph breaking character is recognised and replaced; the
@@ -615,8 +615,8 @@ Unicode line or paragraph breaking character is recognised and replaced; the
 </div>
 <div class="defns">
 <ul>
-<li><code>u8string</code> <strong><code>str_wrap</code></strong><code>(const u8string&amp; str, uint32_t flags = 0, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos)</code></li>
-<li><code>void</code> <strong><code>str_wrap_in</code></strong><code>(u8string&amp; str, uint32_t flags = 0, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos)</code></li>
+<li><code>U8string</code> <strong><code>str_wrap</code></strong><code>(const U8string&amp; str, uint32_t flags = 0, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos)</code></li>
+<li><code>void</code> <strong><code>str_wrap_in</code></strong><code>(U8string&amp; str, uint32_t flags = 0, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos)</code></li>
 </ul>
 <p>Wrap the text in a string to a given width. Wrapping is done separately for
 each paragraph; paragraphs are delimited by two or more line breaks (as usual,
@@ -671,14 +671,14 @@ line are left in their original format.</p>
 <h2 id="case-mapping-functions">Case mapping functions</h2>
 <div class="defns">
 <ul>
-<li><code>u8string</code> <strong><code>str_uppercase</code></strong><code>(const u8string&amp; str)</code></li>
-<li><code>void</code> <strong><code>str_uppercase_in</code></strong><code>(u8string&amp; str)</code></li>
-<li><code>u8string</code> <strong><code>str_lowercase</code></strong><code>(const u8string&amp; str)</code></li>
-<li><code>void</code> <strong><code>str_lowercase_in</code></strong><code>(u8string&amp; str)</code></li>
-<li><code>u8string</code> <strong><code>str_titlecase</code></strong><code>(const u8string&amp; str)</code></li>
-<li><code>void</code> <strong><code>str_titlecase_in</code></strong><code>(u8string&amp; str)</code></li>
-<li><code>u8string</code> <strong><code>str_casefold</code></strong><code>(const u8string&amp; str)</code></li>
-<li><code>void</code> <strong><code>str_casefold_in</code></strong><code>(u8string&amp; str)</code></li>
+<li><code>U8string</code> <strong><code>str_uppercase</code></strong><code>(const U8string&amp; str)</code></li>
+<li><code>void</code> <strong><code>str_uppercase_in</code></strong><code>(U8string&amp; str)</code></li>
+<li><code>U8string</code> <strong><code>str_lowercase</code></strong><code>(const U8string&amp; str)</code></li>
+<li><code>void</code> <strong><code>str_lowercase_in</code></strong><code>(U8string&amp; str)</code></li>
+<li><code>U8string</code> <strong><code>str_titlecase</code></strong><code>(const U8string&amp; str)</code></li>
+<li><code>void</code> <strong><code>str_titlecase_in</code></strong><code>(U8string&amp; str)</code></li>
+<li><code>U8string</code> <strong><code>str_casefold</code></strong><code>(const U8string&amp; str)</code></li>
+<li><code>void</code> <strong><code>str_casefold_in</code></strong><code>(U8string&amp; str)</code></li>
 </ul>
 <p>These convert a string to upper case, lower case, title case, or the case
 folded form (the form recommended by Unicode for case insensitive string
@@ -719,10 +719,10 @@ localisation.</p>
 <p>Flags recognised by <code>str_escape()</code> and related functions.</p>
 <div class="defns">
 <ul>
-<li><code>u8string</code> <strong><code>str_encode_uri</code></strong><code>(const u8string&amp; str)</code></li>
-<li><code>u8string</code> <strong><code>str_encode_uri_component</code></strong><code>(const u8string&amp; str)</code></li>
-<li><code>void</code> <strong><code>str_encode_uri_in</code></strong><code>(u8string&amp; str)</code></li>
-<li><code>void</code> <strong><code>str_encode_uri_component_in</code></strong><code>(u8string&amp; str)</code></li>
+<li><code>U8string</code> <strong><code>str_encode_uri</code></strong><code>(const U8string&amp; str)</code></li>
+<li><code>U8string</code> <strong><code>str_encode_uri_component</code></strong><code>(const U8string&amp; str)</code></li>
+<li><code>void</code> <strong><code>str_encode_uri_in</code></strong><code>(U8string&amp; str)</code></li>
+<li><code>void</code> <strong><code>str_encode_uri_component_in</code></strong><code>(U8string&amp; str)</code></li>
 </ul>
 <p>These replace some characters in the string with percent encoding. These are
 similar to the correspondingly named JavaScript functions, except that they
@@ -757,8 +757,8 @@ support IDNA domain names.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>u8string</code> <strong><code>str_unencode_uri</code></strong><code>(const u8string&amp; str)</code></li>
-<li><code>void</code> <strong><code>str_unencode_uri_in</code></strong><code>(u8string&amp; str)</code></li>
+<li><code>U8string</code> <strong><code>str_unencode_uri</code></strong><code>(const U8string&amp; str)</code></li>
+<li><code>void</code> <strong><code>str_unencode_uri_in</code></strong><code>(U8string&amp; str)</code></li>
 </ul>
 <p>These perform the reverse transformation to <code>str_encode_uri()</code> and
 <code>str_encode_uri_component()</code>, replacing percent escape codes with the original
@@ -766,8 +766,8 @@ characters.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>u8string</code> <strong><code>str_escape</code></strong><code>(const u8string&amp; str, uint32_t flags = 0)</code></li>
-<li><code>void</code> <strong><code>str_escape_in</code></strong><code>(u8string&amp; str, uint32_t flags = 0)</code></li>
+<li><code>U8string</code> <strong><code>str_escape</code></strong><code>(const U8string&amp; str, uint32_t flags = 0)</code></li>
+<li><code>void</code> <strong><code>str_escape_in</code></strong><code>(U8string&amp; str, uint32_t flags = 0)</code></li>
 </ul>
 <p>Replace some of the characters in the string with escape codes using a leading
 backslash. By default, only C0 and C1 control characters, plus the backslash
@@ -777,8 +777,8 @@ settings can be changed by using the flags listed above.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>u8string</code> <strong><code>str_unescape</code></strong><code>(const u8string&amp; str)</code></li>
-<li><code>void</code> <strong><code>str_unescape_in</code></strong><code>(u8string&amp; str)</code></li>
+<li><code>U8string</code> <strong><code>str_unescape</code></strong><code>(const U8string&amp; str)</code></li>
+<li><code>void</code> <strong><code>str_unescape_in</code></strong><code>(U8string&amp; str)</code></li>
 </ul>
 <p>These perform the reverse transformation to <code>str_escape()</code>, replacing escape
 codes with the original characters. If a backslash is followed by a character
@@ -790,16 +790,16 @@ Unicode scalar value.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>u8string</code> <strong><code>str_quote</code></strong><code>(const u8string&amp; str, uint32_t flags = 0, char32_t quote = '\"')</code></li>
-<li><code>void</code> <strong><code>str_quote_in</code></strong><code>(u8string&amp; str, uint32_t flags = 0, char32_t quote = '\"')</code></li>
+<li><code>U8string</code> <strong><code>str_quote</code></strong><code>(const U8string&amp; str, uint32_t flags = 0, char32_t quote = '\"')</code></li>
+<li><code>void</code> <strong><code>str_quote_in</code></strong><code>(U8string&amp; str, uint32_t flags = 0, char32_t quote = '\"')</code></li>
 </ul>
 <p>These perform the same operation as <code>str_escape()</code>, except that quote marks
 are added around the string, and internal quotes are escaped.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>u8string</code> <strong><code>str_unquote</code></strong><code>(const u8string&amp; str, char32_t quote = '\"')</code></li>
-<li><code>void</code> <strong><code>str_unquote_in</code></strong><code>(u8string&amp; str, char32_t quote = '\"')</code></li>
+<li><code>U8string</code> <strong><code>str_unquote</code></strong><code>(const U8string&amp; str, char32_t quote = '\"')</code></li>
+<li><code>void</code> <strong><code>str_unquote_in</code></strong><code>(U8string&amp; str, char32_t quote = '\"')</code></li>
 </ul>
 <p>These perform the reverse transformation to <code>str_quote()</code>, removing quote
 marks from the string, or from any quoted substrings within it, and then
@@ -808,17 +808,17 @@ unescaping the resulting strings.</p>
 <h2 id="type-conversion-functions">Type conversion functions</h2>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename T&gt; size_t</code> <strong><code>str_to_int</code></strong><code>(T&amp; t, const u8string&amp; str, size_t offset = 0, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename T&gt; size_t</code> <strong><code>str_to_int</code></strong><code>(T&amp; t, const U8string&amp; str, size_t offset = 0, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename T&gt; Utf8Iterator</code> <strong><code>str_to_int</code></strong><code>(T&amp; t, const Utf8Iterator&amp; start, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename T&gt; T</code> <strong><code>str_to_int</code></strong><code>(const u8string&amp; str, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename T&gt; T</code> <strong><code>str_to_int</code></strong><code>(const U8string&amp; str, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename T&gt; T</code> <strong><code>str_to_int</code></strong><code>(const Utf8Iterator&amp; start, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename T&gt; size_t</code> <strong><code>hex_to_int</code></strong><code>(T&amp; t, const u8string&amp; str, size_t offset = 0, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename T&gt; size_t</code> <strong><code>hex_to_int</code></strong><code>(T&amp; t, const U8string&amp; str, size_t offset = 0, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename T&gt; Utf8Iterator</code> <strong><code>hex_to_int</code></strong><code>(T&amp; t, const Utf8Iterator&amp; start, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename T&gt; T</code> <strong><code>hex_to_int</code></strong><code>(const u8string&amp; str, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename T&gt; T</code> <strong><code>hex_to_int</code></strong><code>(const U8string&amp; str, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename T&gt; T</code> <strong><code>hex_to_int</code></strong><code>(const Utf8Iterator&amp; start, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename T&gt; size_t</code> <strong><code>str_to_float</code></strong><code>(T&amp; t, const u8string&amp; str, size_t offset = 0, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename T&gt; size_t</code> <strong><code>str_to_float</code></strong><code>(T&amp; t, const U8string&amp; str, size_t offset = 0, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename T&gt; Utf8Iterator</code> <strong><code>str_to_float</code></strong><code>(T&amp; t, const Utf8Iterator&amp; start, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename T&gt; T</code> <strong><code>str_to_float</code></strong><code>(const u8string&amp; str, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename T&gt; T</code> <strong><code>str_to_float</code></strong><code>(const U8string&amp; str, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename T&gt; T</code> <strong><code>str_to_float</code></strong><code>(const Utf8Iterator&amp; start, uint32_t flags = 0)</code></li>
 </ul>
 <p>Conversions from a string to an integer (in decimal or hexadecimal) or a

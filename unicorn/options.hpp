@@ -21,14 +21,14 @@ namespace Unicorn {
 
         template <typename T>
         struct ArgConv<T, false, false> {
-            T operator()(const u8string& s) const {
+            T operator()(const U8string& s) const {
                 return s.empty() ? T() : static_cast<T>(s);
             }
         };
 
         template <typename T>
         struct ArgConv<T, true, false> {
-            T operator()(const u8string& s) const {
+            T operator()(const U8string& s) const {
                 if (s.empty())
                     return T(0);
                 else if (s.size() >= 3 && s[0] == '0' && (s[1] == 'X' || s[1] == 'x'))
@@ -40,14 +40,14 @@ namespace Unicorn {
 
         template <typename T>
         struct ArgConv<T, false, true> {
-            T operator()(const u8string& s) const {
+            T operator()(const U8string& s) const {
                 return s.empty() ? T(0) : T(si_to_float(s));
             }
         };
 
         template <typename C>
-        struct ArgConv<basic_string<C>, false, false> {
-            basic_string<C> operator()(const u8string& s) const {
+        struct ArgConv<std::basic_string<C>, false, false> {
+            std::basic_string<C> operator()(const U8string& s) const {
                 return recode<C>(s);
             }
         };
@@ -66,7 +66,7 @@ namespace Unicorn {
         opt_float,    // Argument must be a floating point number
         opt_multi,    // Option may have multiple arguments
         opt_require;  // Option is required
-    constexpr Kwarg<u8string>
+    constexpr Kwarg<U8string>
         opt_abbrev,   // Single letter abbreviation
         opt_default,  // Default value if not supplied
         opt_group,    // Mutual exclusion group name
@@ -76,37 +76,37 @@ namespace Unicorn {
     public:
         class CommandError: public std::runtime_error {
         public:
-            explicit CommandError(const u8string& details, const u8string& arg = {}, const u8string& arg2 = {});
+            explicit CommandError(const U8string& details, const U8string& arg = {}, const U8string& arg2 = {});
         };
         class SpecError: public std::runtime_error {
         public:
-            explicit SpecError(const u8string& option);
-            SpecError(const u8string& details, const u8string& option);
+            explicit SpecError(const U8string& option);
+            SpecError(const U8string& details, const U8string& option);
         };
         Options() = default;
-        explicit Options(const u8string& info): app_info(str_trim(info)) {}
-        Options& add(const u8string& info);
-        template <typename... Args> Options& add(const u8string& name, const u8string& info, const Args&... args);
+        explicit Options(const U8string& info): app_info(str_trim(info)) {}
+        Options& add(const U8string& info);
+        template <typename... Args> Options& add(const U8string& name, const U8string& info, const Args&... args);
         void autohelp() noexcept { help_auto = true; }
-        u8string help() const;
-        u8string version() const { return app_info; }
-        template <typename C> bool parse(const vector<basic_string<C>>& args, std::ostream& out = cout, uint32_t flags = 0);
-        template <typename C> bool parse(const basic_string<C>& args, std::ostream& out = cout, uint32_t flags = 0);
-        template <typename C> bool parse(int argc, C** argv, std::ostream& out = cout, uint32_t flags = 0);
-        template <typename T> T get(const u8string& name) const
+        U8string help() const;
+        U8string version() const { return app_info; }
+        template <typename C> bool parse(const std::vector<std::basic_string<C>>& args, std::ostream& out = std::cout, uint32_t flags = 0);
+        template <typename C> bool parse(const std::basic_string<C>& args, std::ostream& out = std::cout, uint32_t flags = 0);
+        template <typename C> bool parse(int argc, C** argv, std::ostream& out = std::cout, uint32_t flags = 0);
+        template <typename T> T get(const U8string& name) const
             { return UnicornDetail::ArgConv<T>()(str_join(find_values(name), " ")); }
-        template <typename T> vector<T> get_list(const u8string& name) const;
-        bool has(const u8string& name) const;
+        template <typename T> std::vector<T> get_list(const U8string& name) const;
+        bool has(const U8string& name) const;
     private:
-        using string_list = vector<u8string>;
+        using string_list = std::vector<U8string>;
         enum class help_mode { none, version, usage };
         struct option_type {
             string_list values;
-            u8string abbrev;
-            u8string defval;
-            u8string group;
-            u8string info;
-            u8string name;
+            U8string abbrev;
+            U8string defval;
+            U8string group;
+            U8string info;
+            U8string name;
             Regex pattern;
             bool found = false;
             bool is_anon = false;
@@ -117,13 +117,13 @@ namespace Unicorn {
             bool is_multiple = false;
             bool is_required = false;
         };
-        using option_list = vector<option_type>;
-        u8string app_info;
+        using option_list = std::vector<option_type>;
+        U8string app_info;
         bool help_auto = false;
         option_list opts;
         void add_option(option_type opt);
-        size_t find_index(u8string name, bool require = false) const;
-        string_list find_values(const u8string& name) const;
+        size_t find_index(U8string name, bool require = false) const;
+        string_list find_values(const U8string& name) const;
         help_mode parse_args(string_list args, uint32_t flags);
         void add_help_version();
         void clean_up_arguments(string_list& args, uint32_t flags);
@@ -135,17 +135,17 @@ namespace Unicorn {
         void check_required();
         void supply_defaults();
         void send_help(std::ostream& out, help_mode mode) const;
-        template <typename C> static u8string arg_convert(const basic_string<C>& str, uint32_t /*flags*/)
+        template <typename C> static U8string arg_convert(const std::basic_string<C>& str, uint32_t /*flags*/)
             { return to_utf8(str); }
-        static u8string arg_convert(const string& str, uint32_t flags);
-        static void add_arg_to_opt(const u8string& arg, option_type& opt);
-        static void unquote(const u8string& src, string_list& dst);
+        static U8string arg_convert(const std::string& str, uint32_t flags);
+        static void add_arg_to_opt(const U8string& arg, option_type& opt);
+        static void unquote(const U8string& src, string_list& dst);
     };
 
     template <typename... Args>
-    Options& Options::add(const u8string& name, const u8string& info, const Args&... args) {
+    Options& Options::add(const U8string& name, const U8string& info, const Args&... args) {
         option_type opt;
-        u8string pat;
+        U8string pat;
         opt.name = name;
         opt.info = info;
         kwget(opt_anon, opt.is_anon, args...);
@@ -165,25 +165,25 @@ namespace Unicorn {
     }
 
     template <typename T>
-    vector<T> Options::get_list(const u8string& name) const {
+    std::vector<T> Options::get_list(const U8string& name) const {
         string_list svec = find_values(name);
-        vector<T> tvec;
+        std::vector<T> tvec;
         std::transform(svec.begin(), svec.end(), append(tvec), UnicornDetail::ArgConv<T>());
         return tvec;
     }
 
     template <typename C>
-    bool Options::parse(const vector<basic_string<C>>& args, std::ostream& out, uint32_t flags) {
+    bool Options::parse(const std::vector<std::basic_string<C>>& args, std::ostream& out, uint32_t flags) {
         string_list u8vec;
         std::transform(args.begin(), args.end(), append(u8vec),
-            [=] (const basic_string<C>& s) { return arg_convert(s, flags); });
+            [=] (const std::basic_string<C>& s) { return arg_convert(s, flags); });
         auto help_wanted = parse_args(u8vec, flags);
         send_help(out, help_wanted);
         return help_wanted != help_mode::none;
     }
 
     template <typename C>
-    bool Options::parse(const basic_string<C>& args, std::ostream& out, uint32_t flags) {
+    bool Options::parse(const std::basic_string<C>& args, std::ostream& out, uint32_t flags) {
         auto u8args = arg_convert(args, flags);
         string_list vec;
         if (flags & opt_quoted) {
@@ -199,9 +199,9 @@ namespace Unicorn {
 
     template <typename C>
     bool Options::parse(int argc, C** argv, std::ostream& out, uint32_t flags) {
-        vector<basic_string<C>> args(argv, argv + argc);
+        std::vector<std::basic_string<C>> args(argv, argv + argc);
         if (flags & opt_quoted)
-            return parse(str_join(args, basic_string<C>{C(' ')}), out, flags);
+            return parse(str_join(args, std::basic_string<C>{C(' ')}), out, flags);
         else
             return parse(args, out, flags);
     }

@@ -24,14 +24,14 @@ namespace Unicorn {
 
     namespace {
 
-        template <typename C> u8string quote_file(const basic_string<C>& name) { return quote(to_utf8(name)); }
-        u8string file_pair(const NativeString& f1, const NativeString& f2) { return quote_file(f1) + " -> " + quote_file(f2); }
+        template <typename C> U8string quote_file(const std::basic_string<C>& name) { return quote(to_utf8(name)); }
+        U8string file_pair(const NativeString& f1, const NativeString& f2) { return quote_file(f1) + " -> " + quote_file(f2); }
 
         #ifdef _XOPEN_SOURCE
 
             class Cstdio {
             public:
-                Cstdio(const string& file, bool write) {
+                Cstdio(const std::string& file, bool write) {
                     fp = fopen(file.data(), write ? "wb" : "rb");
                     int error = errno;
                     if (! fp)
@@ -49,7 +49,7 @@ namespace Unicorn {
 
             class Cstdio {
             public:
-                Cstdio(const wstring& file, bool write) {
+                Cstdio(const std::wstring& file, bool write) {
                     fp = _wfopen(file.data(), write ? L"wb" : L"rb");
                     int error = errno;
                     if (! fp)
@@ -65,12 +65,12 @@ namespace Unicorn {
                 return (c >= L'A' && c <= L'Z') || (c >= L'a' && c <= L'z');
             }
 
-            uint32_t get_attributes(const wstring& file) {
+            uint32_t get_attributes(const std::wstring& file) {
                 auto rc = GetFileAttributes(file.data());
                 return rc == INVALID_FILE_ATTRIBUTES ? 0 : rc;
             }
 
-            bool is_drive(const wstring& file) {
+            bool is_drive(const std::wstring& file) {
                 auto rc = GetDriveType(file.data());
                 return rc != DRIVE_NO_ROOT_DIR && rc != DRIVE_UNKNOWN;
             }
@@ -96,7 +96,7 @@ namespace Unicorn {
         }
 
         std::istream& operator>>(std::istream& in, FileId& f) {
-            u8string s(32, '0');
+            U8string s(32, '0');
             for (char& c: s) {
                 auto x = in.get();
                 if (x == EOF)
@@ -131,33 +131,33 @@ namespace Unicorn {
 
     }
 
-    bool is_legal_mac_leaf_name(const u8string& file) {
+    bool is_legal_mac_leaf_name(const U8string& file) {
         return valid_string(file) && is_legal_posix_leaf_name(file);
     }
 
-    bool is_legal_mac_path_name(const u8string& file) {
+    bool is_legal_mac_path_name(const U8string& file) {
         return valid_string(file) && is_legal_posix_path_name(file);
     }
 
-    bool is_legal_posix_leaf_name(const u8string& file) {
+    bool is_legal_posix_leaf_name(const U8string& file) {
         return ! file.empty() && file.find_first_of("\0/"s) == npos;
     }
 
-    bool is_legal_posix_path_name(const u8string& file) {
+    bool is_legal_posix_path_name(const U8string& file) {
         if (file.empty() || file.find('\0') != npos)
             return false;
         size_t i = file.find_first_not_of('/');
         return file.find("//", i) == npos;
     }
 
-    bool is_legal_windows_leaf_name(const wstring& file) {
-        static const wstring illegal_chars = L"\0\"*:<>?|/\\"s;
+    bool is_legal_windows_leaf_name(const std::wstring& file) {
+        static const std::wstring illegal_chars = L"\0\"*:<>?|/\\"s;
         static const Regex illegal_pattern(windows_illegal_names, match_flags);
         return ! file.empty() && file.find_first_of(illegal_chars) == npos && ! illegal_pattern.match(to_utf8(file));
     }
 
-    bool is_legal_windows_path_name(const wstring& file) {
-        static const u8string illegal_chars = "\0\"*:<>?|"s;
+    bool is_legal_windows_path_name(const std::wstring& file) {
+        static const U8string illegal_chars = "\0\"*:<>?|"s;
         static const Regex abs_pattern(windows_absolute, match_flags);
         static const Regex illegal_pattern(R"(([:\\]|^))"s + windows_illegal_names + R"(([:\\]|$))"s, match_flags);
         if (file.empty())
@@ -174,49 +174,49 @@ namespace Unicorn {
 
     #ifdef _XOPEN_SOURCE
 
-        bool file_is_absolute(const u8string& file) {
+        bool file_is_absolute(const U8string& file) {
             return file[0] == '/';
         }
 
-        bool file_is_relative(const u8string& file) {
+        bool file_is_relative(const U8string& file) {
             return ! file.empty() && ! file_is_absolute(file);
         }
 
-        bool file_is_root(const u8string& file) {
+        bool file_is_root(const U8string& file) {
             static const Regex root_pattern(posix_root, match_flags);
             return bool(root_pattern.match(file));
         }
 
     #else
 
-        bool file_is_absolute(const wstring& file) {
+        bool file_is_absolute(const std::wstring& file) {
             static const Regex abs_pattern(windows_absolute, match_flags);
             return bool(abs_pattern.anchor(to_utf8(file)));
         }
 
-        bool file_is_relative(const wstring& file) {
+        bool file_is_relative(const std::wstring& file) {
             return ! file.empty() && ! file_is_absolute(file)
                 && ! file_is_drive_absolute(file) && ! file_is_drive_relative(file);
         }
 
-        bool file_is_drive_absolute(const wstring& file) {
+        bool file_is_drive_absolute(const std::wstring& file) {
             static const Regex drive_abs_pattern(windows_drive_absolute, match_flags);
             return bool(drive_abs_pattern.anchor(to_utf8(file)));
         }
 
-        bool file_is_drive_relative(const wstring& file) {
+        bool file_is_drive_relative(const std::wstring& file) {
             static const Regex drive_rel_pattern(windows_drive_relative, match_flags);
             return bool(drive_rel_pattern.anchor(to_utf8(file)));
         }
 
-        bool file_is_root(const wstring& file) {
+        bool file_is_root(const std::wstring& file) {
             static const Regex root_pattern(windows_root, match_flags);
             return bool(root_pattern.match(to_utf8(file)));
         }
 
     #endif
 
-    pair<u8string, u8string> split_path(const u8string& file, uint32_t flags) {
+    std::pair<U8string, U8string> split_path(const U8string& file, uint32_t flags) {
         auto nfile = UnicornDetail::normalize_path(file);
         auto cut = nfile.find_last_of(file_delimiter);
         #ifndef _XOPEN_SOURCE
@@ -235,7 +235,7 @@ namespace Unicorn {
         }
     }
 
-    pair<u8string, u8string> split_file(const u8string& file) {
+    std::pair<U8string, U8string> split_file(const U8string& file) {
         auto nfile = UnicornDetail::normalize_path(file);
         auto cut = nfile.find_last_of(file_delimiter);
         #ifndef _XOPEN_SOURCE
@@ -257,7 +257,7 @@ namespace Unicorn {
 
     #ifndef _XOPEN_SOURCE
 
-        pair<wstring, wstring> split_path(const wstring& file, uint32_t flags) {
+        std::pair<std::wstring, std::wstring> split_path(const std::wstring& file, uint32_t flags) {
             auto nfile = UnicornDetail::normalize_path(file);
             auto cut = nfile.find_last_of(native_file_delimiter);
             if (cut == 2 && is_ascii_letter(char(file[0])) && file[1] == L':') {
@@ -274,7 +274,7 @@ namespace Unicorn {
             }
         }
 
-        pair<wstring, wstring> split_file(const wstring& file) {
+        std::pair<std::wstring, std::wstring> split_file(const std::wstring& file) {
             auto nfile = UnicornDetail::normalize_path(file);
             auto cut = nfile.find_last_of(native_file_delimiter);
             if (cut == npos && is_ascii_letter(char(file[0])) && file[1] == L':')
@@ -299,8 +299,8 @@ namespace Unicorn {
     namespace {
 
         template <typename C>
-        basic_string<C> trim_dots(basic_string<C> file) {
-            static const basic_string<C> sds = {native_file_delimiter, C('.'), native_file_delimiter};
+        std::basic_string<C> trim_dots(std::basic_string<C> file) {
+            static const std::basic_string<C> sds = {native_file_delimiter, C('.'), native_file_delimiter};
             while (file.size() > 2 && file[0] == C('.') && file[1] == native_file_delimiter)
                 file.erase(0, 2);
             while (file.size() > 2 && file.end()[-1] == C('.') && file.end()[-2] == native_file_delimiter)
@@ -324,8 +324,8 @@ namespace Unicorn {
         namespace {
 
             template <typename Getpw, typename T>
-            u8string call_getpw(Getpw* getpw, T arg) {
-                vector<char> workbuf(1024);
+            U8string call_getpw(Getpw* getpw, T arg) {
+                std::vector<char> workbuf(1024);
                 passwd pwdbuf;
                 passwd* pwdptr = nullptr;
                 for (;;) {
@@ -338,8 +338,8 @@ namespace Unicorn {
                 }
             }
 
-            u8string user_home(const u8string& user) {
-                u8string home;
+            U8string user_home(const U8string& user) {
+                U8string home;
                 if (user.empty()) {
                     home = cstr(getenv("HOME"));
                     if (home.empty())
@@ -352,8 +352,8 @@ namespace Unicorn {
 
         }
 
-        u8string current_directory() {
-            u8string name(256, '\0');
+        U8string current_directory() {
+            U8string name(256, '\0');
             for (;;) {
                 if (getcwd(&name[0], name.size()))
                     break;
@@ -368,12 +368,12 @@ namespace Unicorn {
             return name;
         }
 
-        bool file_exists(const u8string& file) {
+        bool file_exists(const U8string& file) {
             struct stat s;
             return stat(file.data(), &s) == 0;
         }
 
-        FileId file_id(const u8string& file, uint32_t flags) {
+        FileId file_id(const U8string& file, uint32_t flags) {
             struct stat s;
             int rc;
             if (flags & fs_follow)
@@ -387,22 +387,22 @@ namespace Unicorn {
             return {dev, ino};
         }
 
-        bool file_is_directory(const u8string& file) {
+        bool file_is_directory(const U8string& file) {
             struct stat s;
             return stat(file.data(), &s) == 0 && S_ISDIR(s.st_mode);
         }
 
-        bool file_is_hidden(const u8string& file) {
+        bool file_is_hidden(const U8string& file) {
             auto leaf = split_path(file).second;
             return leaf[0] == '.' && leaf != "." && leaf != "..";
         }
 
-        bool file_is_symlink(const u8string& file) {
+        bool file_is_symlink(const U8string& file) {
             struct stat s;
             return lstat(file.data(), &s) == 0 && S_ISLNK(s.st_mode);
         }
 
-        uint64_t file_size(const u8string& file, uint32_t flags) {
+        uint64_t file_size(const U8string& file, uint32_t flags) {
             struct stat s;
             if (lstat(file.data(), &s) != 0)
                 return 0;
@@ -413,8 +413,8 @@ namespace Unicorn {
             return bytes;
         }
 
-        u8string resolve_path(const u8string& file) {
-            u8string result = file;
+        U8string resolve_path(const U8string& file) {
+            U8string result = file;
             size_t pos = 0;
             // Three or more leading slashes are equivalent to one (Posix)
             if (result.size() >= 3) {
@@ -432,12 +432,12 @@ namespace Unicorn {
             }
             // Replace ~[user] with the home directory
             if (result[0] == '~') {
-                u8string user, tail;
+                U8string user, tail;
                 pos = result.find('/');
                 user = result.substr(1, pos - 1);
                 if (pos != npos)
                     tail = result.substr(pos + 1, npos);
-                u8string head = user_home(user);
+                U8string head = user_home(user);
                 if (! head.empty())
                     result = file_path(head, tail);
             }
@@ -448,10 +448,10 @@ namespace Unicorn {
             return trim_dots(result);
         }
 
-        u8string resolve_symlink(const u8string& file) {
+        U8string resolve_symlink(const U8string& file) {
             if (! file_is_symlink(file))
                 return file;
-            vector<char> buf(256);
+            std::vector<char> buf(256);
             for (;;) {
                 auto rc = readlink(file.data(), buf.data(), buf.size());
                 if (rc < 0) {
@@ -462,7 +462,7 @@ namespace Unicorn {
                         throw std::system_error(error, std::generic_category(), quote_file(file));
                 }
                 if (size_t(rc) <= buf.size() - 2)
-                    return u8string(buf.data(), rc);
+                    return U8string(buf.data(), rc);
                 buf.resize(2 * buf.size());
             }
         }
@@ -471,10 +471,10 @@ namespace Unicorn {
 
         namespace {
 
-            wstring get_long_path(const wstring& file) {
+            std::wstring get_long_path(const std::wstring& file) {
                 if (file.empty())
                     return {};
-                wstring buf;
+                std::wstring buf;
                 buf.resize(1024);
                 for (;;) {
                     auto rc = GetLongPathNameW(file.data(), &buf[0], buf.size());
@@ -488,10 +488,10 @@ namespace Unicorn {
                 }
             }
 
-            wstring get_full_path(const wstring& file) {
+            std::wstring get_full_path(const std::wstring& file) {
                 if (file.empty())
                     return {};
-                wstring buf;
+                std::wstring buf;
                 buf.resize(1024);
                 for (;;) {
                     auto rc = GetFullPathNameW(file.data(), buf.size(), &buf[0], nullptr);
@@ -507,8 +507,8 @@ namespace Unicorn {
 
         }
 
-        wstring native_current_directory() {
-            wstring name(256, L'\0');
+        std::wstring native_current_directory() {
+            std::wstring name(256, L'\0');
             for (;;) {
                 auto rc = GetCurrentDirectoryW(name.size(), &name[0]);
                 if (rc == 0)
@@ -522,12 +522,12 @@ namespace Unicorn {
             return name;
         }
 
-        bool file_exists(const wstring& file) {
+        bool file_exists(const std::wstring& file) {
             return file == L"." || file == L".." || get_attributes(file) || is_drive(file);
         }
 
-        FileId file_id(const wstring& file, uint32_t flags) {
-            wstring f;
+        FileId file_id(const std::wstring& file, uint32_t flags) {
+            std::wstring f;
             try {
                 if (flags & fs_follow)
                     f = resolve_symlink(file);
@@ -537,7 +537,7 @@ namespace Unicorn {
             catch (const std::exception&) {
                 return 0;
             }
-            shared_ptr<HandleTarget> handle(CreateFileW(f.data(), GENERIC_READ, FILE_SHARE_READ,
+            std::shared_ptr<HandleTarget> handle(CreateFileW(f.data(), GENERIC_READ, FILE_SHARE_READ,
                 nullptr, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS , nullptr), CloseHandle);
             if (handle.get() == INVALID_HANDLE_VALUE)
                 return 0;
@@ -550,18 +550,18 @@ namespace Unicorn {
             return (hi << 32) + lo;
         }
 
-        bool file_is_directory(const wstring& file) {
+        bool file_is_directory(const std::wstring& file) {
             return file == L"." || file == L".."
                 || (get_attributes(file) & FILE_ATTRIBUTE_DIRECTORY)
                 || is_drive(file);
         }
 
-        bool file_is_hidden(const wstring& file) {
+        bool file_is_hidden(const std::wstring& file) {
             return ! file_is_root(file)
                 && get_attributes(file) & (FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM);
         }
 
-        bool file_is_symlink(const wstring& file) {
+        bool file_is_symlink(const std::wstring& file) {
             if (! (get_attributes(file) & FILE_ATTRIBUTE_REPARSE_POINT))
                 return false;
             WIN32_FIND_DATAW info;
@@ -575,7 +575,7 @@ namespace Unicorn {
             return sym;
         }
 
-        uint64_t file_size(const wstring& file, uint32_t flags) {
+        uint64_t file_size(const std::wstring& file, uint32_t flags) {
             WIN32_FILE_ATTRIBUTE_DATA info;
             if (! GetFileAttributesEx(file.data(), GetFileExInfoStandard, &info))
                 return 0;
@@ -586,25 +586,25 @@ namespace Unicorn {
             return bytes;
         }
 
-        wstring resolve_path(const wstring& file) {
+        std::wstring resolve_path(const std::wstring& file) {
             auto path = trim_dots(get_full_path(get_long_path(UnicornDetail::normalize_path(file))));
             path.shrink_to_fit();
             return path;
         }
 
-        wstring resolve_symlink(const wstring& file) {
+        std::wstring resolve_symlink(const std::wstring& file) {
             if (! file_is_symlink(file))
                 return file;
-            shared_ptr<HandleTarget> handle(CreateFileW(file.data(), GENERIC_READ, FILE_SHARE_READ,
+            std::shared_ptr<HandleTarget> handle(CreateFileW(file.data(), GENERIC_READ, FILE_SHARE_READ,
                 nullptr, OPEN_EXISTING, FILE_FLAG_BACKUP_SEMANTICS , nullptr), CloseHandle);
             if (handle.get() == INVALID_HANDLE_VALUE) {
                 auto error = GetLastError();
                 throw std::system_error(error, std::generic_category(), quote_file(file));
             }
-            vector<FILE_NAME_INFO> buf(100);
+            std::vector<FILE_NAME_INFO> buf(100);
             for (;;) {
                 if (GetFileInformationByHandleEx(handle.get(), FileNameInfo, &buf[0], buf.size() * sizeof(FILE_NAME_INFO)))
-                    return wstring(buf[0].FileName, buf[0].FileNameLength);
+                    return std::wstring(buf[0].FileName, buf[0].FileNameLength);
                 auto error = GetLastError();
                 if (error != ERROR_INSUFFICIENT_BUFFER)
                     throw std::system_error(error, std::generic_category(), quote_file(file));
@@ -623,24 +623,24 @@ namespace Unicorn {
             constexpr int fail_exists = EEXIST;
             constexpr int fail_not_found = ENOENT;
 
-            int mkdir_helper(const u8string& dir) {
+            int mkdir_helper(const U8string& dir) {
                 errno = 0;
                 mkdir(dir.data(), 0777);
                 return errno;
             }
 
-            void make_symlink_helper(const u8string& file, const u8string& link, uint32_t /*flags*/) {
+            void make_symlink_helper(const U8string& file, const U8string& link, uint32_t /*flags*/) {
                 if (symlink(file.data(), link.data()) == 0)
                     return;
                 int error = errno;
                 throw std::system_error(error, std::generic_category(), file_pair(link, file));
             }
 
-            bool move_file_helper(const u8string& src, const u8string& dst) noexcept {
+            bool move_file_helper(const U8string& src, const U8string& dst) noexcept {
                 return rename(src.data(), dst.data()) == 0;
             }
 
-            void remove_file_helper(const u8string& file) {
+            void remove_file_helper(const U8string& file) {
                 int rc = std::remove(file.data());
                 int error = errno;
                 if (rc != 0 && error != ENOENT)
@@ -652,13 +652,13 @@ namespace Unicorn {
             constexpr int fail_exists = ERROR_ALREADY_EXISTS;
             constexpr int fail_not_found = ERROR_PATH_NOT_FOUND;
 
-            int mkdir_helper(const wstring& dir) {
+            int mkdir_helper(const std::wstring& dir) {
                 SetLastError(0);
                 CreateDirectoryW(dir.c_str(), nullptr);
                 return GetLastError();
             }
 
-            void make_symlink_helper(const wstring& file, const wstring& link, uint32_t flags) {
+            void make_symlink_helper(const std::wstring& file, const std::wstring& link, uint32_t flags) {
                 if (! (flags & fs_overwrite) && file_exists(link))
                     throw std::system_error(ERROR_ALREADY_EXISTS, windows_category(), quote_file(link));
                 DWORD wflags = file_is_directory(file) ? SYMBOLIC_LINK_FLAG_DIRECTORY : 0;
@@ -668,7 +668,7 @@ namespace Unicorn {
                 throw std::system_error(error, windows_category(), file_pair(link, file));
             }
 
-            bool move_file_helper(const wstring& src, const wstring& dst) noexcept {
+            bool move_file_helper(const std::wstring& src, const std::wstring& dst) noexcept {
                 return MoveFileW(src.c_str(), dst.c_str()) != 0;
             }
 
@@ -681,7 +681,7 @@ namespace Unicorn {
             public:
                 RandomName():
                     rng(uint32_t(std::chrono::high_resolution_clock::now().time_since_epoch().count())) {}
-                u8string operator()() {
+                U8string operator()() {
                     auto lock = make_lock(mtx);
                     auto uuid = ruuid(rng);
                     return uuid.str();
@@ -692,10 +692,10 @@ namespace Unicorn {
                 RandomUuid ruuid;
             };
 
-            void remove_file_helper(const wstring& file) {
+            void remove_file_helper(const std::wstring& file) {
                 static RandomName rname;
-                wstring parent = split_path(file).first;
-                wstring tempname = file_path(parent, to_wstring(rname() + ".deleted"));
+                std::wstring parent = split_path(file).first;
+                std::wstring tempname = file_path(parent, to_wstring(rname() + ".deleted"));
                 if (MoveFileW(file.data(), tempname.data()) == 0)
                     tempname = file;
                 bool dir = file_is_directory(tempname), ok;
@@ -737,7 +737,7 @@ namespace Unicorn {
                 copy_file(file_path(src, child), file_path(dst, child), fs_recurse);
         } else {
             Cstdio in(src, false), out(dst, true);
-            vector<char> buf(16384);
+            std::vector<char> buf(16384);
             while (! feof(in)) {
                 errno = 0;
                 size_t n = fread(buf.data(), 1, buf.size(), in);
@@ -827,8 +827,8 @@ namespace Unicorn {
             ~impl_type() { if (dp) closedir(dp); }
         };
 
-        void NativeDirectoryIterator::do_init(const string& dir) {
-            impl = make_shared<impl_type>();
+        void NativeDirectoryIterator::do_init(const std::string& dir) {
+            impl = std::make_shared<impl_type>();
             memset(&impl->entry, 0, sizeof(impl->entry));
             memset(impl->padding, 0, sizeof(impl->padding));
             if (dir.empty())
@@ -865,10 +865,10 @@ namespace Unicorn {
             ~impl_type() { if (handle) FindClose(handle); }
         };
 
-        void NativeDirectoryIterator::do_init(const wstring& dir) {
+        void NativeDirectoryIterator::do_init(const std::wstring& dir) {
             if (! file_is_directory(dir))
                 return;
-            impl = make_shared<impl_type>();
+            impl = std::make_shared<impl_type>();
             memset(&impl->info, 0, sizeof(impl->info));
             impl->first = true;
             auto glob = dir + L"\\*";

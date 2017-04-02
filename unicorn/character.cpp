@@ -65,9 +65,9 @@ namespace Unicorn {
 
     namespace {
 
-        using CategoryTable = vector<pair<GC, GC>>;
+        using CategoryTable = std::vector<std::pair<GC, GC>>;
 
-        function<bool(char32_t)> make_category_function(const CategoryTable& table) {
+        std::function<bool(char32_t)> make_category_function(const CategoryTable& table) {
             return [=] (char32_t c) {
                 auto cat = char_general_category(c);
                 for (auto& pair: table)
@@ -122,7 +122,7 @@ namespace Unicorn {
         return GC(sparse_table_lookup(UnicornDetail::general_category_table, c));
     }
 
-    vector<GC> gc_list() {
+    std::vector<GC> gc_list() {
         return {
             GC::Cc, GC::Cf, GC::Cn, GC::Co, GC::Cs,
             GC::Ll, GC::Lm, GC::Lo, GC::Lt, GC::Lu,
@@ -170,18 +170,18 @@ namespace Unicorn {
         }
     }
 
-    function<bool(char32_t)> gc_predicate(GC cat) {
+    std::function<bool(char32_t)> gc_predicate(GC cat) {
         CategoryTable table;
         table.push_back({cat, cat});
         return make_category_function(table);
     }
 
-    function<bool(char32_t)> gc_predicate(const u8string& cat) {
+    std::function<bool(char32_t)> gc_predicate(const U8string& cat) {
         auto table = make_category_table(cat.data(), cat.size());
         return make_category_function(table);
     }
 
-    function<bool(char32_t)> gc_predicate(const char* cat) {
+    std::function<bool(char32_t)> gc_predicate(const char* cat) {
         auto table = make_category_table(cat, strlen(cat));
         return make_category_function(table);
     }
@@ -248,7 +248,7 @@ namespace Unicorn {
     namespace {
 
         class BlockList:
-        public vector<BlockInfo> {
+        public std::vector<BlockInfo> {
         public:
             BlockList() {
                 for (auto& kv: UnicornDetail::blocks_table) {
@@ -262,11 +262,11 @@ namespace Unicorn {
 
     }
 
-    u8string char_block(char32_t c) {
+    U8string char_block(char32_t c) {
         return cstr(sparse_table_lookup(UnicornDetail::blocks_table, c));
     }
 
-    const vector<BlockInfo>& unicode_block_list() {
+    const std::vector<BlockInfo>& unicode_block_list() {
         static const BlockList blocks;
         return blocks;
     }
@@ -345,7 +345,7 @@ namespace Unicorn {
             ZlibError(int error):
                 InitializationError("Zlib error: " + decode(error)) {}
         private:
-            static u8string decode(int error) {
+            static U8string decode(int error) {
                 switch (error) {
                     case Z_ERRNO:          return "Z_ERRNO";
                     case Z_STREAM_ERROR:   return "Z_STREAM_ERROR";
@@ -361,14 +361,14 @@ namespace Unicorn {
         class CharacterNameMap {
         public:
             CharacterNameMap();
-            const u8string& operator[](char32_t c) const;
+            const U8string& operator[](char32_t c) const;
         private:
-            std::unordered_map<char32_t, u8string> map;
+            std::unordered_map<char32_t, U8string> map;
         };
 
         CharacterNameMap::CharacterNameMap() {
             using namespace UnicornDetail;
-            u8string names_list(main_names_expanded, 0);
+            U8string names_list(main_names_expanded, 0);
             auto src = reinterpret_cast<const uint8_t*>(main_names_data);
             auto dst = reinterpret_cast<uint8_t*>(&names_list[0]);
             unsigned long dstlen = main_names_expanded;
@@ -387,8 +387,8 @@ namespace Unicorn {
             }
         }
 
-        const u8string& CharacterNameMap::operator[](char32_t c) const {
-            static const u8string dummy;
+        const U8string& CharacterNameMap::operator[](char32_t c) const {
+            static const U8string dummy;
             auto i = map.find(c);
             return i == map.end() ? dummy : i->second;
         }
@@ -402,7 +402,7 @@ namespace Unicorn {
             return (c >= 0xf900 && c <= 0xfaff) || (c >= 0x2f800 && c <= 0x2fa1f);
         }
 
-        u8string hangul_name(char32_t c) {
+        U8string hangul_name(char32_t c) {
             // Based on code in section 3.12 of the Unicode Standard
             static constexpr uint32_t s_base = 0xac00,
                 l_count = 19, v_count = 21, t_count = 28,
@@ -504,10 +504,10 @@ namespace Unicorn {
 
     }
 
-    u8string char_name(char32_t c, uint32_t flags) {
+    U8string char_name(char32_t c, uint32_t flags) {
         using namespace UnicornDetail;
         static const CharacterNameMap map;
-        u8string name;
+        U8string name;
         if (flags & cn_control) {
             auto name_ptr = control_character_name(c);
             if (name_ptr)
@@ -553,7 +553,7 @@ namespace Unicorn {
             name += '>';
         }
         if (flags & cn_prefix) {
-            u8string prefix = char_as_hex(c);
+            U8string prefix = char_as_hex(c);
             if (name.empty())
                 name = prefix;
             else
@@ -651,7 +651,7 @@ namespace Unicorn {
 
     // Numeric properties
 
-    pair<long long, long long> numeric_value(char32_t c) {
+    std::pair<long long, long long> numeric_value(char32_t c) {
         const auto pair = sparse_table_lookup(UnicornDetail::numeric_value_table, c);
         return {pair.first, pair.second};
     }
@@ -660,15 +660,15 @@ namespace Unicorn {
 
     namespace {
 
-        u8string decode_script(uint32_t code) {
-            u8string s;
+        U8string decode_script(uint32_t code) {
+            U8string s;
             for (int n = 24; n >= 0; n -= 8)
                 s += char((code >> n) & 0xff);
             s[0] = ascii_toupper(s[0]);
             return s;
         }
 
-        uint32_t encode_script(u8string abbr) {
+        uint32_t encode_script(U8string abbr) {
             abbr.resize(4, 0);
             uint32_t code = 0;
             for (char c: abbr)
@@ -679,17 +679,17 @@ namespace Unicorn {
         class ScriptNameMap {
         public:
             ScriptNameMap();
-            u8string operator[](const u8string& abbr) const;
+            U8string operator[](const U8string& abbr) const;
         private:
-            std::unordered_map<uint32_t, u8string> map;
+            std::unordered_map<uint32_t, U8string> map;
         };
 
         ScriptNameMap::ScriptNameMap() {
             for (auto& info: UnicornDetail::iso_script_names)
-                map.insert({encode_script(info.abbr), u8string(info.name)});
+                map.insert({encode_script(info.abbr), U8string(info.name)});
         }
 
-        u8string ScriptNameMap::operator[](const u8string& abbr) const {
+        U8string ScriptNameMap::operator[](const U8string& abbr) const {
             auto i = map.find(encode_script(abbr));
             return i == map.end() ? ""s : i->second;
         }
@@ -697,16 +697,16 @@ namespace Unicorn {
         class ScriptExtensionMap {
         public:
             ScriptExtensionMap();
-            vector<u8string> operator[](const char* cp) const;
+            std::vector<U8string> operator[](const char* cp) const;
         private:
-            std::unordered_map<const char*, vector<u8string>> map;
+            std::unordered_map<const char*, std::vector<U8string>> map;
         };
 
         ScriptExtensionMap::ScriptExtensionMap() {
             for (auto& kv: UnicornDetail::script_extensions_table) {
                 if (kv.value) {
-                    vector<u8string> scripts;
-                    u8string list(kv.value);
+                    std::vector<U8string> scripts;
+                    U8string list(kv.value);
                     for (size_t i = 0; i < list.size(); i += 5)
                         scripts.push_back(list.substr(i, 4));
                     map[kv.value] = scripts;
@@ -714,7 +714,7 @@ namespace Unicorn {
             }
         }
 
-        vector<u8string> ScriptExtensionMap::operator[](const char* cp) const {
+        std::vector<U8string> ScriptExtensionMap::operator[](const char* cp) const {
             auto i = map.find(cp);
             if (i == map.end())
                 return {};
@@ -724,11 +724,11 @@ namespace Unicorn {
 
     }
 
-    u8string char_script(char32_t c) {
+    U8string char_script(char32_t c) {
         return decode_script(sparse_table_lookup(UnicornDetail::scripts_table, c));
     }
 
-    vector<u8string> char_script_list(char32_t c) {
+    std::vector<U8string> char_script_list(char32_t c) {
         static const ScriptExtensionMap map;
         auto cp = sparse_table_lookup(UnicornDetail::script_extensions_table, c);
         if (cp)
@@ -737,7 +737,7 @@ namespace Unicorn {
             return {char_script(c)};
     }
 
-    u8string script_name(const u8string& abbr) {
+    U8string script_name(const U8string& abbr) {
         static const ScriptNameMap map;
         return map[abbr];
     }

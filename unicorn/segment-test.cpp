@@ -14,17 +14,17 @@ using namespace Unicorn;
 
 namespace {
 
-    u32string decode_hex(const u8string& code) {
-        vector<u8string> hexcodes;
+    std::u32string decode_hex(const U8string& code) {
+        std::vector<U8string> hexcodes;
         str_split_by(code, append(hexcodes), " /");
-        u32string str;
+        std::u32string str;
         std::transform(hexcodes.begin(), hexcodes.end(), append(str), hexnum);
         return str;
     }
 
     struct SplitGraphemes {
         template <typename String>
-        void operator()(const String& src, vector<String>& dst) const {
+        void operator()(const String& src, std::vector<String>& dst) const {
             auto range = grapheme_range(src);
             for (auto& segment: range)
                 dst.push_back(u_str(segment));
@@ -33,7 +33,7 @@ namespace {
 
     struct SplitWords {
         template <typename String>
-        void operator()(const String& src, vector<String>& dst) const {
+        void operator()(const String& src, std::vector<String>& dst) const {
             auto range = word_range(src);
             for (auto& segment: range)
                 dst.push_back(u_str(segment));
@@ -42,7 +42,7 @@ namespace {
 
     struct SplitSentences {
         template <typename String>
-        void operator()(const String& src, vector<String>& dst) const {
+        void operator()(const String& src, std::vector<String>& dst) const {
             auto range = sentence_range(src);
             for (auto& segment: range)
                 dst.push_back(u_str(segment));
@@ -50,9 +50,9 @@ namespace {
     };
 
     template <typename Split>
-    void segmentation_test(const u8string& name, Irange<char const* const*> table) {
+    void segmentation_test(const U8string& name, Irange<char const* const*> table) {
         size_t lnum = 0;
-        for (u8string line: table) {
+        for (U8string line: table) {
             ++lnum;
             size_t prev_failures = Test::test_failures();
             auto source32 = decode_hex(line);
@@ -62,22 +62,22 @@ namespace {
             auto source8 = to_utf8(source32);
             auto source16 = to_utf16(source32);
             auto wsource = to_wstring(source32);
-            vector<u8string> breakdown;
+            std::vector<U8string> breakdown;
             str_split_by(line, append(breakdown), "/");
-            vector<u32string> expect32;
+            std::vector<std::u32string> expect32;
             std::transform(breakdown.begin(), breakdown.end(), append(expect32), decode_hex);
-            vector<u8string> expect8(expect32.size());
-            vector<u16string> expect16(expect32.size());
-            vector<wstring> wexpect(expect32.size());
+            std::vector<U8string> expect8(expect32.size());
+            std::vector<std::u16string> expect16(expect32.size());
+            std::vector<std::wstring> wexpect(expect32.size());
             for (size_t i = 0; i < expect32.size(); ++i) {
                 expect8[i] = recode<char>(expect32[i]);
                 expect16[i] = recode<char16_t>(expect32[i]);
                 wexpect[i] = recode<wchar_t>(expect32[i]);
             }
-            vector<u8string> segments8;
-            vector<u16string> segments16;
-            vector<u32string> segments32;
-            vector<wstring> wsegments;
+            std::vector<U8string> segments8;
+            std::vector<std::u16string> segments16;
+            std::vector<std::u32string> segments32;
+            std::vector<std::wstring> wsegments;
             TRY(Split()(source8, segments8));
             TRY(Split()(source16, segments16));
             TRY(Split()(source32, segments32));
@@ -89,7 +89,7 @@ namespace {
             if (Test::test_failures() > prev_failures) {
                 FAIL(name + " " + dec(lnum) + ": " + line);
                 for (auto c: source32)
-                    cout << "\t" << hex(c) << " " << word_break(c) << "\n";
+                    std::cout << "\t" << hex(c) << " " << word_break(c) << "\n";
                 break;
             }
         }
@@ -125,11 +125,11 @@ namespace {
             TEST_EQUAL(result, alpha); \
         } while (false)
 
-    #define BLOCK_SEGMENTATION_TEST(function, mode, source, unstripped, stripped) \
+    #define BLOCK_SEGMENTATION_TEST(func, mode, source, unstripped, stripped) \
         do { \
             auto s = cstr(source); \
-            decltype(function(s, mode)) segments; \
-            TRY(segments = function(s, mode)); \
+            decltype(func(s, mode)) segments; \
+            TRY(segments = func(s, mode)); \
             decltype(s) result; \
             for (auto& subrange: segments) { \
                 str_append_char(result, '['); \
@@ -137,7 +137,7 @@ namespace {
                 str_append_char(result, ']'); \
             } \
             TEST_EQUAL(result, unstripped); \
-            TRY(segments = function(s, mode | strip_breaks)); \
+            TRY(segments = func(s, mode | strip_breaks)); \
             result.clear(); \
             for (auto& subrange: segments) { \
                 str_append_char(result, '['); \

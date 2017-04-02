@@ -16,57 +16,58 @@
 #include <string>
 #include <type_traits>
 #include <utility>
+#include <vector>
 
 namespace Unicorn {
 
     // Early declarations for functions used internally
 
-    inline void str_append(u8string& str, const u8string& suffix) { str += suffix; }
-    void str_append(u8string& str, const Utf8Iterator& suffix_begin, const Utf8Iterator& suffix_end);
-    void str_append(u8string& str, const Irange<Utf8Iterator>& suffix);
-    void str_append(u8string& str, const char* suffix);
-    void str_append(u8string& dst, const char* ptr, size_t n);
-    inline void str_append_char(u8string& dst, char c) { dst += c; }
-    void str_append_chars(u8string& dst, size_t n, char32_t c);
-    u8string str_char(char32_t c);
-    u8string str_chars(size_t n, char32_t c);
-    u8string str_repeat(const u8string& str, size_t n);
-    void str_repeat_in(u8string& str, size_t n);
+    inline void str_append(U8string& str, const U8string& suffix) { str += suffix; }
+    void str_append(U8string& str, const Utf8Iterator& suffix_begin, const Utf8Iterator& suffix_end);
+    void str_append(U8string& str, const Irange<Utf8Iterator>& suffix);
+    void str_append(U8string& str, const char* suffix);
+    void str_append(U8string& dst, const char* ptr, size_t n);
+    inline void str_append_char(U8string& dst, char c) { dst += c; }
+    void str_append_chars(U8string& dst, size_t n, char32_t c);
+    U8string str_char(char32_t c);
+    U8string str_chars(size_t n, char32_t c);
+    U8string str_repeat(const U8string& str, size_t n);
+    void str_repeat_in(U8string& str, size_t n);
 
     template <typename C>
-    void str_append(u8string& str, const basic_string<C>& suffix) {
+    void str_append(U8string& str, const std::basic_string<C>& suffix) {
         std::copy(utf_begin(suffix), utf_end(suffix), utf_writer(str));
     }
 
     template <typename C>
-    void str_append(u8string& str, const UtfIterator<C>& suffix_begin, const UtfIterator<C>& suffix_end) {
+    void str_append(U8string& str, const UtfIterator<C>& suffix_begin, const UtfIterator<C>& suffix_end) {
         std::copy(suffix_begin, suffix_end, utf_writer(str));
     }
 
     template <typename C>
-    void str_append(u8string& str, const Irange<UtfIterator<C>>& suffix) {
+    void str_append(U8string& str, const Irange<UtfIterator<C>>& suffix) {
         str_append(str, suffix.begin(), suffix.end());
     }
 
     template <typename C>
-    void str_append(u8string& str, const C* suffix) {
+    void str_append(U8string& str, const C* suffix) {
         str_append(str, cstr(suffix));
     }
 
     template <typename C>
-    void str_append(u8string& dst, const C* ptr, size_t n) {
+    void str_append(U8string& dst, const C* ptr, size_t n) {
         if (ptr)
             for (auto out = utf_writer(dst); n > 0; --n, ++ptr)
                 *out = char_to_uint(*ptr++);
     }
 
     template <typename C>
-    void str_append_char(u8string& dst, C c) {
+    void str_append_char(U8string& dst, C c) {
         *utf_writer(dst) = char_to_uint(c);
     }
 
     template <typename C1, typename C2, typename... Chars>
-    void str_append_char(u8string& dst, C1 c1, C2 c2, Chars... chars) {
+    void str_append_char(U8string& dst, C1 c1, C2 c2, Chars... chars) {
         str_append_char(dst, c1);
         str_append_char(dst, c2, chars...);
     }
@@ -129,7 +130,7 @@ namespace Unicorn {
         };
 
         template <typename C>
-        pair<UtfIterator<C>, bool> find_position(const Irange<UtfIterator<C>>& range, size_t pos, uint32_t flags = 0) {
+        std::pair<UtfIterator<C>, bool> find_position(const Irange<UtfIterator<C>>& range, size_t pos, uint32_t flags = 0) {
             check_length_flags(flags);
             if (pos == 0)
                 return {range.begin(), true};
@@ -203,7 +204,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    size_t str_length(const basic_string<C>& str, uint32_t flags = 0) {
+    size_t str_length(const std::basic_string<C>& str, uint32_t flags = 0) {
         return str_length(utf_range(str), flags);
     }
 
@@ -218,12 +219,12 @@ namespace Unicorn {
     }
 
     template <typename C>
-    UtfIterator<C> str_find_index(const basic_string<C>& str, size_t pos, uint32_t flags = 0) {
+    UtfIterator<C> str_find_index(const std::basic_string<C>& str, size_t pos, uint32_t flags = 0) {
         return str_find_index(utf_range(str), pos, flags);
     }
 
     template <typename C>
-    size_t str_find_offset(const basic_string<C>& str, size_t pos, uint32_t flags = 0) {
+    size_t str_find_offset(const std::basic_string<C>& str, size_t pos, uint32_t flags = 0) {
         auto rc = UnicornDetail::find_position(utf_range(str), pos, flags);
         return rc.second ? rc.first.offset() : npos;
     }
@@ -232,7 +233,7 @@ namespace Unicorn {
     // Defined in string-property.cpp
 
     template <typename C>
-    char32_t str_char_at(const basic_string<C>& str, size_t index) noexcept {
+    char32_t str_char_at(const std::basic_string<C>& str, size_t index) noexcept {
         auto range = utf_range(str);
         for (char32_t c: range)
             if (! index--)
@@ -241,56 +242,56 @@ namespace Unicorn {
     }
 
     template <typename C>
-    char32_t str_first_char(const basic_string<C>& str) noexcept {
+    char32_t str_first_char(const std::basic_string<C>& str) noexcept {
         return str.empty() ? 0 : *utf_begin(str);
     }
 
     template <typename C>
-    char32_t str_last_char(const basic_string<C>& str) noexcept {
+    char32_t str_last_char(const std::basic_string<C>& str) noexcept {
         return str.empty() ? 0 : *std::prev(utf_end(str));
     }
 
-    bool str_is_east_asian(const u8string& str);
-    bool str_starts_with(const u8string& str, const u8string& prefix) noexcept;
-    bool str_ends_with(const u8string& str, const u8string& suffix) noexcept;
+    bool str_is_east_asian(const U8string& str);
+    bool str_starts_with(const U8string& str, const U8string& prefix) noexcept;
+    bool str_ends_with(const U8string& str, const U8string& suffix) noexcept;
 
     // String comparison
     // Defined in string-compare.cpp
 
-    int str_compare_3way(const u8string& lhs, const u8string& rhs);
-    bool str_icase_compare(const u8string& lhs, const u8string& rhs) noexcept;
-    bool str_icase_equal(const u8string& lhs, const u8string& rhs) noexcept;
-    bool str_natural_compare(const u8string& lhs, const u8string& rhs) noexcept;
+    int str_compare_3way(const U8string& lhs, const U8string& rhs);
+    bool str_icase_compare(const U8string& lhs, const U8string& rhs) noexcept;
+    bool str_icase_equal(const U8string& lhs, const U8string& rhs) noexcept;
+    bool str_natural_compare(const U8string& lhs, const U8string& rhs) noexcept;
 
     // Other string algorithms
     // Defined in string-algorithm.cpp
 
-    size_t str_common(const u8string& s1, const u8string& s2, size_t start = 0) noexcept;
-    size_t str_common_utf(const u8string& s1, const u8string& s2, size_t start = 0) noexcept;
-    bool str_expect(Utf8Iterator& i, const Utf8Iterator& end, const u8string& prefix);
-    bool str_expect(Utf8Iterator& i, const u8string& prefix);
+    size_t str_common(const U8string& s1, const U8string& s2, size_t start = 0) noexcept;
+    size_t str_common_utf(const U8string& s1, const U8string& s2, size_t start = 0) noexcept;
+    bool str_expect(Utf8Iterator& i, const Utf8Iterator& end, const U8string& prefix);
+    bool str_expect(Utf8Iterator& i, const U8string& prefix);
     Utf8Iterator str_find_char(const Utf8Iterator& b, const Utf8Iterator& e, char32_t c);
     Utf8Iterator str_find_char(const Irange<Utf8Iterator>& range, char32_t c);
-    Utf8Iterator str_find_char(const u8string& str, char32_t c);
+    Utf8Iterator str_find_char(const U8string& str, char32_t c);
     Utf8Iterator str_find_last_char(const Utf8Iterator& b, const Utf8Iterator& e, char32_t c);
     Utf8Iterator str_find_last_char(const Irange<Utf8Iterator>& range, char32_t c);
-    Utf8Iterator str_find_last_char(const u8string& str, char32_t c);
-    Utf8Iterator str_find_first_of(const Utf8Iterator& b, const Utf8Iterator& e, const u8string& target);
-    Utf8Iterator str_find_first_of(const Irange<Utf8Iterator>& range, const u8string& target);
-    Utf8Iterator str_find_first_of(const u8string& str, const u8string& target);
-    Utf8Iterator str_find_first_not_of(const Utf8Iterator& b, const Utf8Iterator& e, const u8string& target);
-    Utf8Iterator str_find_first_not_of(const Irange<Utf8Iterator>& range, const u8string& target);
-    Utf8Iterator str_find_first_not_of(const u8string& str, const u8string& target);
-    Utf8Iterator str_find_last_of(const Utf8Iterator& b, const Utf8Iterator& e, const u8string& target);
-    Utf8Iterator str_find_last_of(const Irange<Utf8Iterator>& range, const u8string& target);
-    Utf8Iterator str_find_last_of(const u8string& str, const u8string& target);
-    Utf8Iterator str_find_last_not_of(const Utf8Iterator& b, const Utf8Iterator& e, const u8string& target);
-    Utf8Iterator str_find_last_not_of(const Irange<Utf8Iterator>& range, const u8string& target);
-    Utf8Iterator str_find_last_not_of(const u8string& str, const u8string& target);
-    void str_line_column(const u8string& str, size_t offset, size_t& line, size_t& column, size_t flags = 0);
-    Utf8Iterator str_search(const Utf8Iterator& b, const Utf8Iterator& e, const u8string& target);
-    Utf8Iterator str_search(const Irange<Utf8Iterator>& range, const u8string& target);
-    Utf8Iterator str_search(const u8string& str, const u8string& target);
+    Utf8Iterator str_find_last_char(const U8string& str, char32_t c);
+    Utf8Iterator str_find_first_of(const Utf8Iterator& b, const Utf8Iterator& e, const U8string& target);
+    Utf8Iterator str_find_first_of(const Irange<Utf8Iterator>& range, const U8string& target);
+    Utf8Iterator str_find_first_of(const U8string& str, const U8string& target);
+    Utf8Iterator str_find_first_not_of(const Utf8Iterator& b, const Utf8Iterator& e, const U8string& target);
+    Utf8Iterator str_find_first_not_of(const Irange<Utf8Iterator>& range, const U8string& target);
+    Utf8Iterator str_find_first_not_of(const U8string& str, const U8string& target);
+    Utf8Iterator str_find_last_of(const Utf8Iterator& b, const Utf8Iterator& e, const U8string& target);
+    Utf8Iterator str_find_last_of(const Irange<Utf8Iterator>& range, const U8string& target);
+    Utf8Iterator str_find_last_of(const U8string& str, const U8string& target);
+    Utf8Iterator str_find_last_not_of(const Utf8Iterator& b, const Utf8Iterator& e, const U8string& target);
+    Utf8Iterator str_find_last_not_of(const Irange<Utf8Iterator>& range, const U8string& target);
+    Utf8Iterator str_find_last_not_of(const U8string& str, const U8string& target);
+    void str_line_column(const U8string& str, size_t offset, size_t& line, size_t& column, size_t flags = 0);
+    Utf8Iterator str_search(const Utf8Iterator& b, const Utf8Iterator& e, const U8string& target);
+    Utf8Iterator str_search(const Irange<Utf8Iterator>& range, const U8string& target);
+    Utf8Iterator str_search(const U8string& str, const U8string& target);
     size_t str_skipws(Utf8Iterator& i, const Utf8Iterator& end);
     size_t str_skipws(Utf8Iterator& i);
 
@@ -305,20 +306,20 @@ namespace Unicorn {
 
         enum { trimleft = 1, trimright = 2 };
 
-        u8string expand_tabs(const u8string& str, const vector<size_t>& tabs, uint32_t flags);
+        U8string expand_tabs(const U8string& str, const std::vector<size_t>& tabs, uint32_t flags);
 
         template <typename DS>
-        void concat_helper(u8string&, const DS&) {}
+        void concat_helper(U8string&, const DS&) {}
 
         template <typename DS, typename S2, typename... Strings>
-        void concat_helper(u8string& s1, const DS& delim, const S2& s2, const Strings&... ss) {
+        void concat_helper(U8string& s1, const DS& delim, const S2& s2, const Strings&... ss) {
             str_append(s1, delim);
             str_append(s1, s2);
             concat_helper(s1, delim, ss...);
         }
 
         template <typename Pred>
-        u8string trim_helper(const u8string& src, int mode, Pred p) {
+        U8string trim_helper(const U8string& src, int mode, Pred p) {
             auto range = utf_range(src);
             auto i = range.begin(), j = range.end();
             if (mode & trimleft)
@@ -339,7 +340,7 @@ namespace Unicorn {
         }
 
         template <typename Pred>
-        void trim_in_helper(u8string& src, int mode, Pred p) {
+        void trim_in_helper(U8string& src, int mode, Pred p) {
             auto range = utf_range(src);
             auto i = range.begin(), j = range.end();
             if (mode & trimleft)
@@ -362,168 +363,168 @@ namespace Unicorn {
 
     }
 
-    u8string str_drop_prefix(const u8string& str, const u8string& prefix);
-    void str_drop_prefix_in(u8string& str, const u8string& prefix) noexcept;
-    u8string str_drop_suffix(const u8string& str, const u8string& suffix);
-    void str_drop_suffix_in(u8string& str, const u8string& suffix) noexcept;
-    u8string str_erase_left(const u8string& str, size_t length);
-    void str_erase_left_in(u8string& str, size_t length) noexcept;
-    u8string str_erase_right(const u8string& str, size_t length);
-    void str_erase_right_in(u8string& str, size_t length) noexcept;
-    u8string str_expand_tabs(const u8string& str);
-    void str_expand_tabs_in(u8string& str);
-    u8string str_fix_left(const u8string& str, size_t length, char32_t c = U' ', uint32_t flags = 0);
-    void str_fix_left_in(u8string& str, size_t length, char32_t c = U' ', uint32_t flags = 0);
-    u8string str_fix_right(const u8string& str, size_t length, char32_t c = U' ', uint32_t flags = 0);
-    void str_fix_right_in(u8string& str, size_t length, char32_t c = U' ', uint32_t flags = 0);
-    u8string str_insert(const Utf8Iterator& dst, const Utf8Iterator& src_begin, const Utf8Iterator& src_end);
-    u8string str_insert(const Utf8Iterator& dst, const Irange<Utf8Iterator>& src);
-    u8string str_insert(const Utf8Iterator& dst, const u8string& src);
-    u8string str_insert(const Utf8Iterator& dst_begin, const Utf8Iterator& dst_end,
+    U8string str_drop_prefix(const U8string& str, const U8string& prefix);
+    void str_drop_prefix_in(U8string& str, const U8string& prefix) noexcept;
+    U8string str_drop_suffix(const U8string& str, const U8string& suffix);
+    void str_drop_suffix_in(U8string& str, const U8string& suffix) noexcept;
+    U8string str_erase_left(const U8string& str, size_t length);
+    void str_erase_left_in(U8string& str, size_t length) noexcept;
+    U8string str_erase_right(const U8string& str, size_t length);
+    void str_erase_right_in(U8string& str, size_t length) noexcept;
+    U8string str_expand_tabs(const U8string& str);
+    void str_expand_tabs_in(U8string& str);
+    U8string str_fix_left(const U8string& str, size_t length, char32_t c = U' ', uint32_t flags = 0);
+    void str_fix_left_in(U8string& str, size_t length, char32_t c = U' ', uint32_t flags = 0);
+    U8string str_fix_right(const U8string& str, size_t length, char32_t c = U' ', uint32_t flags = 0);
+    void str_fix_right_in(U8string& str, size_t length, char32_t c = U' ', uint32_t flags = 0);
+    U8string str_insert(const Utf8Iterator& dst, const Utf8Iterator& src_begin, const Utf8Iterator& src_end);
+    U8string str_insert(const Utf8Iterator& dst, const Irange<Utf8Iterator>& src);
+    U8string str_insert(const Utf8Iterator& dst, const U8string& src);
+    U8string str_insert(const Utf8Iterator& dst_begin, const Utf8Iterator& dst_end,
             const Utf8Iterator& src_begin, const Utf8Iterator& src_end);
-    u8string str_insert(const Irange<Utf8Iterator>& dst, const Irange<Utf8Iterator>& src);
-    u8string str_insert(const Utf8Iterator& dst_begin, const Utf8Iterator& dst_end, const u8string& src);
-    u8string str_insert(const Irange<Utf8Iterator>& dst, const u8string& src);
-    Irange<Utf8Iterator> str_insert_in(u8string& dst, const Utf8Iterator& where,
+    U8string str_insert(const Irange<Utf8Iterator>& dst, const Irange<Utf8Iterator>& src);
+    U8string str_insert(const Utf8Iterator& dst_begin, const Utf8Iterator& dst_end, const U8string& src);
+    U8string str_insert(const Irange<Utf8Iterator>& dst, const U8string& src);
+    Irange<Utf8Iterator> str_insert_in(U8string& dst, const Utf8Iterator& where,
             const Utf8Iterator& src_begin, const Utf8Iterator& src_end);
-    Irange<Utf8Iterator> str_insert_in(u8string& dst, const Utf8Iterator& where, const Irange<Utf8Iterator>& src);
-    Irange<Utf8Iterator> str_insert_in(u8string& dst, const Utf8Iterator& where, const u8string& src);
-    Irange<Utf8Iterator> str_insert_in(u8string& dst, const Utf8Iterator& range_begin, const Utf8Iterator& range_end,
+    Irange<Utf8Iterator> str_insert_in(U8string& dst, const Utf8Iterator& where, const Irange<Utf8Iterator>& src);
+    Irange<Utf8Iterator> str_insert_in(U8string& dst, const Utf8Iterator& where, const U8string& src);
+    Irange<Utf8Iterator> str_insert_in(U8string& dst, const Utf8Iterator& range_begin, const Utf8Iterator& range_end,
             const Utf8Iterator& src_begin, const Utf8Iterator& src_end);
-    Irange<Utf8Iterator> str_insert_in(u8string& dst, const Irange<Utf8Iterator>& range, const Irange<Utf8Iterator>& src);
-    Irange<Utf8Iterator> str_insert_in(u8string& dst, const Utf8Iterator& range_begin, const Utf8Iterator& range_end,
-            const u8string& src);
-    Irange<Utf8Iterator> str_insert_in(u8string& dst, const Irange<Utf8Iterator>& range, const u8string& src);
-    u8string str_pad_left(const u8string& str, size_t length, char32_t c = U' ', uint32_t flags = 0);
-    void str_pad_left_in(u8string& str, size_t length, char32_t c = U' ', uint32_t flags = 0);
-    u8string str_pad_right(const u8string& str, size_t length, char32_t c = U' ', uint32_t flags = 0);
-    void str_pad_right_in(u8string& str, size_t length, char32_t c = U' ', uint32_t flags = 0);
-    bool str_partition(const u8string& str, u8string& prefix, u8string& suffix);
-    bool str_partition_at(const u8string& str, u8string& prefix, u8string& suffix, const u8string& delim);
-    bool str_partition_by(const u8string& str, u8string& prefix, u8string& suffix, const u8string& delim);
-    u8string str_remove(const u8string& str, char32_t c);
-    u8string str_remove(const u8string& str, const u8string& chars);
-    void str_remove_in(u8string& str, char32_t c);
-    void str_remove_in(u8string& str, const u8string& chars);
-    u8string str_replace(const u8string& str, const u8string& target, const u8string& sub, size_t n = npos);
-    void str_replace_in(u8string& str, const u8string& target, const u8string& sub, size_t n = npos);
-    vector<u8string> str_splitv(const u8string& src);
-    vector<u8string> str_splitv_at(const u8string& src, const u8string& delim);
-    vector<u8string> str_splitv_by(const u8string& src, const u8string& delim);
-    u8string str_squeeze(const u8string& str);
-    u8string str_squeeze(const u8string& str, const u8string& chars);
-    u8string str_squeeze_trim(const u8string& str);
-    u8string str_squeeze_trim(const u8string& str, const u8string& chars);
-    void str_squeeze_in(u8string& str);
-    void str_squeeze_in(u8string& str, const u8string& chars);
-    void str_squeeze_trim_in(u8string& str);
-    void str_squeeze_trim_in(u8string& str, const u8string& chars);
-    u8string str_substring(const u8string& str, size_t offset, size_t count = npos);
-    u8string utf_substring(const u8string& str, size_t index, size_t length = npos, uint32_t flags = 0);
-    u8string str_translate(const u8string& str, const u8string& target, const u8string& sub);
-    void str_translate_in(u8string& str, const u8string& target, const u8string& sub);
-    u8string str_trim(const u8string& str, const u8string& chars);
-    u8string str_trim(const u8string& str);
-    u8string str_trim_left(const u8string& str, const u8string& chars);
-    u8string str_trim_left(const u8string& str);
-    u8string str_trim_right(const u8string& str, const u8string& chars);
-    u8string str_trim_right(const u8string& str);
-    void str_trim_in(u8string& str, const u8string& chars);
-    void str_trim_in(u8string& str);
-    void str_trim_left_in(u8string& str, const u8string& chars);
-    void str_trim_left_in(u8string& str);
-    void str_trim_right_in(u8string& str, const u8string& chars);
-    void str_trim_right_in(u8string& str);
-    u8string str_unify_lines(const u8string& str, const u8string& newline);
-    u8string str_unify_lines(const u8string& str, char32_t newline);
-    u8string str_unify_lines(const u8string& str);
-    void str_unify_lines_in(u8string& str, const u8string& newline);
-    void str_unify_lines_in(u8string& str, char32_t newline);
-    void str_unify_lines_in(u8string& str);
-    u8string str_wrap(const u8string& str, uint32_t flags = 0, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos);
-    void str_wrap_in(u8string& str, uint32_t flags = 0, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos);
+    Irange<Utf8Iterator> str_insert_in(U8string& dst, const Irange<Utf8Iterator>& range, const Irange<Utf8Iterator>& src);
+    Irange<Utf8Iterator> str_insert_in(U8string& dst, const Utf8Iterator& range_begin, const Utf8Iterator& range_end,
+            const U8string& src);
+    Irange<Utf8Iterator> str_insert_in(U8string& dst, const Irange<Utf8Iterator>& range, const U8string& src);
+    U8string str_pad_left(const U8string& str, size_t length, char32_t c = U' ', uint32_t flags = 0);
+    void str_pad_left_in(U8string& str, size_t length, char32_t c = U' ', uint32_t flags = 0);
+    U8string str_pad_right(const U8string& str, size_t length, char32_t c = U' ', uint32_t flags = 0);
+    void str_pad_right_in(U8string& str, size_t length, char32_t c = U' ', uint32_t flags = 0);
+    bool str_partition(const U8string& str, U8string& prefix, U8string& suffix);
+    bool str_partition_at(const U8string& str, U8string& prefix, U8string& suffix, const U8string& delim);
+    bool str_partition_by(const U8string& str, U8string& prefix, U8string& suffix, const U8string& delim);
+    U8string str_remove(const U8string& str, char32_t c);
+    U8string str_remove(const U8string& str, const U8string& chars);
+    void str_remove_in(U8string& str, char32_t c);
+    void str_remove_in(U8string& str, const U8string& chars);
+    U8string str_replace(const U8string& str, const U8string& target, const U8string& sub, size_t n = npos);
+    void str_replace_in(U8string& str, const U8string& target, const U8string& sub, size_t n = npos);
+    std::vector<U8string> str_splitv(const U8string& src);
+    std::vector<U8string> str_splitv_at(const U8string& src, const U8string& delim);
+    std::vector<U8string> str_splitv_by(const U8string& src, const U8string& delim);
+    U8string str_squeeze(const U8string& str);
+    U8string str_squeeze(const U8string& str, const U8string& chars);
+    U8string str_squeeze_trim(const U8string& str);
+    U8string str_squeeze_trim(const U8string& str, const U8string& chars);
+    void str_squeeze_in(U8string& str);
+    void str_squeeze_in(U8string& str, const U8string& chars);
+    void str_squeeze_trim_in(U8string& str);
+    void str_squeeze_trim_in(U8string& str, const U8string& chars);
+    U8string str_substring(const U8string& str, size_t offset, size_t count = npos);
+    U8string utf_substring(const U8string& str, size_t index, size_t length = npos, uint32_t flags = 0);
+    U8string str_translate(const U8string& str, const U8string& target, const U8string& sub);
+    void str_translate_in(U8string& str, const U8string& target, const U8string& sub);
+    U8string str_trim(const U8string& str, const U8string& chars);
+    U8string str_trim(const U8string& str);
+    U8string str_trim_left(const U8string& str, const U8string& chars);
+    U8string str_trim_left(const U8string& str);
+    U8string str_trim_right(const U8string& str, const U8string& chars);
+    U8string str_trim_right(const U8string& str);
+    void str_trim_in(U8string& str, const U8string& chars);
+    void str_trim_in(U8string& str);
+    void str_trim_left_in(U8string& str, const U8string& chars);
+    void str_trim_left_in(U8string& str);
+    void str_trim_right_in(U8string& str, const U8string& chars);
+    void str_trim_right_in(U8string& str);
+    U8string str_unify_lines(const U8string& str, const U8string& newline);
+    U8string str_unify_lines(const U8string& str, char32_t newline);
+    U8string str_unify_lines(const U8string& str);
+    void str_unify_lines_in(U8string& str, const U8string& newline);
+    void str_unify_lines_in(U8string& str, char32_t newline);
+    void str_unify_lines_in(U8string& str);
+    U8string str_wrap(const U8string& str, uint32_t flags = 0, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos);
+    void str_wrap_in(U8string& str, uint32_t flags = 0, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos);
 
     template <typename C, typename... Strings>
-    u8string str_concat(const basic_string<C>& s, const Strings&... ss) {
-        u8string result;
-        UnicornDetail::concat_helper(result, basic_string<C>(), s, ss...);
+    U8string str_concat(const std::basic_string<C>& s, const Strings&... ss) {
+        U8string result;
+        UnicornDetail::concat_helper(result, std::basic_string<C>(), s, ss...);
         return result;
     }
 
     template <typename C, typename... Strings>
-    u8string str_concat(const C* s, const Strings&... ss) {
-        u8string result;
-        UnicornDetail::concat_helper(result, basic_string<C>(), cstr(s), ss...);
+    U8string str_concat(const C* s, const Strings&... ss) {
+        U8string result;
+        UnicornDetail::concat_helper(result, std::basic_string<C>(), cstr(s), ss...);
         return result;
     }
 
     template <typename C>
-    u8string str_concat_with(const basic_string<C>& /*delim*/) {
+    U8string str_concat_with(const std::basic_string<C>& /*delim*/) {
         return {};
     }
 
     template <typename C>
-    u8string str_concat_with(const C* /*delim*/) {
+    U8string str_concat_with(const C* /*delim*/) {
         return {};
     }
 
     template <typename C1, typename C2, typename... Strings>
-    u8string str_concat_with(const basic_string<C1>& delim, const basic_string<C2>& s, const Strings&... ss) {
-        u8string result = to_utf8(s);
+    U8string str_concat_with(const std::basic_string<C1>& delim, const std::basic_string<C2>& s, const Strings&... ss) {
+        U8string result = to_utf8(s);
         UnicornDetail::concat_helper(result, delim, ss...);
         return result;
     }
 
     template <typename C1, typename C2, typename... Strings>
-    u8string str_concat_with(const basic_string<C1>& delim, const C2* s, const Strings&... ss) {
-        u8string result = to_utf8(cstr(s));
+    U8string str_concat_with(const std::basic_string<C1>& delim, const C2* s, const Strings&... ss) {
+        U8string result = to_utf8(cstr(s));
         UnicornDetail::concat_helper(result, delim, ss...);
         return result;
     }
 
     template <typename C1, typename C2, typename... Strings>
-    u8string str_concat_with(const C1* delim, const basic_string<C2>& s, const Strings&... ss) {
-        u8string result = to_utf8(s);
+    U8string str_concat_with(const C1* delim, const std::basic_string<C2>& s, const Strings&... ss) {
+        U8string result = to_utf8(s);
         UnicornDetail::concat_helper(result, cstr(delim), ss...);
         return result;
     }
 
     template <typename C1, typename C2, typename... Strings>
-    u8string str_concat_with(const C1* delim, const C2* s, const Strings&... ss) {
-        u8string result = to_utf8(cstr(s));
+    U8string str_concat_with(const C1* delim, const C2* s, const Strings&... ss) {
+        U8string result = to_utf8(cstr(s));
         UnicornDetail::concat_helper(result, cstr(delim), ss...);
         return result;
     }
 
     template <typename IntList>
-    u8string str_expand_tabs(const u8string& str, const IntList& tabs, uint32_t flags = 0) {
-        vector<size_t> tv(tabs.begin(), tabs.end());
+    U8string str_expand_tabs(const U8string& str, const IntList& tabs, uint32_t flags = 0) {
+        std::vector<size_t> tv(tabs.begin(), tabs.end());
         return UnicornDetail::expand_tabs(str, tv, flags);
     }
 
     template <typename IntType>
-    u8string str_expand_tabs(const u8string& str, std::initializer_list<IntType> tabs, uint32_t flags = 0) {
-        vector<size_t> tv(tabs.begin(), tabs.end());
+    U8string str_expand_tabs(const U8string& str, std::initializer_list<IntType> tabs, uint32_t flags = 0) {
+        std::vector<size_t> tv(tabs.begin(), tabs.end());
         return UnicornDetail::expand_tabs(str, tv, flags);
     }
 
     template <typename IntList>
-    void str_expand_tabs_in(u8string& str, const IntList& tabs, uint32_t flags = 0) {
-        vector<size_t> tv(tabs.begin(), tabs.end());
+    void str_expand_tabs_in(U8string& str, const IntList& tabs, uint32_t flags = 0) {
+        std::vector<size_t> tv(tabs.begin(), tabs.end());
         str = UnicornDetail::expand_tabs(str, tv, flags);
     }
 
     template <typename IntType>
-    void str_expand_tabs_in(u8string& str, std::initializer_list<IntType> tabs, uint32_t flags = 0) {
-        vector<size_t> tv(tabs.begin(), tabs.end());
+    void str_expand_tabs_in(U8string& str, std::initializer_list<IntType> tabs, uint32_t flags = 0) {
+        std::vector<size_t> tv(tabs.begin(), tabs.end());
         str = UnicornDetail::expand_tabs(str, tv, flags);
     }
 
     template <typename FwdRange>
-    u8string str_join(const FwdRange& r, const u8string& delim, bool term = false) {
+    U8string str_join(const FwdRange& r, const U8string& delim, bool term = false) {
         using std::begin;
         using std::end;
-        u8string dst;
+        U8string dst;
         for (auto& s: r) {
             dst += s;
             dst += delim;
@@ -535,39 +536,39 @@ namespace Unicorn {
 
     template <typename FwdRange>
     auto str_join(const FwdRange& r) {
-        return str_join(r, u8string());
+        return str_join(r, U8string());
     }
 
     template <typename Pred>
-    u8string str_remove_if(const u8string& str, Pred p) {
-        u8string dst;
+    U8string str_remove_if(const U8string& str, Pred p) {
+        U8string dst;
         std::copy_if(utf_begin(str), utf_end(str), utf_writer(dst), [p] (char32_t x) { return ! p(x); });
         return dst;
     }
 
     template <typename Pred>
-    u8string str_remove_if_not(const u8string& str, Pred p) {
-        u8string dst;
+    U8string str_remove_if_not(const U8string& str, Pred p) {
+        U8string dst;
         std::copy_if(utf_begin(str), utf_end(str), utf_writer(dst), p);
         return dst;
     }
 
     template <typename Pred>
-    void str_remove_in_if(u8string& str, Pred p) {
-        u8string dst;
+    void str_remove_in_if(U8string& str, Pred p) {
+        U8string dst;
         std::copy_if(utf_begin(str), utf_end(str), utf_writer(dst), [p] (char32_t x) { return ! p(x); });
         str.swap(dst);
     }
 
     template <typename Pred>
-    void str_remove_in_if_not(u8string& str, Pred p) {
-        u8string dst;
+    void str_remove_in_if_not(U8string& str, Pred p) {
+        U8string dst;
         std::copy_if(utf_begin(str), utf_end(str), utf_writer(dst), p);
         str.swap(dst);
     }
 
     template <typename OutIter>
-    void str_split(const u8string& src, OutIter dst) {
+    void str_split(const U8string& src, OutIter dst) {
         auto range = utf_range(src);
         auto i = range.begin(), j = i;
         while (i != range.end()) {
@@ -580,7 +581,7 @@ namespace Unicorn {
     }
 
     template <typename OutIter>
-    void str_split_at(const u8string& src, OutIter dst, const u8string& delim) {
+    void str_split_at(const U8string& src, OutIter dst, const U8string& delim) {
         if (delim.empty()) {
             *dst++ = src;
             return;
@@ -598,7 +599,7 @@ namespace Unicorn {
     }
 
     template <typename OutIter>
-    void str_split_by(const u8string& src, OutIter dst, const u8string& delim) {
+    void str_split_by(const U8string& src, OutIter dst, const U8string& delim) {
         if (delim.empty()) {
             *dst++ = src;
             return;
@@ -630,7 +631,7 @@ namespace Unicorn {
     }
 
     template <typename OutIter>
-    void str_split_lines(const u8string& src, OutIter dst) {
+    void str_split_lines(const U8string& src, OutIter dst) {
         auto i = utf_begin(src), j = i, e = utf_end(src);
         while (i != e) {
             j = std::find_if(i, e, char_is_line_break);
@@ -647,73 +648,73 @@ namespace Unicorn {
     }
 
     template <typename Pred>
-    u8string str_trim_if(const u8string& str, Pred p) {
+    U8string str_trim_if(const U8string& str, Pred p) {
         using namespace UnicornDetail;
         return trim_helper(str, trimleft | trimright, p);
     }
 
     template <typename Pred>
-    u8string str_trim_left_if(const u8string& str, Pred p) {
+    U8string str_trim_left_if(const U8string& str, Pred p) {
         using namespace UnicornDetail;
         return trim_helper(str, trimleft, p);
     }
 
     template <typename Pred>
-    u8string str_trim_right_if(const u8string& str, Pred p) {
+    U8string str_trim_right_if(const U8string& str, Pred p) {
         using namespace UnicornDetail;
         return trim_helper(str, trimright, p);
     }
 
     template <typename Pred>
-    u8string str_trim_if_not(const u8string& str, Pred p) {
+    U8string str_trim_if_not(const U8string& str, Pred p) {
         using namespace UnicornDetail;
         return trim_helper(str, trimleft | trimright, [p] (char32_t c) { return ! p(c); });
     }
 
     template <typename Pred>
-    u8string str_trim_left_if_not(const u8string& str, Pred p) {
+    U8string str_trim_left_if_not(const U8string& str, Pred p) {
         using namespace UnicornDetail;
         return trim_helper(str, trimleft, [p] (char32_t c) { return ! p(c); });
     }
 
     template <typename Pred>
-    u8string str_trim_right_if_not(const u8string& str, Pred p) {
+    U8string str_trim_right_if_not(const U8string& str, Pred p) {
         using namespace UnicornDetail;
         return trim_helper(str, trimright, [p] (char32_t c) { return ! p(c); });
     }
 
     template <typename Pred>
-    void str_trim_in_if(u8string& str, Pred p) {
+    void str_trim_in_if(U8string& str, Pred p) {
         using namespace UnicornDetail;
         trim_in_helper(str, trimleft | trimright, p);
     }
 
     template <typename Pred>
-    void str_trim_left_in_if(u8string& str, Pred p) {
+    void str_trim_left_in_if(U8string& str, Pred p) {
         using namespace UnicornDetail;
         trim_in_helper(str, trimleft, p);
     }
 
     template <typename Pred>
-    void str_trim_right_in_if(u8string& str, Pred p) {
+    void str_trim_right_in_if(U8string& str, Pred p) {
         using namespace UnicornDetail;
         trim_in_helper(str, trimright, p);
     }
 
     template <typename Pred>
-    void str_trim_in_if_not(u8string& str, Pred p) {
+    void str_trim_in_if_not(U8string& str, Pred p) {
         using namespace UnicornDetail;
         trim_in_helper(str, trimleft | trimright, [p] (char32_t c) { return ! p(c); });
     }
 
     template <typename Pred>
-    void str_trim_left_in_if_not(u8string& str, Pred p) {
+    void str_trim_left_in_if_not(U8string& str, Pred p) {
         using namespace UnicornDetail;
         trim_in_helper(str, trimleft, [p] (char32_t c) { return ! p(c); });
     }
 
     template <typename Pred>
-    void str_trim_right_in_if_not(u8string& str, Pred p) {
+    void str_trim_right_in_if_not(U8string& str, Pred p) {
         using namespace UnicornDetail;
         trim_in_helper(str, trimright, [p] (char32_t c) { return ! p(c); });
     }
@@ -721,14 +722,14 @@ namespace Unicorn {
     // Case mapping functions
     // Defined in string-case.cpp
 
-    u8string str_uppercase(const u8string& str);
-    u8string str_lowercase(const u8string& str);
-    u8string str_titlecase(const u8string& str);
-    u8string str_casefold(const u8string& str);
-    void str_uppercase_in(u8string& str);
-    void str_lowercase_in(u8string& str);
-    void str_titlecase_in(u8string& str);
-    void str_casefold_in(u8string& str);
+    U8string str_uppercase(const U8string& str);
+    U8string str_lowercase(const U8string& str);
+    U8string str_titlecase(const U8string& str);
+    U8string str_casefold(const U8string& str);
+    void str_uppercase_in(U8string& str);
+    void str_lowercase_in(U8string& str);
+    void str_titlecase_in(U8string& str);
+    void str_casefold_in(U8string& str);
 
     // Escaping and quoting functions
     // Defined in string-escape.cpp
@@ -738,20 +739,20 @@ namespace Unicorn {
     constexpr uint32_t esc_pcre    = 1ul << 2;  // Use `\x{...}` instead of `\u` and `\U` (implies `esc_nonascii`)
     constexpr uint32_t esc_punct   = 1ul << 3;  // Escape ASCII punctuation
 
-    u8string str_encode_uri(const u8string& str);
-    u8string str_encode_uri_component(const u8string& str);
-    void str_encode_uri_in(u8string& str);
-    void str_encode_uri_component_in(u8string& str);
-    u8string str_unencode_uri(const u8string& str);
-    void str_unencode_uri_in(u8string& str);
-    u8string str_escape(const u8string& str, uint32_t flags = 0);
-    void str_escape_in(u8string& str, uint32_t flags = 0);
-    u8string str_unescape(const u8string& str);
-    void str_unescape_in(u8string& str);
-    u8string str_quote(const u8string& str, uint32_t flags = 0, char32_t quote = U'\"');
-    void str_quote_in(u8string& str, uint32_t flags = 0, char32_t quote = U'\"');
-    u8string str_unquote(const u8string& str, char32_t quote = U'\"');
-    void str_unquote_in(u8string& str, char32_t quote = U'\"');
+    U8string str_encode_uri(const U8string& str);
+    U8string str_encode_uri_component(const U8string& str);
+    void str_encode_uri_in(U8string& str);
+    void str_encode_uri_component_in(U8string& str);
+    U8string str_unencode_uri(const U8string& str);
+    void str_unencode_uri_in(U8string& str);
+    U8string str_escape(const U8string& str, uint32_t flags = 0);
+    void str_escape_in(U8string& str, uint32_t flags = 0);
+    U8string str_unescape(const U8string& str);
+    void str_unescape_in(U8string& str);
+    U8string str_quote(const U8string& str, uint32_t flags = 0, char32_t quote = U'\"');
+    void str_quote_in(U8string& str, uint32_t flags = 0, char32_t quote = U'\"');
+    U8string str_unquote(const U8string& str, char32_t quote = U'\"');
+    void str_unquote_in(U8string& str, char32_t quote = U'\"');
 
     // Type conversion functions
 
@@ -759,9 +760,9 @@ namespace Unicorn {
 
         template <typename T>
         Utf8Iterator convert_str_to_int(T& t, const Utf8Iterator& start, uint32_t flags, int base) {
-            static const u8string dec_chars = "+-0123456789";
-            static const u8string hex_chars = "+-0123456789ABCDEFabcdef";
-            const u8string& src(start.source());
+            static const U8string dec_chars = "+-0123456789";
+            static const U8string hex_chars = "+-0123456789ABCDEFabcdef";
+            const U8string& src(start.source());
             size_t offset = start.offset();
             if (offset >= src.size()) {
                 if (flags & err_throw)
@@ -778,7 +779,7 @@ namespace Unicorn {
             }
             if (endpos == npos)
                 endpos = src.size();
-            u8string fragment(src, offset, endpos - offset);
+            U8string fragment(src, offset, endpos - offset);
             Utf8Iterator stop;
             if (std::is_signed<T>::value) {
                 static constexpr auto min_value = static_cast<long long>(std::numeric_limits<T>::min());
@@ -848,7 +849,7 @@ namespace Unicorn {
     }
 
     template <typename T>
-    size_t str_to_int(T& t, const u8string& str, size_t offset = 0, uint32_t flags = 0) {
+    size_t str_to_int(T& t, const U8string& str, size_t offset = 0, uint32_t flags = 0) {
         return UnicornDetail::convert_str_to_int<T>(t, utf_iterator(str, offset), flags, 10).offset() - offset;
     }
 
@@ -858,7 +859,7 @@ namespace Unicorn {
     }
 
     template <typename T>
-    T str_to_int(const u8string& str, uint32_t flags = 0) {
+    T str_to_int(const U8string& str, uint32_t flags = 0) {
         T t = T(0);
         UnicornDetail::convert_str_to_int<T>(t, utf_begin(str), flags, 10);
         return t;
@@ -872,7 +873,7 @@ namespace Unicorn {
     }
 
     template <typename T>
-    size_t hex_to_int(T& t, const u8string& str, size_t offset = 0, uint32_t flags = 0) {
+    size_t hex_to_int(T& t, const U8string& str, size_t offset = 0, uint32_t flags = 0) {
         return UnicornDetail::convert_str_to_int<T>(t, utf_iterator(str, offset), flags, 16).offset() - offset;
     }
 
@@ -882,7 +883,7 @@ namespace Unicorn {
     }
 
     template <typename T>
-    T hex_to_int(const u8string& str, uint32_t flags = 0) {
+    T hex_to_int(const U8string& str, uint32_t flags = 0) {
         T t = T(0);
         UnicornDetail::convert_str_to_int<T>(t, utf_begin(str), flags, 16);
         return t;
@@ -899,7 +900,7 @@ namespace Unicorn {
     Utf8Iterator str_to_float(T& t, const Utf8Iterator& start, uint32_t flags = 0) {
         using traits = UnicornDetail::FloatConversionTraits<T>;
         static constexpr T max_value = std::numeric_limits<T>::max();
-        const u8string& src(start.source());
+        const U8string& src(start.source());
         size_t offset = start.offset();
         if (offset >= src.size()) {
             if (flags & err_throw)
@@ -916,7 +917,7 @@ namespace Unicorn {
         }
         if (endpos == npos)
             endpos = src.size();
-        u8string fragment(src, offset, endpos - offset);
+        U8string fragment(src, offset, endpos - offset);
         char* endptr = nullptr;
         T value = traits::str_to_t(fragment.data(), &endptr);
         size_t len = endptr - fragment.data();
@@ -938,12 +939,12 @@ namespace Unicorn {
     }
 
     template <typename T>
-    size_t str_to_float(T& t, const u8string& str, size_t offset = 0, uint32_t flags = 0) {
+    size_t str_to_float(T& t, const U8string& str, size_t offset = 0, uint32_t flags = 0) {
         return str_to_float(t, utf_iterator(str, offset), flags).offset() - offset;
     }
 
     template <typename T>
-    T str_to_float(const u8string& str, uint32_t flags = 0) {
+    T str_to_float(const U8string& str, uint32_t flags = 0) {
         T t = T(0);
         str_to_float(t, utf_begin(str), flags);
         return t;

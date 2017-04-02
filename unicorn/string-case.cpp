@@ -5,8 +5,8 @@ namespace Unicorn {
     namespace {
 
         template <typename F>
-        const u8string casemap_helper(const u8string& src, F f) {
-            u8string dst;
+        const U8string casemap_helper(const U8string& src, F f) {
+            U8string dst;
             char32_t buf[max_case_decomposition];
             auto out = utf_writer(dst);
             for (auto c: utf_range(src)) {
@@ -43,12 +43,12 @@ namespace Unicorn {
 
     }
 
-    u8string str_uppercase(const u8string& str) {
+    U8string str_uppercase(const U8string& str) {
         return casemap_helper(str, char_to_full_uppercase);
     }
 
-    u8string str_lowercase(const u8string& str) {
-        u8string dst;
+    U8string str_lowercase(const U8string& str) {
+        U8string dst;
         LowerChar lc;
         auto range = utf_range(str);
         auto out = utf_writer(dst);
@@ -57,8 +57,8 @@ namespace Unicorn {
         return dst;
     }
 
-    u8string str_titlecase(const u8string& str) {
-        u8string dst;
+    U8string str_titlecase(const U8string& str) {
+        U8string dst;
         LowerChar lc;
         auto e = utf_end(str);
         auto out = utf_writer(dst);
@@ -78,26 +78,26 @@ namespace Unicorn {
         return dst;
     }
 
-    u8string str_casefold(const u8string& str) {
+    U8string str_casefold(const U8string& str) {
         return casemap_helper(str, char_to_full_casefold);
     }
 
-    void str_uppercase_in(u8string& str) {
+    void str_uppercase_in(U8string& str) {
         auto result = str_uppercase(str);
         str.swap(result);
     }
 
-    void str_lowercase_in(u8string& str) {
+    void str_lowercase_in(U8string& str) {
         auto result = str_lowercase(str);
         str.swap(result);
     }
 
-    void str_titlecase_in(u8string& str) {
+    void str_titlecase_in(U8string& str) {
         auto result = str_titlecase(str);
         str.swap(result);
     }
 
-    void str_casefold_in(u8string& str) {
+    void str_casefold_in(U8string& str) {
         auto result = str_casefold(str);
         str.swap(result);
     }

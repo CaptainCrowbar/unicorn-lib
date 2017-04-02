@@ -38,7 +38,7 @@ namespace Unicorn {
             size_t count_groups() const noexcept;
             void* get_pc_ptr() const noexcept { return pc; }
             void* get_ex_ptr() const noexcept { return ex; }
-            size_t named_group(const u8string& name) const noexcept;
+            size_t named_group(const U8string& name) const noexcept;
             void swap(PcreRef& p) noexcept { std::swap(pc, p.pc); std::swap(ex, p.ex); }
             explicit operator bool() const noexcept { return pc; }
         private:
@@ -67,8 +67,8 @@ namespace Unicorn {
     constexpr uint32_t rx_noautocapture    = 1ul << 12;  // No automatic captures                            PCRE_NO_AUTO_CAPTURE
     constexpr uint32_t rx_nostartoptimize  = 1ul << 13;  // No startup optimization                          PCRE_NO_START_OPTIMIZE
     constexpr uint32_t rx_notbol           = 1ul << 14;  // Start of text is not a line break                PCRE_NOTBOL
-    constexpr uint32_t rx_notempty         = 1ul << 15;  // Do not match an empty u8string                   PCRE_NOTEMPTY
-    constexpr uint32_t rx_notemptyatstart  = 1ul << 16;  // Match an empty u8string only at the start        PCRE_NOTEMPTY_ATSTART
+    constexpr uint32_t rx_notempty         = 1ul << 15;  // Do not match an empty U8string                   PCRE_NOTEMPTY
+    constexpr uint32_t rx_notemptyatstart  = 1ul << 16;  // Match an empty U8string only at the start        PCRE_NOTEMPTY_ATSTART
     constexpr uint32_t rx_noteol           = 1ul << 17;  // End of text is not a line break                  PCRE_NOTEOL
     constexpr uint32_t rx_noutfcheck       = 1ul << 18;  // Skip UTF validity checks                         PCRE_NO_UTF8_CHECK
     constexpr uint32_t rx_optimize         = 1ul << 19;  // Take extra effort to optimize the regex          PCRE_STUDY_JIT_COMPILE
@@ -82,39 +82,39 @@ namespace Unicorn {
     class RegexError:
     public std::runtime_error {
     public:
-        RegexError(int error, const u8string& pattern, const u8string& message = {});
+        RegexError(int error, const U8string& pattern, const U8string& message = {});
         int error() const noexcept { return err; }
         const char* pattern() const noexcept { return pat->data(); }
     private:
         int err;
-        shared_ptr<u8string> pat;
-        static u8string assemble(int error, const u8string& pattern, const u8string& message);
-        static u8string translate(int error);
+        std::shared_ptr<U8string> pat;
+        static U8string assemble(int error, const U8string& pattern, const U8string& message);
+        static U8string translate(int error);
     };
 
     // Regex match class
 
     class Match {
     public:
-        u8string operator[](size_t i) const { return str(i); }
-        operator u8string() const { return str(); }
+        U8string operator[](size_t i) const { return str(i); }
+        operator U8string() const { return str(); }
         explicit operator bool() const noexcept { return matched(); }
         bool operator!() const noexcept { return ! matched(); }
         size_t count(size_t i = 0) const noexcept { return is_group(i) ? ofs[2 * i + 1] - ofs[2 * i] : 0; }
         bool empty() const noexcept { return ! *this || ofs[0] == ofs[1]; }
         size_t endpos(size_t i = 0) const noexcept { return is_group(i) ? ofs[2 * i + 1] : npos; }
-        u8string first() const;
-        u8string last() const;
+        U8string first() const;
+        U8string last() const;
         bool full_or_partial() const noexcept { return matched() || partial(); }
         size_t groups() const noexcept { return std::max(status, 0); }
         bool matched(size_t i = 0) const noexcept { return status >= 0 && (i == 0 || is_group(i)); }
-        u8string named(const u8string& name) const { return ref ? str(ref.named_group(name)) : u8string(); }
+        U8string named(const U8string& name) const { return ref ? str(ref.named_group(name)) : U8string(); }
         size_t offset(size_t i = 0) const noexcept { return is_group(i) ? ofs[2 * i] : npos; }
         bool partial() const noexcept { return status == -12; } // PCRE_ERROR_PARTIAL
-        u8string::const_iterator s_begin(size_t i = 0) const noexcept;
-        u8string::const_iterator s_end(size_t i = 0) const noexcept;
-        Irange<u8string::const_iterator> s_range(size_t i = 0) const noexcept { return {s_begin(i), s_end(i)}; }
-        u8string str(size_t i = 0) const;
+        U8string::const_iterator s_begin(size_t i = 0) const noexcept;
+        U8string::const_iterator s_end(size_t i = 0) const noexcept;
+        Irange<U8string::const_iterator> s_range(size_t i = 0) const noexcept { return {s_begin(i), s_end(i)}; }
+        U8string str(size_t i = 0) const;
         void swap(Match& m) noexcept;
         Utf8Iterator u_begin(size_t i = 0) const noexcept;
         Utf8Iterator u_end(size_t i = 0) const noexcept;
@@ -123,13 +123,13 @@ namespace Unicorn {
         friend class MatchIterator;
         friend class Regex;
         friend class SplitIterator;
-        vector<int> ofs;
+        std::vector<int> ofs;
         uint32_t fset = 0;
         UnicornDetail::PcreRef ref;
         int status = -1;
-        const u8string* text = nullptr;
-        void init(const Regex& r, const u8string& s);
-        void next(const u8string& pattern, size_t start, int anchors);
+        const U8string* text = nullptr;
+        void init(const Regex& r, const U8string& s);
+        void next(const U8string& pattern, size_t start, int anchors);
         bool is_group(size_t i) const noexcept { return i < groups() && ofs[2 * i] >= 0 && ofs[2 * i + 1] >= 0; }
     };
 
@@ -141,29 +141,29 @@ namespace Unicorn {
     public LessThanComparable<Regex> {
     public:
         Regex(): Regex({}, 0) {}
-        explicit Regex(const u8string& pattern, uint32_t flags = 0);
-        Match operator()(const u8string& text, size_t offset = 0) const { return search(text, offset); }
+        explicit Regex(const U8string& pattern, uint32_t flags = 0);
+        Match operator()(const U8string& text, size_t offset = 0) const { return search(text, offset); }
         Match operator()(const Utf8Iterator& start) const { return search(start.source(), start.offset()); }
-        Match anchor(const u8string& text, size_t offset = 0) const { return exec(text, offset, 1); }
+        Match anchor(const U8string& text, size_t offset = 0) const { return exec(text, offset, 1); }
         Match anchor(const Utf8Iterator& start) const { return anchor(start.source(), start.offset()); }
-        Match match(const u8string& text, size_t offset = 0) const { return exec(text, offset, 2); }
+        Match match(const U8string& text, size_t offset = 0) const { return exec(text, offset, 2); }
         Match match(const Utf8Iterator& start) const { return match(start.source(), start.offset()); }
-        Match search(const u8string& text, size_t offset = 0) const { return exec(text, offset, 0); }
+        Match search(const U8string& text, size_t offset = 0) const { return exec(text, offset, 0); }
         Match search(const Utf8Iterator& start) const { return search(start.source(), start.offset()); }
-        size_t count(const u8string& text) const;
+        size_t count(const U8string& text) const;
         bool empty() const noexcept { return pat.empty(); }
-        u8string extract(const u8string& fmt, const u8string& text, size_t n = npos) const;
-        u8string format(const u8string& fmt, const u8string& text, size_t n = npos) const;
-        MatchRange grep(const u8string& text) const;
+        U8string extract(const U8string& fmt, const U8string& text, size_t n = npos) const;
+        U8string format(const U8string& fmt, const U8string& text, size_t n = npos) const;
+        MatchRange grep(const U8string& text) const;
         size_t groups() const noexcept { return ref.count_groups(); }
-        size_t named(const u8string& name) const noexcept { return ref.named_group(name); }
-        u8string pattern() const { return pat; }
+        size_t named(const U8string& name) const noexcept { return ref.named_group(name); }
+        U8string pattern() const { return pat; }
         uint32_t flags() const noexcept { return fset; }
-        SplitRange split(const u8string& text) const;
+        SplitRange split(const U8string& text) const;
         void swap(Regex& r) noexcept;
-        template <typename F> u8string transform(const u8string& text, F f, size_t n = npos) const;
-        template <typename F> void transform_in(u8string& text, F f, size_t n = npos) const;
-        static u8string escape(const u8string& str);
+        template <typename F> U8string transform(const U8string& text, F f, size_t n = npos) const;
+        template <typename F> void transform_in(U8string& text, F f, size_t n = npos) const;
+        static U8string escape(const U8string& str);
         static Version pcre_version() noexcept;
         static Version unicode_version() noexcept;
         friend bool operator==(const Regex& lhs, const Regex& rhs) noexcept;
@@ -171,30 +171,30 @@ namespace Unicorn {
     private:
         friend class MatchIterator;
         friend class Match;
-        u8string pat;
+        U8string pat;
         uint32_t fset = 0;
         UnicornDetail::PcreRef ref;
-        Match exec(const u8string& text, size_t offset, int anchors) const;
+        Match exec(const U8string& text, size_t offset, int anchors) const;
     };
 
     namespace UnicornDetail {
 
-        void regex_match_transform(const Regex& re, const u8string& src, u8string& dst, function<u8string(const Match&)> f, size_t n);
-        void regex_string_transform(const Regex& re, const u8string& src, u8string& dst, function<u8string(const u8string&)> f, size_t n);
+        void regex_match_transform(const Regex& re, const U8string& src, U8string& dst, std::function<U8string(const Match&)> f, size_t n);
+        void regex_string_transform(const Regex& re, const U8string& src, U8string& dst, std::function<U8string(const U8string&)> f, size_t n);
 
-        template <typename F, bool S = std::is_convertible<F, function<u8string(const u8string&)>>::value>
+        template <typename F, bool S = std::is_convertible<F, std::function<U8string(const U8string&)>>::value>
         struct RegexTransform ;
 
         template <typename F>
         struct RegexTransform<F, false> {
-            void operator()(const Regex& re, const u8string& src, u8string& dst, F f, size_t n) const {
+            void operator()(const Regex& re, const U8string& src, U8string& dst, F f, size_t n) const {
                 regex_match_transform(re, src, dst, f, n);
             }
         };
 
         template <typename F>
         struct RegexTransform<F, true> {
-            void operator()(const Regex& re, const u8string& src, u8string& dst, F f, size_t n) const {
+            void operator()(const Regex& re, const U8string& src, U8string& dst, F f, size_t n) const {
                 regex_string_transform(re, src, dst, f, n);
             }
         };
@@ -202,15 +202,15 @@ namespace Unicorn {
     }
 
     template <typename F>
-    u8string Regex::transform(const u8string& text, F f, size_t n) const {
-        u8string dst;
+    U8string Regex::transform(const U8string& text, F f, size_t n) const {
+        U8string dst;
         UnicornDetail::RegexTransform<F>()(*this, text, dst, f, n);
         return dst;
     }
 
     template <typename F>
-    void Regex::transform_in(u8string& text, F f, size_t n) const {
-        u8string dst;
+    void Regex::transform_in(U8string& text, F f, size_t n) const {
+        U8string dst;
         UnicornDetail::RegexTransform<F>()(*this, text, dst, f, n);
         text = move(dst);
     }
@@ -230,14 +230,14 @@ namespace Unicorn {
     class RegexFormat {
     public:
         RegexFormat() = default;
-        RegexFormat(const Regex& pattern, const u8string& format);
-        RegexFormat(const u8string& pattern, const u8string& format, uint32_t flags = 0);
-        u8string operator()(const u8string& text, size_t n = npos) const { return format(text, n); }
+        RegexFormat(const Regex& pattern, const U8string& format);
+        RegexFormat(const U8string& pattern, const U8string& format, uint32_t flags = 0);
+        U8string operator()(const U8string& text, size_t n = npos) const { return format(text, n); }
         uint32_t flags() const noexcept { return reg.flags(); }
-        u8string extract(const u8string& text, size_t n = npos) const { return apply(text, n, false); }
-        u8string format() const { return fmt; }
-        u8string format(const u8string& text, size_t n = npos) const { return apply(text, n, true); }
-        u8string pattern() const { return reg.pattern(); }
+        U8string extract(const U8string& text, size_t n = npos) const { return apply(text, n, false); }
+        U8string format() const { return fmt; }
+        U8string format(const U8string& text, size_t n = npos) const { return apply(text, n, true); }
+        U8string pattern() const { return reg.pattern(); }
         Regex regex() const { return reg; }
         void swap(RegexFormat& r) noexcept;
     private:
@@ -249,19 +249,19 @@ namespace Unicorn {
         static constexpr int literal = -1, named = -2;
         struct element {
             int index;
-            u8string text;
+            U8string text;
         };
-        using sequence = vector<element>;
-        u8string fmt;
+        using sequence = std::vector<element>;
+        U8string fmt;
         Regex reg;
         sequence seq;
         void add_escape(char c);
-        void add_literal(const u8string& text);
-        void add_literal(const u8string& text, size_t offset, size_t count);
+        void add_literal(const U8string& text);
+        void add_literal(const U8string& text, size_t offset, size_t count);
         void add_literal(char32_t u);
-        void add_named(const u8string& name) { seq.push_back({named, name}); }
+        void add_named(const U8string& name) { seq.push_back({named, name}); }
         void add_tag(int tag) { seq.push_back({tag, {}}); }
-        u8string apply(const u8string& text, size_t n, bool full) const;
+        U8string apply(const U8string& text, size_t n, bool full) const;
         void parse();
     };
 
@@ -273,29 +273,29 @@ namespace Unicorn {
     public ForwardIterator<MatchIterator, const Match> {
     public:
         MatchIterator() = default;
-        MatchIterator(const Regex& re, const u8string& text);
+        MatchIterator(const Regex& re, const U8string& text);
         const Match& operator*() const noexcept { return mat; }
         MatchIterator& operator++();
         friend bool operator==(const MatchIterator& lhs, const MatchIterator& rhs) noexcept;
     private:
         Match mat;
-        u8string pat;
+        U8string pat;
     };
 
     // Iterator over substrings between matches
 
     class SplitIterator:
-    public ForwardIterator<SplitIterator, const u8string> {
+    public ForwardIterator<SplitIterator, const U8string> {
     public:
         SplitIterator() = default;
-        SplitIterator(const Regex& re, const u8string& text);
-        const u8string& operator*() const noexcept { return value; }
+        SplitIterator(const Regex& re, const U8string& text);
+        const U8string& operator*() const noexcept { return value; }
         SplitIterator& operator++();
         friend bool operator==(const SplitIterator& lhs, const SplitIterator& rhs) noexcept;
     private:
         MatchIterator iter;
         size_t start = npos;
-        u8string value;
+        U8string value;
         void update();
     };
 

@@ -17,21 +17,21 @@ namespace {
     // 00010302  d800 df02  f0 90 8c 82
     // 0010fffd  dbff dffd  f4 8f bf bd
 
-    const u8string utf8_example {"\xd0\xb0\xe4\xba\x8c\xf0\x90\x8c\x82\xf4\x8f\xbf\xbd"};
-    const u16string utf16_example {0x430,0x4e8c,0xd800,0xdf02,0xdbff,0xdffd};
-    const u32string utf32_example {0x430,0x4e8c,0x10302,0x10fffd};
+    const U8string utf8_example {"\xd0\xb0\xe4\xba\x8c\xf0\x90\x8c\x82\xf4\x8f\xbf\xbd"};
+    const std::u16string utf16_example {0x430,0x4e8c,0xd800,0xdf02,0xdbff,0xdffd};
+    const std::u32string utf32_example {0x430,0x4e8c,0x10302,0x10fffd};
 
     #if defined(UNICORN_WCHAR_UTF16)
-        const wstring wide_example(utf16_example.begin(), utf16_example.end());
+        const std::wstring wide_example(utf16_example.begin(), utf16_example.end());
     #else
-        const wstring wide_example(utf32_example.begin(), utf32_example.end());
+        const std::wstring wide_example(utf32_example.begin(), utf32_example.end());
     #endif
 
     void check_length() {
 
-        u8string s8;
-        u16string s16;
-        u32string s32;
+        U8string s8;
+        std::u16string s16;
+        std::u32string s32;
 
         TEST_EQUAL(str_length(""s, character_units), 0);
         TEST_EQUAL(str_length("Hello"s, character_units), 5);

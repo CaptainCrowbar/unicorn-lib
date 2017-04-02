@@ -14,7 +14,7 @@ namespace {
 
     void check_decimal_integer_conversion() {
 
-        u8string s;
+        U8string s;
         int8_t i8;
         uint8_t u8;
         int16_t i16;
@@ -150,7 +150,7 @@ namespace {
 
     void check_hexadecimal_integer_conversion() {
 
-        u8string s = "ffxyz";
+        U8string s = "ffxyz";
         int8_t i8;
         uint8_t u8;
         int16_t i16;
@@ -262,7 +262,7 @@ namespace {
 
     void check_floating_point_conversion() {
 
-        u8string s;
+        U8string s;
         float f;
         double d;
         long double ld;

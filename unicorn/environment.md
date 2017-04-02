@@ -19,13 +19,13 @@ although normally intended to be interpreted as character data, the names and
 values are really arbitrary strings of 8 or 16 bit unsigned integers.
 
 The Unicorn environment variable API allows the caller to express variable
-names and values either in UTF-8 (`u8string`) or in the operating system's
+names and values either in UTF-8 (`U8string`) or in the operating system's
 native encoding (`NativeString`). On Unix, the native API uses 8 bit strings,
-`NativeString` and `u8string` are really the same type (plain `std::string`),
+`NativeString` and `U8string` are really the same type (plain `std::string`),
 and there is only one set of functions here; although the function signatures
 are nominally written in terms of UTF-8 strings, in fact any arbitrary byte
 string can be passed or may be returned. On Windows the native API uses 16 bit
-strings, and `NativeString` is an alias for `std::wstring`; the `u8string`
+strings, and `NativeString` is an alias for `std::wstring`; the `U8string`
 versions of these functions will convert between UTF-8 and UTF-16, using the
 standard replacement convention to handle invalid encoding.
 
@@ -55,7 +55,7 @@ variable name passed in is empty or contains an equals sign, or
 call.
 
 * `NativeString` **`expand_env`**`(const NativeString& src, uint32_t flags = native_env)`
-* `u8string` **`expand_env`**`(const u8string& src, uint32_t flags = native_env)`
+* `U8string` **`expand_env`**`(const U8string& src, uint32_t flags = native_env)`
 
 Expand environment variable references in a string. The `flags` argument
 indicates whether to follow the Posix convention (`"$VAR"` or `"${VAR}"`) or
@@ -66,13 +66,13 @@ substring of alphanumeric characters (including the underscore) following the
 dollar sign.
 
 * `NativeString` **`get_env`**`(const NativeString& name)`
-* `u8string` **`get_env`**`(const u8string& name)`
+* `U8string` **`get_env`**`(const U8string& name)`
 
 Query the value of an environment variable. This will return an empty string
 if the variable does not exist.
 
 * `bool` **`has_env`**`(const NativeString& name)`
-* `bool` **`has_env`**`(const u8string& name)`
+* `bool` **`has_env`**`(const U8string& name)`
 
 Query whether an environment variable exists. Windows, unlike Unix, does not
 always distinguish clearly between a variable that does not exist, and one
@@ -80,12 +80,12 @@ that exists but whose value is an empty string; if a variable has been set to
 an empty value, this function may or may not report its existence on Windows.
 
 * `void` **`set_env`**`(const NativeString& name, const NativeString& value)`
-* `void` **`set_env`**`(const u8string& name, const u8string& value)`
+* `void` **`set_env`**`(const U8string& name, const U8string& value)`
 
 Set the value of a variable in the process's environment block.
 
 * `void` **`unset_env`**`(const NativeString& name)`
-* `void` **`unset_env`**`(const u8string& name)`
+* `void` **`unset_env`**`(const U8string& name)`
 
 Delete a variable from the process's environment block.
 
@@ -114,17 +114,17 @@ copy the environment data from the calling process; otherwise, the newly
 constructed `Environment` object will be empty.
 
 * `NativeString Environment::`**`operator[]`**`(const NativeString& name)`
-* `u8string Environment::`**`operator[]`**`(const u8string& name)`
+* `U8string Environment::`**`operator[]`**`(const U8string& name)`
 * `NativeString Environment::`**`expand`**`(const NativeString& src, uint32_t flags = native_env)`
-* `u8string Environment::`**`expand`**`(const u8string& src, uint32_t flags = native_env)`
+* `U8string Environment::`**`expand`**`(const U8string& src, uint32_t flags = native_env)`
 * `NativeString Environment::`**`get`**`(const NativeString& name)`
-* `u8string Environment::`**`get`**`(const u8string& name)`
+* `U8string Environment::`**`get`**`(const U8string& name)`
 * `bool Environment::`**`has`**`(const NativeString& name)`
-* `bool Environment::`**`has`**`(const u8string& name)`
+* `bool Environment::`**`has`**`(const U8string& name)`
 * `void Environment::`**`set`**`(const NativeString& name, const NativeString& value)`
-* `void Environment::`**`set`**`(const u8string& name, const u8string& value)`
+* `void Environment::`**`set`**`(const U8string& name, const U8string& value)`
 * `void Environment::`**`unset`**`(const NativeString& name)`
-* `void Environment::`**`unset`**`(const u8string& name)`
+* `void Environment::`**`unset`**`(const U8string& name)`
 
 These perform the same operations as the corresponding environment variable
 functions described above (`operator[]` is a synonym for `get()`), and will

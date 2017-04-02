@@ -43,7 +43,7 @@ words encountered more than once, in descending order of frequency.
 
         try {
 
-            const u8string description =
+            const U8string description =
                 "This program reads a text file, splits it into words, "
                 "converts each word to normalization form NFC and lower case, "
                 "and writes out a list of all words encountered more than once, "
@@ -60,13 +60,13 @@ words encountered more than once, in descending order of frequency.
             if (opt.parse(argc, argv))
                 return 0;
 
-            auto input_file = opt.get<u8string>("input");
-            auto output_file = opt.get<u8string>("output");
-            auto input_encoding = opt.get<u8string>("encoding");
+            auto input_file = opt.get<U8string>("input");
+            auto output_file = opt.get<U8string>("output");
+            auto input_encoding = opt.get<U8string>("encoding");
 
             // Read all the words in the input file
 
-            std::map<u8string, size_t> census;
+            std::map<U8string, size_t> census;
 
             for (auto& line: read_lines(input_file, io_stdin, input_encoding))
                 for (auto& word: word_range(line, alpha_words))
@@ -74,7 +74,7 @@ words encountered more than once, in descending order of frequency.
 
             // Order them by descending frequency
 
-            std::multimap<size_t, u8string, std::greater<>> frequencies;
+            std::multimap<size_t, U8string, std::greater<>> frequencies;
 
             for (auto& pair: census)
                 if (pair.second > 1)
@@ -88,8 +88,8 @@ words encountered more than once, in descending order of frequency.
         }
 
         catch (const std::exception& ex) {
-            cerr << "*** " << ex.what() << "\n";
-            return EXIT_FAILURE;
+            std::cerr << "*** " << ex.what() << "\n";
+            return 1;
         }
 
     }
@@ -142,15 +142,15 @@ standard C++ regular expressions instead of creating a new regex class, but
 this turned out to be impractical (see the [`unicorn/regex`](regex.html)
 documentation for the details).
 
-UTF-8, 16, and 32 strings are represented by `u8string`, `u16string`, and
+UTF-8, 16, and 32 strings are represented by `U8string`, `u16string`, and
 `u32string` respectively; you can also use `wstring` for UTF-16 or 32,
 whichever is appropriate for your system (systems where `wstring` is not
-UTF-16 or 32 are not supported). The name `u8string` is an alias for
-`std::string`; the intention here is that `u8string` is used for strings
+UTF-16 or 32 are not supported). The name `U8string` is an alias for
+`std::string`; the intention here is that `U8string` is used for strings
 required to contain valid UTF-8 (or ASCII), while plain `string` is used for
 strings in some other encoding, or for when a string is used simply as an
 array of bytes with no assumptions about encoding. This is intended purely as
-an aid to code clarity, and has no effect on the compiler; `u8string` is just
+an aid to code clarity, and has no effect on the compiler; `U8string` is just
 an alias for `string`, not a new type.
 
 Unicorn assumes that most or all of your string processing will be done in

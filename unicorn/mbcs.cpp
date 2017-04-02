@@ -40,14 +40,14 @@ namespace Unicorn {
             public:
                 PRI_NO_COPY_MOVE(Iconv)
                 iconv_t cd;
-                Iconv(const u8string& from, const u8string& to) { cd = iconv_open(to.data(), from.data()); }
+                Iconv(const U8string& from, const U8string& to) { cd = iconv_open(to.data(), from.data()); }
                 ~Iconv() { if (*this) iconv_close(cd); }
                 explicit operator bool() const { return cd != iconv_t(-1); }
                 bool operator!() const { return cd == iconv_t(-1); }
                 void reset() { if (*this) iconv(cd, nullptr, nullptr, nullptr, nullptr); }
             };
 
-            bool valid_iconv(u8string tag) { return bool(Iconv(tag, "utf-8"s)); }
+            bool valid_iconv(U8string tag) { return bool(Iconv(tag, "utf-8"s)); }
 
         #else
 
@@ -64,8 +64,8 @@ namespace Unicorn {
         static constexpr uint32_t no_recurse = uint32_t(1) << 31;
         static constexpr auto wchar_tag = sizeof(wchar_t) == 2 ? utf16_tag : utf32_tag;
 
-        u8string smash_name(const u8string& name, bool stripz) {
-            u8string result;
+        U8string smash_name(const U8string& name, bool stripz) {
+            U8string result;
             size_t i = 0, size = name.size();
             while (i < size) {
                 while (i < size && ! ascii_isalnum(name[i]))
@@ -90,14 +90,14 @@ namespace Unicorn {
         }
 
         class NameIterator:
-        public ForwardIterator<NameIterator, const u8string> {
+        public ForwardIterator<NameIterator, const U8string> {
         public:
             explicit NameIterator(const char* ptr = nullptr): s(), p(ptr), q(ptr) { ++*this; }
-            const u8string& operator*() const noexcept { return s; }
+            const U8string& operator*() const noexcept { return s; }
             NameIterator& operator++();
             bool operator==(const NameIterator& rhs) const noexcept { return p == rhs.p; }
         private:
-            u8string s;
+            U8string s;
             const char* p;
             const char* q;
         };
@@ -127,13 +127,13 @@ namespace Unicorn {
                 auto i = pages.find(page);
                 return i == pages.end() ? nullptr : i->second;
             }
-            const CharsetInfo* operator[](const u8string& name) const {
+            const CharsetInfo* operator[](const U8string& name) const {
                 auto i = names.find(name);
                 return i == names.end() ? nullptr : i->second;
             }
         private:
             using page_map = std::unordered_map<uint32_t, const CharsetInfo*>;
-            using name_map = std::unordered_map<u8string, const CharsetInfo*>;
+            using name_map = std::unordered_map<U8string, const CharsetInfo*>;
             page_map pages;
             name_map names;
         };
@@ -161,22 +161,22 @@ namespace Unicorn {
             return c;
         }
 
-        EncodingTag find_encoding(const u8string& name) {
+        EncodingTag find_encoding(const U8string& name) {
             static const CharsetMap map;
             static const auto match_codepage = "(?:cp|dos|ibm|ms|windows)-?(\\d+)"_re_i;
             static const auto match_integer = "\\d+"_re;
             static const auto match_unicode = "(?:cs|x)?(?:iso10646)?((?:ucs|utf)\\d+)(be|le|internal|swapped)?"_re;
             #ifdef _XOPEN_SOURCE
-                static const vector<u8string> codepage_prefixes {"cp","dos","ibm","ms","windows-"};
+                static const std::vector<U8string> codepage_prefixes {"cp","dos","ibm","ms","windows-"};
             #endif
             // Check for UTF encodings
             auto smashed = smash_name(name, true);
             auto match = match_unicode.match(smashed);
             if (match) {
-                u8string m1 = match[1];
+                U8string m1 = match[1];
                 if (m1 == "utf8")
                     return utf8_tag;
-                u8string m2 = match[2];
+                U8string m2 = match[2];
                 bool swap = false;
                 swap = (m2 == "be" && little_endian_target)
                     || (m2 == "le" && big_endian_target)
@@ -266,12 +266,12 @@ namespace Unicorn {
 
         #ifdef _XOPEN_SOURCE
 
-            void native_recode(const string& src, string& dst, const u8string& from, const u8string& to,
-                    const u8string& tag, uint32_t flags) {
+            void native_recode(const std::string& src, std::string& dst, const U8string& from, const U8string& to,
+                    const U8string& tag, uint32_t flags) {
                 Iconv conv(from, to);
                 if (! conv)
                     throw UnknownEncoding(tag);
-                string buf(src.size(), 0);
+                std::string buf(src.size(), 0);
                 size_t inpos = 0, outpos = 0;
                 while (inpos < src.size()) {
                     auto inbuf = const_cast<char*>(&src[inpos]); // Posix brain damage
@@ -312,17 +312,17 @@ namespace Unicorn {
 
         #ifdef _XOPEN_SOURCE
 
-            void native_import(const string& src, string& dst, u8string tag, uint32_t flags) {
+            void native_import(const std::string& src, std::string& dst, U8string tag, uint32_t flags) {
                 native_recode(src, dst, tag, "utf-8"s, tag, flags);
             }
 
-            void native_export(const string& src, string& dst, u8string tag, uint32_t flags) {
+            void native_export(const std::string& src, std::string& dst, U8string tag, uint32_t flags) {
                 native_recode(src, dst, "utf-8"s, tag, tag, flags);
             }
 
         #else
 
-            void native_import(const string& src, wstring& dst, uint32_t tag, uint32_t flags) {
+            void native_import(const std::string& src, std::wstring& dst, uint32_t tag, uint32_t flags) {
                 uint32_t wflags = 0;
                 if (flags & err_throw)
                     wflags |= MB_ERR_INVALID_CHARS;
@@ -338,8 +338,8 @@ namespace Unicorn {
                 MultiByteToWideChar(tag, wflags, src.data(), int(src.size()), &dst[0], int(rc));
             }
 
-            void native_export(const wstring& src, string& dst, uint32_t tag, uint32_t flags) {
-                vector<uint32_t> tryflags;
+            void native_export(const std::wstring& src, std::string& dst, uint32_t tag, uint32_t flags) {
+                std::vector<uint32_t> tryflags;
                 if (flags & err_throw)
                     tryflags = {WC_NO_BEST_FIT_CHARS | WC_ERR_INVALID_CHARS, WC_ERR_INVALID_CHARS, WC_NO_BEST_FIT_CHARS, 0};
                 else
@@ -366,7 +366,7 @@ namespace Unicorn {
 
         #endif
 
-        bool utf_import(const string& src, NativeString& dst, EncodingTag tag, uint32_t flags) {
+        bool utf_import(const std::string& src, NativeString& dst, EncodingTag tag, uint32_t flags) {
             if (tag == utf8_tag) {
                 recode(src, dst, flags);
                 return true;
@@ -375,7 +375,7 @@ namespace Unicorn {
                 if (extra && (flags & err_throw))
                     throw EncodingError("UTF-16", src.size() - extra,
                         src.data() + src.size() - extra, extra);
-                u16string src16(src.size() / 2, 0);
+                std::u16string src16(src.size() / 2, 0);
                 memcpy(&src16[0], src.data(), src.size());
                 if (tag == utf16swap_tag)
                     std::transform(src16.begin(), src16.end(), src16.begin(), reverse_char16);
@@ -388,7 +388,7 @@ namespace Unicorn {
                 if (extra && (flags & err_throw))
                     throw EncodingError("UTF-32", src.size() - extra,
                         src.data() + src.size() - extra, extra);
-                u32string src32(src.size() / 4, 0);
+                std::u32string src32(src.size() / 4, 0);
                 memcpy(&src32[0], src.data(), src.size());
                 if (tag == utf32swap_tag)
                     std::transform(src32.begin(), src32.end(), src32.begin(), reverse_char32);
@@ -401,12 +401,12 @@ namespace Unicorn {
             }
         }
 
-        bool utf_export(const NativeString& src, string& dst, EncodingTag tag, uint32_t flags) {
+        bool utf_export(const NativeString& src, std::string& dst, EncodingTag tag, uint32_t flags) {
             if (tag == utf8_tag) {
                 recode(src, dst, flags);
                 return true;
             } else if (tag == utf16_tag || tag == utf16swap_tag) {
-                u16string dst16;
+                std::u16string dst16;
                 recode(src, dst16, flags);
                 if (tag == utf16swap_tag)
                     std::transform(dst16.begin(), dst16.end(), dst16.begin(), reverse_char16);
@@ -414,7 +414,7 @@ namespace Unicorn {
                 memcpy(&dst[0], dst16.data(), dst.size());
                 return true;
             } else if (tag == utf32_tag || tag == utf32swap_tag) {
-                u32string dst32;
+                std::u32string dst32;
                 recode(src, dst32, flags);
                 if (tag == utf32swap_tag)
                     std::transform(dst32.begin(), dst32.end(), dst32.begin(), reverse_char32);
@@ -427,7 +427,7 @@ namespace Unicorn {
         }
 
         template <typename E>
-        void import_string_helper(const string& src, u8string& dst, E enc, uint32_t flags) {
+        void import_string_helper(const std::string& src, U8string& dst, E enc, uint32_t flags) {
             check_mbcs_flags(flags);
             auto tag = lookup_encoding(enc, flags);
             if (src.empty()) {
@@ -445,7 +445,7 @@ namespace Unicorn {
         }
 
         template <typename E>
-        void export_string_helper(const u8string& src, string& dst, E enc, uint32_t flags) {
+        void export_string_helper(const U8string& src, std::string& dst, E enc, uint32_t flags) {
             check_mbcs_flags(flags);
             auto tag = lookup_encoding(enc, flags);
             if (src.empty()) {
@@ -462,7 +462,7 @@ namespace Unicorn {
 
     namespace UnicornDetail {
 
-        u8string guess_utf(const string& str) {
+        U8string guess_utf(const std::string& str) {
             constexpr size_t max_check_bytes = 100;
             if (str.empty())
                 return "utf-8";
@@ -502,8 +502,8 @@ namespace Unicorn {
             return "utf-8";
         }
 
-        EncodingTag lookup_encoding(const u8string& name, uint32_t flags) {
-            static std::map<u8string, EncodingTag> cache;
+        EncodingTag lookup_encoding(const U8string& name, uint32_t flags) {
+            static std::map<U8string, EncodingTag> cache;
             static Mutex mtx;
             if (name.empty())
                 throw UnknownEncoding();
@@ -581,21 +581,21 @@ namespace Unicorn {
     std::runtime_error(assemble({}, {})),
     enc() {}
 
-    UnknownEncoding::UnknownEncoding(const u8string& encoding, const u8string& details):
+    UnknownEncoding::UnknownEncoding(const U8string& encoding, const U8string& details):
     std::runtime_error(assemble(encoding, details)),
-    enc(make_shared<u8string>(encoding)) {}
+    enc(std::make_shared<U8string>(encoding)) {}
 
-    UnknownEncoding::UnknownEncoding(uint32_t encoding, const u8string& details):
+    UnknownEncoding::UnknownEncoding(uint32_t encoding, const U8string& details):
     std::runtime_error(assemble(dec(encoding), details)),
-    enc(make_shared<u8string>(dec(encoding))) {}
+    enc(std::make_shared<U8string>(dec(encoding))) {}
 
     const char* UnknownEncoding::encoding() const noexcept {
         static const char c = 0;
         return enc ? enc->data() : &c;
     }
 
-    u8string UnknownEncoding::assemble(const u8string& encoding, const u8string& details) {
-        u8string s = "Unknown encoding";
+    U8string UnknownEncoding::assemble(const U8string& encoding, const U8string& details) {
+        U8string s = "Unknown encoding";
         if (! encoding.empty()) {
             s += ": ";
             s += encoding;
@@ -609,12 +609,12 @@ namespace Unicorn {
 
     // Utility functions
 
-    u8string local_encoding(const u8string& default_encoding) {
+    U8string local_encoding(const U8string& default_encoding) {
         #ifdef _XOPEN_SOURCE
             static constexpr const char* locale_vars[] {"LC_ALL", "LC_CTYPE", "LANG"};
-            u8string name;
+            U8string name;
             for (auto key: locale_vars) {
-                string value = cstr(getenv(key));
+                std::string value = cstr(getenv(key));
                 size_t dot = value.find('.');
                 if (dot != npos) {
                     value.erase(0, dot + 1);
@@ -637,19 +637,19 @@ namespace Unicorn {
 
     // Conversion functions
 
-    void import_string(const string& src, u8string& dst, const u8string& enc, uint32_t flags) {
+    void import_string(const std::string& src, U8string& dst, const U8string& enc, uint32_t flags) {
         import_string_helper(src, dst, to_utf8(enc), flags);
     }
 
-    void import_string(const string& src, u8string& dst, uint32_t enc, uint32_t flags) {
+    void import_string(const std::string& src, U8string& dst, uint32_t enc, uint32_t flags) {
         import_string_helper(src, dst, enc, flags);
     }
 
-    void export_string(const u8string& src, string& dst, const u8string& enc, uint32_t flags) {
+    void export_string(const U8string& src, std::string& dst, const U8string& enc, uint32_t flags) {
         export_string_helper(src, dst, to_utf8(enc), flags);
     }
 
-    void export_string(const u8string& src, string& dst, uint32_t enc, uint32_t flags) {
+    void export_string(const U8string& src, std::string& dst, uint32_t enc, uint32_t flags) {
         export_string_helper(src, dst, enc, flags);
     }
 

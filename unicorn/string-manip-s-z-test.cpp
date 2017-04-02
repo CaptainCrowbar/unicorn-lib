@@ -13,7 +13,7 @@ namespace {
 
     void check_split() {
 
-        vector<u8string> v;
+        std::vector<U8string> v;
 
         TRY(str_split(""s, overwrite(v)));                      TEST_EQUAL(v.size(), 0);  TEST_EQUAL(str_join(v, "/"), "");
         TRY(str_split("Hello"s, overwrite(v)));                 TEST_EQUAL(v.size(), 1);  TEST_EQUAL(str_join(v, "/"), "Hello");
@@ -67,7 +67,7 @@ namespace {
         TRY(str_split_lines("\r\n\r\n"s, overwrite(v)));      TEST_EQUAL(v.size(), 2);  TEST_EQUAL(str_join(v, "/"), "/");
         TRY(str_split_lines("\r\n\r\n\r\n"s, overwrite(v)));  TEST_EQUAL(v.size(), 3);  TEST_EQUAL(str_join(v, "/"), "//");
 
-        u8string text =
+        U8string text =
             u8"Line one\n"
             u8"Line two\r"
             u8"Line three\r\n"
@@ -108,7 +108,7 @@ namespace {
 
     void check_squeeze() {
 
-        u8string s;
+        U8string s;
 
         TEST_EQUAL(str_squeeze(u8""s), u8""s);
         TEST_EQUAL(str_squeeze(u8"\t\t\t"s), u8" "s);
@@ -169,7 +169,7 @@ namespace {
         // 00010302  d800 df02  f0 90 8c 82
         // 0010fffd  dbff dffd  f4 8f bf bd
 
-        const u8string example {"\xd0\xb0\xe4\xba\x8c\xf0\x90\x8c\x82\xf4\x8f\xbf\xbd"};
+        const U8string example {"\xd0\xb0\xe4\xba\x8c\xf0\x90\x8c\x82\xf4\x8f\xbf\xbd"};
 
         TEST_EQUAL(str_substring(""s, 0), "");
         TEST_EQUAL(str_substring(""s, 5), "");
@@ -256,7 +256,7 @@ namespace {
 
     void check_translate() {
 
-        u8string s;
+        U8string s;
 
         TEST_EQUAL(str_translate(""s, "", ""), "");
         TEST_EQUAL(str_translate("Hello world"s, "", ""), "Hello world");
@@ -282,7 +282,7 @@ namespace {
 
     void check_trim() {
 
-        u8string s;
+        U8string s;
 
         TEST_EQUAL(str_trim(u8""s), u8"");
         TEST_EQUAL(str_trim(u8"Hello"s), u8"Hello");
@@ -360,7 +360,7 @@ namespace {
 
     void check_trim_if() {
 
-        u8string s;
+        U8string s;
 
         TEST_EQUAL(str_trim_if(u8""s, char_is_line_break), u8"");
         TEST_EQUAL(str_trim_if(u8"Hello"s, char_is_line_break), u8"Hello");
@@ -404,7 +404,7 @@ namespace {
 
     void check_unify() {
 
-        u8string s;
+        U8string s;
 
         TEST_EQUAL(str_unify_lines(u8""s), u8"");
         TEST_EQUAL(str_unify_lines(u8"Hello world\nGoodbye\n"s), u8"Hello world\nGoodbye\n");
@@ -429,7 +429,7 @@ namespace {
 
     void check_wrap() {
 
-        u8string s, t;
+        U8string s, t;
 
         TEST_EQUAL(str_wrap(""s), ""s);
         TEST_EQUAL(str_wrap("\r\n"s), ""s);

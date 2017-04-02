@@ -21,7 +21,7 @@ using namespace Unicorn;
 namespace {
 
     template <typename C>
-    void touch(const basic_string<C>& file) {
+    void touch(const std::basic_string<C>& file) {
         std::ofstream(to_utf8(file));
     }
 
@@ -218,7 +218,7 @@ namespace {
 
     void check_file_path_operations() {
 
-        pair<u8string, u8string> p;
+        std::pair<U8string, U8string> p;
 
         TRY(p = split_path(""s));           TEST_EQUAL(p.first, "");        TEST_EQUAL(p.second, "");
         TRY(p = split_file(""s));           TEST_EQUAL(p.first, "");        TEST_EQUAL(p.second, "");
@@ -326,13 +326,13 @@ namespace {
 
     void check_path_resolution() {
 
-        u8string cwd = current_directory(), res;
+        U8string cwd = current_directory(), res;
 
         #ifdef _XOPEN_SOURCE
-            u8string home = cstr(getenv("HOME"));
+            U8string home = cstr(getenv("HOME"));
         #endif
 
-        vector<pair<u8string, u8string>> tests = {
+        std::vector<std::pair<U8string, U8string>> tests = {
             #ifdef _XOPEN_SOURCE
                 {  "",             "",                   },
                 {  "Makefile",     cwd + "/Makefile",    },
@@ -362,8 +362,8 @@ namespace {
 
     void check_file_system_operations() {
 
-        u8string d1, d2, d3, f1, f2, f3, f4;
-        vector<string> vec;
+        U8string d1, d2, d3, f1, f2, f3, f4;
+        std::vector<std::string> vec;
         FileId id1, id2;
 
         TEST(file_exists("."s));

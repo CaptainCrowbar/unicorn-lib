@@ -15,7 +15,7 @@
 converting between the standard Unicode transformation formats: UTF-8, UTF-16,
 and UTF-32. Encoded strings are stored in any of the standard C++ string
 classes, with the encoding defined by the size of the code units: <code>string</code> (or
-<code>u8string</code>) holds UTF-8, <code>u16string</code> holds UTF-16, and <code>u32string</code> holds
+<code>U8string</code>) holds UTF-8, <code>u16string</code> holds UTF-16, and <code>u32string</code> holds
 UTF-32; <code>wstring</code> may hold either UTF-16 or UTF-32, depending on the compiler.</p>
 <h2 id="contents">Contents</h2>
 <div class="toc">
@@ -279,7 +279,7 @@ will contain the successfully converted part of the string before the error.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; u8string</code> <strong><code>to_utf8</code></strong><code>(const basic_string&lt;C&gt;&amp; src, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; U8string</code> <strong><code>to_utf8</code></strong><code>(const basic_string&lt;C&gt;&amp; src, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename C&gt; u16string</code> <strong><code>to_utf16</code></strong><code>(const basic_string&lt;C&gt;&amp; src, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename C&gt; u32string</code> <strong><code>to_utf32</code></strong><code>(const basic_string&lt;C&gt;&amp; src, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename C&gt; wstring</code> <strong><code>to_wstring</code></strong><code>(const basic_string&lt;C&gt;&amp; src, uint32_t flags = 0)</code></li>

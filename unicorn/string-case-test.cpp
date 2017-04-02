@@ -12,7 +12,7 @@ namespace {
 
     void check_case_conversions() {
 
-        u8string s;
+        U8string s;
 
         TEST_EQUAL(str_uppercase(u8""s), u8"");
         TEST_EQUAL(str_uppercase(u8"HELLO WORLD"s), u8"HELLO WORLD");

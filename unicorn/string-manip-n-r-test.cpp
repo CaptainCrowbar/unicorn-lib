@@ -12,7 +12,7 @@ namespace {
 
     void check_pad_left() {
 
-        u8string s;
+        U8string s;
 
         TEST_EQUAL(str_pad_left(""s, 0), "");
         TEST_EQUAL(str_pad_left(""s, 1), " ");
@@ -74,7 +74,7 @@ namespace {
 
     void check_pad_right() {
 
-        u8string s;
+        U8string s;
 
         TEST_EQUAL(str_pad_right(""s, 0), "");
         TEST_EQUAL(str_pad_right(""s, 1), " ");
@@ -136,7 +136,7 @@ namespace {
 
     void check_partition() {
 
-        u8string s, t;
+        U8string s, t;
 
         TEST(! str_partition(""s, s, t));                     TEST_EQUAL(s, "");       TEST_EQUAL(t, "");
         TEST(! str_partition("Hello"s, s, t));                TEST_EQUAL(s, "Hello");  TEST_EQUAL(t, "");
@@ -170,7 +170,7 @@ namespace {
 
     void check_remove() {
 
-        u8string s, t;
+        U8string s, t;
 
         s = u8"";             TRY(t = str_remove(s, U'o'));                                         TEST_EQUAL(t, u8"");
         s = u8"";             TRY(t = str_remove(s, u8"aeiou"));                                    TEST_EQUAL(t, u8"");
@@ -194,7 +194,7 @@ namespace {
 
     void check_repeat() {
 
-        u8string s;
+        U8string s;
 
         TEST_EQUAL(str_repeat("", 0), "");
         TEST_EQUAL(str_repeat("", 1), "");
@@ -228,7 +228,7 @@ namespace {
 
     void check_replace() {
 
-        u8string s;
+        U8string s;
 
         TEST_EQUAL(str_replace(""s, "", ""), "");
         TEST_EQUAL(str_replace("(abc)"s, "", ""), "(abc)");

@@ -8,7 +8,7 @@ This module defines classes and functions for encoding, decoding, and
 converting between the standard Unicode transformation formats: UTF-8, UTF-16,
 and UTF-32. Encoded strings are stored in any of the standard C++ string
 classes, with the encoding defined by the size of the code units: `string` (or
-`u8string`) holds UTF-8, `u16string` holds UTF-16, and `u32string` holds
+`U8string`) holds UTF-8, `u16string` holds UTF-16, and `u32string` holds
 UTF-32; `wstring` may hold either UTF-16 or UTF-32, depending on the compiler.
 
 ## Contents ##
@@ -235,7 +235,7 @@ The `flags` argument has its usual meaning. If the destination string was
 supplied by reference, after an exception is thrown the destination string
 will contain the successfully converted part of the string before the error.
 
-* `template <typename C> u8string` **`to_utf8`**`(const basic_string<C>& src, uint32_t flags = 0)`
+* `template <typename C> U8string` **`to_utf8`**`(const basic_string<C>& src, uint32_t flags = 0)`
 * `template <typename C> u16string` **`to_utf16`**`(const basic_string<C>& src, uint32_t flags = 0)`
 * `template <typename C> u32string` **`to_utf32`**`(const basic_string<C>& src, uint32_t flags = 0)`
 * `template <typename C> wstring` **`to_wstring`**`(const basic_string<C>& src, uint32_t flags = 0)`

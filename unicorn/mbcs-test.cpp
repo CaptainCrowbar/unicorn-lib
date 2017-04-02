@@ -28,15 +28,14 @@ namespace {
 
     void check_locale_detection() {
 
-        string s;
-
-        u8string loc;
+        std::string s;
+        U8string loc;
         TRY(loc = local_encoding());
         if (loc.empty())
             loc = "<unknown>";
         else
             TRY(lookup_encoding(loc));
-        cout << "... Local encoding: " << loc << "\n";
+        std::cout << "... Local encoding: " << loc << "\n";
 
     }
 
@@ -92,9 +91,9 @@ namespace {
 
     void check_mbcs_to_unicode() {
 
-        u8string s8;
-        u16string s16;
-        u32string s32;
+        U8string s8;
+        std::u16string s16;
+        std::u32string s32;
 
         TRY(import_string(euro_utf8, s8, "utf-8"));                TEST_EQUAL(s8, euro_utf8);
         TRY(import_string(euro_utf16be, s8, "utf-16be"));          TEST_EQUAL(s8, euro_utf8);
@@ -137,7 +136,7 @@ namespace {
 
     void check_unicode_to_mbcs() {
 
-        string s;
+        std::string s;
 
         TRY(export_string(euro_utf8, s, "utf-8"));         TEST_EQUAL(s, euro_utf8);
         TRY(export_string(euro_utf8, s, "utf-16be"));      TEST_EQUAL(s, euro_utf16be);
@@ -173,8 +172,8 @@ namespace {
 
     void check_local_encoding_round_trip() {
 
-        string s;
-        u8string s8;
+        std::string s;
+        U8string s8;
 
         TRY(export_string(euro_utf8, s, "char"));
         TRY(import_string(s, s8, "char"));

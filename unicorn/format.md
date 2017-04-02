@@ -22,7 +22,7 @@ of this module and will need to be handled by the caller.
 
 ## Basic formatting functions ##
 
-* `template <typename T> u8string` **`format_type`**`(const T& t, uint64_t flags, int prec)`
+* `template <typename T> U8string` **`format_type`**`(const T& t, uint64_t flags, int prec)`
 
 This is the core formatting function. The details of how the flags and
 precision are interpreted depend on the type being formatted. This function
@@ -36,13 +36,13 @@ listed here; their behaviour is described in more detail below.
 * `signed char`, `unsigned char`, `short`, `unsigned short`, `int`, `unsigned`, `long`, `unsigned long`, `long long`, `unsigned long long`
 * `float`, `double`, `long double`
 * `[const] char*`, `[const] char16_t*`, `[const] char32_t*`, `[const] wchar_t*`
-* `u8string`, `u16string`, `u32string`, `wstring`
+* `U8string`, `u16string`, `u32string`, `wstring`
 * `std::chrono::duration<R, P>`, `std::chrono::system_clock::time_point`
 * `Prion::Uuid`, `Prion::Version`
 
-* <!-- DEFN --> `template <typename T> u8string` **`format_str`**`(const T& t, uint64_t flags = 0, int prec = -1, size_t width = 0, char32_t pad = U' ')`
-* `template <typename T> u8string` **`format_str`**`(const T& t, const u8string& flags)`
-* `template <typename T> u8string` **`format_str`**`(const T& t, const char* flags)`
+* <!-- DEFN --> `template <typename T> U8string` **`format_str`**`(const T& t, uint64_t flags = 0, int prec = -1, size_t width = 0, char32_t pad = U' ')`
+* `template <typename T> U8string` **`format_str`**`(const T& t, const U8string& flags)`
+* `template <typename T> U8string` **`format_str`**`(const T& t, const char* flags)`
 
 These call `format_type()` to format their first argument, with additional
 global options. The first version accepts the same arguments as
@@ -95,16 +95,16 @@ alignment), it will be interpreted as a precision:
 
 * `class` **`Format`**
     * `Format::`**`Format`**`()`
-    * `explicit Format::`**`Format`**`(const u8string& format)`
+    * `explicit Format::`**`Format`**`(const U8string& format)`
     * `Format::`**`Format`**`(const Format& f)`
     * `Format::`**`Format`**`(Format&& f) noexcept`
     * `Format::`**`~Format`**`() noexcept`
     * `Format& Format::`**`operator=`**`(const Format& f)`
     * `Format& Format::`**`operator=`**`(Format&& f) noexcept`
-    * `template <typename... Args> u8string Format::`**`operator()`**`(const Args&... args) const`
+    * `template <typename... Args> U8string Format::`**`operator()`**`(const Args&... args) const`
     * `bool Format::`**`empty`**`() const noexcept`
     * `size_t Format::`**`fields`**`() const`
-    * `u8string Format::`**`format`**`() const`
+    * `U8string Format::`**`format`**`() const`
 
 This class is constructed from a formatting string, which contains
 placeholders into which arguments will be substituted when the formatting
@@ -120,8 +120,8 @@ of braces.
 Example:
 
     Format f("Hello $1, your number is $2f3");
-    u8string a = f("Alice", 42); // "Hello Alice, your number is 42.000"
-    u8string b = f("Bob", 1.23); // "Hello Bob, your number is 1.230"
+    U8string a = f("Alice", 42); // "Hello Alice, your number is 42.000"
+    U8string b = f("Bob", 1.23); // "Hello Bob, your number is 1.230"
 
 Use `"$$"` to insert a literal dollar sign in the format string.
 

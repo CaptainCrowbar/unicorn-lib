@@ -110,7 +110,7 @@ namespace Unicorn {
     }
 
     template <typename C> Irange<GraphemeIterator<C>>
-    grapheme_range(const basic_string<C>& source) {
+    grapheme_range(const std::basic_string<C>& source) {
         return grapheme_range(utf_range(source));
     }
 
@@ -132,7 +132,7 @@ namespace Unicorn {
     }
 
     template <typename C> Irange<WordIterator<C>>
-    word_range(const basic_string<C>& source, uint32_t flags = 0) {
+    word_range(const std::basic_string<C>& source, uint32_t flags = 0) {
         return word_range(utf_range(source), flags);
     }
 
@@ -152,7 +152,7 @@ namespace Unicorn {
     }
 
     template <typename C> Irange<SentenceIterator<C>>
-    sentence_range(const basic_string<C>& source) {
+    sentence_range(const std::basic_string<C>& source) {
         return sentence_range(utf_range(source));
     }
 
@@ -284,7 +284,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    Irange<BlockSegmentIterator<C>> line_range(const basic_string<C>& source, uint32_t flags = 0) {
+    Irange<BlockSegmentIterator<C>> line_range(const std::basic_string<C>& source, uint32_t flags = 0) {
         return line_range(utf_range(source), flags);
     }
 
@@ -314,7 +314,7 @@ namespace Unicorn {
     }
 
     template <typename C>
-    Irange<BlockSegmentIterator<C>> paragraph_range(const basic_string<C>& source, uint32_t flags = 0) {
+    Irange<BlockSegmentIterator<C>> paragraph_range(const std::basic_string<C>& source, uint32_t flags = 0) {
         return paragraph_range(utf_range(source), flags);
     }
 

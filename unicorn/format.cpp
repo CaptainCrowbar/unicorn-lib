@@ -15,8 +15,8 @@ namespace Unicorn {
 
             // These will always be called with x>=0 and prec>=0
 
-            u8string float_print(const char* format, long double x, int prec) {
-                vector<char> buf(32);
+            U8string float_print(const char* format, long double x, int prec) {
+                std::vector<char> buf(32);
                 for (;;) {
                     if (snprintf(buf.data(), buf.size(), format, prec, x) < int(buf.size()))
                         return buf.data();
@@ -24,11 +24,11 @@ namespace Unicorn {
                 }
             }
 
-            void float_strip(u8string& str) {
+            void float_strip(U8string& str) {
                 static const Regex pattern("(.*)(\\.(?:\\d*[1-9])?)(0+)(e.*)?");
                 auto match = pattern.match(str);
                 if (match) {
-                    u8string result = match[1];
+                    U8string result = match[1];
                     if (match.count(2) != 1)
                         result += match[2];
                     result += match[4];
@@ -36,7 +36,7 @@ namespace Unicorn {
                 }
             }
 
-            u8string float_digits(long double x, int prec) {
+            U8string float_digits(long double x, int prec) {
                 prec = std::max(prec, 1);
                 auto result = float_print("%.*Le", x, prec - 1);
                 auto epos = result.find_first_of("Ee");
@@ -58,7 +58,7 @@ namespace Unicorn {
                 return result;
             }
 
-            u8string float_exp(long double x, int prec) {
+            U8string float_exp(long double x, int prec) {
                 prec = std::max(prec, 1);
                 auto result = float_print("%.*Le", x, prec - 1);
                 auto epos = result.find_first_of("Ee");
@@ -66,7 +66,7 @@ namespace Unicorn {
                 if (result[epos + 1] == '-')
                     esign = '-';
                 auto epos2 = result.find_first_not_of("+-0", epos + 1);
-                u8string exponent;
+                U8string exponent;
                 if (epos2 < result.size())
                     exponent = result.substr(epos2);
                 result.resize(epos);
@@ -80,11 +80,11 @@ namespace Unicorn {
                 return result;
             }
 
-            u8string float_fixed(long double x, int prec) {
+            U8string float_fixed(long double x, int prec) {
                 return float_print("%.*Lf", x, prec);
             }
 
-            u8string float_general(long double x, int prec) {
+            U8string float_general(long double x, int prec) {
                 using std::floor;
                 using std::log10;
                 if (x == 0)
@@ -102,8 +102,8 @@ namespace Unicorn {
                 return dform.size() <= eform.size() ? dform : eform;
             }
 
-            u8string string_escape(const u8string& s, uint64_t mode) {
-                u8string result;
+            U8string string_escape(const U8string& s, uint64_t mode) {
+                U8string result;
                 result.reserve(s.size() + 2);
                 if (mode & fx_quote)
                     result += '\"';
@@ -142,10 +142,10 @@ namespace Unicorn {
             }
 
             template <typename Range>
-            u8string string_values(const Range& s, int base, int prec, int defprec) {
+            U8string string_values(const Range& s, int base, int prec, int defprec) {
                 if (prec < 0)
                     prec = defprec;
-                u8string result;
+                U8string result;
                 for (auto c: s) {
                     result += format_radix(char_to_uint(c), base, prec);
                     result += ' ';
@@ -159,7 +159,7 @@ namespace Unicorn {
 
         // Formatting for specific types
 
-        void translate_flags(const u8string& str, uint64_t& flags, int& prec, size_t& width, char32_t& pad) {
+        void translate_flags(const U8string& str, uint64_t& flags, int& prec, size_t& width, char32_t& pad) {
             flags = 0;
             prec = -1;
             width = 0;
@@ -188,7 +188,7 @@ namespace Unicorn {
             }
         }
 
-        u8string format_float(long double t, uint64_t flags, int prec) {
+        U8string format_float(long double t, uint64_t flags, int prec) {
             using std::fabs;
             static constexpr auto format_flags = fx_digits | fx_exp | fx_fixed | fx_general;
             static constexpr auto sign_flags = fx_sign | fx_signz;
@@ -197,7 +197,7 @@ namespace Unicorn {
             if (prec < 0)
                 prec = 6;
             auto mag = fabs(t);
-            u8string s;
+            U8string s;
             if (flags & fx_digits)
                 s = float_digits(mag, prec);
             else if (flags & fx_exp)
@@ -213,7 +213,7 @@ namespace Unicorn {
             return s;
         }
 
-        u8string format_roman(uint32_t n) {
+        U8string format_roman(uint32_t n) {
             struct char_value { const char* str; unsigned num; };
             static const char_value table[] {
                 { "M", 1000 },
@@ -223,7 +223,7 @@ namespace Unicorn {
             };
             if (n == 0)
                 return "0";
-            u8string s;
+            U8string s;
             for (auto& t: table) {
                 auto q = n / t.num;
                 n %= t.num;
@@ -235,7 +235,7 @@ namespace Unicorn {
 
         // Alignment and padding
 
-        u8string format_align(u8string src, uint64_t flags, size_t width, char32_t pad) {
+        U8string format_align(U8string src, uint64_t flags, size_t width, char32_t pad) {
             if (ibits(flags & (fx_left | fx_centre | fx_right)) > 1)
                 throw std::invalid_argument("Inconsistent formatting alignment flags");
             if (ibits(flags & (fx_lower | fx_title | fx_upper)) > 1)
@@ -250,7 +250,7 @@ namespace Unicorn {
             if (width <= len)
                 return src;
             size_t extra = width - len;
-            u8string dst;
+            U8string dst;
             if (flags & fx_right)
                 str_append_chars(dst, extra, pad);
             else if (flags & fx_centre)
@@ -267,7 +267,7 @@ namespace Unicorn {
 
     // Basic formattng functions
 
-    u8string format_type(bool t, uint64_t flags, int /*prec*/) {
+    U8string format_type(bool t, uint64_t flags, int /*prec*/) {
         static constexpr auto format_flags = fx_binary | fx_tf | fx_yesno;
         if (ibits(flags & format_flags) > 1)
             throw std::invalid_argument("Inconsistent formatting flags");
@@ -279,7 +279,7 @@ namespace Unicorn {
             return t ? "true" : "false";
     }
 
-    u8string format_type(const u8string& t, uint64_t flags, int prec) {
+    U8string format_type(const U8string& t, uint64_t flags, int prec) {
         using namespace UnicornDetail;
         static constexpr auto format_flags = fx_ascii | fx_ascquote | fx_escape | fx_decimal | fx_hex | fx_hex8 | fx_hex16 | fx_quote;
         if (ibits(flags & format_flags) > 1)
@@ -304,7 +304,7 @@ namespace Unicorn {
             return t;
     }
 
-    u8string format_type(system_clock::time_point t, uint64_t flags, int prec) {
+    U8string format_type(system_clock::time_point t, uint64_t flags, int prec) {
         static constexpr auto format_flags = fx_iso | fx_common;
         if (ibits(flags & format_flags) > 1)
             throw std::invalid_argument("Inconsistent formatting flags");
@@ -322,7 +322,7 @@ namespace Unicorn {
 
     // Formatter class
 
-    Format::Format(const u8string& format):
+    Format::Format(const U8string& format):
     fmt(format), seq() {
         auto i = utf_begin(format), end = utf_end(format);
         while (i != end) {
@@ -331,7 +331,7 @@ namespace Unicorn {
             i = std::next(j);
             if (i == end)
                 break;
-            u8string prefix, suffix;
+            U8string prefix, suffix;
             if (char_is_digit(*i)) {
                 auto k = std::find_if_not(i, end, char_is_digit);
                 j = std::find_if_not(k, end, char_is_alphanumeric);
@@ -359,7 +359,7 @@ namespace Unicorn {
         }
     }
 
-    void Format::add_index(unsigned index, const u8string& flags) {
+    void Format::add_index(unsigned index, const U8string& flags) {
         using namespace UnicornDetail;
         element elem;
         elem.index = index;
@@ -369,7 +369,7 @@ namespace Unicorn {
             num = index;
     }
 
-    void Format::add_literal(const u8string& text) {
+    void Format::add_literal(const U8string& text) {
         if (! text.empty()) {
             if (seq.empty() || seq.back().index != 0)
                 seq.push_back({0, text, 0, 0, 0, 0});

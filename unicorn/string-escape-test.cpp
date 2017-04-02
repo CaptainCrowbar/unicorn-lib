@@ -10,7 +10,7 @@ namespace {
 
     void check_encode_uri() {
 
-        u8string s1, s2;
+        U8string s1, s2;
 
         s1 = "";                         TRY(s2 = str_encode_uri(s1));  TEST_EQUAL(s2, "");
         s1 = "Hello world";              TRY(s2 = str_encode_uri(s1));  TEST_EQUAL(s2, "Hello%20world");
@@ -68,7 +68,7 @@ namespace {
 
     void check_escape() {
 
-        u8string s1, s2;
+        U8string s1, s2;
 
         s1 = "";                                             TRY(s2 = str_escape(s1));              TEST_EQUAL(s2, "");
         s1 = "Hello world";                                  TRY(s2 = str_escape(s1));              TEST_EQUAL(s2, "Hello world");
@@ -114,7 +114,7 @@ namespace {
 
     void check_quote() {
 
-        u8string s1, s2;
+        U8string s1, s2;
 
         s1 = "";                                             TRY(s2 = str_quote(s1));              TEST_EQUAL(s2, "\"\"");
         s1 = "Hello world";                                  TRY(s2 = str_quote(s1));              TEST_EQUAL(s2, "\"Hello world\"");

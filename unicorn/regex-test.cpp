@@ -22,14 +22,14 @@ namespace {
         TEST_COMPARE(pv, >=, (Version{8,0,0}));
         TEST_COMPARE(uv, >=, (Version{7,0,0}));
 
-        cout << "... PCRE library version: " << pv.str(3) << "\n";
-        cout << "... PCRE Unicode version: " << uv.str(3) << "\n";
+        std::cout << "... PCRE library version: " << pv.str(3) << "\n";
+        std::cout << "... PCRE Unicode version: " << uv.str(3) << "\n";
 
     }
 
     void check_utf8_regex() {
 
-        u8string s;
+        U8string s;
         Regex r;
         Match m;
         Utf8Iterator u;
@@ -40,7 +40,7 @@ namespace {
         TEST_EQUAL(r.flags(), 0);
 
         TEST(! m.matched());
-        TEST_EQUAL(u8string(m.s_begin(), m.s_end()), "");
+        TEST_EQUAL(U8string(m.s_begin(), m.s_end()), "");
         TEST_EQUAL(u_str(m.u_begin(), m.u_end()), "");
 
         TRY(r = Regex("[a-z]+"));
@@ -61,9 +61,9 @@ namespace {
         TEST_EQUAL(m.str(), "ello");
         TEST_EQUAL(m.str(0), "ello");
         TEST_EQUAL(m.str(1), "");
-        TEST_EQUAL(u8string(m.s_begin(), m.s_end()), "ello");
-        TEST_EQUAL(u8string(m.s_begin(0), m.s_end(0)), "ello");
-        TEST_EQUAL(u8string(m.s_begin(1), m.s_end(1)), "");
+        TEST_EQUAL(U8string(m.s_begin(), m.s_end()), "ello");
+        TEST_EQUAL(U8string(m.s_begin(0), m.s_end(0)), "ello");
+        TEST_EQUAL(U8string(m.s_begin(1), m.s_end(1)), "");
         TEST_EQUAL(u_str(m.u_begin(), m.u_end()), "ello");
         TEST_EQUAL(u_str(m.u_begin(0), m.u_end(0)), "ello");
         TEST_EQUAL(u_str(m.u_begin(1), m.u_end(1)), "");
@@ -78,7 +78,7 @@ namespace {
         TEST_EQUAL(m.endpos(), npos);
         TEST_EQUAL(m.count(), 0);
         TEST_EQUAL(m.str(), "");
-        TEST_EQUAL(u8string(m.s_begin(), m.s_end()), "");
+        TEST_EQUAL(U8string(m.s_begin(), m.s_end()), "");
         TEST_EQUAL(u_str(m.u_begin(), m.u_end()), "");
 
         TRY(r = Regex("[a-z]+", rx_dfa));
@@ -192,8 +192,8 @@ namespace {
         TEST_EQUAL(m.str(), "Hello world");
         TEST_EQUAL(m.str(0), "Hello world");
         TEST_EQUAL(m[0], "Hello world");
-        TEST_EQUAL(u8string(m.s_begin(), m.s_end()), "Hello world");
-        TEST_EQUAL(u8string(m.s_begin(0), m.s_end(0)), "Hello world");
+        TEST_EQUAL(U8string(m.s_begin(), m.s_end()), "Hello world");
+        TEST_EQUAL(U8string(m.s_begin(0), m.s_end(0)), "Hello world");
         TEST_EQUAL(u_str(m.u_begin(), m.u_end()), "Hello world");
         TEST_EQUAL(u_str(m.u_begin(0), m.u_end(0)), "Hello world");
         TEST_EQUAL(m.offset(1), 0);
@@ -201,14 +201,14 @@ namespace {
         TEST_EQUAL(m.count(1), 5);
         TEST_EQUAL(m.str(1), "Hello");
         TEST_EQUAL(m[1], "Hello");
-        TEST_EQUAL(u8string(m.s_begin(1), m.s_end(1)), "Hello");
+        TEST_EQUAL(U8string(m.s_begin(1), m.s_end(1)), "Hello");
         TEST_EQUAL(u_str(m.u_begin(1), m.u_end(1)), "Hello");
         TEST_EQUAL(m.offset(2), 6);
         TEST_EQUAL(m.endpos(2), 11);
         TEST_EQUAL(m.count(2), 5);
         TEST_EQUAL(m.str(2), "world");
         TEST_EQUAL(m[2], "world");
-        TEST_EQUAL(u8string(m.s_begin(2), m.s_end(2)), "world");
+        TEST_EQUAL(U8string(m.s_begin(2), m.s_end(2)), "world");
         TEST_EQUAL(u_str(m.u_begin(2), m.u_end(2)), "world");
         TEST(m.matched(0));
         TEST(m.matched(1));
@@ -291,7 +291,7 @@ namespace {
         TRY(r = Regex("^.?$|^(..+?)\\1+$"));
 
         for (int n = 0; n <= 100; ++n) {
-            TEST_EQUAL(! r.match(u8string(n, 'x')), is_prime(n));
+            TEST_EQUAL(! r.match(U8string(n, 'x')), is_prime(n));
             TEST_EQUAL(! r.match(str_repeat(u8"€", n)), is_prime(n));
         }
 
@@ -299,10 +299,10 @@ namespace {
 
     void check_match_ranges() {
 
-        u8string s;
+        U8string s;
         Regex r;
         Irange<MatchIterator> mr;
-        vector<u8string> v;
+        std::vector<U8string> v;
 
         TRY(r = Regex("[a-z]+", rx_caseless));
 
@@ -317,7 +317,7 @@ namespace {
 
     void check_split_ranges() {
 
-        u8string s;
+        U8string s;
         Regex r;
         Irange<SplitIterator> sr;
 
@@ -334,7 +334,7 @@ namespace {
 
     void check_regex_formatting() {
 
-        u8string s;
+        U8string s;
         RegexFormat rf;
 
         TRY(rf = RegexFormat("\\s+", "*"));
@@ -450,8 +450,8 @@ namespace {
     void check_regex_transform() {
 
         Regex r;
-        u8string s1, s2;
-        auto sf = [] (const u8string& s) { return s + s; };
+        U8string s1, s2;
+        auto sf = [] (const U8string& s) { return s + s; };
         auto mf = [] (const Match& m) { return m.first() + m.last(); };
 
         s1 = "Hello world";
@@ -486,7 +486,7 @@ namespace {
 
         Regex r;
         Match m;
-        string s1, s2, s3;
+        std::string s1, s2, s3;
 
         s1 = "(Hello world)";
         TRY(r = Regex("\\b[a-z]+\\b", rx_byte));
@@ -513,7 +513,7 @@ namespace {
         TRY(m = r.search(s1, 15));  TEST(! m.matched());  TEST_EQUAL(m.offset(), npos);  TEST_EQUAL(m.str(), "");
 
         Irange<MatchIterator> mr;
-        vector<string> v;
+        std::vector<std::string> v;
 
         TRY(r = Regex("\\w+", rx_byte));
         TRY(mr = r.grep(s1));

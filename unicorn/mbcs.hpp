@@ -14,13 +14,13 @@ namespace Unicorn {
 
         using EncodingTag =
             #ifdef _XOPEN_SOURCE
-                u8string;
+                U8string;
             #else
                 uint32_t;
             #endif
 
-        u8string guess_utf(const string& str);
-        EncodingTag lookup_encoding(const u8string& name, uint32_t flags = 0);
+        U8string guess_utf(const std::string& str);
+        EncodingTag lookup_encoding(const U8string& name, uint32_t flags = 0);
         EncodingTag lookup_encoding(uint32_t page, uint32_t flags = 0);
 
     }
@@ -35,23 +35,23 @@ namespace Unicorn {
     public std::runtime_error {
     public:
         UnknownEncoding();
-        explicit UnknownEncoding(const u8string& encoding, const u8string& details = {});
-        explicit UnknownEncoding(uint32_t encoding, const u8string& details = {});
+        explicit UnknownEncoding(const U8string& encoding, const U8string& details = {});
+        explicit UnknownEncoding(uint32_t encoding, const U8string& details = {});
         const char* encoding() const noexcept;
     private:
-        shared_ptr<u8string> enc;
-        static u8string assemble(const u8string& encoding, const u8string& details);
+        std::shared_ptr<U8string> enc;
+        static U8string assemble(const U8string& encoding, const U8string& details);
     };
 
     // Utility functions
 
-    u8string local_encoding(const u8string& default_encoding = "utf-8");
+    U8string local_encoding(const U8string& default_encoding = "utf-8");
 
     // Conversion functions
 
-    void import_string(const string& src, u8string& dst, const u8string& enc = {}, uint32_t flags = 0);
-    void import_string(const string& src, u8string& dst, uint32_t enc, uint32_t flags = 0);
-    void export_string(const u8string& src, string& dst, const u8string& enc = {}, uint32_t flags = 0);
-    void export_string(const u8string& src, string& dst, uint32_t enc, uint32_t flags = 0);
+    void import_string(const std::string& src, U8string& dst, const U8string& enc = {}, uint32_t flags = 0);
+    void import_string(const std::string& src, U8string& dst, uint32_t enc, uint32_t flags = 0);
+    void export_string(const U8string& src, std::string& dst, const U8string& enc = {}, uint32_t flags = 0);
+    void export_string(const U8string& src, std::string& dst, uint32_t enc, uint32_t flags = 0);
 
 }

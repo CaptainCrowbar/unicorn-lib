@@ -26,7 +26,7 @@ namespace Unicorn {
             "Partial match",                             // PCRE_ERROR_PARTIAL         = -12
             "Partial match not supported",               // PCRE_ERROR_BADPARTIAL      = -13
             "Internal error",                            // PCRE_ERROR_INTERNAL        = -14
-            "Bad vector size",                           // PCRE_ERROR_BADCOUNT        = -15
+            "Bad std::vector size",                           // PCRE_ERROR_BADCOUNT        = -15
             "DFA unsupported item",                      // PCRE_ERROR_DFA_UITEM       = -16
             "DFA unsupported condition",                 // PCRE_ERROR_DFA_UCOND       = -17
             "DFA unsupported match limit",               // PCRE_ERROR_DFA_UMLIMIT     = -18
@@ -100,7 +100,7 @@ namespace Unicorn {
             return n + 1;
         }
 
-        size_t PcreRef::named_group(const u8string& name) const noexcept {
+        size_t PcreRef::named_group(const U8string& name) const noexcept {
             if (! pc)
                 return npos;
             auto rc = pcre_get_stringnumber(get_pcre(*this), name.data());
@@ -124,21 +124,21 @@ namespace Unicorn {
 
     // Exceptions
 
-    RegexError::RegexError(int error, const u8string& pattern, const u8string& message):
+    RegexError::RegexError(int error, const U8string& pattern, const U8string& message):
         std::runtime_error(assemble(error, pattern, message)),
         err(error),
-        pat(make_shared<u8string>(pattern)) {}
+        pat(std::make_shared<U8string>(pattern)) {}
 
-    u8string RegexError::assemble(int error, const u8string& pattern, const u8string& message) {
-        u8string text = "Regex error " + dec(error);
-        u8string errmsg = message.empty() ? translate(error) : message;
+    U8string RegexError::assemble(int error, const U8string& pattern, const U8string& message) {
+        U8string text = "Regex error " + dec(error);
+        U8string errmsg = message.empty() ? translate(error) : message;
         if (! errmsg.empty())
             text += ": " + errmsg;
         text += "; pattern: " + quote(pattern);
         return text;
     }
 
-    u8string RegexError::translate(int error) {
+    U8string RegexError::translate(int error) {
         if (error < 0 && error > - int(range_count(error_table)))
             return error_table[- error];
         else
@@ -147,7 +147,7 @@ namespace Unicorn {
 
     // Regex match class
 
-    u8string Match::first() const {
+    U8string Match::first() const {
         if (! matched() || ! text)
             return {};
         size_t n = groups();
@@ -157,7 +157,7 @@ namespace Unicorn {
         return {};
     }
 
-    u8string Match::last() const {
+    U8string Match::last() const {
         if (! matched() || ! text)
             return {};
         size_t n = groups();
@@ -167,14 +167,14 @@ namespace Unicorn {
         return {};
     }
 
-    u8string::const_iterator Match::s_begin(size_t i) const noexcept {
+    U8string::const_iterator Match::s_begin(size_t i) const noexcept {
         if (text && is_group(i))
             return text->begin() + offset(i);
         else
             return {};
     }
 
-    u8string::const_iterator Match::s_end(size_t i) const noexcept {
+    U8string::const_iterator Match::s_end(size_t i) const noexcept {
         if (text && is_group(i))
             return text->begin() + endpos(i);
         else
@@ -189,7 +189,7 @@ namespace Unicorn {
         std::swap(text, m.text);
     }
 
-    u8string Match::str(size_t i) const {
+    U8string Match::str(size_t i) const {
         if (text && is_group(i))
             return text->substr(ofs[2 * i],
                 ofs[2 * i + 1] - ofs[2 * i]);
@@ -211,7 +211,7 @@ namespace Unicorn {
             return {};
     }
 
-    void Match::init(const Regex& r, const u8string& s) {
+    void Match::init(const Regex& r, const U8string& s) {
         ofs.clear();
         fset = r.fset;
         ref = r.ref;
@@ -219,7 +219,7 @@ namespace Unicorn {
         text = &s;
     }
 
-    void Match::next(const u8string& pattern, size_t start, int anchors) {
+    void Match::next(const U8string& pattern, size_t start, int anchors) {
         status = PCRE_ERROR_NOMATCH;
         if (! ref || start > text->size())
             return;
@@ -256,7 +256,7 @@ namespace Unicorn {
 
     // Regular expression class
 
-    Regex::Regex(const u8string& pattern, uint32_t flags) {
+    Regex::Regex(const U8string& pattern, uint32_t flags) {
         if (ibits(flags & (rx_newlineanycrlf | rx_newlinecr | rx_newlinecrlf | rx_newlinelf)) > 1
                 || ibits(flags & (rx_notempty | rx_notemptyatstart)) > 1
                 || ibits(flags & (rx_partialhard | rx_partialsoft)) > 1)
@@ -318,7 +318,7 @@ namespace Unicorn {
         ref = {pc, ex};
     }
 
-    size_t Regex::count(const u8string& text) const {
+    size_t Regex::count(const U8string& text) const {
         Match m;
         m.init(*this, text);
         size_t n = 0, ofs = 0;
@@ -332,19 +332,19 @@ namespace Unicorn {
         return n;
     }
 
-    u8string Regex::extract(const u8string& fmt, const u8string& text, size_t n) const {
+    U8string Regex::extract(const U8string& fmt, const U8string& text, size_t n) const {
         return RegexFormat(*this, fmt).extract(text, n);
     }
 
-    u8string Regex::format(const u8string& fmt, const u8string& text, size_t n) const {
+    U8string Regex::format(const U8string& fmt, const U8string& text, size_t n) const {
         return RegexFormat(*this, fmt).format(text, n);
     }
 
-    MatchRange Regex::grep(const u8string& text) const {
+    MatchRange Regex::grep(const U8string& text) const {
         return {{*this, text}, {}};
     }
 
-    SplitRange Regex::split(const u8string& text) const {
+    SplitRange Regex::split(const U8string& text) const {
         return {{*this, text}, {}};
     }
 
@@ -354,9 +354,9 @@ namespace Unicorn {
         ref.swap(r.ref);
     }
 
-    u8string Regex::escape(const u8string& str) {
+    U8string Regex::escape(const U8string& str) {
         static constexpr const char* hexdigits = "0123456789abcdef";
-        u8string dst;
+        U8string dst;
         for (auto c: str) {
             auto u = uint8_t(c);
             switch (c) {
@@ -405,7 +405,7 @@ namespace Unicorn {
         return v;
     }
 
-    Match Regex::exec(const u8string& text, size_t offset, int anchors) const {
+    Match Regex::exec(const U8string& text, size_t offset, int anchors) const {
         Match m;
         m.init(*this, text);
         m.next(pattern(), offset, anchors);
@@ -422,7 +422,7 @@ namespace Unicorn {
 
     namespace UnicornDetail {
 
-        void regex_match_transform(const Regex& re, const u8string& src, u8string& dst, function<u8string(const Match&)> f, size_t n) {
+        void regex_match_transform(const Regex& re, const U8string& src, U8string& dst, std::function<U8string(const Match&)> f, size_t n) {
             auto matches = re.grep(src);
             auto m = matches.begin(), end = matches.end();
             size_t prev = 0;
@@ -434,7 +434,7 @@ namespace Unicorn {
             dst.append(src, prev, npos);
         }
 
-        void regex_string_transform(const Regex& re, const u8string& src, u8string& dst, function<u8string(const u8string&)> f, size_t n) {
+        void regex_string_transform(const Regex& re, const U8string& src, U8string& dst, std::function<U8string(const U8string&)> f, size_t n) {
             auto matches = re.grep(src);
             auto m = matches.begin(), end = matches.end();
             size_t prev = 0;
@@ -450,14 +450,14 @@ namespace Unicorn {
 
     // Regex formatting class
 
-    RegexFormat::RegexFormat(const Regex& pattern, const u8string& format):
+    RegexFormat::RegexFormat(const Regex& pattern, const U8string& format):
         fmt(format),
         reg(pattern),
         seq() {
             parse();
         }
 
-    RegexFormat::RegexFormat(const u8string& pattern, const u8string& format, uint32_t flags):
+    RegexFormat::RegexFormat(const U8string& pattern, const U8string& format, uint32_t flags):
         RegexFormat(Regex(pattern, flags), format) {}
 
     void RegexFormat::swap(RegexFormat& r) noexcept {
@@ -483,7 +483,7 @@ namespace Unicorn {
         add_literal(u);
     }
 
-    void RegexFormat::add_literal(const u8string& text) {
+    void RegexFormat::add_literal(const U8string& text) {
         if (! text.empty()) {
             if (seq.empty() || seq.back().index != literal)
                 seq.push_back({literal, text});
@@ -492,7 +492,7 @@ namespace Unicorn {
         }
     }
 
-    void RegexFormat::add_literal(const u8string& text, size_t offset, size_t count) {
+    void RegexFormat::add_literal(const U8string& text, size_t offset, size_t count) {
         if (offset < text.size() && count > 0)
             add_literal(text.substr(offset, count));
     }
@@ -511,10 +511,10 @@ namespace Unicorn {
         }
     }
 
-    u8string RegexFormat::apply(const u8string& text, size_t n, bool full) const {
+    U8string RegexFormat::apply(const U8string& text, size_t n, bool full) const {
         using namespace UnicornDetail;
-        u8string block, dst;
-        u8string* current = &dst;
+        U8string block, dst;
+        U8string* current = &dst;
         char block_flag = 0, char_flag = 0;
         bool ascii = (reg.flags() & rx_byte) != 0;
         auto end_block = [&] {
@@ -531,7 +531,7 @@ namespace Unicorn {
             block_flag = 0;
             current = &dst;
         };
-        vector<Match> matches;
+        std::vector<Match> matches;
         for (auto& m: reg.grep(text)) {
             matches.push_back(m);
             if (matches.size() >= n)
@@ -545,7 +545,7 @@ namespace Unicorn {
                 dst.append(text, prev, m.offset() - prev);
             block_flag = char_flag = 0;
             for (auto& elem: seq) {
-                u8string fragment;
+                U8string fragment;
                 if (elem.index >= 0) {
                     fragment = m.str(elem.index);
                 } else if (elem.index == literal) {
@@ -653,7 +653,7 @@ namespace Unicorn {
 
     // Iterator over regex matches
 
-    MatchIterator::MatchIterator(const Regex& re, const u8string& text):
+    MatchIterator::MatchIterator(const Regex& re, const U8string& text):
         mat(re.search(text)),
         pat(re.pattern()) {}
 
@@ -669,7 +669,7 @@ namespace Unicorn {
 
     // Iterator over substrings between matches
 
-    SplitIterator::SplitIterator(const Regex& re, const u8string& text):
+    SplitIterator::SplitIterator(const Regex& re, const U8string& text):
         iter(re, text), start(0),
         value() {
             update();

@@ -10,7 +10,7 @@ namespace {
 
     void check_query_functions() {
 
-        u8string s;
+        U8string s;
 
         TEST(has_env("PATH"));
         TRY(s = get_env("PATH"));
@@ -29,7 +29,7 @@ namespace {
 
     void check_update_functions() {
 
-        u8string s;
+        U8string s;
 
         TEST(! has_env("UNICORN_TEST_ENV"));
         TRY(set_env("UNICORN_TEST_ENV", "Hello world"));
@@ -44,7 +44,7 @@ namespace {
     void check_environment_block() {
 
         Environment env;
-        u8string s;
+        U8string s;
 
         TEST(env.empty());
         TEST_EQUAL(env.size(), 0);
@@ -76,7 +76,7 @@ namespace {
             TEST_MATCH(s, "^(.+;)C:\\\\Windows(;.+)?$");
         #endif
 
-        vector<u8string> keys, values;
+        std::vector<U8string> keys, values;
         for (auto& kv: env) {
             TRY(keys.push_back(to_utf8(kv.first, err_replace)));
             TRY(values.push_back(to_utf8(kv.second, err_replace)));
@@ -88,7 +88,7 @@ namespace {
 
     void check_string_expansion() {
 
-        u8string s, t, columns, lines, home;
+        U8string s, t, columns, lines, home;
 
         TRY(columns = get_env("COLUMNS"));
         TRY(lines = get_env("LINES"));

@@ -20,13 +20,13 @@ namespace {
         // 00010302  d800 df02  f0 90 8c 82
         // 0010fffd  dbff dffd  f4 8f bf bd
 
-        const u8string utf8_example {"\xd0\xb0\xe4\xba\x8c\xf0\x90\x8c\x82\xf4\x8f\xbf\xbd"};
-        const u16string utf16_example {0x430,0x4e8c,0xd800,0xdf02,0xdbff,0xdffd};
-        const u32string utf32_example {0x430,0x4e8c,0x10302,0x10fffd};
+        const U8string utf8_example {"\xd0\xb0\xe4\xba\x8c\xf0\x90\x8c\x82\xf4\x8f\xbf\xbd"};
+        const std::u16string utf16_example {0x430,0x4e8c,0xd800,0xdf02,0xdbff,0xdffd};
+        const std::u32string utf32_example {0x430,0x4e8c,0x10302,0x10fffd};
 
-        u8string s, t;
-        u16string t16;
-        u32string t32;
+        U8string s, t;
+        std::u16string t16;
+        std::u32string t32;
 
         s.clear();
         TRY(str_append(s, u8"Hello "));  TEST_EQUAL(s, u8"Hello ");
@@ -359,7 +359,7 @@ namespace {
 
     void check_drop() {
 
-        u8string s;
+        U8string s;
 
         TEST_EQUAL(str_drop_prefix(""s, ""), "");
         TEST_EQUAL(str_drop_prefix("Hello"s, ""), "Hello");
@@ -409,9 +409,9 @@ namespace {
 
     void check_erase() {
 
-        u8string s;
-        u16string s16;
-        u32string s32;
+        U8string s;
+        std::u16string s16;
+        std::u32string s32;
 
         TEST_EQUAL(str_erase_left(u8"€uro"s, 0), u8"€uro");
         TEST_EQUAL(str_erase_left(u8"€uro"s, 1), u8"uro");
@@ -445,17 +445,17 @@ namespace {
 
     void check_expand() {
 
-        vector<int> tabs {5,10,15,20};
+        std::vector<int> tabs {5,10,15,20};
 
-        const u8string a = u8"";
-        const u8string b = u8"Hello world\tGoodbye";
-        const u8string c = u8"ab\tcd\tef\tgh\tij\tkl\tmn\top";
-        const u8string d = u8"ab\tcd\nef\tgh\nij\tkl\nmn\top";
-        const u8string e = u8"abc\t\t\txyz";
-        const u8string f = u8"€uro\t∈lement\t∃";
-        const u8string g = u8"\tabc\txyz\t";
+        const U8string a = u8"";
+        const U8string b = u8"Hello world\tGoodbye";
+        const U8string c = u8"ab\tcd\tef\tgh\tij\tkl\tmn\top";
+        const U8string d = u8"ab\tcd\nef\tgh\nij\tkl\nmn\top";
+        const U8string e = u8"abc\t\t\txyz";
+        const U8string f = u8"€uro\t∈lement\t∃";
+        const U8string g = u8"\tabc\txyz\t";
 
-        u8string s;
+        U8string s;
 
         TRY(s = str_expand_tabs(a));               TEST_EQUAL(s, u8"");
         TRY(s = str_expand_tabs(b));               TEST_EQUAL(s, u8"Hello world     Goodbye");

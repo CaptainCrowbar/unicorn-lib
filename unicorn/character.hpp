@@ -43,7 +43,7 @@ namespace Unicorn {
 
     // Basic character functions
 
-    inline u8string char_as_hex(char32_t c) { return "U+" + ascii_uppercase(hex(c, 4)); }
+    inline U8string char_as_hex(char32_t c) { return "U+" + ascii_uppercase(hex(c, 4)); }
     constexpr bool char_is_digit(char32_t c) noexcept { return c >= U'0' && c <= U'9'; }
     constexpr bool char_is_xdigit(char32_t c) noexcept
         { return (c >= U'0' && c <= U'9') || (c >= U'A' && c <= U'F') || (c >= U'a' && c <= U'f'); }
@@ -121,15 +121,15 @@ namespace Unicorn {
     inline bool char_is_symbol(char32_t c) noexcept { return char_primary_category(c) == 'S'; }
     inline bool char_is_separator(char32_t c) noexcept { return char_primary_category(c) == 'Z'; }
 
-    function<bool(char32_t)> gc_predicate(GC cat);
-    function<bool(char32_t)> gc_predicate(const u8string& cat);
-    function<bool(char32_t)> gc_predicate(const char* cat);
+    std::function<bool(char32_t)> gc_predicate(GC cat);
+    std::function<bool(char32_t)> gc_predicate(const U8string& cat);
+    std::function<bool(char32_t)> gc_predicate(const char* cat);
 
-    inline u8string decode_gc(GC cat) { return {char((uint16_t(cat) >> 8) & 0xff), char(uint16_t(cat) & 0xff)}; }
+    inline U8string decode_gc(GC cat) { return {char((uint16_t(cat) >> 8) & 0xff), char(uint16_t(cat) & 0xff)}; }
     constexpr GC encode_gc(char c1, char c2) noexcept { return GC(unicornDetail::encode_gc(c1, c2)); }
     constexpr GC encode_gc(const char* cat) noexcept { return cat && *cat ? encode_gc(cat[0], cat[1]) : GC(); }
-    inline GC encode_gc(const u8string& cat) noexcept { return encode_gc(cat.data()); }
-    vector<GC> gc_list();
+    inline GC encode_gc(const U8string& cat) noexcept { return encode_gc(cat.data()); }
+    std::vector<GC> gc_list();
     const char* gc_name(GC cat) noexcept;
 
     inline std::ostream& operator<<(std::ostream& o, GC cat) { return o << decode_gc(cat); }
@@ -164,13 +164,13 @@ namespace Unicorn {
     // Block properties
 
     struct BlockInfo {
-        u8string name;
+        U8string name;
         char32_t first;
         char32_t last;
     };
 
-    u8string char_block(char32_t c);
-    const vector<BlockInfo>& unicode_block_list();
+    U8string char_block(char32_t c);
+    const std::vector<BlockInfo>& unicode_block_list();
 
     // Case folding properties
 
@@ -196,7 +196,7 @@ namespace Unicorn {
     constexpr uint32_t cn_prefix   = 1u << 3;
     constexpr uint32_t cn_update   = 1u << 4;
 
-    u8string char_name(char32_t c, uint32_t flags = 0);
+    U8string char_name(char32_t c, uint32_t flags = 0);
 
     // Decomposition properties
 
@@ -233,12 +233,12 @@ namespace Unicorn {
 
     // Numeric properties
 
-    pair<long long, long long> numeric_value(char32_t c);
+    std::pair<long long, long long> numeric_value(char32_t c);
 
     // Script properties
 
-    u8string char_script(char32_t c);
-    vector<u8string> char_script_list(char32_t c);
-    u8string script_name(const u8string& abbr);
+    U8string char_script(char32_t c);
+    std::vector<U8string> char_script_list(char32_t c);
+    U8string script_name(const U8string& abbr);
 
 }

@@ -68,14 +68,14 @@ namespace {
 
     void check_natural_compare() {
 
-        u8string s0 = "";
-        u8string s1 = "abc 123";
-        u8string s2 = "abc 45";
-        u8string s3 = "ABC 67";
-        u8string s4 = "abc 000123";
-        u8string s5 = "abc 123 xyz";
-        u8string s6 = "abc 123 456";
-        u8string s7 = "+abc 123";
+        U8string s0 = "";
+        U8string s1 = "abc 123";
+        U8string s2 = "abc 45";
+        U8string s3 = "ABC 67";
+        U8string s4 = "abc 000123";
+        U8string s5 = "abc 123 xyz";
+        U8string s6 = "abc 123 456";
+        U8string s7 = "+abc 123";
 
         TEST(! str_natural_compare(s0, s0));
         TEST(! str_natural_compare(s1, s1));

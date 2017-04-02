@@ -33,13 +33,13 @@ environment variable APIs make any attempt to enforce Unicode encoding forms;
 although normally intended to be interpreted as character data, the names and
 values are really arbitrary strings of 8 or 16 bit unsigned integers.</p>
 <p>The Unicorn environment variable API allows the caller to express variable
-names and values either in UTF-8 (<code>u8string</code>) or in the operating system's
+names and values either in UTF-8 (<code>U8string</code>) or in the operating system's
 native encoding (<code>NativeString</code>). On Unix, the native API uses 8 bit strings,
-<code>NativeString</code> and <code>u8string</code> are really the same type (plain <code>std::string</code>),
+<code>NativeString</code> and <code>U8string</code> are really the same type (plain <code>std::string</code>),
 and there is only one set of functions here; although the function signatures
 are nominally written in terms of UTF-8 strings, in fact any arbitrary byte
 string can be passed or may be returned. On Windows the native API uses 16 bit
-strings, and <code>NativeString</code> is an alias for <code>std::wstring</code>; the <code>u8string</code>
+strings, and <code>NativeString</code> is an alias for <code>std::wstring</code>; the <code>U8string</code>
 versions of these functions will convert between UTF-8 and UTF-16, using the
 standard replacement convention to handle invalid encoding.</p>
 <p>Whether environment variable names are case sensitive is also operating system
@@ -63,7 +63,7 @@ call.</p>
 <div class="defns">
 <ul>
 <li><code>NativeString</code> <strong><code>expand_env</code></strong><code>(const NativeString&amp; src, uint32_t flags = native_env)</code></li>
-<li><code>u8string</code> <strong><code>expand_env</code></strong><code>(const u8string&amp; src, uint32_t flags = native_env)</code></li>
+<li><code>U8string</code> <strong><code>expand_env</code></strong><code>(const U8string&amp; src, uint32_t flags = native_env)</code></li>
 </ul>
 <p>Expand environment variable references in a string. The <code>flags</code> argument
 indicates whether to follow the Posix convention (<code>"$VAR"</code> or <code>"${VAR}"</code>) or
@@ -76,7 +76,7 @@ dollar sign.</p>
 <div class="defns">
 <ul>
 <li><code>NativeString</code> <strong><code>get_env</code></strong><code>(const NativeString&amp; name)</code></li>
-<li><code>u8string</code> <strong><code>get_env</code></strong><code>(const u8string&amp; name)</code></li>
+<li><code>U8string</code> <strong><code>get_env</code></strong><code>(const U8string&amp; name)</code></li>
 </ul>
 <p>Query the value of an environment variable. This will return an empty string
 if the variable does not exist.</p>
@@ -84,7 +84,7 @@ if the variable does not exist.</p>
 <div class="defns">
 <ul>
 <li><code>bool</code> <strong><code>has_env</code></strong><code>(const NativeString&amp; name)</code></li>
-<li><code>bool</code> <strong><code>has_env</code></strong><code>(const u8string&amp; name)</code></li>
+<li><code>bool</code> <strong><code>has_env</code></strong><code>(const U8string&amp; name)</code></li>
 </ul>
 <p>Query whether an environment variable exists. Windows, unlike Unix, does not
 always distinguish clearly between a variable that does not exist, and one
@@ -94,14 +94,14 @@ an empty value, this function may or may not report its existence on Windows.</p
 <div class="defns">
 <ul>
 <li><code>void</code> <strong><code>set_env</code></strong><code>(const NativeString&amp; name, const NativeString&amp; value)</code></li>
-<li><code>void</code> <strong><code>set_env</code></strong><code>(const u8string&amp; name, const u8string&amp; value)</code></li>
+<li><code>void</code> <strong><code>set_env</code></strong><code>(const U8string&amp; name, const U8string&amp; value)</code></li>
 </ul>
 <p>Set the value of a variable in the process's environment block.</p>
 </div>
 <div class="defns">
 <ul>
 <li><code>void</code> <strong><code>unset_env</code></strong><code>(const NativeString&amp; name)</code></li>
-<li><code>void</code> <strong><code>unset_env</code></strong><code>(const u8string&amp; name)</code></li>
+<li><code>void</code> <strong><code>unset_env</code></strong><code>(const U8string&amp; name)</code></li>
 </ul>
 <p>Delete a variable from the process's environment block.</p>
 </div>
@@ -137,17 +137,17 @@ constructed <code>Environment</code> object will be empty.</p>
 <div class="defns">
 <ul>
 <li><code>NativeString Environment::</code><strong><code>operator[]</code></strong><code>(const NativeString&amp; name)</code></li>
-<li><code>u8string Environment::</code><strong><code>operator[]</code></strong><code>(const u8string&amp; name)</code></li>
+<li><code>U8string Environment::</code><strong><code>operator[]</code></strong><code>(const U8string&amp; name)</code></li>
 <li><code>NativeString Environment::</code><strong><code>expand</code></strong><code>(const NativeString&amp; src, uint32_t flags = native_env)</code></li>
-<li><code>u8string Environment::</code><strong><code>expand</code></strong><code>(const u8string&amp; src, uint32_t flags = native_env)</code></li>
+<li><code>U8string Environment::</code><strong><code>expand</code></strong><code>(const U8string&amp; src, uint32_t flags = native_env)</code></li>
 <li><code>NativeString Environment::</code><strong><code>get</code></strong><code>(const NativeString&amp; name)</code></li>
-<li><code>u8string Environment::</code><strong><code>get</code></strong><code>(const u8string&amp; name)</code></li>
+<li><code>U8string Environment::</code><strong><code>get</code></strong><code>(const U8string&amp; name)</code></li>
 <li><code>bool Environment::</code><strong><code>has</code></strong><code>(const NativeString&amp; name)</code></li>
-<li><code>bool Environment::</code><strong><code>has</code></strong><code>(const u8string&amp; name)</code></li>
+<li><code>bool Environment::</code><strong><code>has</code></strong><code>(const U8string&amp; name)</code></li>
 <li><code>void Environment::</code><strong><code>set</code></strong><code>(const NativeString&amp; name, const NativeString&amp; value)</code></li>
-<li><code>void Environment::</code><strong><code>set</code></strong><code>(const u8string&amp; name, const u8string&amp; value)</code></li>
+<li><code>void Environment::</code><strong><code>set</code></strong><code>(const U8string&amp; name, const U8string&amp; value)</code></li>
 <li><code>void Environment::</code><strong><code>unset</code></strong><code>(const NativeString&amp; name)</code></li>
-<li><code>void Environment::</code><strong><code>unset</code></strong><code>(const u8string&amp; name)</code></li>
+<li><code>void Environment::</code><strong><code>unset</code></strong><code>(const U8string&amp; name)</code></li>
 </ul>
 <p>These perform the same operations as the corresponding environment variable
 functions described above (<code>operator[]</code> is a synonym for <code>get()</code>), and will

@@ -13,7 +13,7 @@ namespace {
 
     void check_fix_left() {
 
-        u8string s;
+        U8string s;
 
         TEST_EQUAL(str_fix_left(""s, 0), "");
         TEST_EQUAL(str_fix_left(""s, 1), " ");
@@ -69,7 +69,7 @@ namespace {
 
     void check_fix_right() {
 
-        u8string s;
+        U8string s;
 
         TEST_EQUAL(str_fix_right(""s, 0), "");
         TEST_EQUAL(str_fix_right(""s, 1), " ");
@@ -125,7 +125,7 @@ namespace {
 
     void check_insert() {
 
-        u8string s, t;
+        U8string s, t;
         Utf8Iterator i, j;
 
         s = u8"Hello world";
@@ -194,7 +194,7 @@ namespace {
 
     void check_join() {
 
-        vector<u8string> v;
+        std::vector<U8string> v;
 
         v.clear();                      TEST_EQUAL(str_join(v), "");
         v = {"Hello"};                  TEST_EQUAL(str_join(v), "Hello");

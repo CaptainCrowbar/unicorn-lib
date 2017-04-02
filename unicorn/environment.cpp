@@ -31,8 +31,8 @@ namespace Unicorn {
         }
 
         template <typename C>
-        basic_string<C> expand_posix_var(const basic_string<C>& src, size_t& ofs, Environment* env) {
-            using S = basic_string<C>;
+        std::basic_string<C> expand_posix_var(const std::basic_string<C>& src, size_t& ofs, Environment* env) {
+            using S = std::basic_string<C>;
             static constexpr C c_dollar = C('$');
             static constexpr C c_lbrace = C('{');
             static constexpr C c_rbrace = C('}');
@@ -73,8 +73,8 @@ namespace Unicorn {
         }
 
         template <typename C>
-        basic_string<C> expand_windows_var(const basic_string<C>& src, size_t& ofs, Environment* env) {
-            using S = basic_string<C>;
+        std::basic_string<C> expand_windows_var(const std::basic_string<C>& src, size_t& ofs, Environment* env) {
+            using S = std::basic_string<C>;
             static constexpr C c_percent = C('%');
             static const S s_percent = {c_percent};
             if (src.size() - ofs == 1) {
@@ -102,8 +102,8 @@ namespace Unicorn {
         }
 
         template <typename C>
-        basic_string<C> do_expand_env(const basic_string<C>& src, uint32_t flags, Environment* env) {
-            using S = basic_string<C>;
+        std::basic_string<C> do_expand_env(const std::basic_string<C>& src, uint32_t flags, Environment* env) {
+            using S = std::basic_string<C>;
             static constexpr C c_dollar = C('$');
             static constexpr C c_percent = C('%');
             S delims;
@@ -136,30 +136,30 @@ namespace Unicorn {
 
     #ifdef _XOPEN_SOURCE
 
-        string expand_env(const string& src, uint32_t flags) {
+        std::string expand_env(const std::string& src, uint32_t flags) {
             return do_expand_env(src, flags, nullptr);
         }
 
-        string get_env(const string& name) {
+        std::string get_env(const std::string& name) {
             check_env(name);
             MutexLock lock(env_mutex);
             return cstr(getenv(name.data()));
         }
 
-        bool has_env(const string& name) {
+        bool has_env(const std::string& name) {
             check_env(name);
             MutexLock lock(env_mutex);
             return getenv(name.data()) != nullptr;
         }
 
-        void set_env(const string& name, const string& value) {
+        void set_env(const std::string& name, const std::string& value) {
             check_env(name, value);
             MutexLock lock(env_mutex);
             if (setenv(name.data(), value.data(), 1) == -1)
                 throw std::system_error(errno, std::generic_category(), "setenv()");
         }
 
-        void unset_env(const string& name) {
+        void unset_env(const std::string& name) {
             check_env(name);
             MutexLock lock(env_mutex);
             if (unsetenv(name.data()) == -1)
@@ -168,23 +168,23 @@ namespace Unicorn {
 
     #else
 
-        wstring expand_env(const wstring& src, uint32_t flags) {
+        std::wstring expand_env(const std::wstring& src, uint32_t flags) {
             return do_expand_env(src, flags, nullptr);
         }
 
-        wstring get_env(const wstring& name) {
+        std::wstring get_env(const std::wstring& name) {
             check_env(name);
             MutexLock lock(env_mutex);
             return cstr(_wgetenv(name.data()));
         }
 
-        bool has_env(const wstring& name) {
+        bool has_env(const std::wstring& name) {
             check_env(name);
             MutexLock lock(env_mutex);
             return _wgetenv(name.data()) != nullptr;
         }
 
-        void set_env(const wstring& name, const wstring& value) {
+        void set_env(const std::wstring& name, const std::wstring& value) {
             check_env(name, value);
             MutexLock lock(env_mutex);
             auto key_value = name + L'=' + value;
@@ -192,7 +192,7 @@ namespace Unicorn {
                 throw std::system_error(errno, std::generic_category(), "_wputenv()");
         }
 
-        void unset_env(const wstring& name) {
+        void unset_env(const std::wstring& name) {
             check_env(name);
             MutexLock lock(env_mutex);
             set_env(name, {});
@@ -253,23 +253,23 @@ namespace Unicorn {
 
     #ifndef _XOPEN_SOURCE
 
-        u8string Environment::expand(const u8string& src, uint32_t flags) {
+        U8string Environment::expand(const U8string& src, uint32_t flags) {
             return do_expand_env(src, flags, this);
         }
 
-        u8string Environment::get(const u8string& name) {
+        U8string Environment::get(const U8string& name) {
             return to_utf8(get(to_wstring(name)));
         }
 
-        bool Environment::has(const u8string& name) {
+        bool Environment::has(const U8string& name) {
             return has(to_wstring(name));
         }
 
-        void Environment::set(const u8string& name, const u8string& value) {
+        void Environment::set(const U8string& name, const U8string& value) {
             return set(to_wstring(name), to_wstring(value));
         }
 
-        void Environment::unset(const u8string& name) {
+        void Environment::unset(const U8string& name) {
             unset(to_wstring(name));
         }
 
@@ -308,7 +308,7 @@ namespace Unicorn {
         if (! block.empty())
             return;
         NativeString temp_block;
-        vector<size_t> offsets;
+        std::vector<size_t> offsets;
         for (auto& kv: map) {
             offsets.push_back(temp_block.size());
             temp_block += kv.first;

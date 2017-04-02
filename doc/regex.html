@@ -39,7 +39,7 @@ these are not used by Unicorn). The module currently uses the traditional
 version of PCRE; at some point I intend to convert it to use PCRE2 instead.</p>
 <p>Refer to the PCRE documentation for details of the regular expression syntax.</p>
 <p>Although the regex functions in this module are specified in terms of
-<code>u8string</code> arguments, Unicorn regexes support both UTF-8 and byte oriented
+<code>U8string</code> arguments, Unicorn regexes support both UTF-8 and byte oriented
 matching. Byte regexes (selected with the <code>rx_byte</code> flag) simply treat a
 string as a sequence of arbitrary bytes, with no assumptions about content
 encoding, and will work with non-Unicode strings. The <code>\xHH</code> escape code
@@ -414,7 +414,7 @@ scalar value or, for byte mode regexes, if it is greater than <code>0xff</code>.
 <div class="defns">
 <ul>
 <li><code>class</code> <strong><code>RegexError</code></strong><code>: public std::runtime_error</code><ul>
-<li><code>RegexError::</code><strong><code>RegexError</code></strong><code>(int error, const u8string&amp; pattern, const u8string&amp; message = "")</code></li>
+<li><code>RegexError::</code><strong><code>RegexError</code></strong><code>(int error, const U8string&amp; pattern, const U8string&amp; message = "")</code></li>
 <li><code>int RegexError::</code><strong><code>error</code></strong><code>() const noexcept</code></li>
 <li><code>const char* RegexError::</code><strong><code>pattern</code></strong><code>() const noexcept</code></li>
 </ul>
@@ -433,7 +433,7 @@ underlying PCRE call reports an error.</p>
 <div class="defns">
 <ul>
 <li><code>Regex::</code><strong><code>Regex</code></strong><code>()</code></li>
-<li><code>explicit Regex::</code><strong><code>Regex</code></strong><code>(const u8string&amp; pattern, uint32_t flags = 0)</code></li>
+<li><code>explicit Regex::</code><strong><code>Regex</code></strong><code>(const U8string&amp; pattern, uint32_t flags = 0)</code></li>
 <li><code>Regex::</code><strong><code>Regex</code></strong><code>(const Regex&amp; r)</code></li>
 <li><code>Regex::</code><strong><code>Regex</code></strong><code>(Regex&amp;&amp; r) noexcept</code></li>
 <li><code>Regex::</code><strong><code>~Regex</code></strong><code>() noexcept</code></li>
@@ -448,13 +448,13 @@ flags are interpreted.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>Match Regex::</code><strong><code>anchor</code></strong><code>(const u8string&amp; text, size_t offset = 0) const</code></li>
+<li><code>Match Regex::</code><strong><code>anchor</code></strong><code>(const U8string&amp; text, size_t offset = 0) const</code></li>
 <li><code>Match Regex::</code><strong><code>anchor</code></strong><code>(const Utf8Iterator&amp; start) const</code></li>
-<li><code>Match Regex::</code><strong><code>match</code></strong><code>(const u8string&amp; text, size_t offset = 0) const</code></li>
+<li><code>Match Regex::</code><strong><code>match</code></strong><code>(const U8string&amp; text, size_t offset = 0) const</code></li>
 <li><code>Match Regex::</code><strong><code>match</code></strong><code>(const Utf8Iterator&amp; start) const</code></li>
-<li><code>Match Regex::</code><strong><code>search</code></strong><code>(const u8string&amp; text, size_t offset = 0) const</code></li>
+<li><code>Match Regex::</code><strong><code>search</code></strong><code>(const U8string&amp; text, size_t offset = 0) const</code></li>
 <li><code>Match Regex::</code><strong><code>search</code></strong><code>(const Utf8Iterator&amp; start) const</code></li>
-<li><code>Match Regex::</code><strong><code>operator()</code></strong><code>(const u8string&amp; text, size_t offset = 0) const</code></li>
+<li><code>Match Regex::</code><strong><code>operator()</code></strong><code>(const U8string&amp; text, size_t offset = 0) const</code></li>
 <li><code>Match Regex::</code><strong><code>operator()</code></strong><code>(const Utf8Iterator&amp; start) const</code></li>
 </ul>
 <p>These are the regex matching functions. The <code>search()</code> functions return a
@@ -478,7 +478,7 @@ these functions with a byte mode regex.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>size_t Regex::</code><strong><code>count</code></strong><code>(const u8string&amp; text) const</code></li>
+<li><code>size_t Regex::</code><strong><code>count</code></strong><code>(const U8string&amp; text) const</code></li>
 </ul>
 <p>Returns the number of non-overlapping matches found in the text.</p>
 </div>
@@ -490,8 +490,8 @@ these functions with a byte mode regex.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>u8string Regex::</code><strong><code>extract</code></strong><code>(const u8string&amp; fmt, const u8string&amp; text, size_t n = npos) const</code></li>
-<li><code>u8string Regex::</code><strong><code>format</code></strong><code>(const u8string&amp; fmt, const u8string&amp; text, size_t n = npos) const</code></li>
+<li><code>U8string Regex::</code><strong><code>extract</code></strong><code>(const U8string&amp; fmt, const U8string&amp; text, size_t n = npos) const</code></li>
+<li><code>U8string Regex::</code><strong><code>format</code></strong><code>(const U8string&amp; fmt, const U8string&amp; text, size_t n = npos) const</code></li>
 </ul>
 <p>The <code>format()</code> function uses the formatting string to transform the text,
 replacing the first <code>n</code> matching substrings (all of them by default) with the
@@ -502,7 +502,7 @@ between matches.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>MatchRange Regex::</code><strong><code>grep</code></strong><code>(const u8string&amp; text) const</code></li>
+<li><code>MatchRange Regex::</code><strong><code>grep</code></strong><code>(const U8string&amp; text) const</code></li>
 </ul>
 <p>This returns a range object that can be used to iterate over all matches
 within the subject string. Refer to the <code>MatchIterator</code> class (below) for
@@ -517,7 +517,7 @@ captures, plus one for the complete match).</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>size_t Regex::</code><strong><code>named</code></strong><code>(const u8string&amp; name) const noexcept</code></li>
+<li><code>size_t Regex::</code><strong><code>named</code></strong><code>(const U8string&amp; name) const noexcept</code></li>
 </ul>
 <p>If the regex includes any named captures, this returns the group index (1
 based) corresponding to the given name. It will return zero if there is no
@@ -525,14 +525,14 @@ capture by that name (or if the regex does not use named captures).</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>u8string Regex::</code><strong><code>pattern</code></strong><code>() const</code></li>
+<li><code>U8string Regex::</code><strong><code>pattern</code></strong><code>() const</code></li>
 <li><code>uint32_t Regex::</code><strong><code>flags</code></strong><code>() const noexcept</code></li>
 </ul>
 <p>These return the construction arguments.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>SplitRange Regex::</code><strong><code>split</code></strong><code>(const u8string&amp; text) const</code></li>
+<li><code>SplitRange Regex::</code><strong><code>split</code></strong><code>(const U8string&amp; text) const</code></li>
 </ul>
 <p>This returns a range object that can be used to iterate over the substrings
 delimited by matches within the subject string, effectively splitting the
@@ -548,8 +548,8 @@ string using regex matches as delimiters. Refer to the <code>SplitIterator</code
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename F&gt; u8string Regex::</code><strong><code>transform</code></strong><code>(const u8string&amp; text, F f, size_t n = npos) const</code></li>
-<li><code>template &lt;typename F&gt; void Regex::</code><strong><code>transform_in</code></strong><code>(u8string&amp; text, F f, size_t n = npos) const</code></li>
+<li><code>template &lt;typename F&gt; U8string Regex::</code><strong><code>transform</code></strong><code>(const U8string&amp; text, F f, size_t n = npos) const</code></li>
+<li><code>template &lt;typename F&gt; void Regex::</code><strong><code>transform_in</code></strong><code>(U8string&amp; text, F f, size_t n = npos) const</code></li>
 </ul>
 <p>Apply a user supplied transformation to each match (or the first <code>n</code> matches)
 in the text. Each match <code>m</code> in <code>text</code> is replaced by <code>f(m)</code>. The
@@ -558,7 +558,7 @@ argument, but must return a <code>string</code> (or something convertible to a <
 </div>
 <div class="defns">
 <ul>
-<li><code>static u8string Regex::</code><strong><code>escape</code></strong><code>(const u8string&amp; str)</code></li>
+<li><code>static U8string Regex::</code><strong><code>escape</code></strong><code>(const U8string&amp; str)</code></li>
 </ul>
 <p>Returns a copy of the argument string, modified by inserting escape characters
 where necessary to produce a pattern that will exactly match the original
@@ -629,8 +629,8 @@ matching function rather than directly constructed by the user.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>u8string Match::</code><strong><code>first</code></strong><code>() const</code></li>
-<li><code>u8string Match::</code><strong><code>last</code></strong><code>() const</code></li>
+<li><code>U8string Match::</code><strong><code>first</code></strong><code>() const</code></li>
+<li><code>U8string Match::</code><strong><code>last</code></strong><code>() const</code></li>
 </ul>
 <p>These return the first and last non-empty capture groups (not counting the
 complete match), or empty strings if there are no such groups.</p>
@@ -678,9 +678,9 @@ in the match, the two offsets will both be <code>npos</code> and the size will b
 </div>
 <div class="defns">
 <ul>
-<li><code>u8string::const_iterator Match::</code><strong><code>s_begin</code></strong><code>(size_t i = 0) const noexcept</code></li>
-<li><code>u8string::const_iterator Match::</code><strong><code>s_end</code></strong><code>(size_t i = 0) const noexcept</code></li>
-<li><code>Irange&lt;u8string::const_iterator&gt; Match::</code><strong><code>s_range</code></strong><code>(size_t i = 0) const noexcept</code></li>
+<li><code>U8string::const_iterator Match::</code><strong><code>s_begin</code></strong><code>(size_t i = 0) const noexcept</code></li>
+<li><code>U8string::const_iterator Match::</code><strong><code>s_end</code></strong><code>(size_t i = 0) const noexcept</code></li>
+<li><code>Irange&lt;U8string::const_iterator&gt; Match::</code><strong><code>s_range</code></strong><code>(size_t i = 0) const noexcept</code></li>
 <li><code>Utf8Iterator Match::</code><strong><code>u_begin</code></strong><code>(size_t i = 0) const noexcept</code></li>
 <li><code>Utf8Iterator Match::</code><strong><code>u_end</code></strong><code>(size_t i = 0) const noexcept</code></li>
 <li><code>Irange&lt;Utf8Iterator&gt; Match::</code><strong><code>u_range</code></strong><code>(size_t i = 0) const noexcept</code></li>
@@ -698,10 +698,10 @@ undefined in this situation.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>u8string Match::</code><strong><code>str</code></strong><code>(size_t i = 0) const</code></li>
-<li><code>u8string Match::</code><strong><code>named</code></strong><code>(const u8string&amp; name) const</code></li>
-<li><code>u8string Match::</code><strong><code>operator[]</code></strong><code>(size_t i) const</code></li>
-<li><code>Match::</code><strong><code>operator u8string</code></strong><code>() const</code></li>
+<li><code>U8string Match::</code><strong><code>str</code></strong><code>(size_t i = 0) const</code></li>
+<li><code>U8string Match::</code><strong><code>named</code></strong><code>(const U8string&amp; name) const</code></li>
+<li><code>U8string Match::</code><strong><code>operator[]</code></strong><code>(size_t i) const</code></li>
+<li><code>Match::</code><strong><code>operator U8string</code></strong><code>() const</code></li>
 </ul>
 <p>The <code>str()</code> and <code>named()</code> functions return a copy of the substring matched by
 a numbered or named group, or an empty string if the group does not exist or
@@ -730,8 +730,8 @@ efficient if the same formatting operation is going to be applied many times.</p
 <div class="defns">
 <ul>
 <li><code>RegexFormat::</code><strong><code>RegexFormat</code></strong><code>()</code></li>
-<li><code>RegexFormat::</code><strong><code>RegexFormat</code></strong><code>(const Regex&amp; pattern, const u8string&amp; format)</code></li>
-<li><code>RegexFormat::</code><strong><code>RegexFormat</code></strong><code>(const u8string&amp; pattern, const u8string&amp; format, uint32_t flags = 0)</code></li>
+<li><code>RegexFormat::</code><strong><code>RegexFormat</code></strong><code>(const Regex&amp; pattern, const U8string&amp; format)</code></li>
+<li><code>RegexFormat::</code><strong><code>RegexFormat</code></strong><code>(const U8string&amp; pattern, const U8string&amp; format, uint32_t flags = 0)</code></li>
 <li><code>RegexFormat::</code><strong><code>RegexFormat</code></strong><code>(const RegexFormat&amp; f)</code></li>
 <li><code>RegexFormat::</code><strong><code>RegexFormat</code></strong><code>(RegexFormat&amp;&amp; f) noexcept</code></li>
 <li><code>RegexFormat::</code><strong><code>~RegexFormat</code></strong><code>() noexcept</code></li>
@@ -745,9 +745,9 @@ constructor.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>u8string RegexFormat::</code><strong><code>format</code></strong><code>(const u8string&amp; text, size_t n = npos) const</code></li>
-<li><code>u8string RegexFormat::</code><strong><code>extract</code></strong><code>(const u8string&amp; text, size_t n = npos) const</code></li>
-<li><code>u8string RegexFormat::</code><strong><code>operator()</code></strong><code>(const u8string&amp; text, size_t n = npos) const</code></li>
+<li><code>U8string RegexFormat::</code><strong><code>format</code></strong><code>(const U8string&amp; text, size_t n = npos) const</code></li>
+<li><code>U8string RegexFormat::</code><strong><code>extract</code></strong><code>(const U8string&amp; text, size_t n = npos) const</code></li>
+<li><code>U8string RegexFormat::</code><strong><code>operator()</code></strong><code>(const U8string&amp; text, size_t n = npos) const</code></li>
 </ul>
 <p>The <code>format()</code> function (and the equivalent function call operator) uses the
 formatting string to transform the text, replacing the first <code>n</code> matching
@@ -760,8 +760,8 @@ first <code>n</code> matches, discarding the unmatched text between them.
 <div class="defns">
 <ul>
 <li><code>Regex RegexFormat::</code><strong><code>regex</code></strong><code>() const</code></li>
-<li><code>u8string RegexFormat::</code><strong><code>format</code></strong><code>() const</code></li>
-<li><code>u8string RegexFormat::</code><strong><code>pattern</code></strong><code>() const</code></li>
+<li><code>U8string RegexFormat::</code><strong><code>format</code></strong><code>() const</code></li>
+<li><code>U8string RegexFormat::</code><strong><code>pattern</code></strong><code>() const</code></li>
 <li><code>uint32_t RegexFormat::</code><strong><code>flags</code></strong><code>() const noexcept</code></li>
 </ul>
 <p>These functions query the construction parameters. The <code>pattern()</code> and
@@ -785,7 +785,7 @@ first <code>n</code> matches, discarding the unmatched text between them.
 <li><code>using MatchIterator::</code><strong><code>reference</code></strong> <code>= const Match&amp;</code></li>
 <li><code>using MatchIterator::</code><strong><code>value_type</code></strong> <code>= Match</code></li>
 <li><code>MatchIterator::</code><strong><code>MatchIterator</code></strong><code>()</code></li>
-<li><code>MatchIterator::</code><strong><code>MatchIterator</code></strong><code>(const Regex&amp; re, const u8string&amp; text)</code></li>
+<li><code>MatchIterator::</code><strong><code>MatchIterator</code></strong><code>(const Regex&amp; re, const U8string&amp; text)</code></li>
 <li><em>[standard iterator operations]</em></li>
 </ul>
 </li>
@@ -800,11 +800,11 @@ constructed directly by the user.</p>
 <li><code>class</code> <strong><code>SplitIterator</code></strong><ul>
 <li><code>using SplitIterator::</code><strong><code>difference_type</code></strong> <code>= ptrdiff_t</code></li>
 <li><code>using SplitIterator::</code><strong><code>iterator_category</code></strong> <code>= std::forward_iterator_tag</code></li>
-<li><code>using SplitIterator::</code><strong><code>pointer</code></strong> <code>= const u8string*</code></li>
-<li><code>using SplitIterator::</code><strong><code>reference</code></strong> <code>= const u8string&amp;</code></li>
-<li><code>using SplitIterator::</code><strong><code>value_type</code></strong> <code>= u8string</code></li>
+<li><code>using SplitIterator::</code><strong><code>pointer</code></strong> <code>= const U8string*</code></li>
+<li><code>using SplitIterator::</code><strong><code>reference</code></strong> <code>= const U8string&amp;</code></li>
+<li><code>using SplitIterator::</code><strong><code>value_type</code></strong> <code>= U8string</code></li>
 <li><code>SplitIterator::</code><strong><code>SplitIterator</code></strong><code>()</code></li>
-<li><code>SplitIterator::</code><strong><code>SplitIterator</code></strong><code>(const Regex&amp; re, const u8string&amp; text)</code></li>
+<li><code>SplitIterator::</code><strong><code>SplitIterator</code></strong><code>(const Regex&amp; re, const U8string&amp; text)</code></li>
 <li><em>[standard iterator operations]</em></li>
 </ul>
 </li>

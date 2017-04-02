@@ -2,7 +2,7 @@
 
 namespace Unicorn {
 
-    int str_compare_3way(const u8string& lhs, const u8string& rhs) {
+    int str_compare_3way(const U8string& lhs, const U8string& rhs) {
         size_t size1 = lhs.size(), size2 = rhs.size();
         size_t common = std::min(lhs.size(), rhs.size());
         int rc = memcmp(lhs.data(), rhs.data(), common);
@@ -12,7 +12,7 @@ namespace Unicorn {
             return size1 < size2 ? -1 : size1 == size2 ? 0 : 1;
     }
 
-    bool str_icase_compare(const u8string& lhs, const u8string& rhs) noexcept {
+    bool str_icase_compare(const U8string& lhs, const U8string& rhs) noexcept {
         if (lhs.empty() || rhs.empty())
             return ! rhs.empty();
         auto u1 = utf_range(lhs), u2 = utf_range(rhs);
@@ -41,7 +41,7 @@ namespace Unicorn {
         }
     }
 
-    bool str_icase_equal(const u8string& lhs, const u8string& rhs) noexcept {
+    bool str_icase_equal(const U8string& lhs, const U8string& rhs) noexcept {
         if (lhs.empty() && rhs.empty())
             return true;
         if (lhs.size() != rhs.size())
@@ -86,7 +86,7 @@ namespace Unicorn {
         struct NaturalSegment:
         Irange<Utf8Iterator> {
             bool is_number = false;
-            u8string cooked;
+            U8string cooked;
             void cook() {
                 if (first == second)
                     return;
@@ -96,7 +96,7 @@ namespace Unicorn {
                         ++i;
                     str_append(cooked, i, second);
                 } else {
-                    u8string s;
+                    U8string s;
                     for (char32_t c: *this)
                         if (char_is_significant(c))
                             str_append_char(s, c);
@@ -149,7 +149,7 @@ namespace Unicorn {
 
     }
 
-    bool str_natural_compare(const u8string& lhs, const u8string& rhs) noexcept {
+    bool str_natural_compare(const U8string& lhs, const U8string& rhs) noexcept {
         auto b1 = utf_begin(lhs), e1 = utf_end(lhs), b2 = utf_begin(rhs), e2 = utf_end(rhs);
         NaturalSegmentIterator s1(b1, e1), s1_end(e1, e1), s2(b2, e2), s2_end(e2, e2);
         for (; s1 != s1_end && s2 != s2_end; ++s1, ++s2) {

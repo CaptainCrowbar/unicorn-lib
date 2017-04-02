@@ -13,10 +13,10 @@ namespace Unicorn {
 
     namespace {
 
-        using SharedFile = shared_ptr<FILE>;
+        using SharedFile = std::shared_ptr<FILE>;
 
         void checked_fclose(FILE* f) { if (f) fclose(f); }
-        template <typename C> u8string quote_file(const basic_string<C>& name) { return quote(to_utf8(name)); }
+        template <typename C> U8string quote_file(const std::basic_string<C>& name) { return quote(to_utf8(name)); }
 
         SharedFile shared_fopen(const NativeString& file, const NativeString& mode, bool check) {
             FILE* f =
@@ -37,12 +37,12 @@ namespace Unicorn {
     // Class FileReader
 
     struct FileReader::impl_type {
-        u8string line8;
-        string rdbuf;
+        U8string line8;
+        std::string rdbuf;
         NativeString name;
         uint32_t flags;
-        u8string enc;
-        u8string eol;
+        U8string enc;
+        U8string eol;
         SharedFile handle;
         size_t lines;
         bool is_ready() noexcept {
@@ -50,8 +50,8 @@ namespace Unicorn {
         }
     };
 
-    const u8string& FileReader::operator*() const noexcept {
-        static const u8string dummy;
+    const U8string& FileReader::operator*() const noexcept {
+        static const U8string dummy;
         return impl ? impl->line8 : dummy;
     }
 
@@ -66,12 +66,12 @@ namespace Unicorn {
         return impl ? impl->lines : size_t(0);
     }
 
-    void FileReader::init(const NativeString& file, uint32_t flags, const u8string& enc, const u8string& eol) {
+    void FileReader::init(const NativeString& file, uint32_t flags, const U8string& enc, const U8string& eol) {
         static const NativeString dashfile = PRI_CSTR("-", NativeCharacter);
         if (ibits(flags & (err_replace | err_throw)) > 1
                 || ibits(flags & (io_crlf | io_lf | io_striplf | io_striptws | io_stripws)) > 1)
             throw std::invalid_argument("Inconsistent file I/O flags");
-        impl = make_shared<impl_type>();
+        impl = std::make_shared<impl_type>();
         impl->name = file;
         impl->flags = flags;
         impl->enc = enc;
@@ -131,7 +131,7 @@ namespace Unicorn {
             impl.reset();
             return;
         }
-        string encoded(impl->rdbuf, 0, eolpos + eolbytes);
+        std::string encoded(impl->rdbuf, 0, eolpos + eolbytes);
         impl->rdbuf.erase(0, eolpos + eolbytes);
         if (impl->flags & (io_lf | io_crlf | io_striplf | io_striptws | io_stripws))
             encoded.resize(eolpos);
@@ -155,12 +155,12 @@ namespace Unicorn {
     // Class FileWriter
 
     struct FileWriter::impl_type {
-        u8string wrbuf;
+        U8string wrbuf;
         NativeString name;
         uint32_t flags;
-        u8string enc;
+        U8string enc;
         SharedFile handle;
-        shared_ptr<Mutex> mutex;
+        std::shared_ptr<Mutex> mutex;
     };
 
     void FileWriter::flush() {
@@ -172,7 +172,7 @@ namespace Unicorn {
         }
     }
 
-    void FileWriter::init(const NativeString& file, uint32_t flags, const u8string& enc) {
+    void FileWriter::init(const NativeString& file, uint32_t flags, const U8string& enc) {
         static const NativeString dashfile{PRI_CHAR('-', NativeCharacter)};
         static Mutex stdout_mutex;
         static Mutex stderr_mutex;
@@ -183,7 +183,7 @@ namespace Unicorn {
                 || ibits(flags & (io_linebuf | io_unbuf)) > 1
                 || ibits(flags & (io_stderr | io_stdout)) > 1)
             throw std::invalid_argument("Inconsistent file I/O flags");
-        impl = make_shared<impl_type>();
+        impl = std::make_shared<impl_type>();
         impl->name = file;
         impl->flags = flags;
         impl->enc = enc;
@@ -204,16 +204,16 @@ namespace Unicorn {
             else if (impl->handle.get() == stderr)
                 impl->mutex.reset(&stderr_mutex, do_nothing);
             else
-                impl->mutex = make_shared<Mutex>();
+                impl->mutex = std::make_shared<Mutex>();
         }
     }
 
-    void FileWriter::fix_text(u8string& str) const {
+    void FileWriter::fix_text(U8string& str) const {
         if ((impl->flags & io_writeline) || ((impl->flags & io_autoline)
                 && (str.empty() || ! char_is_line_break(str_last_char(str)))))
             str += '\n';
         if (impl->flags & (io_lf | io_crlf)) {
-            u8string brk = (impl->flags & io_crlf) ? "\r\n"s : "\n"s;
+            U8string brk = (impl->flags & io_crlf) ? "\r\n"s : "\n"s;
             auto i = utf_begin(str);
             while (i.offset() < str.size()) {
                 if (*i == '\r' && str[i.offset() + 1] == '\n')
@@ -226,7 +226,7 @@ namespace Unicorn {
         }
     }
 
-    void FileWriter::write(u8string str) {
+    void FileWriter::write(U8string str) {
         if (! impl)
             throw std::system_error(std::make_error_code(std::errc::bad_file_descriptor));
         fix_text(str);
@@ -254,7 +254,7 @@ namespace Unicorn {
                     str.insert(0, utf8_bom);
                 impl->flags &= ~ io_bom;
             }
-            string encoded;
+            std::string encoded;
             export_string(str, encoded, impl->enc, impl->flags & (err_replace | err_throw));
             if (impl->mutex) {
                 MutexLock lock(*impl->mutex);
@@ -265,7 +265,7 @@ namespace Unicorn {
         }
     }
 
-    void FileWriter::write_mbcs(const string& str) {
+    void FileWriter::write_mbcs(const std::string& str) {
         fwrite(str.data(), 1, str.size(), impl->handle.get());
         auto err = errno;
         if (ferror(impl->handle.get()))

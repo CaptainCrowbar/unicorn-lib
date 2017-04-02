@@ -9,36 +9,36 @@ using namespace Unicorn;
 
 namespace {
 
-    const u8string a8 {};
-    const u8string b8 {"Hello"};
-    const u8string c8 {"\x4d\xd0\xb0\xe4\xba\x8c\xf0\x90\x8c\x82\xf4\x8f\xbf\xbd"};
-    const string x8 {"Hello\xffworld"};
-    const u8string y8 {"Hello\xef\xbf\xbdworld"};
-    const u8string z8 {"\0\0\0"s};
-    const u16string a16 {};
-    const u16string b16 {u"Hello"};
-    const u16string c16 {0x4d,0x430,0x4e8c,0xd800,0xdf02,0xdbff,0xdffd};
-    const u16string x16 {'H','e','l','l','o',0xd800,'w','o','r','l','d'};
-    const u16string y16 {'H','e','l','l','o',0xfffd,'w','o','r','l','d'};
-    const u16string z16 {0, 0, 0};
-    const u32string a32 {};
-    const u32string b32 {U"Hello"};
-    const u32string c32 {0x4d,0x430,0x4e8c,0x10302,0x10fffd};
-    const u32string x32 {'H','e','l','l','o',0xd800,'w','o','r','l','d'};
-    const u32string y32 {'H','e','l','l','o',0xfffd,'w','o','r','l','d'};
-    const u32string z32 {0, 0, 0};
-    const wstring aw {};
-    const wstring bw {L"Hello"};
-    const wstring zw {0, 0, 0};
+    const U8string a8 {};
+    const U8string b8 {"Hello"};
+    const U8string c8 {"\x4d\xd0\xb0\xe4\xba\x8c\xf0\x90\x8c\x82\xf4\x8f\xbf\xbd"};
+    const std::string x8 {"Hello\xffworld"};
+    const U8string y8 {"Hello\xef\xbf\xbdworld"};
+    const U8string z8 {"\0\0\0"s};
+    const std::u16string a16 {};
+    const std::u16string b16 {u"Hello"};
+    const std::u16string c16 {0x4d,0x430,0x4e8c,0xd800,0xdf02,0xdbff,0xdffd};
+    const std::u16string x16 {'H','e','l','l','o',0xd800,'w','o','r','l','d'};
+    const std::u16string y16 {'H','e','l','l','o',0xfffd,'w','o','r','l','d'};
+    const std::u16string z16 {0, 0, 0};
+    const std::u32string a32 {};
+    const std::u32string b32 {U"Hello"};
+    const std::u32string c32 {0x4d,0x430,0x4e8c,0x10302,0x10fffd};
+    const std::u32string x32 {'H','e','l','l','o',0xd800,'w','o','r','l','d'};
+    const std::u32string y32 {'H','e','l','l','o',0xfffd,'w','o','r','l','d'};
+    const std::u32string z32 {0, 0, 0};
+    const std::wstring aw {};
+    const std::wstring bw {L"Hello"};
+    const std::wstring zw {0, 0, 0};
 
     #if defined(UNICORN_WCHAR_UTF16)
-        const wstring cw(c16.begin(), c16.end());
-        const wstring xw(x16.begin(), x16.end());
-        const wstring yw(y16.begin(), y16.end());
+        const std::wstring cw(c16.begin(), c16.end());
+        const std::wstring xw(x16.begin(), x16.end());
+        const std::wstring yw(y16.begin(), y16.end());
     #else
-        const wstring cw(c32.begin(), c32.end());
-        const wstring xw(x32.begin(), x32.end());
-        const wstring yw(y32.begin(), y32.end());
+        const std::wstring cw(c32.begin(), c32.end());
+        const std::wstring xw(x32.begin(), x32.end());
+        const std::wstring yw(y32.begin(), y32.end());
     #endif
 
     void check_basic_conversions() {
@@ -64,12 +64,12 @@ namespace {
         { char a[] = "\xf0\x90\x8c\x82";  TEST_EQUAL(UtfEncoding<char>::decode(a, 5, u), 4);  TEST_EQUAL(u, 0x10302); }
         { char a[] = "\xf4\x8f\xbf\xbd";  TEST_EQUAL(UtfEncoding<char>::decode(a, 5, u), 4);  TEST_EQUAL(u, 0x10fffd); }
 
-        TEST_EQUAL(UtfEncoding<char>::encode(0, buf8), 1);         TEST_EQUAL(u8string(buf8, 1), "\0"s);
-        TEST_EQUAL(UtfEncoding<char>::encode(0x4d, buf8), 1);      TEST_EQUAL(u8string(buf8, 1), "\x4d");
-        TEST_EQUAL(UtfEncoding<char>::encode(0x430, buf8), 2);     TEST_EQUAL(u8string(buf8, 2), "\xd0\xb0");
-        TEST_EQUAL(UtfEncoding<char>::encode(0x4e8c, buf8), 3);    TEST_EQUAL(u8string(buf8, 3), "\xe4\xba\x8c");
-        TEST_EQUAL(UtfEncoding<char>::encode(0x10302, buf8), 4);   TEST_EQUAL(u8string(buf8, 4), "\xf0\x90\x8c\x82");
-        TEST_EQUAL(UtfEncoding<char>::encode(0x10fffd, buf8), 4);  TEST_EQUAL(u8string(buf8, 4), "\xf4\x8f\xbf\xbd");
+        TEST_EQUAL(UtfEncoding<char>::encode(0, buf8), 1);         TEST_EQUAL(U8string(buf8, 1), "\0"s);
+        TEST_EQUAL(UtfEncoding<char>::encode(0x4d, buf8), 1);      TEST_EQUAL(U8string(buf8, 1), "\x4d");
+        TEST_EQUAL(UtfEncoding<char>::encode(0x430, buf8), 2);     TEST_EQUAL(U8string(buf8, 2), "\xd0\xb0");
+        TEST_EQUAL(UtfEncoding<char>::encode(0x4e8c, buf8), 3);    TEST_EQUAL(U8string(buf8, 3), "\xe4\xba\x8c");
+        TEST_EQUAL(UtfEncoding<char>::encode(0x10302, buf8), 4);   TEST_EQUAL(U8string(buf8, 4), "\xf0\x90\x8c\x82");
+        TEST_EQUAL(UtfEncoding<char>::encode(0x10fffd, buf8), 4);  TEST_EQUAL(U8string(buf8, 4), "\xf4\x8f\xbf\xbd");
 
         { char16_t a[] {0x0000, 0};       TEST_EQUAL(UtfEncoding<char16_t>::decode(a, 3, u), 1);  TEST_EQUAL(u, 0); }
         { char16_t a[] {0x004d, 0};       TEST_EQUAL(UtfEncoding<char16_t>::decode(a, 3, u), 1);  TEST_EQUAL(u, 0x4d); }
@@ -137,12 +137,12 @@ namespace {
         { char a[] = "\xf4\x8f\xbf\xbd";  u = 0;  TEST_EQUAL(char_from_utf8(a, u), 4);  TEST_EQUAL(u, 0x10fffd); }
         { char a[] = "\xff\xff\xff\xff";  u = 0;  TEST_EQUAL(char_from_utf8(a, u), 0);  TEST_EQUAL(u, 0); }
 
-        TEST_EQUAL(char_to_utf8(0, buf8), 1);         TEST_EQUAL(u8string(buf8, 1), "\0"s);
-        TEST_EQUAL(char_to_utf8(0x4d, buf8), 1);      TEST_EQUAL(u8string(buf8, 1), "\x4d");
-        TEST_EQUAL(char_to_utf8(0x430, buf8), 2);     TEST_EQUAL(u8string(buf8, 2), "\xd0\xb0");
-        TEST_EQUAL(char_to_utf8(0x4e8c, buf8), 3);    TEST_EQUAL(u8string(buf8, 3), "\xe4\xba\x8c");
-        TEST_EQUAL(char_to_utf8(0x10302, buf8), 4);   TEST_EQUAL(u8string(buf8, 4), "\xf0\x90\x8c\x82");
-        TEST_EQUAL(char_to_utf8(0x10fffd, buf8), 4);  TEST_EQUAL(u8string(buf8, 4), "\xf4\x8f\xbf\xbd");
+        TEST_EQUAL(char_to_utf8(0, buf8), 1);         TEST_EQUAL(U8string(buf8, 1), "\0"s);
+        TEST_EQUAL(char_to_utf8(0x4d, buf8), 1);      TEST_EQUAL(U8string(buf8, 1), "\x4d");
+        TEST_EQUAL(char_to_utf8(0x430, buf8), 2);     TEST_EQUAL(U8string(buf8, 2), "\xd0\xb0");
+        TEST_EQUAL(char_to_utf8(0x4e8c, buf8), 3);    TEST_EQUAL(U8string(buf8, 3), "\xe4\xba\x8c");
+        TEST_EQUAL(char_to_utf8(0x10302, buf8), 4);   TEST_EQUAL(U8string(buf8, 4), "\xf0\x90\x8c\x82");
+        TEST_EQUAL(char_to_utf8(0x10fffd, buf8), 4);  TEST_EQUAL(U8string(buf8, 4), "\xf4\x8f\xbf\xbd");
         TEST_EQUAL(char_to_utf8(0xd800, buf8), 0);
         TEST_EQUAL(char_to_utf8(0x110000, buf8), 0);
 
@@ -245,47 +245,47 @@ namespace {
 
         TEST_EQUAL(i8.str(), "");
         TRY(r8 = utf_range(c8));
-        TRY(i8 = r8.first);  TEST_EQUAL(*i8, 0x4d);      TEST_EQUAL(i8.str(), "\x4d");              TEST_EQUAL(string(i8.range().begin(), i8.range().end()), "\x4d");
-        TRY(++i8);           TEST_EQUAL(*i8, 0x430);     TEST_EQUAL(i8.str(), "\xd0\xb0");          TEST_EQUAL(string(i8.range().begin(), i8.range().end()), "\xd0\xb0");
-        TRY(++i8);           TEST_EQUAL(*i8, 0x4e8c);    TEST_EQUAL(i8.str(), "\xe4\xba\x8c");      TEST_EQUAL(string(i8.range().begin(), i8.range().end()), "\xe4\xba\x8c");
-        TRY(++i8);           TEST_EQUAL(*i8, 0x10302);   TEST_EQUAL(i8.str(), "\xf0\x90\x8c\x82");  TEST_EQUAL(string(i8.range().begin(), i8.range().end()), "\xf0\x90\x8c\x82");
-        TRY(++i8);           TEST_EQUAL(*i8, 0x10fffd);  TEST_EQUAL(i8.str(), "\xf4\x8f\xbf\xbd");  TEST_EQUAL(string(i8.range().begin(), i8.range().end()), "\xf4\x8f\xbf\xbd");
-        TRY(++i8);           TEST(i8 == r8.second);      TEST_EQUAL(i8.str(), "");                  TEST_EQUAL(string(i8.range().begin(), i8.range().end()), "");
-        TRY(--i8);           TEST_EQUAL(*i8, 0x10fffd);  TEST_EQUAL(i8.str(), "\xf4\x8f\xbf\xbd");  TEST_EQUAL(string(i8.range().begin(), i8.range().end()), "\xf4\x8f\xbf\xbd");
-        TRY(--i8);           TEST_EQUAL(*i8, 0x10302);   TEST_EQUAL(i8.str(), "\xf0\x90\x8c\x82");  TEST_EQUAL(string(i8.range().begin(), i8.range().end()), "\xf0\x90\x8c\x82");
-        TRY(--i8);           TEST_EQUAL(*i8, 0x4e8c);    TEST_EQUAL(i8.str(), "\xe4\xba\x8c");      TEST_EQUAL(string(i8.range().begin(), i8.range().end()), "\xe4\xba\x8c");
-        TRY(--i8);           TEST_EQUAL(*i8, 0x430);     TEST_EQUAL(i8.str(), "\xd0\xb0");          TEST_EQUAL(string(i8.range().begin(), i8.range().end()), "\xd0\xb0");
-        TRY(--i8);           TEST_EQUAL(*i8, 0x4d);      TEST_EQUAL(i8.str(), "\x4d");              TEST_EQUAL(string(i8.range().begin(), i8.range().end()), "\x4d");
+        TRY(i8 = r8.first);  TEST_EQUAL(*i8, 0x4d);      TEST_EQUAL(i8.str(), "\x4d");              TEST_EQUAL(std::string(i8.range().begin(), i8.range().end()), "\x4d");
+        TRY(++i8);           TEST_EQUAL(*i8, 0x430);     TEST_EQUAL(i8.str(), "\xd0\xb0");          TEST_EQUAL(std::string(i8.range().begin(), i8.range().end()), "\xd0\xb0");
+        TRY(++i8);           TEST_EQUAL(*i8, 0x4e8c);    TEST_EQUAL(i8.str(), "\xe4\xba\x8c");      TEST_EQUAL(std::string(i8.range().begin(), i8.range().end()), "\xe4\xba\x8c");
+        TRY(++i8);           TEST_EQUAL(*i8, 0x10302);   TEST_EQUAL(i8.str(), "\xf0\x90\x8c\x82");  TEST_EQUAL(std::string(i8.range().begin(), i8.range().end()), "\xf0\x90\x8c\x82");
+        TRY(++i8);           TEST_EQUAL(*i8, 0x10fffd);  TEST_EQUAL(i8.str(), "\xf4\x8f\xbf\xbd");  TEST_EQUAL(std::string(i8.range().begin(), i8.range().end()), "\xf4\x8f\xbf\xbd");
+        TRY(++i8);           TEST(i8 == r8.second);      TEST_EQUAL(i8.str(), "");                  TEST_EQUAL(std::string(i8.range().begin(), i8.range().end()), "");
+        TRY(--i8);           TEST_EQUAL(*i8, 0x10fffd);  TEST_EQUAL(i8.str(), "\xf4\x8f\xbf\xbd");  TEST_EQUAL(std::string(i8.range().begin(), i8.range().end()), "\xf4\x8f\xbf\xbd");
+        TRY(--i8);           TEST_EQUAL(*i8, 0x10302);   TEST_EQUAL(i8.str(), "\xf0\x90\x8c\x82");  TEST_EQUAL(std::string(i8.range().begin(), i8.range().end()), "\xf0\x90\x8c\x82");
+        TRY(--i8);           TEST_EQUAL(*i8, 0x4e8c);    TEST_EQUAL(i8.str(), "\xe4\xba\x8c");      TEST_EQUAL(std::string(i8.range().begin(), i8.range().end()), "\xe4\xba\x8c");
+        TRY(--i8);           TEST_EQUAL(*i8, 0x430);     TEST_EQUAL(i8.str(), "\xd0\xb0");          TEST_EQUAL(std::string(i8.range().begin(), i8.range().end()), "\xd0\xb0");
+        TRY(--i8);           TEST_EQUAL(*i8, 0x4d);      TEST_EQUAL(i8.str(), "\x4d");              TEST_EQUAL(std::string(i8.range().begin(), i8.range().end()), "\x4d");
         TEST(i8 == r8.first);
 
         TEST_EQUAL(i16.str(), u"");
         TRY(r16 = utf_range(c16));
-        TRY(i16 = r16.first);  TEST_EQUAL(*i16, 0x4d);      TEST_EQUAL(i16.str(), (u16string{0x004d}));          TEST_EQUAL(u16string(i16.range().begin(), i16.range().end()), (u16string{0x004d}));
-        TRY(++i16);            TEST_EQUAL(*i16, 0x430);     TEST_EQUAL(i16.str(), (u16string{0x0430}));          TEST_EQUAL(u16string(i16.range().begin(), i16.range().end()), (u16string{0x0430}));
-        TRY(++i16);            TEST_EQUAL(*i16, 0x4e8c);    TEST_EQUAL(i16.str(), (u16string{0x4e8c}));          TEST_EQUAL(u16string(i16.range().begin(), i16.range().end()), (u16string{0x4e8c}));
-        TRY(++i16);            TEST_EQUAL(*i16, 0x10302);   TEST_EQUAL(i16.str(), (u16string{0xd800, 0xdf02}));  TEST_EQUAL(u16string(i16.range().begin(), i16.range().end()), (u16string{0xd800, 0xdf02}));
-        TRY(++i16);            TEST_EQUAL(*i16, 0x10fffd);  TEST_EQUAL(i16.str(), (u16string{0xdbff, 0xdffd}));  TEST_EQUAL(u16string(i16.range().begin(), i16.range().end()), (u16string{0xdbff, 0xdffd}));
-        TRY(++i16);            TEST(i16 == r16.second);     TEST_EQUAL(i16.str(), u"");                          TEST_EQUAL(u16string(i16.range().begin(), i16.range().end()), u"");
-        TRY(--i16);            TEST_EQUAL(*i16, 0x10fffd);  TEST_EQUAL(i16.str(), (u16string{0xdbff, 0xdffd}));  TEST_EQUAL(u16string(i16.range().begin(), i16.range().end()), (u16string{0xdbff, 0xdffd}));
-        TRY(--i16);            TEST_EQUAL(*i16, 0x10302);   TEST_EQUAL(i16.str(), (u16string{0xd800, 0xdf02}));  TEST_EQUAL(u16string(i16.range().begin(), i16.range().end()), (u16string{0xd800, 0xdf02}));
-        TRY(--i16);            TEST_EQUAL(*i16, 0x4e8c);    TEST_EQUAL(i16.str(), (u16string{0x4e8c}));          TEST_EQUAL(u16string(i16.range().begin(), i16.range().end()), (u16string{0x4e8c}));
-        TRY(--i16);            TEST_EQUAL(*i16, 0x430);     TEST_EQUAL(i16.str(), (u16string{0x0430}));          TEST_EQUAL(u16string(i16.range().begin(), i16.range().end()), (u16string{0x0430}));
-        TRY(--i16);            TEST_EQUAL(*i16, 0x4d);      TEST_EQUAL(i16.str(), (u16string{0x004d}));          TEST_EQUAL(u16string(i16.range().begin(), i16.range().end()), (u16string{0x004d}));
+        TRY(i16 = r16.first);  TEST_EQUAL(*i16, 0x4d);      TEST_EQUAL(i16.str(), (std::u16string{0x004d}));          TEST_EQUAL(std::u16string(i16.range().begin(), i16.range().end()), (std::u16string{0x004d}));
+        TRY(++i16);            TEST_EQUAL(*i16, 0x430);     TEST_EQUAL(i16.str(), (std::u16string{0x0430}));          TEST_EQUAL(std::u16string(i16.range().begin(), i16.range().end()), (std::u16string{0x0430}));
+        TRY(++i16);            TEST_EQUAL(*i16, 0x4e8c);    TEST_EQUAL(i16.str(), (std::u16string{0x4e8c}));          TEST_EQUAL(std::u16string(i16.range().begin(), i16.range().end()), (std::u16string{0x4e8c}));
+        TRY(++i16);            TEST_EQUAL(*i16, 0x10302);   TEST_EQUAL(i16.str(), (std::u16string{0xd800, 0xdf02}));  TEST_EQUAL(std::u16string(i16.range().begin(), i16.range().end()), (std::u16string{0xd800, 0xdf02}));
+        TRY(++i16);            TEST_EQUAL(*i16, 0x10fffd);  TEST_EQUAL(i16.str(), (std::u16string{0xdbff, 0xdffd}));  TEST_EQUAL(std::u16string(i16.range().begin(), i16.range().end()), (std::u16string{0xdbff, 0xdffd}));
+        TRY(++i16);            TEST(i16 == r16.second);     TEST_EQUAL(i16.str(), u"");                          TEST_EQUAL(std::u16string(i16.range().begin(), i16.range().end()), u"");
+        TRY(--i16);            TEST_EQUAL(*i16, 0x10fffd);  TEST_EQUAL(i16.str(), (std::u16string{0xdbff, 0xdffd}));  TEST_EQUAL(std::u16string(i16.range().begin(), i16.range().end()), (std::u16string{0xdbff, 0xdffd}));
+        TRY(--i16);            TEST_EQUAL(*i16, 0x10302);   TEST_EQUAL(i16.str(), (std::u16string{0xd800, 0xdf02}));  TEST_EQUAL(std::u16string(i16.range().begin(), i16.range().end()), (std::u16string{0xd800, 0xdf02}));
+        TRY(--i16);            TEST_EQUAL(*i16, 0x4e8c);    TEST_EQUAL(i16.str(), (std::u16string{0x4e8c}));          TEST_EQUAL(std::u16string(i16.range().begin(), i16.range().end()), (std::u16string{0x4e8c}));
+        TRY(--i16);            TEST_EQUAL(*i16, 0x430);     TEST_EQUAL(i16.str(), (std::u16string{0x0430}));          TEST_EQUAL(std::u16string(i16.range().begin(), i16.range().end()), (std::u16string{0x0430}));
+        TRY(--i16);            TEST_EQUAL(*i16, 0x4d);      TEST_EQUAL(i16.str(), (std::u16string{0x004d}));          TEST_EQUAL(std::u16string(i16.range().begin(), i16.range().end()), (std::u16string{0x004d}));
         TEST(i16 == r16.first);
 
         TEST_EQUAL(i32.str(), U"");
         TRY(r32 = utf_range(c32));
-        TRY(i32 = r32.first);  TEST_EQUAL(*i32, 0x4d);      TEST_EQUAL(i32.str(), u32string{0x0000004d});  TEST_EQUAL(u32string(i32.range().begin(), i32.range().end()), u32string{0x0000004d});
-        TRY(++i32);            TEST_EQUAL(*i32, 0x430);     TEST_EQUAL(i32.str(), u32string{0x00000430});  TEST_EQUAL(u32string(i32.range().begin(), i32.range().end()), u32string{0x00000430});
-        TRY(++i32);            TEST_EQUAL(*i32, 0x4e8c);    TEST_EQUAL(i32.str(), u32string{0x00004e8c});  TEST_EQUAL(u32string(i32.range().begin(), i32.range().end()), u32string{0x00004e8c});
-        TRY(++i32);            TEST_EQUAL(*i32, 0x10302);   TEST_EQUAL(i32.str(), u32string{0x00010302});  TEST_EQUAL(u32string(i32.range().begin(), i32.range().end()), u32string{0x00010302});
-        TRY(++i32);            TEST_EQUAL(*i32, 0x10fffd);  TEST_EQUAL(i32.str(), u32string{0x0010fffd});  TEST_EQUAL(u32string(i32.range().begin(), i32.range().end()), u32string{0x0010fffd});
-        TRY(++i32);            TEST(i32 == r32.second);     TEST_EQUAL(i32.str(), U"");                    TEST_EQUAL(u32string(i32.range().begin(), i32.range().end()), U"");
-        TRY(--i32);            TEST_EQUAL(*i32, 0x10fffd);  TEST_EQUAL(i32.str(), u32string{0x0010fffd});  TEST_EQUAL(u32string(i32.range().begin(), i32.range().end()), u32string{0x0010fffd});
-        TRY(--i32);            TEST_EQUAL(*i32, 0x10302);   TEST_EQUAL(i32.str(), u32string{0x00010302});  TEST_EQUAL(u32string(i32.range().begin(), i32.range().end()), u32string{0x00010302});
-        TRY(--i32);            TEST_EQUAL(*i32, 0x4e8c);    TEST_EQUAL(i32.str(), u32string{0x00004e8c});  TEST_EQUAL(u32string(i32.range().begin(), i32.range().end()), u32string{0x00004e8c});
-        TRY(--i32);            TEST_EQUAL(*i32, 0x430);     TEST_EQUAL(i32.str(), u32string{0x00000430});  TEST_EQUAL(u32string(i32.range().begin(), i32.range().end()), u32string{0x00000430});
-        TRY(--i32);            TEST_EQUAL(*i32, 0x4d);      TEST_EQUAL(i32.str(), u32string{0x0000004d});  TEST_EQUAL(u32string(i32.range().begin(), i32.range().end()), u32string{0x0000004d});
+        TRY(i32 = r32.first);  TEST_EQUAL(*i32, 0x4d);      TEST_EQUAL(i32.str(), std::u32string{0x0000004d});  TEST_EQUAL(std::u32string(i32.range().begin(), i32.range().end()), std::u32string{0x0000004d});
+        TRY(++i32);            TEST_EQUAL(*i32, 0x430);     TEST_EQUAL(i32.str(), std::u32string{0x00000430});  TEST_EQUAL(std::u32string(i32.range().begin(), i32.range().end()), std::u32string{0x00000430});
+        TRY(++i32);            TEST_EQUAL(*i32, 0x4e8c);    TEST_EQUAL(i32.str(), std::u32string{0x00004e8c});  TEST_EQUAL(std::u32string(i32.range().begin(), i32.range().end()), std::u32string{0x00004e8c});
+        TRY(++i32);            TEST_EQUAL(*i32, 0x10302);   TEST_EQUAL(i32.str(), std::u32string{0x00010302});  TEST_EQUAL(std::u32string(i32.range().begin(), i32.range().end()), std::u32string{0x00010302});
+        TRY(++i32);            TEST_EQUAL(*i32, 0x10fffd);  TEST_EQUAL(i32.str(), std::u32string{0x0010fffd});  TEST_EQUAL(std::u32string(i32.range().begin(), i32.range().end()), std::u32string{0x0010fffd});
+        TRY(++i32);            TEST(i32 == r32.second);     TEST_EQUAL(i32.str(), U"");                    TEST_EQUAL(std::u32string(i32.range().begin(), i32.range().end()), U"");
+        TRY(--i32);            TEST_EQUAL(*i32, 0x10fffd);  TEST_EQUAL(i32.str(), std::u32string{0x0010fffd});  TEST_EQUAL(std::u32string(i32.range().begin(), i32.range().end()), std::u32string{0x0010fffd});
+        TRY(--i32);            TEST_EQUAL(*i32, 0x10302);   TEST_EQUAL(i32.str(), std::u32string{0x00010302});  TEST_EQUAL(std::u32string(i32.range().begin(), i32.range().end()), std::u32string{0x00010302});
+        TRY(--i32);            TEST_EQUAL(*i32, 0x4e8c);    TEST_EQUAL(i32.str(), std::u32string{0x00004e8c});  TEST_EQUAL(std::u32string(i32.range().begin(), i32.range().end()), std::u32string{0x00004e8c});
+        TRY(--i32);            TEST_EQUAL(*i32, 0x430);     TEST_EQUAL(i32.str(), std::u32string{0x00000430});  TEST_EQUAL(std::u32string(i32.range().begin(), i32.range().end()), std::u32string{0x00000430});
+        TRY(--i32);            TEST_EQUAL(*i32, 0x4d);      TEST_EQUAL(i32.str(), std::u32string{0x0000004d});  TEST_EQUAL(std::u32string(i32.range().begin(), i32.range().end()), std::u32string{0x0000004d});
         TEST(i32 == r32.first);
 
         TRY(rw = utf_range(cw));
@@ -306,10 +306,10 @@ namespace {
 
     void check_decoding_ranges() {
 
-        u8string s8;
-        u16string s16;
-        u32string s32;
-        wstring sw;
+        U8string s8;
+        std::u16string s16;
+        std::u32string s32;
+        std::wstring sw;
         Utf8Range r8;
         Utf16Range r16;
         Utf32Range r32;
@@ -347,33 +347,33 @@ namespace {
         TRY(std::copy(utf_begin(bw), utf_end(bw), overwrite(s32)));    TEST_EQUAL(s32, U"Hello");
         TRY(std::copy(utf_begin(cw), utf_end(cw), overwrite(s32)));    TEST_EQUAL(s32, c32);
 
-        TRY(std::copy(utf_iterator(c8, 0), utf_iterator(c8, 14), overwrite(s32)));   TEST_EQUAL(s32, (u32string{0x4d,0x430,0x4e8c,0x10302,0x10fffd}));
-        TRY(std::copy(utf_iterator(c8, 0), utf_iterator(c8, 1), overwrite(s32)));    TEST_EQUAL(s32, (u32string{0x4d}));
-        TRY(std::copy(utf_iterator(c8, 0), utf_iterator(c8, 3), overwrite(s32)));    TEST_EQUAL(s32, (u32string{0x4d,0x430}));
-        TRY(std::copy(utf_iterator(c8, 0), utf_iterator(c8, 6), overwrite(s32)));    TEST_EQUAL(s32, (u32string{0x4d,0x430,0x4e8c}));
-        TRY(std::copy(utf_iterator(c8, 0), utf_iterator(c8, 10), overwrite(s32)));   TEST_EQUAL(s32, (u32string{0x4d,0x430,0x4e8c,0x10302}));
-        TRY(std::copy(utf_iterator(c8, 1), utf_iterator(c8, 14), overwrite(s32)));   TEST_EQUAL(s32, (u32string{0x430,0x4e8c,0x10302,0x10fffd}));
-        TRY(std::copy(utf_iterator(c8, 3), utf_iterator(c8, 14), overwrite(s32)));   TEST_EQUAL(s32, (u32string{0x4e8c,0x10302,0x10fffd}));
-        TRY(std::copy(utf_iterator(c8, 6), utf_iterator(c8, 14), overwrite(s32)));   TEST_EQUAL(s32, (u32string{0x10302,0x10fffd}));
-        TRY(std::copy(utf_iterator(c8, 10), utf_iterator(c8, 14), overwrite(s32)));  TEST_EQUAL(s32, (u32string{0x10fffd}));
-        TRY(std::copy(utf_iterator(c16, 0), utf_iterator(c16, 7), overwrite(s32)));  TEST_EQUAL(s32, (u32string{0x4d,0x430,0x4e8c,0x10302,0x10fffd}));
-        TRY(std::copy(utf_iterator(c16, 0), utf_iterator(c16, 1), overwrite(s32)));  TEST_EQUAL(s32, (u32string{0x4d}));
-        TRY(std::copy(utf_iterator(c16, 0), utf_iterator(c16, 2), overwrite(s32)));  TEST_EQUAL(s32, (u32string{0x4d,0x430}));
-        TRY(std::copy(utf_iterator(c16, 0), utf_iterator(c16, 3), overwrite(s32)));  TEST_EQUAL(s32, (u32string{0x4d,0x430,0x4e8c}));
-        TRY(std::copy(utf_iterator(c16, 0), utf_iterator(c16, 5), overwrite(s32)));  TEST_EQUAL(s32, (u32string{0x4d,0x430,0x4e8c,0x10302}));
-        TRY(std::copy(utf_iterator(c16, 1), utf_iterator(c16, 7), overwrite(s32)));  TEST_EQUAL(s32, (u32string{0x430,0x4e8c,0x10302,0x10fffd}));
-        TRY(std::copy(utf_iterator(c16, 2), utf_iterator(c16, 7), overwrite(s32)));  TEST_EQUAL(s32, (u32string{0x4e8c,0x10302,0x10fffd}));
-        TRY(std::copy(utf_iterator(c16, 3), utf_iterator(c16, 7), overwrite(s32)));  TEST_EQUAL(s32, (u32string{0x10302,0x10fffd}));
-        TRY(std::copy(utf_iterator(c16, 5), utf_iterator(c16, 7), overwrite(s32)));  TEST_EQUAL(s32, (u32string{0x10fffd}));
-        TRY(std::copy(utf_iterator(c32, 0), utf_iterator(c32, 5), overwrite(s32)));  TEST_EQUAL(s32, (u32string{0x4d,0x430,0x4e8c,0x10302,0x10fffd}));
-        TRY(std::copy(utf_iterator(c32, 0), utf_iterator(c32, 1), overwrite(s32)));  TEST_EQUAL(s32, (u32string{0x4d}));
-        TRY(std::copy(utf_iterator(c32, 0), utf_iterator(c32, 2), overwrite(s32)));  TEST_EQUAL(s32, (u32string{0x4d,0x430}));
-        TRY(std::copy(utf_iterator(c32, 0), utf_iterator(c32, 3), overwrite(s32)));  TEST_EQUAL(s32, (u32string{0x4d,0x430,0x4e8c}));
-        TRY(std::copy(utf_iterator(c32, 0), utf_iterator(c32, 4), overwrite(s32)));  TEST_EQUAL(s32, (u32string{0x4d,0x430,0x4e8c,0x10302}));
-        TRY(std::copy(utf_iterator(c32, 1), utf_iterator(c32, 5), overwrite(s32)));  TEST_EQUAL(s32, (u32string{0x430,0x4e8c,0x10302,0x10fffd}));
-        TRY(std::copy(utf_iterator(c32, 2), utf_iterator(c32, 5), overwrite(s32)));  TEST_EQUAL(s32, (u32string{0x4e8c,0x10302,0x10fffd}));
-        TRY(std::copy(utf_iterator(c32, 3), utf_iterator(c32, 5), overwrite(s32)));  TEST_EQUAL(s32, (u32string{0x10302,0x10fffd}));
-        TRY(std::copy(utf_iterator(c32, 4), utf_iterator(c32, 5), overwrite(s32)));  TEST_EQUAL(s32, (u32string{0x10fffd}));
+        TRY(std::copy(utf_iterator(c8, 0), utf_iterator(c8, 14), overwrite(s32)));   TEST_EQUAL(s32, (std::u32string{0x4d,0x430,0x4e8c,0x10302,0x10fffd}));
+        TRY(std::copy(utf_iterator(c8, 0), utf_iterator(c8, 1), overwrite(s32)));    TEST_EQUAL(s32, (std::u32string{0x4d}));
+        TRY(std::copy(utf_iterator(c8, 0), utf_iterator(c8, 3), overwrite(s32)));    TEST_EQUAL(s32, (std::u32string{0x4d,0x430}));
+        TRY(std::copy(utf_iterator(c8, 0), utf_iterator(c8, 6), overwrite(s32)));    TEST_EQUAL(s32, (std::u32string{0x4d,0x430,0x4e8c}));
+        TRY(std::copy(utf_iterator(c8, 0), utf_iterator(c8, 10), overwrite(s32)));   TEST_EQUAL(s32, (std::u32string{0x4d,0x430,0x4e8c,0x10302}));
+        TRY(std::copy(utf_iterator(c8, 1), utf_iterator(c8, 14), overwrite(s32)));   TEST_EQUAL(s32, (std::u32string{0x430,0x4e8c,0x10302,0x10fffd}));
+        TRY(std::copy(utf_iterator(c8, 3), utf_iterator(c8, 14), overwrite(s32)));   TEST_EQUAL(s32, (std::u32string{0x4e8c,0x10302,0x10fffd}));
+        TRY(std::copy(utf_iterator(c8, 6), utf_iterator(c8, 14), overwrite(s32)));   TEST_EQUAL(s32, (std::u32string{0x10302,0x10fffd}));
+        TRY(std::copy(utf_iterator(c8, 10), utf_iterator(c8, 14), overwrite(s32)));  TEST_EQUAL(s32, (std::u32string{0x10fffd}));
+        TRY(std::copy(utf_iterator(c16, 0), utf_iterator(c16, 7), overwrite(s32)));  TEST_EQUAL(s32, (std::u32string{0x4d,0x430,0x4e8c,0x10302,0x10fffd}));
+        TRY(std::copy(utf_iterator(c16, 0), utf_iterator(c16, 1), overwrite(s32)));  TEST_EQUAL(s32, (std::u32string{0x4d}));
+        TRY(std::copy(utf_iterator(c16, 0), utf_iterator(c16, 2), overwrite(s32)));  TEST_EQUAL(s32, (std::u32string{0x4d,0x430}));
+        TRY(std::copy(utf_iterator(c16, 0), utf_iterator(c16, 3), overwrite(s32)));  TEST_EQUAL(s32, (std::u32string{0x4d,0x430,0x4e8c}));
+        TRY(std::copy(utf_iterator(c16, 0), utf_iterator(c16, 5), overwrite(s32)));  TEST_EQUAL(s32, (std::u32string{0x4d,0x430,0x4e8c,0x10302}));
+        TRY(std::copy(utf_iterator(c16, 1), utf_iterator(c16, 7), overwrite(s32)));  TEST_EQUAL(s32, (std::u32string{0x430,0x4e8c,0x10302,0x10fffd}));
+        TRY(std::copy(utf_iterator(c16, 2), utf_iterator(c16, 7), overwrite(s32)));  TEST_EQUAL(s32, (std::u32string{0x4e8c,0x10302,0x10fffd}));
+        TRY(std::copy(utf_iterator(c16, 3), utf_iterator(c16, 7), overwrite(s32)));  TEST_EQUAL(s32, (std::u32string{0x10302,0x10fffd}));
+        TRY(std::copy(utf_iterator(c16, 5), utf_iterator(c16, 7), overwrite(s32)));  TEST_EQUAL(s32, (std::u32string{0x10fffd}));
+        TRY(std::copy(utf_iterator(c32, 0), utf_iterator(c32, 5), overwrite(s32)));  TEST_EQUAL(s32, (std::u32string{0x4d,0x430,0x4e8c,0x10302,0x10fffd}));
+        TRY(std::copy(utf_iterator(c32, 0), utf_iterator(c32, 1), overwrite(s32)));  TEST_EQUAL(s32, (std::u32string{0x4d}));
+        TRY(std::copy(utf_iterator(c32, 0), utf_iterator(c32, 2), overwrite(s32)));  TEST_EQUAL(s32, (std::u32string{0x4d,0x430}));
+        TRY(std::copy(utf_iterator(c32, 0), utf_iterator(c32, 3), overwrite(s32)));  TEST_EQUAL(s32, (std::u32string{0x4d,0x430,0x4e8c}));
+        TRY(std::copy(utf_iterator(c32, 0), utf_iterator(c32, 4), overwrite(s32)));  TEST_EQUAL(s32, (std::u32string{0x4d,0x430,0x4e8c,0x10302}));
+        TRY(std::copy(utf_iterator(c32, 1), utf_iterator(c32, 5), overwrite(s32)));  TEST_EQUAL(s32, (std::u32string{0x430,0x4e8c,0x10302,0x10fffd}));
+        TRY(std::copy(utf_iterator(c32, 2), utf_iterator(c32, 5), overwrite(s32)));  TEST_EQUAL(s32, (std::u32string{0x4e8c,0x10302,0x10fffd}));
+        TRY(std::copy(utf_iterator(c32, 3), utf_iterator(c32, 5), overwrite(s32)));  TEST_EQUAL(s32, (std::u32string{0x10302,0x10fffd}));
+        TRY(std::copy(utf_iterator(c32, 4), utf_iterator(c32, 5), overwrite(s32)));  TEST_EQUAL(s32, (std::u32string{0x10fffd}));
 
         s8.clear();   TRY(std::copy(a32.begin(), a32.end(), utf_writer(s8)));   TEST_EQUAL(s8, "");
         s8.clear();   TRY(std::copy(b32.begin(), b32.end(), utf_writer(s8)));   TEST_EQUAL(s8, "Hello");
@@ -395,10 +395,10 @@ namespace {
 
     void check_implicit_recoding() {
 
-        u8string s8;
-        u16string s16;
-        u32string s32;
-        wstring sw;
+        U8string s8;
+        std::u16string s16;
+        std::u32string s32;
+        std::wstring sw;
 
         TRY(recode(a8, s8));    TEST_EQUAL(s8, a8);
         TRY(recode(b8, s8));    TEST_EQUAL(s8, b8);
@@ -615,10 +615,10 @@ namespace {
 
     void check_string_validation() {
 
-        u8string s8;
-        u16string s16;
-        u32string s32;
-        wstring sw;
+        U8string s8;
+        std::u16string s16;
+        std::u32string s32;
+        std::wstring sw;
 
         TRY(check_string(c8));
         TEST_THROW(check_string(x8), EncodingError);
@@ -691,10 +691,10 @@ namespace {
 
     void check_error_handling() {
 
-        u8string s8;
-        u16string s16;
-        u32string s32;
-        wstring sw;
+        U8string s8;
+        std::u16string s16;
+        std::u32string s32;
+        std::wstring sw;
         Utf8Iterator i8;
         Utf16Iterator i16;
         Utf32Iterator i32;
@@ -742,8 +742,8 @@ namespace {
 
         // Check that error handling for UTF-8 matches the Unicode recommendation
         // (Unicode Standard 7.0, section 3.9, page 128)
-        const string bad_utf8 {"\x61\xf1\x80\x80\xe1\x80\xc2\x62\x80\x63\x80\xbf\x64"};
-        const u32string expected {0x61,0xfffd,0xfffd,0xfffd,0x62,0xfffd,0x63,0xfffd,0xfffd,0x64};
+        const std::string bad_utf8 {"\x61\xf1\x80\x80\xe1\x80\xc2\x62\x80\x63\x80\xbf\x64"};
+        const std::u32string expected {0x61,0xfffd,0xfffd,0xfffd,0x62,0xfffd,0x63,0xfffd,0xfffd,0x64};
         TRY(recode(bad_utf8, s32, err_replace));
         TEST_EQUAL(s32, expected);
 
