@@ -3,7 +3,6 @@
 #include "unicorn/character.hpp"
 #include "unicorn/utf.hpp"
 #include "prion/unit-test.hpp"
-#include <string>
 #include <vector>
 
 using namespace std::literals;

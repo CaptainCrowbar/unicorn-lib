@@ -1,4 +1,9 @@
 #include "unicorn/string.hpp"
+#include <algorithm>
+#include <stdexcept>
+#include <string>
+#include <utility>
+#include <vector>
 
 namespace Unicorn {
 

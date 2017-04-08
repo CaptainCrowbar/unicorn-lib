@@ -6,6 +6,7 @@
 #include "unicorn/string.hpp"
 #include <algorithm>
 #include <iostream>
+#include <ostream>
 #include <stdexcept>
 #include <string>
 #include <type_traits>

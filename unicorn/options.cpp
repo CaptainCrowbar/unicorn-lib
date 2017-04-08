@@ -1,7 +1,7 @@
 #include "unicorn/options.hpp"
 #include "unicorn/format.hpp"
 #include "unicorn/mbcs.hpp"
-#include <iterator>
+#include <utility>
 
 using namespace std::literals;
 using namespace Unicorn::Literals;

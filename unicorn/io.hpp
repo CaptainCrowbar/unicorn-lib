@@ -5,7 +5,6 @@
 #include "unicorn/file.hpp"
 #include "unicorn/utf.hpp"
 #include <cstdio>
-#include <iterator>
 #include <memory>
 #include <string>
 

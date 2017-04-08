@@ -6,10 +6,12 @@
 #include "unicorn/ucd-tables.hpp"
 #include "prion/unit-test.hpp"
 #include <algorithm>
+#include <array>
 #include <cstdlib>
+#include <iterator>
 #include <memory>
 #include <string>
-#include <utility>
+#include <vector>
 
 using namespace Unicorn;
 using namespace Unicorn::Literals;

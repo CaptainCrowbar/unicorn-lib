@@ -7,9 +7,7 @@
 #include <string>
 #include <type_traits>
 
-PRI_LDLIB(unicorn)
-PRI_LDLIB(pcre)
-PRI_LDLIB(z)
+PRI_LDLIB(unicorn pcre z);
 
 namespace Unicorn {
 

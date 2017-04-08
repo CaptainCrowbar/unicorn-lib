@@ -28,6 +28,7 @@ compositions are possible.
 #include "unicorn/character.hpp"
 #include "unicorn/utf.hpp"
 #include <algorithm>
+#include <string>
 
 using namespace std::literals;
 

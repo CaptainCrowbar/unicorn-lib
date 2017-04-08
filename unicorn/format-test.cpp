@@ -2,10 +2,8 @@
 #include "unicorn/format.hpp"
 #include "prion/unit-test.hpp"
 #include <chrono>
-#include <limits>
 #include <map>
 #include <stdexcept>
-#include <string>
 #include <vector>
 
 using namespace Unicorn;

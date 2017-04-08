@@ -1,7 +1,6 @@
 #pragma once
 
 #include "unicorn/core.hpp"
-#include <string>
 
 namespace Unicorn {
 

@@ -3,7 +3,6 @@
 #include "unicorn/utf.hpp"
 #include "prion/unit-test.hpp"
 #include <algorithm>
-#include <fstream>
 #include <string>
 #include <system_error>
 #include <vector>

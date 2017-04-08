@@ -2,10 +2,10 @@
 
 #include "unicorn/core.hpp"
 #include "unicorn/utf.hpp"
-#include <iterator>
 #include <map>
 #include <string>
 #include <utility>
+#include <vector>
 
 namespace Unicorn {
 

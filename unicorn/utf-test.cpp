@@ -2,6 +2,8 @@
 #include "unicorn/character.hpp"
 #include "unicorn/utf.hpp"
 #include "prion/unit-test.hpp"
+#include <algorithm>
+#include <iterator>
 #include <string>
 
 using namespace std::literals;

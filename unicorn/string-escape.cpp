@@ -1,4 +1,6 @@
 #include "unicorn/string.hpp"
+#include <algorithm>
+#include <utility>
 
 namespace Unicorn {
 

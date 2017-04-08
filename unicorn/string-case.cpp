@@ -1,4 +1,5 @@
 #include "unicorn/string.hpp"
+#include <algorithm>
 
 namespace Unicorn {
 

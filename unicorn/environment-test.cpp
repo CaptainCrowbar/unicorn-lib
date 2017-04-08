@@ -1,7 +1,6 @@
 #include "unicorn/core.hpp"
 #include "unicorn/environment.hpp"
 #include "prion/unit-test.hpp"
-#include <string>
 #include <vector>
 
 using namespace Unicorn;

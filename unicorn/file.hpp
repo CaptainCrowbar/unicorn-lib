@@ -5,12 +5,11 @@
 #include "unicorn/string.hpp"
 #include "unicorn/utf.hpp"
 #include <algorithm>
-#include <iterator>
+#include <istream>
 #include <memory>
+#include <ostream>
 #include <string>
-#include <type_traits>
 #include <utility>
-#include <vector>
 
 #ifdef _XOPEN_SOURCE
     #include <sys/stat.h>

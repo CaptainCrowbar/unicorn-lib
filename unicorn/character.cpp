@@ -1,8 +1,8 @@
 #include "unicorn/character.hpp"
 #include "unicorn/iso-script-names.hpp"
 #include "unicorn/ucd-tables.hpp"
+#include <algorithm>
 #include <array>
-#include <cstdint>
 #include <iterator>
 #include <unordered_map>
 #include <zlib.h>

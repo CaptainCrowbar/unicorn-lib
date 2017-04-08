@@ -6,7 +6,9 @@
 #include <algorithm>
 #include <deque>
 #include <iterator>
+#include <stdexcept>
 #include <string>
+#include <utility>
 
 namespace Unicorn {
 

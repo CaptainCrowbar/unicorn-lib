@@ -3,10 +3,7 @@
 #include "unicorn/core.hpp"
 #include "unicorn/character.hpp"
 #include <algorithm>
-#include <iterator>
 #include <string>
-#include <type_traits>
-#include <vector>
 
 namespace Unicorn {
 

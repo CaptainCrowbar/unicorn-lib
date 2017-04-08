@@ -4,7 +4,9 @@
 #include "unicorn/string.hpp"
 #include <algorithm>
 #include <cerrno>
+#include <stdexcept>
 #include <system_error>
+#include <utility>
 
 using namespace std::literals;
 using namespace Unicorn::Literals;

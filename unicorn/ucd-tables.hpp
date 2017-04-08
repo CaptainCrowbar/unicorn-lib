@@ -7,9 +7,7 @@
 #include "unicorn/property-values.hpp"
 #include <algorithm>
 #include <array>
-#include <cstdint>
-#include <functional>
-#include <utility>
+#include <iterator>
 
 namespace Unicorn {
 

@@ -177,6 +177,4 @@ build/$(TARGET)/utf-test.o: unicorn/utf-test.cpp unicorn/core.hpp \
 build/$(TARGET)/utf.o: unicorn/utf.cpp unicorn/utf.hpp unicorn/core.hpp \
   $(LIBROOT)/prion-lib/prion/core.hpp unicorn/character.hpp \
   unicorn/property-values.hpp
-LDLIBS += -lunicorn
-LDLIBS += -lpcre
-LDLIBS += -lz
+LDLIBS += -lunicorn -lpcre -lz

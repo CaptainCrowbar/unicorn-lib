@@ -4,8 +4,6 @@
 #include "unicorn/utf.hpp"
 #include "prion/unit-test.hpp"
 #include <iterator>
-#include <random>
-#include <string>
 
 using namespace std::literals;
 using namespace Unicorn;

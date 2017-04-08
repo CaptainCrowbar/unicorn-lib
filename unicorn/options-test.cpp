@@ -2,7 +2,6 @@
 #include "unicorn/options.hpp"
 #include "prion/unit-test.hpp"
 #include <sstream>
-#include <string>
 #include <vector>
 
 using namespace std::literals;

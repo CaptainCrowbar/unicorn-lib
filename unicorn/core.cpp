@@ -1,6 +1,5 @@
 #include "unicorn/core.hpp"
 #include "unicorn/ucd-tables.hpp"
-#include <algorithm>
 
 using namespace std::literals;
 

@@ -1,5 +1,6 @@
 #include "unicorn/core.hpp"
 #include "prion/unit-test.hpp"
+#include <iostream>
 #include <string>
 
 using namespace std::literals;

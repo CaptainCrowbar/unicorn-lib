@@ -2,6 +2,7 @@
 #include "unicorn/string.hpp"
 #include <cerrno>
 #include <cstdlib>
+#include <stdexcept>
 #include <system_error>
 
 #ifdef _XOPEN_SOURCE

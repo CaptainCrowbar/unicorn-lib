@@ -9,6 +9,7 @@
 #include <cstring>
 #include <map>
 #include <unordered_map>
+#include <vector>
 
 #ifdef _XOPEN_SOURCE
     #include <iconv.h>

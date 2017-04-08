@@ -4,7 +4,7 @@
 #include "unicorn/property-values.hpp"
 #include <cstring>
 #include <functional>
-#include <string>
+#include <ostream>
 #include <type_traits>
 #include <utility>
 #include <vector>

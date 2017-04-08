@@ -5,6 +5,8 @@
 #include "unicorn/ucd-tables.hpp"
 #include "unicorn/utf.hpp"
 #include "prion/unit-test.hpp"
+#include <algorithm>
+#include <iostream>
 #include <cstdlib>
 #include <string>
 #include <vector>

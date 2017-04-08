@@ -5,8 +5,11 @@
 #include <cerrno>
 #include <chrono>
 #include <cstdio>
+#include <exception>
 #include <random>
 #include <system_error>
+#include <type_traits>
+#include <vector>
 
 #ifdef _XOPEN_SOURCE
     #include <dirent.h>

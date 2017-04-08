@@ -5,7 +5,6 @@
 #include "prion/unit-test.hpp"
 #include <limits>
 #include <stdexcept>
-#include <string>
 
 using namespace std::literals;
 using namespace Unicorn;
