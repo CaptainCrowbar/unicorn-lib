@@ -2,6 +2,7 @@
 #include "unicorn/core.hpp"
 #include "rs-core/unit-test.hpp"
 
+using namespace RS;
 using namespace RS::Unicorn;
 using namespace std::literals;
 

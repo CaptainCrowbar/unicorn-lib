@@ -11,8 +11,6 @@
     extern wchar_t** _wenviron;
 #endif
 
-using namespace RS::Unicorn::Literals;
-
 namespace RS {
 
     namespace Unicorn {

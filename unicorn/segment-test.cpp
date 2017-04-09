@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 
+using namespace RS;
 using namespace RS::Unicorn;
 using namespace std::literals;
 

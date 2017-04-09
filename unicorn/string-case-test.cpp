@@ -4,6 +4,7 @@
 #include "unicorn/utf.hpp"
 #include "rs-core/unit-test.hpp"
 
+using namespace RS;
 using namespace RS::Unicorn;
 using namespace std::literals;
 

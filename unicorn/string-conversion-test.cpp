@@ -6,6 +6,7 @@
 #include <limits>
 #include <stdexcept>
 
+using namespace RS;
 using namespace RS::Unicorn;
 using namespace std::literals;
 

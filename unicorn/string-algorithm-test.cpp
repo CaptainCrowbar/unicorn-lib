@@ -5,6 +5,7 @@
 #include "rs-core/unit-test.hpp"
 #include <iterator>
 
+using namespace RS;
 using namespace RS::Unicorn;
 using namespace std::literals;
 

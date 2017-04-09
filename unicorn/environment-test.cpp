@@ -3,6 +3,7 @@
 #include "rs-core/unit-test.hpp"
 #include <vector>
 
+using namespace RS;
 using namespace RS::Unicorn;
 
 namespace {

@@ -13,9 +13,6 @@ namespace RS {
 
     namespace Unicorn {
 
-        using namespace RS;
-        namespace Literals { using namespace RS::Literals; }
-
         // Exceptions
 
         class InitializationError:
