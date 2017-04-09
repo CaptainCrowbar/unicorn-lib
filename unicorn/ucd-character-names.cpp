@@ -1,5 +1,6 @@
 #include "unicorn/ucd-tables.hpp"
 
+namespace RS {
 namespace Unicorn {
 namespace UnicornDetail {
 
@@ -5994,5 +5995,6 @@ const KeyValue<char32_t, char const*> corrected_names_array[] {
 
 const TableView<char32_t, char const*> corrected_names_table {std::begin(corrected_names_array), std::end(corrected_names_array)};
 
+}
 }
 }

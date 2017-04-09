@@ -8,8 +8,9 @@ This module provides facilities for formatting various kinds of data as
 Unicode strings, in a manner similar to `printf()` in C, `str.format()` in
 Python, etc. Formatters are supplied for commonly used standard types
 (booleans, integers, floating point, characters, strings, and time points and
-durations), as well as for the `Uuid` and `Version` types from the Prion
-library; user defined formatters for other types can also be supplied.
+durations), as well as for the `Uuid` and `Version` types from my core
+utilities library; user defined formatters for other types can also be
+supplied.
 
 Basic formatting for range types (containers and arrays) is provided; these
 will be written in comma delimited form. Pairs will be written in
@@ -38,7 +39,7 @@ listed here; their behaviour is described in more detail below.
 * `[const] char*`, `[const] char16_t*`, `[const] char32_t*`, `[const] wchar_t*`
 * `U8string`, `u16string`, `u32string`, `wstring`
 * `std::chrono::duration<R, P>`, `std::chrono::system_clock::time_point`
-* `Prion::Uuid`, `Prion::Version`
+* `RS::Uuid`, `RS::Version`
 
 * <!-- DEFN --> `template <typename T> U8string` **`format_str`**`(const T& t, uint64_t flags = 0, int prec = -1, size_t width = 0, char32_t pad = U' ')`
 * `template <typename T> U8string` **`format_str`**`(const T& t, const U8string& flags)`
@@ -55,7 +56,7 @@ carries the same information as the format control arguments to
 `format_type()` and the first version of `format_str()`. The flag descriptions
 below indicate which letter corresponds to which flag; when defining
 `format_type()` overloads for user defined types, you can use the predefined
-flags or use `Prion::letter_to_mask()` to define new ones.
+flags or use `RS::letter_to_mask()` to define new ones.
 
 Example:
 
@@ -125,14 +126,14 @@ Example:
 
 Use `"$$"` to insert a literal dollar sign in the format string.
 
-* `namespace Unicorn::Literals`
+* `namespace RS::Unicorn::Literals`
     * `Format` **`operator"" _fmt`**`(const char* ptr, size_t len)`
 
 Formatting object literal.
 
 ## Formatting for specific types ##
 
-No type-specific flags are defined for `Prion::Uuid` and `Prion::Version`.
+No type-specific flags are defined for `RS::Uuid` and `RS::Version`.
 
 ### Boolean formatting ###
 
@@ -196,7 +197,7 @@ Flag               | Letter  | Description
 
 <!-- DEFN -->
 
-Formatting for `std::chrono::duration` calls `Prion::format_time()`, with the
+Formatting for `std::chrono::duration` calls `RS::format_time()`, with the
 specified precision if one was supplied. Formatting for
 `std::chrono::system_clock::time_point` uses ISO 8601 format by default
 (`"yyyy-mm-dd hh:mm:ss"`), and respects the following flags:

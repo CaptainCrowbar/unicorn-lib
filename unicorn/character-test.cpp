@@ -1,12 +1,12 @@
 #include "unicorn/core.hpp"
 #include "unicorn/character.hpp"
 #include "unicorn/ucd-tables.hpp"
-#include "prion/unit-test.hpp"
+#include "rs-core/unit-test.hpp"
 #include <map>
 #include <string>
 #include <vector>
 
-using namespace Unicorn;
+using namespace RS::Unicorn;
 using namespace std::literals;
 
 #define TEST_PROPERTY_STRING(type, value) TEST_EQUAL(to_str(type::value), # type "::" # value)

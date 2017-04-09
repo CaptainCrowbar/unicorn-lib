@@ -4,7 +4,7 @@
 #include "unicorn/normal.hpp"
 #include "unicorn/string.hpp"
 #include "unicorn/ucd-tables.hpp"
-#include "prion/unit-test.hpp"
+#include "rs-core/unit-test.hpp"
 #include <algorithm>
 #include <array>
 #include <cstdlib>
@@ -13,8 +13,8 @@
 #include <string>
 #include <vector>
 
-using namespace Unicorn;
-using namespace Unicorn::Literals;
+using namespace RS::Unicorn;
+using namespace RS::Unicorn::Literals;
 using namespace std::literals;
 
 namespace {

@@ -1,11 +1,11 @@
 #include "unicorn/core.hpp"
-#include "prion/unit-test.hpp"
+#include "rs-core/unit-test.hpp"
 #include <iostream>
 #include <string>
 
+using namespace RS::Unicorn;
+using namespace RS::Unicorn::Literals;
 using namespace std::literals;
-using namespace Unicorn;
-using namespace Unicorn::Literals;
 
 TEST_MAIN;
 

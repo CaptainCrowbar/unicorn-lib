@@ -1,9 +1,9 @@
 // Internal to the library, do not include this directly
 // NOT INSTALLED
 #pragma once
-#include "prion/core.hpp"
+#include "rs-core/core.hpp"
+namespace RS {
 namespace Unicorn {
-using namespace Prion;
 namespace UnicornDetail {
 struct ScriptInfo { const char* abbr; const char* name; };
 constexpr ScriptInfo iso_script_names[] {
@@ -183,5 +183,6 @@ constexpr ScriptInfo iso_script_names[] {
 {"zyyy","Common"},
 {"zzzz","Unknown"},
 };
+}
 }
 }

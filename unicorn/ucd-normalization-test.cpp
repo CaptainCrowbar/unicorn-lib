@@ -1,5 +1,6 @@
 #include "unicorn/ucd-tables.hpp"
 
+namespace RS {
 namespace Unicorn {
 namespace UnicornDetail {
 
@@ -18998,5 +18999,6 @@ const KeyValue<char32_t, char32_t> normalization_identity_array[] {
 
 const TableView<char32_t, char32_t> normalization_identity_table {std::begin(normalization_identity_array), std::end(normalization_identity_array)};
 
+}
 }
 }

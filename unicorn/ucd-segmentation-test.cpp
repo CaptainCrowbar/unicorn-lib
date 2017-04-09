@@ -1,5 +1,6 @@
 #include "unicorn/ucd-tables.hpp"
 
+namespace RS {
 namespace Unicorn {
 namespace UnicornDetail {
 
@@ -2412,5 +2413,6 @@ char const* const sentence_break_test_array[] {
 
 const Irange<char const* const*> sentence_break_test_table {std::begin(sentence_break_test_array), std::end(sentence_break_test_array)};
 
+}
 }
 }

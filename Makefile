@@ -1,2 +1,2 @@
 LIBROOT := ..
-include $(LIBROOT)/crow-lib/Makefile
+include $(LIBROOT)/core-lib/Makefile

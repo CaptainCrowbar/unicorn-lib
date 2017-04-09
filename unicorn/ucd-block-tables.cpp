@@ -1,5 +1,6 @@
 #include "unicorn/ucd-tables.hpp"
 
+namespace RS {
 namespace Unicorn {
 namespace UnicornDetail {
 
@@ -313,5 +314,6 @@ const KeyValue<char32_t, char const*> blocks_array[] {
 
 const TableView<char32_t, char const*> blocks_table {std::begin(blocks_array), std::end(blocks_array)};
 
+}
 }
 }

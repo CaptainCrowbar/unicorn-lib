@@ -1,7 +1,7 @@
 #include "unicorn/core.hpp"
 #include "unicorn/mbcs.hpp"
 #include "unicorn/utf.hpp"
-#include "prion/unit-test.hpp"
+#include "rs-core/unit-test.hpp"
 #include <cerrno>
 #include <iostream>
 #include <string>
@@ -10,8 +10,8 @@
     #include <windows.h>
 #endif
 
+using namespace RS::Unicorn;
 using namespace std::literals;
-using namespace Unicorn;
 
 namespace {
 

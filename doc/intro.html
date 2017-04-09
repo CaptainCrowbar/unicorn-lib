@@ -51,8 +51,8 @@ words encountered more than once, in descending order of frequency.</p>
 #include &lt;map&gt;
 #include &lt;string&gt;
 
-using namespace Unicorn;
-using namespace Unicorn::Literals;
+using namespace RS::Unicorn;
+using namespace RS::Unicorn::Literals;
 
 int main(int argc, char** argv) {
 
@@ -277,12 +277,11 @@ all of these should be present or easily installed on most systems:</p>
 <p>You can import the whole library using <code>#include "unicorn/library.hpp"</code>, or
 include the individual modules that you need. Link with <code>-lunicorn</code>, and with
 the other required libraries described above.</p>
-<p>Everything in the Unicorn library is in <code>namespace Unicorn</code> (or a subordinate
-namespace inside <code>Unicorn</code>). You can either qualify all calls with the
-<code>Unicorn::</code> prefix, or use <code>using namespace Unicorn</code>.</p>
-<p>Unicorn calls my <a href="https://github.com/CaptainCrowbar/prion-lib">Prion library</a>.
+<p>Everything in the Unicorn library is in <code>namespace RS::Unicorn</code> (or a
+subordinate namespace inside <code>Unicorn</code>). You can either qualify all calls with
+the <code>RS::Unicorn::</code> prefix, or use <code>using namespace RS::Unicorn</code>.</p>
+<p>Unicorn calls my <a href="https://github.com/CaptainCrowbar/rs-core-lib">core utilities library</a>.
 This consists only of a single header (and a second one if you build the unit
 tests); no special build actions are required beyond making sure the compiler
-can find the <code>"prion/core.hpp"</code> header. Everything in <code>namespace Prion</code> is
-imported into <code>namespace Unicorn</code>.</p></body>
+can find the <code>"rs-core/core.hpp"</code> header.</p></body>
 </html>

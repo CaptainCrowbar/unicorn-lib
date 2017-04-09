@@ -1,20 +1,20 @@
 #include "unicorn/core.hpp"
 #include "unicorn/io.hpp"
 #include "unicorn/utf.hpp"
-#include "prion/unit-test.hpp"
+#include "rs-core/unit-test.hpp"
 #include <algorithm>
 #include <string>
 #include <system_error>
 #include <vector>
 
+using namespace RS::Unicorn;
 using namespace std::literals;
-using namespace Unicorn;
 
 namespace {
 
     class TempFile {
     public:
-        PRI_NO_COPY_MOVE(TempFile)
+        RS_NO_COPY_MOVE(TempFile)
         explicit TempFile(const U8string& file): f(file) {}
         ~TempFile() { remove(f.data()); }
     private:

@@ -10,14 +10,6 @@ This module provides some common definitions used throughout the library.
 
 [TOC]
 
-## Imports ##
-
-* `using namespace Prion`
-* `namespace Unicorn::Literals`
-    * `using namespace Prion::Literals`
-
-Everything in the Prion library is imported.
-
 ## Exceptions ##
 
 * `class` **`InitializationError`**`: public std::runtime_error`

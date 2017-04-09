@@ -10,12 +10,12 @@ currently supporting Unicode version 8.0.
 
 The library is divided into the modules listed below; you can import only the
 ones you need, or import the whole API using `#include "unicorn/library.hpp"`.
-Everything in the Unicorn library is in `namespace Unicorn` (or a subordinate
-namespace inside `Unicorn`). You can either qualify all calls with the
-`Unicorn::` prefix, or use `using namespace Unicorn`.
+Everything in the Unicorn library is in `namespace RS::Unicorn` (or a
+subordinate namespace inside `Unicorn`). You can either qualify all calls with
+the `RS::Unicorn::` prefix, or use `using namespace RS::Unicorn`.
 
 The Unicorn library depends on the utilities and unit testing framework in my
-[Prion library](https://github.com/CaptainCrowbar/prion-lib).
+[core library](https://github.com/CaptainCrowbar/rs-core-lib).
 
 * <!-- TEXT --> **Documentation**
     * [Introduction to the Unicorn Library](intro.html)

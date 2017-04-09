@@ -1,9 +1,9 @@
 #include "unicorn/core.hpp"
 #include "unicorn/environment.hpp"
-#include "prion/unit-test.hpp"
+#include "rs-core/unit-test.hpp"
 #include <vector>
 
-using namespace Unicorn;
+using namespace RS::Unicorn;
 
 namespace {
 

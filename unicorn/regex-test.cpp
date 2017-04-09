@@ -1,13 +1,13 @@
 #include "unicorn/core.hpp"
 #include "unicorn/regex.hpp"
 #include "unicorn/string.hpp"
-#include "prion/unit-test.hpp"
+#include "rs-core/unit-test.hpp"
 #include <algorithm>
 #include <iostream>
 #include <string>
 #include <vector>
 
-using namespace Unicorn;
+using namespace RS::Unicorn;
 using namespace std::literals;
 
 namespace {
@@ -567,7 +567,7 @@ namespace {
 
     void check_regex_literals() {
 
-        using namespace Unicorn::Literals;
+        using namespace RS::Unicorn::Literals;
 
         Regex r;
 

@@ -1,5 +1,6 @@
 #include "unicorn/ucd-tables.hpp"
 
+namespace RS {
 namespace Unicorn {
 namespace UnicornDetail {
 
@@ -1603,5 +1604,6 @@ const KeyValue<char32_t, char const*> script_extensions_array[] {
 
 const TableView<char32_t, char const*> script_extensions_table {std::begin(script_extensions_array), std::end(script_extensions_array)};
 
+}
 }
 }

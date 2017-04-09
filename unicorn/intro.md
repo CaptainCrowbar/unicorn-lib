@@ -36,8 +36,8 @@ words encountered more than once, in descending order of frequency.
     #include <map>
     #include <string>
 
-    using namespace Unicorn;
-    using namespace Unicorn::Literals;
+    using namespace RS::Unicorn;
+    using namespace RS::Unicorn::Literals;
 
     int main(int argc, char** argv) {
 
@@ -294,12 +294,11 @@ You can import the whole library using `#include "unicorn/library.hpp"`, or
 include the individual modules that you need. Link with `-lunicorn`, and with
 the other required libraries described above.
 
-Everything in the Unicorn library is in `namespace Unicorn` (or a subordinate
-namespace inside `Unicorn`). You can either qualify all calls with the
-`Unicorn::` prefix, or use `using namespace Unicorn`.
+Everything in the Unicorn library is in `namespace RS::Unicorn` (or a
+subordinate namespace inside `Unicorn`). You can either qualify all calls with
+the `RS::Unicorn::` prefix, or use `using namespace RS::Unicorn`.
 
-Unicorn calls my [Prion library](https://github.com/CaptainCrowbar/prion-lib).
+Unicorn calls my [core utilities library](https://github.com/CaptainCrowbar/rs-core-lib).
 This consists only of a single header (and a second one if you build the unit
 tests); no special build actions are required beyond making sure the compiler
-can find the `"prion/core.hpp"` header. Everything in `namespace Prion` is
-imported into `namespace Unicorn`.
+can find the `"rs-core/core.hpp"` header.

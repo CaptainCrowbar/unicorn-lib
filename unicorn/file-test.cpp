@@ -1,7 +1,7 @@
 #include "unicorn/core.hpp"
 #include "unicorn/file.hpp"
 #include "unicorn/utf.hpp"
-#include "prion/unit-test.hpp"
+#include "rs-core/unit-test.hpp"
 #include <algorithm>
 #include <cstdlib>
 #include <fstream>
@@ -10,8 +10,8 @@
 #include <utility>
 #include <vector>
 
+using namespace RS::Unicorn;
 using namespace std::literals;
-using namespace Unicorn;
 
 #ifdef _XOPEN_SOURCE
     #define SLASH "/"

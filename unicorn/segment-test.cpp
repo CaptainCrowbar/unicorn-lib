@@ -4,15 +4,15 @@
 #include "unicorn/string.hpp"
 #include "unicorn/ucd-tables.hpp"
 #include "unicorn/utf.hpp"
-#include "prion/unit-test.hpp"
+#include "rs-core/unit-test.hpp"
 #include <algorithm>
 #include <iostream>
 #include <cstdlib>
 #include <string>
 #include <vector>
 
+using namespace RS::Unicorn;
 using namespace std::literals;
-using namespace Unicorn;
 
 namespace {
 

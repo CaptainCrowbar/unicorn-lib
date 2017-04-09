@@ -1,13 +1,13 @@
 #include "unicorn/core.hpp"
 #include "unicorn/format.hpp"
-#include "prion/unit-test.hpp"
+#include "rs-core/unit-test.hpp"
 #include <chrono>
 #include <map>
 #include <stdexcept>
 #include <vector>
 
-using namespace Unicorn;
-using namespace Unicorn::Literals;
+using namespace RS::Unicorn;
+using namespace RS::Unicorn::Literals;
 using namespace std::chrono;
 using namespace std::literals;
 
