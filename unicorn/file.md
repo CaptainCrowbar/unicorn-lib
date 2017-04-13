@@ -26,9 +26,9 @@ whose name is an arbitrary sequence of 16-bit integers. The HFS+ file system
 used by Apple on macOS and iOS appears to be the only widely used file system
 that actually does enforce valid Unicode names at the file system level,
 although it then proceeds to complicate matters by using a proprietary
-normalization scheme that does not match any of the four standard ones (and
-even on a Mac you need to be careful in the presence of remote file systems
-that may be on a different OS).
+normalization scheme that does not match any of the four standard ones, and in
+any case the new APFS file system does not appear to enforce any kind of
+encoding.
 
 To make it possible to deal with this situation, this module uses the
 `NativeString` type from the [`unicorn/core`](core.html) module, which is
@@ -48,8 +48,7 @@ In short, use the `NativeString` versions of the functions here if you need
 reliable handling of all filenames, including those containing invalid
 Unicode; use the `U8string` versions if you expect all the files you deal with
 to have valid Unicode names, and you don't mind if non-Unicode names are
-slightly mangled, or if you're only targeting Mac/iOS and don't need to worry
-about other operating systems.
+slightly mangled.
 
 The examples in the documentation below mostly use Unix-style file names for
 simplicity; the equivalent code on Windows will make the obvious substitutions
