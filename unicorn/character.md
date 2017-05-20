@@ -286,19 +286,16 @@ Flag              | Description
 ----              | -----------
 **`cn_control`**  | Use the common ASCII or ISO 8859 names for control characters
 **`cn_label`**    | Generate the standard code point label for characters that do not have an official name
-**`cn_lower`**    | Return the name in lower case (excluding `U+XXXX` prefix if present)
+**`cn_lower`**    | Return the name in lower case (excluding the `U+XXXX` prefix if present)
 **`cn_prefix`**   | Prefix the name with the code point in `U+XXXX` format
 **`cn_update`**   | Where the official name was in error and a suggested correction has been published, use that instead
+**`cn_all`**      | Mask combining all of the above flags
 
 Returns the name of a character. By default, only the official Unicode name is
 returned; an empty string is returned if the character does not have an
 official name. The `flags` argument can contain a bitwise-OR combination of
 any of the options. If both `cn_control` and `cn_label` are present,
 `cn_control` takes precedence for characters that qualify for both.
-
-The character name table is stored in compressed form to save space. The first
-call to `char_name()` may throw `InitializationError` if something goes wrong
-while loading the table.
 
 ## Decomposition properties ##
 

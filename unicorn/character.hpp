@@ -197,6 +197,7 @@ namespace RS {
         constexpr uint32_t cn_lower    = 1u << 2;
         constexpr uint32_t cn_prefix   = 1u << 3;
         constexpr uint32_t cn_update   = 1u << 4;
+        constexpr uint32_t cn_all      = cn_control | cn_label | cn_lower | cn_prefix | cn_update;
 
         U8string char_name(char32_t c, uint32_t flags = 0);
 

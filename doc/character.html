@@ -377,7 +377,7 @@ library).</p>
 </tr>
 <tr>
 <td><strong><code>cn_lower</code></strong></td>
-<td>Return the name in lower case (excluding <code>U+XXXX</code> prefix if present)</td>
+<td>Return the name in lower case (excluding the <code>U+XXXX</code> prefix if present)</td>
 </tr>
 <tr>
 <td><strong><code>cn_prefix</code></strong></td>
@@ -387,6 +387,10 @@ library).</p>
 <td><strong><code>cn_update</code></strong></td>
 <td>Where the official name was in error and a suggested correction has been published, use that instead</td>
 </tr>
+<tr>
+<td><strong><code>cn_all</code></strong></td>
+<td>Mask combining all of the above flags</td>
+</tr>
 </tbody>
 </table>
 <p>Returns the name of a character. By default, only the official Unicode name is
@@ -394,9 +398,6 @@ returned; an empty string is returned if the character does not have an
 official name. The <code>flags</code> argument can contain a bitwise-OR combination of
 any of the options. If both <code>cn_control</code> and <code>cn_label</code> are present,
 <code>cn_control</code> takes precedence for characters that qualify for both.</p>
-<p>The character name table is stored in compressed form to save space. The first
-call to <code>char_name()</code> may throw <code>InitializationError</code> if something goes wrong
-while loading the table.</p>
 </div>
 <h2 id="decomposition-properties">Decomposition properties</h2>
 <div class="defns">
