@@ -522,21 +522,24 @@ namespace {
 
         system_clock::duration t;
 
-        TRY(from_seconds(0, t));            TEST_EQUAL(format_str(t), "0s");
-        TRY(from_seconds(0, t));            TEST_EQUAL(format_str(t, "3"), "0.000s");
-        TRY(from_seconds(0.25, t));         TEST_EQUAL(format_str(t, "3"), "0.250s");
-        TRY(from_seconds(1, t));            TEST_EQUAL(format_str(t, "3"), "1.000s");
-        TRY(from_seconds(1234, t));         TEST_EQUAL(format_str(t, "3"), "20m34.000s");
-        TRY(from_seconds(12345, t));        TEST_EQUAL(format_str(t, "3"), "3h25m45.000s");
-        TRY(from_seconds(123456, t));       TEST_EQUAL(format_str(t, "3"), "1d10h17m36.000s");
-        TRY(from_seconds(1234567, t));      TEST_EQUAL(format_str(t, "3"), "14d06h56m07.000s");
-        TRY(from_seconds(12345678, t));     TEST_EQUAL(format_str(t, "3"), "142d21h21m18.000s");
-        TRY(from_seconds(123456789, t));    TEST_EQUAL(format_str(t, "3"), "3y333d03h33m09.000s");
-        TRY(from_seconds(1234567890, t));   TEST_EQUAL(format_str(t, "3"), "39y044d05h31m30.000s");
-        TRY(from_seconds(-0.25, t));        TEST_EQUAL(format_str(t, "3"), "-0.250s");
-        TRY(from_seconds(-1, t));           TEST_EQUAL(format_str(t, "3"), "-1.000s");
-        TRY(from_seconds(-1234, t));        TEST_EQUAL(format_str(t, "3"), "-20m34.000s");
-        TRY(from_seconds(-1234567890, t));  TEST_EQUAL(format_str(t, "3"), "-39y044d05h31m30.000s");
+        TRY(from_seconds(0, t));           TEST_EQUAL(format_str(t), "0s");
+        TRY(from_seconds(0, t));           TEST_EQUAL(format_str(t, "3"), "0.000s");
+        TRY(from_seconds(0.25, t));        TEST_EQUAL(format_str(t, "3"), "0.250s");
+        TRY(from_seconds(1, t));           TEST_EQUAL(format_str(t, "3"), "1.000s");
+        TRY(from_seconds(1234, t));        TEST_EQUAL(format_str(t, "3"), "20m34.000s");
+        TRY(from_seconds(12345, t));       TEST_EQUAL(format_str(t, "3"), "3h25m45.000s");
+        TRY(from_seconds(123456, t));      TEST_EQUAL(format_str(t, "3"), "1d10h17m36.000s");
+        TRY(from_seconds(1234567, t));     TEST_EQUAL(format_str(t, "3"), "14d06h56m07.000s");
+        TRY(from_seconds(12345678, t));    TEST_EQUAL(format_str(t, "3"), "142d21h21m18.000s");
+        TRY(from_seconds(123456789, t));   TEST_EQUAL(format_str(t, "3"), "1428d21h33m09.000s");
+        TRY(from_seconds(-0.25, t));       TEST_EQUAL(format_str(t, "3"), "-0.250s");
+        TRY(from_seconds(-1, t));          TEST_EQUAL(format_str(t, "3"), "-1.000s");
+        TRY(from_seconds(-1234, t));       TEST_EQUAL(format_str(t, "3"), "-20m34.000s");
+        TRY(from_seconds(-12345, t));      TEST_EQUAL(format_str(t, "3"), "-3h25m45.000s");
+        TRY(from_seconds(-123456, t));     TEST_EQUAL(format_str(t, "3"), "-1d10h17m36.000s");
+        TRY(from_seconds(-1234567, t));    TEST_EQUAL(format_str(t, "3"), "-14d06h56m07.000s");
+        TRY(from_seconds(-12345678, t));   TEST_EQUAL(format_str(t, "3"), "-142d21h21m18.000s");
+        TRY(from_seconds(-123456789, t));  TEST_EQUAL(format_str(t, "3"), "-1428d21h33m09.000s");
 
     }
 
