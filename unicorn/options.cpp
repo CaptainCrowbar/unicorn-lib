@@ -231,24 +231,25 @@ namespace RS {
         }
 
         void Options::add_help_version() {
-            if (find_index("help") == npos) {
-                option_type opt;
-                opt.name = "help";
-                opt.info = "Show usage information";
-                opt.is_boolean = true;
-                if (find_index("h") == npos)
-                    opt.abbrev = "h";
-                opts.push_back(opt);
+            auto it = opts.end();
+            if (! opts.empty()) {
+                do --it;
+                    while (it != opts.begin() && it->name.empty());
+                if (! it->name.empty())
+                    ++it;
             }
-            if (find_index("version") == npos) {
-                option_type opt;
-                opt.name = "version";
-                opt.info = "Show version information";
-                opt.is_boolean = true;
-                if (find_index("v") == npos)
-                    opt.abbrev = "v";
-                opts.push_back(opt);
-            }
+            option_type opt;
+            opt.is_boolean = true;
+            opt.name = "help";
+            opt.info = "Show usage information";
+            if (find_index("h") == npos)
+                opt.abbrev = "h";
+            it = opts.insert(it, opt);
+            opt.name = "version";
+            opt.info = "Show version information";
+            if (find_index("v") == npos)
+                opt.abbrev = "v";
+            opts.insert(++it, opt);
         }
 
         void Options::clean_up_arguments(string_list& args, uint32_t flags) {
