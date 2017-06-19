@@ -90,14 +90,13 @@ namespace RS {
             explicit Options(const U8string& info): app_info(str_trim(info)) {}
             Options& add(const U8string& info);
             template <typename... Args> Options& add(const U8string& name, const U8string& info, const Args&... args);
-            void autohelp() noexcept { help_auto = true; }
+            void add_help(bool automatic = false);
             U8string help() const;
             U8string version() const { return app_info; }
             template <typename C> bool parse(const std::vector<std::basic_string<C>>& args, std::ostream& out = std::cout, uint32_t flags = 0);
             template <typename C> bool parse(const std::basic_string<C>& args, std::ostream& out = std::cout, uint32_t flags = 0);
             template <typename C> bool parse(int argc, C** argv, std::ostream& out = std::cout, uint32_t flags = 0);
-            template <typename T> T get(const U8string& name) const
-                { return UnicornDetail::ArgConv<T>()(str_join(find_values(name), " ")); }
+            template <typename T> T get(const U8string& name) const { return UnicornDetail::ArgConv<T>()(str_join(find_values(name), " ")); }
             template <typename T> std::vector<T> get_list(const U8string& name) const;
             bool has(const U8string& name) const;
         private:
@@ -122,13 +121,12 @@ namespace RS {
             };
             using option_list = std::vector<option_type>;
             U8string app_info;
-            bool help_auto = false;
+            int help_flag = -1;
             option_list opts;
             void add_option(option_type opt);
             size_t find_index(U8string name, bool require = false) const;
             string_list find_values(const U8string& name) const;
             help_mode parse_args(string_list args, uint32_t flags);
-            void add_help_version();
             void clean_up_arguments(string_list& args, uint32_t flags);
             string_list parse_forced_anonymous(string_list& args);
             void parse_attached_arguments(string_list& args);
@@ -138,8 +136,7 @@ namespace RS {
             void check_required();
             void supply_defaults();
             void send_help(std::ostream& out, help_mode mode) const;
-            template <typename C> static U8string arg_convert(const std::basic_string<C>& str, uint32_t /*flags*/)
-                { return to_utf8(str); }
+            template <typename C> static U8string arg_convert(const std::basic_string<C>& str, uint32_t /*flags*/) { return to_utf8(str); }
             static U8string arg_convert(const std::string& str, uint32_t flags);
             static void add_arg_to_opt(const U8string& arg, option_type& opt);
             static void unquote(const U8string& src, string_list& dst);

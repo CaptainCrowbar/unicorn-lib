@@ -188,10 +188,8 @@ is <code>true</code>; the <code>"--no-whatever"</code> form can be used to switc
 <li>More than one of <code>opt_float</code>, <code>opt_int</code>, <code>opt_pattern</code>, and <code>opt_uint</code> is supplied.</li>
 <li>The <code>opt_default</code> and <code>opt_pattern</code> tags are both present, but the default value does not match the pattern.</li>
 </ul>
-<p>Do not explicitly add the standard <code>"--help"</code> and <code>"--version"</code> boolean
-options; these will be added automatically. They will be given the
-abbreviations <code>"-h"</code> and <code>"-v"</code> if these have not been claimed by other
-options.</p>
+<p>Do not explicitly add the standard <code>"--help"</code> and <code>"--version"</code> options here;
+these are added automatically, or optionally through <code>add_help()</code> (below).</p>
 <p>A program will normally construct an <code>Options</code> object and use multiple calls
 to <code>add()</code> to construct the option specification before calling <code>parse()</code> to
 parse the actual command line arguments. Once the arguments have been parsed,
@@ -199,10 +197,16 @@ the <code>get()</code>, <code>get_list()</code>, and <code>has()</code> function
 </div>
 <div class="defns">
 <ul>
-<li><code>void Options::</code><strong><code>autohelp</code></strong><code>() noexcept</code></li>
+<li><code>void Options::</code><strong><code>add_help</code></strong><code>(bool automatic = false)</code></li>
 </ul>
-<p>If this is set, calling the program with no arguments will be interpreted as a
-request for help (i.e. an empty argument list is equivalent to <code>"--help"</code>).</p>
+<p>Adds the standard <code>"--help"</code> and <code>"--version"</code> options. They will be given the
+abbreviations <code>"-h"</code> and <code>"-v"</code> if these have not been claimed by other
+options. These options will be added anyway even if <code>add_help()</code> has not been
+called; this is only required if you want to put them somewhere other than at
+the end of the option list, or to set the <code>automatic</code> flag.</p>
+<p>If the <code>automatic</code> flag is set, calling the program with no arguments will be
+interpreted as a request for help (i.e. an empty argument list is equivalent
+to <code>"--help"</code>).</p>
 </div>
 <div class="defns">
 <ul>

@@ -66,6 +66,24 @@ namespace RS {
             return *this;
         }
 
+        void Options::add_help(bool automatic) {
+            help_flag = int(automatic);
+            option_type opt;
+            opt.is_boolean = true;
+            opt.name = "help";
+            opt.info = "Show usage information";
+            if (find_index("h") == npos)
+                opt.abbrev = "h";
+            opts.push_back(opt);
+            opt = {};
+            opt.is_boolean = true;
+            opt.name = "version";
+            opt.info = "Show version information";
+            if (find_index("v") == npos)
+                opt.abbrev = "v";
+            opts.push_back(opt);
+        }
+
         U8string Options::help() const {
             static constexpr auto length_flags = grapheme_units | narrow_context;
             U8string text = "\n" + app_info + "\n";
@@ -212,9 +230,10 @@ namespace RS {
         }
 
         Options::help_mode Options::parse_args(string_list args, uint32_t flags) {
-            add_help_version();
+            if (help_flag == -1)
+                add_help();
             clean_up_arguments(args, flags);
-            if (help_auto && args.empty())
+            if (help_flag && args.empty())
                 return help_mode::usage;
             auto anon = parse_forced_anonymous(args);
             parse_attached_arguments(args);
@@ -228,28 +247,6 @@ namespace RS {
             check_required();
             supply_defaults();
             return help_mode::none;
-        }
-
-        void Options::add_help_version() {
-            auto it = opts.end();
-            if (! opts.empty()) {
-                do --it;
-                    while (it != opts.begin() && it->name.empty());
-                if (! it->name.empty())
-                    ++it;
-            }
-            option_type opt;
-            opt.is_boolean = true;
-            opt.name = "help";
-            opt.info = "Show usage information";
-            if (find_index("h") == npos)
-                opt.abbrev = "h";
-            it = opts.insert(it, opt);
-            opt.name = "version";
-            opt.info = "Show version information";
-            if (find_index("v") == npos)
-                opt.abbrev = "v";
-            opts.insert(++it, opt);
         }
 
         void Options::clean_up_arguments(string_list& args, uint32_t flags) {

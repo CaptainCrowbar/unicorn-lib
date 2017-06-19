@@ -121,20 +121,25 @@ Adding an option will throw `SpecError` if any of the following is true:
 * More than one of `opt_float`, `opt_int`, `opt_pattern`, and `opt_uint` is supplied.
 * The `opt_default` and `opt_pattern` tags are both present, but the default value does not match the pattern.
 
-Do not explicitly add the standard `"--help"` and `"--version"` boolean
-options; these will be added automatically. They will be given the
-abbreviations `"-h"` and `"-v"` if these have not been claimed by other
-options.
+Do not explicitly add the standard `"--help"` and `"--version"` options here;
+these are added automatically, or optionally through `add_help()` (below).
 
 A program will normally construct an `Options` object and use multiple calls
 to `add()` to construct the option specification before calling `parse()` to
 parse the actual command line arguments. Once the arguments have been parsed,
 the `get()`, `get_list()`, and `has()` functions can be used to query them.
 
-* `void Options::`**`autohelp`**`() noexcept`
+* `void Options::`**`add_help`**`(bool automatic = false)`
 
-If this is set, calling the program with no arguments will be interpreted as a
-request for help (i.e. an empty argument list is equivalent to `"--help"`).
+Adds the standard `"--help"` and `"--version"` options. They will be given the
+abbreviations `"-h"` and `"-v"` if these have not been claimed by other
+options. These options will be added anyway even if `add_help()` has not been
+called; this is only required if you want to put them somewhere other than at
+the end of the option list, or to set the `automatic` flag.
+
+If the `automatic` flag is set, calling the program with no arguments will be
+interpreted as a request for help (i.e. an empty argument list is equivalent
+to `"--help"`).
 
 * `U8string Options::`**`help`**`() const`
 * `U8string Options::`**`version`**`() const`

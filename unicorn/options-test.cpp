@@ -469,7 +469,7 @@ namespace {
 
         {
             TRY(opt2 = opt1);
-            TRY(opt2.autohelp());
+            TRY(opt2.add_help(true));
             cmdline = "app";
             std::ostringstream out;
             TEST(opt2.parse(cmdline, out));
