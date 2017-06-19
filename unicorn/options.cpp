@@ -145,7 +145,7 @@ namespace RS {
             bool opthdr = false, was_info = true;
             for (size_t i = 0; i < opts.size(); ++i) {
                 bool is_info = opts[i].name.empty();
-                if (is_info || was_info)
+                if (is_info || (was_info && ! ends_with(text, ":\n")))
                     text += "\n";
                 if (is_info) {
                     text += opts[i].info + "\n";
