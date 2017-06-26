@@ -70,7 +70,7 @@ namespace RS {
 
         void FileReader::init(const NativeString& file, uint32_t flags, const U8string& enc, const U8string& eol) {
             static const NativeString dashfile = RS_CSTR("-", NativeCharacter);
-            if (ibits(flags & (Error::replace | Error::throws)) > 1
+            if (ibits(flags & (UtfError::replace | UtfError::throws)) > 1
                     || ibits(flags & (IO::crlf | IO::lf | IO::striplf | IO::striptws | IO::stripws)) > 1)
                 throw std::invalid_argument("Inconsistent file I/O flags");
             impl = std::make_shared<impl_type>();
@@ -137,7 +137,7 @@ namespace RS {
             impl->rdbuf.erase(0, eolpos + eolbytes);
             if (impl->flags & (IO::lf | IO::crlf | IO::striplf | IO::striptws | IO::stripws))
                 encoded.resize(eolpos);
-            import_string(encoded, impl->line8, impl->enc, impl->flags & (Error::replace | Error::throws));
+            import_string(encoded, impl->line8, impl->enc, impl->flags & (UtfError::replace | UtfError::throws));
             fixline();
             ++impl->lines;
         }
@@ -178,7 +178,7 @@ namespace RS {
             static const NativeString dashfile{RS_CHAR('-', NativeCharacter)};
             static Mutex stdout_mutex;
             static Mutex stderr_mutex;
-            if (ibits(flags & (Error::replace | Error::throws)) > 1
+            if (ibits(flags & (UtfError::replace | UtfError::throws)) > 1
                     || ibits(flags & (IO::append | IO::protect)) > 1
                     || ibits(flags & (IO::autoline | IO::writeline)) > 1
                     || ibits(flags & (IO::crlf | IO::lf)) > 1
@@ -257,7 +257,7 @@ namespace RS {
                     impl->flags &= ~ IO::bom;
                 }
                 std::string encoded;
-                export_string(str, encoded, impl->enc, impl->flags & (Error::replace | Error::throws));
+                export_string(str, encoded, impl->enc, impl->flags & (UtfError::replace | UtfError::throws));
                 if (impl->mutex) {
                     MutexLock lock(*impl->mutex);
                     write_mbcs(encoded);

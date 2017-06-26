@@ -66,25 +66,26 @@ recognised as a line delimiter.
 The constructor will throw `std::invalid_argument` if an inconsistent
 combination of flags is supplied, `UnknownEncoding` if the encoding is not
 recognised, or `std::system_error` if anything goes wrong while opening the
-file. If the `Error::throws` option was selected, the constructor or increment
-operator may throw `EncodingError` if the file contains invalid text.
+file. If the `UtfError::throws` option was selected, the constructor or
+increment operator may throw `EncodingError` if the file contains invalid
+text.
 
 A dereferenced iterator yields one line of text from the file, optionally
 modified by the flags below.
 
-Flag                    | Description
-----                    | -----------
-`Error::`**`replace`**  | Replace invalid encoding with `U+FFFD` (default)
-`Error::`**`throws`**   | Throw `EncodingError` if invalid encoding is encountered
-`IO::`**`stdin`**       | Read from standard input if the file name is `"-"` or an empty string
-`IO::`**`pretend`**     | Treat a nonexistent file as empty instead of throwing an exception
-`IO::`**`bom`**         | Strip a leading byte order mark if one is found
-`IO::`**`lf`**          | Convert all line breaks to `LF`
-`IO::`**`crlf`**        | Convert all line breaks to `CR+LF`
-`IO::`**`striplf`**     | Strip trailing line breaks from each line
-`IO::`**`striptws`**    | Strip trailing whitespace from each line (implies `striplf`)
-`IO::`**`stripws`**     | Strip leading and trailing whitespace from each line (implies `striplf`)
-`IO::`**`notempty`**    | Skip empty lines (after any whitespace stripping)
+Flag                       | Description
+----                       | -----------
+`IO::`**`stdin`**          | Read from standard input if the file name is `"-"` or an empty string
+`IO::`**`pretend`**        | Treat a nonexistent file as empty instead of throwing an exception
+`IO::`**`bom`**            | Strip a leading byte order mark if one is found
+`IO::`**`lf`**             | Convert all line breaks to `LF`
+`IO::`**`crlf`**           | Convert all line breaks to `CR+LF`
+`IO::`**`striplf`**        | Strip trailing line breaks from each line
+`IO::`**`striptws`**       | Strip trailing whitespace from each line (implies `striplf`)
+`IO::`**`stripws`**        | Strip leading and trailing whitespace from each line (implies `striplf`)
+`IO::`**`notempty`**       | Skip empty lines (after any whitespace stripping)
+`UtfError::`**`replace`**  | Replace invalid encoding with `U+FFFD` (default)
+`UtfError::`**`throws`**   | Throw `EncodingError` if invalid encoding is encountered
 
 * `Irange<FileReader>` **`read_lines`**`(const U8string& file, uint32_t flags = 0)`
 * `Irange<FileReader>` **`read_lines`**`(const U8string& file, uint32_t flags, const U8string& enc)`
@@ -133,19 +134,19 @@ written one line at a time; a single output string can contain multiple lines.
 See the [`unicorn/mbcs`](mbcs.html) documentation for the behaviour of the
 error handling flags on output.
 
-Flag                    | Description
-----                    | -----------
-`Error::`**`replace`**  | Replace encoding errors (default)
-`Error::`**`throws`**   | Throw `EncodingError` on encoding errors
-`IO::`**`standout`**    | Write to standard output if the file name is `"-"` or an empty string
-`IO::`**`standerr`**    | Write to standard error if the file name is `"-"` or an empty string
-`IO::`**`append`**      | Open an existing file for appending instead of overwriting it
-`IO::`**`protect`**     | Throw `system_error(file_exists)` if the file already exists
-`IO::`**`bom`**         | Insert a leading byte order mark if the first output string does not contain one
-`IO::`**`lf`**          | Convert all line breaks to `LF`
-`IO::`**`crlf`**        | Convert all line breaks to `CR+LF`
-`IO::`**`writeline`**   | Write a line feed after every write
-`IO::`**`autoline`**    | Write a line feed after every write that does not already end with one
-`IO::`**`linebuf`**     | Line buffered output
-`IO::`**`unbuf`**       | Unbuffered output
-`IO::`**`mutex`**       | Hold a per-file mutex while writing, to allow coherent multithreaded output
+Flag                       | Description
+----                       | -----------
+`IO::`**`standout`**       | Write to standard output if the file name is `"-"` or an empty string
+`IO::`**`standerr`**       | Write to standard error if the file name is `"-"` or an empty string
+`IO::`**`append`**         | Open an existing file for appending instead of overwriting it
+`IO::`**`protect`**        | Throw `system_error(file_exists)` if the file already exists
+`IO::`**`bom`**            | Insert a leading byte order mark if the first output string does not contain one
+`IO::`**`lf`**             | Convert all line breaks to `LF`
+`IO::`**`crlf`**           | Convert all line breaks to `CR+LF`
+`IO::`**`writeline`**      | Write a line feed after every write
+`IO::`**`autoline`**       | Write a line feed after every write that does not already end with one
+`IO::`**`linebuf`**        | Line buffered output
+`IO::`**`unbuf`**          | Unbuffered output
+`IO::`**`mutex`**          | Hold a per-file mutex while writing, to allow coherent multithreaded output
+`UtfError::`**`replace`**  | Replace encoding errors (default)
+`UtfError::`**`throws`**   | Throw `EncodingError` on encoding errors

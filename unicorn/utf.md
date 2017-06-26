@@ -17,15 +17,15 @@ UTF-32; `wstring` may hold either UTF-16 or UTF-32, depending on the compiler.
 
 ## Constants ##
 
-* `namespace` **`Error`**
+* `namespace` **`UtfError`**
 
 This exists only to provide a namespace for the error handling constants.
 
-Flag                    | Description
-----                    | -----------
-`Error::`**`ignore`**   | Assume valid UTF input
-`Error::`**`replace`**  | Replace invalid UTF with `U+FFFD`
-`Error::`**`throws`**   | Throw `EncodingError` on invalid UTF
+Flag                       | Description
+----                       | -----------
+`UtfError::`**`ignore`**   | Assume valid UTF input
+`UtfError::`**`replace`**  | Replace invalid UTF with `U+FFFD`
+`UtfError::`**`throws`**   | Throw `EncodingError` on invalid UTF
 
 These bitmask flags are used in most encoding conversion functions, and some
 related functions, to indicate how to handle encoding errors in the input
@@ -53,8 +53,8 @@ manipulation within a program will be done entirely in Unicode; text is
 normally converted back and forth to other encodings, and checked for
 validity, only at the point of input and output. Unlike the UTF conversion
 functions in this module, the functions in [`unicorn/mbcs`](mbcs.html) that
-convert between Unicode and other encodings default to `Error::replace`, and
-do not accept the `Error::ignore` option.
+convert between Unicode and other encodings default to `UtfError::replace`,
+and do not accept the `UtfError::ignore` option.
 
 ## Single character functions ##
 
@@ -149,8 +149,8 @@ the end, but behaviour is undefined if this is called on any other kind of
 invalid iterator.
 
 The `valid()` function indicates whether the current character is valid; it
-will always be true if `Error::ignore` was set, and its value is unspecified
-on a past-the-end iterator.
+will always be true if `UtfError::ignore` was set, and its value is
+unspecified on a past-the-end iterator.
 
 If the underlying string is UTF-32, this is just a simple pass-through
 iterator, but if one of the non-default error handling options is selected, it

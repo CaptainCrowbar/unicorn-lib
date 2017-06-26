@@ -81,8 +81,9 @@ recognised as a line delimiter.</p>
 <p>The constructor will throw <code>std::invalid_argument</code> if an inconsistent
 combination of flags is supplied, <code>UnknownEncoding</code> if the encoding is not
 recognised, or <code>std::system_error</code> if anything goes wrong while opening the
-file. If the <code>Error::throws</code> option was selected, the constructor or increment
-operator may throw <code>EncodingError</code> if the file contains invalid text.</p>
+file. If the <code>UtfError::throws</code> option was selected, the constructor or
+increment operator may throw <code>EncodingError</code> if the file contains invalid
+text.</p>
 <p>A dereferenced iterator yields one line of text from the file, optionally
 modified by the flags below.</p>
 <table>
@@ -93,14 +94,6 @@ modified by the flags below.</p>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td><code>Error::</code><strong><code>replace</code></strong></td>
-<td>Replace invalid encoding with <code>U+FFFD</code> (default)</td>
-</tr>
-<tr>
-<td><code>Error::</code><strong><code>throws</code></strong></td>
-<td>Throw <code>EncodingError</code> if invalid encoding is encountered</td>
-</tr>
 <tr>
 <td><code>IO::</code><strong><code>stdin</code></strong></td>
 <td>Read from standard input if the file name is <code>"-"</code> or an empty string</td>
@@ -136,6 +129,14 @@ modified by the flags below.</p>
 <tr>
 <td><code>IO::</code><strong><code>notempty</code></strong></td>
 <td>Skip empty lines (after any whitespace stripping)</td>
+</tr>
+<tr>
+<td><code>UtfError::</code><strong><code>replace</code></strong></td>
+<td>Replace invalid encoding with <code>U+FFFD</code> (default)</td>
+</tr>
+<tr>
+<td><code>UtfError::</code><strong><code>throws</code></strong></td>
+<td>Throw <code>EncodingError</code> if invalid encoding is encountered</td>
 </tr>
 </tbody>
 </table>
@@ -198,14 +199,6 @@ error handling flags on output.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>Error::</code><strong><code>replace</code></strong></td>
-<td>Replace encoding errors (default)</td>
-</tr>
-<tr>
-<td><code>Error::</code><strong><code>throws</code></strong></td>
-<td>Throw <code>EncodingError</code> on encoding errors</td>
-</tr>
-<tr>
 <td><code>IO::</code><strong><code>standout</code></strong></td>
 <td>Write to standard output if the file name is <code>"-"</code> or an empty string</td>
 </tr>
@@ -252,6 +245,14 @@ error handling flags on output.</p>
 <tr>
 <td><code>IO::</code><strong><code>mutex</code></strong></td>
 <td>Hold a per-file mutex while writing, to allow coherent multithreaded output</td>
+</tr>
+<tr>
+<td><code>UtfError::</code><strong><code>replace</code></strong></td>
+<td>Replace encoding errors (default)</td>
+</tr>
+<tr>
+<td><code>UtfError::</code><strong><code>throws</code></strong></td>
+<td>Throw <code>EncodingError</code> on encoding errors</td>
 </tr>
 </tbody>
 </table></body>

@@ -14,7 +14,7 @@ namespace RS {
         // Remember that any other set of flags that might be combined with these
         // needs to skip the bits that are already spoken for.
 
-        namespace Error {
+        namespace UtfError {
             constexpr uint32_t ignore = 1;   // Assume valid UTF input
             constexpr uint32_t replace = 2;  // Replace invalid UTF with U+FFFD
             constexpr uint32_t throws = 4;   // Throw EncodingError on invalid UTF
@@ -183,9 +183,9 @@ namespace RS {
             using code_unit = C;
             using string_type = std::basic_string<C>;
             UtfIterator() noexcept { static const string_type dummy; sptr = &dummy; }
-            explicit UtfIterator(const string_type& src): sptr(&src) { if (ibits(fset & Error::mask) == 0) fset |= Error::ignore; ++*this; }
+            explicit UtfIterator(const string_type& src): sptr(&src) { if (ibits(fset & UtfError::mask) == 0) fset |= UtfError::ignore; ++*this; }
             UtfIterator(const string_type& src, size_t offset, uint32_t flags = 0):
-                sptr(&src), ofs(std::min(offset, src.size())), fset(flags) { if (ibits(fset & Error::mask) == 0) fset |= Error::ignore; ++*this; }
+                sptr(&src), ofs(std::min(offset, src.size())), fset(flags) { if (ibits(fset & UtfError::mask) == 0) fset |= UtfError::ignore; ++*this; }
             const char32_t& operator*() const noexcept { return u; }
             UtfIterator& operator++();
             UtfIterator& operator--();
@@ -202,7 +202,7 @@ namespace RS {
             size_t ofs = 0;                     // Offset of current character in source
             size_t units = 0;                   // Code units in current character
             char32_t u = 0;                     // Current decoded character
-            uint32_t fset = Error::ignore;      // Error handling flag
+            uint32_t fset = UtfError::ignore;   // Error handling flag
             bool ok = false;                    // Current character is valid
         };
 
@@ -215,7 +215,7 @@ namespace RS {
             ok = false;
             if (ofs == sptr->size()) {
                 // do nothing
-            } else if (fset & Error::ignore) {
+            } else if (fset & UtfError::ignore) {
                 units = UtfEncoding<C>::decode_fast(sptr->data() + ofs, sptr->size() - ofs, u);
                 ok = true;
             } else {
@@ -223,7 +223,7 @@ namespace RS {
                 ok = char_is_unicode(u);
                 if (! ok) {
                     u = replacement_char;
-                    if (fset & Error::throws)
+                    if (fset & UtfError::throws)
                         throw EncodingError(UtfEncoding<C>::name(), ofs, sptr->data() + ofs, units);
                 }
             }
@@ -240,10 +240,10 @@ namespace RS {
                 return *this;
             units = UtfEncoding<C>::decode_prev(sptr->data(), ofs, u);
             ofs -= units;
-            ok = (fset & Error::ignore) || char_is_unicode(u);
+            ok = (fset & UtfError::ignore) || char_is_unicode(u);
             if (! ok) {
                 u = replacement_char;
-                if (fset & Error::throws)
+                if (fset & UtfError::throws)
                     throw EncodingError(UtfEncoding<C>::name(), ofs, sptr->data() + ofs, units);
             }
             return *this;
@@ -316,14 +316,14 @@ namespace RS {
             using code_unit = C;
             using string_type = std::basic_string<C>;
             UtfWriter() noexcept {}
-            explicit UtfWriter(string_type& dst) noexcept: sptr(&dst) { if (ibits(fset & Error::mask) == 0) fset |= Error::ignore; }
-            UtfWriter(string_type& dst, uint32_t flags) noexcept: sptr(&dst), fset(flags) { if (ibits(fset & Error::mask) == 0) fset |= Error::ignore; }
+            explicit UtfWriter(string_type& dst) noexcept: sptr(&dst) { if (ibits(fset & UtfError::mask) == 0) fset |= UtfError::ignore; }
+            UtfWriter(string_type& dst, uint32_t flags) noexcept: sptr(&dst), fset(flags) { if (ibits(fset & UtfError::mask) == 0) fset |= UtfError::ignore; }
             UtfWriter& operator=(char32_t u);
             bool valid() const noexcept { return ok; }
         private:
-            string_type* sptr = nullptr;    // Destination string
-            uint32_t fset = Error::ignore;  // Error handling flag
-            bool ok = false;                // Most recent character is valid
+            string_type* sptr = nullptr;       // Destination string
+            uint32_t fset = UtfError::ignore;  // Error handling flag
+            bool ok = false;                   // Most recent character is valid
         };
 
         template <typename C>
@@ -331,7 +331,7 @@ namespace RS {
             using namespace UnicornDetail;
             if (! sptr)
                 return *this;
-            bool fast = fset & Error::ignore;
+            bool fast = fset & UtfError::ignore;
             auto pos = sptr->size();
             sptr->resize(pos + UtfEncoding<C>::max_units);
             size_t rc = 0;
@@ -343,7 +343,7 @@ namespace RS {
             } else {
                 ok = rc > 0;
                 if (! ok) {
-                    if (fset & Error::throws)
+                    if (fset & UtfError::throws)
                         throw EncodingError(UtfEncoding<C>::name(), pos, &u);
                     else
                         append_error(*sptr);
@@ -371,15 +371,15 @@ namespace RS {
                 void operator()(const C1* src, size_t n, std::basic_string<C2>& dst, uint32_t flags) const {
                     if (! src)
                         return;
-                    if (ibits(flags & Error::mask) == 0)
-                        flags |= Error::ignore;
+                    if (ibits(flags & UtfError::mask) == 0)
+                        flags |= UtfError::ignore;
                     size_t pos = 0;
                     char32_t u = 0;
                     C2 buf[UtfEncoding<C2>::max_units];
                     while (pos < n) {
                         auto rc = UtfEncoding<C1>::decode(src + pos, n - pos, u);
-                        if (! (flags & Error::ignore) && ! char_is_unicode(u)) {
-                            if (flags & Error::throws)
+                        if (! (flags & UtfError::ignore) && ! char_is_unicode(u)) {
+                            if (flags & UtfError::throws)
                                 throw EncodingError(UtfEncoding<C1>::name(), pos, src + pos, rc);
                             u = replacement_char;
                         }
@@ -395,11 +395,11 @@ namespace RS {
                 void operator()(const C1* src, size_t n, std::u32string& dst, uint32_t flags) const {
                     if (! src)
                         return;
-                    if (ibits(flags & Error::mask) == 0)
-                        flags |= Error::ignore;
+                    if (ibits(flags & UtfError::mask) == 0)
+                        flags |= UtfError::ignore;
                     size_t pos = 0;
                     char32_t u = 0;
-                    if (flags & Error::ignore) {
+                    if (flags & UtfError::ignore) {
                         while (pos < n) {
                             pos += UtfEncoding<C1>::decode(src + pos, n - pos, u);
                             dst += u;
@@ -409,7 +409,7 @@ namespace RS {
                             auto rc = UtfEncoding<C1>::decode(src + pos, n - pos, u);
                             if (char_is_unicode(u))
                                 dst += u;
-                            else if (flags & Error::throws)
+                            else if (flags & UtfError::throws)
                                 throw EncodingError(UtfEncoding<C1>::name(), pos, src + pos, rc);
                             else
                                 dst += replacement_char;
@@ -424,16 +424,16 @@ namespace RS {
                 void operator()(const char32_t* src, size_t n, std::basic_string<C2>& dst, uint32_t flags) const {
                     if (! src)
                         return;
-                    if (ibits(flags & Error::mask) == 0)
-                        flags |= Error::ignore;
+                    if (ibits(flags & UtfError::mask) == 0)
+                        flags |= UtfError::ignore;
                     char32_t u = 0;
                     C2 buf[UtfEncoding<C2>::max_units];
                     for (size_t pos = 0; pos < n; ++pos) {
                         if (n == npos && src[pos] == 0)
                             break;
-                        else if ((flags & Error::ignore) || char_is_unicode(src[pos]))
+                        else if ((flags & UtfError::ignore) || char_is_unicode(src[pos]))
                             u = src[pos];
-                        else if (flags & Error::throws)
+                        else if (flags & UtfError::throws)
                             throw EncodingError(UtfEncoding<char32_t>::name(), pos, src + pos);
                         else
                             u = replacement_char;
@@ -448,12 +448,12 @@ namespace RS {
                 void operator()(const C* src, size_t n, std::basic_string<C>& dst, uint32_t flags) const {
                     if (! src)
                         return;
-                    if (ibits(flags & Error::mask) == 0)
-                        flags |= Error::ignore;
+                    if (ibits(flags & UtfError::mask) == 0)
+                        flags |= UtfError::ignore;
                     size_t pos = 0;
                     char32_t u = 0;
                     C buf[UtfEncoding<C>::max_units];
-                    if (flags & Error::ignore) {
+                    if (flags & UtfError::ignore) {
                         while (pos < n) {
                             auto rc = UtfEncoding<C>::decode(src + pos, n - pos, u);
                             dst.append(src + pos, rc);
@@ -464,7 +464,7 @@ namespace RS {
                             auto rc = UtfEncoding<C>::decode(src + pos, n - pos, u);
                             if (char_is_unicode(u)) {
                                 dst.append(src + pos, rc);
-                            } else if (flags & Error::throws) {
+                            } else if (flags & UtfError::throws) {
                                 throw EncodingError(UtfEncoding<C>::name(), pos, src + pos, rc);
                             } else {
                                 auto rc2 = UtfEncoding<C>::encode(replacement_char, buf);
@@ -481,14 +481,14 @@ namespace RS {
                 void operator()(const char32_t* src, size_t n, std::u32string& dst, uint32_t flags) const {
                     if (! src)
                         return;
-                    if (ibits(flags & Error::mask) == 0)
-                        flags |= Error::ignore;
+                    if (ibits(flags & UtfError::mask) == 0)
+                        flags |= UtfError::ignore;
                     for (size_t pos = 0; pos < n; ++pos) {
                         if (n == npos && src[pos] == 0)
                             break;
-                        else if ((flags & Error::throws) || char_is_unicode(src[pos]))
+                        else if ((flags & UtfError::throws) || char_is_unicode(src[pos]))
                             dst += src[pos];
-                        else if (flags & Error::throws)
+                        else if (flags & UtfError::throws)
                             throw EncodingError(UtfEncoding<char32_t>::name(), pos, src + pos);
                         else
                             dst += replacement_char;
@@ -595,14 +595,14 @@ namespace RS {
         template <typename C>
         std::basic_string<C> sanitize(const std::basic_string<C>& str) {
             std::basic_string<C> result;
-            recode(str, result, Error::replace);
+            recode(str, result, UtfError::replace);
             return result;
         }
 
         template <typename C>
         void sanitize_in(std::basic_string<C>& str) {
             std::basic_string<C> result;
-            recode(str, result, Error::replace);
+            recode(str, result, UtfError::replace);
             str.swap(result);
         }
 

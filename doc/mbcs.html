@@ -68,14 +68,14 @@ of leeway for variations in punctuation and capitalization, but since we are
 relying on system APIs for the actual conversion, no promises can be made
 about any particular encoding (other than the UTF encodings) being correctly
 recognised and handled.</p>
-<p>The <code>flags</code> argument can be <code>Error::replace</code> (the default) or <code>Error::throws</code>
-(these are defined in <a href="utf.html"><code>unicorn/utf</code></a>). If <code>Error::replace</code> is
-selected, invalid data in the input string will be replaced with a system-
-defined replacement character (not necessarily <code>U+FFFD</code>); if <code>Error::throws</code>
-is selected, invalid data will cause an <code>EncodingError</code> exception to be
-thrown, if this is detectable (see below).</p>
+<p>The <code>flags</code> argument can be <code>UtfError::replace</code> (the default) or
+<code>UtfError::throws</code> (these are defined in <a href="utf.html"><code>unicorn/utf</code></a>). If
+<code>UtfError::replace</code> is selected, invalid data in the input string will be
+replaced with a system- defined replacement character (not necessarily
+<code>U+FFFD</code>); if <code>UtfError::throws</code> is selected, invalid data will cause an
+<code>EncodingError</code> exception to be thrown, if this is detectable (see below).</p>
 <p>Ignoring invalid encoding is not allowed here; if any MBCS function that takes
-a <code>flags</code> argument is passed the <code>Error::ignore</code> flags, it will throw
+a <code>flags</code> argument is passed the <code>UtfError::ignore</code> flags, it will throw
 <code>std::invalid_argument</code>.</p>
 <p>If the constant <code>mb_strict</code> is included in the <code>flags</code>, no attempt will be
 made to translate the encoding name or number supplied into an equivalent

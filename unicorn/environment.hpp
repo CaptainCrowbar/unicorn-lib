@@ -41,23 +41,23 @@ namespace RS {
             void unset_env(const std::wstring& name);
 
             inline U8string expand_env(const U8string& src, uint32_t flags = native_env) {
-                return to_utf8(expand_env(to_wstring(src, Error::replace), flags), Error::replace);
+                return to_utf8(expand_env(to_wstring(src, UtfError::replace), flags), UtfError::replace);
             }
 
             inline U8string get_env(const U8string& name) {
-                return to_utf8(get_env(to_wstring(name, Error::replace)), Error::replace);
+                return to_utf8(get_env(to_wstring(name, UtfError::replace)), UtfError::replace);
             }
 
             inline bool has_env(const U8string& name) {
-                return has_env(to_wstring(name, Error::replace));
+                return has_env(to_wstring(name, UtfError::replace));
             }
 
             inline void set_env(const U8string& name, const U8string& value) {
-                set_env(to_wstring(name, Error::replace), to_wstring(value, Error::replace));
+                set_env(to_wstring(name, UtfError::replace), to_wstring(value, UtfError::replace));
             }
 
             inline void unset_env(const U8string& name) {
-                unset_env(to_wstring(name, Error::replace));
+                unset_env(to_wstring(name, UtfError::replace));
             }
 
         #endif
