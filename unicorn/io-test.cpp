@@ -34,7 +34,7 @@ namespace {
         TempFile tempfile(testfile);
 
         TEST_THROW(range = read_lines(nonesuch), std::system_error);
-        TRY(range = read_lines(nonesuch, io_pretend));
+        TRY(range = read_lines(nonesuch, IO::pretend));
         TEST_EQUAL(range_count(range), 0);
 
         TRY(save_file(testfile,
@@ -118,47 +118,47 @@ namespace {
             "\x80uro\n"
             "Pound\n"
         ));
-        TRY(range = read_lines(testfile, err_throw));
+        TRY(range = read_lines(testfile, Error::throws));
         TEST_THROW(std::copy(range.begin(), range.end(), overwrite(vec)), EncodingError);
 
         TRY(save_file(testfile, "Hello world\nGoodbye\n"));
-        TRY(range = read_lines(testfile, io_bom));
+        TRY(range = read_lines(testfile, IO::bom));
         TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 2);
         TEST_EQUAL_RANGE(vec, (u8vector{"Hello world\n", "Goodbye\n"}));
 
         TRY(save_file(testfile, u8"\ufeffHello world\nGoodbye\n"));
-        TRY(range = read_lines(testfile, io_bom));
+        TRY(range = read_lines(testfile, IO::bom));
         TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 2);
         TEST_EQUAL_RANGE(vec, (u8vector{"Hello world\n", "Goodbye\n"}));
 
         TRY(save_file(testfile, "Hello world\nGoodbye\n"));
-        TRY(range = read_lines(testfile, io_lf));
+        TRY(range = read_lines(testfile, IO::lf));
         TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 2);
         TEST_EQUAL_RANGE(vec, (u8vector{"Hello world\n", "Goodbye\n"}));
-        TRY(range = read_lines(testfile, io_crlf));
+        TRY(range = read_lines(testfile, IO::crlf));
         TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 2);
         TEST_EQUAL_RANGE(vec, (u8vector{"Hello world\r\n", "Goodbye\r\n"}));
 
         TRY(save_file(testfile, "Hello world\r\nGoodbye\r\n"));
-        TRY(range = read_lines(testfile, io_lf));
+        TRY(range = read_lines(testfile, IO::lf));
         TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 2);
         TEST_EQUAL_RANGE(vec, (u8vector{"Hello world\n", "Goodbye\n"}));
-        TRY(range = read_lines(testfile, io_crlf));
+        TRY(range = read_lines(testfile, IO::crlf));
         TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 2);
         TEST_EQUAL_RANGE(vec, (u8vector{"Hello world\r\n", "Goodbye\r\n"}));
 
         TRY(save_file(testfile, "Hello world\rGoodbye\r"));
-        TRY(range = read_lines(testfile, io_lf));
+        TRY(range = read_lines(testfile, IO::lf));
         TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 2);
         TEST_EQUAL_RANGE(vec, (u8vector{"Hello world\n", "Goodbye\n"}));
-        TRY(range = read_lines(testfile, io_crlf));
+        TRY(range = read_lines(testfile, IO::crlf));
         TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 2);
         TEST_EQUAL_RANGE(vec, (u8vector{"Hello world\r\n", "Goodbye\r\n"}));
@@ -186,7 +186,7 @@ namespace {
             "Goodbye\n",
             "\n",
         }));
-        TRY(range = read_lines(testfile, io_striplf));
+        TRY(range = read_lines(testfile, IO::striplf));
         TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 8);
         TEST_EQUAL_RANGE(vec, (u8vector{
@@ -199,7 +199,7 @@ namespace {
             "Goodbye",
             "",
         }));
-        TRY(range = read_lines(testfile, io_striptws));
+        TRY(range = read_lines(testfile, IO::striptws));
         TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 8);
         TEST_EQUAL_RANGE(vec, (u8vector{
@@ -212,7 +212,7 @@ namespace {
             "Goodbye",
             "",
         }));
-        TRY(range = read_lines(testfile, io_stripws));
+        TRY(range = read_lines(testfile, IO::stripws));
         TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 8);
         TEST_EQUAL_RANGE(vec, (u8vector{
@@ -225,7 +225,7 @@ namespace {
             "Goodbye",
             "",
         }));
-        TRY(range = read_lines(testfile, io_notempty));
+        TRY(range = read_lines(testfile, IO::notempty));
         TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 6);
         TEST_EQUAL_RANGE(vec, (u8vector{
@@ -236,7 +236,7 @@ namespace {
             "    \n",
             "Goodbye\n",
         }));
-        TRY(range = read_lines(testfile, io_stripws | io_notempty));
+        TRY(range = read_lines(testfile, IO::stripws | IO::notempty));
         TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 4);
         TEST_EQUAL_RANGE(vec, (u8vector{
@@ -259,7 +259,7 @@ namespace {
             "7:Goodbye\n"
             "8:\n"
         );
-        TRY(range = read_lines(testfile, io_stripws | io_notempty));
+        TRY(range = read_lines(testfile, IO::stripws | IO::notempty));
         s.clear();
         for (auto fr = range.begin(); fr != range.end(); ++fr)
             TRY(s += dec(fr.line()) + ":"+ *fr + "\n");
@@ -277,13 +277,13 @@ namespace {
         TEST_EQUAL_RANGE(vec, (u8vector{"Hello world!!", "Goodbye!!"}));
 
         TRY(save_file(testfile, "Hello world!!Goodbye!!"));
-        TRY(range = read_lines(testfile, io_striplf, ""s, "!!"s));
+        TRY(range = read_lines(testfile, IO::striplf, ""s, "!!"s));
         TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 2);
         TEST_EQUAL_RANGE(vec, (u8vector{"Hello world", "Goodbye"}));
 
         TRY(save_file(testfile, "Hello world!!Goodbye!!"));
-        TRY(range = read_lines(testfile, io_lf, ""s, "!!"s));
+        TRY(range = read_lines(testfile, IO::lf, ""s, "!!"s));
         TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 2);
         TEST_EQUAL_RANGE(vec, (u8vector{"Hello world\n", "Goodbye\n"}));
@@ -331,19 +331,19 @@ namespace {
         // Error detection is not reliable on Windows
         #ifdef _XOPEN_SOURCE
             vec = {u8"Hello €urope\n", "Goodbye\n"};
-            TRY(writer = FileWriter(testfile, err_throw, "ascii"s));
+            TRY(writer = FileWriter(testfile, Error::throws, "ascii"s));
             TEST_THROW(std::copy(vec.begin(), vec.end(), writer), EncodingError);
         #endif
 
         vec = {"Hello world\n", "Goodbye\n"};
-        TRY(writer = FileWriter(testfile, io_bom));
+        TRY(writer = FileWriter(testfile, IO::bom));
         TRY(std::copy(vec.begin(), vec.end(), writer));
         TRY(writer.flush());
         TRY(load_file(testfile, s));
         TEST_EQUAL(s, u8"\ufeffHello world\nGoodbye\n");
 
         vec = {u8"\ufeffHello world\n", "Goodbye\n"};
-        TRY(writer = FileWriter(testfile, io_bom));
+        TRY(writer = FileWriter(testfile, IO::bom));
         TRY(std::copy(vec.begin(), vec.end(), writer));
         TRY(writer.flush());
         TRY(load_file(testfile, s));
@@ -351,80 +351,80 @@ namespace {
 
         TRY(writer = FileWriter(testfile));
         TRY(*writer++ = "Hello world\n");
-        TRY(writer = FileWriter(testfile, io_append));
+        TRY(writer = FileWriter(testfile, IO::append));
         TRY(*writer++ = "Goodbye\n");
         TRY(writer = FileWriter());
         TRY(load_file(testfile, s));
         TEST_EQUAL(s, "Hello world\nGoodbye\n");
 
-        TEST_THROW(FileWriter(testfile, io_protect), std::system_error);
+        TEST_THROW(FileWriter(testfile, IO::protect), std::system_error);
 
         vec = {"Hello world\n", "Goodbye\n"};
-        TRY(writer = FileWriter(testfile, io_lf));
+        TRY(writer = FileWriter(testfile, IO::lf));
         TRY(std::copy(vec.begin(), vec.end(), writer));
         TRY(writer.flush());
         TRY(load_file(testfile, s));
         TEST_EQUAL(s, "Hello world\nGoodbye\n");
-        TRY(writer = FileWriter(testfile, io_crlf));
+        TRY(writer = FileWriter(testfile, IO::crlf));
         TRY(std::copy(vec.begin(), vec.end(), writer));
         TRY(writer.flush());
         TRY(load_file(testfile, s));
         TEST_EQUAL(s, "Hello world\r\nGoodbye\r\n");
 
         vec = {"Hello world\r\n", "Goodbye\r\n"};
-        TRY(writer = FileWriter(testfile, io_lf));
+        TRY(writer = FileWriter(testfile, IO::lf));
         TRY(std::copy(vec.begin(), vec.end(), writer));
         TRY(writer.flush());
         TRY(load_file(testfile, s));
         TEST_EQUAL(s, "Hello world\nGoodbye\n");
-        TRY(writer = FileWriter(testfile, io_crlf));
+        TRY(writer = FileWriter(testfile, IO::crlf));
         TRY(std::copy(vec.begin(), vec.end(), writer));
         TRY(writer.flush());
         TRY(load_file(testfile, s));
         TEST_EQUAL(s, "Hello world\r\nGoodbye\r\n");
 
         vec = {"Hello world\r", "Goodbye\r"};
-        TRY(writer = FileWriter(testfile, io_lf));
+        TRY(writer = FileWriter(testfile, IO::lf));
         TRY(std::copy(vec.begin(), vec.end(), writer));
         TRY(writer.flush());
         TRY(load_file(testfile, s));
         TEST_EQUAL(s, "Hello world\nGoodbye\n");
-        TRY(writer = FileWriter(testfile, io_crlf));
+        TRY(writer = FileWriter(testfile, IO::crlf));
         TRY(std::copy(vec.begin(), vec.end(), writer));
         TRY(writer.flush());
         TRY(load_file(testfile, s));
         TEST_EQUAL(s, "Hello world\r\nGoodbye\r\n");
 
         vec = {"Hello world", "Goodbye"};
-        TRY(writer = FileWriter(testfile, io_writeline));
+        TRY(writer = FileWriter(testfile, IO::writeline));
         TRY(std::copy(vec.begin(), vec.end(), writer));
         TRY(writer.flush());
         TRY(load_file(testfile, s));
         TEST_EQUAL(s, "Hello world\nGoodbye\n");
 
         vec = {"Hello world", "Goodbye"};
-        TRY(writer = FileWriter(testfile, io_crlf | io_writeline));
+        TRY(writer = FileWriter(testfile, IO::crlf | IO::writeline));
         TRY(std::copy(vec.begin(), vec.end(), writer));
         TRY(writer.flush());
         TRY(load_file(testfile, s));
         TEST_EQUAL(s, "Hello world\r\nGoodbye\r\n");
 
         vec = {"North", "South\n", "East", "West\r\n"};
-        TRY(writer = FileWriter(testfile, io_autoline));
+        TRY(writer = FileWriter(testfile, IO::autoline));
         TRY(std::copy(vec.begin(), vec.end(), writer));
         TRY(writer.flush());
         TRY(load_file(testfile, s));
         TEST_EQUAL(s, "North\nSouth\nEast\nWest\r\n");
 
         vec = {"North", "South\n", "East", "West\r\n"};
-        TRY(writer = FileWriter(testfile, io_lf | io_autoline));
+        TRY(writer = FileWriter(testfile, IO::lf | IO::autoline));
         TRY(std::copy(vec.begin(), vec.end(), writer));
         TRY(writer.flush());
         TRY(load_file(testfile, s));
         TEST_EQUAL(s, "North\nSouth\nEast\nWest\n");
 
         vec = {"North", "South\n", "East", "West\r\n"};
-        TRY(writer = FileWriter(testfile, io_crlf | io_autoline));
+        TRY(writer = FileWriter(testfile, IO::crlf | IO::autoline));
         TRY(std::copy(vec.begin(), vec.end(), writer));
         TRY(writer.flush());
         TRY(load_file(testfile, s));

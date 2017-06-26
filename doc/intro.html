@@ -85,7 +85,7 @@ int main(int argc, char** argv) {
 
         std::map&lt;U8string, size_t&gt; census;
 
-        for (auto&amp; line: read_lines(input_file, io_stdin, input_encoding))
+        for (auto&amp; line: read_lines(input_file, IO::standin, input_encoding))
             for (auto&amp; word: word_range(line, alpha_words))
                 ++census[str_lowercase(normalize(u_str(word), NFC))];
 

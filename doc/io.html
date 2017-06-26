@@ -25,11 +25,20 @@ handled.</p>
 <ul>
 <li><a href="#unicorn-library-input-and-output">Unicorn Library: Input and Output</a><ul>
 <li><a href="#contents">Contents</a></li>
+<li><a href="#supporting-types">Supporting types</a></li>
 <li><a href="#file-input-iterator">File input iterator</a></li>
 <li><a href="#file-output-iterator">File output iterator</a></li>
 </ul>
 </li>
 </ul>
+</div>
+<h2 id="supporting-types">Supporting types</h2>
+<div class="defns">
+<ul>
+<li><code>namespace</code> <strong><code>IO</code></strong></li>
+</ul>
+<p>This exists only to provide a namespace for the I/O behaviour constants. Its
+member constants are described below.</p>
 </div>
 <h2 id="file-input-iterator">File input iterator</h2>
 <div class="defns">
@@ -72,7 +81,7 @@ recognised as a line delimiter.</p>
 <p>The constructor will throw <code>std::invalid_argument</code> if an inconsistent
 combination of flags is supplied, <code>UnknownEncoding</code> if the encoding is not
 recognised, or <code>std::system_error</code> if anything goes wrong while opening the
-file. If the <code>err_throw</code> option was selected, the constructor or increment
+file. If the <code>Error::throws</code> option was selected, the constructor or increment
 operator may throw <code>EncodingError</code> if the file contains invalid text.</p>
 <p>A dereferenced iterator yields one line of text from the file, optionally
 modified by the flags below.</p>
@@ -85,47 +94,47 @@ modified by the flags below.</p>
 </thead>
 <tbody>
 <tr>
-<td><strong><code>err_replace</code></strong></td>
+<td><code>Error::</code><strong><code>replace</code></strong></td>
 <td>Replace invalid encoding with <code>U+FFFD</code> (default)</td>
 </tr>
 <tr>
-<td><strong><code>err_throw</code></strong></td>
+<td><code>Error::</code><strong><code>throws</code></strong></td>
 <td>Throw <code>EncodingError</code> if invalid encoding is encountered</td>
 </tr>
 <tr>
-<td><strong><code>io_stdin</code></strong></td>
+<td><code>IO::</code><strong><code>stdin</code></strong></td>
 <td>Read from standard input if the file name is <code>"-"</code> or an empty string</td>
 </tr>
 <tr>
-<td><strong><code>io_pretend</code></strong></td>
+<td><code>IO::</code><strong><code>pretend</code></strong></td>
 <td>Treat a nonexistent file as empty instead of throwing an exception</td>
 </tr>
 <tr>
-<td><strong><code>io_bom</code></strong></td>
+<td><code>IO::</code><strong><code>bom</code></strong></td>
 <td>Strip a leading byte order mark if one is found</td>
 </tr>
 <tr>
-<td><strong><code>io_lf</code></strong></td>
+<td><code>IO::</code><strong><code>lf</code></strong></td>
 <td>Convert all line breaks to <code>LF</code></td>
 </tr>
 <tr>
-<td><strong><code>io_crlf</code></strong></td>
+<td><code>IO::</code><strong><code>crlf</code></strong></td>
 <td>Convert all line breaks to <code>CR+LF</code></td>
 </tr>
 <tr>
-<td><strong><code>io_striplf</code></strong></td>
+<td><code>IO::</code><strong><code>striplf</code></strong></td>
 <td>Strip trailing line breaks from each line</td>
 </tr>
 <tr>
-<td><strong><code>io_striptws</code></strong></td>
-<td>Strip trailing whitespace from each line (implies <code>io_striplf</code>)</td>
+<td><code>IO::</code><strong><code>striptws</code></strong></td>
+<td>Strip trailing whitespace from each line (implies <code>striplf</code>)</td>
 </tr>
 <tr>
-<td><strong><code>io_stripws</code></strong></td>
-<td>Strip leading and trailing whitespace from each line (implies <code>io_striplf</code>)</td>
+<td><code>IO::</code><strong><code>stripws</code></strong></td>
+<td>Strip leading and trailing whitespace from each line (implies <code>striplf</code>)</td>
 </tr>
 <tr>
-<td><strong><code>io_notempty</code></strong></td>
+<td><code>IO::</code><strong><code>notempty</code></strong></td>
 <td>Skip empty lines (after any whitespace stripping)</td>
 </tr>
 </tbody>
@@ -189,59 +198,59 @@ error handling flags on output.</p>
 </thead>
 <tbody>
 <tr>
-<td><strong><code>err_replace</code></strong></td>
+<td><code>Error::</code><strong><code>replace</code></strong></td>
 <td>Replace encoding errors (default)</td>
 </tr>
 <tr>
-<td><strong><code>err_throw</code></strong></td>
+<td><code>Error::</code><strong><code>throws</code></strong></td>
 <td>Throw <code>EncodingError</code> on encoding errors</td>
 </tr>
 <tr>
-<td><strong><code>io_stdout</code></strong></td>
+<td><code>IO::</code><strong><code>standout</code></strong></td>
 <td>Write to standard output if the file name is <code>"-"</code> or an empty string</td>
 </tr>
 <tr>
-<td><strong><code>io_stderr</code></strong></td>
+<td><code>IO::</code><strong><code>standerr</code></strong></td>
 <td>Write to standard error if the file name is <code>"-"</code> or an empty string</td>
 </tr>
 <tr>
-<td><strong><code>io_append</code></strong></td>
+<td><code>IO::</code><strong><code>append</code></strong></td>
 <td>Open an existing file for appending instead of overwriting it</td>
 </tr>
 <tr>
-<td><strong><code>io_protect</code></strong></td>
+<td><code>IO::</code><strong><code>protect</code></strong></td>
 <td>Throw <code>system_error(file_exists)</code> if the file already exists</td>
 </tr>
 <tr>
-<td><strong><code>io_bom</code></strong></td>
+<td><code>IO::</code><strong><code>bom</code></strong></td>
 <td>Insert a leading byte order mark if the first output string does not contain one</td>
 </tr>
 <tr>
-<td><strong><code>io_lf</code></strong></td>
+<td><code>IO::</code><strong><code>lf</code></strong></td>
 <td>Convert all line breaks to <code>LF</code></td>
 </tr>
 <tr>
-<td><strong><code>io_crlf</code></strong></td>
+<td><code>IO::</code><strong><code>crlf</code></strong></td>
 <td>Convert all line breaks to <code>CR+LF</code></td>
 </tr>
 <tr>
-<td><strong><code>io_writeline</code></strong></td>
+<td><code>IO::</code><strong><code>writeline</code></strong></td>
 <td>Write a line feed after every write</td>
 </tr>
 <tr>
-<td><strong><code>io_autoline</code></strong></td>
+<td><code>IO::</code><strong><code>autoline</code></strong></td>
 <td>Write a line feed after every write that does not already end with one</td>
 </tr>
 <tr>
-<td><strong><code>io_linebuf</code></strong></td>
+<td><code>IO::</code><strong><code>linebuf</code></strong></td>
 <td>Line buffered output</td>
 </tr>
 <tr>
-<td><strong><code>io_unbuf</code></strong></td>
+<td><code>IO::</code><strong><code>unbuf</code></strong></td>
 <td>Unbuffered output</td>
 </tr>
 <tr>
-<td><strong><code>io_mutex</code></strong></td>
+<td><code>IO::</code><strong><code>mutex</code></strong></td>
 <td>Hold a per-file mutex while writing, to allow coherent multithreaded output</td>
 </tr>
 </tbody>

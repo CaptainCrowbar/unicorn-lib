@@ -17,30 +17,32 @@ UTF-32; `wstring` may hold either UTF-16 or UTF-32, depending on the compiler.
 
 ## Constants ##
 
-<!-- DEFN -->
+* `namespace` **`Error`**
 
-Flag               | Description
-----               | -----------
-**`err_ignore`**   | Assume valid UTF input
-**`err_replace`**  | Replace invalid UTF with `U+FFFD`
-**`err_throw`**    | Throw `EncodingError` on invalid UTF
+This exists only to provide a namespace for the error handling constants.
+
+Flag                    | Description
+----                    | -----------
+`Error::`**`ignore`**   | Assume valid UTF input
+`Error::`**`replace`**  | Replace invalid UTF with `U+FFFD`
+`Error::`**`throws`**   | Throw `EncodingError` on invalid UTF
 
 These bitmask flags are used in most encoding conversion functions, and some
 related functions, to indicate how to handle encoding errors in the input
 data.
 
-The `err_ignore` option is the default for the UTF conversion functions. This
+The `ignore` option is the default for the UTF conversion functions. This
 tells the function to assume that the input is already known to be a valid UTF
 encoding. If this is not true, behaviour is unspecified (but not undefined);
 basically, the output will be garbage. The UTF conversion code is optimized
 for this case.
 
-The `err_replace` option causes invalid input encoding to be replaced with the
+The `replace` option causes invalid input encoding to be replaced with the
 standard Unicode replacement character (`U+FFFD`). Error handling for invalid
 UTF-8 subsequences follows the Unicode recommended behaviour (Unicode Standard
 7.0, section 3.9, page 128).
 
-The `err_throw` option causes any input encoding error to throw an
+The `throws` option causes any input encoding error to throw an
 `EncodingError` exception.
 
 Behaviour is unspecified if more than one of these flags is combined.
@@ -51,8 +53,8 @@ manipulation within a program will be done entirely in Unicode; text is
 normally converted back and forth to other encodings, and checked for
 validity, only at the point of input and output. Unlike the UTF conversion
 functions in this module, the functions in [`unicorn/mbcs`](mbcs.html) that
-convert between Unicode and other encodings default to `err_replace`, and do
-not accept the `err_ignore` option.
+convert between Unicode and other encodings default to `Error::replace`, and
+do not accept the `Error::ignore` option.
 
 ## Single character functions ##
 
@@ -147,8 +149,8 @@ the end, but behaviour is undefined if this is called on any other kind of
 invalid iterator.
 
 The `valid()` function indicates whether the current character is valid; it
-will always be true if `err_ignore` was set, and its value is unspecified on a
-past-the-end iterator.
+will always be true if `Error::ignore` was set, and its value is unspecified
+on a past-the-end iterator.
 
 If the underlying string is UTF-32, this is just a simple pass-through
 iterator, but if one of the non-default error handling options is selected, it

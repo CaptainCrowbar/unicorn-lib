@@ -70,7 +70,7 @@ words encountered more than once, in descending order of frequency.
 
             std::map<U8string, size_t> census;
 
-            for (auto& line: read_lines(input_file, io_stdin, input_encoding))
+            for (auto& line: read_lines(input_file, IO::standin, input_encoding))
                 for (auto& word: word_range(line, alpha_words))
                     ++census[str_lowercase(normalize(u_str(word), NFC))];
 

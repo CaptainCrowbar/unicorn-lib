@@ -34,8 +34,10 @@ UTF-32; <code>wstring</code> may hold either UTF-16 or UTF-32, depending on the 
 </div>
 <h2 id="constants">Constants</h2>
 <div class="defns">
-<!-- DEFN -->
-
+<ul>
+<li><code>namespace</code> <strong><code>Error</code></strong></li>
+</ul>
+<p>This exists only to provide a namespace for the error handling constants.</p>
 <table>
 <thead>
 <tr>
@@ -45,15 +47,15 @@ UTF-32; <code>wstring</code> may hold either UTF-16 or UTF-32, depending on the 
 </thead>
 <tbody>
 <tr>
-<td><strong><code>err_ignore</code></strong></td>
+<td><code>Error::</code><strong><code>ignore</code></strong></td>
 <td>Assume valid UTF input</td>
 </tr>
 <tr>
-<td><strong><code>err_replace</code></strong></td>
+<td><code>Error::</code><strong><code>replace</code></strong></td>
 <td>Replace invalid UTF with <code>U+FFFD</code></td>
 </tr>
 <tr>
-<td><strong><code>err_throw</code></strong></td>
+<td><code>Error::</code><strong><code>throws</code></strong></td>
 <td>Throw <code>EncodingError</code> on invalid UTF</td>
 </tr>
 </tbody>
@@ -61,16 +63,16 @@ UTF-32; <code>wstring</code> may hold either UTF-16 or UTF-32, depending on the 
 <p>These bitmask flags are used in most encoding conversion functions, and some
 related functions, to indicate how to handle encoding errors in the input
 data.</p>
-<p>The <code>err_ignore</code> option is the default for the UTF conversion functions. This
+<p>The <code>ignore</code> option is the default for the UTF conversion functions. This
 tells the function to assume that the input is already known to be a valid UTF
 encoding. If this is not true, behaviour is unspecified (but not undefined);
 basically, the output will be garbage. The UTF conversion code is optimized
 for this case.</p>
-<p>The <code>err_replace</code> option causes invalid input encoding to be replaced with the
+<p>The <code>replace</code> option causes invalid input encoding to be replaced with the
 standard Unicode replacement character (<code>U+FFFD</code>). Error handling for invalid
 UTF-8 subsequences follows the Unicode recommended behaviour (Unicode Standard
 7.0, section 3.9, page 128).</p>
-<p>The <code>err_throw</code> option causes any input encoding error to throw an
+<p>The <code>throws</code> option causes any input encoding error to throw an
 <code>EncodingError</code> exception.</p>
 <p>Behaviour is unspecified if more than one of these flags is combined.</p>
 <p>If ignoring errors sounds like an unsafe choice for the default action,
@@ -79,8 +81,8 @@ manipulation within a program will be done entirely in Unicode; text is
 normally converted back and forth to other encodings, and checked for
 validity, only at the point of input and output. Unlike the UTF conversion
 functions in this module, the functions in <a href="mbcs.html"><code>unicorn/mbcs</code></a> that
-convert between Unicode and other encodings default to <code>err_replace</code>, and do
-not accept the <code>err_ignore</code> option.</p>
+convert between Unicode and other encodings default to <code>Error::replace</code>, and
+do not accept the <code>Error::ignore</code> option.</p>
 </div>
 <h2 id="single-character-functions">Single character functions</h2>
 <div class="defns">
@@ -176,8 +178,8 @@ character. This will be empty if the iterator is default constructed or past
 the end, but behaviour is undefined if this is called on any other kind of
 invalid iterator.</p>
 <p>The <code>valid()</code> function indicates whether the current character is valid; it
-will always be true if <code>err_ignore</code> was set, and its value is unspecified on a
-past-the-end iterator.</p>
+will always be true if <code>Error::ignore</code> was set, and its value is unspecified
+on a past-the-end iterator.</p>
 <p>If the underlying string is UTF-32, this is just a simple pass-through
 iterator, but if one of the non-default error handling options is selected, it
 will check for valid Unicode characters and treat invalid code points as

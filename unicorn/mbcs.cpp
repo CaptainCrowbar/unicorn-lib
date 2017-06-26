@@ -290,7 +290,7 @@ namespace RS {
                         } else if (errno == E2BIG) {
                             buf.resize(buf.size() + src.size());
                         } else {
-                            if (flags & err_throw)
+                            if (flags & Error::throws)
                                 throw EncodingError(tag, inpos, &src[inpos]);
                             if (outbytes < 3)
                                 buf.resize(buf.size() + 3);
@@ -307,10 +307,10 @@ namespace RS {
             #endif
 
             void check_mbcs_flags(uint32_t& flags) {
-                if (flags & err_ignore)
-                    throw std::invalid_argument("Invalid MBCS conversion flag: err_ignore");
+                if (flags & Error::ignore)
+                    throw std::invalid_argument("Invalid MBCS conversion flag: Error::ignore");
                 if (flags == 0)
-                    flags = err_replace;
+                    flags = Error::replace;
             }
 
             #ifdef _XOPEN_SOURCE
@@ -327,7 +327,7 @@ namespace RS {
 
                 void native_import(const std::string& src, std::wstring& dst, uint32_t tag, uint32_t flags) {
                     uint32_t wflags = 0;
-                    if (flags & err_throw)
+                    if (flags & Error::throws)
                         wflags |= MB_ERR_INVALID_CHARS;
                     auto rc = MultiByteToWideChar(tag, wflags, src.data(), int(src.size()), nullptr, 0);
                     if (rc == 0) {
@@ -343,7 +343,7 @@ namespace RS {
 
                 void native_export(const std::wstring& src, std::string& dst, uint32_t tag, uint32_t flags) {
                     std::vector<uint32_t> tryflags;
-                    if (flags & err_throw)
+                    if (flags & Error::throws)
                         tryflags = {WC_NO_BEST_FIT_CHARS | WC_ERR_INVALID_CHARS, WC_ERR_INVALID_CHARS, WC_NO_BEST_FIT_CHARS, 0};
                     else
                         tryflags = {WC_NO_BEST_FIT_CHARS, 0};
@@ -375,7 +375,7 @@ namespace RS {
                     return true;
                 } else if (tag == utf16_tag || tag == utf16swap_tag) {
                     auto extra = src.size() % 2;
-                    if (extra && (flags & err_throw))
+                    if (extra && (flags & Error::throws))
                         throw EncodingError("UTF-16", src.size() - extra,
                             src.data() + src.size() - extra, extra);
                     std::u16string src16(src.size() / 2, 0);
@@ -388,7 +388,7 @@ namespace RS {
                     return true;
                 } else if (tag == utf32_tag || tag == utf32swap_tag) {
                     auto extra = src.size() % 4;
-                    if (extra && (flags & err_throw))
+                    if (extra && (flags & Error::throws))
                         throw EncodingError("UTF-32", src.size() - extra,
                             src.data() + src.size() - extra, extra);
                     std::u32string src32(src.size() / 4, 0);
