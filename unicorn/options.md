@@ -24,9 +24,9 @@ Example:
 
     int main(int argc, char** argv) {
         Options opt("My Program 1.0");
-        opt.add("--alpha", "The most important option", opt_abbrev="-a");
+        opt.add("--alpha", "The most important option", Options::abbrev="-a");
         opt.add("--omega", "The least important option");
-        opt.add("--number", "How many roads to walk down", opt_abbrev="-n", opt_default="42", opt_int);
+        opt.add("--number", "How many roads to walk down", Options::abbrev="-n", Options::def="42", Options::integer);
         if (opt.parse(argc, argv))
             return 0;
         // ... main program code goes here ...
@@ -46,16 +46,16 @@ the following information on the standard output:
 
 ## Options class ##
 
-* `class Options::`**`CommandError`**`: public std::runtime_error`
-    * `explicit CommandError::`**`CommandError`**`(const U8string& details, const U8string& arg = {}, const U8string& arg2 = {})`
+* `class Options::`**`command_error`**`: public std::runtime_error`
+    * `explicit command_error::`**`command_error`**`(const U8string& details, const U8string& arg = {}, const U8string& arg2 = {})`
 
 Thrown by `Options::parse()` during argument parsing, to report that the
 command line arguments supplied by the user were not consistent with the
 option specification.
 
-* `class Options::`**`SpecError`**`: public std::runtime_error`
-    * `explicit SpecError::`**`SpecError`**`(const U8string& option)`
-    * `SpecError::`**`SpecError`**`(const U8string& details, const U8string& option)`
+* `class Options::`**`spec_error`**`: public std::runtime_error`
+    * `explicit spec_error::`**`spec_error`**`(const U8string& option)`
+    * `spec_error::`**`spec_error`**`(const U8string& details, const U8string& option)`
 
 Thrown by `Options::add()` during the creation of an option specification, to
 report an invalid combination of properties.
@@ -91,35 +91,35 @@ hyphens). The `info` string is the description of the option that will be
 presented to the user when help is requested. These may be followed by
 optional keyword arguments, as listed below.
 
-Keyword            | Type        | Description
--------            | ----        | -----------
-**`opt_abbrev`**   | `U8string`  | A single letter abbreviation for the option (e.g. `"-x"`; the hyphen is optional).
-**`opt_anon`**     | `bool`      | Anonymous arguments (not claimed by any other option) will be assigned to this option.
-**`opt_bool`**     | `bool`      | This option is a boolean switch and does not take arguments.
-**`opt_default`**  | `U8string`  | Use this default value if the option is not supplied by the user.
-**`opt_float`**    | `bool`      | The argument value must be a floating point number.
-**`opt_group`**    | `U8string`  | Assign the option to a mutual exclusion group; at most one option from a group is allowed.
-**`opt_int`**      | `bool`      | The argument value must be an integer.
-**`opt_multi`**    | `bool`      | This option may be followed by multiple arguments.
-**`opt_pattern`**  | `U8string`  | The argument value must match this regular expression.
-**`opt_require`**  | `bool`      | This option is mandatory.
-**`opt_uint`**     | `bool`      | The argument value must be an unsigned integer.
+Keyword                    | Type        | Description
+-------                    | ----        | -----------
+`Options::`**`abbrev`**    | `U8string`  | A single letter abbreviation for the option (e.g. `"-x"`; the hyphen is optional).
+`Options::`**`anon`**      | `bool`      | Anonymous arguments (not claimed by any other option) will be assigned to this option.
+`Options::`**`boolean`**   | `bool`      | This option is a boolean switch and does not take arguments.
+`Options::`**`def`**       | `U8string`  | Use this default value if the option is not supplied by the user.
+`Options::`**`floating`**  | `bool`      | The argument value must be a floating point number.
+`Options::`**`group`**     | `U8string`  | Assign the option to a mutual exclusion group; at most one option from a group is allowed.
+`Options::`**`integer`**   | `bool`      | The argument value must be an integer.
+`Options::`**`multi`**     | `bool`      | This option may be followed by multiple arguments.
+`Options::`**`pattern`**   | `U8string`  | The argument value must match this regular expression.
+`Options::`**`require`**   | `bool`      | This option is mandatory.
+`Options::`**`uinteger`**  | `bool`      | The argument value must be an unsigned integer.
 
 Boolean options can be supplied in negated form, by giving a name starting
 with `"--no-"` (or `"no-"`). This creates a boolean option whose default value
 is `true`; the `"--no-whatever"` form can be used to switch it off.
 
-Adding an option will throw `SpecError` if any of the following is true:
+Adding an option will throw `spec_error` if any of the following is true:
 
 * The option name has less than two characters (not counting any leading hyphens).
 * The name or abbreviation has already been used by an earlier entry.
 * The info string is empty (this also applies to the first version of `add()`).
 * An abbreviation is supplied that is longer than one character (not counting a leading hyphen), or is not alphanumeric.
 * An option starting with `"--no-"` is not boolean or has an abbreviation.
-* The `opt_bool` tag is combined with `opt_anon`, `opt_default`, `opt_multi`, `opt_pattern`, or `opt_require`.
-* The `opt_require` tag is combined with `opt_bool`, `opt_default`, or `opt_group`.
-* More than one of `opt_float`, `opt_int`, `opt_pattern`, and `opt_uint` is supplied.
-* The `opt_default` and `opt_pattern` tags are both present, but the default value does not match the pattern.
+* The `boolean` tag is combined with `anon`, `def`, `multi`, `pattern`, or `require`.
+* The `require` tag is combined with `boolean`, `def`, or `group`.
+* More than one of `floating`, `integer`, `pattern`, and `uinteger` is supplied.
+* The `def` and `pattern` tags are both present, but the default value does not match the pattern.
 
 Do not explicitly add the standard `"--help"` and `"--version"` options here;
 these are added automatically, or optionally through `add_help()` (below).
@@ -159,7 +159,7 @@ supplied as a vector of strings, as a single combined string that will be
 split apart during parsing, or as the standard `(argc,argv)` arguments from
 `main()` (or a similar source such as the UTF-16 `_wmain()` often used on
 Windows). Normally the supplied argument list is assumed to start with the
-command name (which will be discarded); use the `opt_noprefix` flag to
+command name (which will be discarded); use the `noprefix` flag to
 override this.
 
 Boolean options will be recognised in normal or negated form (e.g. `"--magic"`
@@ -175,21 +175,21 @@ the return value from `parse()` and end the program if it is true.
 
 The `flags` argument can be any combination of these:
 
-Flag                | Description
-----                | -----------
-**`opt_locale`**    | The argument list is in the local encoding
-**`opt_noprefix`**  | The first argument is not the command name
-**`opt_quoted`**    | Allow arguments to be quoted
+Flag                       | Description
+----                       | -----------
+`Options::`**`locale`**    | The argument list is in the local encoding
+`Options::`**`noprefix`**  | The first argument is not the command name
+`Options::`**`quoted`**    | Allow arguments to be quoted
 
-The `opt_locale` flag is only relevant to 8 bit strings, which are assumed to
-be UTF-8 by default; the flag is ignored if the `C` type is not `char`, since
-16 or 32 bit strings are always assumed to be UTF-16/32.
+The `locale` flag is only relevant to 8 bit strings, which are assumed to be
+UTF-8 by default; the flag is ignored if the `C` type is not `char`, since 16
+or 32 bit strings are always assumed to be UTF-16/32.
 
-The `parse()` functions will throw `CommandError` if any of the following is
+The `parse()` functions will throw `command_error` if any of the following is
 true:
 
 * A full or abbreviated option is supplied that is not in the spec.
-* The same option appears more than once, but does not have the `opt_multi` flag.
+* The same option appears more than once, but does not have the `multi` flag.
 * Multiple options from the same mutual exclusion group are supplied.
 * The argument supplied for an option does not match the pattern given in the spec.
 * A required option is missing.
@@ -221,5 +221,5 @@ behaviour is otherwise the same as `get()`.
 The `has()` function simply indicates whether an option was present on the
 command line.
 
-All of these will throw `SpecError` if the `name` string does not match one of
-the registered options.
+All of these will throw `spec_error` if the `name` string does not match one
+of the registered options.

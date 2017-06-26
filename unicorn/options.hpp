@@ -57,35 +57,34 @@ namespace RS {
 
         }
 
-        constexpr uint32_t opt_locale = 1;    // Argument list is in local encoding
-        constexpr uint32_t opt_noprefix = 2;  // First argument is not the command name
-        constexpr uint32_t opt_quoted = 4;    // Allow arguments to be quoted
-
-        constexpr Kwarg<bool>
-            opt_anon,     // Assign anonymous arguments to this option
-            opt_bool,     // Boolean option
-            opt_int,      // Argument must be an integer
-            opt_uint,     // Argument must be an unsigned integer
-            opt_float,    // Argument must be a floating point number
-            opt_multi,    // Option may have multiple arguments
-            opt_require;  // Option is required
-        constexpr Kwarg<U8string>
-            opt_abbrev,   // Single letter abbreviation
-            opt_default,  // Default value if not supplied
-            opt_group,    // Mutual exclusion group name
-            opt_pattern;  // Argument must match this regular expression
 
         class Options {
         public:
-            class CommandError: public std::runtime_error {
+            class command_error: public std::runtime_error {
             public:
-                explicit CommandError(const U8string& details, const U8string& arg = {}, const U8string& arg2 = {});
+                explicit command_error(const U8string& details, const U8string& arg = {}, const U8string& arg2 = {});
             };
-            class SpecError: public std::runtime_error {
+            class spec_error: public std::runtime_error {
             public:
-                explicit SpecError(const U8string& option);
-                SpecError(const U8string& details, const U8string& option);
+                explicit spec_error(const U8string& option);
+                spec_error(const U8string& details, const U8string& option);
             };
+            static constexpr uint32_t locale    = 1;  // Argument list is in local encoding
+            static constexpr uint32_t noprefix  = 2;  // First argument is not the command name
+            static constexpr uint32_t quoted    = 4;  // Allow arguments to be quoted
+            static constexpr Kwarg<bool>
+                anon = {},      // Assign anonymous arguments to this option
+                boolean = {},   // Boolean option
+                integer = {},   // Argument must be an integer
+                uinteger = {},  // Argument must be an unsigned integer
+                floating = {},  // Argument must be a floating point number
+                multi = {},     // Option may have multiple arguments
+                required = {};  // Option is required
+            static constexpr Kwarg<U8string>
+                abbrev = {},   // Single letter abbreviation
+                def = {},      // Default value if not supplied
+                group = {},    // Mutual exclusion group name
+                pattern = {};  // Argument must match this regular expression
             Options() = default;
             explicit Options(const U8string& info): app_info(str_trim(info)) {}
             Options& add(const U8string& info);
@@ -105,7 +104,7 @@ namespace RS {
             struct option_type {
                 string_list values;
                 U8string abbrev;
-                U8string defval;
+                U8string def;
                 U8string group;
                 U8string info;
                 U8string name;
@@ -115,8 +114,8 @@ namespace RS {
                 bool is_boolean = false;
                 bool is_integer = false;
                 bool is_uinteger = false;
-                bool is_float = false;
-                bool is_multiple = false;
+                bool is_floating = false;
+                bool is_multi = false;
                 bool is_required = false;
             };
             using option_list = std::vector<option_type>;
@@ -145,21 +144,21 @@ namespace RS {
         template <typename... Args>
         Options& Options::add(const U8string& name, const U8string& info, const Args&... args) {
             option_type opt;
-            U8string pat;
+            U8string pattern_str;
             opt.name = name;
             opt.info = info;
-            kwget(opt_anon, opt.is_anon, args...);
-            kwget(opt_bool, opt.is_boolean, args...);
-            kwget(opt_int, opt.is_integer, args...);
-            kwget(opt_uint, opt.is_uinteger, args...);
-            kwget(opt_float, opt.is_float, args...);
-            kwget(opt_multi, opt.is_multiple, args...);
-            kwget(opt_require, opt.is_required, args...);
-            kwget(opt_abbrev, opt.abbrev, args...);
-            kwget(opt_default, opt.defval, args...);
-            kwget(opt_group, opt.group, args...);
-            kwget(opt_pattern, pat, args...);
-            opt.pattern = Regex(pat);
+            kwget(anon, opt.is_anon, args...);
+            kwget(boolean, opt.is_boolean, args...);
+            kwget(integer, opt.is_integer, args...);
+            kwget(uinteger, opt.is_uinteger, args...);
+            kwget(floating, opt.is_floating, args...);
+            kwget(multi, opt.is_multi, args...);
+            kwget(required, opt.is_required, args...);
+            kwget(abbrev, opt.abbrev, args...);
+            kwget(def, opt.def, args...);
+            kwget(group, opt.group, args...);
+            kwget(pattern, pattern_str, args...);
+            opt.pattern = Regex(pattern_str);
             add_option(opt);
             return *this;
         }
@@ -186,9 +185,9 @@ namespace RS {
         bool Options::parse(const std::basic_string<C>& args, std::ostream& out, uint32_t flags) {
             auto u8args = arg_convert(args, flags);
             string_list vec;
-            if (flags & opt_quoted) {
+            if (flags & quoted) {
                 unquote(u8args, vec);
-                flags &= ~ opt_quoted;
+                flags &= ~ quoted;
             } else {
                 str_split(u8args, append(vec));
             }
@@ -200,7 +199,7 @@ namespace RS {
         template <typename C>
         bool Options::parse(int argc, C** argv, std::ostream& out, uint32_t flags) {
             std::vector<std::basic_string<C>> args(argv, argv + argc);
-            if (flags & opt_quoted)
+            if (flags & quoted)
                 return parse(str_join(args, std::basic_string<C>{C(' ')}), out, flags);
             else
                 return parse(args, out, flags);

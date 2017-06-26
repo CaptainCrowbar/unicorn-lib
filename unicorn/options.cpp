@@ -30,7 +30,7 @@ namespace RS {
                 else if (arg.size() >= 3 && arg[1] == '-' && arg[2] != '-' && arg[2] != '=')
                     return is_long_option;
                 else
-                    throw Options::CommandError("Argument not recognised", arg);
+                    throw Options::command_error("Argument not recognised", arg);
             }
 
             U8string cmd_error(const U8string& details, const U8string& arg, const U8string& arg2) {
@@ -48,18 +48,32 @@ namespace RS {
 
         }
 
-        Options::CommandError::CommandError(const U8string& details, const U8string& arg, const U8string& arg2):
+        constexpr Kwarg<bool>
+            Options::anon,
+            Options::boolean,
+            Options::integer,
+            Options::uinteger,
+            Options::floating,
+            Options::multi,
+            Options::required;
+        constexpr Kwarg<U8string>
+            Options::abbrev,
+            Options::def,
+            Options::group,
+            Options::pattern;
+
+        Options::command_error::command_error(const U8string& details, const U8string& arg, const U8string& arg2):
         std::runtime_error(cmd_error(details, arg, arg2)) {}
 
-        Options::SpecError::SpecError(const U8string& option):
+        Options::spec_error::spec_error(const U8string& option):
         std::runtime_error("Invalid option spec: $1q"_fmt(option)) {}
 
-        Options::SpecError::SpecError(const U8string& details, const U8string& option):
+        Options::spec_error::spec_error(const U8string& details, const U8string& option):
         std::runtime_error("$1: $2q"_fmt(details, option)) {}
 
         Options& Options::add(const U8string& info) {
             if (info.empty())
-                throw SpecError("Empty string");
+                throw spec_error("Empty string");
             option_type opt;
             opt.info = str_trim_right(info);
             opts.push_back(opt);
@@ -96,7 +110,7 @@ namespace RS {
                     if (opt.is_anon)
                         prefix += "[";
                     prefix += "--";
-                    if (opt.is_boolean && opt.defval == "1")
+                    if (opt.is_boolean && opt.def == "1")
                         prefix += "no-";
                     prefix += opt.name;
                     if (! opt.abbrev.empty())
@@ -105,24 +119,24 @@ namespace RS {
                         prefix += "]";
                     if (! opt.is_boolean) {
                         prefix += " <";
-                        if (opt.is_integer || opt.is_uinteger || opt.is_float)
+                        if (opt.is_integer || opt.is_uinteger || opt.is_floating)
                             prefix += "num";
                         else
                             prefix += "arg";
                         prefix += ">";
-                        if (opt.is_multiple)
+                        if (opt.is_multi)
                             prefix += " ...";
                     }
                     length = str_length(prefix, length_flags);
                     U8string extra;
                     if (opt.is_required) {
                         extra = "required";
-                    } else if (! opt.defval.empty() && ! opt.is_boolean && opt.info.find("default") == npos) {
+                    } else if (! opt.def.empty() && ! opt.is_boolean && opt.info.find("default") == npos) {
                         extra = "default ";
-                        if (match_integer.match(opt.defval) || match_float.match(opt.defval))
-                            extra += opt.defval;
+                        if (match_integer.match(opt.def) || match_float.match(opt.def))
+                            extra += opt.def;
                         else
-                            extra += "$1q"_fmt(opt.defval);
+                            extra += "$1q"_fmt(opt.def);
                     }
                     suffix = opt.info;
                     if (! extra.empty()) {
@@ -177,34 +191,34 @@ namespace RS {
             U8string tag = opt.name;
             str_trim_in(opt.name, "-");
             if (str_length(opt.name) < 2)
-                throw SpecError(tag);
+                throw spec_error(tag);
             bool neg = opt.name.substr(0, 3) == "no-";
             str_trim_in(opt.info);
             if (opt.info.empty())
-                throw SpecError(tag);
+                throw spec_error(tag);
             str_trim_in(opt.abbrev, "-");
             if (str_length(opt.abbrev) > 1
                     || (! opt.abbrev.empty() && ! char_is_alphanumeric(*utf_begin(opt.abbrev)))
-                    || (opt.is_boolean && (opt.is_anon || opt.is_multiple || opt.is_required || ! opt.pattern.empty()))
-                    || ((opt.is_boolean || opt.is_required) && ! opt.defval.empty())
+                    || (opt.is_boolean && (opt.is_anon || opt.is_multi || opt.is_required || ! opt.pattern.empty()))
+                    || ((opt.is_boolean || opt.is_required) && ! opt.def.empty())
                     || (neg && (! opt.is_boolean || ! opt.abbrev.empty()))
                     || (opt.is_required && ! opt.group.empty())
-                    || (int(opt.is_integer) + int(opt.is_uinteger) + int(opt.is_float) + int(! opt.pattern.empty()) > 1))
-                throw SpecError(tag);
+                    || (int(opt.is_integer) + int(opt.is_uinteger) + int(opt.is_floating) + int(! opt.pattern.empty()) > 1))
+                throw spec_error(tag);
             if (opt.is_integer)
                 opt.pattern = match_integer;
             else if (opt.is_uinteger)
                 opt.pattern = match_uinteger;
-            else if (opt.is_float)
+            else if (opt.is_floating)
                 opt.pattern = match_float;
-            if (! opt.defval.empty() && ! opt.pattern.empty() && ! opt.pattern.match(opt.defval))
-                throw SpecError(tag);
+            if (! opt.def.empty() && ! opt.pattern.empty() && ! opt.pattern.match(opt.def))
+                throw spec_error(tag);
             if (neg) {
                 opt.name.erase(0, 3);
-                opt.defval = "1";
+                opt.def = "1";
             }
             if (find_index(opt.name) != npos || find_index(opt.abbrev) != npos)
-                throw SpecError("Duplicate option spec", tag);
+                throw spec_error("Duplicate option spec", tag);
             opts.push_back(opt);
         }
 
@@ -219,7 +233,7 @@ namespace RS {
             if (i != opts.end())
                 return i - opts.begin();
             else if (require)
-                throw SpecError("--" + name);
+                throw spec_error("--" + name);
             else
                 return npos;
         }
@@ -250,9 +264,9 @@ namespace RS {
         }
 
         void Options::clean_up_arguments(string_list& args, uint32_t flags) {
-            if (! (flags & opt_noprefix) && ! args.empty())
+            if (! (flags & noprefix) && ! args.empty())
                 args.erase(args.begin());
-            if (flags & opt_quoted)
+            if (flags & quoted)
                 for (auto& arg: args)
                     if (arg.size() >= 2 && arg.front() == '\"' && arg.back() == '\"')
                         arg = arg.substr(1, arg.size() - 1);
@@ -294,7 +308,7 @@ namespace RS {
                     for (auto u = std::next(utf_begin(arg)), uend = utf_end(arg); u != uend; ++u, ++j) {
                         size_t o = find_index(arg.substr(u.offset(), u.count()));
                         if (o == npos)
-                            throw CommandError("Unknown option", arg);
+                            throw command_error("Unknown option", arg);
                         args.insert(args.begin() + i + j, "--" + opts[o].name);
                     }
                     i += j;
@@ -313,14 +327,14 @@ namespace RS {
                 }
                 size_t o = find_index(args[a]);
                 if (o == npos)
-                    throw CommandError("Unknown option", args[a]);
+                    throw command_error("Unknown option", args[a]);
                 auto& opt(opts[o]);
-                if (opt.found && ! opt.is_multiple)
-                    throw CommandError("Duplicate option", args[a]);
+                if (opt.found && ! opt.is_multi)
+                    throw command_error("Duplicate option", args[a]);
                 if (! opt.group.empty())
                     for (auto& opt2: opts)
                         if (&opt2 != &opt && opt2.group == opt.group && opt2.found)
-                            throw CommandError("Incompatible options", "--" + opt2.name, args[a]);
+                            throw command_error("Incompatible options", "--" + opt2.name, args[a]);
                 opt.found = true;
                 if (opt.is_boolean) {
                     if (args[a].substr(0, 5) == "--no-")
@@ -330,7 +344,7 @@ namespace RS {
                     args.erase(args.begin() + a);
                 } else {
                     size_t n = 1, max_n = 1;
-                    if (opt.is_multiple)
+                    if (opt.is_multi)
                         max_n = args.size() - a;
                     else
                         max_n = std::min(size_t(2), args.size() - a);
@@ -349,25 +363,25 @@ namespace RS {
                 if (! opt.is_anon)
                     continue;
                 opt.found = true;
-                size_t n = opt.is_multiple ? args.size() : 1;
+                size_t n = opt.is_multi ? args.size() : 1;
                 for (size_t i = 0; i < n; ++i)
                     add_arg_to_opt(args[i], opt);
                 args.erase(args.begin(), args.begin() + n);
             }
             if (! args.empty())
-                throw CommandError("Unexpected argument", args[0]);
+                throw command_error("Unexpected argument", args[0]);
         }
 
         void Options::check_required() {
             for (auto& opt: opts)
                 if (opt.is_required && ! opt.found)
-                    throw CommandError("Required option is missing", "--" + opt.name);
+                    throw command_error("Required option is missing", "--" + opt.name);
         }
 
         void Options::supply_defaults() {
             for (auto& opt: opts)
-                if (opt.values.empty() && ! opt.defval.empty())
-                    add_arg_to_opt(opt.defval, opt);
+                if (opt.values.empty() && ! opt.def.empty())
+                    add_arg_to_opt(opt.def, opt);
         }
 
         void Options::send_help(std::ostream& out, help_mode mode) const {
@@ -382,7 +396,7 @@ namespace RS {
         }
 
         U8string Options::arg_convert(const std::string& str, uint32_t flags) {
-            if (! (flags & opt_locale))
+            if (! (flags & locale))
                 return str;
             U8string utf8;
             import_string(str, utf8, local_encoding());
@@ -391,7 +405,7 @@ namespace RS {
 
         void Options::add_arg_to_opt(const U8string& arg, option_type& opt) {
             if (! opt.pattern.empty() && (opt.is_required || ! arg.empty()) && ! opt.pattern.match(arg))
-                throw CommandError("Invalid argument to option", "--" + opt.name, arg);
+                throw command_error("Invalid argument to option", "--" + opt.name, arg);
             opt.values.push_back(arg);
         }
 

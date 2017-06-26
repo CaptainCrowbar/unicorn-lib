@@ -70,9 +70,9 @@ int main(int argc, char** argv) {
 
         Options opt("Unicorn Demo");
         opt.add(str_wrap(description, 0, 75));
-        opt.add("input", "Input file (default is standard input)", opt_abbrev="i", opt_default="-");
-        opt.add("output", "Output file (default is standard output)", opt_abbrev="o", opt_default="-");
-        opt.add("encoding", "Input encoding", opt_abbrev="e", opt_default="UTF-8");
+        opt.add("input", "Input file (default is standard input)", Options::abbrev="i", Options::def="-");
+        opt.add("output", "Output file (default is standard output)", Options::abbrev="o", Options::def="-");
+        opt.add("encoding", "Input encoding", Options::abbrev="e", Options::def="UTF-8");
 
         if (opt.parse(argc, argv))
             return 0;
