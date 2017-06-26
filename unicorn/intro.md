@@ -32,10 +32,12 @@ words encountered more than once, in descending order of frequency.
     #include "unicorn/library.hpp"
     #include <cstdlib>
     #include <exception>
+    #include <functional>
     #include <iostream>
     #include <map>
     #include <string>
 
+    using namespace RS;
     using namespace RS::Unicorn;
     using namespace RS::Unicorn::Literals;
 
@@ -51,8 +53,8 @@ words encountered more than once, in descending order of frequency.
 
             // Parse the command line options
 
-            Options opt("Unicorn Demo", str_wrap(description, 0, 75));
-
+            Options opt("Unicorn Demo");
+            opt.add(str_wrap(description, 0, 75));
             opt.add("input", "Input file (default is standard input)", opt_abbrev="i", opt_default="-");
             opt.add("output", "Output file (default is standard output)", opt_abbrev="o", opt_default="-");
             opt.add("encoding", "Input encoding", opt_abbrev="e", opt_default="UTF-8");
@@ -81,7 +83,7 @@ words encountered more than once, in descending order of frequency.
                     frequencies.insert({pair.second, pair.first});
 
             for (auto& pair: frequencies)
-                cout << "[$1] $2\n"_fmt(pair.first, pair.second);
+                std::cout << "[$1] $2\n"_fmt(pair.first, pair.second);
 
             return 0;
 
@@ -89,7 +91,7 @@ words encountered more than once, in descending order of frequency.
 
         catch (const std::exception& ex) {
             std::cerr << "*** " << ex.what() << "\n";
-            return 1;
+            return EXIT_FAILURE;
         }
 
     }
