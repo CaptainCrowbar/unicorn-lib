@@ -714,18 +714,25 @@ namespace RS {
         U8string str_unify_lines(const U8string& str, const U8string& newline) {
             auto i = utf_begin(str), e = utf_end(str);
             U8string result;
+            bool last_break = false;
             while (i != e) {
                 auto j = std::find_if(i, e, char_is_line_break);
-                result += u_str(i, j);
+                if (j != i) {
+                    result += u_str(i, j);
+                    last_break = false;
+                }
                 while (j != e && char_is_line_break(*j)) {
                     result += newline;
                     auto c = *j;
                     ++j;
                     if (j != e && c == U'\r' && *j == U'\n')
                         ++j;
+                    last_break = true;
                 }
                 i = j;
             }
+            if (! last_break && ! result.empty())
+                result += newline;
             return result;
         }
 
@@ -791,7 +798,6 @@ namespace RS {
                     result.append(tailspaces, ' ');
                     j = std::find_if(i, e, char_is_line_break);
                     result += str_unify_lines(u_str(i, j), newline);
-                    result += newline;
                     words = linewidth = 0;
                 } else {
                     j = std::find_if(i, e, char_is_white_space);

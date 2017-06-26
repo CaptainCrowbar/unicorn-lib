@@ -4,6 +4,7 @@
 #include "unicorn/utf.hpp"
 #include "rs-core/unit-test.hpp"
 #include <iterator>
+#include <utility>
 
 using namespace RS;
 using namespace RS::Unicorn;
@@ -122,49 +123,49 @@ namespace {
             s1 = "Hello world",
             s2 = "Hello world\nGoodbye\n",
             s3 = "Hello world\r\nGoodbye\r\n";
-        size_t ofs = 0, line = 0, col = 0;
+        size_t ofs;
+        std::pair<size_t, size_t> lc;
 
         TEST_EQUAL(s1.size(), 11);
         TEST_EQUAL(s2.size(), 20);
         TEST_EQUAL(s3.size(), 22);
 
-        ofs = 0;   TEST_EQUAL(s0[ofs], '\0');  TRY(str_line_column(s0, ofs, line, col));  TEST_EQUAL(line, 1);  TEST_EQUAL(col, 1);
-        ofs = 0;   TEST_EQUAL(s1[ofs], 'H');   TRY(str_line_column(s1, ofs, line, col));  TEST_EQUAL(line, 1);  TEST_EQUAL(col, 1);
-        ofs = 10;  TEST_EQUAL(s1[ofs], 'd');   TRY(str_line_column(s1, ofs, line, col));  TEST_EQUAL(line, 1);  TEST_EQUAL(col, 11);
-        ofs = 11;  TEST_EQUAL(s1[ofs], '\0');  TRY(str_line_column(s1, ofs, line, col));  TEST_EQUAL(line, 1);  TEST_EQUAL(col, 12);
-        ofs = 0;   TEST_EQUAL(s2[ofs], 'H');   TRY(str_line_column(s2, ofs, line, col));  TEST_EQUAL(line, 1);  TEST_EQUAL(col, 1);
-        ofs = 10;  TEST_EQUAL(s2[ofs], 'd');   TRY(str_line_column(s2, ofs, line, col));  TEST_EQUAL(line, 1);  TEST_EQUAL(col, 11);
-        ofs = 11;  TEST_EQUAL(s2[ofs], '\n');  TRY(str_line_column(s2, ofs, line, col));  TEST_EQUAL(line, 1);  TEST_EQUAL(col, 12);
-        ofs = 12;  TEST_EQUAL(s2[ofs], 'G');   TRY(str_line_column(s2, ofs, line, col));  TEST_EQUAL(line, 2);  TEST_EQUAL(col, 1);
-        ofs = 18;  TEST_EQUAL(s2[ofs], 'e');   TRY(str_line_column(s2, ofs, line, col));  TEST_EQUAL(line, 2);  TEST_EQUAL(col, 7);
-        ofs = 19;  TEST_EQUAL(s2[ofs], '\n');  TRY(str_line_column(s2, ofs, line, col));  TEST_EQUAL(line, 2);  TEST_EQUAL(col, 8);
-        ofs = 20;  TEST_EQUAL(s2[ofs], '\0');  TRY(str_line_column(s2, ofs, line, col));  TEST_EQUAL(line, 3);  TEST_EQUAL(col, 1);
-        ofs = 0;   TEST_EQUAL(s3[ofs], 'H');   TRY(str_line_column(s3, ofs, line, col));  TEST_EQUAL(line, 1);  TEST_EQUAL(col, 1);
-        ofs = 10;  TEST_EQUAL(s3[ofs], 'd');   TRY(str_line_column(s3, ofs, line, col));  TEST_EQUAL(line, 1);  TEST_EQUAL(col, 11);
-        ofs = 11;  TEST_EQUAL(s3[ofs], '\r');  TRY(str_line_column(s3, ofs, line, col));  TEST_EQUAL(line, 1);  TEST_EQUAL(col, 12);
-        ofs = 12;  TEST_EQUAL(s3[ofs], '\n');  TRY(str_line_column(s3, ofs, line, col));  TEST_EQUAL(line, 1);  TEST_EQUAL(col, 13);
-        ofs = 13;  TEST_EQUAL(s3[ofs], 'G');   TRY(str_line_column(s3, ofs, line, col));  TEST_EQUAL(line, 2);  TEST_EQUAL(col, 1);
-        ofs = 19;  TEST_EQUAL(s3[ofs], 'e');   TRY(str_line_column(s3, ofs, line, col));  TEST_EQUAL(line, 2);  TEST_EQUAL(col, 7);
-        ofs = 20;  TEST_EQUAL(s3[ofs], '\r');  TRY(str_line_column(s3, ofs, line, col));  TEST_EQUAL(line, 2);  TEST_EQUAL(col, 8);
-        ofs = 21;  TEST_EQUAL(s3[ofs], '\n');  TRY(str_line_column(s3, ofs, line, col));  TEST_EQUAL(line, 2);  TEST_EQUAL(col, 9);
-        ofs = 22;  TEST_EQUAL(s3[ofs], '\0');  TRY(str_line_column(s3, ofs, line, col));  TEST_EQUAL(line, 3);  TEST_EQUAL(col, 1);
+        ofs = 0;   TEST_EQUAL(s0[ofs], '\0');  TRY(lc = str_line_column(s0, ofs));  TEST_EQUAL(lc.first, 1);  TEST_EQUAL(lc.second, 1);
+        ofs = 0;   TEST_EQUAL(s1[ofs], 'H');   TRY(lc = str_line_column(s1, ofs));  TEST_EQUAL(lc.first, 1);  TEST_EQUAL(lc.second, 1);
+        ofs = 10;  TEST_EQUAL(s1[ofs], 'd');   TRY(lc = str_line_column(s1, ofs));  TEST_EQUAL(lc.first, 1);  TEST_EQUAL(lc.second, 11);
+        ofs = 11;  TEST_EQUAL(s1[ofs], '\0');  TRY(lc = str_line_column(s1, ofs));  TEST_EQUAL(lc.first, 1);  TEST_EQUAL(lc.second, 12);
+        ofs = 0;   TEST_EQUAL(s2[ofs], 'H');   TRY(lc = str_line_column(s2, ofs));  TEST_EQUAL(lc.first, 1);  TEST_EQUAL(lc.second, 1);
+        ofs = 10;  TEST_EQUAL(s2[ofs], 'd');   TRY(lc = str_line_column(s2, ofs));  TEST_EQUAL(lc.first, 1);  TEST_EQUAL(lc.second, 11);
+        ofs = 11;  TEST_EQUAL(s2[ofs], '\n');  TRY(lc = str_line_column(s2, ofs));  TEST_EQUAL(lc.first, 1);  TEST_EQUAL(lc.second, 12);
+        ofs = 12;  TEST_EQUAL(s2[ofs], 'G');   TRY(lc = str_line_column(s2, ofs));  TEST_EQUAL(lc.first, 2);  TEST_EQUAL(lc.second, 1);
+        ofs = 18;  TEST_EQUAL(s2[ofs], 'e');   TRY(lc = str_line_column(s2, ofs));  TEST_EQUAL(lc.first, 2);  TEST_EQUAL(lc.second, 7);
+        ofs = 19;  TEST_EQUAL(s2[ofs], '\n');  TRY(lc = str_line_column(s2, ofs));  TEST_EQUAL(lc.first, 2);  TEST_EQUAL(lc.second, 8);
+        ofs = 20;  TEST_EQUAL(s2[ofs], '\0');  TRY(lc = str_line_column(s2, ofs));  TEST_EQUAL(lc.first, 3);  TEST_EQUAL(lc.second, 1);
+        ofs = 0;   TEST_EQUAL(s3[ofs], 'H');   TRY(lc = str_line_column(s3, ofs));  TEST_EQUAL(lc.first, 1);  TEST_EQUAL(lc.second, 1);
+        ofs = 10;  TEST_EQUAL(s3[ofs], 'd');   TRY(lc = str_line_column(s3, ofs));  TEST_EQUAL(lc.first, 1);  TEST_EQUAL(lc.second, 11);
+        ofs = 11;  TEST_EQUAL(s3[ofs], '\r');  TRY(lc = str_line_column(s3, ofs));  TEST_EQUAL(lc.first, 1);  TEST_EQUAL(lc.second, 12);
+        ofs = 12;  TEST_EQUAL(s3[ofs], '\n');  TRY(lc = str_line_column(s3, ofs));  TEST_EQUAL(lc.first, 1);  TEST_EQUAL(lc.second, 13);
+        ofs = 13;  TEST_EQUAL(s3[ofs], 'G');   TRY(lc = str_line_column(s3, ofs));  TEST_EQUAL(lc.first, 2);  TEST_EQUAL(lc.second, 1);
+        ofs = 19;  TEST_EQUAL(s3[ofs], 'e');   TRY(lc = str_line_column(s3, ofs));  TEST_EQUAL(lc.first, 2);  TEST_EQUAL(lc.second, 7);
+        ofs = 20;  TEST_EQUAL(s3[ofs], '\r');  TRY(lc = str_line_column(s3, ofs));  TEST_EQUAL(lc.first, 2);  TEST_EQUAL(lc.second, 8);
+        ofs = 21;  TEST_EQUAL(s3[ofs], '\n');  TRY(lc = str_line_column(s3, ofs));  TEST_EQUAL(lc.first, 2);  TEST_EQUAL(lc.second, 9);
+        ofs = 22;  TEST_EQUAL(s3[ofs], '\0');  TRY(lc = str_line_column(s3, ofs));  TEST_EQUAL(lc.first, 3);  TEST_EQUAL(lc.second, 1);
 
     }
 
     void check_search() {
 
-        U8string s;
-        Utf8Iterator i;
+        U8string s = u8"€uro ∈lement";
+        Irange<Utf8Iterator> r;
 
-        s = u8"€uro ∈lement";
-        TRY(i = str_search(s, u8""));                    TEST_EQUAL(std::distance(utf_begin(s), i), 0);
-        TRY(i = str_search(s, u8"€uro"));                TEST_EQUAL(std::distance(utf_begin(s), i), 0);
-        TRY(i = str_search(s, u8"∈lement"));             TEST_EQUAL(std::distance(utf_begin(s), i), 5);
-        TRY(i = str_search(s, u8"Hello"));               TEST_EQUAL(std::distance(utf_begin(s), i), 12);
-        TRY(i = str_search(utf_range(s), u8""));         TEST_EQUAL(std::distance(utf_begin(s), i), 0);
-        TRY(i = str_search(utf_range(s), u8"€uro"));     TEST_EQUAL(std::distance(utf_begin(s), i), 0);
-        TRY(i = str_search(utf_range(s), u8"∈lement"));  TEST_EQUAL(std::distance(utf_begin(s), i), 5);
-        TRY(i = str_search(utf_range(s), u8"Hello"));    TEST_EQUAL(std::distance(utf_begin(s), i), 12);
+        TRY(r = str_search(s, u8""));                    TEST_EQUAL(std::distance(utf_begin(s), r.first), 0);   TEST_EQUAL(std::distance(r.first, r.second), 0);
+        TRY(r = str_search(s, u8"€uro"));                TEST_EQUAL(std::distance(utf_begin(s), r.first), 0);   TEST_EQUAL(std::distance(r.first, r.second), 4);
+        TRY(r = str_search(s, u8"∈lement"));             TEST_EQUAL(std::distance(utf_begin(s), r.first), 5);   TEST_EQUAL(std::distance(r.first, r.second), 7);
+        TRY(r = str_search(s, u8"Hello"));               TEST_EQUAL(std::distance(utf_begin(s), r.first), 12);  TEST_EQUAL(std::distance(r.first, r.second), 0);
+        TRY(r = str_search(utf_range(s), u8""));         TEST_EQUAL(std::distance(utf_begin(s), r.first), 0);   TEST_EQUAL(std::distance(r.first, r.second), 0);
+        TRY(r = str_search(utf_range(s), u8"€uro"));     TEST_EQUAL(std::distance(utf_begin(s), r.first), 0);   TEST_EQUAL(std::distance(r.first, r.second), 4);
+        TRY(r = str_search(utf_range(s), u8"∈lement"));  TEST_EQUAL(std::distance(utf_begin(s), r.first), 5);   TEST_EQUAL(std::distance(r.first, r.second), 7);
+        TRY(r = str_search(utf_range(s), u8"Hello"));    TEST_EQUAL(std::distance(utf_begin(s), r.first), 12);  TEST_EQUAL(std::distance(r.first, r.second), 0);
 
     }
 

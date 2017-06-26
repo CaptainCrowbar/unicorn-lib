@@ -97,6 +97,7 @@ four functions will be true for any value of the argument.
     * `const string_type& UtfIterator::`**`source`**`() const noexcept`
     * `size_t UtfIterator::`**`offset`**`() const noexcept`
     * `size_t UtfIterator::`**`count`**`() const noexcept`
+    * `UtfIterator UtfIterator::`**`offset_by`**`(ptrdiff_t n) const noexcept`
     * `Irange<const C*> UtfIterator::`**`range`**`() const noexcept`
     * `string_type` **`str`**`() const`
     * `bool UtfIterator::`**`valid`**`() const noexcept`
@@ -134,6 +135,11 @@ string. The `offset()` and `count()` functions return the position and length
 (in code units) of the current encoded character (or the group of code units
 currently being interpreted as an invalid character). The `range()` function
 returns the same sequence of code units as a pair of pointers.
+
+The `offset_by()` function returns an iterator moved by the specified number
+of code units. The resulting offset will be clamped to the bounds of the
+source string; behaviour is the same as for the constructor if it is not on a
+character boundary.
 
 The `str()` function returns a copy of the code units making up the current
 character. This will be empty if the iterator is default constructed or past

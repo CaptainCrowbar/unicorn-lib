@@ -289,10 +289,10 @@ namespace RS {
         Utf8Iterator str_find_last_not_of(const Utf8Iterator& b, const Utf8Iterator& e, const U8string& target);
         Utf8Iterator str_find_last_not_of(const Irange<Utf8Iterator>& range, const U8string& target);
         Utf8Iterator str_find_last_not_of(const U8string& str, const U8string& target);
-        void str_line_column(const U8string& str, size_t offset, size_t& line, size_t& column, size_t flags = 0);
-        Utf8Iterator str_search(const Utf8Iterator& b, const Utf8Iterator& e, const U8string& target);
-        Utf8Iterator str_search(const Irange<Utf8Iterator>& range, const U8string& target);
-        Utf8Iterator str_search(const U8string& str, const U8string& target);
+        std::pair<size_t, size_t> str_line_column(const U8string& str, size_t offset, size_t flags = 0);
+        Irange<Utf8Iterator> str_search(const Utf8Iterator& b, const Utf8Iterator& e, const U8string& target);
+        Irange<Utf8Iterator> str_search(const Irange<Utf8Iterator>& range, const U8string& target);
+        Irange<Utf8Iterator> str_search(const U8string& str, const U8string& target);
         size_t str_skipws(Utf8Iterator& i, const Utf8Iterator& end);
         size_t str_skipws(Utf8Iterator& i);
 

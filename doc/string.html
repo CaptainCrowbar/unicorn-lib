@@ -113,10 +113,9 @@ normally obtain it by calling <code>str_length()</code> (or a related function s
 values); you can also select a count of grapheme clusters (user-perceived
 characters; see <a href="segment.html"><code>unicorn/segment</code></a>), or calculate the East
 Asian width.</p>
-<p>If the <code>grapheme_units</code> flag is selected, nonspacing marks are counted as zero
-width. The two options for East Asian width determine how ambiguous width
-characters are handled, defaulting to narrow (one unit) or wide (two units).
-The <code>grapheme_units</code> flag can be combined with either of the East Asian width
+<p>The two options for East Asian width determine how ambiguous width characters
+are handled, defaulting to narrow (one unit) or wide (two units). The
+<code>grapheme_units</code> flag can be combined with either of the East Asian width
 options, giving a size based on the width of the base character of each
 grapheme cluster.</p>
 <div class="defns">
@@ -268,7 +267,7 @@ instead of code units.)</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>void</code> <strong><code>str_line_column</code></strong><code>(const U8string&amp; str, size_t offset, size_t&amp; line, size_t&amp; column, uint32_t flags = 0)</code></li>
+<li><code>std::pair&lt;size_t, size_t&gt;</code> <strong><code>str_line_column</code></strong><code>(const U8string&amp; str, size_t offset, uint32_t flags = 0)</code></li>
 </ul>
 <p>Converts a code unit offset (0-based) into a string to a line and column
 number (1-based). The <code>flags</code> argument takes the same values as for
@@ -283,13 +282,13 @@ appended to the string.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>Utf8Iterator</code> <strong><code>str_search</code></strong><code>(const U8string&amp; str, const U8string&amp; target)</code></li>
-<li><code>Utf8Iterator</code> <strong><code>str_search</code></strong><code>(const Utf8Iterator&amp; begin, const Utf8Iterator&amp; end, const U8string&amp; target)</code></li>
-<li><code>Utf8Iterator</code> <strong><code>str_search</code></strong><code>(const Irange&lt;Utf8Iterator&gt;&amp; range, const U8string&amp; target)</code></li>
+<li><code>Irange&lt;Utf8Iterator&gt;</code> <strong><code>str_search</code></strong><code>(const U8string&amp; str, const U8string&amp; target)</code></li>
+<li><code>Irange&lt;Utf8Iterator&gt;</code> <strong><code>str_search</code></strong><code>(const Utf8Iterator&amp; begin, const Utf8Iterator&amp; end, const U8string&amp; target)</code></li>
+<li><code>Irange&lt;Utf8Iterator&gt;</code> <strong><code>str_search</code></strong><code>(const Irange&lt;Utf8Iterator&gt;&amp; range, const U8string&amp; target)</code></li>
 </ul>
 <p>Find the first occurrence of the target substring in the subject range,
-returning an iterator pointing to the beginning of the located substring, or
-an end iterator if it was not found.</p>
+returning an iterator range marking the located substring, or a pair of end
+iterators if it was not found.</p>
 </div>
 <div class="defns">
 <ul>
@@ -411,10 +410,12 @@ than the requested length.</p>
 <li><code>Irange&lt;Utf8Iterator&gt;</code> <strong><code>str_insert_in</code></strong><code>(U8string&amp; dst, const Utf8Iterator&amp; range_begin, const Utf8Iterator&amp; range_end, const Utf8Iterator&amp; src_begin, const Utf8Iterator&amp; src_end)</code></li>
 </ul>
 <p>These insert a copy of the source string into the destination string, either
-at a specified location or replacing a specified substring. The effect is
-similar to the <code>std::string::insert()</code> and <code>replace()</code> methods, except that
-positions within the string are specified by UTF iterators instead of ordinary
-string iterators or offsets. The <code>str_insert_in()</code> functions return a pair of
+at a specified location or replacing a specified substring. (For the versions
+that return the result, the source string is not needed as an explicit
+argument since it can be obtained from the iterator.) The effect is similar to
+the <code>std::string::insert()</code> and <code>replace()</code> methods, except that positions
+within the string are specified by UTF iterators instead of ordinary string
+iterators or offsets. The <code>str_insert_in()</code> functions return a pair of
 iterators delimiting the newly inserted replacement string within the updated
 <code>dst</code>.</p>
 </div>
@@ -611,7 +612,9 @@ Unicode character, i.e. a <code>char32_t</code>, not a code unit.</p>
 </ul>
 <p>These convert all line breaks to the same form, a single <code>LF</code> by default. Any
 Unicode line or paragraph breaking character is recognised and replaced; the
-<code>CR+LF</code> sequence is also treated as a single line break.</p>
+<code>CR+LF</code> sequence is also treated as a single line break. Unless the original
+string was completely empty, a line break will be added at the end if it was
+not already there.</p>
 </div>
 <div class="defns">
 <ul>

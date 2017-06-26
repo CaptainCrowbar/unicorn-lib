@@ -89,8 +89,7 @@ namespace RS {
 
             inline size_t UtfEncoding<char16_t>::decode_fast(const char16_t* src, size_t n, char32_t& dst) noexcept {
                 if (n >= 2 && char_is_surrogate(src[0])) {
-                    dst = 0x10000 + ((char32_t(src[0]) & 0x3ff) << 10)
-                        + (char32_t(src[1]) & 0x3ff);
+                    dst = 0x10000 + ((char32_t(src[0]) & 0x3ff) << 10) + (char32_t(src[1]) & 0x3ff);
                     return 2;
                 } else {
                     dst = src[0];
@@ -101,14 +100,10 @@ namespace RS {
             template <>
             struct UtfEncoding<char32_t> {
                 static constexpr size_t max_units = 1;
-                static size_t decode(const char32_t* src, size_t /*n*/, char32_t& dst) noexcept
-                    { dst = *src; return 1; }
-                static size_t decode_fast(const char32_t* src, size_t /*n*/, char32_t& dst) noexcept
-                    { dst = *src; return 1; }
-                static size_t decode_prev(const char32_t* src, size_t pos, char32_t& dst) noexcept
-                    { dst = src[pos - 1]; return 1; }
-                static size_t encode(char32_t src, char32_t* dst) noexcept
-                    { *dst = src; return 1; }
+                static size_t decode(const char32_t* src, size_t /*n*/, char32_t& dst) noexcept { dst = *src; return 1; }
+                static size_t decode_fast(const char32_t* src, size_t /*n*/, char32_t& dst) noexcept { dst = *src; return 1; }
+                static size_t decode_prev(const char32_t* src, size_t pos, char32_t& dst) noexcept { dst = src[pos - 1]; return 1; }
+                static size_t encode(char32_t src, char32_t* dst) noexcept { *dst = src; return 1; }
                 static const char* name() noexcept { return "UTF-32"; }
             };
 
@@ -116,19 +111,14 @@ namespace RS {
             struct UtfEncoding<wchar_t> {
                 using utf = UtfEncoding<WcharEquivalent>;
                 static constexpr size_t max_units = utf::max_units;
-                static size_t decode(const wchar_t* src, size_t n, char32_t& dst) noexcept
-                    { return utf::decode(reinterpret_cast<const WcharEquivalent*>(src), n, dst); }
-                static size_t decode_fast(const wchar_t* src, size_t n, char32_t& dst) noexcept
-                    { return utf::decode_fast(reinterpret_cast<const WcharEquivalent*>(src), n, dst); }
-                static size_t decode_prev(const wchar_t* src, size_t pos, char32_t& dst) noexcept
-                    { return utf::decode_prev(reinterpret_cast<const WcharEquivalent*>(src), pos, dst); }
-                static size_t encode(char32_t src, wchar_t* dst) noexcept
-                    { return utf::encode(src, reinterpret_cast<WcharEquivalent*>(dst)); }
+                static size_t decode(const wchar_t* src, size_t n, char32_t& dst) noexcept { return utf::decode(reinterpret_cast<const WcharEquivalent*>(src), n, dst); }
+                static size_t decode_fast(const wchar_t* src, size_t n, char32_t& dst) noexcept { return utf::decode_fast(reinterpret_cast<const WcharEquivalent*>(src), n, dst); }
+                static size_t decode_prev(const wchar_t* src, size_t pos, char32_t& dst) noexcept { return utf::decode_prev(reinterpret_cast<const WcharEquivalent*>(src), pos, dst); }
+                static size_t encode(char32_t src, wchar_t* dst) noexcept { return utf::encode(src, reinterpret_cast<WcharEquivalent*>(dst)); }
                 static const char* name() noexcept { return "wchar_t"; }
             };
 
-            template <typename C> inline void append_error(std::basic_string<C>& str)
-                { str += static_cast<C>(replacement_char); }
+            template <typename C> inline void append_error(std::basic_string<C>& str) { str += static_cast<C>(replacement_char); }
             inline void append_error(U8string& str) { str += utf8_replacement; }
 
         }
@@ -192,22 +182,20 @@ namespace RS {
             using code_unit = C;
             using string_type = std::basic_string<C>;
             UtfIterator() noexcept { static const string_type dummy; sptr = &dummy; }
-            explicit UtfIterator(const string_type& src): sptr(&src)
-                { if (ibits(fset & err_flags) == 0) fset |= err_ignore; ++*this; }
+            explicit UtfIterator(const string_type& src): sptr(&src) { if (ibits(fset & err_flags) == 0) fset |= err_ignore; ++*this; }
             UtfIterator(const string_type& src, size_t offset, uint32_t flags = 0):
-                sptr(&src), ofs(std::min(offset, src.size())), fset(flags)
-                { if (ibits(fset & err_flags) == 0) fset |= err_ignore; ++*this; }
+                sptr(&src), ofs(std::min(offset, src.size())), fset(flags) { if (ibits(fset & err_flags) == 0) fset |= err_ignore; ++*this; }
             const char32_t& operator*() const noexcept { return u; }
             UtfIterator& operator++();
             UtfIterator& operator--();
             const string_type& source() const noexcept { return *sptr; }
             size_t offset() const noexcept { return ofs; }
             size_t count() const noexcept { return units; }
+            UtfIterator offset_by(ptrdiff_t n) const noexcept;
             Irange<const C*> range() const noexcept;
             string_type str() const { return sptr ? sptr->substr(ofs, units) : string_type(); }
             bool valid() const noexcept { return ok; }
-            friend bool operator==(const UtfIterator& lhs, const UtfIterator& rhs) noexcept
-                { return lhs.ofs == rhs.ofs; }
+            friend bool operator==(const UtfIterator& lhs, const UtfIterator& rhs) noexcept { return lhs.ofs == rhs.ofs; }
         private:
             const string_type* sptr = nullptr;  // Source string
             size_t ofs = 0;                     // Offset of current character in source
@@ -224,9 +212,9 @@ namespace RS {
             units = 0;
             u = 0;
             ok = false;
-            if (ofs == sptr->size())
-                return *this;
-            if (fset & err_ignore) {
+            if (ofs == sptr->size()) {
+                // do nothing
+            } else if (fset & err_ignore) {
                 units = UtfEncoding<C>::decode_fast(sptr->data() + ofs, sptr->size() - ofs, u);
                 ok = true;
             } else {
@@ -258,6 +246,17 @@ namespace RS {
                     throw EncodingError(UtfEncoding<C>::name(), ofs, sptr->data() + ofs, units);
             }
             return *this;
+        }
+
+        template <typename C>
+        UtfIterator<C> UtfIterator<C>::offset_by(ptrdiff_t n) const noexcept {
+            if (! sptr)
+                return *this;
+            auto i = *this;
+            i.ofs = size_t(clamp(ptrdiff_t(ofs) + n, 0, sptr->size()));
+            i.units = 0;
+            ++i;
+            return i;
         }
 
         template <typename C>
@@ -316,10 +315,8 @@ namespace RS {
             using code_unit = C;
             using string_type = std::basic_string<C>;
             UtfWriter() noexcept {}
-            explicit UtfWriter(string_type& dst) noexcept:
-                sptr(&dst) { if (ibits(fset & err_flags) == 0) fset |= err_ignore; }
-            UtfWriter(string_type& dst, uint32_t flags) noexcept:
-                sptr(&dst), fset(flags) { if (ibits(fset & err_flags) == 0) fset |= err_ignore; }
+            explicit UtfWriter(string_type& dst) noexcept: sptr(&dst) { if (ibits(fset & err_flags) == 0) fset |= err_ignore; }
+            UtfWriter(string_type& dst, uint32_t flags) noexcept: sptr(&dst), fset(flags) { if (ibits(fset & err_flags) == 0) fset |= err_ignore; }
             UtfWriter& operator=(char32_t u);
             bool valid() const noexcept { return ok; }
         private:
@@ -501,16 +498,14 @@ namespace RS {
         };
 
         template <typename C1, typename C2>
-        void recode(const std::basic_string<C1>& src, std::basic_string<C2>& dst,
-                uint32_t flags = 0) {
+        void recode(const std::basic_string<C1>& src, std::basic_string<C2>& dst, uint32_t flags = 0) {
             std::basic_string<C2> result;
             UnicornDetail::Recode<C1, C2>()(src.data(), src.size(), result, flags);
             dst.swap(result);
         }
 
         template <typename C1, typename C2>
-        void recode(const std::basic_string<C1>& src, size_t offset, std::basic_string<C2>& dst,
-                uint32_t flags = 0) {
+        void recode(const std::basic_string<C1>& src, size_t offset, std::basic_string<C2>& dst, uint32_t flags = 0) {
             std::basic_string<C2> result;
             if (offset < src.size())
                 UnicornDetail::Recode<C1, C2>()(src.data() + offset, src.size() - offset, result, flags);

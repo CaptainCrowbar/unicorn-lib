@@ -135,14 +135,14 @@ namespace RS {
             return str_find_last_not_of(utf_begin(str), utf_end(str), target);
         }
 
-        void str_line_column(const U8string& str, size_t offset, size_t& line, size_t& column, size_t flags) {
+        std::pair<size_t, size_t> str_line_column(const U8string& str, size_t offset, size_t flags) {
             offset = std::min(offset, str.size());
-            size_t lnum = 1;
+            size_t line = 1;
             bool prev_lf = false;
             auto i = utf_begin(str), lstart = i;
             while (i.offset() < offset) {
                 if (prev_lf) {
-                    ++lnum;
+                    ++line;
                     lstart = i;
                     prev_lf = false;
                 }
@@ -162,23 +162,28 @@ namespace RS {
             if (i.offset() > offset) {
                 --i;
             } else if (prev_lf) {
-                ++lnum;
+                ++line;
                 lstart = i;
             }
-            column = str_length(lstart, i, flags) + 1;
-            line = lnum;
+            size_t column = str_length(lstart, i, flags) + 1;
+            return {line, column};
         }
 
-        Utf8Iterator str_search(const Utf8Iterator& b, const Utf8Iterator& e, const U8string& target) {
+        Irange<Utf8Iterator> str_search(const Utf8Iterator& b, const Utf8Iterator& e, const U8string& target) {
             auto u_target = to_utf32(target);
-            return std::search(b, e, u_target.begin(), u_target.end());
+            auto ub = u_target.begin(), ue = u_target.end();
+            auto i = std::search(b, e, ub, ue);
+            if (i == e)
+                return {i, i};
+            auto j = i.offset_by(target.size());
+            return {i, j};
         }
 
-        Utf8Iterator str_search(const Irange<Utf8Iterator>& range, const U8string& target) {
+        Irange<Utf8Iterator> str_search(const Irange<Utf8Iterator>& range, const U8string& target) {
             return str_search(range.begin(), range.end(), target);
         }
 
-        Utf8Iterator str_search(const U8string& str, const U8string& target) {
+        Irange<Utf8Iterator> str_search(const U8string& str, const U8string& target) {
             return str_search(utf_begin(str), utf_end(str), target);
         }
 

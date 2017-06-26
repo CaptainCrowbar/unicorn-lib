@@ -408,6 +408,7 @@ namespace {
 
         TEST_EQUAL(str_unify_lines(u8""s), u8"");
         TEST_EQUAL(str_unify_lines(u8"Hello world\nGoodbye\n"s), u8"Hello world\nGoodbye\n");
+        TEST_EQUAL(str_unify_lines(u8"Hello world\nGoodbye"s), u8"Hello world\nGoodbye\n");
         TEST_EQUAL(str_unify_lines(u8"Hello world\nGoodbye\n"s, u8"\r\n"), u8"Hello world\r\nGoodbye\r\n");
         TEST_EQUAL(str_unify_lines(u8"Hello world\nGoodbye\n"s, U'*'), u8"Hello world*Goodbye*");
         TEST_EQUAL(str_unify_lines(u8"Hello world\r\nGoodbye\r\n"s), u8"Hello world\nGoodbye\n");
@@ -419,6 +420,7 @@ namespace {
 
         s = u8"";                                TRY(str_unify_lines_in(s));            TEST_EQUAL(s, u8"");
         s = u8"Hello world\nGoodbye\n";          TRY(str_unify_lines_in(s));            TEST_EQUAL(s, u8"Hello world\nGoodbye\n");
+        s = u8"Hello world\nGoodbye";            TRY(str_unify_lines_in(s));            TEST_EQUAL(s, u8"Hello world\nGoodbye\n");
         s = u8"Hello world\nGoodbye\n";          TRY(str_unify_lines_in(s, u8"\r\n"));  TEST_EQUAL(s, u8"Hello world\r\nGoodbye\r\n");
         s = u8"Hello world\r\nGoodbye\r\n";      TRY(str_unify_lines_in(s));            TEST_EQUAL(s, u8"Hello world\nGoodbye\n");
         s = u8"Hello world\r\nGoodbye\r\n";      TRY(str_unify_lines_in(s, u8"\r\n"));  TEST_EQUAL(s, u8"Hello world\r\nGoodbye\r\n");

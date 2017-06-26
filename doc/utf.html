@@ -131,6 +131,7 @@ four functions will be true for any value of the argument.</p>
 <li><code>const string_type&amp; UtfIterator::</code><strong><code>source</code></strong><code>() const noexcept</code></li>
 <li><code>size_t UtfIterator::</code><strong><code>offset</code></strong><code>() const noexcept</code></li>
 <li><code>size_t UtfIterator::</code><strong><code>count</code></strong><code>() const noexcept</code></li>
+<li><code>UtfIterator UtfIterator::</code><strong><code>offset_by</code></strong><code>(ptrdiff_t n) const noexcept</code></li>
 <li><code>Irange&lt;const C*&gt; UtfIterator::</code><strong><code>range</code></strong><code>() const noexcept</code></li>
 <li><code>string_type</code> <strong><code>str</code></strong><code>() const</code></li>
 <li><code>bool UtfIterator::</code><strong><code>valid</code></strong><code>() const noexcept</code></li>
@@ -166,6 +167,10 @@ string. The <code>offset()</code> and <code>count()</code> functions return the 
 (in code units) of the current encoded character (or the group of code units
 currently being interpreted as an invalid character). The <code>range()</code> function
 returns the same sequence of code units as a pair of pointers.</p>
+<p>The <code>offset_by()</code> function returns an iterator moved by the specified number
+of code units. The resulting offset will be clamped to the bounds of the
+source string; behaviour is the same as for the constructor if it is not on a
+character boundary.</p>
 <p>The <code>str()</code> function returns a copy of the code units making up the current
 character. This will be empty if the iterator is default constructed or past
 the end, but behaviour is undefined if this is called on any other kind of

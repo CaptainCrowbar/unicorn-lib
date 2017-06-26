@@ -87,10 +87,9 @@ values); you can also select a count of grapheme clusters (user-perceived
 characters; see [`unicorn/segment`](segment.html)), or calculate the East
 Asian width.
 
-If the `grapheme_units` flag is selected, nonspacing marks are counted as zero
-width. The two options for East Asian width determine how ambiguous width
-characters are handled, defaulting to narrow (one unit) or wide (two units).
-The `grapheme_units` flag can be combined with either of the East Asian width
+The two options for East Asian width determine how ambiguous width characters
+are handled, defaulting to narrow (one unit) or wide (two units). The
+`grapheme_units` flag can be combined with either of the East Asian width
 options, giving a size based on the width of the base character of each
 grapheme cluster.
 
@@ -218,7 +217,7 @@ matching character is found. (They are essentially the same as the similarly
 named member functions in `std::string`, except that they work on characters
 instead of code units.)
 
-* `void` **`str_line_column`**`(const U8string& str, size_t offset, size_t& line, size_t& column, uint32_t flags = 0)`
+* `std::pair<size_t, size_t>` **`str_line_column`**`(const U8string& str, size_t offset, uint32_t flags = 0)`
 
 Converts a code unit offset (0-based) into a string to a line and column
 number (1-based). The `flags` argument takes the same values as for
@@ -231,13 +230,13 @@ contains the offset will be reported. If `offset>=str.size()`, this will
 report what the line and column number would be for the next character
 appended to the string.
 
-* `Utf8Iterator` **`str_search`**`(const U8string& str, const U8string& target)`
-* `Utf8Iterator` **`str_search`**`(const Utf8Iterator& begin, const Utf8Iterator& end, const U8string& target)`
-* `Utf8Iterator` **`str_search`**`(const Irange<Utf8Iterator>& range, const U8string& target)`
+* `Irange<Utf8Iterator>` **`str_search`**`(const U8string& str, const U8string& target)`
+* `Irange<Utf8Iterator>` **`str_search`**`(const Utf8Iterator& begin, const Utf8Iterator& end, const U8string& target)`
+* `Irange<Utf8Iterator>` **`str_search`**`(const Irange<Utf8Iterator>& range, const U8string& target)`
 
 Find the first occurrence of the target substring in the subject range,
-returning an iterator pointing to the beginning of the located substring, or
-an end iterator if it was not found.
+returning an iterator range marking the located substring, or a pair of end
+iterators if it was not found.
 
 * `size_t` **`str_skipws`**`(Utf8Iterator& i)`
 * `size_t` **`str_skipws`**`(Utf8Iterator& i, const Utf8Iterator& end)`
@@ -343,10 +342,12 @@ than the requested length.
 * `Irange<Utf8Iterator>` **`str_insert_in`**`(U8string& dst, const Utf8Iterator& range_begin, const Utf8Iterator& range_end, const Utf8Iterator& src_begin, const Utf8Iterator& src_end)`
 
 These insert a copy of the source string into the destination string, either
-at a specified location or replacing a specified substring. The effect is
-similar to the `std::string::insert()` and `replace()` methods, except that
-positions within the string are specified by UTF iterators instead of ordinary
-string iterators or offsets. The `str_insert_in()` functions return a pair of
+at a specified location or replacing a specified substring. (For the versions
+that return the result, the source string is not needed as an explicit
+argument since it can be obtained from the iterator.) The effect is similar to
+the `std::string::insert()` and `replace()` methods, except that positions
+within the string are specified by UTF iterators instead of ordinary string
+iterators or offsets. The `str_insert_in()` functions return a pair of
 iterators delimiting the newly inserted replacement string within the updated
 `dst`.
 
@@ -517,7 +518,9 @@ Unicode character, i.e. a `char32_t`, not a code unit.
 
 These convert all line breaks to the same form, a single `LF` by default. Any
 Unicode line or paragraph breaking character is recognised and replaced; the
-`CR+LF` sequence is also treated as a single line break.
+`CR+LF` sequence is also treated as a single line break. Unless the original
+string was completely empty, a line break will be added at the end if it was
+not already there.
 
 * `U8string` **`str_wrap`**`(const U8string& str, uint32_t flags = 0, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos)`
 * `void` **`str_wrap_in`**`(U8string& str, uint32_t flags = 0, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos)`
