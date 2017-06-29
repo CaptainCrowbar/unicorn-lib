@@ -258,6 +258,31 @@ namespace RS {
 
         // Regular expression class
 
+        constexpr uint32_t Regex::byte;
+        constexpr uint32_t Regex::caseless;
+        constexpr uint32_t Regex::dfa;
+        constexpr uint32_t Regex::dollarnewline;
+        constexpr uint32_t Regex::dotinline;
+        constexpr uint32_t Regex::extended;
+        constexpr uint32_t Regex::firstline;
+        constexpr uint32_t Regex::multiline;
+        constexpr uint32_t Regex::newlineanycrlf;
+        constexpr uint32_t Regex::newlinecr;
+        constexpr uint32_t Regex::newlinecrlf;
+        constexpr uint32_t Regex::newlinelf;
+        constexpr uint32_t Regex::noautocapture;
+        constexpr uint32_t Regex::nostartoptimize;
+        constexpr uint32_t Regex::notbol;
+        constexpr uint32_t Regex::notempty;
+        constexpr uint32_t Regex::notemptyatstart;
+        constexpr uint32_t Regex::noteol;
+        constexpr uint32_t Regex::noutfcheck;
+        constexpr uint32_t Regex::optimize;
+        constexpr uint32_t Regex::partialhard;
+        constexpr uint32_t Regex::partialsoft;
+        constexpr uint32_t Regex::prefershort;
+        constexpr uint32_t Regex::ucp;
+
         Regex::Regex(const U8string& pattern, uint32_t flags) {
             if (ibits(flags & (newlineanycrlf | newlinecr | newlinecrlf | newlinelf)) > 1
                     || ibits(flags & (notempty | notemptyatstart)) > 1
