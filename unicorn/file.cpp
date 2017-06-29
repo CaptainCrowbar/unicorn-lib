@@ -126,7 +126,7 @@ namespace RS {
             constexpr const char* posix_root             = R"(/{2,}[^/]+/?|/+)";
             constexpr const char* windows_absolute       = R"((\\\\\?\\)*([A-Z]:\\|\\{2,}(?=[^?\\])))";
             constexpr const char* windows_illegal_names  = R"((AUX|COM[1-9]|CON|LPT[1-9]|NUL|PRN)(\.[^.]*)?)";
-            constexpr uint32_t match_flags               = rx_byte | rx_caseless | rx_noautocapture;
+            constexpr uint32_t match_flags               = Regex::byte | Regex::caseless | Regex::noautocapture;
 
             #ifndef _XOPEN_SOURCE
                 constexpr const char* windows_root            = R"((\\\\\?\\)*([A-Z]:\\|\\{2,}[^?\\]+\\?|\\+))";

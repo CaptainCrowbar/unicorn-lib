@@ -51,33 +51,6 @@ namespace RS {
 
         }
 
-        // Regex options
-
-        constexpr uint32_t rx_byte             = 1ul << 0;   // Byte mode matching                               ~PCRE_UTF8
-        constexpr uint32_t rx_caseless         = 1ul << 1;   // Case insensitive matching                        PCRE_CASELESS
-        constexpr uint32_t rx_dfa              = 1ul << 2;   // Use the alternative DFA algorithm                pcre_dfa_exec()
-        constexpr uint32_t rx_dollarnewline    = 1ul << 3;   // $ may match line break at end                    ~PCRE_DOLLAR_ENDONLY
-        constexpr uint32_t rx_dotinline        = 1ul << 4;   // . does not match newlines                        ~PCRE_DOTALL
-        constexpr uint32_t rx_extended         = 1ul << 5;   // Free-form mode (ignore whitespace and comments)  PCRE_EXTENDED
-        constexpr uint32_t rx_firstline        = 1ul << 6;   // Must match in first line                         PCRE_FIRSTLINE
-        constexpr uint32_t rx_multiline        = 1ul << 7;   // Multiline mode (^ and $ match BOL/EOL)           PCRE_MULTILINE
-        constexpr uint32_t rx_newlineanycrlf   = 1ul << 8;   // Line break is any of CR, LF, CRLF                PCRE_NEWLINE_ANYCRLF
-        constexpr uint32_t rx_newlinecr        = 1ul << 9;   // Line break is CR only                            PCRE_NEWLINE_CR
-        constexpr uint32_t rx_newlinecrlf      = 1ul << 10;  // Line break is CRLF only                          PCRE_NEWLINE_CRLF
-        constexpr uint32_t rx_newlinelf        = 1ul << 11;  // Line break is LF only                            PCRE_NEWLINE_LF
-        constexpr uint32_t rx_noautocapture    = 1ul << 12;  // No automatic captures                            PCRE_NO_AUTO_CAPTURE
-        constexpr uint32_t rx_nostartoptimize  = 1ul << 13;  // No startup optimization                          PCRE_NO_START_OPTIMIZE
-        constexpr uint32_t rx_notbol           = 1ul << 14;  // Start of text is not a line break                PCRE_NOTBOL
-        constexpr uint32_t rx_notempty         = 1ul << 15;  // Do not match an empty U8string                   PCRE_NOTEMPTY
-        constexpr uint32_t rx_notemptyatstart  = 1ul << 16;  // Match an empty U8string only at the start        PCRE_NOTEMPTY_ATSTART
-        constexpr uint32_t rx_noteol           = 1ul << 17;  // End of text is not a line break                  PCRE_NOTEOL
-        constexpr uint32_t rx_noutfcheck       = 1ul << 18;  // Skip UTF validity checks                         PCRE_NO_UTF8_CHECK
-        constexpr uint32_t rx_optimize         = 1ul << 19;  // Take extra effort to optimize the regex          PCRE_STUDY_JIT_COMPILE
-        constexpr uint32_t rx_partialhard      = 1ul << 20;  // Hard partial matching (prefer over full match)   PCRE_PARTIAL_HARD
-        constexpr uint32_t rx_partialsoft      = 1ul << 21;  // Soft partial matching (only if no full match)    PCRE_PARTIAL_SOFT
-        constexpr uint32_t rx_prefershort      = 1ul << 22;  // Non-greedy quantifiers, or shorter DFA matches   PCRE_UNGREEDY,PCRE_DFA_SHORTEST
-        constexpr uint32_t rx_ucp              = 1ul << 23;  // Use Unicode properties in escape charsets        PCRE_UCP
-
         // Exceptions
 
         class RegexError:
@@ -141,6 +114,30 @@ namespace RS {
         class Regex:
         public LessThanComparable<Regex> {
         public:
+            static constexpr uint32_t byte             = 1ul << 0;   // Byte mode matching                               ~PCRE_UTF8
+            static constexpr uint32_t caseless         = 1ul << 1;   // Case insensitive matching                        PCRE_CASELESS
+            static constexpr uint32_t dfa              = 1ul << 2;   // Use the alternative DFA algorithm                pcre_dfa_exec()
+            static constexpr uint32_t dollarnewline    = 1ul << 3;   // $ may match line break at end                    ~PCRE_DOLLAR_ENDONLY
+            static constexpr uint32_t dotinline        = 1ul << 4;   // . does not match newlines                        ~PCRE_DOTALL
+            static constexpr uint32_t extended         = 1ul << 5;   // Free-form mode (ignore whitespace and comments)  PCRE_EXTENDED
+            static constexpr uint32_t firstline        = 1ul << 6;   // Must match in first line                         PCRE_FIRSTLINE
+            static constexpr uint32_t multiline        = 1ul << 7;   // Multiline mode (^ and $ match BOL/EOL)           PCRE_MULTILINE
+            static constexpr uint32_t newlineanycrlf   = 1ul << 8;   // Line break is any of CR, LF, CRLF                PCRE_NEWLINE_ANYCRLF
+            static constexpr uint32_t newlinecr        = 1ul << 9;   // Line break is CR only                            PCRE_NEWLINE_CR
+            static constexpr uint32_t newlinecrlf      = 1ul << 10;  // Line break is CRLF only                          PCRE_NEWLINE_CRLF
+            static constexpr uint32_t newlinelf        = 1ul << 11;  // Line break is LF only                            PCRE_NEWLINE_LF
+            static constexpr uint32_t noautocapture    = 1ul << 12;  // No automatic captures                            PCRE_NO_AUTO_CAPTURE
+            static constexpr uint32_t nostartoptimize  = 1ul << 13;  // No startup optimization                          PCRE_NO_START_OPTIMIZE
+            static constexpr uint32_t notbol           = 1ul << 14;  // Start of text is not a line break                PCRE_NOTBOL
+            static constexpr uint32_t notempty         = 1ul << 15;  // Do not match an empty U8string                   PCRE_NOTEMPTY
+            static constexpr uint32_t notemptyatstart  = 1ul << 16;  // Match an empty U8string only at the start        PCRE_NOTEMPTY_ATSTART
+            static constexpr uint32_t noteol           = 1ul << 17;  // End of text is not a line break                  PCRE_NOTEOL
+            static constexpr uint32_t noutfcheck       = 1ul << 18;  // Skip UTF validity checks                         PCRE_NO_UTF8_CHECK
+            static constexpr uint32_t optimize         = 1ul << 19;  // Take extra effort to optimize the regex          PCRE_STUDY_JIT_COMPILE
+            static constexpr uint32_t partialhard      = 1ul << 20;  // Hard partial matching (prefer over full match)   PCRE_PARTIAL_HARD
+            static constexpr uint32_t partialsoft      = 1ul << 21;  // Soft partial matching (only if no full match)    PCRE_PARTIAL_SOFT
+            static constexpr uint32_t prefershort      = 1ul << 22;  // Non-greedy quantifiers, or shorter DFA matches   PCRE_UNGREEDY,PCRE_DFA_SHORTEST
+            static constexpr uint32_t ucp              = 1ul << 23;  // Use Unicode properties in escape charsets        PCRE_UCP
             Regex(): Regex({}, 0) {}
             explicit Regex(const U8string& pattern, uint32_t flags = 0);
             Match operator()(const U8string& text, size_t offset = 0) const { return search(text, offset); }
@@ -221,8 +218,8 @@ namespace RS {
         namespace Literals {
 
             inline Regex operator"" _re(const char* ptr, size_t len) { return Regex(cstr(ptr, len)); }
-            inline Regex operator"" _re_b(const char* ptr, size_t len) { return Regex(cstr(ptr, len), rx_byte); }
-            inline Regex operator"" _re_i(const char* ptr, size_t len) { return Regex(cstr(ptr, len), rx_caseless); }
+            inline Regex operator"" _re_b(const char* ptr, size_t len) { return Regex(cstr(ptr, len), Regex::byte); }
+            inline Regex operator"" _re_i(const char* ptr, size_t len) { return Regex(cstr(ptr, len), Regex::caseless); }
 
         }
 

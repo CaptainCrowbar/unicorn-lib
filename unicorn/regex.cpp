@@ -63,19 +63,19 @@ namespace RS {
 
             int translate_match_flags(uint32_t fset) {
                 int mask = 0;
-                if (fset & rx_partialhard)
+                if (fset & Regex::partialhard)
                     mask |= PCRE_PARTIAL_HARD;
-                if (fset & rx_partialsoft)
+                if (fset & Regex::partialsoft)
                     mask |= PCRE_PARTIAL_SOFT;
-                if (fset & rx_notbol)
+                if (fset & Regex::notbol)
                     mask |= PCRE_NOTBOL;
-                if (fset & rx_notempty)
+                if (fset & Regex::notempty)
                     mask |= PCRE_NOTEMPTY;
-                if (fset & rx_notemptyatstart)
+                if (fset & Regex::notemptyatstart)
                     mask |= PCRE_NOTEMPTY_ATSTART;
-                if (fset & rx_noteol)
+                if (fset & Regex::noteol)
                     mask |= PCRE_NOTEOL;
-                if (fset & rx_nostartoptimize)
+                if (fset & Regex::nostartoptimize)
                     mask |= PCRE_NO_START_OPTIMIZE;
                 return mask;
             }
@@ -228,8 +228,8 @@ namespace RS {
             int xflags = 0;
             if (anchors > 0)
                 xflags |= PCRE_ANCHORED;
-            if (fset & rx_dfa) {
-                if (fset & rx_prefershort)
+            if (fset & Regex::dfa) {
+                if (fset & Regex::prefershort)
                     xflags |= PCRE_DFA_SHORTEST;
                 if (ofs.size() < 40)
                     ofs.resize(40); // ovector + workspace
@@ -259,53 +259,53 @@ namespace RS {
         // Regular expression class
 
         Regex::Regex(const U8string& pattern, uint32_t flags) {
-            if (ibits(flags & (rx_newlineanycrlf | rx_newlinecr | rx_newlinecrlf | rx_newlinelf)) > 1
-                    || ibits(flags & (rx_notempty | rx_notemptyatstart)) > 1
-                    || ibits(flags & (rx_partialhard | rx_partialsoft)) > 1)
+            if (ibits(flags & (newlineanycrlf | newlinecr | newlinecrlf | newlinelf)) > 1
+                    || ibits(flags & (notempty | notemptyatstart)) > 1
+                    || ibits(flags & (partialhard | partialsoft)) > 1)
                 throw std::invalid_argument("Inconsistent regex flags");
             pat = pattern;
             fset = flags;
             int cflags = PCRE_EXTRA, sflags = 0;
-            if (! (flags & rx_byte))
+            if (! (flags & byte))
                 cflags |= PCRE_UTF8;
-            if (flags & rx_newlineanycrlf)
+            if (flags & newlineanycrlf)
                 cflags |= PCRE_BSR_ANYCRLF | PCRE_NEWLINE_ANYCRLF;
-            else if (flags & rx_newlinecr)
+            else if (flags & newlinecr)
                 cflags |= PCRE_BSR_ANYCRLF | PCRE_NEWLINE_CR;
-            else if (flags & rx_newlinecrlf)
+            else if (flags & newlinecrlf)
                 cflags |= PCRE_BSR_ANYCRLF | PCRE_NEWLINE_CRLF;
-            else if (flags & rx_newlinelf)
+            else if (flags & newlinelf)
                 cflags |= PCRE_BSR_ANYCRLF | PCRE_NEWLINE_LF;
             else
                 cflags |= PCRE_BSR_ANYCRLF | PCRE_NEWLINE_ANYCRLF;
-            if (flags & rx_optimize) {
+            if (flags & optimize) {
                 sflags |= PCRE_STUDY_JIT_COMPILE;
-                if (flags & rx_partialhard)
+                if (flags & partialhard)
                     sflags |= PCRE_STUDY_JIT_PARTIAL_HARD_COMPILE;
-                else if (flags & rx_partialsoft)
+                else if (flags & partialsoft)
                     sflags |= PCRE_STUDY_JIT_PARTIAL_SOFT_COMPILE;
             }
-            if (flags & rx_caseless)
+            if (flags & caseless)
                 cflags |= PCRE_CASELESS;
-            if (! (flags & rx_dollarnewline))
+            if (! (flags & dollarnewline))
                 cflags |= PCRE_DOLLAR_ENDONLY;
-            if (! (flags & rx_dotinline))
+            if (! (flags & dotinline))
                 cflags |= PCRE_DOTALL;
-            if (flags & rx_extended)
+            if (flags & extended)
                 cflags |= PCRE_EXTENDED;
-            if (flags & rx_firstline)
+            if (flags & firstline)
                 cflags |= PCRE_FIRSTLINE;
-            if (flags & rx_multiline)
+            if (flags & multiline)
                 cflags |= PCRE_MULTILINE;
-            if (flags & rx_noautocapture)
+            if (flags & noautocapture)
                 cflags |= PCRE_NO_AUTO_CAPTURE;
-            if (flags & rx_nostartoptimize)
+            if (flags & nostartoptimize)
                 cflags |= PCRE_NO_START_OPTIMIZE;
-            if ((flags & rx_noutfcheck) && ! (flags & rx_byte))
+            if ((flags & noutfcheck) && ! (flags & byte))
                 cflags |= PCRE_NO_UTF8_CHECK;
-            if (flags & rx_prefershort)
+            if (flags & prefershort)
                 cflags |= PCRE_UNGREEDY;
-            if (flags & rx_ucp)
+            if (flags & ucp)
                 cflags |= PCRE_UCP;
             int error = 0, errpos = 0;
             const char* errptr = nullptr;
@@ -502,7 +502,7 @@ namespace RS {
         void RegexFormat::add_literal(char32_t u) {
             if (seq.empty() || seq.back().index != literal)
                 seq.push_back({literal, {}});
-            if (reg.flags() & rx_byte) {
+            if (reg.flags() & Regex::byte) {
                 if (u > 0xff)
                     throw EncodingError("byte", 0, u);
                 seq.back().text += char(u);
@@ -518,7 +518,7 @@ namespace RS {
             U8string block, dst;
             U8string* current = &dst;
             char block_flag = 0, char_flag = 0;
-            bool ascii = (reg.flags() & rx_byte) != 0;
+            bool ascii = (reg.flags() & Regex::byte) != 0;
             auto end_block = [&] {
                 if (current == &dst)
                     return;
@@ -613,7 +613,7 @@ namespace RS {
                 R"(|(?:\\([ELTUlu])))"                           // (11) Escape code
                 R"(|(?:\\Q((?:[^\\]|\\(?:[^E]|$))*)(?:\\E|$)))"  // (12) Literal text
                 R"(|(?:[\\$](.)))",                              // (13) Unknown
-                rx_optimize);
+                Regex::optimize);
             size_t prev = 0;
             for (;;) {
                 auto match = pattern.search(fmt, prev);

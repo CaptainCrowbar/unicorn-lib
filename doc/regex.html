@@ -40,7 +40,7 @@ version of PCRE; at some point I intend to convert it to use PCRE2 instead.</p>
 <p>Refer to the PCRE documentation for details of the regular expression syntax.</p>
 <p>Although the regex functions in this module are specified in terms of
 <code>U8string</code> arguments, Unicorn regexes support both UTF-8 and byte oriented
-matching. Byte regexes (selected with the <code>rx_byte</code> flag) simply treat a
+matching. Byte regexes (selected with the <code>Regex::byte</code> flag) simply treat a
 string as a sequence of arbitrary bytes, with no assumptions about content
 encoding, and will work with non-Unicode strings. The <code>\xHH</code> escape code
 (where H is a hexadecimal digit) always matches a single byte even if the
@@ -102,157 +102,158 @@ library instead.</p>
 </thead>
 <tbody>
 <tr>
-<td><strong><code>rx_byte</code></strong></td>
+<td><code>Regex::</code><strong><code>byte</code></strong></td>
 <td>Match in byte mode instead of UTF-8</td>
 <td><code>~PCRE_UTF8</code></td>
 </tr>
 <tr>
-<td><strong><code>rx_caseless</code></strong></td>
+<td><code>Regex::</code><strong><code>caseless</code></strong></td>
 <td>Matching is case insensitive</td>
 <td><code>PCRE_CASELESS</code></td>
 </tr>
 <tr>
-<td><strong><code>rx_dfa</code></strong></td>
+<td><code>Regex::</code><strong><code>dfa</code></strong></td>
 <td>Use the alternative DFA matching algorithm</td>
 <td><code>pcre_dfa_exec()</code></td>
 </tr>
 <tr>
-<td><strong><code>rx_dollarnewline</code></strong></td>
+<td><code>Regex::</code><strong><code>dollarnewline</code></strong></td>
 <td><code>$</code> may match line breaks preceding the end of the string</td>
 <td><code>~PCRE_DOLLAR_ENDONLY</code></td>
 </tr>
 <tr>
-<td><strong><code>rx_dotinline</code></strong></td>
+<td><code>Regex::</code><strong><code>dotinline</code></strong></td>
 <td><code>.</code> does not match line breaks</td>
 <td><code>~PCRE_DOTALL</code></td>
 </tr>
 <tr>
-<td><strong><code>rx_extended</code></strong></td>
+<td><code>Regex::</code><strong><code>extended</code></strong></td>
 <td>Free-form mode; ignore whitespace and comments marked with <code>#</code></td>
 <td><code>PCRE_EXTENDED</code></td>
 </tr>
 <tr>
-<td><strong><code>rx_firstline</code></strong></td>
+<td><code>Regex::</code><strong><code>firstline</code></strong></td>
 <td>Any match must start in the first line of the subject string</td>
 <td><code>PCRE_FIRSTLINE</code></td>
 </tr>
 <tr>
-<td><strong><code>rx_multiline</code></strong></td>
+<td><code>Regex::</code><strong><code>multiline</code></strong></td>
 <td>Multiline mode; <code>^</code> and <code>$</code> match the beginning and end of each line</td>
 <td><code>PCRE_MULTILINE</code></td>
 </tr>
 <tr>
-<td><strong><code>rx_newlineanycrlf</code></strong></td>
+<td><code>Regex::</code><strong><code>newlineanycrlf</code></strong></td>
 <td>Any of CR, LF, or CR+LF is recognised as a line break</td>
 <td><code>PCRE_NEWLINE_ANYCRLF</code></td>
 </tr>
 <tr>
-<td><strong><code>rx_newlinecr</code></strong></td>
+<td><code>Regex::</code><strong><code>newlinecr</code></strong></td>
 <td>Only CR is recognised as a line break</td>
 <td><code>PCRE_NEWLINE_CR</code></td>
 </tr>
 <tr>
-<td><strong><code>rx_newlinecrlf</code></strong></td>
+<td><code>Regex::</code><strong><code>newlinecrlf</code></strong></td>
 <td>Only CR+LF is recognised as a line break</td>
 <td><code>PCRE_NEWLINE_CRLF</code></td>
 </tr>
 <tr>
-<td><strong><code>rx_newlinelf</code></strong></td>
+<td><code>Regex::</code><strong><code>newlinelf</code></strong></td>
 <td>Only LF is recognised as a line break</td>
 <td><code>PCRE_NEWLINE_LF</code></td>
 </tr>
 <tr>
-<td><strong><code>rx_noautocapture</code></strong></td>
+<td><code>Regex::</code><strong><code>noautocapture</code></strong></td>
 <td>Parentheses do not automatically capture; only named captures are recorded</td>
 <td><code>PCRE_NO_AUTO_CAPTURE</code></td>
 </tr>
 <tr>
-<td><strong><code>rx_nostartoptimize</code></strong></td>
+<td><code>Regex::</code><strong><code>nostartoptimize</code></strong></td>
 <td>Disable some optimizations that affect <code>(*COMMIT)</code> and <code>(*MARK)</code> handling</td>
 <td><code>PCRE_NO_START_OPTIMIZE</code></td>
 </tr>
 <tr>
-<td><strong><code>rx_notbol</code></strong></td>
+<td><code>Regex::</code><strong><code>notbol</code></strong></td>
 <td>Do not match <code>^</code> at the start of the subject string</td>
 <td><code>PCRE_NOTBOL</code></td>
 </tr>
 <tr>
-<td><strong><code>rx_notempty</code></strong></td>
+<td><code>Regex::</code><strong><code>notempty</code></strong></td>
 <td>Do not match an empty string</td>
 <td><code>PCRE_NOTEMPTY</code></td>
 </tr>
 <tr>
-<td><strong><code>rx_notemptyatstart</code></strong></td>
+<td><code>Regex::</code><strong><code>notemptyatstart</code></strong></td>
 <td>Do not match an empty string at the start of the subject string</td>
 <td><code>PCRE_NOTEMPTY_ATSTART</code></td>
 </tr>
 <tr>
-<td><strong><code>rx_noteol</code></strong></td>
+<td><code>Regex::</code><strong><code>noteol</code></strong></td>
 <td>Do not match <code>$</code> at the end of the subject string</td>
 <td><code>PCRE_NOTEOL</code></td>
 </tr>
 <tr>
-<td><strong><code>rx_noutfcheck</code></strong></td>
+<td><code>Regex::</code><strong><code>noutfcheck</code></strong></td>
 <td>Skip UTF validity checks (ignored in byte mode)</td>
 <td><code>PCRE_NO_UTF8_CHECK</code></td>
 </tr>
 <tr>
-<td><strong><code>rx_optimize</code></strong></td>
+<td><code>Regex::</code><strong><code>optimize</code></strong></td>
 <td>Optimize the regex using PCRE's JIT compiler</td>
 <td><code>PCRE_STUDY_JIT_COMPILE</code></td>
 </tr>
 <tr>
-<td><strong><code>rx_partialhard</code></strong></td>
+<td><code>Regex::</code><strong><code>partialhard</code></strong></td>
 <td>Hard partial matching; prefer a partial match to a full match</td>
 <td><code>PCRE_PARTIAL_HARD</code></td>
 </tr>
 <tr>
-<td><strong><code>rx_partialsoft</code></strong></td>
+<td><code>Regex::</code><strong><code>partialsoft</code></strong></td>
 <td>Soft partial matching; prefer a full match to a partial match</td>
 <td><code>PCRE_PARTIAL_SOFT</code></td>
 </tr>
 <tr>
-<td><strong><code>rx_prefershort</code></strong></td>
+<td><code>Regex::</code><strong><code>prefershort</code></strong></td>
 <td>Quantifiers are non-greedy in NFA mode; prefer shorter matches in DFA mode</td>
 <td><code>PCRE_UNGREEDY,PCRE_DFA_SHORTEST</code></td>
 </tr>
 <tr>
-<td><strong><code>rx_ucp</code></strong></td>
+<td><code>Regex::</code><strong><code>ucp</code></strong></td>
 <td>Backslash-escape character sets use Unicode properties, instead of just ASCII</td>
 <td><code>PCRE_UCP</code></td>
 </tr>
 </tbody>
 </table>
-<p>Flags controlling regular expression matching behaviour. Most of these
+<p>Flags controlling regular expression matching behaviour. These are members of
+the <code>Regex</code> class but documented here for convenience. Most of these
 correspond directly to PCRE flags, but note that all flags must be specified
 when the regex is constructed (unlike PCRE, where some flags can be set at
 execution time).</p>
-<p>Note that some of the flags (<code>rx_byte</code>, <code>rx_dollarnewline</code>, and
-<code>rx_dotinline</code>) have the reverse sense to the corresponding PCRE flags
+<p>Note that some of the flags (<code>Regex::byte</code>, <code>Regex::dollarnewline</code>, and
+<code>Regex::dotinline</code>) have the reverse sense to the corresponding PCRE flags
 (<code>PCRE_UTF8</code>, <code>PCRE_DOLLAR_ENDONLY</code>, and <code>PCRE_DOTALL</code>, respectively). This is
 simply because I felt that the reversed state was the more natural default in
 these cases.</p>
-<p>The four line breaking flags (<code>rx_newlineanycrlf</code>, <code>rx_newlinecr</code>,
-<code>rx_newlinecrlf</code>, and <code>rx_newlinelf</code>) also affect the behaviour of the <code>\R</code>
-escape code, which matches any of CR, LF, or CR+LF if any of these flags are
-set (this corresponds to the <code>PCRE_BSR_ANYCRLF</code> flag). The default behaviour,
-if none of these is set, recognises any Unicode line break (LF, VT, FF, CR,
-CR+LF, <code>U+0085 NEXT LINE</code>, <code>U+2028 LINE SEPARATOR</code>, and <code>U+2029 PARAGRAPH
-SEPARATOR</code>; the last three are not recognised in byte mode), corresponding to
-the <code>PCRE_NEWLINE_ANY</code> and <code>PCRE_BSR_UNICODE</code> flags.</p>
+<p>The four line breaking flags (<code>Regex::newlineanycrlf</code>, <code>Regex::newlinecr</code>,
+<code>Regex::newlinecrlf</code>, and <code>Regex::newlinelf</code>) also affect the behaviour of the
+<code>\R</code> escape code, which matches any of CR, LF, or CR+LF if any of these flags
+are set (this corresponds to the <code>PCRE_BSR_ANYCRLF</code> flag). The default
+behaviour, if none of these is set, recognises any Unicode line break (LF, VT,
+FF, CR, CR+LF, <code>U+0085 NEXT LINE</code>, <code>U+2028 LINE SEPARATOR</code>, and <code>U+2029
+PARAGRAPH SEPARATOR</code>; the last three are not recognised in byte mode),
+corresponding to the <code>PCRE_NEWLINE_ANY</code> and <code>PCRE_BSR_UNICODE</code> flags.</p>
 <p>All regex constructors, and any functions that take a pattern and flags and
 implicitly construct a regex, will throw <code>std::invalid_argument</code> if the flags
 supplied are inconsistent:</p>
 <ul>
-<li>At most one of <code>rx_newlineanycrlf</code>, <code>rx_newlinecr</code>, <code>rx_newlinecrlf</code>, and <code>rx_newlinelf</code> may be used.</li>
-<li><code>rx_byte</code> can only be used with 8-bit strings.</li>
-<li><code>rx_byte</code> and <code>rx_ucp</code> may not be combined.</li>
-<li><code>rx_notempty</code> and <code>rx_notemptyatstart</code> may not be combined.</li>
-<li><code>rx_partialhard</code> and <code>rx_partialsoft</code> may not be combined.</li>
+<li>At most one of <code>Regex::newlineanycrlf</code>, <code>Regex::newlinecr</code>, <code>Regex::newlinecrlf</code>, and <code>Regex::newlinelf</code> may be used.</li>
+<li><code>Regex::byte</code> can only be used with 8-bit strings.</li>
+<li><code>Regex::byte</code> and <code>Regex::ucp</code> may not be combined.</li>
+<li><code>Regex::notempty</code> and <code>Regex::notemptyatstart</code> may not be combined.</li>
+<li><code>Regex::partialhard</code> and <code>Regex::partialsoft</code> may not be combined.</li>
 </ul>
-<p><strong>Caution:</strong> If you use the <code>rx_noutfcheck</code> flag, be careful about sanitizing
-your strings; behaviour is undefined if this flag is present and any regex
-pattern, subject string, or format string is not valid Unicode.</p>
+<p><strong>Caution:</strong> If you use the <code>Regex::noutfcheck</code> flag, be careful about
+sanitizing your strings; behaviour is undefined if this flag is present and
+any regex pattern, subject string, or format string is not valid Unicode.</p>
 <h2 id="formatting-syntax">Formatting syntax</h2>
 <p>Formatting strings are used in the <code>format()</code> and <code>extract()</code> methods of
 <code>Regex</code> and <code>RegexFormat</code>, to generate a modified string by using a regex to
@@ -642,10 +643,10 @@ complete match), or empty strings if there are no such groups.</p>
 </ul>
 <p>The <code>partial()</code> function is true if a partial match was detected, while
 <code>full_or_partial()</code> is true if either a full or partial match was detected.
-These are only meaningful if one of the <code>rx_partialhard</code> or <code>rx_partialsoft</code>
-options was selected when the original regex was compiled; otherwise,
-<code>partial()</code> is always false and <code>full_or_partial()</code> is equivalent to
-<code>matched()</code>.</p>
+These are only meaningful if one of the <code>Regex::partialhard</code> or
+<code>Regex::partialsoft</code> options was selected when the original regex was
+compiled; otherwise, <code>partial()</code> is always false and <code>full_or_partial()</code> is
+equivalent to <code>matched()</code>.</p>
 </div>
 <div class="defns">
 <ul>

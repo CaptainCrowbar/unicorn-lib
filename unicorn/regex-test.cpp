@@ -81,10 +81,10 @@ namespace {
         TEST_EQUAL(U8string(m.s_begin(), m.s_end()), "");
         TEST_EQUAL(u_str(m.u_begin(), m.u_end()), "");
 
-        TRY(r = Regex("[a-z]+", rx_dfa));
+        TRY(r = Regex("[a-z]+", Regex::dfa));
         TEST_EQUAL(r.groups(), 1);
         TEST_EQUAL(r.pattern(), "[a-z]+");
-        TEST_EQUAL(r.flags(), rx_dfa);
+        TEST_EQUAL(r.flags(), Regex::dfa);
         s = "Hello world";
         TRY(m = r.search(s));
         TEST(m.matched());
@@ -102,10 +102,10 @@ namespace {
         TEST_EQUAL(m.count(), 0);
         TEST_EQUAL(m.str(), "");
 
-        TRY(r = Regex("[a-z]*", rx_notempty));
+        TRY(r = Regex("[a-z]*", Regex::notempty));
         TEST_EQUAL(r.groups(), 1);
         TEST_EQUAL(r.pattern(), "[a-z]*");
-        TEST_EQUAL(r.flags(), rx_notempty);
+        TEST_EQUAL(r.flags(), Regex::notempty);
         s = "Hello world";
         TRY(m = r.search(s));
         TEST(m.matched());
@@ -125,10 +125,10 @@ namespace {
         TEST_EQUAL(m.count(), 0);
         TEST_EQUAL(m.str(), "");
 
-        TRY(r = Regex("[a-z]+", rx_caseless));
+        TRY(r = Regex("[a-z]+", Regex::caseless));
         TEST_EQUAL(r.groups(), 1);
         TEST_EQUAL(r.pattern(), "[a-z]+");
-        TEST_EQUAL(r.flags(), rx_caseless);
+        TEST_EQUAL(r.flags(), Regex::caseless);
         s = "Hello world";
         TRY(m = r.search(s));
         TEST(m.matched());
@@ -148,7 +148,7 @@ namespace {
         TEST_EQUAL(m.count(),0);
         TEST_EQUAL(m.str(),"");
 
-        TRY(r = Regex("[a-z]+", rx_caseless));
+        TRY(r = Regex("[a-z]+", Regex::caseless));
         s = "Hello world";
         TRY(m = r.search(s, 0));   TEST(m.matched());    TEST_EQUAL(m.offset(), 0);     TEST_EQUAL(m.str(), "Hello");
         TRY(m = r.search(s, 1));   TEST(m.matched());    TEST_EQUAL(m.offset(), 1);     TEST_EQUAL(m.str(), "ello");
@@ -177,10 +177,10 @@ namespace {
         TRY(m = r.search(++u));  TEST(m.matched());    TEST_EQUAL(m.offset(), 10);    TEST_EQUAL(m.str(), "d");
         TRY(m = r.search(++u));  TEST(! m.matched());  TEST_EQUAL(m.offset(), npos);  TEST_EQUAL(m.str(), "");
 
-        TRY(r = Regex("([a-z]+) ([a-z]+)", rx_caseless));
+        TRY(r = Regex("([a-z]+) ([a-z]+)", Regex::caseless));
         TEST_EQUAL(r.groups(), 3);
         TEST_EQUAL(r.pattern(), "([a-z]+) ([a-z]+)");
-        TEST_EQUAL(r.flags(), rx_caseless);
+        TEST_EQUAL(r.flags(), Regex::caseless);
         s = "Hello world";
         TRY(m = r.search(s));
         TEST(m.matched());
@@ -215,7 +215,7 @@ namespace {
         TEST(m.matched(2));
         TEST(! m.matched(3));
 
-        TRY(r = Regex("(?<head>[a-z]+) (?<tail>[a-z]+)", rx_caseless));
+        TRY(r = Regex("(?<head>[a-z]+) (?<tail>[a-z]+)", Regex::caseless));
         TEST_EQUAL(r.named("head"), 1);
         TEST_EQUAL(r.named("tail"), 2);
         TEST_EQUAL(r.named("none"), npos);
@@ -228,26 +228,26 @@ namespace {
         TEST_EQUAL(m.named("none"), "");
         TEST_EQUAL(m.named(""), "");
 
-        TRY(r = Regex("[a-z]+", rx_caseless));
+        TRY(r = Regex("[a-z]+", Regex::caseless));
         s = "Hello";          TRY(m = r.anchor(s));  TEST(m.matched());    TEST_EQUAL(m.str(), "Hello");
         s = "Hello world";    TRY(m = r.anchor(s));  TEST(m.matched());    TEST_EQUAL(m.str(), "Hello");
         s = "(Hello world)";  TRY(m = r.anchor(s));  TEST(! m.matched());  TEST_EQUAL(m.str(), "");
         s = "Hello";          TRY(m = r.match(s));   TEST(m.matched());    TEST_EQUAL(m.str(), "Hello");
         s = "Hello world";    TRY(m = r.match(s));   TEST(! m.matched());  TEST_EQUAL(m.str(), "");
 
-        TRY(r = Regex("[a-z]+", rx_caseless));
+        TRY(r = Regex("[a-z]+", Regex::caseless));
         s = "Hello world";  TEST_EQUAL(r.count(s), 2);
         s = "42";           TEST_EQUAL(r.count(s), 0);
 
-        TRY(r = Regex("([a-z]+) ([a-z]+)", rx_caseless));
+        TRY(r = Regex("([a-z]+) ([a-z]+)", Regex::caseless));
         s = "Hello";  TRY(m = r.match(s));  TEST(! m);  TEST(! m.partial());  TEST(! m.full_or_partial());
 
-        TRY(r = Regex("([a-z]+) ([a-z]+)", rx_caseless | rx_partialsoft));
+        TRY(r = Regex("([a-z]+) ([a-z]+)", Regex::caseless | Regex::partialsoft));
         s = "Hello";        TRY(m = r.match(s));  TEST(! m);  TEST(m.partial());    TEST(m.full_or_partial());
         s = "Hello world";  TRY(m = r.match(s));  TEST(m);    TEST(! m.partial());  TEST(m.full_or_partial());
         s = "42";           TRY(m = r.match(s));  TEST(! m);  TEST(! m.partial());  TEST(! m.full_or_partial());
 
-        TRY(r = Regex("([a-z]+) ([a-z]+)", rx_caseless | rx_partialhard));
+        TRY(r = Regex("([a-z]+) ([a-z]+)", Regex::caseless | Regex::partialhard));
         s = "Hello";        TRY(m = r.match(s));  TEST(! m);  TEST(m.partial());    TEST(m.full_or_partial());
         s = "Hello world";  TRY(m = r.match(s));  TEST(! m);  TEST(m.partial());    TEST(m.full_or_partial());
         s = "42";           TRY(m = r.match(s));  TEST(! m);  TEST(! m.partial());  TEST(! m.full_or_partial());
@@ -255,7 +255,7 @@ namespace {
         TEST_THROW(r = Regex("]a-z["), RegexError);
         TEST_THROW(r = Regex("x\\yz"), RegexError);
 
-        TRY(r = Regex("(\\w+) (\\w+)", rx_optimize));
+        TRY(r = Regex("(\\w+) (\\w+)", Regex::optimize));
         s = "Hello";
         TRY(m = r.match(s));
         TEST(! m);
@@ -271,7 +271,7 @@ namespace {
         TRY(r = Regex("[a-z]+"));
         TRY(m = r(s));
         TEST_EQUAL(m.str(), "ello");
-        TRY(r = Regex("[a-z]+", rx_caseless));
+        TRY(r = Regex("[a-z]+", Regex::caseless));
         TRY(m = r(s));
         TEST_EQUAL(m.str(), "Hello");
 
@@ -304,7 +304,7 @@ namespace {
         Irange<MatchIterator> mr;
         std::vector<U8string> v;
 
-        TRY(r = Regex("[a-z]+", rx_caseless));
+        TRY(r = Regex("[a-z]+", Regex::caseless));
 
         s = "";               TRY(mr = r.grep(s));  TEST_EQUAL(range_count(mr), 0);
         s = "42";             TRY(mr = r.grep(s));  TEST_EQUAL(range_count(mr), 0);
@@ -414,13 +414,13 @@ namespace {
         TRY(rf = RegexFormat("\\S+", "\\U$0"));
         s = "aeiou áéíóú αβγδε";  TEST_EQUAL(rf(s), u8"AEIOU ÁÉÍÓÚ ΑΒΓΔΕ");
 
-        TRY(rf = RegexFormat("([aeiou])|([a-z])", "\\U$1\\L$2", rx_caseless));
+        TRY(rf = RegexFormat("([aeiou])|([a-z])", "\\U$1\\L$2", Regex::caseless));
         s = "Hello world";  TEST_EQUAL(rf(s), "hEllO wOrld");
 
         s = "Hello world";
         TRY(rf = RegexFormat("[a-z]+", "§"));
         TEST_EQUAL(rf(s), "H§ §");
-        TRY(rf = RegexFormat("[a-z]+", "§", rx_caseless));
+        TRY(rf = RegexFormat("[a-z]+", "§", Regex::caseless));
         TEST_EQUAL(rf(s), "§ §");
 
         TRY(rf = RegexFormat("\\w+", "\\U$0"));
@@ -489,11 +489,11 @@ namespace {
         std::string s1, s2, s3;
 
         s1 = "(Hello world)";
-        TRY(r = Regex("\\b[a-z]+\\b", rx_byte));
+        TRY(r = Regex("\\b[a-z]+\\b", Regex::byte));
         TRY(m = r(s1));
         TEST(m);
         TEST_EQUAL(m.str(), "world");
-        TRY(r = Regex("[a-z]+", rx_byte | rx_caseless));
+        TRY(r = Regex("[a-z]+", Regex::byte | Regex::caseless));
 
         TRY(m = r.search(s1, 0));   TEST(m.matched());    TEST_EQUAL(m.offset(), 1);     TEST_EQUAL(m.str(), "Hello");
         TRY(m = r.search(s1, 1));   TEST(m.matched());    TEST_EQUAL(m.offset(), 1);     TEST_EQUAL(m.str(), "Hello");
@@ -515,7 +515,7 @@ namespace {
         Irange<MatchIterator> mr;
         std::vector<std::string> v;
 
-        TRY(r = Regex("\\w+", rx_byte));
+        TRY(r = Regex("\\w+", Regex::byte));
         TRY(mr = r.grep(s1));
         TEST_EQUAL(range_count(mr), 2);
         TRY(std::copy(mr.begin(), mr.end(), overwrite(v)));
@@ -523,7 +523,7 @@ namespace {
 
         Irange<SplitIterator> sr;
 
-        TRY(r = Regex("[ ()]+", rx_byte));
+        TRY(r = Regex("[ ()]+", Regex::byte));
         TRY(sr = r.split(s1));
         TEST_EQUAL(range_count(sr), 4);
         TRY(std::copy(sr.begin(), sr.end(), overwrite(v)));
@@ -531,26 +531,26 @@ namespace {
 
         RegexFormat rf;
 
-        TRY(rf = RegexFormat("\\w+", "=$0=", rx_byte));
+        TRY(rf = RegexFormat("\\w+", "=$0=", Regex::byte));
         TRY(s2 = rf(s1));
         TEST_EQUAL(s2, "(=Hello= =world=)");
-        TRY(rf = RegexFormat("\\w+", "\\xff", rx_byte));
+        TRY(rf = RegexFormat("\\w+", "\\xff", Regex::byte));
         TRY(s2 = rf(s1));
         TEST_EQUAL(s2, "(\xff \xff)");
-        TRY(rf = RegexFormat("\\w+", "\\U$0\\E", rx_byte));
+        TRY(rf = RegexFormat("\\w+", "\\U$0\\E", Regex::byte));
         TRY(s2 = rf(s1));
         TEST_EQUAL(s2, "(HELLO WORLD)");
-        TRY(rf = RegexFormat("\\w+", "\\L$0\\E", rx_byte));
+        TRY(rf = RegexFormat("\\w+", "\\L$0\\E", Regex::byte));
         s1 = "AEIOU \xc1\xc9\xcd\xd3\xda";
         TRY(s2 = rf(s1));
         TEST_EQUAL(s2, "aeiou \xc1\xc9\xcd\xd3\xda");
-        TEST_THROW(RegexFormat("\\w", "\\x{100}", rx_byte), EncodingError);
+        TEST_THROW(RegexFormat("\\w", "\\x{100}", Regex::byte), EncodingError);
 
         Regex x;
         RegexFormat xf;
         size_t n1, n2;
 
-        TRY(r = Regex("[\\x80-\\xff]", rx_byte));
+        TRY(r = Regex("[\\x80-\\xff]", Regex::byte));
         TRY(x = Regex("[\\x80-\\xff]"));
         s1 = u8"Hello §¶ ΣΠ";
         TRY(n1 = r.count(s1));

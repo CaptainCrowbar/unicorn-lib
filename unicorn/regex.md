@@ -22,7 +22,7 @@ Refer to the PCRE documentation for details of the regular expression syntax.
 
 Although the regex functions in this module are specified in terms of
 `U8string` arguments, Unicorn regexes support both UTF-8 and byte oriented
-matching. Byte regexes (selected with the `rx_byte` flag) simply treat a
+matching. Byte regexes (selected with the `Regex::byte` flag) simply treat a
 string as a sequence of arbitrary bytes, with no assumptions about content
 encoding, and will work with non-Unicode strings. The `\xHH` escape code
 (where H is a hexadecimal digit) always matches a single byte even if the
@@ -84,66 +84,67 @@ library instead.
 
 ## Regex options ##
 
-Flag                      | Description                                                                    | PCRE equivalent
-----                      | -----------                                                                    | ---------------
-**`rx_byte`**             | Match in byte mode instead of UTF-8                                            | `~PCRE_UTF8`
-**`rx_caseless`**         | Matching is case insensitive                                                   | `PCRE_CASELESS`
-**`rx_dfa`**              | Use the alternative DFA matching algorithm                                     | `pcre_dfa_exec()`
-**`rx_dollarnewline`**    | `$` may match line breaks preceding the end of the string                      | `~PCRE_DOLLAR_ENDONLY`
-**`rx_dotinline`**        | `.` does not match line breaks                                                 | `~PCRE_DOTALL`
-**`rx_extended`**         | Free-form mode; ignore whitespace and comments marked with `#`                 | `PCRE_EXTENDED`
-**`rx_firstline`**        | Any match must start in the first line of the subject string                   | `PCRE_FIRSTLINE`
-**`rx_multiline`**        | Multiline mode; `^` and `$` match the beginning and end of each line           | `PCRE_MULTILINE`
-**`rx_newlineanycrlf`**   | Any of CR, LF, or CR+LF is recognised as a line break                          | `PCRE_NEWLINE_ANYCRLF`
-**`rx_newlinecr`**        | Only CR is recognised as a line break                                          | `PCRE_NEWLINE_CR`
-**`rx_newlinecrlf`**      | Only CR+LF is recognised as a line break                                       | `PCRE_NEWLINE_CRLF`
-**`rx_newlinelf`**        | Only LF is recognised as a line break                                          | `PCRE_NEWLINE_LF`
-**`rx_noautocapture`**    | Parentheses do not automatically capture; only named captures are recorded     | `PCRE_NO_AUTO_CAPTURE`
-**`rx_nostartoptimize`**  | Disable some optimizations that affect `(*COMMIT)` and `(*MARK)` handling      | `PCRE_NO_START_OPTIMIZE`
-**`rx_notbol`**           | Do not match `^` at the start of the subject string                            | `PCRE_NOTBOL`
-**`rx_notempty`**         | Do not match an empty string                                                   | `PCRE_NOTEMPTY`
-**`rx_notemptyatstart`**  | Do not match an empty string at the start of the subject string                | `PCRE_NOTEMPTY_ATSTART`
-**`rx_noteol`**           | Do not match `$` at the end of the subject string                              | `PCRE_NOTEOL`
-**`rx_noutfcheck`**       | Skip UTF validity checks (ignored in byte mode)                                | `PCRE_NO_UTF8_CHECK`
-**`rx_optimize`**         | Optimize the regex using PCRE's JIT compiler                                   | `PCRE_STUDY_JIT_COMPILE`
-**`rx_partialhard`**      | Hard partial matching; prefer a partial match to a full match                  | `PCRE_PARTIAL_HARD`
-**`rx_partialsoft`**      | Soft partial matching; prefer a full match to a partial match                  | `PCRE_PARTIAL_SOFT`
-**`rx_prefershort`**      | Quantifiers are non-greedy in NFA mode; prefer shorter matches in DFA mode     | `PCRE_UNGREEDY,PCRE_DFA_SHORTEST`
-**`rx_ucp`**              | Backslash-escape character sets use Unicode properties, instead of just ASCII  | `PCRE_UCP`
+Flag                            | Description                                                                    | PCRE equivalent
+----                            | -----------                                                                    | ---------------
+`Regex::`**`byte`**             | Match in byte mode instead of UTF-8                                            | `~PCRE_UTF8`
+`Regex::`**`caseless`**         | Matching is case insensitive                                                   | `PCRE_CASELESS`
+`Regex::`**`dfa`**              | Use the alternative DFA matching algorithm                                     | `pcre_dfa_exec()`
+`Regex::`**`dollarnewline`**    | `$` may match line breaks preceding the end of the string                      | `~PCRE_DOLLAR_ENDONLY`
+`Regex::`**`dotinline`**        | `.` does not match line breaks                                                 | `~PCRE_DOTALL`
+`Regex::`**`extended`**         | Free-form mode; ignore whitespace and comments marked with `#`                 | `PCRE_EXTENDED`
+`Regex::`**`firstline`**        | Any match must start in the first line of the subject string                   | `PCRE_FIRSTLINE`
+`Regex::`**`multiline`**        | Multiline mode; `^` and `$` match the beginning and end of each line           | `PCRE_MULTILINE`
+`Regex::`**`newlineanycrlf`**   | Any of CR, LF, or CR+LF is recognised as a line break                          | `PCRE_NEWLINE_ANYCRLF`
+`Regex::`**`newlinecr`**        | Only CR is recognised as a line break                                          | `PCRE_NEWLINE_CR`
+`Regex::`**`newlinecrlf`**      | Only CR+LF is recognised as a line break                                       | `PCRE_NEWLINE_CRLF`
+`Regex::`**`newlinelf`**        | Only LF is recognised as a line break                                          | `PCRE_NEWLINE_LF`
+`Regex::`**`noautocapture`**    | Parentheses do not automatically capture; only named captures are recorded     | `PCRE_NO_AUTO_CAPTURE`
+`Regex::`**`nostartoptimize`**  | Disable some optimizations that affect `(*COMMIT)` and `(*MARK)` handling      | `PCRE_NO_START_OPTIMIZE`
+`Regex::`**`notbol`**           | Do not match `^` at the start of the subject string                            | `PCRE_NOTBOL`
+`Regex::`**`notempty`**         | Do not match an empty string                                                   | `PCRE_NOTEMPTY`
+`Regex::`**`notemptyatstart`**  | Do not match an empty string at the start of the subject string                | `PCRE_NOTEMPTY_ATSTART`
+`Regex::`**`noteol`**           | Do not match `$` at the end of the subject string                              | `PCRE_NOTEOL`
+`Regex::`**`noutfcheck`**       | Skip UTF validity checks (ignored in byte mode)                                | `PCRE_NO_UTF8_CHECK`
+`Regex::`**`optimize`**         | Optimize the regex using PCRE's JIT compiler                                   | `PCRE_STUDY_JIT_COMPILE`
+`Regex::`**`partialhard`**      | Hard partial matching; prefer a partial match to a full match                  | `PCRE_PARTIAL_HARD`
+`Regex::`**`partialsoft`**      | Soft partial matching; prefer a full match to a partial match                  | `PCRE_PARTIAL_SOFT`
+`Regex::`**`prefershort`**      | Quantifiers are non-greedy in NFA mode; prefer shorter matches in DFA mode     | `PCRE_UNGREEDY,PCRE_DFA_SHORTEST`
+`Regex::`**`ucp`**              | Backslash-escape character sets use Unicode properties, instead of just ASCII  | `PCRE_UCP`
 
-Flags controlling regular expression matching behaviour. Most of these
+Flags controlling regular expression matching behaviour. These are members of
+the `Regex` class but documented here for convenience. Most of these
 correspond directly to PCRE flags, but note that all flags must be specified
 when the regex is constructed (unlike PCRE, where some flags can be set at
 execution time).
 
-Note that some of the flags (`rx_byte`, `rx_dollarnewline`, and
-`rx_dotinline`) have the reverse sense to the corresponding PCRE flags
+Note that some of the flags (`Regex::byte`, `Regex::dollarnewline`, and
+`Regex::dotinline`) have the reverse sense to the corresponding PCRE flags
 (`PCRE_UTF8`, `PCRE_DOLLAR_ENDONLY`, and `PCRE_DOTALL`, respectively). This is
 simply because I felt that the reversed state was the more natural default in
 these cases.
 
-The four line breaking flags (`rx_newlineanycrlf`, `rx_newlinecr`,
-`rx_newlinecrlf`, and `rx_newlinelf`) also affect the behaviour of the `\R`
-escape code, which matches any of CR, LF, or CR+LF if any of these flags are
-set (this corresponds to the `PCRE_BSR_ANYCRLF` flag). The default behaviour,
-if none of these is set, recognises any Unicode line break (LF, VT, FF, CR,
-CR+LF, `U+0085 NEXT LINE`, `U+2028 LINE SEPARATOR`, and `U+2029 PARAGRAPH
-SEPARATOR`; the last three are not recognised in byte mode), corresponding to
-the `PCRE_NEWLINE_ANY` and `PCRE_BSR_UNICODE` flags.
+The four line breaking flags (`Regex::newlineanycrlf`, `Regex::newlinecr`,
+`Regex::newlinecrlf`, and `Regex::newlinelf`) also affect the behaviour of the
+`\R` escape code, which matches any of CR, LF, or CR+LF if any of these flags
+are set (this corresponds to the `PCRE_BSR_ANYCRLF` flag). The default
+behaviour, if none of these is set, recognises any Unicode line break (LF, VT,
+FF, CR, CR+LF, `U+0085 NEXT LINE`, `U+2028 LINE SEPARATOR`, and `U+2029
+PARAGRAPH SEPARATOR`; the last three are not recognised in byte mode),
+corresponding to the `PCRE_NEWLINE_ANY` and `PCRE_BSR_UNICODE` flags.
 
 All regex constructors, and any functions that take a pattern and flags and
 implicitly construct a regex, will throw `std::invalid_argument` if the flags
 supplied are inconsistent:
 
-* At most one of `rx_newlineanycrlf`, `rx_newlinecr`, `rx_newlinecrlf`, and `rx_newlinelf` may be used.
-* `rx_byte` can only be used with 8-bit strings.
-* `rx_byte` and `rx_ucp` may not be combined.
-* `rx_notempty` and `rx_notemptyatstart` may not be combined.
-* `rx_partialhard` and `rx_partialsoft` may not be combined.
+* At most one of `Regex::newlineanycrlf`, `Regex::newlinecr`, `Regex::newlinecrlf`, and `Regex::newlinelf` may be used.
+* `Regex::byte` can only be used with 8-bit strings.
+* `Regex::byte` and `Regex::ucp` may not be combined.
+* `Regex::notempty` and `Regex::notemptyatstart` may not be combined.
+* `Regex::partialhard` and `Regex::partialsoft` may not be combined.
 
-**Caution:** If you use the `rx_noutfcheck` flag, be careful about sanitizing
-your strings; behaviour is undefined if this flag is present and any regex
-pattern, subject string, or format string is not valid Unicode.
+**Caution:** If you use the `Regex::noutfcheck` flag, be careful about
+sanitizing your strings; behaviour is undefined if this flag is present and
+any regex pattern, subject string, or format string is not valid Unicode.
 
 ## Formatting syntax ##
 
@@ -409,10 +410,10 @@ complete match), or empty strings if there are no such groups.
 
 The `partial()` function is true if a partial match was detected, while
 `full_or_partial()` is true if either a full or partial match was detected.
-These are only meaningful if one of the `rx_partialhard` or `rx_partialsoft`
-options was selected when the original regex was compiled; otherwise,
-`partial()` is always false and `full_or_partial()` is equivalent to
-`matched()`.
+These are only meaningful if one of the `Regex::partialhard` or
+`Regex::partialsoft` options was selected when the original regex was
+compiled; otherwise, `partial()` is always false and `full_or_partial()` is
+equivalent to `matched()`.
 
 * `size_t Match::`**`groups`**`() const noexcept`
 
