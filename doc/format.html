@@ -85,8 +85,8 @@ below indicate which letter corresponds to which flag; when defining
 <code>format_type()</code> overloads for user defined types, you can use the predefined
 flags or use <code>RS::letter_to_mask()</code> to define new ones.</p>
 <p>Example:</p>
-<pre><code>constexpr uint64_t fx_alpha = letter_to_mask('A');
-constexpr uint64_t fx_omega = letter_to_mask('Z');
+<pre><code>constexpr uint64_t alpha_format = letter_to_mask('A');
+constexpr uint64_t omega_format = letter_to_mask('Z');
 </code></pre>
 <p>The following global flags are common to all types:</p>
 <!-- DEFN -->
@@ -101,32 +101,32 @@ constexpr uint64_t fx_omega = letter_to_mask('Z');
 </thead>
 <tbody>
 <tr>
-<td><strong><code>fx_left</code></strong></td>
+<td><code>Format::</code><strong><code>left</code></strong></td>
 <td><code>&lt;</code></td>
 <td>Left align (default)</td>
 </tr>
 <tr>
-<td><strong><code>fx_right</code></strong></td>
+<td><code>Format::</code><strong><code>right</code></strong></td>
 <td><code>&gt;</code></td>
 <td>Right align</td>
 </tr>
 <tr>
-<td><strong><code>fx_centre</code></strong></td>
+<td><code>Format::</code><strong><code>centre</code></strong></td>
 <td><code>=</code></td>
 <td>Centre align</td>
 </tr>
 <tr>
-<td><strong><code>fx_upper</code></strong></td>
+<td><code>Format::</code><strong><code>upper</code></strong></td>
 <td><code>U</code></td>
 <td>Convert to upper case</td>
 </tr>
 <tr>
-<td><strong><code>fx_lower</code></strong></td>
+<td><code>Format::</code><strong><code>lower</code></strong></td>
 <td><code>L</code></td>
 <td>Convert to lower case</td>
 </tr>
 <tr>
-<td><strong><code>fx_title</code></strong></td>
+<td><code>Format::</code><strong><code>title</code></strong></td>
 <td><code>T</code></td>
 <td>Convert to title case</td>
 </tr>
@@ -222,17 +222,17 @@ U8string b = f("Bob", 1.23); // "Hello Bob, your number is 1.230"
 </thead>
 <tbody>
 <tr>
-<td><strong><code>fx_tf</code></strong></td>
+<td><code>Format::</code><strong><code>tf</code></strong></td>
 <td><code>t</code></td>
 <td>Format as <code>"true"</code> or <code>"false"</code> (default)</td>
 </tr>
 <tr>
-<td><strong><code>fx_binary</code></strong></td>
+<td><code>Format::</code><strong><code>binary</code></strong></td>
 <td><code>b</code></td>
 <td>Format as <code>"1"</code> or <code>"0"</code></td>
 </tr>
 <tr>
-<td><strong><code>fx_yesno</code></strong></td>
+<td><code>Format::</code><strong><code>yesno</code></strong></td>
 <td><code>y</code></td>
 <td>Format as <code>"yes"</code> or <code>"no"</code></td>
 </tr>
@@ -255,32 +255,32 @@ types.</p>
 </thead>
 <tbody>
 <tr>
-<td><strong><code>fx_decimal</code></strong></td>
+<td><code>Format::</code><strong><code>decimal</code></strong></td>
 <td><code>n</code></td>
 <td>Format as a decimal number (default)</td>
 </tr>
 <tr>
-<td><strong><code>fx_binary</code></strong></td>
+<td><code>Format::</code><strong><code>binary</code></strong></td>
 <td><code>b</code></td>
 <td>Format as a binary number</td>
 </tr>
 <tr>
-<td><strong><code>fx_hex</code></strong></td>
+<td><code>Format::</code><strong><code>hex</code></strong></td>
 <td><code>x</code></td>
 <td>Format as a hexadecimal number</td>
 </tr>
 <tr>
-<td><strong><code>fx_roman</code></strong></td>
+<td><code>Format::</code><strong><code>roman</code></strong></td>
 <td><code>r</code></td>
 <td>Format as a Roman numeral</td>
 </tr>
 <tr>
-<td><strong><code>fx_sign</code></strong></td>
+<td><code>Format::</code><strong><code>sign</code></strong></td>
 <td><code>s</code></td>
 <td>Always show a sign</td>
 </tr>
 <tr>
-<td><strong><code>fx_signz</code></strong></td>
+<td><code>Format::</code><strong><code>signz</code></strong></td>
 <td><code>S</code></td>
 <td>Always show a sign unless the value is zero</td>
 </tr>
@@ -301,37 +301,37 @@ types.</p>
 </thead>
 <tbody>
 <tr>
-<td><strong><code>fx_digits</code></strong></td>
+<td><code>Format::</code><strong><code>digits</code></strong></td>
 <td><code>d</code></td>
 <td>Format with a fixed number of significant figures</td>
 </tr>
 <tr>
-<td><strong><code>fx_exp</code></strong></td>
+<td><code>Format::</code><strong><code>exp</code></strong></td>
 <td><code>e</code></td>
 <td>Format in scientific notation</td>
 </tr>
 <tr>
-<td><strong><code>fx_fixed</code></strong></td>
+<td><code>Format::</code><strong><code>fixed</code></strong></td>
 <td><code>f</code></td>
 <td>Format with a fixed number of decimal places</td>
 </tr>
 <tr>
-<td><strong><code>fx_general</code></strong></td>
+<td><code>Format::</code><strong><code>general</code></strong></td>
 <td><code>g</code></td>
-<td>Use the shorter of <code>fx_digits</code> or <code>fx_exp</code> (default)</td>
+<td>Use the shorter of <code>digits</code> or <code>exp</code> (default)</td>
 </tr>
 <tr>
-<td><strong><code>fx_sign</code></strong></td>
+<td><code>Format::</code><strong><code>sign</code></strong></td>
 <td><code>s</code></td>
 <td>Always show a sign</td>
 </tr>
 <tr>
-<td><strong><code>fx_signz</code></strong></td>
+<td><code>Format::</code><strong><code>signz</code></strong></td>
 <td><code>S</code></td>
 <td>Always show a sign unless the value is zero</td>
 </tr>
 <tr>
-<td><strong><code>fx_stripz</code></strong></td>
+<td><code>Format::</code><strong><code>stripz</code></strong></td>
 <td><code>z</code></td>
 <td>Strip trailing zeros after the decimal point</td>
 </tr>
@@ -354,42 +354,42 @@ types.</p>
 </thead>
 <tbody>
 <tr>
-<td><strong><code>fx_escape</code></strong></td>
+<td><code>Format::</code><strong><code>escape</code></strong></td>
 <td><code>e</code></td>
 <td>Escape C0 and C1 control characters</td>
 </tr>
 <tr>
-<td><strong><code>fx_ascii</code></strong></td>
+<td><code>Format::</code><strong><code>ascii</code></strong></td>
 <td><code>a</code></td>
 <td>Escape all characters except printable ASCII</td>
 </tr>
 <tr>
-<td><strong><code>fx_quote</code></strong></td>
+<td><code>Format::</code><strong><code>quote</code></strong></td>
 <td><code>q</code></td>
 <td>Quote the string, and escape C0 and C1 controls</td>
 </tr>
 <tr>
-<td><strong><code>fx_ascquote</code></strong></td>
+<td><code>Format::</code><strong><code>ascquote</code></strong></td>
 <td><code>Q</code></td>
 <td>Quote the string, and escape non-ASCII characters</td>
 </tr>
 <tr>
-<td><strong><code>fx_decimal</code></strong></td>
+<td><code>Format::</code><strong><code>decimal</code></strong></td>
 <td><code>n</code></td>
 <td>Format characters as decimal numbers</td>
 </tr>
 <tr>
-<td><strong><code>fx_hex</code></strong></td>
+<td><code>Format::</code><strong><code>hex</code></strong></td>
 <td><code>x</code></td>
 <td>Format characters as hexadecimal numbers</td>
 </tr>
 <tr>
-<td><strong><code>fx_hex8</code></strong></td>
+<td><code>Format::</code><strong><code>hex8</code></strong></td>
 <td><code>u</code></td>
 <td>Format characters as hex UTF-8 code units</td>
 </tr>
 <tr>
-<td><strong><code>fx_hex16</code></strong></td>
+<td><code>Format::</code><strong><code>hex16</code></strong></td>
 <td><code>v</code></td>
 <td>Format characters as hex UTF-16 code units</td>
 </tr>
@@ -414,17 +414,17 @@ specified precision if one was supplied. Formatting for
 </thead>
 <tbody>
 <tr>
-<td><strong><code>fx_iso</code></strong></td>
+<td><code>Format::</code><strong><code>iso</code></strong></td>
 <td><code>t</code></td>
 <td>Use strict ISO 8601 format with T delimiter</td>
 </tr>
 <tr>
-<td><strong><code>fx_common</code></strong></td>
+<td><code>Format::</code><strong><code>common</code></strong></td>
 <td><code>c</code></td>
 <td>Use the locale's standard format</td>
 </tr>
 <tr>
-<td><strong><code>fx_local</code></strong></td>
+<td><code>Format::</code><strong><code>local</code></strong></td>
 <td><code>l</code></td>
 <td>Use the local time zone instead of UTC</td>
 </tr>

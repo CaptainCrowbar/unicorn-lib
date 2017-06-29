@@ -65,8 +65,8 @@ flags or use `RS::letter_to_mask()` to define new ones.
 
 Example:
 
-    constexpr uint64_t fx_alpha = letter_to_mask('A');
-    constexpr uint64_t fx_omega = letter_to_mask('Z');
+    constexpr uint64_t alpha_format = letter_to_mask('A');
+    constexpr uint64_t omega_format = letter_to_mask('Z');
 
 The following global flags are common to all types:
 
@@ -74,12 +74,12 @@ The following global flags are common to all types:
 
 Flag                        | Letter  | Description
 ----                        | ------  | -----------
-**`fx_left`**               |`<`      | Left align (default)
-**`fx_right`**              |`>`      | Right align
-**`fx_centre`**             |`=`      | Centre align
-**`fx_upper`**              |`U`      | Convert to upper case
-**`fx_lower`**              |`L`      | Convert to lower case
-**`fx_title`**              |`T`      | Convert to title case
+`Format::`**`left`**        |`<`      | Left align (default)
+`Format::`**`right`**       |`>`      | Right align
+`Format::`**`centre`**      |`=`      | Centre align
+`Format::`**`upper`**       |`U`      | Convert to upper case
+`Format::`**`lower`**       |`L`      | Convert to lower case
+`Format::`**`title`**       |`T`      | Convert to title case
 `Length::`**`characters`**  |`C`      | Measure string in characters (default)
 `Length::`**`graphemes`**   |`G`      | Measure string in grapheme clusters
 `Length::`**`narrow`**      |`N`      | East Asian width, defaulting to narrow
@@ -144,11 +144,11 @@ No type-specific flags are defined for `RS::Uuid` and `RS::Version`.
 
 <!-- DEFN -->
 
-Flag             | Letter  | Description
-----             | ------  | -----------
-**`fx_tf`**      |`t`      | Format as `"true"` or `"false"` (default)
-**`fx_binary`**  |`b`      | Format as `"1"` or `"0"`
-**`fx_yesno`**   |`y`      | Format as `"yes"` or `"no"`
+Flag                    | Letter  | Description
+----                    | ------  | -----------
+`Format::`**`tf`**      |`t`      | Format as `"true"` or `"false"` (default)
+`Format::`**`binary`**  |`b`      | Format as `"1"` or `"0"`
+`Format::`**`yesno`**   |`y`      | Format as `"yes"` or `"no"`
 
 ### Integer formatting ###
 
@@ -157,28 +157,28 @@ Flag             | Letter  | Description
 These flags apply to all integer types other than the four standard character
 types.
 
-Flag              | Letter  | Description
-----              | ------  | -----------
-**`fx_decimal`**  |`n`      | Format as a decimal number (default)
-**`fx_binary`**   |`b`      | Format as a binary number
-**`fx_hex`**      |`x`      | Format as a hexadecimal number
-**`fx_roman`**    |`r`      | Format as a Roman numeral
-**`fx_sign`**     |`s`      | Always show a sign
-**`fx_signz`**    |`S`      | Always show a sign unless the value is zero
+Flag                     | Letter  | Description
+----                     | ------  | -----------
+`Format::`**`decimal`**  |`n`      | Format as a decimal number (default)
+`Format::`**`binary`**   |`b`      | Format as a binary number
+`Format::`**`hex`**      |`x`      | Format as a hexadecimal number
+`Format::`**`roman`**    |`r`      | Format as a Roman numeral
+`Format::`**`sign`**     |`s`      | Always show a sign
+`Format::`**`signz`**    |`S`      | Always show a sign unless the value is zero
 
 ### Floating point formatting ###
 
 <!-- DEFN -->
 
-Flag              | Letter  | Description
-----              | ------  | -----------
-**`fx_digits`**   |`d`      | Format with a fixed number of significant figures
-**`fx_exp`**      |`e`      | Format in scientific notation
-**`fx_fixed`**    |`f`      | Format with a fixed number of decimal places
-**`fx_general`**  |`g`      | Use the shorter of `fx_digits` or `fx_exp` (default)
-**`fx_sign`**     |`s`      | Always show a sign
-**`fx_signz`**    |`S`      | Always show a sign unless the value is zero
-**`fx_stripz`**   |`z`      | Strip trailing zeros after the decimal point
+Flag                     | Letter  | Description
+----                     | ------  | -----------
+`Format::`**`digits`**   |`d`      | Format with a fixed number of significant figures
+`Format::`**`exp`**      |`e`      | Format in scientific notation
+`Format::`**`fixed`**    |`f`      | Format with a fixed number of decimal places
+`Format::`**`general`**  |`g`      | Use the shorter of `digits` or `exp` (default)
+`Format::`**`sign`**     |`s`      | Always show a sign
+`Format::`**`signz`**    |`S`      | Always show a sign unless the value is zero
+`Format::`**`stripz`**   |`z`      | Strip trailing zeros after the decimal point
 
 ### Character and string formatting ###
 
@@ -187,16 +187,16 @@ types.
 
 <!-- DEFN -->
 
-Flag               | Letter  | Description
-----               | ------  | -----------
-**`fx_escape`**    |`e`      | Escape C0 and C1 control characters
-**`fx_ascii`**     |`a`      | Escape all characters except printable ASCII
-**`fx_quote`**     |`q`      | Quote the string, and escape C0 and C1 controls
-**`fx_ascquote`**  |`Q`      | Quote the string, and escape non-ASCII characters
-**`fx_decimal`**   |`n`      | Format characters as decimal numbers
-**`fx_hex`**       |`x`      | Format characters as hexadecimal numbers
-**`fx_hex8`**      |`u`      | Format characters as hex UTF-8 code units
-**`fx_hex16`**     |`v`      | Format characters as hex UTF-16 code units
+Flag                      | Letter  | Description
+----                      | ------  | -----------
+`Format::`**`escape`**    |`e`      | Escape C0 and C1 control characters
+`Format::`**`ascii`**     |`a`      | Escape all characters except printable ASCII
+`Format::`**`quote`**     |`q`      | Quote the string, and escape C0 and C1 controls
+`Format::`**`ascquote`**  |`Q`      | Quote the string, and escape non-ASCII characters
+`Format::`**`decimal`**   |`n`      | Format characters as decimal numbers
+`Format::`**`hex`**       |`x`      | Format characters as hexadecimal numbers
+`Format::`**`hex8`**      |`u`      | Format characters as hex UTF-8 code units
+`Format::`**`hex16`**     |`v`      | Format characters as hex UTF-16 code units
 
 ### Time and date formatting ###
 
@@ -207,8 +207,8 @@ specified precision if one was supplied. Formatting for
 `std::chrono::system_clock::time_point` uses ISO 8601 format by default
 (`"yyyy-mm-dd hh:mm:ss"`), and respects the following flags:
 
-Flag             | Letter  | Description
-----             | ------  | -----------
-**`fx_iso`**     |`t`      | Use strict ISO 8601 format with T delimiter
-**`fx_common`**  |`c`      | Use the locale's standard format
-**`fx_local`**   |`l`      | Use the local time zone instead of UTC
+Flag                    | Letter  | Description
+----                    | ------  | -----------
+`Format::`**`iso`**     |`t`      | Use strict ISO 8601 format with T delimiter
+`Format::`**`common`**  |`c`      | Use the locale's standard format
+`Format::`**`local`**   |`l`      | Use the local time zone instead of UTC
