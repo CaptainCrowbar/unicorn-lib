@@ -17,6 +17,11 @@ will be written in comma delimited form. Pairs will be written in
 `"key:value"` format. More elaborate formatting for ranges is beyond the scope
 of this module and will need to be handled by the caller.
 
+The standard flags use to control formatting are members of the `Format`
+class, but are documented with the individual functions they control for
+convenience. User defined flags can also be used, as described below under the
+`format_type()` function.
+
 ## Contents ##
 
 [TOC]

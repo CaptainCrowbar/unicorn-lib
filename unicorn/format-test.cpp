@@ -16,9 +16,9 @@ namespace {
 
     void check_boolean_formatting() {
 
-        // b, fx_binary  = Binary number
-        // t, fx_tf      = Write as true/false [default]
-        // y, fx_yesno   = Write as yes/no
+        // b, binary  = Binary number
+        // t, tf      = Write as true/false [default]
+        // y, yesno   = Write as yes/no
 
         TEST_EQUAL(format_str(true), "true");
         TEST_EQUAL(format_str(false), "false");
@@ -33,12 +33,12 @@ namespace {
 
     void check_integer_formatting() {
 
-        // n, fx_decimal  = Decimal number [default]
-        // b, fx_binary   = Binary number
-        // x, fx_hex      = Hexadecimal number
-        // r, fx_roman    = Roman numerals
-        // s, fx_sign     = Always show a sign
-        // S, fx_signz    = Always show a sign unless zero
+        // n, decimal  = Decimal number [default]
+        // b, binary   = Binary number
+        // x, hex      = Hexadecimal number
+        // r, roman    = Roman numerals
+        // s, sign     = Always show a sign
+        // S, signz    = Always show a sign unless zero
 
         TEST_EQUAL(format_str(0), "0");
         TEST_EQUAL(format_str(42), "42");
@@ -101,13 +101,13 @@ namespace {
 
     void check_floating_point_formatting() {
 
-        // d, fx_digits   = Fixed significant figures
-        // e, fx_exp      = Scientific notation
-        // f, fx_fixed    = Fixed point notation
-        // g, fx_general  = Use the shorter of d or e [default]
-        // s, fx_sign     = Always show a sign
-        // i, fx_signz    = Always show a sign unless zero
-        // z, fx_stripz   = Strip trailing zeros
+        // d, digits   = Fixed significant figures
+        // e, exp      = Scientific notation
+        // f, fixed    = Fixed point notation
+        // g, general  = Use the shorter of d or e [default]
+        // s, sign     = Always show a sign
+        // i, signz    = Always show a sign unless zero
+        // z, stripz   = Strip trailing zeros
 
         TEST_EQUAL(format_str(0.0, "d"), "0.00000");
         TEST_EQUAL(format_str(123.0, "d"), "123.000");
@@ -299,14 +299,14 @@ namespace {
 
     void check_character_formatting() {
 
-        // e, fx_escape    = Escape if C0/C1 control
-        // a, fx_ascii     = Escape if not printable ASCII
-        // q, fx_quote     = Quote string, escape C0/C1
-        // Q, fx_ascquote  = Quote string, escape non-ASCII
-        // n, fx_decimal   = Decimal number
-        // x, fx_hex       = Hexadecimal number
-        // u, fx_hex8      = Hex UTF-8 bytes
-        // v, fx_hex16     = Hex UTF-16 code units
+        // e, escape    = Escape if C0/C1 control
+        // a, ascii     = Escape if not printable ASCII
+        // q, quote     = Quote string, escape C0/C1
+        // Q, ascquote  = Quote string, escape non-ASCII
+        // n, decimal   = Decimal number
+        // x, hex       = Hexadecimal number
+        // u, hex8      = Hex UTF-8 bytes
+        // v, hex16     = Hex UTF-16 code units
 
         TEST_EQUAL(format_str('\t'), "\t");
         TEST_EQUAL(format_str('\t', "e"), "\\t");
@@ -402,14 +402,14 @@ namespace {
 
     void check_string_formatting() {
 
-        // e, fx_escape    = Escape if C0/C1 control
-        // a, fx_ascii     = Escape if not printable ASCII
-        // q, fx_quote     = Quote string, escape C0/C1
-        // Q, fx_ascquote  = Quote string, escape non-ASCII
-        // d, fx_decimal   = Decimal number
-        // x, fx_hex       = Hexadecimal number
-        // u, fx_hex8      = Hex UTF-8 bytes
-        // v, fx_hex16     = Hex UTF-16 code units
+        // e, escape    = Escape if C0/C1 control
+        // a, ascii     = Escape if not printable ASCII
+        // q, quote     = Quote string, escape C0/C1
+        // Q, ascquote  = Quote string, escape non-ASCII
+        // d, decimal   = Decimal number
+        // x, hex       = Hexadecimal number
+        // u, hex8      = Hex UTF-8 bytes
+        // v, hex16     = Hex UTF-16 code units
 
         TEST_EQUAL(format_str(""s), "");
         TEST_EQUAL(format_str(""s, "e"), "");
@@ -583,20 +583,20 @@ namespace {
 
     void check_alignment_and_padding() {
 
-        // <, fx_left    = Left align
-        // =, fx_centre  = Centre align
-        // >, fx_right   = Right align
+        // <, left    = Left align
+        // =, centre  = Centre align
+        // >, right   = Right align
 
-        TEST_EQUAL(format_str(42, fx_left, 0, 1u), "42");
-        TEST_EQUAL(format_str(42, fx_right, 0, 1u), "42");
-        TEST_EQUAL(format_str(42, fx_centre, 0, 1u), "42");
-        TEST_EQUAL(format_str(42, fx_left, 0, 5u), "42   ");
-        TEST_EQUAL(format_str(42, fx_right, 0, 5u), "   42");
-        TEST_EQUAL(format_str(42, fx_centre, 0, 8u), "   42   ");
-        TEST_EQUAL(format_str(42, fx_centre, 0, 9u), "   42    ");
-        TEST_EQUAL(format_str(42, fx_left, 0, 5u, U'*'), "42***");
-        TEST_EQUAL(format_str(42, fx_right, 0, 5u, U'*'), "***42");
-        TEST_EQUAL(format_str(42, fx_centre, 0, 8u, U'*'), "***42***");
+        TEST_EQUAL(format_str(42, Format::left, 0, 1u), "42");
+        TEST_EQUAL(format_str(42, Format::right, 0, 1u), "42");
+        TEST_EQUAL(format_str(42, Format::centre, 0, 1u), "42");
+        TEST_EQUAL(format_str(42, Format::left, 0, 5u), "42   ");
+        TEST_EQUAL(format_str(42, Format::right, 0, 5u), "   42");
+        TEST_EQUAL(format_str(42, Format::centre, 0, 8u), "   42   ");
+        TEST_EQUAL(format_str(42, Format::centre, 0, 9u), "   42    ");
+        TEST_EQUAL(format_str(42, Format::left, 0, 5u, U'*'), "42***");
+        TEST_EQUAL(format_str(42, Format::right, 0, 5u, U'*'), "***42");
+        TEST_EQUAL(format_str(42, Format::centre, 0, 8u, U'*'), "***42***");
 
         TEST_EQUAL(format_str(42, "<"), "42");
         TEST_EQUAL(format_str(42, ">"), "42");
@@ -612,9 +612,9 @@ namespace {
 
     void check_case_mapping() {
 
-        // L, fx_lower  = Convert to lower case
-        // T, fx_title  = Convert to title case
-        // U, fx_upper  = Convert to upper case
+        // L, lower  = Convert to lower case
+        // T, title  = Convert to title case
+        // U, upper  = Convert to upper case
 
         TEST_EQUAL(format_str("hello WORLD"s, "L"), "hello world"s);
         TEST_EQUAL(format_str("hello WORLD"s, "T"), "Hello World"s);

@@ -107,7 +107,7 @@ namespace RS {
                 U8string string_escape(const U8string& s, uint64_t mode) {
                     U8string result;
                     result.reserve(s.size() + 2);
-                    if (mode & fx_quote)
+                    if (mode & Format::quote)
                         result += '\"';
                     for (auto i = utf_begin(s), e = utf_end(s); i != e; ++i) {
                         switch (*i) {
@@ -118,14 +118,14 @@ namespace RS {
                             case U'\r': result += "\\r"; break;
                             case U'\\': result += "\\\\"; break;
                             case U'\"':
-                                if (mode & fx_quote)
+                                if (mode & Format::quote)
                                     result += '\\';
                                 result += '\"';
                                 break;
                             default:
                                 if (*i >= 32 && *i <= 126) {
                                     result += char(*i);
-                                } else if (*i >= 0xa0 && ! (mode & fx_ascii)) {
+                                } else if (*i >= 0xa0 && ! (mode & Format::ascii)) {
                                     result.append(s, i.offset(), i.count());
                                 } else if (*i <= 0xff) {
                                     result += "\\x";
@@ -138,7 +138,7 @@ namespace RS {
                                 break;
                         }
                     }
-                    if (mode & fx_quote)
+                    if (mode & Format::quote)
                         result += '\"';
                     return result;
                 }
@@ -170,11 +170,11 @@ namespace RS {
                 while (i != end) {
                     if (*i == U'<' || *i == U'=' || *i == U'>') {
                         if (*i == U'<')
-                            flags |= fx_left;
+                            flags |= Format::left;
                         else if (*i == U'=')
-                            flags |= fx_centre;
+                            flags |= Format::centre;
                         else
-                            flags |= fx_right;
+                            flags |= Format::right;
                         ++i;
                         if (i != end && ! char_is_digit(*i))
                             pad = *i++;
@@ -192,25 +192,25 @@ namespace RS {
 
             U8string format_float(long double t, uint64_t flags, int prec) {
                 using std::fabs;
-                static constexpr auto format_flags = fx_digits | fx_exp | fx_fixed | fx_general;
-                static constexpr auto sign_flags = fx_sign | fx_signz;
+                static constexpr auto format_flags = Format::digits | Format::exp | Format::fixed | Format::general;
+                static constexpr auto sign_flags = Format::sign | Format::signz;
                 if (ibits(flags & format_flags) > 1 || ibits(flags & sign_flags) > 1)
                     throw std::invalid_argument("Inconsistent formatting flags");
                 if (prec < 0)
                     prec = 6;
                 auto mag = fabs(t);
                 U8string s;
-                if (flags & fx_digits)
+                if (flags & Format::digits)
                     s = float_digits(mag, prec);
-                else if (flags & fx_exp)
+                else if (flags & Format::exp)
                     s = float_exp(mag, prec);
-                else if (flags & fx_fixed)
+                else if (flags & Format::fixed)
                     s = float_fixed(mag, prec);
                 else
                     s = float_general(mag, prec);
-                if (flags & fx_stripz)
+                if (flags & Format::stripz)
                     float_strip(s);
-                if (t < 0 || (flags & fx_sign) || (t > 0 && (flags & fx_signz)))
+                if (t < 0 || (flags & Format::sign) || (t > 0 && (flags & Format::signz)))
                     s.insert(s.begin(), t < 0 ? '-' : '+');
                 return s;
             }
@@ -238,29 +238,29 @@ namespace RS {
             // Alignment and padding
 
             U8string format_align(U8string src, uint64_t flags, size_t width, char32_t pad) {
-                if (ibits(flags & (fx_left | fx_centre | fx_right)) > 1)
+                if (ibits(flags & (Format::left | Format::centre | Format::right)) > 1)
                     throw std::invalid_argument("Inconsistent formatting alignment flags");
-                if (ibits(flags & (fx_lower | fx_title | fx_upper)) > 1)
+                if (ibits(flags & (Format::lower | Format::title | Format::upper)) > 1)
                     throw std::invalid_argument("Inconsistent formatting case conversion flags");
-                if (flags & fx_lower)
+                if (flags & Format::lower)
                     str_lowercase_in(src);
-                else if (flags & fx_title)
+                else if (flags & Format::title)
                     str_titlecase_in(src);
-                else if (flags & fx_upper)
+                else if (flags & Format::upper)
                     str_uppercase_in(src);
-                size_t len = str_length(src, flags & fx_length_flags);
+                size_t len = str_length(src, flags & format_length_flags);
                 if (width <= len)
                     return src;
                 size_t extra = width - len;
                 U8string dst;
-                if (flags & fx_right)
+                if (flags & Format::right)
                     str_append_chars(dst, extra, pad);
-                else if (flags & fx_centre)
+                else if (flags & Format::centre)
                     str_append_chars(dst, extra / 2, pad);
                 dst += src;
-                if (flags & fx_left)
+                if (flags & Format::left)
                     str_append_chars(dst, extra, pad);
-                else if (flags & fx_centre)
+                else if (flags & Format::centre)
                     str_append_chars(dst, (extra + 1) / 2, pad);
                 return dst;
             }
@@ -270,12 +270,12 @@ namespace RS {
         // Basic formattng functions
 
         U8string format_type(bool t, uint64_t flags, int /*prec*/) {
-            static constexpr auto format_flags = fx_binary | fx_tf | fx_yesno;
+            static constexpr auto format_flags = Format::binary | Format::tf | Format::yesno;
             if (ibits(flags & format_flags) > 1)
                 throw std::invalid_argument("Inconsistent formatting flags");
-            if (flags & fx_binary)
+            if (flags & Format::binary)
                 return t ? "1" : "0";
-            else if (flags & fx_yesno)
+            else if (flags & Format::yesno)
                 return t ? "yes" : "no";
             else
                 return t ? "true" : "false";
@@ -283,38 +283,38 @@ namespace RS {
 
         U8string format_type(const U8string& t, uint64_t flags, int prec) {
             using namespace UnicornDetail;
-            static constexpr auto format_flags = fx_ascii | fx_ascquote | fx_escape | fx_decimal | fx_hex | fx_hex8 | fx_hex16 | fx_quote;
+            static constexpr auto format_flags = Format::ascii | Format::ascquote | Format::escape | Format::decimal | Format::hex | Format::hex8 | Format::hex16 | Format::quote;
             if (ibits(flags & format_flags) > 1)
                 throw std::invalid_argument("Inconsistent formatting flags");
-            if (flags & fx_quote)
-                return string_escape(t, fx_quote);
-            else if (flags & fx_ascquote)
-                return string_escape(t, fx_quote | fx_ascii);
-            else if (flags & fx_escape)
+            if (flags & Format::quote)
+                return string_escape(t, Format::quote);
+            else if (flags & Format::ascquote)
+                return string_escape(t, Format::quote | Format::ascii);
+            else if (flags & Format::escape)
                 return string_escape(t, 0);
-            else if (flags & fx_ascii)
-                return string_escape(t, fx_ascii);
-            else if (flags & fx_decimal)
+            else if (flags & Format::ascii)
+                return string_escape(t, Format::ascii);
+            else if (flags & Format::decimal)
                 return string_values(utf_range(t), 10, prec, 1);
-            else if (flags & fx_hex8)
+            else if (flags & Format::hex8)
                 return string_values(t, 16, prec, 2);
-            else if (flags & fx_hex16)
+            else if (flags & Format::hex16)
                 return string_values(to_utf16(t), 16, prec, 4);
-            else if (flags & fx_hex)
+            else if (flags & Format::hex)
                 return string_values(utf_range(t), 16, prec, 1);
             else
                 return t;
         }
 
         U8string format_type(system_clock::time_point t, uint64_t flags, int prec) {
-            static constexpr auto format_flags = fx_iso | fx_common;
+            static constexpr auto format_flags = Format::iso | Format::common;
             if (ibits(flags & format_flags) > 1)
                 throw std::invalid_argument("Inconsistent formatting flags");
-            auto zone = flags & fx_local ? Zone::local : Zone::utc;
-            if (flags & fx_common)
+            auto zone = flags & Format::local ? Zone::local : Zone::utc;
+            if (flags & Format::common)
                 return format_date(t, "%c"s, zone);
             auto result = format_date(t, prec, zone);
-            if (flags & fx_iso) {
+            if (flags & Format::iso) {
                 auto pos = result.find(' ');
                 if (pos != npos)
                     result[pos] = 'T';

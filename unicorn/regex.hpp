@@ -113,7 +113,9 @@ namespace RS {
 
         class Regex:
         public LessThanComparable<Regex> {
+
         public:
+
             static constexpr uint32_t byte             = 1ul << 0;   // Byte mode matching                               ~PCRE_UTF8
             static constexpr uint32_t caseless         = 1ul << 1;   // Case insensitive matching                        PCRE_CASELESS
             static constexpr uint32_t dfa              = 1ul << 2;   // Use the alternative DFA algorithm                pcre_dfa_exec()
@@ -138,6 +140,7 @@ namespace RS {
             static constexpr uint32_t partialsoft      = 1ul << 21;  // Soft partial matching (only if no full match)    PCRE_PARTIAL_SOFT
             static constexpr uint32_t prefershort      = 1ul << 22;  // Non-greedy quantifiers, or shorter DFA matches   PCRE_UNGREEDY,PCRE_DFA_SHORTEST
             static constexpr uint32_t ucp              = 1ul << 23;  // Use Unicode properties in escape charsets        PCRE_UCP
+
             Regex(): Regex({}, 0) {}
             explicit Regex(const U8string& pattern, uint32_t flags = 0);
             Match operator()(const U8string& text, size_t offset = 0) const { return search(text, offset); }
@@ -166,13 +169,16 @@ namespace RS {
             static Version unicode_version() noexcept;
             friend bool operator==(const Regex& lhs, const Regex& rhs) noexcept;
             friend bool operator<(const Regex& lhs, const Regex& rhs) noexcept;
+
         private:
+
             friend class MatchIterator;
             friend class Match;
             U8string pat;
             uint32_t fset = 0;
             UnicornDetail::PcreRef ref;
             Match exec(const U8string& text, size_t offset, int anchors) const;
+
         };
 
         namespace UnicornDetail {
