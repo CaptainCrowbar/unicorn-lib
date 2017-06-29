@@ -368,36 +368,36 @@ library).</p>
 </thead>
 <tbody>
 <tr>
-<td><strong><code>cn_control</code></strong></td>
+<td><code>Cname::</code><strong><code>all</code></strong></td>
+<td>Mask combining all of these flags</td>
+</tr>
+<tr>
+<td><code>Cname::</code><strong><code>control</code></strong></td>
 <td>Use the common ASCII or ISO 8859 names for control characters</td>
 </tr>
 <tr>
-<td><strong><code>cn_label</code></strong></td>
+<td><code>Cname::</code><strong><code>label</code></strong></td>
 <td>Generate the standard code point label for characters that do not have an official name</td>
 </tr>
 <tr>
-<td><strong><code>cn_lower</code></strong></td>
+<td><code>Cname::</code><strong><code>lower</code></strong></td>
 <td>Return the name in lower case (excluding the <code>U+XXXX</code> prefix if present)</td>
 </tr>
 <tr>
-<td><strong><code>cn_prefix</code></strong></td>
+<td><code>Cname::</code><strong><code>prefix</code></strong></td>
 <td>Prefix the name with the code point in <code>U+XXXX</code> format</td>
 </tr>
 <tr>
-<td><strong><code>cn_update</code></strong></td>
+<td><code>Cname::</code><strong><code>update</code></strong></td>
 <td>Where the official name was in error and a suggested correction has been published, use that instead</td>
-</tr>
-<tr>
-<td><strong><code>cn_all</code></strong></td>
-<td>Mask combining all of the above flags</td>
 </tr>
 </tbody>
 </table>
 <p>Returns the name of a character. By default, only the official Unicode name is
 returned; an empty string is returned if the character does not have an
 official name. The <code>flags</code> argument can contain a bitwise-OR combination of
-any of the options. If both <code>cn_control</code> and <code>cn_label</code> are present,
-<code>cn_control</code> takes precedence for characters that qualify for both.</p>
+any of the options. If both <code>control</code> and <code>label</code> are present, <code>control</code> takes
+precedence for characters that qualify for both.</p>
 </div>
 <h2 id="decomposition-properties">Decomposition properties</h2>
 <div class="defns">

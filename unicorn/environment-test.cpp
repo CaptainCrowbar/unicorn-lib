@@ -99,23 +99,23 @@ namespace {
         TEST_EQUAL(t, s);
 
         s = "Hello world $COLUMNS $LINES $HOME ...";
-        TRY(t = expand_env(s, posix_env));
+        TRY(t = expand_env(s, Environment::posix));
         TEST_EQUAL(t, "Hello world " + columns + " " + lines + " " + home + " ...");;
 
         s = "Hello world ${COLUMNS} ${LINES} ${HOME} ...";
-        TRY(t = expand_env(s, posix_env));
+        TRY(t = expand_env(s, Environment::posix));
         TEST_EQUAL(t, "Hello world " + columns + " " + lines + " " + home + " ...");;
 
         s = "Hello world %COLUMNS% %LINES% %HOME% ...";
-        TRY(t = expand_env(s, windows_env));
+        TRY(t = expand_env(s, Environment::windows));
         TEST_EQUAL(t, "Hello world " + columns + " " + lines + " " + home + " ...");;
 
         s = "Hello world $COLUMNS ${LINES} %HOME% ...";
-        TRY(t = expand_env(s, posix_env | windows_env));
+        TRY(t = expand_env(s, Environment::posix | Environment::windows));
         TEST_EQUAL(t, "Hello world " + columns + " " + lines + " " + home + " ...");;
 
         s = "$$ %%";
-        TRY(t = expand_env(s, posix_env | windows_env));
+        TRY(t = expand_env(s, Environment::posix | Environment::windows));
         TEST_EQUAL(t, "$ %");
 
         Environment env;
@@ -125,19 +125,19 @@ namespace {
         TRY(env.set("charlie", "zulu"));
 
         s = "Hello $alpha $zulu world";
-        TRY(t = env.expand(s, posix_env));
+        TRY(t = env.expand(s, Environment::posix));
         TEST_EQUAL(t, "Hello xray  world");
 
         s = "Hello ${alpha} ${zulu} world";
-        TRY(t = env.expand(s, posix_env));
+        TRY(t = env.expand(s, Environment::posix));
         TEST_EQUAL(t, "Hello xray  world");
 
         s = "Hello %alpha% %zulu% world";
-        TRY(t = env.expand(s, windows_env));
+        TRY(t = env.expand(s, Environment::windows));
         TEST_EQUAL(t, "Hello xray  world");
 
         s = "Hello $alpha %zulu% world";
-        TRY(t = env.expand(s, posix_env | windows_env));
+        TRY(t = env.expand(s, Environment::posix | Environment::windows));
         TEST_EQUAL(t, "Hello xray  world");
 
     }

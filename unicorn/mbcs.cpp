@@ -510,7 +510,7 @@ namespace RS {
                 static Mutex mtx;
                 if (name.empty())
                     throw UnknownEncoding();
-                if (flags & mb_strict)
+                if (flags & Mbcs::strict)
                     #ifdef _XOPEN_SOURCE
                         return name;
                     #else
@@ -548,7 +548,7 @@ namespace RS {
                 static Mutex mtx;
                 if (page == 0)
                     throw UnknownEncoding();
-                if (flags & mb_strict)
+                if (flags & Mbcs::strict)
                     #ifdef _XOPEN_SOURCE
                         return dec(page);
                     #else

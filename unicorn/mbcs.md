@@ -11,6 +11,12 @@ encodings, as well as external UTF encodings with a specific byte order.
 
 [TOC]
 
+## Constants ##
+
+* `constexpr uint32_t Mbcs::`**`strict`**
+
+Constant used to control how encoding names are interpreted (see below).
+
 ## Exceptions ##
 
 * `class` **`UnknownEncoding`**`: public std::runtime_error`
@@ -61,10 +67,10 @@ replaced with a system- defined replacement character (not necessarily
 `EncodingError` exception to be thrown, if this is detectable (see below).
 
 Ignoring invalid encoding is not allowed here; if any MBCS function that takes
-a `flags` argument is passed the `UtfError::ignore` flags, it will throw
+a flags argument is passed the `UtfError::ignore` flags, it will throw
 `std::invalid_argument`.
 
-If the constant `mb_strict` is included in the `flags`, no attempt will be
+If the constant `Mbcs::strict` is included in the flags, no attempt will be
 made to translate the encoding name or number supplied into an equivalent
 acceptable to the underlying API; the value supplied will simply be passed
 unchanged (apart from conversion between string and integer where necessary).

@@ -21,13 +21,17 @@ namespace RS {
 
         // Constants
 
-        constexpr uint32_t fs_dotdot     = 1ul << 0;  // Include . and ..
-        constexpr uint32_t fs_follow     = 1ul << 1;  // Resolve symlinks
-        constexpr uint32_t fs_fullname   = 1ul << 2;  // Return full file names
-        constexpr uint32_t fs_hidden     = 1ul << 3;  // Include hidden files
-        constexpr uint32_t fs_overwrite  = 1ul << 4;  // Delete existing file if necessary
-        constexpr uint32_t fs_recurse    = 1ul << 5;  // Recursive directory operations
-        constexpr uint32_t fs_unicode    = 1ul << 6;  // Skip files with non-Unicode names
+        namespace File {
+
+            constexpr uint32_t dotdot     = 1ul << 0;  // Include . and ..
+            constexpr uint32_t follow     = 1ul << 1;  // Resolve symlinks
+            constexpr uint32_t fullname   = 1ul << 2;  // Return full file names
+            constexpr uint32_t hidden     = 1ul << 3;  // Include hidden files
+            constexpr uint32_t overwrite  = 1ul << 4;  // Delete existing file if necessary
+            constexpr uint32_t recurse    = 1ul << 5;  // Recursive directory operations
+            constexpr uint32_t unicode    = 1ul << 6;  // Skip files with non-Unicode names
+
+        }
 
         // Types
 

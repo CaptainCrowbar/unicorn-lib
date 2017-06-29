@@ -769,9 +769,9 @@ namespace RS {
                 margin2 = margin1;
             if (margin1 >= width || margin2 >= width)
                 throw std::length_error("Word wrap width and margins are inconsistent");
-            size_t spacing = flags & wide_context ? 2 : 1;
+            size_t spacing = flags & Length::wide ? 2 : 1;
             U8string newline, result;
-            if (flags & wrap_crlf)
+            if (flags & Wrap::crlf)
                 newline = "\r\n";
             else
                 newline = "\n";
@@ -792,7 +792,7 @@ namespace RS {
                     spaces = margin1;
                 }
                 i = j;
-                if ((flags & wrap_preserve) && linebreaks >= 1 && tailspaces >= 1) {
+                if ((flags & Wrap::preserve) && linebreaks >= 1 && tailspaces >= 1) {
                     if (words > 0)
                         result += newline;
                     result.append(tailspaces, ' ');
@@ -820,7 +820,7 @@ namespace RS {
                     result += word;
                     ++words;
                     linewidth += wordlen;
-                    if ((flags & wrap_enforce) && linewidth > size_t(width))
+                    if ((flags & Wrap::enforce) && linewidth > size_t(width))
                         throw std::length_error("Word is too long for wrapping width");
                 }
                 i = j;

@@ -510,12 +510,12 @@ namespace RS {
             using namespace UnicornDetail;
             static const CharacterNameMap map;
             U8string name;
-            if (flags & cn_control) {
+            if (flags & Cname::control) {
                 auto name_ptr = control_character_name(c);
                 if (name_ptr)
                     name = name_ptr;
             }
-            if (name.empty() && (flags & cn_update)) {
+            if (name.empty() && (flags & Cname::update)) {
                 auto name_ptr = table_lookup(corrected_names_table, c, static_cast<const char*>(nullptr));
                 if (name_ptr)
                     name = name_ptr;
@@ -530,9 +530,9 @@ namespace RS {
                 else
                     name = hangul_name(c);
             }
-            if (flags & cn_lower)
+            if (flags & Cname::lower)
                 name = ascii_lowercase(name);
-            if (name.empty() && (flags & cn_label)) {
+            if (name.empty() && (flags & Cname::label)) {
                 if (c <= last_unicode_char) {
                     auto gc = char_general_category(c);
                     if (gc == GC::Cc)
@@ -548,13 +548,13 @@ namespace RS {
                 } else {
                     name = "<noncharacter-";
                 }
-                if (flags & cn_lower)
+                if (flags & Cname::lower)
                     name += hex(c, 4);
                 else
                     name += ascii_uppercase(hex(c, 4));
                 name += '>';
             }
-            if (flags & cn_prefix) {
+            if (flags & Cname::prefix) {
                 U8string prefix = char_as_hex(c);
                 if (name.empty())
                     name = prefix;

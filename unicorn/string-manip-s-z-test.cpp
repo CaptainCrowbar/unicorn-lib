@@ -235,22 +235,22 @@ namespace {
         TEST_EQUAL(utf_substring(example, 5, 0), "");
         TEST_EQUAL(utf_substring(example, 5, 1), "");
 
-        TEST_EQUAL(utf_substring(u8"áéíóú"s, 1, 0, grapheme_units), u8"");
-        TEST_EQUAL(utf_substring(u8"áéíóú"s, 1, 1, grapheme_units), u8"é");
-        TEST_EQUAL(utf_substring(u8"áéíóú"s, 1, 2, grapheme_units), u8"éí");
-        TEST_EQUAL(utf_substring(u8"áéíóú"s, 1, 3, grapheme_units), u8"éíó");
-        TEST_EQUAL(utf_substring(u8"áéíóú"s, 1, 4, grapheme_units), u8"éíóú");
-        TEST_EQUAL(utf_substring(u8"áéíóú"s, 1, 5, grapheme_units), u8"éíóú");
-        TEST_EQUAL(utf_substring(u8"áéíóú"s, 1, npos, grapheme_units), u8"éíóú");
-        TEST_EQUAL(utf_substring(u8"áéíóú"s, 5, npos, grapheme_units), u8"");
-        TEST_EQUAL(utf_substring(u8"a\u0301e\u0301i\u0301o\u0301u\u0301"s, 1, 0, grapheme_units), u8"");
-        TEST_EQUAL(utf_substring(u8"a\u0301e\u0301i\u0301o\u0301u\u0301"s, 1, 1, grapheme_units), u8"e\u0301");
-        TEST_EQUAL(utf_substring(u8"a\u0301e\u0301i\u0301o\u0301u\u0301"s, 1, 2, grapheme_units), u8"e\u0301i\u0301");
-        TEST_EQUAL(utf_substring(u8"a\u0301e\u0301i\u0301o\u0301u\u0301"s, 1, 3, grapheme_units), u8"e\u0301i\u0301o\u0301");
-        TEST_EQUAL(utf_substring(u8"a\u0301e\u0301i\u0301o\u0301u\u0301"s, 1, 4, grapheme_units), u8"e\u0301i\u0301o\u0301u\u0301");
-        TEST_EQUAL(utf_substring(u8"a\u0301e\u0301i\u0301o\u0301u\u0301"s, 1, 5, grapheme_units), u8"e\u0301i\u0301o\u0301u\u0301");
-        TEST_EQUAL(utf_substring(u8"a\u0301e\u0301i\u0301o\u0301u\u0301"s, 1, npos, grapheme_units), u8"e\u0301i\u0301o\u0301u\u0301");
-        TEST_EQUAL(utf_substring(u8"a\u0301e\u0301i\u0301o\u0301u\u0301"s, 5, npos, grapheme_units), u8"");
+        TEST_EQUAL(utf_substring(u8"áéíóú"s, 1, 0, Length::graphemes), u8"");
+        TEST_EQUAL(utf_substring(u8"áéíóú"s, 1, 1, Length::graphemes), u8"é");
+        TEST_EQUAL(utf_substring(u8"áéíóú"s, 1, 2, Length::graphemes), u8"éí");
+        TEST_EQUAL(utf_substring(u8"áéíóú"s, 1, 3, Length::graphemes), u8"éíó");
+        TEST_EQUAL(utf_substring(u8"áéíóú"s, 1, 4, Length::graphemes), u8"éíóú");
+        TEST_EQUAL(utf_substring(u8"áéíóú"s, 1, 5, Length::graphemes), u8"éíóú");
+        TEST_EQUAL(utf_substring(u8"áéíóú"s, 1, npos, Length::graphemes), u8"éíóú");
+        TEST_EQUAL(utf_substring(u8"áéíóú"s, 5, npos, Length::graphemes), u8"");
+        TEST_EQUAL(utf_substring(u8"a\u0301e\u0301i\u0301o\u0301u\u0301"s, 1, 0, Length::graphemes), u8"");
+        TEST_EQUAL(utf_substring(u8"a\u0301e\u0301i\u0301o\u0301u\u0301"s, 1, 1, Length::graphemes), u8"e\u0301");
+        TEST_EQUAL(utf_substring(u8"a\u0301e\u0301i\u0301o\u0301u\u0301"s, 1, 2, Length::graphemes), u8"e\u0301i\u0301");
+        TEST_EQUAL(utf_substring(u8"a\u0301e\u0301i\u0301o\u0301u\u0301"s, 1, 3, Length::graphemes), u8"e\u0301i\u0301o\u0301");
+        TEST_EQUAL(utf_substring(u8"a\u0301e\u0301i\u0301o\u0301u\u0301"s, 1, 4, Length::graphemes), u8"e\u0301i\u0301o\u0301u\u0301");
+        TEST_EQUAL(utf_substring(u8"a\u0301e\u0301i\u0301o\u0301u\u0301"s, 1, 5, Length::graphemes), u8"e\u0301i\u0301o\u0301u\u0301");
+        TEST_EQUAL(utf_substring(u8"a\u0301e\u0301i\u0301o\u0301u\u0301"s, 1, npos, Length::graphemes), u8"e\u0301i\u0301o\u0301u\u0301");
+        TEST_EQUAL(utf_substring(u8"a\u0301e\u0301i\u0301o\u0301u\u0301"s, 5, npos, Length::graphemes), u8"");
 
     }
 
@@ -521,8 +521,8 @@ namespace {
             "aliqua. Ut enim ad minim veniam, quis\r\n"
             "nostrud exercitation ullamco laboris\r\n"
             "nisi ut aliquip ex ea commodo consequat.\r\n";
-        TEST_EQUAL(str_wrap(s, wrap_crlf, 40), t);
-        TRY(str_wrap_in(s, wrap_crlf, 40));
+        TEST_EQUAL(str_wrap(s, Wrap::crlf, 40), t);
+        TRY(str_wrap_in(s, Wrap::crlf, 40));
         TEST_EQUAL(s, t);
         s =
             "Lorem ipsum dolor sit amet,\r\n"
@@ -547,8 +547,8 @@ namespace {
             "\n"
             "Lorem ipsum dolor sit amet, consectetur\n"
             "adipisicing elit.\n";
-        TEST_EQUAL(str_wrap(s, wrap_preserve, 40), t);
-        TRY(str_wrap_in(s, wrap_preserve, 40));
+        TEST_EQUAL(str_wrap(s, Wrap::preserve, 40), t);
+        TRY(str_wrap_in(s, Wrap::preserve, 40));
         TEST_EQUAL(s, t);
 
     }

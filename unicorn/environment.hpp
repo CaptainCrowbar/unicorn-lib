@@ -11,57 +11,6 @@ namespace RS {
 
     namespace Unicorn {
 
-        // Constants
-
-        constexpr uint32_t posix_env = 1;
-        constexpr uint32_t windows_env = 2;
-
-        #ifdef _XOPEN_SOURCE
-            constexpr uint32_t native_env = posix_env;
-        #else
-            constexpr uint32_t native_env = windows_env;
-        #endif
-
-        // Functions
-
-        #ifdef _XOPEN_SOURCE
-
-            std::string expand_env(const std::string& src, uint32_t flags = native_env);
-            std::string get_env(const std::string& name);
-            bool has_env(const std::string& name);
-            void set_env(const std::string& name, const std::string& value);
-            void unset_env(const std::string& name);
-
-        #else
-
-            std::wstring expand_env(const std::wstring& src, uint32_t flags = native_env);
-            std::wstring get_env(const std::wstring& name);
-            bool has_env(const std::wstring& name);
-            void set_env(const std::wstring& name, const std::wstring& value);
-            void unset_env(const std::wstring& name);
-
-            inline U8string expand_env(const U8string& src, uint32_t flags = native_env) {
-                return to_utf8(expand_env(to_wstring(src, UtfError::replace), flags), UtfError::replace);
-            }
-
-            inline U8string get_env(const U8string& name) {
-                return to_utf8(get_env(to_wstring(name, UtfError::replace)), UtfError::replace);
-            }
-
-            inline bool has_env(const U8string& name) {
-                return has_env(to_wstring(name, UtfError::replace));
-            }
-
-            inline void set_env(const U8string& name, const U8string& value) {
-                set_env(to_wstring(name, UtfError::replace), to_wstring(value, UtfError::replace));
-            }
-
-            inline void unset_env(const U8string& name) {
-                unset_env(to_wstring(name, UtfError::replace));
-            }
-
-        #endif
-
         // Class Environment
 
         class Environment {
@@ -70,6 +19,13 @@ namespace RS {
             using string_map = std::map<NativeString, NativeString>;
             using string_pair = std::pair<NativeString, NativeString>;
         public:
+            static constexpr uint32_t posix = 1;
+            static constexpr uint32_t windows = 2;
+            #ifdef _XOPEN_SOURCE
+                static constexpr uint32_t native = posix;
+            #else
+                static constexpr uint32_t native = windows;
+            #endif
             class iterator:
             public ForwardIterator<iterator, const string_pair> {
             public:
@@ -90,14 +46,14 @@ namespace RS {
             Environment& operator=(const Environment& env);
             Environment& operator=(Environment&& env) noexcept;
             NativeString operator[](const NativeString& name) { return get(name); }
-            NativeString expand(const NativeString& src, uint32_t flags = native_env);
+            NativeString expand(const NativeString& src, uint32_t flags = native);
             NativeString get(const NativeString& name);
             bool has(const NativeString& name);
             void set(const NativeString& name, const NativeString& value);
             void unset(const NativeString& name);
             #ifndef _XOPEN_SOURCE
                 U8string operator[](const U8string& name) { return get(name); }
-                U8string expand(const U8string& src, uint32_t flags = native_env);
+                U8string expand(const U8string& src, uint32_t flags = native);
                 U8string get(const U8string& name);
                 bool has(const U8string& name);
                 void set(const U8string& name, const U8string& value);
@@ -117,6 +73,46 @@ namespace RS {
             void deconstruct() { block.clear(); index.clear(); }
             void reconstruct();
         };
+
+        // Functions
+
+        #ifdef _XOPEN_SOURCE
+
+            std::string expand_env(const std::string& src, uint32_t flags = Environment::native);
+            std::string get_env(const std::string& name);
+            bool has_env(const std::string& name);
+            void set_env(const std::string& name, const std::string& value);
+            void unset_env(const std::string& name);
+
+        #else
+
+            std::wstring expand_env(const std::wstring& src, uint32_t flags = Environment::native);
+            std::wstring get_env(const std::wstring& name);
+            bool has_env(const std::wstring& name);
+            void set_env(const std::wstring& name, const std::wstring& value);
+            void unset_env(const std::wstring& name);
+
+            inline U8string expand_env(const U8string& src, uint32_t flags = Environment::native) {
+                return to_utf8(expand_env(to_wstring(src, UtfError::replace), flags), UtfError::replace);
+            }
+
+            inline U8string get_env(const U8string& name) {
+                return to_utf8(get_env(to_wstring(name, UtfError::replace)), UtfError::replace);
+            }
+
+            inline bool has_env(const U8string& name) {
+                return has_env(to_wstring(name, UtfError::replace));
+            }
+
+            inline void set_env(const U8string& name, const U8string& value) {
+                set_env(to_wstring(name, UtfError::replace), to_wstring(value, UtfError::replace));
+            }
+
+            inline void unset_env(const U8string& name) {
+                unset_env(to_wstring(name, UtfError::replace));
+            }
+
+        #endif
 
     }
 

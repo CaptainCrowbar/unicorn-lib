@@ -67,18 +67,18 @@ The following global flags are common to all types:
 
 <!-- DEFN -->
 
-Flag                   | Letter  | Description
-----                   | ------  | -----------
-**`fx_left`**          |`<`      | Left align (default)
-**`fx_right`**         |`>`      | Right align
-**`fx_centre`**        |`=`      | Centre align
-**`fx_upper`**         |`U`      | Convert to upper case
-**`fx_lower`**         |`L`      | Convert to lower case
-**`fx_title`**         |`T`      | Convert to title case
-**`character_units`**  |`C`      | Measure string in characters (default)
-**`grapheme_units`**   |`G`      | Measure string in grapheme clusters
-**`narrow_context`**   |`N`      | East Asian width, defaulting to narrow
-**`wide_context`**     |`W`      | East Asian width, defaulting to wide
+Flag                        | Letter  | Description
+----                        | ------  | -----------
+**`fx_left`**               |`<`      | Left align (default)
+**`fx_right`**              |`>`      | Right align
+**`fx_centre`**             |`=`      | Centre align
+**`fx_upper`**              |`U`      | Convert to upper case
+**`fx_lower`**              |`L`      | Convert to lower case
+**`fx_title`**              |`T`      | Convert to title case
+`Length::`**`characters`**  |`C`      | Measure string in characters (default)
+`Length::`**`graphemes`**   |`G`      | Measure string in grapheme clusters
+`Length::`**`narrow`**      |`N`      | East Asian width, defaulting to narrow
+`Length::`**`wide`**        |`W`      | East Asian width, defaulting to wide
 
 See [`unicorn/string`](string.html) for details of the four string measurement
 flags. The alignment flags can be followed by a decimal number, which will be

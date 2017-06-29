@@ -60,17 +60,19 @@ of `"/foo/bar/hello.txt"` is `"hello.txt"`).
 
 ## Constants ##
 
-Flag                | Description
-----                | -----------
-**`fs_dotdot`**     | Include . and ..
-**`fs_follow`**     | Follow symlinks
-**`fs_fullname`**   | Return full file names
-**`fs_hidden`**     | Include hidden files
-**`fs_overwrite`**  | Delete existing file if necessary
-**`fs_recurse`**    | Recursive directory operations
-**`fs_unicode`**    | Skip files with non-Unicode names
+Flag                     | Description
+----                     | -----------
+`File::`**`dotdot`**     | Include . and ..
+`File::`**`follow`**     | Follow symlinks
+`File::`**`fullname`**   | Return full file names
+`File::`**`hidden`**     | Include hidden files
+`File::`**`overwrite`**  | Delete existing file if necessary
+`File::`**`recurse`**    | Recursive directory operations
+`File::`**`unicode`**    | Skip files with non-Unicode names
 
-Flags recognised by some of the functions in this module.
+Flags recognised by some of the functions in this module. Their usage is
+documented with the individual functions that use them. Any flags not
+documented for a given function will be ignored.
 
 ## Types ##
 
@@ -185,7 +187,7 @@ file name and the leaf name is empty.
 
 By default, the delimiter between the directory and leaf names is discarded,
 unless the directory is a root name that requires the delimiter suffix for
-correct identification; if the `fs_fullname` flag is set, the delimiter (if
+correct identification; if the `File::fullname` flag is set, the delimiter (if
 any) will always be kept at the end of the directory part. This is the only
 flag recognised.
 
@@ -226,9 +228,9 @@ but is not accessible to the calling process.
 Returns a unique file identifier, intended to identify the file even if it is
 referred to by different paths. It will return zero if the file does not exist
 or the caller does not have permission to query its properties. The only flag
-recognised is `fs_follow`, which causes the function to return the ID of the
-linked file instead of that of the symlink; it has no effect if the file named
-is not a symlink.
+recognised is `File::follow`, which causes the function to return the ID of
+the linked file instead of that of the symlink; it has no effect if the file
+named is not a symlink.
 
 This is based on the device and inode numbers on Unix, or the file index on
 Windows. Completely reliable file identification cannot be guaranteed in the
@@ -261,7 +263,7 @@ True if the file is a symbolic link.
 Returns the size of the file in bytes. This will return zero if the file does
 not exist, or if it can't be accessed for any other reason. If the file is a
 directory, by default only the size of the directory entry itself (which may
-be zero on some systems) is returned; if the `fs_recurse` flag is supplied,
+be zero on some systems) is returned; if the `File::recurse` flag is supplied,
 the directory's contents will be recursively scanned (symbolic links are not
 followed).
 
@@ -293,14 +295,15 @@ system.
 * `void` **`copy_file`**`(const U8string& src, const U8string& dst, uint32_t flags = 0)`
 * `void` **`copy_file`**`(const NativeString& src, const NativeString& dst, uint32_t flags = 0)`
 
-Copy a file. If the `fs_recurse` flag is used, this will copy a directory
+Copy a file. If the `File::recurse` flag is used, this will copy a directory
 recursively; otherwise, it will fail if the source file is a directory. If the
-`fs_overwrite` flag is used, an existing file of the same name will be deleted
-if possible; otherwise, the copy will fail. If the existing destination file
-is a directory, it will only be replaced if the `fs_recurse` flag is also
-present (regardless of whether the source is a directory). Regardless of
-flags, it will always fail if the source and destination are the same.
-Symbolic links will be copied as links; the linked file will not be copied.
+`File::overwrite` flag is used, an existing file of the same name will be
+deleted if possible; otherwise, the copy will fail. If the existing
+destination file is a directory, it will only be replaced if the
+`File::recurse` flag is also present (regardless of whether the source is a
+directory). Regardless of flags, it will always fail if the source and
+destination are the same. Symbolic links will be copied as links; the linked
+file will not be copied.
 
 This will throw `std::system_error` if anything goes wrong. This is
 necessarily a non-atomic operation; there is always the possibility that an
@@ -311,24 +314,25 @@ file or directory.
 * `void` **`make_directory`**`(const NativeString& dir, uint32_t flags = 0)`
 
 Create a directory (with default permissions). It will do nothing if the
-directory already exists. If the `fs_recurse` flag is set, this will
+directory already exists. If the `File::recurse` flag is set, this will
 recursively create any missing parent directories (similar to `mkdir -p`). If
-the `fs_overwrite` flag is set, and a file of the same name exists but is not
-a directory, the existing file will be replaced.
+the `File::overwrite` flag is set, and a file of the same name exists but is
+not a directory, the existing file will be replaced.
 
 This will throw `std::system_error` if the named file already exists but is
-not a directory, and either the `fs_overwrite` flag is not used or an attempt
-to delete the existing file fails, if the directory path is not a legal
-filename, if the parent directory does not exist and the `recurse` flag was
-not set, or if the caller does not have permission to create the directory.
+not a directory, and either the `File::overwrite` flag is not used or an
+attempt to delete the existing file fails, if the directory path is not a
+legal filename, if the parent directory does not exist and the `File::recurse`
+flag was not set, or if the caller does not have permission to create the
+directory.
 
 * `void` **`make_symlink`**`(const U8string& file, const U8string& link, uint32_t flags = 0)`
 * `void` **`make_symlink`**`(const NativeString& file, const NativeString& link, uint32_t flags = 0)`
 
 Creates a symlink named `link` pointing to `file`. This will do nothing if the
-symlink already exists. If the `fs_overwrite` flag is set, this will delete
+symlink already exists. If the `File::overwrite` flag is set, this will delete
 any existing file with the same name as the new link; if the existing file is
-a non-empty directory, it will only be replaced if the `fs_recurse` flag is
+a non-empty directory, it will only be replaced if the `File::recurse` flag is
 also set. This will throw `std::system_error` if the symlink cannot be
 created, or if a file or directory of the same name as `link` already exists
 but the necessary flags were not supplied.
@@ -340,20 +344,20 @@ Rename a file or directory. This will attempt to use the operating system's
 native `rename()` call if possible, but will attempt a copy-and-delete
 operation if this fails. This follows the same rules, and respects the same
 flags, as `copy_file()`, except that moving a file to itself always succeeds,
-and directories are always moved recursively (the `fs_recurse` flag is only
+and directories are always moved recursively (the `File::recurse` flag is only
 needed if an existing directory is to be replaced). This will throw
 `std::system_error` if anything goes wrong.
 
 * `void` **`remove_file`**`(const U8string& file, uint32_t flags = 0)`
 * `void` **`remove_file`**`(const NativeString& file, uint32_t flags = 0)`
 
-Delete a file or directory. If the `fs_recurse` flag is set, directories will
-be deleted recursively (like `rm -rf`; this will not follow symbolic links);
-the flag is not needed to delete an empty directory. This will do nothing if
-the named file does not exist to begin with. It will throw `std::system_error`
-if the name is not a legal filename, if the name refers to a non-empty
-directory and the `fs_recurse` flag was not set, or if the caller does not
-have permission to delete the file.
+Delete a file or directory. If the `File::recurse` flag is set, directories
+will be deleted recursively (like `rm -rf`; this will not follow symbolic
+links); the flag is not needed to delete an empty directory. This will do
+nothing if the named file does not exist to begin with. It will throw
+`std::system_error` if the name is not a legal filename, if the name refers to
+a non-empty directory and the `File::recurse` flag was not set, or if the
+caller does not have permission to delete the file.
 
 ## Directory iterators ##
 
@@ -378,7 +382,7 @@ APIs work).
 On systems (Windows) where the native string type is not 8-bit, there are two
 directory iterator types: `NativeDirectoryIterator` has a value type of
 `NativeString`, and returns the actual file names even if they are not valid
-Unicode (unless the `fs_unicode` option is used); `DirectoryIterator` has a
+Unicode (unless the `File::unicode` option is used); `DirectoryIterator` has a
 value type of `U8string`, and converts file names using the usual substitution
 convention if the original name is invalid.
 
@@ -388,23 +392,24 @@ UTF-8 (on systems where this is possible) are passed through unchanged.
 
 The following flags are recognised:
 
-Flag               | Description
-----               | -----------
-**`fs_dotdot`**    | Include . and ..
-**`fs_fullname`**  | Return full file names
-**`fs_hidden`**    | Include hidden files
-**`fs_unicode`**   | Skip files with non-Unicode names
+Flag                    | Description
+----                    | -----------
+`File::`**`dotdot`**    | Include . and ..
+`File::`**`fullname`**  | Return full file names
+`File::`**`hidden`**    | Include hidden files
+`File::`**`unicode`**   | Skip files with non-Unicode names
 
 If the name passed to the constructor, or to the `directory()` function,
 refers to a file that does not exist or is not a directory, it will simply be
 treated as an empty directory.
 
 By default, an iterator dereferences to a file's leaf name; if the
-`fs_fullname` option is used, the full path is reported instead, including the
-directory (this is based on the name passed to the constructor, and will not
-be a fully qualified absolute path if the original directory name was not).
+`File::fullname` option is used, the full path is reported instead, including
+the directory (this is based on the name passed to the constructor, and will
+not be a fully qualified absolute path if the original directory name was
+not).
 
-If the `fs_unicode` flag is supplied, and the original directory name was
+If the `File::unicode` flag is supplied, and the original directory name was
 invalid UTF, no files will be returned.
 
 The order in which files are returned is unspecified; do not rely on them

@@ -17,7 +17,6 @@
 <li><a href="#unicorn-library-environment-variables">Unicorn Library: Environment Variables</a><ul>
 <li><a href="#contents">Contents</a></li>
 <li><a href="#introduction">Introduction</a></li>
-<li><a href="#constants">Constants</a></li>
 <li><a href="#functions">Functions</a></li>
 <li><a href="#class-environment">Class Environment</a></li>
 </ul>
@@ -47,14 +46,6 @@ dependent.</p>
 <p>The native environment variable APIs are usually not threadsafe; all of the
 functions in this module ensure thread safety internally by locking a common
 global mutex.</p>
-<h2 id="constants">Constants</h2>
-<p><code>constexpr uint32_t</code> <strong><code>posix_env</code></strong>
-<code>constexpr uint32_t</code> <strong><code>windows_env</code></strong>
-<code>constexpr uint32_t</code> <strong><code>native_env</code></strong></p>
-<p>Bitmask constants indicating how environment variable expansion is to be done
-in <code>expand_env()</code> and <code>Environment::expand()</code>. The <code>native_env</code> constant will
-be equal to either <code>posix_env</code> or <code>windows_env</code>, depending on the operating
-system.</p>
 <h2 id="functions">Functions</h2>
 <p>All of these functions can throw <code>std::invalid_argument</code> if an environment
 variable name passed in is empty or contains an equals sign, or
@@ -62,8 +53,8 @@ variable name passed in is empty or contains an equals sign, or
 call.</p>
 <div class="defns">
 <ul>
-<li><code>NativeString</code> <strong><code>expand_env</code></strong><code>(const NativeString&amp; src, uint32_t flags = native_env)</code></li>
-<li><code>U8string</code> <strong><code>expand_env</code></strong><code>(const U8string&amp; src, uint32_t flags = native_env)</code></li>
+<li><code>NativeString</code> <strong><code>expand_env</code></strong><code>(const NativeString&amp; src, uint32_t flags = Environment::native)</code></li>
+<li><code>U8string</code> <strong><code>expand_env</code></strong><code>(const U8string&amp; src, uint32_t flags = Environment::native)</code></li>
 </ul>
 <p>Expand environment variable references in a string. The <code>flags</code> argument
 indicates whether to follow the Posix convention (<code>"$VAR"</code> or <code>"${VAR}"</code>) or
@@ -122,6 +113,16 @@ object. This is a forward iterator whose value type is
 </div>
 <div class="defns">
 <ul>
+<li><code>constexpr uint32_t Environment::</code><strong><code>posix</code></strong></li>
+<li><code>constexpr uint32_t Environment::</code><strong><code>windows</code></strong></li>
+<li><code>constexpr uint32_t Environment::</code><strong><code>native</code></strong></li>
+</ul>
+<p>Bitmask constants indicating how environment variable expansion is to be done
+in <code>expand_env()</code> and <code>Environment::expand()</code>. The <code>native</code> constant will be
+equal to either <code>posix</code> or <code>windows</code>, depending on the operating system.</p>
+</div>
+<div class="defns">
+<ul>
 <li><code>Environment::</code><strong><code>Environment</code></strong><code>()</code></li>
 <li><code>explicit Environment::</code><strong><code>Environment</code></strong><code>(bool from_process)</code></li>
 <li><code>Environment::</code><strong><code>Environment</code></strong><code>(const Environment&amp; env)</code></li>
@@ -138,8 +139,8 @@ constructed <code>Environment</code> object will be empty.</p>
 <ul>
 <li><code>NativeString Environment::</code><strong><code>operator[]</code></strong><code>(const NativeString&amp; name)</code></li>
 <li><code>U8string Environment::</code><strong><code>operator[]</code></strong><code>(const U8string&amp; name)</code></li>
-<li><code>NativeString Environment::</code><strong><code>expand</code></strong><code>(const NativeString&amp; src, uint32_t flags = native_env)</code></li>
-<li><code>U8string Environment::</code><strong><code>expand</code></strong><code>(const U8string&amp; src, uint32_t flags = native_env)</code></li>
+<li><code>NativeString Environment::</code><strong><code>expand</code></strong><code>(const NativeString&amp; src, uint32_t flags = Environment::native)</code></li>
+<li><code>U8string Environment::</code><strong><code>expand</code></strong><code>(const U8string&amp; src, uint32_t flags = Environment::native)</code></li>
 <li><code>NativeString Environment::</code><strong><code>get</code></strong><code>(const NativeString&amp; name)</code></li>
 <li><code>U8string Environment::</code><strong><code>get</code></strong><code>(const U8string&amp; name)</code></li>
 <li><code>bool Environment::</code><strong><code>has</code></strong><code>(const NativeString&amp; name)</code></li>

@@ -16,14 +16,17 @@ namespace RS {
 
         // Constants
 
-        constexpr uint32_t unicode_words    = 1ul << 0;  // Report all UAX29 words (default)
-        constexpr uint32_t graphic_words    = 1ul << 1;  // Report only words with graphic characters
-        constexpr uint32_t alpha_words      = 1ul << 2;  // Report only words with alphanumeric characters
-        constexpr uint32_t keep_breaks      = 1ul << 3;  // Include line/para terminators in results (default)
-        constexpr uint32_t strip_breaks     = 1ul << 4;  // Do not include line/para terminators
-        constexpr uint32_t multiline_paras  = 1ul << 5;  // Divide into paragraphs using multiple breaks (default)
-        constexpr uint32_t line_paras       = 1ul << 6;  // Divide into paragraphs using any line break
-        constexpr uint32_t unicode_paras    = 1ul << 7;  // Divide into paragraphs using only PS
+        namespace Segment {
+
+            constexpr uint32_t unicode    = 1ul << 0;  // [word] Report all UAX29 words (default); [para] Divide into paragraphs using only PS
+            constexpr uint32_t graphic    = 1ul << 1;  // [word] Report only words with graphic characters
+            constexpr uint32_t alpha      = 1ul << 2;  // [word] Report only words with alphanumeric characters
+            constexpr uint32_t keep       = 1ul << 3;  // [line/para] Include line/para terminators in results (default)
+            constexpr uint32_t strip      = 1ul << 4;  // [line/para] Do not include line/para terminators
+            constexpr uint32_t multiline  = 1ul << 5;  // [para] Divide into paragraphs using multiple breaks (default)
+            constexpr uint32_t line       = 1ul << 6;  // [para] Divide into paragraphs using any line break
+
+        }
 
         // Common base template for grapheme, word, and sentence iterators
 
@@ -38,8 +41,7 @@ namespace RS {
 
         }
 
-        template <typename C, typename Property, UnicornDetail::PropertyQuery<Property> PQ,
-            UnicornDetail::SegmentFunction<Property> SF>
+        template <typename C, typename Property, UnicornDetail::PropertyQuery<Property> PQ, UnicornDetail::SegmentFunction<Property> SF>
         class BasicSegmentIterator:
         public ForwardIterator<BasicSegmentIterator<C, Property, PQ, SF>, const Irange<UtfIterator<C>>> {
         public:
@@ -62,10 +64,8 @@ namespace RS {
             bool select_segment() const noexcept;
         };
 
-        template <typename C, typename Property, UnicornDetail::PropertyQuery<Property> PQ,
-            UnicornDetail::SegmentFunction<Property> SF>
-        BasicSegmentIterator<C, Property, PQ, SF>&
-        BasicSegmentIterator<C, Property, PQ, SF>::operator++() noexcept {
+        template <typename C, typename Property, UnicornDetail::PropertyQuery<Property> PQ, UnicornDetail::SegmentFunction<Property> SF>
+        BasicSegmentIterator<C, Property, PQ, SF>& BasicSegmentIterator<C, Property, PQ, SF>::operator++() noexcept {
             do {
                 seg.first = seg.second;
                 if (seg.first == ends)
@@ -87,12 +87,11 @@ namespace RS {
             return *this;
         }
 
-        template <typename C, typename Property, UnicornDetail::PropertyQuery<Property> PQ,
-            UnicornDetail::SegmentFunction<Property> SF>
+        template <typename C, typename Property, UnicornDetail::PropertyQuery<Property> PQ, UnicornDetail::SegmentFunction<Property> SF>
         bool BasicSegmentIterator<C, Property, PQ, SF>::select_segment() const noexcept {
-            if (mode & graphic_words)
+            if (mode & Segment::graphic)
                 return std::find_if_not(seg.begin(), seg.end(), char_is_white_space) != seg.end();
-            else if (mode & alpha_words)
+            else if (mode & Segment::alpha)
                 return std::find_if(seg.begin(), seg.end(), char_is_alphanumeric) != seg.end();
             else
                 return true;
@@ -100,8 +99,7 @@ namespace RS {
 
         // Grapheme cluster boundaries
 
-        template <typename C> using GraphemeIterator
-            = BasicSegmentIterator<C, Grapheme_Cluster_Break, grapheme_cluster_break, UnicornDetail::find_grapheme_break>;
+        template <typename C> using GraphemeIterator = BasicSegmentIterator<C, Grapheme_Cluster_Break, grapheme_cluster_break, UnicornDetail::find_grapheme_break>;
 
         template <typename C> Irange<GraphemeIterator<C>>
         grapheme_range(const UtfIterator<C>& i, const UtfIterator<C>& j) {
@@ -120,12 +118,11 @@ namespace RS {
 
         // Word boundaries
 
-        template <typename C> using WordIterator
-            = BasicSegmentIterator<C, Word_Break, word_break, UnicornDetail::find_word_break>;
+        template <typename C> using WordIterator = BasicSegmentIterator<C, Word_Break, word_break, UnicornDetail::find_word_break>;
 
         template <typename C> Irange<WordIterator<C>>
         word_range(const UtfIterator<C>& i, const UtfIterator<C>& j, uint32_t flags = 0) {
-            if (ibits(flags & (unicode_words | graphic_words | alpha_words)) > 1)
+            if (ibits(flags & (Segment::unicode | Segment::graphic | Segment::alpha)) > 1)
                 throw std::invalid_argument("Inconsistent word breaking flags");
             return {{i, j, flags}, {j, j, flags}};
         }
@@ -142,8 +139,7 @@ namespace RS {
 
         // Sentence boundaries
 
-        template <typename C> using SentenceIterator
-            = BasicSegmentIterator<C, Sentence_Break, sentence_break, UnicornDetail::find_sentence_break>;
+        template <typename C> using SentenceIterator = BasicSegmentIterator<C, Sentence_Break, sentence_break, UnicornDetail::find_sentence_break>;
 
         template <typename C> Irange<SentenceIterator<C>>
         sentence_range(const UtfIterator<C>& i, const UtfIterator<C>& j) {
@@ -164,9 +160,9 @@ namespace RS {
 
         namespace UnicornDetail {
 
-            // This takes a pair of UTF iterators marking the current position and
-            // the end of the subject string, and returns a pair delimiting the
-            // end-of-block marker.
+            // This takes a pair of UTF iterators marking the current position
+            // and the end of the subject string, and returns a pair
+            // delimiting the end-of-block marker.
 
             template <typename C> using FindBlockFunction = Irange<UtfIterator<C>> (*)(const UtfIterator<C>&, const UtfIterator<C>&);
 
@@ -265,7 +261,7 @@ namespace RS {
                 return *this;
             auto endblock = find(next, ends);
             seg.first = next;
-            seg.second = mode & strip_breaks ? endblock.first : endblock.second;
+            seg.second = mode & Segment::strip ? endblock.first : endblock.second;
             next = endblock.second;
             return *this;
         }
@@ -277,7 +273,7 @@ namespace RS {
         template <typename C>
         Irange<BlockSegmentIterator<C>> line_range(const UtfIterator<C>& i, const UtfIterator<C>& j, uint32_t flags = 0) {
             using namespace UnicornDetail;
-            if (ibits(flags & (keep_breaks | strip_breaks)) > 1)
+            if (ibits(flags & (Segment::keep | Segment::strip)) > 1)
                 throw std::invalid_argument("Inconsistent line breaking flags");
             return {{i, j, flags, find_end_of_line}, {j, j, flags, find_end_of_line}};
         }
@@ -299,13 +295,13 @@ namespace RS {
         template <typename C>
         Irange<BlockSegmentIterator<C>> paragraph_range(const UtfIterator<C>& i, const UtfIterator<C>& j, uint32_t flags = 0) {
             using namespace UnicornDetail;
-            if (ibits(flags & (keep_breaks | strip_breaks)) > 1
-                    || ibits(flags & (multiline_paras | line_paras | unicode_paras)) > 1)
+            if (ibits(flags & (Segment::keep | Segment::strip)) > 1
+                    || ibits(flags & (Segment::multiline | Segment::line | Segment::unicode)) > 1)
                 throw std::invalid_argument("Inconsistent paragraph breaking flags");
             FindBlockFunction<C> f;
-            if (flags & unicode_paras)
+            if (flags & Segment::unicode)
                 f = find_unicode_para;
-            else if (flags & line_paras)
+            else if (flags & Segment::line)
                 f = find_basic_para;
             else
                 f = find_multiline_para;

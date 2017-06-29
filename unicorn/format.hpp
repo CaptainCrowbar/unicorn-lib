@@ -53,7 +53,7 @@ namespace RS {
 
             // Reserved global flags
 
-            constexpr uint64_t fx_length_flags = character_units | grapheme_units | narrow_context | wide_context;
+            constexpr uint64_t fx_length_flags = Length::characters | Length::graphemes | Length::narrow | Length::wide;
             constexpr uint64_t fx_toplevel_flags = fx_length_flags | fx_left | fx_centre | fx_right | fx_lower | fx_title | fx_upper;
             constexpr uint64_t fx_global_flags = fx_length_flags | fx_toplevel_flags;
 

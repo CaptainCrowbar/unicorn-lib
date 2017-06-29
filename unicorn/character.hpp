@@ -47,8 +47,7 @@ namespace RS {
 
         inline U8string char_as_hex(char32_t c) { return "U+" + ascii_uppercase(hex(c, 4)); }
         constexpr bool char_is_digit(char32_t c) noexcept { return c >= U'0' && c <= U'9'; }
-        constexpr bool char_is_xdigit(char32_t c) noexcept
-            { return (c >= U'0' && c <= U'9') || (c >= U'A' && c <= U'F') || (c >= U'a' && c <= U'f'); }
+        constexpr bool char_is_xdigit(char32_t c) noexcept { return (c >= U'0' && c <= U'9') || (c >= U'A' && c <= U'F') || (c >= U'a' && c <= U'f'); }
         constexpr bool char_is_ascii(char32_t c) noexcept { return c <= last_ascii_char; }
         constexpr bool char_is_latin1(char32_t c) noexcept { return c <= last_latin1_char; }
         constexpr bool char_is_surrogate(char32_t c) noexcept { return c >= first_surrogate_char && c <= last_surrogate_char; }
@@ -57,21 +56,19 @@ namespace RS {
         constexpr bool char_is_unicode(char32_t c) noexcept { return c <= last_unicode_char && ! char_is_surrogate(c); }
         constexpr bool char_is_high_surrogate(char32_t c) noexcept { return c >= first_high_surrogate_char && c <= last_high_surrogate_char; }
         constexpr bool char_is_low_surrogate(char32_t c) noexcept { return c >= first_low_surrogate_char && c <= last_low_surrogate_char; }
-        constexpr bool char_is_noncharacter(char32_t c) noexcept
-            { return (c >= first_noncharacter && c <= last_noncharacter) || (c & 0xfffe) == 0xfffe; }
-        constexpr bool char_is_private_use(char32_t c) noexcept
-            { return (c >= first_private_use_char && c <= last_private_use_char)
+        constexpr bool char_is_noncharacter(char32_t c) noexcept { return (c >= first_noncharacter && c <= last_noncharacter) || (c & 0xfffe) == 0xfffe; }
+        constexpr bool char_is_private_use(char32_t c) noexcept {
+            return (c >= first_private_use_char && c <= last_private_use_char)
                 || (c >= first_private_use_a_char && c <= last_private_use_a_char)
-                || (c >= first_private_use_b_char && c <= last_private_use_b_char); }
+                || (c >= first_private_use_b_char && c <= last_private_use_b_char);
+        }
         template <typename C> constexpr uint32_t char_to_uint(C c) noexcept { return std::make_unsigned_t<C>(c); }
 
         // General category
 
         namespace unicornDetail {
 
-            constexpr uint16_t encode_gc(char c1, char c2) noexcept {
-                return uint16_t((uint16_t(uint8_t(c1)) << 8) + uint8_t(c2));
-            }
+            constexpr uint16_t encode_gc(char c1, char c2) noexcept { return uint16_t((uint16_t(uint8_t(c1)) << 8) + uint8_t(c2)); }
 
         }
 
@@ -141,8 +138,10 @@ namespace RS {
         inline bool char_is_assigned(char32_t c) noexcept { return char_general_category(c) != GC::Cn; }
         inline bool char_is_unassigned(char32_t c) noexcept { return char_general_category(c) == GC::Cn; }
         bool char_is_white_space(char32_t c) noexcept;
-        inline bool char_is_line_break(char32_t c) noexcept { return c == U'\n' || c == U'\v' || c == U'\f' || c == U'\r'
-            || c == 0x85 || c == line_separator_char || c == paragraph_separator_char; }
+        inline bool char_is_line_break(char32_t c) noexcept {
+            return c == U'\n' || c == U'\v' || c == U'\f' || c == U'\r'
+                || c == 0x85 || c == line_separator_char || c == paragraph_separator_char;
+        }
         inline bool char_is_inline_space(char32_t c) noexcept { return char_is_white_space(c) && ! char_is_line_break(c); }
         bool char_is_id_start(char32_t c) noexcept;
         bool char_is_id_nonstart(char32_t c) noexcept;
@@ -192,12 +191,16 @@ namespace RS {
 
         // Character names
 
-        constexpr uint32_t cn_control  = 1u << 0;
-        constexpr uint32_t cn_label    = 1u << 1;
-        constexpr uint32_t cn_lower    = 1u << 2;
-        constexpr uint32_t cn_prefix   = 1u << 3;
-        constexpr uint32_t cn_update   = 1u << 4;
-        constexpr uint32_t cn_all      = cn_control | cn_label | cn_lower | cn_prefix | cn_update;
+        namespace Cname {
+
+            constexpr uint32_t control  = 1u << 0;
+            constexpr uint32_t label    = 1u << 1;
+            constexpr uint32_t lower    = 1u << 2;
+            constexpr uint32_t prefix   = 1u << 3;
+            constexpr uint32_t update   = 1u << 4;
+            constexpr uint32_t all      = control | label | lower | prefix | update;
+
+        }
 
         U8string char_name(char32_t c, uint32_t flags = 0);
 

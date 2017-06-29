@@ -18,12 +18,20 @@ encodings, as well as external UTF encodings with a specific byte order.</p>
 <ul>
 <li><a href="#unicorn-library-non-unicode-encodings">Unicorn Library: Non-Unicode Encodings</a><ul>
 <li><a href="#contents">Contents</a></li>
+<li><a href="#constants">Constants</a></li>
 <li><a href="#exceptions">Exceptions</a></li>
 <li><a href="#conversion-functions">Conversion functions</a></li>
 <li><a href="#utility-functions">Utility functions</a></li>
 </ul>
 </li>
 </ul>
+</div>
+<h2 id="constants">Constants</h2>
+<div class="defns">
+<ul>
+<li><code>constexpr uint32_t Mbcs::</code><strong><code>strict</code></strong></li>
+</ul>
+<p>Constant used to control how encoding names are interpreted (see below).</p>
 </div>
 <h2 id="exceptions">Exceptions</h2>
 <div class="defns">
@@ -75,9 +83,9 @@ replaced with a system- defined replacement character (not necessarily
 <code>U+FFFD</code>); if <code>UtfError::throws</code> is selected, invalid data will cause an
 <code>EncodingError</code> exception to be thrown, if this is detectable (see below).</p>
 <p>Ignoring invalid encoding is not allowed here; if any MBCS function that takes
-a <code>flags</code> argument is passed the <code>UtfError::ignore</code> flags, it will throw
+a flags argument is passed the <code>UtfError::ignore</code> flags, it will throw
 <code>std::invalid_argument</code>.</p>
-<p>If the constant <code>mb_strict</code> is included in the <code>flags</code>, no attempt will be
+<p>If the constant <code>Mbcs::strict</code> is included in the flags, no attempt will be
 made to translate the encoding name or number supplied into an equivalent
 acceptable to the underlying API; the value supplied will simply be passed
 unchanged (apart from conversion between string and integer where necessary).

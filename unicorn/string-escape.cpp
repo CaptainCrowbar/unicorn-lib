@@ -89,10 +89,10 @@ namespace RS {
             }
 
             void escape_helper(const U8string& src, U8string& dst, uint32_t flags, char32_t quote = 0xffffffff) {
-                const bool ascii = flags & (esc_ascii | esc_pcre);
-                const bool nostdc = flags & esc_nostdc;
-                const bool pcre = flags & esc_pcre;
-                const bool punct = flags & esc_punct;
+                const bool ascii = flags & (Escape::ascii | Escape::pcre);
+                const bool nostdc = flags & Escape::nostdc;
+                const bool pcre = flags & Escape::pcre;
+                const bool punct = flags & Escape::punct;
                 for (char32_t c: utf_range(src)) {
                     if (! nostdc && (c == 0 || (c >= U'\a' && c <= U'\r'))) {
                         append_escape_stdc(c, dst);

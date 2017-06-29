@@ -108,9 +108,9 @@ namespace RS {
                 static constexpr C c_dollar = C('$');
                 static constexpr C c_percent = C('%');
                 S delims;
-                if (flags & posix_env)
+                if (flags & Environment::posix)
                     delims += c_dollar;
-                if (flags & windows_env)
+                if (flags & Environment::windows)
                     delims += c_percent;
                 if (delims.empty() || src.empty())
                     return src;
@@ -134,72 +134,6 @@ namespace RS {
             }
 
         }
-
-        #ifdef _XOPEN_SOURCE
-
-            std::string expand_env(const std::string& src, uint32_t flags) {
-                return do_expand_env(src, flags, nullptr);
-            }
-
-            std::string get_env(const std::string& name) {
-                check_env(name);
-                MutexLock lock(env_mutex);
-                return cstr(getenv(name.data()));
-            }
-
-            bool has_env(const std::string& name) {
-                check_env(name);
-                MutexLock lock(env_mutex);
-                return getenv(name.data()) != nullptr;
-            }
-
-            void set_env(const std::string& name, const std::string& value) {
-                check_env(name, value);
-                MutexLock lock(env_mutex);
-                if (setenv(name.data(), value.data(), 1) == -1)
-                    throw std::system_error(errno, std::generic_category(), "setenv()");
-            }
-
-            void unset_env(const std::string& name) {
-                check_env(name);
-                MutexLock lock(env_mutex);
-                if (unsetenv(name.data()) == -1)
-                    throw std::system_error(errno, std::generic_category(), "unsetenv()");
-            }
-
-        #else
-
-            std::wstring expand_env(const std::wstring& src, uint32_t flags) {
-                return do_expand_env(src, flags, nullptr);
-            }
-
-            std::wstring get_env(const std::wstring& name) {
-                check_env(name);
-                MutexLock lock(env_mutex);
-                return cstr(_wgetenv(name.data()));
-            }
-
-            bool has_env(const std::wstring& name) {
-                check_env(name);
-                MutexLock lock(env_mutex);
-                return _wgetenv(name.data()) != nullptr;
-            }
-
-            void set_env(const std::wstring& name, const std::wstring& value) {
-                check_env(name, value);
-                MutexLock lock(env_mutex);
-                auto key_value = name + L'=' + value;
-                if (_wputenv(key_value.data()) == -1)
-                    throw std::system_error(errno, std::generic_category(), "_wputenv()");
-            }
-
-            void unset_env(const std::wstring& name) {
-                check_env(name);
-                MutexLock lock(env_mutex);
-                set_env(name, {});
-            }
-
-        #endif
 
         // Class Environment
 
@@ -323,6 +257,74 @@ namespace RS {
             for (size_t i = 0; i < offsets.size(); ++i)
                 index[i] = &block[0] + offsets[i];
         }
+
+        // Functions
+
+        #ifdef _XOPEN_SOURCE
+
+            std::string expand_env(const std::string& src, uint32_t flags) {
+                return do_expand_env(src, flags, nullptr);
+            }
+
+            std::string get_env(const std::string& name) {
+                check_env(name);
+                MutexLock lock(env_mutex);
+                return cstr(getenv(name.data()));
+            }
+
+            bool has_env(const std::string& name) {
+                check_env(name);
+                MutexLock lock(env_mutex);
+                return getenv(name.data()) != nullptr;
+            }
+
+            void set_env(const std::string& name, const std::string& value) {
+                check_env(name, value);
+                MutexLock lock(env_mutex);
+                if (setenv(name.data(), value.data(), 1) == -1)
+                    throw std::system_error(errno, std::generic_category(), "setenv()");
+            }
+
+            void unset_env(const std::string& name) {
+                check_env(name);
+                MutexLock lock(env_mutex);
+                if (unsetenv(name.data()) == -1)
+                    throw std::system_error(errno, std::generic_category(), "unsetenv()");
+            }
+
+        #else
+
+            std::wstring expand_env(const std::wstring& src, uint32_t flags) {
+                return do_expand_env(src, flags, nullptr);
+            }
+
+            std::wstring get_env(const std::wstring& name) {
+                check_env(name);
+                MutexLock lock(env_mutex);
+                return cstr(_wgetenv(name.data()));
+            }
+
+            bool has_env(const std::wstring& name) {
+                check_env(name);
+                MutexLock lock(env_mutex);
+                return _wgetenv(name.data()) != nullptr;
+            }
+
+            void set_env(const std::wstring& name, const std::wstring& value) {
+                check_env(name, value);
+                MutexLock lock(env_mutex);
+                auto key_value = name + L'=' + value;
+                if (_wputenv(key_value.data()) == -1)
+                    throw std::system_error(errno, std::generic_category(), "_wputenv()");
+            }
+
+            void unset_env(const std::wstring& name) {
+                check_env(name);
+                MutexLock lock(env_mutex);
+                set_env(name, {});
+            }
+
+        #endif
 
     }
 

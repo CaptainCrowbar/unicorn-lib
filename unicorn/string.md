@@ -70,12 +70,12 @@ Most functions that need to calculate the size of a string, in this module and
 others, accept one of the following flags to indicate which definition of
 "size" the caller wants:
 
-Flag                   | Description
-----                   | -----------
-**`character_units`**  | Count the number of Unicode characters in the string (this is normally the default)
-**`grapheme_units`**   | Count the number of grapheme clusters (user-perceived characters) in the string
-**`narrow_context`**   | Calculate the East Asian width (ambiguous characters default to narrow)
-**`wide_context`**     | Calculate the East Asian width (ambiguous characters default to wide)
+Flag                        | Description
+----                        | -----------
+`Length::`**`characters`**  | Count the number of Unicode characters in the string (this is normally the default)
+`Length::`**`graphemes`**   | Count the number of grapheme clusters (user-perceived characters) in the string
+`Length::`**`narrow`**      | Calculate the East Asian width (ambiguous characters default to narrow)
+`Length::`**`wide`**        | Calculate the East Asian width (ambiguous characters default to wide)
 
 The various methods of measurement are implemented in the `str_length()`
 function, described below; anything else that needs a string size will
@@ -89,7 +89,7 @@ Asian width.
 
 The two options for East Asian width determine how ambiguous width characters
 are handled, defaulting to narrow (one unit) or wide (two units). The
-`grapheme_units` flag can be combined with either of the East Asian width
+`Length::graphemes` flag can be combined with either of the East Asian width
 options, giving a size based on the width of the base character of each
 grapheme cluster.
 
@@ -542,28 +542,28 @@ of a paragraph (the width includes the indentation). If `margin2=npos`,
 if either margin is greater than or equal to the width.
 
 Any line breaking (within paragraphs) already present in the input text is
-discarded, except for the special behaviour described for `wrap_preserve`
+discarded, except for the special behaviour described for `Wrap::preserve`
 below.
 
-Flag                 | Description
-----                 | -----------
-**`wrap_crlf`**      | Use CR+LF for line breaks (default is LF)
-**`wrap_enforce`**   | Enforce right margin strictly
-**`wrap_preserve`**  | Preserve layout on already indented lines
+Flag                    | Description
+----                    | -----------
+`Wrap::`**`crlf`**      | Use CR+LF for line breaks (default is LF)
+`Wrap::`**`enforce`**   | Enforce right margin strictly
+`Wrap::`**`preserve`**  | Preserve layout on already indented lines
 
 The `flags` argument determines the details of the word wrapping behaviour. In
 addition to the flags listed above, the standard flags for determining string
 length are respected.
 
-By default, a single `LF` is used to break lines; setting `wrap_crlf` causes
+By default, a single `LF` is used to break lines; setting `Wrap::crlf` causes
 `CR+LF` to be used instead.
 
 If a single word is too long to fit on one line, the default behaviour is to
-allow it to violate the right margin. If the `wrap_enforce` flag is set, this
+allow it to violate the right margin. If the `Wrap::enforce` flag is set, this
 will cause the function to throw `std::length_error` instead.
 
-If the `wrap_preserve` flag is set, any paragraphs that start with an indented
-line are left in their original format.
+If the `Wrap::preserve` flag is set, any paragraphs that start with an
+indented line are left in their original format.
 
 ## Case mapping functions ##
 
@@ -587,12 +587,12 @@ localisation.
 
 ## Escaping and quoting functions ##
 
-Flag          | Description
-----          | -----------
-`esc_ascii`   | Escape all non-ASCII characters
-`esc_nostdc`  | Do not use standard C symbols such as `\n`
-`esc_pcre`    | Use `\x{...}` instead of `\u` and `\U` (implies `esc_ascii`)
-`esc_punct`   | Escape all ASCII punctuation
+Flag                    | Description
+----                    | -----------
+`Escape::`**`ascii`**   | Escape all non-ASCII characters
+`Escape::`**`nostdc`**  | Do not use standard C symbols such as `\n`
+`Escape::`**`pcre`**    | Use `\x{...}` instead of `\u` and `\U` (implies `ascii`)
+`Escape::`**`punct`**   | Escape all ASCII punctuation
 
 Flags recognised by `str_escape()` and related functions.
 

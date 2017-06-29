@@ -233,24 +233,24 @@ namespace {
 
         #ifdef _XOPEN_SOURCE
 
-            TRY(p = split_path("/hello.txt"s));                            TEST_EQUAL(p.first, "/");            TEST_EQUAL(p.second, "hello.txt");
-            TRY(p = split_path("/hello.txt"s, fs_fullname));               TEST_EQUAL(p.first, "/");            TEST_EQUAL(p.second, "hello.txt");
-            TRY(p = split_file("/hello.txt"s));                            TEST_EQUAL(p.first, "hello");        TEST_EQUAL(p.second, ".txt");
-            TRY(p = split_path("abc/def/hello.txt"s));                     TEST_EQUAL(p.first, "abc/def");      TEST_EQUAL(p.second, "hello.txt");
-            TRY(p = split_path("abc/def/hello.txt"s, fs_fullname));        TEST_EQUAL(p.first, "abc/def/");     TEST_EQUAL(p.second, "hello.txt");
-            TRY(p = split_file("abc/def/hello.txt"s));                     TEST_EQUAL(p.first, "hello");        TEST_EQUAL(p.second, ".txt");
-            TRY(p = split_path("abc/def/hello"s));                         TEST_EQUAL(p.first, "abc/def");      TEST_EQUAL(p.second, "hello");
-            TRY(p = split_path("abc/def/hello"s, fs_fullname));            TEST_EQUAL(p.first, "abc/def/");     TEST_EQUAL(p.second, "hello");
-            TRY(p = split_file("abc/def/hello"s));                         TEST_EQUAL(p.first, "hello");        TEST_EQUAL(p.second, "");
-            TRY(p = split_path("abc/def/hello.world.txt"s));               TEST_EQUAL(p.first, "abc/def");      TEST_EQUAL(p.second, "hello.world.txt");
-            TRY(p = split_path("abc/def/hello.world.txt"s, fs_fullname));  TEST_EQUAL(p.first, "abc/def/");     TEST_EQUAL(p.second, "hello.world.txt");
-            TRY(p = split_file("abc/def/hello.world.txt"s));               TEST_EQUAL(p.first, "hello.world");  TEST_EQUAL(p.second, ".txt");
-            TRY(p = split_path("abc/def/.hello"s));                        TEST_EQUAL(p.first, "abc/def");      TEST_EQUAL(p.second, ".hello");
-            TRY(p = split_path("abc/def/.hello"s, fs_fullname));           TEST_EQUAL(p.first, "abc/def/");     TEST_EQUAL(p.second, ".hello");
-            TRY(p = split_file("abc/def/.hello"s));                        TEST_EQUAL(p.first, ".hello");       TEST_EQUAL(p.second, "");
-            TRY(p = split_path("abc/def/.hello.txt"s));                    TEST_EQUAL(p.first, "abc/def");      TEST_EQUAL(p.second, ".hello.txt");
-            TRY(p = split_path("abc/def/.hello.txt"s, fs_fullname));       TEST_EQUAL(p.first, "abc/def/");     TEST_EQUAL(p.second, ".hello.txt");
-            TRY(p = split_file("abc/def/.hello.txt"s));                    TEST_EQUAL(p.first, ".hello");       TEST_EQUAL(p.second, ".txt");
+            TRY(p = split_path("/hello.txt"s));                               TEST_EQUAL(p.first, "/");            TEST_EQUAL(p.second, "hello.txt");
+            TRY(p = split_path("/hello.txt"s, File::fullname));               TEST_EQUAL(p.first, "/");            TEST_EQUAL(p.second, "hello.txt");
+            TRY(p = split_file("/hello.txt"s));                               TEST_EQUAL(p.first, "hello");        TEST_EQUAL(p.second, ".txt");
+            TRY(p = split_path("abc/def/hello.txt"s));                        TEST_EQUAL(p.first, "abc/def");      TEST_EQUAL(p.second, "hello.txt");
+            TRY(p = split_path("abc/def/hello.txt"s, File::fullname));        TEST_EQUAL(p.first, "abc/def/");     TEST_EQUAL(p.second, "hello.txt");
+            TRY(p = split_file("abc/def/hello.txt"s));                        TEST_EQUAL(p.first, "hello");        TEST_EQUAL(p.second, ".txt");
+            TRY(p = split_path("abc/def/hello"s));                            TEST_EQUAL(p.first, "abc/def");      TEST_EQUAL(p.second, "hello");
+            TRY(p = split_path("abc/def/hello"s, File::fullname));            TEST_EQUAL(p.first, "abc/def/");     TEST_EQUAL(p.second, "hello");
+            TRY(p = split_file("abc/def/hello"s));                            TEST_EQUAL(p.first, "hello");        TEST_EQUAL(p.second, "");
+            TRY(p = split_path("abc/def/hello.world.txt"s));                  TEST_EQUAL(p.first, "abc/def");      TEST_EQUAL(p.second, "hello.world.txt");
+            TRY(p = split_path("abc/def/hello.world.txt"s, File::fullname));  TEST_EQUAL(p.first, "abc/def/");     TEST_EQUAL(p.second, "hello.world.txt");
+            TRY(p = split_file("abc/def/hello.world.txt"s));                  TEST_EQUAL(p.first, "hello.world");  TEST_EQUAL(p.second, ".txt");
+            TRY(p = split_path("abc/def/.hello"s));                           TEST_EQUAL(p.first, "abc/def");      TEST_EQUAL(p.second, ".hello");
+            TRY(p = split_path("abc/def/.hello"s, File::fullname));           TEST_EQUAL(p.first, "abc/def/");     TEST_EQUAL(p.second, ".hello");
+            TRY(p = split_file("abc/def/.hello"s));                           TEST_EQUAL(p.first, ".hello");       TEST_EQUAL(p.second, "");
+            TRY(p = split_path("abc/def/.hello.txt"s));                       TEST_EQUAL(p.first, "abc/def");      TEST_EQUAL(p.second, ".hello.txt");
+            TRY(p = split_path("abc/def/.hello.txt"s, File::fullname));       TEST_EQUAL(p.first, "abc/def/");     TEST_EQUAL(p.second, ".hello.txt");
+            TRY(p = split_file("abc/def/.hello.txt"s));                       TEST_EQUAL(p.first, ".hello");       TEST_EQUAL(p.second, ".txt");
 
             TEST_EQUAL(file_path(""), "");
             TEST_EQUAL(file_path("hello.txt"), "hello.txt");
@@ -277,27 +277,27 @@ namespace {
 
         #else
 
-            TRY(p = split_path("C:\\hello.txt"s));                           TEST_EQUAL(p.first, "C:\\");         TEST_EQUAL(p.second, "hello.txt");
-            TRY(p = split_path("C:\\hello.txt"s, fs_fullname));              TEST_EQUAL(p.first, "C:\\");         TEST_EQUAL(p.second, "hello.txt");
-            TRY(p = split_file("C:\\hello.txt"s));                           TEST_EQUAL(p.first, "hello");        TEST_EQUAL(p.second, ".txt");
-            TRY(p = split_path("C:hello.txt"s));                             TEST_EQUAL(p.first, "C:");           TEST_EQUAL(p.second, "hello.txt");
-            TRY(p = split_path("C:hello.txt"s, fs_fullname));                TEST_EQUAL(p.first, "C:");           TEST_EQUAL(p.second, "hello.txt");
-            TRY(p = split_file("C:hello.txt"s));                             TEST_EQUAL(p.first, "hello");        TEST_EQUAL(p.second, ".txt");
-            TRY(p = split_path("abc\\def\\hello.txt"s));                     TEST_EQUAL(p.first, "abc\\def");     TEST_EQUAL(p.second, "hello.txt");
-            TRY(p = split_path("abc\\def\\hello.txt"s, fs_fullname));        TEST_EQUAL(p.first, "abc\\def\\");   TEST_EQUAL(p.second, "hello.txt");
-            TRY(p = split_file("abc\\def\\hello.txt"s));                     TEST_EQUAL(p.first, "hello");        TEST_EQUAL(p.second, ".txt");
-            TRY(p = split_path("abc\\def\\hello"s));                         TEST_EQUAL(p.first, "abc\\def");     TEST_EQUAL(p.second, "hello");
-            TRY(p = split_path("abc\\def\\hello"s, fs_fullname));            TEST_EQUAL(p.first, "abc\\def\\");   TEST_EQUAL(p.second, "hello");
-            TRY(p = split_file("abc\\def\\hello"s));                         TEST_EQUAL(p.first, "hello");        TEST_EQUAL(p.second, "");
-            TRY(p = split_path("abc\\def\\hello.world.txt"s));               TEST_EQUAL(p.first, "abc\\def");     TEST_EQUAL(p.second, "hello.world.txt");
-            TRY(p = split_path("abc\\def\\hello.world.txt"s, fs_fullname));  TEST_EQUAL(p.first, "abc\\def\\");   TEST_EQUAL(p.second, "hello.world.txt");
-            TRY(p = split_file("abc\\def\\hello.world.txt"s));               TEST_EQUAL(p.first, "hello.world");  TEST_EQUAL(p.second, ".txt");
-            TRY(p = split_path("abc\\def\\.hello"s));                        TEST_EQUAL(p.first, "abc\\def");     TEST_EQUAL(p.second, ".hello");
-            TRY(p = split_path("abc\\def\\.hello"s, fs_fullname));           TEST_EQUAL(p.first, "abc\\def\\");   TEST_EQUAL(p.second, ".hello");
-            TRY(p = split_file("abc\\def\\.hello"s));                        TEST_EQUAL(p.first, ".hello");       TEST_EQUAL(p.second, "");
-            TRY(p = split_path("abc\\def\\.hello.txt"s));                    TEST_EQUAL(p.first, "abc\\def");     TEST_EQUAL(p.second, ".hello.txt");
-            TRY(p = split_path("abc\\def\\.hello.txt"s, fs_fullname));       TEST_EQUAL(p.first, "abc\\def\\");   TEST_EQUAL(p.second, ".hello.txt");
-            TRY(p = split_file("abc\\def\\.hello.txt"s));                    TEST_EQUAL(p.first, ".hello");       TEST_EQUAL(p.second, ".txt");
+            TRY(p = split_path("C:\\hello.txt"s));                              TEST_EQUAL(p.first, "C:\\");         TEST_EQUAL(p.second, "hello.txt");
+            TRY(p = split_path("C:\\hello.txt"s, File::fullname));              TEST_EQUAL(p.first, "C:\\");         TEST_EQUAL(p.second, "hello.txt");
+            TRY(p = split_file("C:\\hello.txt"s));                              TEST_EQUAL(p.first, "hello");        TEST_EQUAL(p.second, ".txt");
+            TRY(p = split_path("C:hello.txt"s));                                TEST_EQUAL(p.first, "C:");           TEST_EQUAL(p.second, "hello.txt");
+            TRY(p = split_path("C:hello.txt"s, File::fullname));                TEST_EQUAL(p.first, "C:");           TEST_EQUAL(p.second, "hello.txt");
+            TRY(p = split_file("C:hello.txt"s));                                TEST_EQUAL(p.first, "hello");        TEST_EQUAL(p.second, ".txt");
+            TRY(p = split_path("abc\\def\\hello.txt"s));                        TEST_EQUAL(p.first, "abc\\def");     TEST_EQUAL(p.second, "hello.txt");
+            TRY(p = split_path("abc\\def\\hello.txt"s, File::fullname));        TEST_EQUAL(p.first, "abc\\def\\");   TEST_EQUAL(p.second, "hello.txt");
+            TRY(p = split_file("abc\\def\\hello.txt"s));                        TEST_EQUAL(p.first, "hello");        TEST_EQUAL(p.second, ".txt");
+            TRY(p = split_path("abc\\def\\hello"s));                            TEST_EQUAL(p.first, "abc\\def");     TEST_EQUAL(p.second, "hello");
+            TRY(p = split_path("abc\\def\\hello"s, File::fullname));            TEST_EQUAL(p.first, "abc\\def\\");   TEST_EQUAL(p.second, "hello");
+            TRY(p = split_file("abc\\def\\hello"s));                            TEST_EQUAL(p.first, "hello");        TEST_EQUAL(p.second, "");
+            TRY(p = split_path("abc\\def\\hello.world.txt"s));                  TEST_EQUAL(p.first, "abc\\def");     TEST_EQUAL(p.second, "hello.world.txt");
+            TRY(p = split_path("abc\\def\\hello.world.txt"s, File::fullname));  TEST_EQUAL(p.first, "abc\\def\\");   TEST_EQUAL(p.second, "hello.world.txt");
+            TRY(p = split_file("abc\\def\\hello.world.txt"s));                  TEST_EQUAL(p.first, "hello.world");  TEST_EQUAL(p.second, ".txt");
+            TRY(p = split_path("abc\\def\\.hello"s));                           TEST_EQUAL(p.first, "abc\\def");     TEST_EQUAL(p.second, ".hello");
+            TRY(p = split_path("abc\\def\\.hello"s, File::fullname));           TEST_EQUAL(p.first, "abc\\def\\");   TEST_EQUAL(p.second, ".hello");
+            TRY(p = split_file("abc\\def\\.hello"s));                           TEST_EQUAL(p.first, ".hello");       TEST_EQUAL(p.second, "");
+            TRY(p = split_path("abc\\def\\.hello.txt"s));                       TEST_EQUAL(p.first, "abc\\def");     TEST_EQUAL(p.second, ".hello.txt");
+            TRY(p = split_path("abc\\def\\.hello.txt"s, File::fullname));       TEST_EQUAL(p.first, "abc\\def\\");   TEST_EQUAL(p.second, ".hello.txt");
+            TRY(p = split_file("abc\\def\\.hello.txt"s));                       TEST_EQUAL(p.first, ".hello");       TEST_EQUAL(p.second, ".txt");
 
             TEST_EQUAL(file_path(""), "");
             TEST_EQUAL(file_path("hello.txt"), "hello.txt");
@@ -418,11 +418,11 @@ namespace {
         #endif
 
         TEST_EQUAL(file_size("Makefile"s), 51);
-        TEST_EQUAL(file_size("Makefile"s, fs_recurse), 51);
+        TEST_EQUAL(file_size("Makefile"s, File::recurse), 51);
         TEST_EQUAL(file_size("no such file"s), 0);
-        TEST_EQUAL(file_size("no such file"s, fs_recurse), 0);
-        TEST_COMPARE(file_size("."s, fs_recurse), >, 65000000);
-        TEST_COMPARE(file_size("unicorn"s, fs_recurse), >, 4000000);
+        TEST_EQUAL(file_size("no such file"s, File::recurse), 0);
+        TEST_COMPARE(file_size("."s, File::recurse), >, 65000000);
+        TEST_COMPARE(file_size("unicorn"s, File::recurse), >, 4000000);
 
         f1 = "__test_file_1";
         f2 = "__test_file_2";
@@ -468,7 +468,7 @@ namespace {
         TEST(file_exists(d2));
         TEST(file_is_directory(d2));
         TEST_THROW(copy_file(d2, d3), std::system_error);
-        TRY(copy_file(d2, d3, fs_recurse));
+        TRY(copy_file(d2, d3, File::recurse));
         TEST(file_exists(d2));
         TEST(file_is_directory(d2));
         TEST(file_exists(d3));
@@ -488,17 +488,17 @@ namespace {
         TEST(! file_exists(d1));
         TEST(! file_exists(d2));
         TEST_THROW(make_directory(d2), std::system_error);
-        TRY(make_directory(d2, fs_recurse));
+        TRY(make_directory(d2, File::recurse));
         TEST(file_exists(d1));
         TEST(file_exists(d2));
         TEST(file_is_directory(d1));
         TEST(file_is_directory(d2));
-        TRY(make_directory(d2, fs_recurse));
+        TRY(make_directory(d2, File::recurse));
         TEST_THROW(remove_file(d1), std::system_error);
-        TRY(remove_file(d1, fs_recurse));
+        TRY(remove_file(d1, File::recurse));
         TEST(! file_exists(d1));
         TEST(! file_exists(d2));
-        TRY(remove_file(d1, fs_recurse));
+        TRY(remove_file(d1, File::recurse));
 
         d1 = "__test_dir_1";
         auto dir = directory(d1);
@@ -524,12 +524,12 @@ namespace {
         TEST_EQUAL(vec.size(), 2);
         std::sort(vec.begin(), vec.end());
         TEST_EQUAL(Test::format_range(vec), "[hello,world]"s);
-        TRY(dir = directory(d1, fs_dotdot));
+        TRY(dir = directory(d1, File::dotdot));
         TRY(std::copy(dir.begin(), dir.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 4);
         std::sort(vec.begin(), vec.end());
         TEST_EQUAL(Test::format_range(vec), "[.,..,hello,world]"s);
-        TRY(dir = directory(d1, fs_fullname));
+        TRY(dir = directory(d1, File::fullname));
         TRY(std::copy(dir.begin(), dir.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 2);
         std::sort(vec.begin(), vec.end());
@@ -538,7 +538,7 @@ namespace {
         TEST(file_exists(d1));
         TEST(file_exists(f1));
         TEST(file_exists(f2));
-        TRY(remove_file(d1, fs_recurse));
+        TRY(remove_file(d1, File::recurse));
         TEST(! file_exists(d1));
         TEST(! file_exists(f1));
         TEST(! file_exists(f2));

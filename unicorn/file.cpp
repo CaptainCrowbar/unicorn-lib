@@ -235,7 +235,7 @@ namespace RS {
             } else if (cut == 0) {
                 return {nfile.substr(0, 1), nfile.substr(1, npos)};
             } else {
-                size_t cut1 = flags & fs_fullname ? cut + 1 : cut;
+                size_t cut1 = flags & File::fullname ? cut + 1 : cut;
                 return {nfile.substr(0, cut1), nfile.substr(cut + 1, npos)};
             }
         }
@@ -274,7 +274,7 @@ namespace RS {
                 } else if (cut == 0) {
                     return {nfile.substr(0, 1), nfile.substr(1, npos)};
                 } else {
-                    size_t cut1 = flags & fs_fullname ? cut + 1 : cut;
+                    size_t cut1 = flags & File::fullname ? cut + 1 : cut;
                     return {nfile.substr(0, cut1), nfile.substr(cut + 1, npos)};
                 }
             }
@@ -381,7 +381,7 @@ namespace RS {
             FileId file_id(const U8string& file, uint32_t flags) {
                 struct stat s;
                 int rc;
-                if (flags & fs_follow)
+                if (flags & File::follow)
                     rc = stat(file.data(), &s);
                 else
                     rc = lstat(file.data(), &s);
@@ -412,9 +412,9 @@ namespace RS {
                 if (lstat(file.data(), &s) != 0)
                     return 0;
                 auto bytes = uint64_t(s.st_size);
-                if ((flags & fs_recurse) && S_ISDIR(s.st_mode))
-                    for (auto& child: directory(file, fs_fullname | fs_hidden))
-                        bytes += file_size(child, fs_recurse);
+                if ((flags & File::recurse) && S_ISDIR(s.st_mode))
+                    for (auto& child: directory(file, File::fullname | File::hidden))
+                        bytes += file_size(child, File::recurse);
                 return bytes;
             }
 
@@ -534,7 +534,7 @@ namespace RS {
             FileId file_id(const std::wstring& file, uint32_t flags) {
                 std::wstring f;
                 try {
-                    if (flags & fs_follow)
+                    if (flags & File::follow)
                         f = resolve_symlink(file);
                     else
                         f = file;
@@ -585,9 +585,9 @@ namespace RS {
                 if (! GetFileAttributesEx(file.data(), GetFileExInfoStandard, &info))
                     return 0;
                 auto bytes = (uint64_t(info.nFileSizeHigh) << 32) + uint64_t(info.nFileSizeLow);
-                if (flags & fs_recurse)
-                    for (auto& child: directory(file, fs_fullname | fs_hidden))
-                        bytes += file_size(child, fs_recurse);
+                if (flags & File::recurse)
+                    for (auto& child: directory(file, File::fullname | File::hidden))
+                        bytes += file_size(child, File::recurse);
                 return bytes;
             }
 
@@ -664,7 +664,7 @@ namespace RS {
                 }
 
                 void make_symlink_helper(const std::wstring& file, const std::wstring& link, uint32_t flags) {
-                    if (! (flags & fs_overwrite) && file_exists(link))
+                    if (! (flags & File::overwrite) && file_exists(link))
                         throw std::system_error(ERROR_ALREADY_EXISTS, windows_category(), quote_file(link));
                     DWORD wflags = file_is_directory(file) ? SYMBOLIC_LINK_FLAG_DIRECTORY : 0;
                     if (CreateSymbolicLinkW(link.data(), file.data(), wflags))
@@ -721,7 +721,7 @@ namespace RS {
         }
 
         void copy_file(const NativeString& src, const NativeString& dst, uint32_t flags) {
-            bool overwrite = (flags & fs_overwrite) != 0, recurse = (flags & fs_recurse) != 0;
+            bool overwrite = (flags & File::overwrite) != 0, recurse = (flags & File::recurse) != 0;
             if (! file_exists(src))
                 throw std::system_error(std::make_error_code(std::errc::no_such_file_or_directory), quote_file(src));
             if (src == dst || file_id(src) == file_id(dst))
@@ -731,15 +731,15 @@ namespace RS {
             if (file_exists(dst)) {
                 if (! overwrite || (file_is_directory(dst) && ! recurse))
                     throw std::system_error(std::make_error_code(std::errc::file_exists), quote_file(dst));
-                remove_file(dst, fs_recurse);
+                remove_file(dst, File::recurse);
             }
             if (file_is_symlink(src)) {
                 auto target = resolve_symlink(src);
                 make_symlink(target, dst, 0);
             } else if (file_is_directory(src)) {
                 make_directory(dst, 0);
-                for (auto& child: directory(src, fs_hidden))
-                    copy_file(file_path(src, child), file_path(dst, child), fs_recurse);
+                for (auto& child: directory(src, File::hidden))
+                    copy_file(file_path(src, child), file_path(dst, child), File::recurse);
             } else {
                 Cstdio in(src, false), out(dst, true);
                 std::vector<char> buf(16384);
@@ -767,11 +767,11 @@ namespace RS {
             if (error == fail_exists) {
                 if (file_is_directory(dir))
                     return;
-                if (flags & fs_overwrite) {
+                if (flags & File::overwrite) {
                     remove_file(dir, 0);
                     error = 0;
                 }
-            } else if (error == fail_not_found && (flags & fs_recurse) && ! dir.empty()) {
+            } else if (error == fail_not_found && (flags & File::recurse) && ! dir.empty()) {
                 auto parent = split_path(dir).first;
                 if (parent != dir) {
                     make_directory(parent, flags);
@@ -792,13 +792,13 @@ namespace RS {
                 }
                 catch (const std::system_error&) {}
             }
-            if ((flags & fs_overwrite) && file_exists(link))
+            if ((flags & File::overwrite) && file_exists(link))
                 remove_file(link, flags);
             make_symlink_helper(file, link, flags);
         }
 
         void move_file(const NativeString& src, const NativeString& dst, uint32_t flags) {
-            bool overwrite = (flags & fs_overwrite) != 0, recurse = (flags & fs_recurse) != 0;
+            bool overwrite = (flags & File::overwrite) != 0, recurse = (flags & File::recurse) != 0;
             if (! file_exists(src))
                 throw std::system_error(std::make_error_code(std::errc::no_such_file_or_directory), quote_file(src));
             if (src == dst)
@@ -806,18 +806,18 @@ namespace RS {
             if (file_exists(dst) && file_id(src) != file_id(dst)) {
                 if (! overwrite || (file_is_directory(dst) && ! recurse))
                     throw std::system_error(std::make_error_code(std::errc::file_exists), quote_file(dst));
-                remove_file(dst, fs_recurse);
+                remove_file(dst, File::recurse);
             }
             if (! move_file_helper(src, dst)) {
-                copy_file(src, dst, fs_recurse);
-                remove_file(src, fs_recurse);
+                copy_file(src, dst, File::recurse);
+                remove_file(src, File::recurse);
             }
         }
 
         void remove_file(const NativeString& file, uint32_t flags) {
-            if ((flags & fs_recurse) && file_is_directory(file) && ! file_is_symlink(file))
-                for (auto child: directory(file, fs_fullname | fs_hidden))
-                    remove_file(child, fs_recurse);
+            if ((flags & File::recurse) && file_is_directory(file) && ! file_is_symlink(file))
+                for (auto child: directory(file, File::fullname | File::hidden))
+                    remove_file(child, File::recurse);
             remove_file_helper(file);
         }
 
@@ -896,12 +896,12 @@ namespace RS {
         #endif
 
         NativeDirectoryIterator::NativeDirectoryIterator(const NativeString& dir, uint32_t flags) {
-            if ((flags & fs_unicode) && ! valid_string(dir))
+            if ((flags & File::unicode) && ! valid_string(dir))
                 return;
             auto normdir = UnicornDetail::normalize_path(dir);
             do_init(normdir);
             fset = flags;
-            if ((fset & fs_fullname) || ! (fset & fs_hidden)) {
+            if ((fset & File::fullname) || ! (fset & File::hidden)) {
                 prefix = normdir;
                 if (! prefix.empty() && prefix.back() != native_file_delimiter)
                     prefix += native_file_delimiter;
@@ -917,14 +917,14 @@ namespace RS {
                 do_next();
                 if (! impl)
                     break;
-                if ((fset & fs_unicode) && ! valid_string(leaf))
+                if ((fset & File::unicode) && ! valid_string(leaf))
                     continue;
-                if (! (fset & fs_dotdot) && (leaf == link1 || leaf == link2))
+                if (! (fset & File::dotdot) && (leaf == link1 || leaf == link2))
                     continue;
                 current = prefix + leaf;
-                if (! (fset & fs_hidden) && file_is_hidden(current))
+                if (! (fset & File::hidden) && file_is_hidden(current))
                     continue;
-                if (! (fset & fs_fullname))
+                if (! (fset & File::fullname))
                     current = leaf;
                 break;
             }

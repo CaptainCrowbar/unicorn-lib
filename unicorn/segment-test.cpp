@@ -98,7 +98,7 @@ namespace {
         }
     }
 
-    #define WORD_SEGMENTATION_TEST(source, all, graphic, alpha) \
+    #define WORD_SEGMENTATION_TEST(source, all, graphics, alphas) \
         do { \
             auto s = cstr(source); \
             decltype(word_range(s)) segments; \
@@ -110,22 +110,22 @@ namespace {
                 str_append_char(result, ']'); \
             } \
             TEST_EQUAL(result, all); \
-            TRY(segments = word_range(s, graphic_words)); \
+            TRY(segments = word_range(s, Segment::graphic)); \
             result.clear(); \
             for (auto& subrange: segments) { \
                 str_append_char(result, '['); \
                 TRY(result += u_str(subrange)); \
                 str_append_char(result, ']'); \
             } \
-            TEST_EQUAL(result, graphic); \
-            TRY(segments = word_range(s, alpha_words)); \
+            TEST_EQUAL(result, graphics); \
+            TRY(segments = word_range(s, Segment::alpha)); \
             result.clear(); \
             for (auto& subrange: segments) { \
                 str_append_char(result, '['); \
                 TRY(result += u_str(subrange)); \
                 str_append_char(result, ']'); \
             } \
-            TEST_EQUAL(result, alpha); \
+            TEST_EQUAL(result, alphas); \
         } while (false)
 
     #define BLOCK_SEGMENTATION_TEST(func, mode, source, unstripped, stripped) \
@@ -140,7 +140,7 @@ namespace {
                 str_append_char(result, ']'); \
             } \
             TEST_EQUAL(result, unstripped); \
-            TRY(segments = func(s, mode | strip_breaks)); \
+            TRY(segments = func(s, mode | Segment::strip)); \
             result.clear(); \
             for (auto& subrange: segments) { \
                 str_append_char(result, '['); \
@@ -245,35 +245,35 @@ namespace {
 
         BLOCK_SEGMENTATION_TEST(paragraph_range, 0, "", "", "");
 
-        BLOCK_SEGMENTATION_TEST(paragraph_range, unicode_paras, u8"Hello\n\nworld\n\n", u8"[Hello\n\nworld\n\n]", u8"[Hello\n\nworld\n\n]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, unicode_paras, u8"Hello\r\rworld\r\r", u8"[Hello\r\rworld\r\r]", u8"[Hello\r\rworld\r\r]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, unicode_paras, u8"Hello\r\nworld\r\n", u8"[Hello\r\nworld\r\n]", u8"[Hello\r\nworld\r\n]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, unicode_paras, u8"Hello\n\rworld\n\r", u8"[Hello\n\rworld\n\r]", u8"[Hello\n\rworld\n\r]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, unicode_paras, u8"Hello\v\vworld\v\v", u8"[Hello\v\vworld\v\v]", u8"[Hello\v\vworld\v\v]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, unicode_paras, u8"Hello\f\fworld\f\f", u8"[Hello\f\fworld\f\f]", u8"[Hello\f\fworld\f\f]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, unicode_paras, u8"Hello\u0085\u0085world\u0085\u0085", u8"[Hello\u0085\u0085world\u0085\u0085]", u8"[Hello\u0085\u0085world\u0085\u0085]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, unicode_paras, u8"Hello\u2028\u2028world\u2028\u2028", u8"[Hello\u2028\u2028world\u2028\u2028]", u8"[Hello\u2028\u2028world\u2028\u2028]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, unicode_paras, u8"Hello\u2029\u2029world\u2029\u2029", u8"[Hello\u2029][\u2029][world\u2029][\u2029]", u8"[Hello][][world][]");
+        BLOCK_SEGMENTATION_TEST(paragraph_range, Segment::unicode, u8"Hello\n\nworld\n\n", u8"[Hello\n\nworld\n\n]", u8"[Hello\n\nworld\n\n]");
+        BLOCK_SEGMENTATION_TEST(paragraph_range, Segment::unicode, u8"Hello\r\rworld\r\r", u8"[Hello\r\rworld\r\r]", u8"[Hello\r\rworld\r\r]");
+        BLOCK_SEGMENTATION_TEST(paragraph_range, Segment::unicode, u8"Hello\r\nworld\r\n", u8"[Hello\r\nworld\r\n]", u8"[Hello\r\nworld\r\n]");
+        BLOCK_SEGMENTATION_TEST(paragraph_range, Segment::unicode, u8"Hello\n\rworld\n\r", u8"[Hello\n\rworld\n\r]", u8"[Hello\n\rworld\n\r]");
+        BLOCK_SEGMENTATION_TEST(paragraph_range, Segment::unicode, u8"Hello\v\vworld\v\v", u8"[Hello\v\vworld\v\v]", u8"[Hello\v\vworld\v\v]");
+        BLOCK_SEGMENTATION_TEST(paragraph_range, Segment::unicode, u8"Hello\f\fworld\f\f", u8"[Hello\f\fworld\f\f]", u8"[Hello\f\fworld\f\f]");
+        BLOCK_SEGMENTATION_TEST(paragraph_range, Segment::unicode, u8"Hello\u0085\u0085world\u0085\u0085", u8"[Hello\u0085\u0085world\u0085\u0085]", u8"[Hello\u0085\u0085world\u0085\u0085]");
+        BLOCK_SEGMENTATION_TEST(paragraph_range, Segment::unicode, u8"Hello\u2028\u2028world\u2028\u2028", u8"[Hello\u2028\u2028world\u2028\u2028]", u8"[Hello\u2028\u2028world\u2028\u2028]");
+        BLOCK_SEGMENTATION_TEST(paragraph_range, Segment::unicode, u8"Hello\u2029\u2029world\u2029\u2029", u8"[Hello\u2029][\u2029][world\u2029][\u2029]", u8"[Hello][][world][]");
 
-        BLOCK_SEGMENTATION_TEST(paragraph_range, line_paras, u8"Hello\n\nworld\n\n", u8"[Hello\n][\n][world\n][\n]", u8"[Hello][][world][]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, line_paras, u8"Hello\r\rworld\r\r", u8"[Hello\r][\r][world\r][\r]", u8"[Hello][][world][]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, line_paras, u8"Hello\r\nworld\r\n", u8"[Hello\r\n][world\r\n]", u8"[Hello][world]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, line_paras, u8"Hello\n\rworld\n\r", u8"[Hello\n][\r][world\n][\r]", u8"[Hello][][world][]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, line_paras, u8"Hello\v\vworld\v\v", u8"[Hello\v][\v][world\v][\v]", u8"[Hello][][world][]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, line_paras, u8"Hello\f\fworld\f\f", u8"[Hello\f\fworld\f\f]", u8"[Hello\f\fworld\f\f]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, line_paras, u8"Hello\u0085\u0085world\u0085\u0085", u8"[Hello\u0085][\u0085][world\u0085][\u0085]", u8"[Hello][][world][]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, line_paras, u8"Hello\u2028\u2028world\u2028\u2028", u8"[Hello\u2028\u2028world\u2028\u2028]", u8"[Hello\u2028\u2028world\u2028\u2028]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, line_paras, u8"Hello\u2029\u2029world\u2029\u2029", u8"[Hello\u2029][\u2029][world\u2029][\u2029]", u8"[Hello][][world][]");
+        BLOCK_SEGMENTATION_TEST(paragraph_range, Segment::line, u8"Hello\n\nworld\n\n", u8"[Hello\n][\n][world\n][\n]", u8"[Hello][][world][]");
+        BLOCK_SEGMENTATION_TEST(paragraph_range, Segment::line, u8"Hello\r\rworld\r\r", u8"[Hello\r][\r][world\r][\r]", u8"[Hello][][world][]");
+        BLOCK_SEGMENTATION_TEST(paragraph_range, Segment::line, u8"Hello\r\nworld\r\n", u8"[Hello\r\n][world\r\n]", u8"[Hello][world]");
+        BLOCK_SEGMENTATION_TEST(paragraph_range, Segment::line, u8"Hello\n\rworld\n\r", u8"[Hello\n][\r][world\n][\r]", u8"[Hello][][world][]");
+        BLOCK_SEGMENTATION_TEST(paragraph_range, Segment::line, u8"Hello\v\vworld\v\v", u8"[Hello\v][\v][world\v][\v]", u8"[Hello][][world][]");
+        BLOCK_SEGMENTATION_TEST(paragraph_range, Segment::line, u8"Hello\f\fworld\f\f", u8"[Hello\f\fworld\f\f]", u8"[Hello\f\fworld\f\f]");
+        BLOCK_SEGMENTATION_TEST(paragraph_range, Segment::line, u8"Hello\u0085\u0085world\u0085\u0085", u8"[Hello\u0085][\u0085][world\u0085][\u0085]", u8"[Hello][][world][]");
+        BLOCK_SEGMENTATION_TEST(paragraph_range, Segment::line, u8"Hello\u2028\u2028world\u2028\u2028", u8"[Hello\u2028\u2028world\u2028\u2028]", u8"[Hello\u2028\u2028world\u2028\u2028]");
+        BLOCK_SEGMENTATION_TEST(paragraph_range, Segment::line, u8"Hello\u2029\u2029world\u2029\u2029", u8"[Hello\u2029][\u2029][world\u2029][\u2029]", u8"[Hello][][world][]");
 
-        BLOCK_SEGMENTATION_TEST(paragraph_range, multiline_paras, u8"Hello\n\nworld\n\n", u8"[Hello\n\n][world\n\n]", u8"[Hello][world]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, multiline_paras, u8"Hello\r\rworld\r\r", u8"[Hello\r\r][world\r\r]", u8"[Hello][world]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, multiline_paras, u8"Hello\r\nworld\r\n", u8"[Hello\r\nworld\r\n]", u8"[Hello\r\nworld\r\n]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, multiline_paras, u8"Hello\n\rworld\n\r", u8"[Hello\n\r][world\n\r]", u8"[Hello][world]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, multiline_paras, u8"Hello\v\vworld\v\v", u8"[Hello\v\v][world\v\v]", u8"[Hello][world]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, multiline_paras, u8"Hello\f\fworld\f\f", u8"[Hello\f\fworld\f\f]", u8"[Hello\f\fworld\f\f]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, multiline_paras, u8"Hello\u0085\u0085world\u0085\u0085", u8"[Hello\u0085\u0085][world\u0085\u0085]", u8"[Hello][world]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, multiline_paras, u8"Hello\u2028\u2028world\u2028\u2028", u8"[Hello\u2028\u2028world\u2028\u2028]", u8"[Hello\u2028\u2028world\u2028\u2028]");
-        BLOCK_SEGMENTATION_TEST(paragraph_range, multiline_paras, u8"Hello\u2029\u2029world\u2029\u2029", u8"[Hello\u2029][\u2029][world\u2029][\u2029]", u8"[Hello][][world][]");
+        BLOCK_SEGMENTATION_TEST(paragraph_range, Segment::multiline, u8"Hello\n\nworld\n\n", u8"[Hello\n\n][world\n\n]", u8"[Hello][world]");
+        BLOCK_SEGMENTATION_TEST(paragraph_range, Segment::multiline, u8"Hello\r\rworld\r\r", u8"[Hello\r\r][world\r\r]", u8"[Hello][world]");
+        BLOCK_SEGMENTATION_TEST(paragraph_range, Segment::multiline, u8"Hello\r\nworld\r\n", u8"[Hello\r\nworld\r\n]", u8"[Hello\r\nworld\r\n]");
+        BLOCK_SEGMENTATION_TEST(paragraph_range, Segment::multiline, u8"Hello\n\rworld\n\r", u8"[Hello\n\r][world\n\r]", u8"[Hello][world]");
+        BLOCK_SEGMENTATION_TEST(paragraph_range, Segment::multiline, u8"Hello\v\vworld\v\v", u8"[Hello\v\v][world\v\v]", u8"[Hello][world]");
+        BLOCK_SEGMENTATION_TEST(paragraph_range, Segment::multiline, u8"Hello\f\fworld\f\f", u8"[Hello\f\fworld\f\f]", u8"[Hello\f\fworld\f\f]");
+        BLOCK_SEGMENTATION_TEST(paragraph_range, Segment::multiline, u8"Hello\u0085\u0085world\u0085\u0085", u8"[Hello\u0085\u0085][world\u0085\u0085]", u8"[Hello][world]");
+        BLOCK_SEGMENTATION_TEST(paragraph_range, Segment::multiline, u8"Hello\u2028\u2028world\u2028\u2028", u8"[Hello\u2028\u2028world\u2028\u2028]", u8"[Hello\u2028\u2028world\u2028\u2028]");
+        BLOCK_SEGMENTATION_TEST(paragraph_range, Segment::multiline, u8"Hello\u2029\u2029world\u2029\u2029", u8"[Hello\u2029][\u2029][world\u2029][\u2029]", u8"[Hello][][world][]");
 
     }
 

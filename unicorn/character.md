@@ -282,20 +282,20 @@ library).
 
 * `U8string` **`char_name`**`(char32_t c, uint32_t flags = 0)`
 
-Flag              | Description
-----              | -----------
-**`cn_control`**  | Use the common ASCII or ISO 8859 names for control characters
-**`cn_label`**    | Generate the standard code point label for characters that do not have an official name
-**`cn_lower`**    | Return the name in lower case (excluding the `U+XXXX` prefix if present)
-**`cn_prefix`**   | Prefix the name with the code point in `U+XXXX` format
-**`cn_update`**   | Where the official name was in error and a suggested correction has been published, use that instead
-**`cn_all`**      | Mask combining all of the above flags
+Flag                    | Description
+----                    | -----------
+`Cname::`**`all`**      | Mask combining all of these flags
+`Cname::`**`control`**  | Use the common ASCII or ISO 8859 names for control characters
+`Cname::`**`label`**    | Generate the standard code point label for characters that do not have an official name
+`Cname::`**`lower`**    | Return the name in lower case (excluding the `U+XXXX` prefix if present)
+`Cname::`**`prefix`**   | Prefix the name with the code point in `U+XXXX` format
+`Cname::`**`update`**   | Where the official name was in error and a suggested correction has been published, use that instead
 
 Returns the name of a character. By default, only the official Unicode name is
 returned; an empty string is returned if the character does not have an
 official name. The `flags` argument can contain a bitwise-OR combination of
-any of the options. If both `cn_control` and `cn_label` are present,
-`cn_control` takes precedence for characters that qualify for both.
+any of the options. If both `control` and `label` are present, `control` takes
+precedence for characters that qualify for both.
 
 ## Decomposition properties ##
 

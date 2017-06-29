@@ -19,6 +19,9 @@ Segmentation</a>.</p>
 pair of <a href="unicorn/utf.html">UTF iterators</a>, bracketing the text segment of
 interest. As usual, the <code>u_str()</code> function can be used to copy the actual
 substring if this is needed.</p>
+<p>All of the flags used to control these functions are placed together in the
+<code>Segment</code> sub-namespace, but only the flags specifically documented for each
+function will affect that function; any other flags will be ignored.</p>
 <h2 id="contents">Contents</h2>
 <div class="toc">
 <ul>
@@ -86,15 +89,15 @@ words containing at least one alphanumeric character.</p>
 </thead>
 <tbody>
 <tr>
-<td><strong><code>unicode_words</code></strong></td>
+<td><code>Segment::</code><strong><code>unicode</code></strong></td>
 <td>Report all UAX29 words (default)</td>
 </tr>
 <tr>
-<td><strong><code>graphic_words</code></strong></td>
+<td><code>Segment::</code><strong><code>graphic</code></strong></td>
 <td>Report only words containing a non-whitespace character</td>
 </tr>
 <tr>
-<td><strong><code>alpha_words</code></strong></td>
+<td><code>Segment::</code><strong><code>alpha</code></strong></td>
 <td>Report only words containing an alphanumeric character</td>
 </tr>
 </tbody>
@@ -143,7 +146,7 @@ UAX29).</p>
 character with the line break property. Multiple consecutive line break
 characters are treated as separate lines; except that <code>CR+LF</code> is treated as a
 single line break. By default, the segment identified by the dereferenced
-iterator includes the terminating line break; if the <code>strip_breaks</code> flag is
+iterator includes the terminating line break; if the <code>Segment::strip</code> flag is
 set, the line break is excluded from the segment.</p>
 <table>
 <thead>
@@ -154,11 +157,11 @@ set, the line break is excluded from the segment.</p>
 </thead>
 <tbody>
 <tr>
-<td><strong><code>keep_breaks</code></strong></td>
+<td><code>Segment::</code><strong><code>keep</code></strong></td>
 <td>Include line terminators in reported segments (default)</td>
 </tr>
 <tr>
-<td><strong><code>strip_breaks</code></strong></td>
+<td><code>Segment::</code><strong><code>strip</code></strong></td>
 <td>Do not include line terminators</td>
 </tr>
 </tbody>
@@ -185,10 +188,10 @@ set, the line break is excluded from the segment.</p>
 <p>A forward iterator over the paragraphs in a Unicode string. The flags passed
 to the constructor determine how paragraphs are identified. By default, any
 sequence of two or more line breaks ends a paragraph (as usual, <code>CR+LF</code> counts
-as a single line break); the <code>line_paras</code> flag causes every line break to be
-interpreted as a paragraph break, while <code>unicode_paras</code> restricts paragraph
-breaks to the Unicode paragraph separator character (<code>U+2029</code>). The
-<code>strip_breaks</code> flag works the same way as in <code>LineIterator</code>, skipping the
+as a single line break); the <code>Segment::line</code> flag causes every line break to
+be interpreted as a paragraph break, while <code>Segment::unicode</code> restricts
+paragraph breaks to the Unicode paragraph separator character (<code>U+2029</code>). The
+<code>Segment::strip</code> flag works the same way as in <code>LineIterator</code>, skipping the
 paragraph delimiters.</p>
 <table>
 <thead>
@@ -199,23 +202,23 @@ paragraph delimiters.</p>
 </thead>
 <tbody>
 <tr>
-<td><strong><code>multiline_paras</code></strong></td>
+<td><code>Segment::</code><strong><code>multiline</code></strong></td>
 <td>Divide into paragraphs using multiple line breaks (default)</td>
 </tr>
 <tr>
-<td><strong><code>line_paras</code></strong></td>
+<td><code>Segment::</code><strong><code>line</code></strong></td>
 <td>Divide into paragraphs using any line break</td>
 </tr>
 <tr>
-<td><strong><code>unicode_paras</code></strong></td>
+<td><code>Segment::</code><strong><code>unicode</code></strong></td>
 <td>Divide into paragraphs using only Paragraph Separator</td>
 </tr>
 <tr>
-<td><strong><code>keep_breaks</code></strong></td>
+<td><code>Segment::</code><strong><code>keep</code></strong></td>
 <td>Include paragraph terminators in reported segments (default)</td>
 </tr>
 <tr>
-<td><strong><code>strip_breaks</code></strong></td>
+<td><code>Segment::</code><strong><code>strip</code></strong></td>
 <td>Do not include paragraph terminators</td>
 </tr>
 </tbody>

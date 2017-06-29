@@ -36,17 +36,6 @@ The native environment variable APIs are usually not threadsafe; all of the
 functions in this module ensure thread safety internally by locking a common
 global mutex.
 
-## Constants ##
-
-`constexpr uint32_t` **`posix_env`**
-`constexpr uint32_t` **`windows_env`**
-`constexpr uint32_t` **`native_env`**
-
-Bitmask constants indicating how environment variable expansion is to be done
-in `expand_env()` and `Environment::expand()`. The `native_env` constant will
-be equal to either `posix_env` or `windows_env`, depending on the operating
-system.
-
 ## Functions ##
 
 All of these functions can throw `std::invalid_argument` if an environment
@@ -54,8 +43,8 @@ variable name passed in is empty or contains an equals sign, or
 `std::system_error` if anything goes wrong with the underlying system API
 call.
 
-* `NativeString` **`expand_env`**`(const NativeString& src, uint32_t flags = native_env)`
-* `U8string` **`expand_env`**`(const U8string& src, uint32_t flags = native_env)`
+* `NativeString` **`expand_env`**`(const NativeString& src, uint32_t flags = Environment::native)`
+* `U8string` **`expand_env`**`(const U8string& src, uint32_t flags = Environment::native)`
 
 Expand environment variable references in a string. The `flags` argument
 indicates whether to follow the Posix convention (`"$VAR"` or `"${VAR}"`) or
@@ -101,6 +90,14 @@ A read-only iterator over the name-value pairs stored in an `Environment`
 object. This is a forward iterator whose value type is
 `pair<NativeString,NativeString>`.
 
+* `constexpr uint32_t Environment::`**`posix`**
+* `constexpr uint32_t Environment::`**`windows`**
+* `constexpr uint32_t Environment::`**`native`**
+
+Bitmask constants indicating how environment variable expansion is to be done
+in `expand_env()` and `Environment::expand()`. The `native` constant will be
+equal to either `posix` or `windows`, depending on the operating system.
+
 * `Environment::`**`Environment`**`()`
 * `explicit Environment::`**`Environment`**`(bool from_process)`
 * `Environment::`**`Environment`**`(const Environment& env)`
@@ -115,8 +112,8 @@ constructed `Environment` object will be empty.
 
 * `NativeString Environment::`**`operator[]`**`(const NativeString& name)`
 * `U8string Environment::`**`operator[]`**`(const U8string& name)`
-* `NativeString Environment::`**`expand`**`(const NativeString& src, uint32_t flags = native_env)`
-* `U8string Environment::`**`expand`**`(const U8string& src, uint32_t flags = native_env)`
+* `NativeString Environment::`**`expand`**`(const NativeString& src, uint32_t flags = Environment::native)`
+* `U8string Environment::`**`expand`**`(const U8string& src, uint32_t flags = Environment::native)`
 * `NativeString Environment::`**`get`**`(const NativeString& name)`
 * `U8string Environment::`**`get`**`(const U8string& name)`
 * `bool Environment::`**`has`**`(const NativeString& name)`

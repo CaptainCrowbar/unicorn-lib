@@ -75,20 +75,24 @@ namespace RS {
 
         // String size functions
 
-        // Remember that any other set of flags that might be combined with these
-        // needs to skip the bits that are already spoken for. The string length
-        // flags are linked to upper case letters for use with unicorn/format, so
-        // they have bit positions in the 0-25 range.
+        // Remember that any other set of flags that might be combined with
+        // these needs to skip the bits that are already spoken for. The
+        // string length flags are linked to upper case letters for use with
+        // unicorn/format, so they have bit positions in the 0-25 range.
 
-        constexpr uint32_t character_units  = letter_to_mask('C');  // Measure string in characters (default)
-        constexpr uint32_t grapheme_units   = letter_to_mask('G');  // Measure string in grapheme clusters
-        constexpr uint32_t narrow_context   = letter_to_mask('N');  // East Asian width, defaulting to narrow
-        constexpr uint32_t wide_context     = letter_to_mask('W');  // East Asian width, defaulting to wide
+        namespace Length {
+
+            constexpr uint32_t characters  = letter_to_mask('C');  // Measure string in characters (default)
+            constexpr uint32_t graphemes   = letter_to_mask('G');  // Measure string in grapheme clusters
+            constexpr uint32_t narrow      = letter_to_mask('N');  // East Asian width, defaulting to narrow
+            constexpr uint32_t wide        = letter_to_mask('W');  // East Asian width, defaulting to wide
+
+        }
 
         namespace UnicornDetail {
 
-            constexpr auto east_asian_flags = narrow_context | wide_context;
-            constexpr auto all_length_flags = character_units | grapheme_units | east_asian_flags;
+            constexpr auto east_asian_flags = Length::narrow | Length::wide;
+            constexpr auto all_length_flags = Length::characters | Length::graphemes | east_asian_flags;
 
             inline bool char_is_advancing(char32_t c) {
                 return char_general_category(c) != GC::Mn;
@@ -100,11 +104,11 @@ namespace RS {
             }
 
             inline void check_length_flags(uint32_t& flags) {
-                if (ibits(flags & (character_units | grapheme_units)) > 1
-                        || ibits(flags & (character_units | east_asian_flags)) > 1)
+                if (ibits(flags & (Length::characters | Length::graphemes)) > 1
+                        || ibits(flags & (Length::characters | east_asian_flags)) > 1)
                     throw std::invalid_argument("Inconsistent string length flags");
                 if (ibits(flags & all_length_flags) == 0)
-                    flags |= character_units;
+                    flags |= Length::characters;
             }
 
             class EastAsianCount {
@@ -115,7 +119,7 @@ namespace RS {
                         ++count[unsigned(east_asian_width(c))];
                 }
                 size_t get() const noexcept {
-                    size_t default_width = fset & wide_context ? 2 : 1;
+                    size_t default_width = fset & Length::wide ? 2 : 1;
                     return count[neut] + count[half] + count[narr] + 2 * count[full] + 2 * count[wide]
                         + default_width * count[ambi];
                 }
@@ -135,7 +139,7 @@ namespace RS {
                 check_length_flags(flags);
                 if (pos == 0)
                     return {range.begin(), true};
-                if (flags & character_units) {
+                if (flags & Length::characters) {
                     auto i = range.begin();
                     size_t len = 0;
                     while (i != range.end() && len < pos) {
@@ -145,7 +149,7 @@ namespace RS {
                     return {i, len == pos};
                 } else if (flags & east_asian_flags) {
                     EastAsianCount eac(flags);
-                    if (flags & grapheme_units) {
+                    if (flags & Length::graphemes) {
                         auto graph = grapheme_range(range);
                         auto g = graph.begin();
                         while (g != graph.end() && eac.get() < pos) {
@@ -181,11 +185,11 @@ namespace RS {
         size_t str_length(const Irange<UtfIterator<C>>& range, uint32_t flags = 0) {
             using namespace UnicornDetail;
             check_length_flags(flags);
-            if (flags & character_units) {
+            if (flags & Length::characters) {
                 return range_count(range);
             } else if (flags & east_asian_flags) {
                 EastAsianCount eac(flags);
-                if (flags & grapheme_units) {
+                if (flags & Length::graphemes) {
                     for (auto g: grapheme_range(range))
                         eac.add(*g.begin());
                 } else {
@@ -299,9 +303,13 @@ namespace RS {
         // String manipulation functions
         // Defined in string-manip.cpp
 
-        constexpr uint32_t wrap_crlf      = 1ul << 26;  // Use CR+LF for line breaks (default LF)
-        constexpr uint32_t wrap_enforce   = 1ul << 27;  // Enforce right margin strictly
-        constexpr uint32_t wrap_preserve  = 1ul << 28;  // Preserve layout on already indented lines
+        namespace Wrap {
+
+            constexpr uint32_t crlf      = 1ul << 26;  // Use CR+LF for line breaks (default LF)
+            constexpr uint32_t enforce   = 1ul << 27;  // Enforce right margin strictly
+            constexpr uint32_t preserve  = 1ul << 28;  // Preserve layout on already indented lines
+
+        }
 
         namespace UnicornDetail {
 
@@ -381,20 +389,16 @@ namespace RS {
         U8string str_insert(const Utf8Iterator& dst, const Utf8Iterator& src_begin, const Utf8Iterator& src_end);
         U8string str_insert(const Utf8Iterator& dst, const Irange<Utf8Iterator>& src);
         U8string str_insert(const Utf8Iterator& dst, const U8string& src);
-        U8string str_insert(const Utf8Iterator& dst_begin, const Utf8Iterator& dst_end,
-                const Utf8Iterator& src_begin, const Utf8Iterator& src_end);
+        U8string str_insert(const Utf8Iterator& dst_begin, const Utf8Iterator& dst_end, const Utf8Iterator& src_begin, const Utf8Iterator& src_end);
         U8string str_insert(const Irange<Utf8Iterator>& dst, const Irange<Utf8Iterator>& src);
         U8string str_insert(const Utf8Iterator& dst_begin, const Utf8Iterator& dst_end, const U8string& src);
         U8string str_insert(const Irange<Utf8Iterator>& dst, const U8string& src);
-        Irange<Utf8Iterator> str_insert_in(U8string& dst, const Utf8Iterator& where,
-                const Utf8Iterator& src_begin, const Utf8Iterator& src_end);
+        Irange<Utf8Iterator> str_insert_in(U8string& dst, const Utf8Iterator& where, const Utf8Iterator& src_begin, const Utf8Iterator& src_end);
         Irange<Utf8Iterator> str_insert_in(U8string& dst, const Utf8Iterator& where, const Irange<Utf8Iterator>& src);
         Irange<Utf8Iterator> str_insert_in(U8string& dst, const Utf8Iterator& where, const U8string& src);
-        Irange<Utf8Iterator> str_insert_in(U8string& dst, const Utf8Iterator& range_begin, const Utf8Iterator& range_end,
-                const Utf8Iterator& src_begin, const Utf8Iterator& src_end);
+        Irange<Utf8Iterator> str_insert_in(U8string& dst, const Utf8Iterator& range_begin, const Utf8Iterator& range_end, const Utf8Iterator& src_begin, const Utf8Iterator& src_end);
         Irange<Utf8Iterator> str_insert_in(U8string& dst, const Irange<Utf8Iterator>& range, const Irange<Utf8Iterator>& src);
-        Irange<Utf8Iterator> str_insert_in(U8string& dst, const Utf8Iterator& range_begin, const Utf8Iterator& range_end,
-                const U8string& src);
+        Irange<Utf8Iterator> str_insert_in(U8string& dst, const Utf8Iterator& range_begin, const Utf8Iterator& range_end, const U8string& src);
         Irange<Utf8Iterator> str_insert_in(U8string& dst, const Irange<Utf8Iterator>& range, const U8string& src);
         U8string str_pad_left(const U8string& str, size_t length, char32_t c = U' ', uint32_t flags = 0);
         void str_pad_left_in(U8string& str, size_t length, char32_t c = U' ', uint32_t flags = 0);
@@ -735,10 +739,14 @@ namespace RS {
         // Escaping and quoting functions
         // Defined in string-escape.cpp
 
-        constexpr uint32_t esc_ascii   = 1ul << 0;  // Escape all non-ASCII characters
-        constexpr uint32_t esc_nostdc  = 1ul << 1;  // Do not use standard C symbols such as `\n`
-        constexpr uint32_t esc_pcre    = 1ul << 2;  // Use `\x{...}` instead of `\u` and `\U` (implies `esc_nonascii`)
-        constexpr uint32_t esc_punct   = 1ul << 3;  // Escape ASCII punctuation
+        namespace Escape {
+
+            constexpr uint32_t ascii   = 1ul << 0;  // Escape all non-ASCII characters
+            constexpr uint32_t nostdc  = 1ul << 1;  // Do not use standard C symbols such as `\n`
+            constexpr uint32_t pcre    = 1ul << 2;  // Use `\x{...}` instead of `\u` and `\U` (implies `nonascii`)
+            constexpr uint32_t punct   = 1ul << 3;  // Escape ASCII punctuation
+
+        }
 
         U8string str_encode_uri(const U8string& str);
         U8string str_encode_uri_component(const U8string& str);

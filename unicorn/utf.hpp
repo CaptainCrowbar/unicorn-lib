@@ -15,10 +15,12 @@ namespace RS {
         // needs to skip the bits that are already spoken for.
 
         namespace UtfError {
+
             constexpr uint32_t ignore = 1;   // Assume valid UTF input
             constexpr uint32_t replace = 2;  // Replace invalid UTF with U+FFFD
             constexpr uint32_t throws = 4;   // Throw EncodingError on invalid UTF
             constexpr uint32_t mask = ignore | replace | throws;
+
         }
 
         namespace UnicornDetail {

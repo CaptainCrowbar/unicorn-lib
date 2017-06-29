@@ -14,6 +14,10 @@ pair of [UTF iterators](unicorn/utf.html), bracketing the text segment of
 interest. As usual, the `u_str()` function can be used to copy the actual
 substring if this is needed.
 
+All of the flags used to control these functions are placed together in the
+`Segment` sub-namespace, but only the flags specifically documented for each
+function will affect that function; any other flags will be ignored.
+
 ## Contents ##
 
 [TOC]
@@ -57,11 +61,11 @@ include whitespace between words, punctuation marks, etc. Flags can be used to
 select only words containing at least one non-whitespace character, or only
 words containing at least one alphanumeric character.
 
-Flag                 | Description
-----                 | -----------
-**`unicode_words`**  | Report all UAX29 words (default)
-**`graphic_words`**  | Report only words containing a non-whitespace character
-**`alpha_words`**    | Report only words containing an alphanumeric character
+Flag                      | Description
+----                      | -----------
+`Segment::`**`unicode`**  | Report all UAX29 words (default)
+`Segment::`**`graphic`**  | Report only words containing a non-whitespace character
+`Segment::`**`alpha`**    | Report only words containing an alphanumeric character
 
 ## Sentence boundaries ##
 
@@ -100,13 +104,13 @@ A forward iterator over the lines in a Unicode string. Lines are ended by any
 character with the line break property. Multiple consecutive line break
 characters are treated as separate lines; except that `CR+LF` is treated as a
 single line break. By default, the segment identified by the dereferenced
-iterator includes the terminating line break; if the `strip_breaks` flag is
+iterator includes the terminating line break; if the `Segment::strip` flag is
 set, the line break is excluded from the segment.
 
-Flag                | Description
-----                | -----------
-**`keep_breaks`**   | Include line terminators in reported segments (default)
-**`strip_breaks`**  | Do not include line terminators
+Flag                    | Description
+----                    | -----------
+`Segment::`**`keep`**   | Include line terminators in reported segments (default)
+`Segment::`**`strip`**  | Do not include line terminators
 
 ## Paragraph boundaries ##
 
@@ -126,16 +130,16 @@ Flag                | Description
 A forward iterator over the paragraphs in a Unicode string. The flags passed
 to the constructor determine how paragraphs are identified. By default, any
 sequence of two or more line breaks ends a paragraph (as usual, `CR+LF` counts
-as a single line break); the `line_paras` flag causes every line break to be
-interpreted as a paragraph break, while `unicode_paras` restricts paragraph
-breaks to the Unicode paragraph separator character (`U+2029`). The
-`strip_breaks` flag works the same way as in `LineIterator`, skipping the
+as a single line break); the `Segment::line` flag causes every line break to
+be interpreted as a paragraph break, while `Segment::unicode` restricts
+paragraph breaks to the Unicode paragraph separator character (`U+2029`). The
+`Segment::strip` flag works the same way as in `LineIterator`, skipping the
 paragraph delimiters.
 
-Flag                   | Description
-----                   | -----------
-**`multiline_paras`**  | Divide into paragraphs using multiple line breaks (default)
-**`line_paras`**       | Divide into paragraphs using any line break
-**`unicode_paras`**    | Divide into paragraphs using only Paragraph Separator
-**`keep_breaks`**      | Include paragraph terminators in reported segments (default)
-**`strip_breaks`**     | Do not include paragraph terminators
+Flag                        | Description
+----                        | -----------
+`Segment::`**`multiline`**  | Divide into paragraphs using multiple line breaks (default)
+`Segment::`**`line`**       | Divide into paragraphs using any line break
+`Segment::`**`unicode`**    | Divide into paragraphs using only Paragraph Separator
+`Segment::`**`keep`**       | Include paragraph terminators in reported segments (default)
+`Segment::`**`strip`**      | Do not include paragraph terminators

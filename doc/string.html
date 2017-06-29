@@ -88,19 +88,19 @@ others, accept one of the following flags to indicate which definition of
 </thead>
 <tbody>
 <tr>
-<td><strong><code>character_units</code></strong></td>
+<td><code>Length::</code><strong><code>characters</code></strong></td>
 <td>Count the number of Unicode characters in the string (this is normally the default)</td>
 </tr>
 <tr>
-<td><strong><code>grapheme_units</code></strong></td>
+<td><code>Length::</code><strong><code>graphemes</code></strong></td>
 <td>Count the number of grapheme clusters (user-perceived characters) in the string</td>
 </tr>
 <tr>
-<td><strong><code>narrow_context</code></strong></td>
+<td><code>Length::</code><strong><code>narrow</code></strong></td>
 <td>Calculate the East Asian width (ambiguous characters default to narrow)</td>
 </tr>
 <tr>
-<td><strong><code>wide_context</code></strong></td>
+<td><code>Length::</code><strong><code>wide</code></strong></td>
 <td>Calculate the East Asian width (ambiguous characters default to wide)</td>
 </tr>
 </tbody>
@@ -115,7 +115,7 @@ characters; see <a href="segment.html"><code>unicorn/segment</code></a>), or cal
 Asian width.</p>
 <p>The two options for East Asian width determine how ambiguous width characters
 are handled, defaulting to narrow (one unit) or wide (two units). The
-<code>grapheme_units</code> flag can be combined with either of the East Asian width
+<code>Length::graphemes</code> flag can be combined with either of the East Asian width
 options, giving a size based on the width of the base character of each
 grapheme cluster.</p>
 <div class="defns">
@@ -636,7 +636,7 @@ of a paragraph (the width includes the indentation). If <code>margin2=npos</code
 <code>margin1</code> is used for all lines. The function will throw <code>std::length_error</code>
 if either margin is greater than or equal to the width.</p>
 <p>Any line breaking (within paragraphs) already present in the input text is
-discarded, except for the special behaviour described for <code>wrap_preserve</code>
+discarded, except for the special behaviour described for <code>Wrap::preserve</code>
 below.</p>
 <table>
 <thead>
@@ -647,15 +647,15 @@ below.</p>
 </thead>
 <tbody>
 <tr>
-<td><strong><code>wrap_crlf</code></strong></td>
+<td><code>Wrap::</code><strong><code>crlf</code></strong></td>
 <td>Use CR+LF for line breaks (default is LF)</td>
 </tr>
 <tr>
-<td><strong><code>wrap_enforce</code></strong></td>
+<td><code>Wrap::</code><strong><code>enforce</code></strong></td>
 <td>Enforce right margin strictly</td>
 </tr>
 <tr>
-<td><strong><code>wrap_preserve</code></strong></td>
+<td><code>Wrap::</code><strong><code>preserve</code></strong></td>
 <td>Preserve layout on already indented lines</td>
 </tr>
 </tbody>
@@ -663,13 +663,13 @@ below.</p>
 <p>The <code>flags</code> argument determines the details of the word wrapping behaviour. In
 addition to the flags listed above, the standard flags for determining string
 length are respected.</p>
-<p>By default, a single <code>LF</code> is used to break lines; setting <code>wrap_crlf</code> causes
+<p>By default, a single <code>LF</code> is used to break lines; setting <code>Wrap::crlf</code> causes
 <code>CR+LF</code> to be used instead.</p>
 <p>If a single word is too long to fit on one line, the default behaviour is to
-allow it to violate the right margin. If the <code>wrap_enforce</code> flag is set, this
+allow it to violate the right margin. If the <code>Wrap::enforce</code> flag is set, this
 will cause the function to throw <code>std::length_error</code> instead.</p>
-<p>If the <code>wrap_preserve</code> flag is set, any paragraphs that start with an indented
-line are left in their original format.</p>
+<p>If the <code>Wrap::preserve</code> flag is set, any paragraphs that start with an
+indented line are left in their original format.</p>
 </div>
 <h2 id="case-mapping-functions">Case mapping functions</h2>
 <div class="defns">
@@ -702,19 +702,19 @@ localisation.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>esc_ascii</code></td>
+<td><code>Escape::</code><strong><code>ascii</code></strong></td>
 <td>Escape all non-ASCII characters</td>
 </tr>
 <tr>
-<td><code>esc_nostdc</code></td>
+<td><code>Escape::</code><strong><code>nostdc</code></strong></td>
 <td>Do not use standard C symbols such as <code>\n</code></td>
 </tr>
 <tr>
-<td><code>esc_pcre</code></td>
-<td>Use <code>\x{...}</code> instead of <code>\u</code> and <code>\U</code> (implies <code>esc_ascii</code>)</td>
+<td><code>Escape::</code><strong><code>pcre</code></strong></td>
+<td>Use <code>\x{...}</code> instead of <code>\u</code> and <code>\U</code> (implies <code>ascii</code>)</td>
 </tr>
 <tr>
-<td><code>esc_punct</code></td>
+<td><code>Escape::</code><strong><code>punct</code></strong></td>
 <td>Escape all ASCII punctuation</td>
 </tr>
 </tbody>

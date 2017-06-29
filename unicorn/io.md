@@ -19,13 +19,6 @@ handled.
 
 [TOC]
 
-## Supporting types ##
-
-* `namespace` **`IO`**
-
-This exists only to provide a namespace for the I/O behaviour constants. Its
-member constants are described below.
-
 ## File input iterator ##
 
 * `class` **`FileReader`**

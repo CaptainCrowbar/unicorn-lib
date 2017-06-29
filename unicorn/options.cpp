@@ -99,7 +99,7 @@ namespace RS {
         }
 
         U8string Options::help() const {
-            static constexpr auto length_flags = grapheme_units | narrow_context;
+            static constexpr auto length_flags = Length::graphemes | Length::narrow;
             U8string text = "\n" + app_info + "\n";
             string_list prefixes, suffixes;
             std::vector<size_t> lengths;

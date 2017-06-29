@@ -29,7 +29,11 @@ namespace RS {
 
         // Constants
 
-        constexpr uint32_t mb_strict = 8; // Do not look up encoding
+        namespace Mbcs {
+
+            constexpr uint32_t strict = 8; // Do not look up encoding
+
+        }
 
         // Exceptions
 
