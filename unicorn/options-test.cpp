@@ -14,11 +14,11 @@ namespace {
 
     void check_basic_options(Options& opt1) {
 
-        opt1 = Options("App version 1.0");
         Options opt2;
         U8string cmdline;
 
-        TEST_EQUAL(opt1.version(), "App version 1.0");
+        TRY(opt1 = Options("App version 1.0"));
+        TEST_EQUAL(opt1.version_text(), "App version 1.0");
         TRY(opt1.add("alpha", "Alpha option", Options::abbrev="a", Options::defvalue="ABC"));
         TRY(opt1.add("--number", "Number option", Options::abbrev="n", Options::defvalue="123"));
 
@@ -369,7 +369,7 @@ namespace {
         cmdline = "app abc 123";
         TEST_THROW_MATCH(opt2.parse(cmdline), Options::command_error, ": \"--alpha\", \"123\"$");
 
-        opt1 = Options("App");
+        TRY(opt1 = Options("App"));
         TRY(opt1.add("int", "Integer", Options::integer, Options::abbrev="i"));
         TRY(opt1.add("uint", "Unsigned integer", Options::uinteger, Options::abbrev="u"));
         TRY(opt1.add("float", "Float", Options::floating, Options::abbrev="f"));
@@ -420,7 +420,7 @@ namespace {
         cmdline = "app --float 0x1234";
         TEST_THROW_MATCH(opt2.parse(cmdline), Options::command_error, ": \"--float\", \"0x1234\"$");
 
-        opt1 = Options("App");
+        TRY(opt1 = Options("App"));
         TRY(opt1.add("int", "Integer", Options::anon, Options::required, Options::abbrev="i"));
         TRY(opt1.add("str", "String", Options::required, Options::abbrev="s"));
 
@@ -469,7 +469,7 @@ namespace {
 
         {
             TRY(opt2 = opt1);
-            TRY(opt2.add_help(true));
+            TRY(opt2.add(Options::autohelp));
             cmdline = "app";
             std::ostringstream out;
             TEST(opt2.parse(cmdline, out));
@@ -502,7 +502,7 @@ namespace {
         TRY(opt = Options("App 1.0"));
         TRY(opt.add("Intro"));
         TRY(opt.add("alpha", "Alpha option"));
-        TRY(help = opt.help());
+        TRY(help = opt.help_text());
         TEST_EQUAL(help,
             "\n"
             "App 1.0\n"
@@ -517,7 +517,7 @@ namespace {
         TRY(opt = Options("App 1.0"));
         TRY(opt.add("alpha", "Alpha option"));
         TRY(opt.add("Outro"));
-        TRY(help = opt.help());
+        TRY(help = opt.help_text());
         TEST_EQUAL(help,
             "\n"
             "App 1.0\n"
@@ -538,7 +538,7 @@ namespace {
         TRY(opt.add("Some more info."));
         TRY(opt.add("delta", "Delta option"));
         TRY(opt.add("Outro"));
-        TRY(help = opt.help());
+        TRY(help = opt.help_text());
         TEST_EQUAL(help,
             "\n"
             "App 1.0\n"

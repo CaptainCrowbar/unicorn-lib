@@ -65,7 +65,7 @@ report an invalid combination of properties.
 Constructor to initialize an option specification. The `info` argument is a
 string containing the basic description of the program, typically something
 like `"Foobar 1.0 - Goes ding when there's stuff"`; this will be returned if
-the user calls it with the `"--version"` option.
+the user runs it with the `"--version"` option.
 
 * `Options::`**`Options`**`() noexcept`
 * `Options::`**`Options`**`(const Options& opt)`
@@ -75,20 +75,22 @@ the user calls it with the `"--version"` option.
 * `Options& Options::`**`operator=`**`(Options&& opt) noexcept`
 
 Other life cycle functions. (The default constructor should not normally be
-used and is supplied only to enable move initialization in certain scenarios.)
+used and is supplied only to enable move initialization in some cases.)
 
-* `Options& Options::`**`add`**`(const U8string& info)`
 * `template <typename... Args> Options& Options::`**`add`**`(const U8string& name, const U8string& info, const Args&... args)`
+* `Options& Options::`**`add`**`(const U8string& info)`
+* `Options& Options::`**`add`**`([private type] flag)`
 
-The first version adds some information text to the option list. This will be
-reproduced verbatim at the corresponding point among the options listed in the
-help text.
+A program will normally construct an `Options` object and use multiple calls
+to `add()` to construct the option specification before calling `parse()` to
+parse the actual command line arguments. Once the arguments have been parsed,
+the `get()`, `get_list()`, and `has()` functions can be used to query them.
 
-The second version adds an option to the parser. The `name` argument is the
-full name of the option, which users can invoke with `"--name"` (the option
-name can be supplied to the `add()` function with or without the leading
-hyphens). The `info` string is the description of the option that will be
-presented to the user when help is requested. These may be followed by
+The first version of `add()` adds an option to the parser. The `name` argument
+is the full name of the option, which users can invoke with `"--name"` (the
+option name can be supplied to the `add()` function with or without the
+leading hyphens). The `info` string is the description of the option that will
+be presented to the user when help is requested. These may be followed by
 optional keyword arguments, as listed below.
 
 Keyword                    | Type        | Description
@@ -121,32 +123,33 @@ Adding an option will throw `spec_error` if any of the following is true:
 * More than one of `floating`, `integer`, `pattern`, and `uinteger` is supplied.
 * The `defvalue` and `pattern` tags are both present, but the default value does not match the pattern.
 
-Do not explicitly add the standard `"--help"` and `"--version"` options here;
-these are added automatically, or optionally through `add_help()` (below).
+The second version of `add()` adds some information text to the option list.
+This will be reproduced verbatim at the corresponding point among the options
+listed in the help text.
 
-A program will normally construct an `Options` object and use multiple calls
-to `add()` to construct the option specification before calling `parse()` to
-parse the actual command line arguments. Once the arguments have been parsed,
-the `get()`, `get_list()`, and `has()` functions can be used to query them.
+The third version of `add()` can be used to explicitly add the help and
+version options. Use this if you want to place them somewhere other than at
+the end of the list of options in the help message, or if you want to set the
+automatic help flag. The argument can be one of:
 
-* `void Options::`**`add_help`**`(bool automatic = false)`
+<!-- TEXT -->
+* `Options::help`
+* `Options::autohelp`
 
-Adds the standard `"--help"` and `"--version"` options. They will be given the
-abbreviations `"-h"` and `"-v"` if these have not been claimed by other
-options. If the `automatic` flag is set, calling the program with no arguments
-will be interpreted as a request for help (i.e. an empty argument list is
-equivalent to `"--help"`). These options will be added anyway even if
-`add_help()` has not been called; this is only required if you want to put
-them somewhere other than at the end of the option list, or to set the
-`automatic` flag.
+Either of these will add the `"--help"` and `"--version"` options, with the
+abbreviations `"-h"` and `"-v"` if these have not already been assigned to
+other options. They will be automatically added at the end of the option list
+if you do not add them here. If the `autohelp` flag is used, calling the
+program with no arguments will be interpreted as a request for help (i.e. an
+empty argument list is equivalent to `"--help"`).
 
-* `U8string Options::`**`help`**`() const`
-* `U8string Options::`**`version`**`() const`
+* `U8string Options::`**`help_text`**`() const`
+* `U8string Options::`**`version_text`**`() const`
 
 These are the same texts that will be presented to the user by the `"--help"`
-and `"--version"` options. The `help()` text is constructed automatically by
-the `Options` object; the `version()` text is simply the original `info`
-string that was supplied to the `Options` constructor.
+and `"--version"` options. The help text is constructed automatically by the
+`Options` object; the version text is simply the original `info` string that
+was supplied to the `Options` constructor.
 
 * `template <typename C> bool Options::`**`parse`**`(const vector<basic_string<C>>& args, std::ostream& out = cout, uint32_t flags = 0)`
 * `template <typename C> bool Options::`**`parse`**`(const basic_string<C>& args, std::ostream& out = cout, uint32_t flags = 0)`

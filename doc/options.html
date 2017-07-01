@@ -79,7 +79,7 @@ report an invalid combination of properties.</p>
 <p>Constructor to initialize an option specification. The <code>info</code> argument is a
 string containing the basic description of the program, typically something
 like <code>"Foobar 1.0 - Goes ding when there's stuff"</code>; this will be returned if
-the user calls it with the <code>"--version"</code> option.</p>
+the user runs it with the <code>"--version"</code> option.</p>
 </div>
 <div class="defns">
 <ul>
@@ -91,21 +91,23 @@ the user calls it with the <code>"--version"</code> option.</p>
 <li><code>Options&amp; Options::</code><strong><code>operator=</code></strong><code>(Options&amp;&amp; opt) noexcept</code></li>
 </ul>
 <p>Other life cycle functions. (The default constructor should not normally be
-used and is supplied only to enable move initialization in certain scenarios.)</p>
+used and is supplied only to enable move initialization in some cases.)</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>Options&amp; Options::</code><strong><code>add</code></strong><code>(const U8string&amp; info)</code></li>
 <li><code>template &lt;typename... Args&gt; Options&amp; Options::</code><strong><code>add</code></strong><code>(const U8string&amp; name, const U8string&amp; info, const Args&amp;... args)</code></li>
+<li><code>Options&amp; Options::</code><strong><code>add</code></strong><code>(const U8string&amp; info)</code></li>
+<li><code>Options&amp; Options::</code><strong><code>add</code></strong><code>([private type] flag)</code></li>
 </ul>
-<p>The first version adds some information text to the option list. This will be
-reproduced verbatim at the corresponding point among the options listed in the
-help text.</p>
-<p>The second version adds an option to the parser. The <code>name</code> argument is the
-full name of the option, which users can invoke with <code>"--name"</code> (the option
-name can be supplied to the <code>add()</code> function with or without the leading
-hyphens). The <code>info</code> string is the description of the option that will be
-presented to the user when help is requested. These may be followed by
+<p>A program will normally construct an <code>Options</code> object and use multiple calls
+to <code>add()</code> to construct the option specification before calling <code>parse()</code> to
+parse the actual command line arguments. Once the arguments have been parsed,
+the <code>get()</code>, <code>get_list()</code>, and <code>has()</code> functions can be used to query them.</p>
+<p>The first version of <code>add()</code> adds an option to the parser. The <code>name</code> argument
+is the full name of the option, which users can invoke with <code>"--name"</code> (the
+option name can be supplied to the <code>add()</code> function with or without the
+leading hyphens). The <code>info</code> string is the description of the option that will
+be presented to the user when help is requested. These may be followed by
 optional keyword arguments, as listed below.</p>
 <table>
 <thead>
@@ -188,35 +190,35 @@ is <code>true</code>; the <code>"--no-whatever"</code> form can be used to switc
 <li>More than one of <code>floating</code>, <code>integer</code>, <code>pattern</code>, and <code>uinteger</code> is supplied.</li>
 <li>The <code>defvalue</code> and <code>pattern</code> tags are both present, but the default value does not match the pattern.</li>
 </ul>
-<p>Do not explicitly add the standard <code>"--help"</code> and <code>"--version"</code> options here;
-these are added automatically, or optionally through <code>add_help()</code> (below).</p>
-<p>A program will normally construct an <code>Options</code> object and use multiple calls
-to <code>add()</code> to construct the option specification before calling <code>parse()</code> to
-parse the actual command line arguments. Once the arguments have been parsed,
-the <code>get()</code>, <code>get_list()</code>, and <code>has()</code> functions can be used to query them.</p>
-</div>
-<div class="defns">
+<p>The second version of <code>add()</code> adds some information text to the option list.
+This will be reproduced verbatim at the corresponding point among the options
+listed in the help text.</p>
+<p>The third version of <code>add()</code> can be used to explicitly add the help and
+version options. Use this if you want to place them somewhere other than at
+the end of the list of options in the help message, or if you want to set the
+automatic help flag. The argument can be one of:</p>
+<!-- TEXT -->
+
 <ul>
-<li><code>void Options::</code><strong><code>add_help</code></strong><code>(bool automatic = false)</code></li>
+<li><code>Options::help</code></li>
+<li><code>Options::autohelp</code></li>
 </ul>
-<p>Adds the standard <code>"--help"</code> and <code>"--version"</code> options. They will be given the
-abbreviations <code>"-h"</code> and <code>"-v"</code> if these have not been claimed by other
-options. If the <code>automatic</code> flag is set, calling the program with no arguments
-will be interpreted as a request for help (i.e. an empty argument list is
-equivalent to <code>"--help"</code>). These options will be added anyway even if
-<code>add_help()</code> has not been called; this is only required if you want to put
-them somewhere other than at the end of the option list, or to set the
-<code>automatic</code> flag.</p>
+<p>Either of these will add the <code>"--help"</code> and <code>"--version"</code> options, with the
+abbreviations <code>"-h"</code> and <code>"-v"</code> if these have not already been assigned to
+other options. They will be automatically added at the end of the option list
+if you do not add them here. If the <code>autohelp</code> flag is used, calling the
+program with no arguments will be interpreted as a request for help (i.e. an
+empty argument list is equivalent to <code>"--help"</code>).</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>U8string Options::</code><strong><code>help</code></strong><code>() const</code></li>
-<li><code>U8string Options::</code><strong><code>version</code></strong><code>() const</code></li>
+<li><code>U8string Options::</code><strong><code>help_text</code></strong><code>() const</code></li>
+<li><code>U8string Options::</code><strong><code>version_text</code></strong><code>() const</code></li>
 </ul>
 <p>These are the same texts that will be presented to the user by the <code>"--help"</code>
-and <code>"--version"</code> options. The <code>help()</code> text is constructed automatically by
-the <code>Options</code> object; the <code>version()</code> text is simply the original <code>info</code>
-string that was supplied to the <code>Options</code> constructor.</p>
+and <code>"--version"</code> options. The help text is constructed automatically by the
+<code>Options</code> object; the version text is simply the original <code>info</code> string that
+was supplied to the <code>Options</code> constructor.</p>
 </div>
 <div class="defns">
 <ul>

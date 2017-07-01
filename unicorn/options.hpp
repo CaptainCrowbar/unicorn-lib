@@ -68,6 +68,7 @@ namespace RS {
                 explicit spec_error(const U8string& option);
                 spec_error(const U8string& details, const U8string& option);
             };
+            enum special_options { help, autohelp };
             static constexpr uint32_t locale    = 1;  // Argument list is in local encoding
             static constexpr uint32_t noprefix  = 2;  // First argument is not the command name
             static constexpr uint32_t quoted    = 4;  // Allow arguments to be quoted
@@ -86,11 +87,13 @@ namespace RS {
                 pattern = {};   // Argument must match this regular expression
             Options() = default;
             explicit Options(const U8string& info): app_info(str_trim(info)) {}
+            template <typename... Args> Options& add(const U8string& name, const U8string& info, const Args&... args)
+                { add_option(option_type(name, info, args...)); return *this; }
             Options& add(const U8string& info);
-            template <typename... Args> Options& add(const U8string& name, const U8string& info, const Args&... args);
+            Options& add(special_options flag);
             void add_help(bool automatic = false);
-            U8string help() const;
-            U8string version() const { return app_info; }
+            U8string help_text() const;
+            U8string version_text() const { return app_info; }
             template <typename C> bool parse(const std::vector<std::basic_string<C>>& args, std::ostream& out = std::cout, uint32_t flags = 0);
             template <typename C> bool parse(const std::basic_string<C>& args, std::ostream& out = std::cout, uint32_t flags = 0);
             template <typename C> bool parse(int argc, C** argv, std::ostream& out = std::cout, uint32_t flags = 0);
@@ -101,14 +104,18 @@ namespace RS {
             using string_list = std::vector<U8string>;
             enum class help_mode { none, version, usage };
             struct option_type {
+                option_type() = default;
+                template <typename... Args> option_type(const U8string& name, const U8string& info, const Args&... args);
+                option_type(const U8string& info);
+                option_type(const char* info): option_type(cstr(info)) {}
                 string_list values;
-                U8string abbrev;
-                U8string defvalue;
-                U8string group;
-                U8string info;
-                U8string name;
-                Regex pattern;
-                bool found = false;
+                U8string opt_name;
+                U8string opt_info;
+                U8string opt_abbrev;
+                U8string opt_defvalue;
+                U8string opt_group;
+                Regex opt_pattern;
+                bool is_found = false;
                 bool is_anon = false;
                 bool is_boolean = false;
                 bool is_integer = false;
@@ -139,28 +146,6 @@ namespace RS {
             static void add_arg_to_opt(const U8string& arg, option_type& opt);
             static void unquote(const U8string& src, string_list& dst);
         };
-
-        template <typename... Args>
-        Options& Options::add(const U8string& name, const U8string& info, const Args&... args) {
-            option_type opt;
-            U8string pattern_str;
-            opt.name = name;
-            opt.info = info;
-            kwget(anon, opt.is_anon, args...);
-            kwget(boolean, opt.is_boolean, args...);
-            kwget(integer, opt.is_integer, args...);
-            kwget(uinteger, opt.is_uinteger, args...);
-            kwget(floating, opt.is_floating, args...);
-            kwget(multi, opt.is_multi, args...);
-            kwget(required, opt.is_required, args...);
-            kwget(abbrev, opt.abbrev, args...);
-            kwget(defvalue, opt.defvalue, args...);
-            kwget(group, opt.group, args...);
-            kwget(pattern, pattern_str, args...);
-            opt.pattern = Regex(pattern_str);
-            add_option(opt);
-            return *this;
-        }
 
         template <typename T>
         std::vector<T> Options::get_list(const U8string& name) const {
@@ -202,6 +187,32 @@ namespace RS {
                 return parse(str_join(args, std::basic_string<C>{C(' ')}), out, flags);
             else
                 return parse(args, out, flags);
+        }
+
+        template <typename... Args>
+        Options::option_type::option_type(const U8string& name, const U8string& info, const Args&... args) {
+            U8string patstr;
+            opt_name = name;
+            opt_info = info;
+            kwget(anon, is_anon, args...);
+            kwget(boolean, is_boolean, args...);
+            kwget(integer, is_integer, args...);
+            kwget(uinteger, is_uinteger, args...);
+            kwget(floating, is_floating, args...);
+            kwget(multi, is_multi, args...);
+            kwget(required, is_required, args...);
+            kwget(abbrev, opt_abbrev, args...);
+            kwget(defvalue, opt_defvalue, args...);
+            kwget(group, opt_group, args...);
+            kwget(pattern, patstr, args...);
+            if (! patstr.empty())
+                opt_pattern = Regex(patstr);
+        }
+
+        inline Options::option_type::option_type(const U8string& info) {
+            opt_info = str_trim_right(info);
+            if (opt_info.empty())
+                throw spec_error("Empty information string");
         }
 
     }
