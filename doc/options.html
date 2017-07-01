@@ -32,7 +32,7 @@ some commonly expected command line features:</p>
     Options opt("My Program 1.0");
     opt.add("--alpha", "The most important option", Options::abbrev="-a");
     opt.add("--omega", "The least important option");
-    opt.add("--number", "How many roads to walk down", Options::abbrev="-n", Options::def="42", Options::integer);
+    opt.add("--number", "How many roads to walk down", Options::abbrev="-n", Options::defvalue="42", Options::integer);
     if (opt.parse(argc, argv))
         return 0;
     // ... main program code goes here ...
@@ -132,7 +132,7 @@ optional keyword arguments, as listed below.</p>
 <td>This option is a boolean switch and does not take arguments.</td>
 </tr>
 <tr>
-<td><code>Options::</code><strong><code>def</code></strong></td>
+<td><code>Options::</code><strong><code>defvalue</code></strong></td>
 <td><code>U8string</code></td>
 <td>Use this default value if the option is not supplied by the user.</td>
 </tr>
@@ -183,10 +183,10 @@ is <code>true</code>; the <code>"--no-whatever"</code> form can be used to switc
 <li>The info string is empty (this also applies to the first version of <code>add()</code>).</li>
 <li>An abbreviation is supplied that is longer than one character (not counting a leading hyphen), or is not alphanumeric.</li>
 <li>An option starting with <code>"--no-"</code> is not boolean or has an abbreviation.</li>
-<li>The <code>boolean</code> tag is combined with <code>anon</code>, <code>def</code>, <code>multi</code>, <code>pattern</code>, or <code>require</code>.</li>
-<li>The <code>require</code> tag is combined with <code>boolean</code>, <code>def</code>, or <code>group</code>.</li>
+<li>The <code>boolean</code> tag is combined with <code>anon</code>, <code>defvalue</code>, <code>multi</code>, <code>pattern</code>, or <code>require</code>.</li>
+<li>The <code>require</code> tag is combined with <code>boolean</code>, <code>defvalue</code>, or <code>group</code>.</li>
 <li>More than one of <code>floating</code>, <code>integer</code>, <code>pattern</code>, and <code>uinteger</code> is supplied.</li>
-<li>The <code>def</code> and <code>pattern</code> tags are both present, but the default value does not match the pattern.</li>
+<li>The <code>defvalue</code> and <code>pattern</code> tags are both present, but the default value does not match the pattern.</li>
 </ul>
 <p>Do not explicitly add the standard <code>"--help"</code> and <code>"--version"</code> options here;
 these are added automatically, or optionally through <code>add_help()</code> (below).</p>
@@ -201,12 +201,12 @@ the <code>get()</code>, <code>get_list()</code>, and <code>has()</code> function
 </ul>
 <p>Adds the standard <code>"--help"</code> and <code>"--version"</code> options. They will be given the
 abbreviations <code>"-h"</code> and <code>"-v"</code> if these have not been claimed by other
-options. These options will be added anyway even if <code>add_help()</code> has not been
-called; this is only required if you want to put them somewhere other than at
-the end of the option list, or to set the <code>automatic</code> flag.</p>
-<p>If the <code>automatic</code> flag is set, calling the program with no arguments will be
-interpreted as a request for help (i.e. an empty argument list is equivalent
-to <code>"--help"</code>).</p>
+options. If the <code>automatic</code> flag is set, calling the program with no arguments
+will be interpreted as a request for help (i.e. an empty argument list is
+equivalent to <code>"--help"</code>). These options will be added anyway even if
+<code>add_help()</code> has not been called; this is only required if you want to put
+them somewhere other than at the end of the option list, or to set the
+<code>automatic</code> flag.</p>
 </div>
 <div class="defns">
 <ul>

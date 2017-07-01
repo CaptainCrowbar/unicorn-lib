@@ -58,7 +58,7 @@ namespace RS {
             Options::required;
         constexpr Kwarg<U8string>
             Options::abbrev,
-            Options::def,
+            Options::defvalue,
             Options::group,
             Options::pattern;
 
@@ -110,7 +110,7 @@ namespace RS {
                     if (opt.is_anon)
                         prefix += "[";
                     prefix += "--";
-                    if (opt.is_boolean && opt.def == "1")
+                    if (opt.is_boolean && opt.defvalue == "1")
                         prefix += "no-";
                     prefix += opt.name;
                     if (! opt.abbrev.empty())
@@ -131,12 +131,12 @@ namespace RS {
                     U8string extra;
                     if (opt.is_required) {
                         extra = "required";
-                    } else if (! opt.def.empty() && ! opt.is_boolean && opt.info.find("default") == npos) {
+                    } else if (! opt.defvalue.empty() && ! opt.is_boolean && opt.info.find("default") == npos) {
                         extra = "default ";
-                        if (match_integer.match(opt.def) || match_float.match(opt.def))
-                            extra += opt.def;
+                        if (match_integer.match(opt.defvalue) || match_float.match(opt.defvalue))
+                            extra += opt.defvalue;
                         else
-                            extra += "$1q"_fmt(opt.def);
+                            extra += "$1q"_fmt(opt.defvalue);
                     }
                     suffix = opt.info;
                     if (! extra.empty()) {
@@ -200,7 +200,7 @@ namespace RS {
             if (str_length(opt.abbrev) > 1
                     || (! opt.abbrev.empty() && ! char_is_alphanumeric(*utf_begin(opt.abbrev)))
                     || (opt.is_boolean && (opt.is_anon || opt.is_multi || opt.is_required || ! opt.pattern.empty()))
-                    || ((opt.is_boolean || opt.is_required) && ! opt.def.empty())
+                    || ((opt.is_boolean || opt.is_required) && ! opt.defvalue.empty())
                     || (neg && (! opt.is_boolean || ! opt.abbrev.empty()))
                     || (opt.is_required && ! opt.group.empty())
                     || (int(opt.is_integer) + int(opt.is_uinteger) + int(opt.is_floating) + int(! opt.pattern.empty()) > 1))
@@ -211,11 +211,11 @@ namespace RS {
                 opt.pattern = match_uinteger;
             else if (opt.is_floating)
                 opt.pattern = match_float;
-            if (! opt.def.empty() && ! opt.pattern.empty() && ! opt.pattern.match(opt.def))
+            if (! opt.defvalue.empty() && ! opt.pattern.empty() && ! opt.pattern.match(opt.defvalue))
                 throw spec_error(tag);
             if (neg) {
                 opt.name.erase(0, 3);
-                opt.def = "1";
+                opt.defvalue = "1";
             }
             if (find_index(opt.name) != npos || find_index(opt.abbrev) != npos)
                 throw spec_error("Duplicate option spec", tag);
@@ -380,8 +380,8 @@ namespace RS {
 
         void Options::supply_defaults() {
             for (auto& opt: opts)
-                if (opt.values.empty() && ! opt.def.empty())
-                    add_arg_to_opt(opt.def, opt);
+                if (opt.values.empty() && ! opt.defvalue.empty())
+                    add_arg_to_opt(opt.defvalue, opt);
         }
 
         void Options::send_help(std::ostream& out, help_mode mode) const {

@@ -19,8 +19,8 @@ namespace {
         U8string cmdline;
 
         TEST_EQUAL(opt1.version(), "App version 1.0");
-        TRY(opt1.add("alpha", "Alpha option", Options::abbrev="a", Options::def="ABC"));
-        TRY(opt1.add("--number", "Number option", Options::abbrev="n", Options::def="123"));
+        TRY(opt1.add("alpha", "Alpha option", Options::abbrev="a", Options::defvalue="ABC"));
+        TRY(opt1.add("--number", "Number option", Options::abbrev="n", Options::defvalue="123"));
 
         {
             TRY(opt2 = opt1);
@@ -330,9 +330,9 @@ namespace {
     void check_argument_patterns() {
 
         Options opt1("App");
-        TRY(opt1.add("alpha", "Alpha", Options::abbrev="a", Options::anon, Options::def="Hello", Options::multi, Options::pattern="[[:alpha:]]+"));
-        TRY(opt1.add("number", "Number", Options::abbrev="n", Options::def="42", Options::multi, Options::pattern="\\d+"));
-        TEST_THROW_MATCH(opt1.add("word", "Word", Options::def="*", Options::pattern="\\w+"), Options::spec_error, ": \"word\"$");
+        TRY(opt1.add("alpha", "Alpha", Options::abbrev="a", Options::anon, Options::defvalue="Hello", Options::multi, Options::pattern="[[:alpha:]]+"));
+        TRY(opt1.add("number", "Number", Options::abbrev="n", Options::defvalue="42", Options::multi, Options::pattern="\\d+"));
+        TEST_THROW_MATCH(opt1.add("word", "Word", Options::defvalue="*", Options::pattern="\\w+"), Options::spec_error, ": \"word\"$");
 
         Options opt2("Blank");
         U8string cmdline;

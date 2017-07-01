@@ -26,7 +26,7 @@ Example:
         Options opt("My Program 1.0");
         opt.add("--alpha", "The most important option", Options::abbrev="-a");
         opt.add("--omega", "The least important option");
-        opt.add("--number", "How many roads to walk down", Options::abbrev="-n", Options::def="42", Options::integer);
+        opt.add("--number", "How many roads to walk down", Options::abbrev="-n", Options::defvalue="42", Options::integer);
         if (opt.parse(argc, argv))
             return 0;
         // ... main program code goes here ...
@@ -96,7 +96,7 @@ Keyword                    | Type        | Description
 `Options::`**`abbrev`**    | `U8string`  | A single letter abbreviation for the option (e.g. `"-x"`; the hyphen is optional).
 `Options::`**`anon`**      | `bool`      | Anonymous arguments (not claimed by any other option) will be assigned to this option.
 `Options::`**`boolean`**   | `bool`      | This option is a boolean switch and does not take arguments.
-`Options::`**`def`**       | `U8string`  | Use this default value if the option is not supplied by the user.
+`Options::`**`defvalue`**  | `U8string`  | Use this default value if the option is not supplied by the user.
 `Options::`**`floating`**  | `bool`      | The argument value must be a floating point number.
 `Options::`**`group`**     | `U8string`  | Assign the option to a mutual exclusion group; at most one option from a group is allowed.
 `Options::`**`integer`**   | `bool`      | The argument value must be an integer.
@@ -116,10 +116,10 @@ Adding an option will throw `spec_error` if any of the following is true:
 * The info string is empty (this also applies to the first version of `add()`).
 * An abbreviation is supplied that is longer than one character (not counting a leading hyphen), or is not alphanumeric.
 * An option starting with `"--no-"` is not boolean or has an abbreviation.
-* The `boolean` tag is combined with `anon`, `def`, `multi`, `pattern`, or `require`.
-* The `require` tag is combined with `boolean`, `def`, or `group`.
+* The `boolean` tag is combined with `anon`, `defvalue`, `multi`, `pattern`, or `require`.
+* The `require` tag is combined with `boolean`, `defvalue`, or `group`.
 * More than one of `floating`, `integer`, `pattern`, and `uinteger` is supplied.
-* The `def` and `pattern` tags are both present, but the default value does not match the pattern.
+* The `defvalue` and `pattern` tags are both present, but the default value does not match the pattern.
 
 Do not explicitly add the standard `"--help"` and `"--version"` options here;
 these are added automatically, or optionally through `add_help()` (below).
@@ -133,13 +133,12 @@ the `get()`, `get_list()`, and `has()` functions can be used to query them.
 
 Adds the standard `"--help"` and `"--version"` options. They will be given the
 abbreviations `"-h"` and `"-v"` if these have not been claimed by other
-options. These options will be added anyway even if `add_help()` has not been
-called; this is only required if you want to put them somewhere other than at
-the end of the option list, or to set the `automatic` flag.
-
-If the `automatic` flag is set, calling the program with no arguments will be
-interpreted as a request for help (i.e. an empty argument list is equivalent
-to `"--help"`).
+options. If the `automatic` flag is set, calling the program with no arguments
+will be interpreted as a request for help (i.e. an empty argument list is
+equivalent to `"--help"`). These options will be added anyway even if
+`add_help()` has not been called; this is only required if you want to put
+them somewhere other than at the end of the option list, or to set the
+`automatic` flag.
 
 * `U8string Options::`**`help`**`() const`
 * `U8string Options::`**`version`**`() const`

@@ -18,8 +18,7 @@ namespace RS {
 
         namespace UnicornDetail {
 
-            template <typename T, bool I = std::is_integral<T>::value,
-                bool F = std::is_floating_point<T>::value>
+            template <typename T, bool I = std::is_integral<T>::value, bool F = std::is_floating_point<T>::value>
             struct ArgConv;
 
             template <typename T>
@@ -81,10 +80,10 @@ namespace RS {
                 multi = {},     // Option may have multiple arguments
                 required = {};  // Option is required
             static constexpr Kwarg<U8string>
-                abbrev = {},   // Single letter abbreviation
-                def = {},      // Default value if not supplied
-                group = {},    // Mutual exclusion group name
-                pattern = {};  // Argument must match this regular expression
+                abbrev = {},    // Single letter abbreviation
+                defvalue = {},  // Default value if not supplied
+                group = {},     // Mutual exclusion group name
+                pattern = {};   // Argument must match this regular expression
             Options() = default;
             explicit Options(const U8string& info): app_info(str_trim(info)) {}
             Options& add(const U8string& info);
@@ -104,7 +103,7 @@ namespace RS {
             struct option_type {
                 string_list values;
                 U8string abbrev;
-                U8string def;
+                U8string defvalue;
                 U8string group;
                 U8string info;
                 U8string name;
@@ -155,7 +154,7 @@ namespace RS {
             kwget(multi, opt.is_multi, args...);
             kwget(required, opt.is_required, args...);
             kwget(abbrev, opt.abbrev, args...);
-            kwget(def, opt.def, args...);
+            kwget(defvalue, opt.defvalue, args...);
             kwget(group, opt.group, args...);
             kwget(pattern, pattern_str, args...);
             opt.pattern = Regex(pattern_str);
