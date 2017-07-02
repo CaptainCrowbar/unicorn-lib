@@ -268,6 +268,14 @@ namespace RS {
         bool str_icase_equal(const U8string& lhs, const U8string& rhs) noexcept;
         bool str_natural_compare(const U8string& lhs, const U8string& rhs) noexcept;
 
+        template <typename C>
+        bool utf_compare(const std::basic_string<C>& lhs, const std::basic_string<C>& rhs) noexcept {
+            if (sizeof(C) == 2)
+                return std::lexicographical_compare(utf_begin(lhs), utf_end(lhs), utf_begin(rhs), utf_end(rhs));
+            else
+                return lhs < rhs;
+        }
+
         // Other string algorithms
         // Defined in string-algorithm.cpp
 

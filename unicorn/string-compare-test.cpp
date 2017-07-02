@@ -96,6 +96,30 @@ namespace {
 
     }
 
+    void check_utf_compare() {
+
+        U8string a8 = u8"\uff00\U00010000";
+        U8string b8 = u8"\U00010000\uff00";
+        std::u16string a16 = u"\uff00\U00010000";
+        std::u16string b16 = u"\U00010000\uff00";
+        std::u32string a32 = U"\uff00\U00010000";
+        std::u32string b32 = U"\U00010000\uff00";
+
+        TEST(! utf_compare(a8, a8));
+        TEST(utf_compare(a8, b8));
+        TEST(! utf_compare(b8, a8));
+        TEST(! utf_compare(b8, b8));
+        TEST(! utf_compare(a16, a16));
+        TEST(utf_compare(a16, b16));
+        TEST(! utf_compare(b16, a16));
+        TEST(! utf_compare(b16, b16));
+        TEST(! utf_compare(a32, a32));
+        TEST(utf_compare(a32, b32));
+        TEST(! utf_compare(b32, a32));
+        TEST(! utf_compare(b32, b32));
+
+    }
+
 }
 
 TEST_MODULE(unicorn, string_compare) {
@@ -103,5 +127,6 @@ TEST_MODULE(unicorn, string_compare) {
     check_compare_3way();
     check_icase_compare();
     check_natural_compare();
+    check_utf_compare();
 
 }

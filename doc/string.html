@@ -181,8 +181,8 @@ to, or less than the second one, respectively.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>bool</code> <strong><code>str_icase_equal</code></strong><code>(const U8string&amp; lhs, const U8string&amp; rhs) const noexcept</code></li>
-<li><code>bool</code> <strong><code>str_icase_compare</code></strong><code>(const U8string&amp; lhs, const U8string&amp; rhs) const noexcept</code></li>
+<li><code>bool</code> <strong><code>str_icase_equal</code></strong><code>(const U8string&amp; lhs, const U8string&amp; rhs) noexcept</code></li>
+<li><code>bool</code> <strong><code>str_icase_compare</code></strong><code>(const U8string&amp; lhs, const U8string&amp; rhs) noexcept</code></li>
 </ul>
 <p>Function objects that perform case insensitive string comparison, with
 equality or less-than semantics. These are equivalent to calling
@@ -193,7 +193,7 @@ more efficient if the same string is going to be compared frequently.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>bool</code> <strong><code>str_natural_compare</code></strong><code>(const U8string&amp; lhs, const U8string&amp; rhs) const noexcept</code></li>
+<li><code>bool</code> <strong><code>str_natural_compare</code></strong><code>(const U8string&amp; lhs, const U8string&amp; rhs) noexcept</code></li>
 </ul>
 <p>This attempts to perform a "natural" (human friendly) comparison between two
 strings. It treats numbers (currently only ASCII digits are recognised) as
@@ -204,6 +204,15 @@ punctuation (significant characters are defined as general categories <code>L</c
 equal according to these criteria, but are not exactly byte for byte
 identical, a simple lexicographical comparison by code point is used as a tie
 breaker.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>template &lt;typename C&gt; bool</code> <strong><code>utf_compare</code></strong><code>(const basic_string&lt;C&gt;&amp; lhs, const basic_string&lt;C&gt;&amp; rhs) noexcept</code></li>
+</ul>
+<p>Lexicographical comparison of strings by code point, in any UTF
+representation. For UTF-8 and UTF-32 this just performs a simple comparison by
+code unit; for UTF-16 this would not be equivalent to code point ordering, and
+a slightly more complicated algorithm is needed to produce the same result.</p>
 </div>
 <h2 id="other-string-algorithms">Other string algorithms</h2>
 <div class="defns">
