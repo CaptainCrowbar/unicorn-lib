@@ -14,14 +14,14 @@ namespace RS {
         // Remember that any other set of flags that might be combined with these
         // needs to skip the bits that are already spoken for.
 
-        namespace UtfError {
+        struct UtfError {
 
-            constexpr uint32_t ignore = 1;   // Assume valid UTF input
-            constexpr uint32_t replace = 2;  // Replace invalid UTF with U+FFFD
-            constexpr uint32_t throws = 4;   // Throw EncodingError on invalid UTF
-            constexpr uint32_t mask = ignore | replace | throws;
+            static constexpr uint32_t ignore = 1;   // Assume valid UTF input
+            static constexpr uint32_t replace = 2;  // Replace invalid UTF with U+FFFD
+            static constexpr uint32_t throws = 4;   // Throw EncodingError on invalid UTF
+            static constexpr uint32_t mask = ignore | replace | throws;
 
-        }
+        };
 
         namespace UnicornDetail {
 
@@ -579,7 +579,7 @@ namespace RS {
         }
 
         template <typename C>
-        bool valid_string(const std::basic_string<C>& str) {
+        bool valid_string(const std::basic_string<C>& str) noexcept {
             using namespace UnicornDetail;
             auto data = str.data();
             size_t pos = 0, size = str.size();

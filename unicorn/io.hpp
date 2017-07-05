@@ -14,38 +14,38 @@ namespace RS {
 
         // I/O flags
 
-        namespace IO {
+        struct IO {
 
             // Skip the first 3 bits because these need to be compatible with the encoding error flags
 
             // Common reader and writer flags
 
-            constexpr uint32_t bom        = 1ul << 3;   // Strip or insert a BOM
-            constexpr uint32_t lf         = 1ul << 4;   // Convert all line breaks to LF
-            constexpr uint32_t crlf       = 1ul << 5;   // Convert all line breaks to CR+LF
+            static constexpr uint32_t bom        = 1ul << 3;   // Strip or insert a BOM
+            static constexpr uint32_t lf         = 1ul << 4;   // Convert all line breaks to LF
+            static constexpr uint32_t crlf       = 1ul << 5;   // Convert all line breaks to CR+LF
 
             // Reader flags
 
-            constexpr uint32_t standin    = 1ul << 6;   // Default to stdin
-            constexpr uint32_t pretend    = 1ul << 7;   // Treat nonexistent file as empty
-            constexpr uint32_t striplf    = 1ul << 8;   // Strip line breaks
-            constexpr uint32_t striptws   = 1ul << 9;   // Strip trailing whitespace
-            constexpr uint32_t stripws    = 1ul << 10;  // Strip whitespace
-            constexpr uint32_t notempty   = 1ul << 11;  // Skip empty lines
+            static constexpr uint32_t standin    = 1ul << 6;   // Default to stdin
+            static constexpr uint32_t pretend    = 1ul << 7;   // Treat nonexistent file as empty
+            static constexpr uint32_t striplf    = 1ul << 8;   // Strip line breaks
+            static constexpr uint32_t striptws   = 1ul << 9;   // Strip trailing whitespace
+            static constexpr uint32_t stripws    = 1ul << 10;  // Strip whitespace
+            static constexpr uint32_t notempty   = 1ul << 11;  // Skip empty lines
 
             // Writer flags
 
-            constexpr uint32_t standout   = 1ul << 12;  // Default to stdout
-            constexpr uint32_t standerr   = 1ul << 13;  // Default to stderr
-            constexpr uint32_t append     = 1ul << 14;  // Append to file
-            constexpr uint32_t protect    = 1ul << 15;  // Fail if the file already exists
-            constexpr uint32_t linebuf    = 1ul << 16;  // Line buffered output
-            constexpr uint32_t unbuf      = 1ul << 17;  // Unbuffered output
-            constexpr uint32_t writeline  = 1ul << 18;  // Write LF after every write
-            constexpr uint32_t autoline   = 1ul << 19;  // Write LF if not already there
-            constexpr uint32_t mutex      = 1ul << 20;  // Hold per-file mutex while writing
+            static constexpr uint32_t standout   = 1ul << 12;  // Default to stdout
+            static constexpr uint32_t standerr   = 1ul << 13;  // Default to stderr
+            static constexpr uint32_t append     = 1ul << 14;  // Append to file
+            static constexpr uint32_t protect    = 1ul << 15;  // Fail if the file already exists
+            static constexpr uint32_t linebuf    = 1ul << 16;  // Line buffered output
+            static constexpr uint32_t unbuf      = 1ul << 17;  // Unbuffered output
+            static constexpr uint32_t writeline  = 1ul << 18;  // Write LF after every write
+            static constexpr uint32_t autoline   = 1ul << 19;  // Write LF if not already there
+            static constexpr uint32_t mutex      = 1ul << 20;  // Hold per-file mutex while writing
 
-        }
+        };
 
         // File input iterator
 

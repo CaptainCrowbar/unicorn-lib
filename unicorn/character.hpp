@@ -191,16 +191,16 @@ namespace RS {
 
         // Character names
 
-        namespace Cname {
+        struct Cname {
 
-            constexpr uint32_t control  = 1u << 0;
-            constexpr uint32_t label    = 1u << 1;
-            constexpr uint32_t lower    = 1u << 2;
-            constexpr uint32_t prefix   = 1u << 3;
-            constexpr uint32_t update   = 1u << 4;
-            constexpr uint32_t all      = control | label | lower | prefix | update;
+            static constexpr uint32_t control  = 1u << 0;
+            static constexpr uint32_t label    = 1u << 1;
+            static constexpr uint32_t lower    = 1u << 2;
+            static constexpr uint32_t prefix   = 1u << 3;
+            static constexpr uint32_t update   = 1u << 4;
+            static constexpr uint32_t all      = control | label | lower | prefix | update;
 
-        }
+        };
 
         U8string char_name(char32_t c, uint32_t flags = 0);
 

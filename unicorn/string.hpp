@@ -80,14 +80,14 @@ namespace RS {
         // string length flags are linked to upper case letters for use with
         // unicorn/format, so they have bit positions in the 0-25 range.
 
-        namespace Length {
+        struct Length {
 
-            constexpr uint32_t characters  = letter_to_mask('C');  // Measure string in characters (default)
-            constexpr uint32_t graphemes   = letter_to_mask('G');  // Measure string in grapheme clusters
-            constexpr uint32_t narrow      = letter_to_mask('N');  // East Asian width, defaulting to narrow
-            constexpr uint32_t wide        = letter_to_mask('W');  // East Asian width, defaulting to wide
+            static constexpr uint32_t characters  = letter_to_mask('C');  // Measure string in characters (default)
+            static constexpr uint32_t graphemes   = letter_to_mask('G');  // Measure string in grapheme clusters
+            static constexpr uint32_t narrow      = letter_to_mask('N');  // East Asian width, defaulting to narrow
+            static constexpr uint32_t wide        = letter_to_mask('W');  // East Asian width, defaulting to wide
 
-        }
+        };
 
         namespace UnicornDetail {
 
@@ -311,13 +311,13 @@ namespace RS {
         // String manipulation functions
         // Defined in string-manip.cpp
 
-        namespace Wrap {
+        struct Wrap {
 
-            constexpr uint32_t crlf      = 1ul << 26;  // Use CR+LF for line breaks (default LF)
-            constexpr uint32_t enforce   = 1ul << 27;  // Enforce right margin strictly
-            constexpr uint32_t preserve  = 1ul << 28;  // Preserve layout on already indented lines
+            static constexpr uint32_t crlf      = 1ul << 26;  // Use CR+LF for line breaks (default LF)
+            static constexpr uint32_t enforce   = 1ul << 27;  // Enforce right margin strictly
+            static constexpr uint32_t preserve  = 1ul << 28;  // Preserve layout on already indented lines
 
-        }
+        };
 
         namespace UnicornDetail {
 
@@ -747,14 +747,14 @@ namespace RS {
         // Escaping and quoting functions
         // Defined in string-escape.cpp
 
-        namespace Escape {
+        struct Escape {
 
-            constexpr uint32_t ascii   = 1ul << 0;  // Escape all non-ASCII characters
-            constexpr uint32_t nostdc  = 1ul << 1;  // Do not use standard C symbols such as `\n`
-            constexpr uint32_t pcre    = 1ul << 2;  // Use `\x{...}` instead of `\u` and `\U` (implies `nonascii`)
-            constexpr uint32_t punct   = 1ul << 3;  // Escape ASCII punctuation
+            static constexpr uint32_t ascii   = 1ul << 0;  // Escape all non-ASCII characters
+            static constexpr uint32_t nostdc  = 1ul << 1;  // Do not use standard C symbols such as `\n`
+            static constexpr uint32_t pcre    = 1ul << 2;  // Use `\x{...}` instead of `\u` and `\U` (implies `nonascii`)
+            static constexpr uint32_t punct   = 1ul << 3;  // Escape ASCII punctuation
 
-        }
+        };
 
         U8string str_encode_uri(const U8string& str);
         U8string str_encode_uri_component(const U8string& str);

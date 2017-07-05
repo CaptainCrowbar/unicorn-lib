@@ -298,7 +298,7 @@ will contain the successfully converted part of the string before the error.</p>
 <div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; void</code> <strong><code>check_string</code></strong><code>(const basic_string&lt;C&gt;&amp; str)</code></li>
-<li><code>template &lt;typename C&gt; bool</code> <strong><code>valid_string</code></strong><code>(const basic_string&lt;C&gt;&amp; str)</code></li>
+<li><code>template &lt;typename C&gt; bool</code> <strong><code>valid_string</code></strong><code>(const basic_string&lt;C&gt;&amp; str) noexcept</code></li>
 </ul>
 <p>These check for valid encoding. If the string contains invalid UTF,
 <code>valid_string()</code> returns <code>false</code>, while <code>check_string()</code> throws
