@@ -280,9 +280,12 @@ object (with an optional starting offset), or a code unit pointer and length
 <p>The last two versions return the converted string instead of writing it to a
 destination string passed by reference; in this case the output code unit type
 must be supplied explicitly as a template argument.</p>
-<p>The <code>flags</code> argument has its usual meaning. If the destination string was
-supplied by reference, after an exception is thrown the destination string
-will contain the successfully converted part of the string before the error.</p>
+<p>The <code>flags</code> argument has its usual meaning. If the <code>UtfError::ignore</code> flag is
+used, and the source and destination code units are the same size, the string
+will simply be copied unchanged. If the <code>UtfError::throws</code> flag is used, and
+the destination string was supplied by reference, after an exception is thrown
+the destination string will contain the successfully converted part of the
+string before the error.</p>
 </div>
 <div class="defns">
 <ul>

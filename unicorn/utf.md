@@ -239,9 +239,12 @@ The last two versions return the converted string instead of writing it to a
 destination string passed by reference; in this case the output code unit type
 must be supplied explicitly as a template argument.
 
-The `flags` argument has its usual meaning. If the destination string was
-supplied by reference, after an exception is thrown the destination string
-will contain the successfully converted part of the string before the error.
+The `flags` argument has its usual meaning. If the `UtfError::ignore` flag is
+used, and the source and destination code units are the same size, the string
+will simply be copied unchanged. If the `UtfError::throws` flag is used, and
+the destination string was supplied by reference, after an exception is thrown
+the destination string will contain the successfully converted part of the
+string before the error.
 
 * `template <typename C> U8string` **`to_utf8`**`(const basic_string<C>& src, uint32_t flags = 0)`
 * `template <typename C> u16string` **`to_utf16`**`(const basic_string<C>& src, uint32_t flags = 0)`

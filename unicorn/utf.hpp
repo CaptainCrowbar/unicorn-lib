@@ -3,7 +3,9 @@
 #include "unicorn/core.hpp"
 #include "unicorn/character.hpp"
 #include <algorithm>
+#include <cstring>
 #include <string>
+#include <utility>
 
 namespace RS {
 
@@ -375,6 +377,11 @@ namespace RS {
                         return;
                     if (ibits(flags & UtfError::mask) == 0)
                         flags |= UtfError::ignore;
+                    if (sizeof(C1) == sizeof(C2) && (flags & UtfError::ignore)) {
+                        dst.resize(dst.size() + n);
+                        memcpy(&dst[0] + dst.size() - n, src, n * sizeof(C1));
+                        return;
+                    }
                     size_t pos = 0;
                     char32_t u = 0;
                     C2 buf[UtfEncoding<C2>::max_units];
@@ -399,6 +406,11 @@ namespace RS {
                         return;
                     if (ibits(flags & UtfError::mask) == 0)
                         flags |= UtfError::ignore;
+                    if (sizeof(C1) == 4 && (flags & UtfError::ignore)) {
+                        dst.resize(dst.size() + n);
+                        memcpy(&dst[0] + dst.size() - n, src, 4 * n);
+                        return;
+                    }
                     size_t pos = 0;
                     char32_t u = 0;
                     if (flags & UtfError::ignore) {
@@ -428,6 +440,11 @@ namespace RS {
                         return;
                     if (ibits(flags & UtfError::mask) == 0)
                         flags |= UtfError::ignore;
+                    if (sizeof(C2) == 4 && (flags & UtfError::ignore)) {
+                        dst.resize(dst.size() + n);
+                        memcpy(&dst[0] + dst.size() - n, src, 4 * n);
+                        return;
+                    }
                     char32_t u = 0;
                     C2 buf[UtfEncoding<C2>::max_units];
                     for (size_t pos = 0; pos < n; ++pos) {
@@ -456,24 +473,20 @@ namespace RS {
                     char32_t u = 0;
                     C buf[UtfEncoding<C>::max_units];
                     if (flags & UtfError::ignore) {
-                        while (pos < n) {
-                            auto rc = UtfEncoding<C>::decode(src + pos, n - pos, u);
+                        dst.append(src, n);
+                        return;
+                    }
+                    while (pos < n) {
+                        auto rc = UtfEncoding<C>::decode(src + pos, n - pos, u);
+                        if (char_is_unicode(u)) {
                             dst.append(src + pos, rc);
-                            pos += rc;
+                        } else if (flags & UtfError::throws) {
+                            throw EncodingError(UtfEncoding<C>::name(), pos, src + pos, rc);
+                        } else {
+                            auto rc2 = UtfEncoding<C>::encode(replacement_char, buf);
+                            dst.append(buf, rc2);
                         }
-                    } else {
-                        while (pos < n) {
-                            auto rc = UtfEncoding<C>::decode(src + pos, n - pos, u);
-                            if (char_is_unicode(u)) {
-                                dst.append(src + pos, rc);
-                            } else if (flags & UtfError::throws) {
-                                throw EncodingError(UtfEncoding<C>::name(), pos, src + pos, rc);
-                            } else {
-                                auto rc2 = UtfEncoding<C>::encode(replacement_char, buf);
-                                dst.append(buf, rc2);
-                            }
-                            pos += rc;
-                        }
+                        pos += rc;
                     }
                 }
             };
@@ -485,6 +498,10 @@ namespace RS {
                         return;
                     if (ibits(flags & UtfError::mask) == 0)
                         flags |= UtfError::ignore;
+                    if (flags & UtfError::ignore) {
+                        dst.append(src, n);
+                        return;
+                    }
                     for (size_t pos = 0; pos < n; ++pos) {
                         if (n == npos && src[pos] == 0)
                             break;
@@ -504,7 +521,7 @@ namespace RS {
         void recode(const std::basic_string<C1>& src, std::basic_string<C2>& dst, uint32_t flags = 0) {
             std::basic_string<C2> result;
             UnicornDetail::Recode<C1, C2>()(src.data(), src.size(), result, flags);
-            dst.swap(result);
+            dst = std::move(result);
         }
 
         template <typename C1, typename C2>
@@ -512,14 +529,14 @@ namespace RS {
             std::basic_string<C2> result;
             if (offset < src.size())
                 UnicornDetail::Recode<C1, C2>()(src.data() + offset, src.size() - offset, result, flags);
-            dst.swap(result);
+            dst = std::move(result);
         }
 
         template <typename C1, typename C2>
         void recode(const C1* src, size_t count, std::basic_string<C2>& dst, uint32_t flags = 0) {
             std::basic_string<C2> result;
             UnicornDetail::Recode<C1, C2>()(src, count, result, flags);
-            dst.swap(result);
+            dst = std::move(result);
         }
 
         template <typename C2, typename C1>
@@ -605,7 +622,7 @@ namespace RS {
         void sanitize_in(std::basic_string<C>& str) {
             std::basic_string<C> result;
             recode(str, result, UtfError::replace);
-            str.swap(result);
+            str = std::move(result);
         }
 
         template <typename C>
