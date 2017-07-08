@@ -247,7 +247,7 @@ namespace RS {
             for (auto& kv: map) {
                 offsets.push_back(temp_block.size());
                 temp_block += kv.first;
-                temp_block += RS_CHAR('=', NativeCharacter);
+                temp_block += NativeCharacter('=');
                 temp_block += kv.second;
                 temp_block += NativeCharacter(0);
             }

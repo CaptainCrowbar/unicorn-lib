@@ -17,6 +17,7 @@ namespace RS {
 
         namespace {
 
+            using NC = NativeCharacter;
             using SharedFile = std::shared_ptr<FILE>;
 
             void checked_fclose(FILE* f) { if (f) fclose(f); }
@@ -69,7 +70,8 @@ namespace RS {
         }
 
         void FileReader::init(const NativeString& file, uint32_t flags, const U8string& enc, const U8string& eol) {
-            static const NativeString dashfile = RS_CSTR("-", NativeCharacter);
+            static constexpr NC dash[] = {NC('-'), NC(0)};
+            static constexpr NC rb[] = {NC('r'), NC('b'), NC(0)};
             if (ibits(flags & (UtfError::replace | UtfError::throws)) > 1
                     || ibits(flags & (IO::crlf | IO::lf | IO::striplf | IO::striptws | IO::stripws)) > 1)
                 throw std::invalid_argument("Inconsistent file I/O flags");
@@ -81,10 +83,10 @@ namespace RS {
             impl->lines = 0;
             if (enc.empty() || enc == "0")
                 impl->enc = "utf-8";
-            if ((flags & IO::standin) && (file.empty() || file == dashfile))
+            if ((flags & IO::standin) && (file.empty() || file == dash))
                 impl->handle.reset(stdin, do_nothing);
             else
-                impl->handle = shared_fopen(file, RS_CSTR("rb", NativeCharacter), ! (flags & IO::pretend));
+                impl->handle = shared_fopen(file, rb, ! (flags & IO::pretend));
             ++*this;
         }
 
@@ -175,7 +177,9 @@ namespace RS {
         }
 
         void FileWriter::init(const NativeString& file, uint32_t flags, const U8string& enc) {
-            static const NativeString dashfile{RS_CHAR('-', NativeCharacter)};
+            static constexpr NC dash[] = {NC('-'), NC(0)};
+            static constexpr NC ab[] = {NC('a'), NC('b'), NC(0)};
+            static constexpr NC wb[] = {NC('w'), NC('b'), NC(0)};
             static Mutex stdout_mutex;
             static Mutex stderr_mutex;
             if (ibits(flags & (UtfError::replace | UtfError::throws)) > 1
@@ -191,15 +195,15 @@ namespace RS {
             impl->enc = enc;
             if (enc.empty() || enc == "0")
                 impl->enc = "utf-8";
-            if ((flags & IO::standout) && (file.empty() || file == dashfile))
+            if ((flags & IO::standout) && (file.empty() || file == dash))
                 impl->handle.reset(stdout, do_nothing);
-            else if ((flags & IO::standerr) && (file.empty() || file == dashfile))
+            else if ((flags & IO::standerr) && (file.empty() || file == dash))
                 impl->handle.reset(stderr, do_nothing);
             else if ((flags & IO::protect) && file_exists(file))
                 throw std::system_error(std::make_error_code(std::errc::file_exists), quote_file(file));
             else
                 impl->handle = shared_fopen(file,
-                    flags & IO::append ? RS_CSTR("ab", NativeCharacter) : RS_CSTR("wb", NativeCharacter), true);
+                    flags & IO::append ? ab : wb, true);
             if (flags & IO::mutex) {
                 if (impl->handle.get() == stdout)
                     impl->mutex.reset(&stdout_mutex, do_nothing);
