@@ -195,7 +195,7 @@ These return a copy of the substring between two iterators.
     * `using UtfWriter::`**`value_type`** `= char32_t`
     * `UtfWriter::`**`UtfWriter`**`() noexcept`
     * `explicit UtfWriter::`**`UtfWriter`**`(string_type& dst) noexcept`
-    * `UtfWriter::`**`UtfWriter`**`(string_type& dst, int on_error) noexcept`
+    * `UtfWriter::`**`UtfWriter`**`(string_type& dst, uint32_t fags) flagst`
     * `bool UtfWriter::`**`valid`**`() const noexcept`
     * _[standard iterator operations]_
 
@@ -227,7 +227,7 @@ Returns an encoding iterator writing to the given destination string.
 * `template <typename C1, typename C2> void` **`recode`**`(const basic_string<C1>& src, size_t offset, basic_string<C2>& dst, uint32_t flags = 0)`
 * `template <typename C1, typename C2> void` **`recode`**`(const C1* src, size_t count, basic_string<C2>& dst, uint32_t flags = 0)`
 * `template <typename C2, typename C1> basic_string<C2>` **`recode`**`(const basic_string<C1>& src, uint32_t flags = 0)`
-* `template <typename C2, typename C1> basic_string<C2>` **`recode`**`(const basic_string<C1>& src, size_t offset, int on_error)`
+* `template <typename C2, typename C1> basic_string<C2>` **`recode`**`(const basic_string<C1>& src, size_t offset, uint32_t flags)`
 
 Encoding conversion functions. These convert from one UTF encoding to another;
 as usual, the encoding forms are determined by the size of the input (`C1`)

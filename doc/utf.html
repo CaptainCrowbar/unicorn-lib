@@ -232,7 +232,7 @@ errors.</p>
 <li><code>using UtfWriter::</code><strong><code>value_type</code></strong> <code>= char32_t</code></li>
 <li><code>UtfWriter::</code><strong><code>UtfWriter</code></strong><code>() noexcept</code></li>
 <li><code>explicit UtfWriter::</code><strong><code>UtfWriter</code></strong><code>(string_type&amp; dst) noexcept</code></li>
-<li><code>UtfWriter::</code><strong><code>UtfWriter</code></strong><code>(string_type&amp; dst, int on_error) noexcept</code></li>
+<li><code>UtfWriter::</code><strong><code>UtfWriter</code></strong><code>(string_type&amp; dst, uint32_t fags) flagst</code></li>
 <li><code>bool UtfWriter::</code><strong><code>valid</code></strong><code>() const noexcept</code></li>
 <li><em>[standard iterator operations]</em></li>
 </ul>
@@ -270,7 +270,7 @@ same way as for <code>UtfIterator</code>.</p>
 <li><code>template &lt;typename C1, typename C2&gt; void</code> <strong><code>recode</code></strong><code>(const basic_string&lt;C1&gt;&amp; src, size_t offset, basic_string&lt;C2&gt;&amp; dst, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename C1, typename C2&gt; void</code> <strong><code>recode</code></strong><code>(const C1* src, size_t count, basic_string&lt;C2&gt;&amp; dst, uint32_t flags = 0)</code></li>
 <li><code>template &lt;typename C2, typename C1&gt; basic_string&lt;C2&gt;</code> <strong><code>recode</code></strong><code>(const basic_string&lt;C1&gt;&amp; src, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C2, typename C1&gt; basic_string&lt;C2&gt;</code> <strong><code>recode</code></strong><code>(const basic_string&lt;C1&gt;&amp; src, size_t offset, int on_error)</code></li>
+<li><code>template &lt;typename C2, typename C1&gt; basic_string&lt;C2&gt;</code> <strong><code>recode</code></strong><code>(const basic_string&lt;C1&gt;&amp; src, size_t offset, uint32_t flags)</code></li>
 </ul>
 <p>Encoding conversion functions. These convert from one UTF encoding to another;
 as usual, the encoding forms are determined by the size of the input (<code>C1</code>)
