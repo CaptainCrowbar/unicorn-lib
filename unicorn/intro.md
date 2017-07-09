@@ -106,6 +106,7 @@ following usage guide:
     encountered more than once, in descending order of frequency.
 
     Options:
+
         --input, -i <arg>     = Input file (default is standard input)
         --output, -o <arg>    = Output file (default is standard output)
         --encoding, -e <arg>  = Input encoding (default "UTF-8")

@@ -40,6 +40,7 @@ namespace {
                 "App version 1.0\n"
                 "\n"
                 "Options:\n"
+                "\n"
                 "    --alpha, -a <arg>   = Alpha option (default \"ABC\")\n"
                 "    --number, -n <arg>  = Number option (default 123)\n"
                 "    --help, -h          = Show usage information\n"
@@ -453,6 +454,7 @@ namespace {
                 "App version 1.0\n"
                 "\n"
                 "Options:\n"
+                "\n"
                 "    --alpha, -a <arg>     = Alpha option (default \"ABC\")\n"
                 "    --number, -n <arg>    = Number option (default 123)\n"
                 "    --foo, -f             = Positive option\n"
@@ -478,6 +480,7 @@ namespace {
                 "App version 1.0\n"
                 "\n"
                 "Options:\n"
+                "\n"
                 "    --alpha, -a <arg>     = Alpha option (default \"ABC\")\n"
                 "    --number, -n <arg>    = Number option (default 123)\n"
                 "    --foo, -f             = Positive option\n"
@@ -500,52 +503,56 @@ namespace {
         U8string help;
 
         TRY(opt = Options("App 1.0"));
-        TRY(opt.add("Intro"));
+        TRY(opt.add("Intro."));
         TRY(opt.add("alpha", "Alpha option"));
         TRY(help = opt.help_text());
         TEST_EQUAL(help,
             "\n"
             "App 1.0\n"
             "\n"
-            "Intro\n"
+            "Intro.\n"
             "\n"
             "Options:\n"
+            "\n"
             "    --alpha <arg>  = Alpha option\n"
             "\n"
         );
 
         TRY(opt = Options("App 1.0"));
         TRY(opt.add("alpha", "Alpha option"));
-        TRY(opt.add("Outro"));
+        TRY(opt.add("Outro."));
         TRY(help = opt.help_text());
         TEST_EQUAL(help,
             "\n"
             "App 1.0\n"
             "\n"
             "Options:\n"
+            "\n"
             "    --alpha <arg>  = Alpha option\n"
             "\n"
-            "Outro\n"
+            "Outro.\n"
             "\n"
         );
 
         TRY(opt = Options("App 1.0"));
-        TRY(opt.add("Intro"));
+        TRY(opt.add("Intro."));
         TRY(opt.add("alpha", "Alpha option"));
         TRY(opt.add("Some info."));
         TRY(opt.add("bravo", "Bravo option"));
         TRY(opt.add("charlie", "Charlie option"));
         TRY(opt.add("Some more info."));
+        TRY(opt.add("Yet more info."));
         TRY(opt.add("delta", "Delta option"));
-        TRY(opt.add("Outro"));
+        TRY(opt.add("Outro."));
         TRY(help = opt.help_text());
         TEST_EQUAL(help,
             "\n"
             "App 1.0\n"
             "\n"
-            "Intro\n"
+            "Intro.\n"
             "\n"
             "Options:\n"
+            "\n"
             "    --alpha <arg>    = Alpha option\n"
             "\n"
             "Some info.\n"
@@ -555,9 +562,11 @@ namespace {
             "\n"
             "Some more info.\n"
             "\n"
+            "Yet more info.\n"
+            "\n"
             "    --delta <arg>    = Delta option\n"
             "\n"
-            "Outro\n"
+            "Outro.\n"
             "\n"
         );
 

@@ -165,13 +165,13 @@ namespace RS {
             bool opthdr = false, was_info = true;
             for (size_t i = 0; i < opts.size(); ++i) {
                 bool is_info = opts[i].opt_name.empty();
-                if (is_info || (was_info && ! ends_with(text, ":\n")))
+                if (is_info || was_info)
                     text += "\n";
                 if (is_info) {
                     text += opts[i].opt_info + "\n";
                 } else {
                     if (! opthdr) {
-                        text += "Options:\n";
+                        text += "Options:\n\n";
                         opthdr = true;
                     }
                     U8string prefix = str_pad_right(prefixes[i], maxlen, U' ', length_flags);
@@ -182,7 +182,7 @@ namespace RS {
             if (! opthdr) {
                 if (was_info)
                     text += "\n";
-                text += "Options:\n    None\n";
+                text += "Options:\n\n    None\n";
             }
             text += "\n";
             return text;

@@ -38,6 +38,7 @@ the following information on the standard output:
     My Program 1.0
 
     Options:
+
         --alpha, -a <arg>   = The most important option
         --omega <arg>       = The least important option
         --number, -n <num>  = How many roads to walk down (default 42)
