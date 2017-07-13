@@ -17,15 +17,11 @@ UTF-32; `wstring` may hold either UTF-16 or UTF-32, depending on the compiler.
 
 ## Constants ##
 
-* `namespace` **`UtfError`**
-
-This exists only to provide a namespace for the error handling constants.
-
-Flag                       | Description
-----                       | -----------
-`UtfError::`**`ignore`**   | Assume valid UTF input
-`UtfError::`**`replace`**  | Replace invalid UTF with `U+FFFD`
-`UtfError::`**`throws`**   | Throw `EncodingError` on invalid UTF
+Flag                  | Description
+----                  | -----------
+`Utf::`**`ignore`**   | Assume valid UTF input
+`Utf::`**`replace`**  | Replace invalid UTF with `U+FFFD`
+`Utf::`**`throws`**   | Throw `EncodingError` on invalid UTF
 
 These bitmask flags are used in most encoding conversion functions, and some
 related functions, to indicate how to handle encoding errors in the input
@@ -53,8 +49,8 @@ manipulation within a program will be done entirely in Unicode; text is
 normally converted back and forth to other encodings, and checked for
 validity, only at the point of input and output. Unlike the UTF conversion
 functions in this module, the functions in [`unicorn/mbcs`](mbcs.html) that
-convert between Unicode and other encodings default to `UtfError::replace`,
-and do not accept the `UtfError::ignore` option.
+convert between Unicode and other encodings default to `Utf::replace`, and do
+not accept the `Utf::ignore` option.
 
 ## Single character functions ##
 
@@ -149,8 +145,8 @@ the end, but behaviour is undefined if this is called on any other kind of
 invalid iterator.
 
 The `valid()` function indicates whether the current character is valid; it
-will always be true if `UtfError::ignore` was set, and its value is
-unspecified on a past-the-end iterator.
+will always be true if `Utf::ignore` was set, and its value is unspecified on
+a past-the-end iterator.
 
 If the underlying string is UTF-32, this is just a simple pass-through
 iterator, but if one of the non-default error handling options is selected, it
@@ -239,12 +235,12 @@ The last two versions return the converted string instead of writing it to a
 destination string passed by reference; in this case the output code unit type
 must be supplied explicitly as a template argument.
 
-The `flags` argument has its usual meaning. If the `UtfError::ignore` flag is
-used, and the source and destination code units are the same size, the string
-will simply be copied unchanged. If the `UtfError::throws` flag is used, and
-the destination string was supplied by reference, after an exception is thrown
-the destination string will contain the successfully converted part of the
-string before the error.
+The `flags` argument has its usual meaning. If the `Utf::ignore` flag is used,
+and the source and destination code units are the same size, the string will
+simply be copied unchanged. If the `Utf::throws` flag is used, and the
+destination string was supplied by reference, after an exception is thrown the
+destination string will contain the successfully converted part of the string
+before the error.
 
 * `template <typename C> U8string` **`to_utf8`**`(const basic_string<C>& src, uint32_t flags = 0)`
 * `template <typename C> u16string` **`to_utf16`**`(const basic_string<C>& src, uint32_t flags = 0)`

@@ -114,17 +114,17 @@ namespace {
         TRY(import_string(euro_iso8859_15, s8, 28605));  TEST_EQUAL(s8, euro_utf8);
         TRY(import_string(euro_gb18030, s8, 54936));     TEST_EQUAL(s8, euro_utf8);
 
-        TRY(import_string(euro_utf8, s8, "utf-8", UtfError::throws));       TEST_EQUAL(s8, euro_utf8);
-        TRY(import_string(euro_utf8, s8, 65001, UtfError::throws));         TEST_EQUAL(s8, euro_utf8);
-        TRY(import_string(euro_gb18030, s8, "gb18030", UtfError::throws));  TEST_EQUAL(s8, euro_utf8);
-        TRY(import_string(euro_gb18030, s8, 54936, UtfError::throws));      TEST_EQUAL(s8, euro_utf8);
-        TEST_THROW(import_string(euro_windows1252, s8, "utf-8", UtfError::throws), EncodingError);
-        TEST_THROW(import_string(euro_windows1252, s8, 65001, UtfError::throws), EncodingError);
+        TRY(import_string(euro_utf8, s8, "utf-8", Utf::throws));       TEST_EQUAL(s8, euro_utf8);
+        TRY(import_string(euro_utf8, s8, 65001, Utf::throws));         TEST_EQUAL(s8, euro_utf8);
+        TRY(import_string(euro_gb18030, s8, "gb18030", Utf::throws));  TEST_EQUAL(s8, euro_utf8);
+        TRY(import_string(euro_gb18030, s8, 54936, Utf::throws));      TEST_EQUAL(s8, euro_utf8);
+        TEST_THROW(import_string(euro_windows1252, s8, "utf-8", Utf::throws), EncodingError);
+        TEST_THROW(import_string(euro_windows1252, s8, 65001, Utf::throws), EncodingError);
 
         // Error detection is not reliable on Windows
         #ifdef _XOPEN_SOURCE
-            TEST_THROW(import_string(euro_utf8, s8, "ascii", UtfError::throws), EncodingError);
-            TEST_THROW(import_string(euro_utf8, s8, 20127, UtfError::throws), EncodingError);
+            TEST_THROW(import_string(euro_utf8, s8, "ascii", Utf::throws), EncodingError);
+            TEST_THROW(import_string(euro_utf8, s8, 20127, Utf::throws), EncodingError);
         #endif
 
         TRY(import_string(euro_utf8, s8, "utf"));     TEST_EQUAL(s8, euro_utf8);
@@ -157,16 +157,16 @@ namespace {
         TRY(export_string(euro_utf8, s, 28605));  TEST_EQUAL(s, euro_iso8859_15);
         TRY(export_string(euro_utf8, s, 54936));  TEST_EQUAL(s, euro_gb18030);
 
-        TRY(export_string(euro_utf8, s, "utf-8", UtfError::throws));    TEST_EQUAL(s, euro_utf8);
-        TRY(export_string(euro_utf8, s, 65001, UtfError::throws));      TEST_EQUAL(s, euro_utf8);
-        TRY(export_string(euro_utf8, s, "gb18030", UtfError::throws));  TEST_EQUAL(s, euro_gb18030);
-        TRY(export_string(euro_utf8, s, 54936, UtfError::throws));      TEST_EQUAL(s, euro_gb18030);
-        TEST_THROW(export_string(euro_utf8 + '\xff', s, "utf-8", UtfError::throws), EncodingError);
-        TEST_THROW(export_string(euro_utf8 + '\xff', s, 65001, UtfError::throws), EncodingError);
+        TRY(export_string(euro_utf8, s, "utf-8", Utf::throws));    TEST_EQUAL(s, euro_utf8);
+        TRY(export_string(euro_utf8, s, 65001, Utf::throws));      TEST_EQUAL(s, euro_utf8);
+        TRY(export_string(euro_utf8, s, "gb18030", Utf::throws));  TEST_EQUAL(s, euro_gb18030);
+        TRY(export_string(euro_utf8, s, 54936, Utf::throws));      TEST_EQUAL(s, euro_gb18030);
+        TEST_THROW(export_string(euro_utf8 + '\xff', s, "utf-8", Utf::throws), EncodingError);
+        TEST_THROW(export_string(euro_utf8 + '\xff', s, 65001, Utf::throws), EncodingError);
 
         #ifdef _XOPEN_SOURCE
-            TEST_THROW(export_string(euro_utf8, s, "ascii", UtfError::throws), EncodingError);
-            TEST_THROW(export_string(euro_utf8, s, 20127, UtfError::throws), EncodingError);
+            TEST_THROW(export_string(euro_utf8, s, "ascii", Utf::throws), EncodingError);
+            TEST_THROW(export_string(euro_utf8, s, 20127, Utf::throws), EncodingError);
         #endif
 
     }
@@ -180,16 +180,16 @@ namespace {
         TRY(import_string(s, s8, "char"));
         TEST_EQUAL(s8, euro_utf8);
 
-        TRY(export_string(euro_utf8, s, "char", UtfError::throws));
-        TRY(import_string(s, s8, "char", UtfError::throws));
+        TRY(export_string(euro_utf8, s, "char", Utf::throws));
+        TRY(import_string(s, s8, "char", Utf::throws));
         TEST_EQUAL(s8, euro_utf8);
 
         TRY(export_string(euro_utf8, s, "wchar_t"));
         TRY(import_string(s, s8, "wchar_t"));
         TEST_EQUAL(s8, euro_utf8);
 
-        TRY(export_string(euro_utf8, s, "wchar_t", UtfError::throws));
-        TRY(import_string(s, s8, "wchar_t", UtfError::throws));
+        TRY(export_string(euro_utf8, s, "wchar_t", Utf::throws));
+        TRY(import_string(s, s8, "wchar_t", Utf::throws));
         TEST_EQUAL(s8, euro_utf8);
 
     }

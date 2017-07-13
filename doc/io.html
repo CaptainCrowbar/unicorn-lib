@@ -72,9 +72,8 @@ recognised as a line delimiter.</p>
 <p>The constructor will throw <code>std::invalid_argument</code> if an inconsistent
 combination of flags is supplied, <code>UnknownEncoding</code> if the encoding is not
 recognised, or <code>std::system_error</code> if anything goes wrong while opening the
-file. If the <code>UtfError::throws</code> option was selected, the constructor or
-increment operator may throw <code>EncodingError</code> if the file contains invalid
-text.</p>
+file. If the <code>Utf::throws</code> option was selected, the constructor or increment
+operator may throw <code>EncodingError</code> if the file contains invalid text.</p>
 <p>A dereferenced iterator yields one line of text from the file, optionally
 modified by the flags below.</p>
 <table>
@@ -122,11 +121,11 @@ modified by the flags below.</p>
 <td>Skip empty lines (after any whitespace stripping)</td>
 </tr>
 <tr>
-<td><code>UtfError::</code><strong><code>replace</code></strong></td>
+<td><code>Utf::</code><strong><code>replace</code></strong></td>
 <td>Replace invalid encoding with <code>U+FFFD</code> (default)</td>
 </tr>
 <tr>
-<td><code>UtfError::</code><strong><code>throws</code></strong></td>
+<td><code>Utf::</code><strong><code>throws</code></strong></td>
 <td>Throw <code>EncodingError</code> if invalid encoding is encountered</td>
 </tr>
 </tbody>
@@ -238,11 +237,11 @@ error handling flags on output.</p>
 <td>Hold a per-file mutex while writing, to allow coherent multithreaded output</td>
 </tr>
 <tr>
-<td><code>UtfError::</code><strong><code>replace</code></strong></td>
+<td><code>Utf::</code><strong><code>replace</code></strong></td>
 <td>Replace encoding errors (default)</td>
 </tr>
 <tr>
-<td><code>UtfError::</code><strong><code>throws</code></strong></td>
+<td><code>Utf::</code><strong><code>throws</code></strong></td>
 <td>Throw <code>EncodingError</code> on encoding errors</td>
 </tr>
 </tbody>

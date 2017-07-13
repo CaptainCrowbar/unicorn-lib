@@ -782,14 +782,14 @@ namespace RS {
                 const U8string& src(start.source());
                 size_t offset = start.offset();
                 if (offset >= src.size()) {
-                    if (flags & UtfError::throws)
+                    if (flags & Utf::throws)
                         throw std::invalid_argument("Invalid integer (empty string)");
                     t = T(0);
                     return utf_end(src);
                 }
                 size_t endpos = src.find_first_not_of(base == 16 ? hex_chars : dec_chars, offset);
                 if (endpos == offset) {
-                    if (flags & UtfError::throws)
+                    if (flags & Utf::throws)
                         throw std::invalid_argument("Invalid integer: " + quote(to_utf8(start.str())));
                     t = T(0);
                     return start;
@@ -807,14 +807,14 @@ namespace RS {
                     int err = errno;
                     size_t len = endptr - fragment.data();
                     stop = utf_iterator(src, offset + len);
-                    if ((flags & UtfError::throws) && stop != utf_end(src))
+                    if ((flags & Utf::throws) && stop != utf_end(src))
                         throw std::invalid_argument("Invalid integer: " + quote(fragment));
                     if (len == 0) {
-                        if (flags & UtfError::throws)
+                        if (flags & Utf::throws)
                             throw std::invalid_argument("Invalid integer: " + quote(u_str(start, utf_end(src))));
                         t = T(0);
                     } else if (err == ERANGE || value < min_value || value > max_value) {
-                        if (flags & UtfError::throws)
+                        if (flags & Utf::throws)
                             throw std::range_error("Integer out of range: " + quote(fragment));
                         t = T(value > 0 ? max_value : min_value);
                     } else {
@@ -828,14 +828,14 @@ namespace RS {
                     int err = errno;
                     size_t len = endptr - fragment.data();
                     stop = utf_iterator(src, offset + len);
-                    if ((flags & UtfError::throws) && stop != utf_end(src))
+                    if ((flags & Utf::throws) && stop != utf_end(src))
                             throw std::invalid_argument("Invalid integer: " + quote(u_str(start, utf_end(src))));
                     if (len == 0) {
-                        if (flags & UtfError::throws)
+                        if (flags & Utf::throws)
                             throw std::invalid_argument("Invalid integer: " + quote(fragment));
                         t = T(0);
                     } else if (err == ERANGE || value > max_value) {
-                        if (flags & UtfError::throws)
+                        if (flags & Utf::throws)
                             throw std::range_error("Integer out of range: " + quote(fragment));
                         t = T(max_value);
                     } else {
@@ -920,14 +920,14 @@ namespace RS {
             const U8string& src(start.source());
             size_t offset = start.offset();
             if (offset >= src.size()) {
-                if (flags & UtfError::throws)
+                if (flags & Utf::throws)
                     throw std::invalid_argument("Invalid number (empty string)");
                 t = T(0);
                 return utf_end(src);
             }
             size_t endpos = src.find_first_not_of("+-.0123456789Ee", offset);
             if (endpos == offset) {
-                if (flags & UtfError::throws)
+                if (flags & Utf::throws)
                     throw std::invalid_argument("Invalid number: " + quote(start.str()));
                 t = T(0);
                 return start;
@@ -939,14 +939,14 @@ namespace RS {
             T value = traits::str_to_t(fragment.data(), &endptr);
             size_t len = endptr - fragment.data();
             auto stop = utf_iterator(src, offset + len);
-            if ((flags & UtfError::throws) && stop != utf_end(src))
+            if ((flags & Utf::throws) && stop != utf_end(src))
                 throw std::invalid_argument("Invalid number: " + quote(u_str(start, utf_end(src))));
             if (len == 0) {
-                if (flags & UtfError::throws)
+                if (flags & Utf::throws)
                     throw std::invalid_argument("Invalid number: " + quote(fragment));
                 t = T(0);
             } else if (value == traits::huge_val || value == - traits::huge_val) {
-                if (flags & UtfError::throws)
+                if (flags & Utf::throws)
                     throw std::range_error("Number out of range: " + quote(fragment));
                 t = value > T(0) ? max_value : - max_value;
             } else {

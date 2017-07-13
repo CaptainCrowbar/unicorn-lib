@@ -33,11 +33,6 @@ UTF-32; <code>wstring</code> may hold either UTF-16 or UTF-32, depending on the 
 </ul>
 </div>
 <h2 id="constants">Constants</h2>
-<div class="defns">
-<ul>
-<li><code>namespace</code> <strong><code>UtfError</code></strong></li>
-</ul>
-<p>This exists only to provide a namespace for the error handling constants.</p>
 <table>
 <thead>
 <tr>
@@ -47,15 +42,15 @@ UTF-32; <code>wstring</code> may hold either UTF-16 or UTF-32, depending on the 
 </thead>
 <tbody>
 <tr>
-<td><code>UtfError::</code><strong><code>ignore</code></strong></td>
+<td><code>Utf::</code><strong><code>ignore</code></strong></td>
 <td>Assume valid UTF input</td>
 </tr>
 <tr>
-<td><code>UtfError::</code><strong><code>replace</code></strong></td>
+<td><code>Utf::</code><strong><code>replace</code></strong></td>
 <td>Replace invalid UTF with <code>U+FFFD</code></td>
 </tr>
 <tr>
-<td><code>UtfError::</code><strong><code>throws</code></strong></td>
+<td><code>Utf::</code><strong><code>throws</code></strong></td>
 <td>Throw <code>EncodingError</code> on invalid UTF</td>
 </tr>
 </tbody>
@@ -81,9 +76,8 @@ manipulation within a program will be done entirely in Unicode; text is
 normally converted back and forth to other encodings, and checked for
 validity, only at the point of input and output. Unlike the UTF conversion
 functions in this module, the functions in <a href="mbcs.html"><code>unicorn/mbcs</code></a> that
-convert between Unicode and other encodings default to <code>UtfError::replace</code>,
-and do not accept the <code>UtfError::ignore</code> option.</p>
-</div>
+convert between Unicode and other encodings default to <code>Utf::replace</code>, and do
+not accept the <code>Utf::ignore</code> option.</p>
 <h2 id="single-character-functions">Single character functions</h2>
 <div class="defns">
 <ul>
@@ -178,8 +172,8 @@ character. This will be empty if the iterator is default constructed or past
 the end, but behaviour is undefined if this is called on any other kind of
 invalid iterator.</p>
 <p>The <code>valid()</code> function indicates whether the current character is valid; it
-will always be true if <code>UtfError::ignore</code> was set, and its value is
-unspecified on a past-the-end iterator.</p>
+will always be true if <code>Utf::ignore</code> was set, and its value is unspecified on
+a past-the-end iterator.</p>
 <p>If the underlying string is UTF-32, this is just a simple pass-through
 iterator, but if one of the non-default error handling options is selected, it
 will check for valid Unicode characters and treat invalid code points as
@@ -280,12 +274,12 @@ object (with an optional starting offset), or a code unit pointer and length
 <p>The last two versions return the converted string instead of writing it to a
 destination string passed by reference; in this case the output code unit type
 must be supplied explicitly as a template argument.</p>
-<p>The <code>flags</code> argument has its usual meaning. If the <code>UtfError::ignore</code> flag is
-used, and the source and destination code units are the same size, the string
-will simply be copied unchanged. If the <code>UtfError::throws</code> flag is used, and
-the destination string was supplied by reference, after an exception is thrown
-the destination string will contain the successfully converted part of the
-string before the error.</p>
+<p>The <code>flags</code> argument has its usual meaning. If the <code>Utf::ignore</code> flag is used,
+and the source and destination code units are the same size, the string will
+simply be copied unchanged. If the <code>Utf::throws</code> flag is used, and the
+destination string was supplied by reference, after an exception is thrown the
+destination string will contain the successfully converted part of the string
+before the error.</p>
 </div>
 <div class="defns">
 <ul>

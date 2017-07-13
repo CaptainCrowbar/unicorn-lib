@@ -118,7 +118,7 @@ namespace {
             "\x80uro\n"
             "Pound\n"
         ));
-        TRY(range = read_lines(testfile, UtfError::throws));
+        TRY(range = read_lines(testfile, Utf::throws));
         TEST_THROW(std::copy(range.begin(), range.end(), overwrite(vec)), EncodingError);
 
         TRY(save_file(testfile, "Hello world\nGoodbye\n"));
@@ -331,7 +331,7 @@ namespace {
         // Error detection is not reliable on Windows
         #ifdef _XOPEN_SOURCE
             vec = {u8"Hello €urope\n", "Goodbye\n"};
-            TRY(writer = FileWriter(testfile, UtfError::throws, "ascii"s));
+            TRY(writer = FileWriter(testfile, Utf::throws, "ascii"s));
             TEST_THROW(std::copy(vec.begin(), vec.end(), writer), EncodingError);
         #endif
 

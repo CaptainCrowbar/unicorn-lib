@@ -692,12 +692,12 @@ otherwise similar `strtol()` and related functions, these do not skip leading
 whitespace. For the versions that take a string and offset, results are
 unspecified if the offset does not point to an encoded character boundary.
 
-The only flag recognised is `UtfError::throws`. By default, a value out of
-range for the return type will be clamped to the nearest end of its valid
-range, and the result will be zero if the string does not contain a valid
-number. If `UtfError::throws` is set, an invalid number will throw
-`std::invalid_argument`, and a result out of range will throw
-`std::range_error`. The versions that return the result by value will also
-throw `std::invalid_argument` if `UtfError::throws` is set and there are any
-other characters following the number. In the versions that take the result as
-a reference argument, this will be left unchanged if an exception is thrown.
+The only flag recognised is `Utf::throws`. By default, a value out of range
+for the return type will be clamped to the nearest end of its valid range, and
+the result will be zero if the string does not contain a valid number. If
+`Utf::throws` is set, an invalid number will throw `std::invalid_argument`,
+and a result out of range will throw `std::range_error`. The versions that
+return the result by value will also throw `std::invalid_argument` if
+`Utf::throws` is set and there are any other characters following the number.
+In the versions that take the result as a reference argument, this will be
+left unchanged if an exception is thrown.

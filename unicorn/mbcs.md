@@ -59,15 +59,15 @@ relying on system APIs for the actual conversion, no promises can be made
 about any particular encoding (other than the UTF encodings) being correctly
 recognised and handled.
 
-The `flags` argument can be `UtfError::replace` (the default) or
-`UtfError::throws` (these are defined in [`unicorn/utf`](utf.html)). If
-`UtfError::replace` is selected, invalid data in the input string will be
-replaced with a system- defined replacement character (not necessarily
-`U+FFFD`); if `UtfError::throws` is selected, invalid data will cause an
-`EncodingError` exception to be thrown, if this is detectable (see below).
+The `flags` argument can be `Utf::replace` (the default) or `Utf::throws`
+(these are defined in [`unicorn/utf`](utf.html)). If `Utf::replace` is
+selected, invalid data in the input string will be replaced with a system-
+defined replacement character (not necessarily `U+FFFD`); if `Utf::throws` is
+selected, invalid data will cause an `EncodingError` exception to be thrown,
+if this is detectable (see below).
 
 Ignoring invalid encoding is not allowed here; if any MBCS function that takes
-a flags argument is passed the `UtfError::ignore` flags, it will throw
+a flags argument is passed the `Utf::ignore` flags, it will throw
 `std::invalid_argument`.
 
 If the constant `Mbcs::strict` is included in the flags, no attempt will be

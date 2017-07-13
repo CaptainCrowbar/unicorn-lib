@@ -707,47 +707,47 @@ namespace {
         Utf32Range r32;
         WcharRange rw;
 
-        TRY(r8 = utf_range(x8, UtfError::replace));    TRY(std::copy(r8.begin(), r8.end(), overwrite(s32)));   TEST_EQUAL(s32, y32);
-        TRY(r16 = utf_range(x16, UtfError::replace));  TRY(std::copy(r16.begin(), r16.end(), overwrite(s32)));  TEST_EQUAL(s32, y32);
-        TRY(r32 = utf_range(x32, UtfError::replace));  TRY(std::copy(r32.begin(), r32.end(), overwrite(s32)));  TEST_EQUAL(s32, y32);
-        TRY(rw = utf_range(xw, UtfError::replace));    TRY(std::copy(rw.begin(), rw.end(), overwrite(s32)));   TEST_EQUAL(s32, y32);
+        TRY(r8 = utf_range(x8, Utf::replace));    TRY(std::copy(r8.begin(), r8.end(), overwrite(s32)));   TEST_EQUAL(s32, y32);
+        TRY(r16 = utf_range(x16, Utf::replace));  TRY(std::copy(r16.begin(), r16.end(), overwrite(s32)));  TEST_EQUAL(s32, y32);
+        TRY(r32 = utf_range(x32, Utf::replace));  TRY(std::copy(r32.begin(), r32.end(), overwrite(s32)));  TEST_EQUAL(s32, y32);
+        TRY(rw = utf_range(xw, Utf::replace));    TRY(std::copy(rw.begin(), rw.end(), overwrite(s32)));   TEST_EQUAL(s32, y32);
 
-        s8.clear();   TRY(std::copy(x32.begin(), x32.end(), utf_writer(s8, UtfError::replace)));   TEST_EQUAL(s8, y8);
-        s16.clear();  TRY(std::copy(x32.begin(), x32.end(), utf_writer(s16, UtfError::replace)));  TEST_EQUAL(s16, y16);
-        s32.clear();  TRY(std::copy(x32.begin(), x32.end(), utf_writer(s32, UtfError::replace)));  TEST_EQUAL(s32, y32);
-        sw.clear();   TRY(std::copy(x32.begin(), x32.end(), utf_writer(sw, UtfError::replace)));   TEST_EQUAL(sw, yw);
+        s8.clear();   TRY(std::copy(x32.begin(), x32.end(), utf_writer(s8, Utf::replace)));   TEST_EQUAL(s8, y8);
+        s16.clear();  TRY(std::copy(x32.begin(), x32.end(), utf_writer(s16, Utf::replace)));  TEST_EQUAL(s16, y16);
+        s32.clear();  TRY(std::copy(x32.begin(), x32.end(), utf_writer(s32, Utf::replace)));  TEST_EQUAL(s32, y32);
+        sw.clear();   TRY(std::copy(x32.begin(), x32.end(), utf_writer(sw, Utf::replace)));   TEST_EQUAL(sw, yw);
 
-        TRY(i8 = utf_begin(x8, UtfError::throws));
+        TRY(i8 = utf_begin(x8, Utf::throws));
         TRY(std::advance(i8, 4));
         TEST_THROW_EQUAL(++i8, EncodingError, "Encoding error (UTF-8); offset 5; hex ff");
-        TRY(i8 = utf_iterator(x8, 0, UtfError::throws));
-        TEST_THROW_EQUAL(i8 = utf_iterator(x8, 5, UtfError::throws), EncodingError, "Encoding error (UTF-8); offset 5; hex ff");
-        TRY(i16 = utf_begin(x16, UtfError::throws));
+        TRY(i8 = utf_iterator(x8, 0, Utf::throws));
+        TEST_THROW_EQUAL(i8 = utf_iterator(x8, 5, Utf::throws), EncodingError, "Encoding error (UTF-8); offset 5; hex ff");
+        TRY(i16 = utf_begin(x16, Utf::throws));
         TRY(std::advance(i16, 4));
         TEST_THROW_EQUAL(++i16, EncodingError, "Encoding error (UTF-16); offset 5; hex d800");
-        TRY(i16 = utf_iterator(x16, 0, UtfError::throws));
-        TEST_THROW_EQUAL(i16 = utf_iterator(x16, 5, UtfError::throws), EncodingError, "Encoding error (UTF-16); offset 5; hex d800");
-        TRY(i32 = utf_begin(x32, UtfError::throws));
+        TRY(i16 = utf_iterator(x16, 0, Utf::throws));
+        TEST_THROW_EQUAL(i16 = utf_iterator(x16, 5, Utf::throws), EncodingError, "Encoding error (UTF-16); offset 5; hex d800");
+        TRY(i32 = utf_begin(x32, Utf::throws));
         TRY(std::advance(i32, 4));
         TEST_THROW_EQUAL(++i32, EncodingError, "Encoding error (UTF-32); offset 5; hex 0000d800");
-        TRY(i32 = utf_iterator(x32, 0, UtfError::throws));
-        TEST_THROW_EQUAL(i32 = utf_iterator(x32, 5, UtfError::throws), EncodingError, "Encoding error (UTF-32); offset 5; hex 0000d800");
+        TRY(i32 = utf_iterator(x32, 0, Utf::throws));
+        TEST_THROW_EQUAL(i32 = utf_iterator(x32, 5, Utf::throws), EncodingError, "Encoding error (UTF-32); offset 5; hex 0000d800");
 
         s8.clear();
-        TEST_THROW_EQUAL(std::copy(x32.begin(), x32.end(), utf_writer(s8, UtfError::throws)),
+        TEST_THROW_EQUAL(std::copy(x32.begin(), x32.end(), utf_writer(s8, Utf::throws)),
             EncodingError, "Encoding error (UTF-8); offset 5; hex 0000d800");
         s16.clear();
-        TEST_THROW_EQUAL(std::copy(x32.begin(), x32.end(), utf_writer(s16, UtfError::throws)),
+        TEST_THROW_EQUAL(std::copy(x32.begin(), x32.end(), utf_writer(s16, Utf::throws)),
             EncodingError, "Encoding error (UTF-16); offset 5; hex 0000d800");
         s32.clear();
-        TEST_THROW_EQUAL(std::copy(x32.begin(), x32.end(), utf_writer(s32, UtfError::throws)),
+        TEST_THROW_EQUAL(std::copy(x32.begin(), x32.end(), utf_writer(s32, Utf::throws)),
             EncodingError, "Encoding error (UTF-32); offset 5; hex 0000d800");
 
         // Check that error handling for UTF-8 matches the Unicode recommendation
         // (Unicode Standard 7.0, section 3.9, page 128)
         const std::string bad_utf8 {"\x61\xf1\x80\x80\xe1\x80\xc2\x62\x80\x63\x80\xbf\x64"};
         const std::u32string expected {0x61,0xfffd,0xfffd,0xfffd,0x62,0xfffd,0x63,0xfffd,0xfffd,0x64};
-        TRY(recode(bad_utf8, s32, UtfError::replace));
+        TRY(recode(bad_utf8, s32, Utf::replace));
         TEST_EQUAL(s32, expected);
 
     }

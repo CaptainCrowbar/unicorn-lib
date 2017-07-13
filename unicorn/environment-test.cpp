@@ -78,8 +78,8 @@ namespace {
 
         std::vector<U8string> keys, values;
         for (auto& kv: env) {
-            TRY(keys.push_back(to_utf8(kv.first, UtfError::replace)));
-            TRY(values.push_back(to_utf8(kv.second, UtfError::replace)));
+            TRY(keys.push_back(to_utf8(kv.first, Utf::replace)));
+            TRY(values.push_back(to_utf8(kv.second, Utf::replace)));
         }
         TEST_EQUAL(keys.size(), env.size());
         TEST_EQUAL(values.size(), env.size());

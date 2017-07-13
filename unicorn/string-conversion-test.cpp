@@ -106,45 +106,45 @@ namespace {
         TEST_EQUAL(str_to_int<uint64_t>("18446744073709551615"s), std::numeric_limits<uint64_t>::max());
         TEST_EQUAL(str_to_int<uint64_t>("18446744073709551616"s), std::numeric_limits<uint64_t>::max());
 
-        TEST_THROW(str_to_int<int8_t>(""s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(str_to_int<int8_t>("hello"s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(str_to_int<int8_t>("128"s, UtfError::throws), std::range_error);
-        TEST_THROW(str_to_int<int8_t>("-129"s, UtfError::throws), std::range_error);
-        TEST_THROW(str_to_int<int8_t>("42xyz"s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(str_to_int<uint8_t>(""s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(str_to_int<uint8_t>("hello"s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(str_to_int<uint8_t>("256"s, UtfError::throws), std::range_error);
-        TEST_THROW(str_to_int<uint8_t>("42xyz"s, UtfError::throws), std::invalid_argument);
+        TEST_THROW(str_to_int<int8_t>(""s, Utf::throws), std::invalid_argument);
+        TEST_THROW(str_to_int<int8_t>("hello"s, Utf::throws), std::invalid_argument);
+        TEST_THROW(str_to_int<int8_t>("128"s, Utf::throws), std::range_error);
+        TEST_THROW(str_to_int<int8_t>("-129"s, Utf::throws), std::range_error);
+        TEST_THROW(str_to_int<int8_t>("42xyz"s, Utf::throws), std::invalid_argument);
+        TEST_THROW(str_to_int<uint8_t>(""s, Utf::throws), std::invalid_argument);
+        TEST_THROW(str_to_int<uint8_t>("hello"s, Utf::throws), std::invalid_argument);
+        TEST_THROW(str_to_int<uint8_t>("256"s, Utf::throws), std::range_error);
+        TEST_THROW(str_to_int<uint8_t>("42xyz"s, Utf::throws), std::invalid_argument);
 
-        TEST_THROW(str_to_int<int16_t>(""s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(str_to_int<int16_t>("hello"s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(str_to_int<int16_t>("32768"s, UtfError::throws), std::range_error);
-        TEST_THROW(str_to_int<int16_t>("-32769"s, UtfError::throws), std::range_error);
-        TEST_THROW(str_to_int<int16_t>("42xyz"s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(str_to_int<uint16_t>(""s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(str_to_int<uint16_t>("hello"s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(str_to_int<uint16_t>("65536"s, UtfError::throws), std::range_error);
-        TEST_THROW(str_to_int<uint16_t>("42xyz"s, UtfError::throws), std::invalid_argument);
+        TEST_THROW(str_to_int<int16_t>(""s, Utf::throws), std::invalid_argument);
+        TEST_THROW(str_to_int<int16_t>("hello"s, Utf::throws), std::invalid_argument);
+        TEST_THROW(str_to_int<int16_t>("32768"s, Utf::throws), std::range_error);
+        TEST_THROW(str_to_int<int16_t>("-32769"s, Utf::throws), std::range_error);
+        TEST_THROW(str_to_int<int16_t>("42xyz"s, Utf::throws), std::invalid_argument);
+        TEST_THROW(str_to_int<uint16_t>(""s, Utf::throws), std::invalid_argument);
+        TEST_THROW(str_to_int<uint16_t>("hello"s, Utf::throws), std::invalid_argument);
+        TEST_THROW(str_to_int<uint16_t>("65536"s, Utf::throws), std::range_error);
+        TEST_THROW(str_to_int<uint16_t>("42xyz"s, Utf::throws), std::invalid_argument);
 
-        TEST_THROW(str_to_int<int32_t>(""s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(str_to_int<int32_t>("hello"s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(str_to_int<int32_t>("2147483648"s, UtfError::throws), std::range_error);
-        TEST_THROW(str_to_int<int32_t>("-2147483649"s, UtfError::throws), std::range_error);
-        TEST_THROW(str_to_int<int32_t>("42xyz"s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(str_to_int<uint32_t>(""s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(str_to_int<uint32_t>("hello"s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(str_to_int<uint32_t>("4294967296"s, UtfError::throws), std::range_error);
-        TEST_THROW(str_to_int<uint32_t>("42xyz"s, UtfError::throws), std::invalid_argument);
+        TEST_THROW(str_to_int<int32_t>(""s, Utf::throws), std::invalid_argument);
+        TEST_THROW(str_to_int<int32_t>("hello"s, Utf::throws), std::invalid_argument);
+        TEST_THROW(str_to_int<int32_t>("2147483648"s, Utf::throws), std::range_error);
+        TEST_THROW(str_to_int<int32_t>("-2147483649"s, Utf::throws), std::range_error);
+        TEST_THROW(str_to_int<int32_t>("42xyz"s, Utf::throws), std::invalid_argument);
+        TEST_THROW(str_to_int<uint32_t>(""s, Utf::throws), std::invalid_argument);
+        TEST_THROW(str_to_int<uint32_t>("hello"s, Utf::throws), std::invalid_argument);
+        TEST_THROW(str_to_int<uint32_t>("4294967296"s, Utf::throws), std::range_error);
+        TEST_THROW(str_to_int<uint32_t>("42xyz"s, Utf::throws), std::invalid_argument);
 
-        TEST_THROW(str_to_int<int64_t>(""s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(str_to_int<int64_t>("hello"s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(str_to_int<int64_t>("9223372036854775808"s, UtfError::throws), std::range_error);
-        TEST_THROW(str_to_int<int64_t>("-9223372036854775809"s, UtfError::throws), std::range_error);
-        TEST_THROW(str_to_int<int64_t>("42xyz"s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(str_to_int<uint64_t>(""s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(str_to_int<uint64_t>("hello"s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(str_to_int<uint64_t>("18446744073709551616"s, UtfError::throws), std::range_error);
-        TEST_THROW(str_to_int<uint64_t>("42xyz"s, UtfError::throws), std::invalid_argument);
+        TEST_THROW(str_to_int<int64_t>(""s, Utf::throws), std::invalid_argument);
+        TEST_THROW(str_to_int<int64_t>("hello"s, Utf::throws), std::invalid_argument);
+        TEST_THROW(str_to_int<int64_t>("9223372036854775808"s, Utf::throws), std::range_error);
+        TEST_THROW(str_to_int<int64_t>("-9223372036854775809"s, Utf::throws), std::range_error);
+        TEST_THROW(str_to_int<int64_t>("42xyz"s, Utf::throws), std::invalid_argument);
+        TEST_THROW(str_to_int<uint64_t>(""s, Utf::throws), std::invalid_argument);
+        TEST_THROW(str_to_int<uint64_t>("hello"s, Utf::throws), std::invalid_argument);
+        TEST_THROW(str_to_int<uint64_t>("18446744073709551616"s, Utf::throws), std::range_error);
+        TEST_THROW(str_to_int<uint64_t>("42xyz"s, Utf::throws), std::invalid_argument);
 
     }
 
@@ -218,45 +218,45 @@ namespace {
         TEST_EQUAL(hex_to_int<uint64_t>("ffffffffffffffff"s), std::numeric_limits<uint64_t>::max());
         TEST_EQUAL(hex_to_int<uint64_t>("10000000000000000"s), std::numeric_limits<uint64_t>::max());
 
-        TEST_THROW(hex_to_int<int8_t>(""s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(hex_to_int<int8_t>("hello"s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(hex_to_int<int8_t>("80"s, UtfError::throws), std::range_error);
-        TEST_THROW(hex_to_int<int8_t>("-81"s, UtfError::throws), std::range_error);
-        TEST_THROW(hex_to_int<int8_t>("42xyz"s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(hex_to_int<uint8_t>(""s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(hex_to_int<uint8_t>("hello"s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(hex_to_int<uint8_t>("100"s, UtfError::throws), std::range_error);
-        TEST_THROW(hex_to_int<uint8_t>("42xyz"s, UtfError::throws), std::invalid_argument);
+        TEST_THROW(hex_to_int<int8_t>(""s, Utf::throws), std::invalid_argument);
+        TEST_THROW(hex_to_int<int8_t>("hello"s, Utf::throws), std::invalid_argument);
+        TEST_THROW(hex_to_int<int8_t>("80"s, Utf::throws), std::range_error);
+        TEST_THROW(hex_to_int<int8_t>("-81"s, Utf::throws), std::range_error);
+        TEST_THROW(hex_to_int<int8_t>("42xyz"s, Utf::throws), std::invalid_argument);
+        TEST_THROW(hex_to_int<uint8_t>(""s, Utf::throws), std::invalid_argument);
+        TEST_THROW(hex_to_int<uint8_t>("hello"s, Utf::throws), std::invalid_argument);
+        TEST_THROW(hex_to_int<uint8_t>("100"s, Utf::throws), std::range_error);
+        TEST_THROW(hex_to_int<uint8_t>("42xyz"s, Utf::throws), std::invalid_argument);
 
-        TEST_THROW(hex_to_int<int16_t>(""s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(hex_to_int<int16_t>("hello"s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(hex_to_int<int16_t>("8000"s, UtfError::throws), std::range_error);
-        TEST_THROW(hex_to_int<int16_t>("-8001"s, UtfError::throws), std::range_error);
-        TEST_THROW(hex_to_int<int16_t>("42xyz"s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(hex_to_int<uint16_t>(""s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(hex_to_int<uint16_t>("hello"s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(hex_to_int<uint16_t>("10000"s, UtfError::throws), std::range_error);
-        TEST_THROW(hex_to_int<uint16_t>("42xyz"s, UtfError::throws), std::invalid_argument);
+        TEST_THROW(hex_to_int<int16_t>(""s, Utf::throws), std::invalid_argument);
+        TEST_THROW(hex_to_int<int16_t>("hello"s, Utf::throws), std::invalid_argument);
+        TEST_THROW(hex_to_int<int16_t>("8000"s, Utf::throws), std::range_error);
+        TEST_THROW(hex_to_int<int16_t>("-8001"s, Utf::throws), std::range_error);
+        TEST_THROW(hex_to_int<int16_t>("42xyz"s, Utf::throws), std::invalid_argument);
+        TEST_THROW(hex_to_int<uint16_t>(""s, Utf::throws), std::invalid_argument);
+        TEST_THROW(hex_to_int<uint16_t>("hello"s, Utf::throws), std::invalid_argument);
+        TEST_THROW(hex_to_int<uint16_t>("10000"s, Utf::throws), std::range_error);
+        TEST_THROW(hex_to_int<uint16_t>("42xyz"s, Utf::throws), std::invalid_argument);
 
-        TEST_THROW(hex_to_int<int32_t>(""s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(hex_to_int<int32_t>("hello"s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(hex_to_int<int32_t>("80000000"s, UtfError::throws), std::range_error);
-        TEST_THROW(hex_to_int<int32_t>("-80000001"s, UtfError::throws), std::range_error);
-        TEST_THROW(hex_to_int<int32_t>("42xyz"s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(hex_to_int<uint32_t>(""s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(hex_to_int<uint32_t>("hello"s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(hex_to_int<uint32_t>("100000000"s, UtfError::throws), std::range_error);
-        TEST_THROW(hex_to_int<uint32_t>("42xyz"s, UtfError::throws), std::invalid_argument);
+        TEST_THROW(hex_to_int<int32_t>(""s, Utf::throws), std::invalid_argument);
+        TEST_THROW(hex_to_int<int32_t>("hello"s, Utf::throws), std::invalid_argument);
+        TEST_THROW(hex_to_int<int32_t>("80000000"s, Utf::throws), std::range_error);
+        TEST_THROW(hex_to_int<int32_t>("-80000001"s, Utf::throws), std::range_error);
+        TEST_THROW(hex_to_int<int32_t>("42xyz"s, Utf::throws), std::invalid_argument);
+        TEST_THROW(hex_to_int<uint32_t>(""s, Utf::throws), std::invalid_argument);
+        TEST_THROW(hex_to_int<uint32_t>("hello"s, Utf::throws), std::invalid_argument);
+        TEST_THROW(hex_to_int<uint32_t>("100000000"s, Utf::throws), std::range_error);
+        TEST_THROW(hex_to_int<uint32_t>("42xyz"s, Utf::throws), std::invalid_argument);
 
-        TEST_THROW(hex_to_int<int64_t>(""s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(hex_to_int<int64_t>("hello"s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(hex_to_int<int64_t>("8000000000000000"s, UtfError::throws), std::range_error);
-        TEST_THROW(hex_to_int<int64_t>("-8000000000000001"s, UtfError::throws), std::range_error);
-        TEST_THROW(hex_to_int<int64_t>("42xyz"s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(hex_to_int<uint64_t>(""s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(hex_to_int<uint64_t>("hello"s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(hex_to_int<uint64_t>("10000000000000000"s, UtfError::throws), std::range_error);
-        TEST_THROW(hex_to_int<uint64_t>("42xyz"s, UtfError::throws), std::invalid_argument);
+        TEST_THROW(hex_to_int<int64_t>(""s, Utf::throws), std::invalid_argument);
+        TEST_THROW(hex_to_int<int64_t>("hello"s, Utf::throws), std::invalid_argument);
+        TEST_THROW(hex_to_int<int64_t>("8000000000000000"s, Utf::throws), std::range_error);
+        TEST_THROW(hex_to_int<int64_t>("-8000000000000001"s, Utf::throws), std::range_error);
+        TEST_THROW(hex_to_int<int64_t>("42xyz"s, Utf::throws), std::invalid_argument);
+        TEST_THROW(hex_to_int<uint64_t>(""s, Utf::throws), std::invalid_argument);
+        TEST_THROW(hex_to_int<uint64_t>("hello"s, Utf::throws), std::invalid_argument);
+        TEST_THROW(hex_to_int<uint64_t>("10000000000000000"s, Utf::throws), std::range_error);
+        TEST_THROW(hex_to_int<uint64_t>("42xyz"s, Utf::throws), std::invalid_argument);
 
     }
 
@@ -299,11 +299,11 @@ namespace {
         TEST_EQUAL(str_to_float<double>("1e9999"s), std::numeric_limits<double>::max());
         TEST_EQUAL(str_to_float<double>("-1e9999"s), - std::numeric_limits<double>::max());
 
-        TEST_THROW(str_to_float<double>(""s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(str_to_float<double>("hello"s, UtfError::throws), std::invalid_argument);
-        TEST_THROW(str_to_float<double>("1e9999"s, UtfError::throws), std::range_error);
-        TEST_THROW(str_to_float<double>("-1e9999"s, UtfError::throws), std::range_error);
-        TEST_THROW(str_to_float<double>("42xyz"s, UtfError::throws), std::invalid_argument);
+        TEST_THROW(str_to_float<double>(""s, Utf::throws), std::invalid_argument);
+        TEST_THROW(str_to_float<double>("hello"s, Utf::throws), std::invalid_argument);
+        TEST_THROW(str_to_float<double>("1e9999"s, Utf::throws), std::range_error);
+        TEST_THROW(str_to_float<double>("-1e9999"s, Utf::throws), std::range_error);
+        TEST_THROW(str_to_float<double>("42xyz"s, Utf::throws), std::invalid_argument);
 
         s = "123456";     TEST_EQUAL(str_to_float<double>(utf_iterator(s, 3)), 456);
         s = "123456.75";  TEST_EQUAL(str_to_float<double>(utf_iterator(s, 3)), 456.75);
