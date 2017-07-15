@@ -10,7 +10,7 @@ using namespace RS;
 using namespace RS::Unicorn;
 using namespace std::literals;
 
-#define TEST_PROPERTY_STRING(type, value) TEST_EQUAL(to_str(type::value), # type "::" # value)
+#define TEST_PROPERTY_STRING(type, value) TEST_EQUAL(to_str(type::value), #type "::" #value)
 
 namespace {
 
@@ -1296,7 +1296,7 @@ namespace {
         #define DECOMPOSITION_TEST(mode, chr, length, expect) \
             do { \
                 size_t n; \
-                TRY(n = mode ## _decomposition(char_to_uint(chr), buf)); \
+                TRY(n = mode##_decomposition(char_to_uint(chr), buf)); \
                 TEST_EQUAL(n, length); \
                 std::u32string decomp(buf + 0, buf + n); \
                 TEST_EQUAL(decomp, expect); \
