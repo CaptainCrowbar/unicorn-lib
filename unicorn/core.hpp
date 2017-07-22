@@ -14,6 +14,12 @@ namespace RS {
 
     namespace Unicorn {
 
+        // Character types
+
+        template <typename T> constexpr bool is_character_type =
+            std::is_same<T, char>::value || std::is_same<T, char16_t>::value
+            || std::is_same<T, char32_t>::value || std::is_same<T, wchar_t>::value;
+
         // Exceptions
 
         class InitializationError:
@@ -55,30 +61,6 @@ namespace RS {
             }
             return s;
         }
-
-        // Basic character types
-
-        template <typename T> constexpr bool is_character_type =
-            std::is_same<T, char>::value || std::is_same<T, char16_t>::value
-            || std::is_same<T, char32_t>::value || std::is_same<T, wchar_t>::value;
-
-        #ifdef _XOPEN_SOURCE
-            using NativeCharacter = char;
-        #else
-            #define UNICORN_NATIVE_WCHAR 1
-            using NativeCharacter = wchar_t;
-        #endif
-
-        #if WCHAR_MAX < 0x7fffffff
-            #define UNICORN_WCHAR_UTF16 1
-            using WcharEquivalent = char16_t;
-        #else
-            #define UNICORN_WCHAR_UTF32 1
-            using WcharEquivalent = char32_t;
-        #endif
-
-        using NativeString = std::basic_string<NativeCharacter>;
-        using WstringEquivalent = std::basic_string<WcharEquivalent>;
 
         // Version information
 
