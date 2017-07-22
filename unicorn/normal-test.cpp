@@ -4,6 +4,7 @@
 #include "unicorn/normal.hpp"
 #include "unicorn/string.hpp"
 #include "unicorn/ucd-tables.hpp"
+#include "rs-core/thread.hpp"
 #include "rs-core/unit-test.hpp"
 #include <algorithm>
 #include <array>

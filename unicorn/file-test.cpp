@@ -506,14 +506,14 @@ namespace {
         f2 = file_path(d1, "world");
         TRY(std::copy(dir.begin(), dir.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 0);
-        TEST_EQUAL(Test::format_range(vec), "[]");
+        TEST_EQUAL(RS::UnitTest::format_range(vec), "[]");
         TRY(make_directory(d1));
         TEST(file_exists(d1));
         TEST(file_is_directory(d1));
         TRY(dir = directory(d1));
         TRY(std::copy(dir.begin(), dir.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 0);
-        TEST_EQUAL(Test::format_range(vec), "[]");
+        TEST_EQUAL(RS::UnitTest::format_range(vec), "[]");
         TRY(touch(f1));
         TEST(file_exists(f1));
         TRY(touch(f2));
@@ -523,17 +523,17 @@ namespace {
         TRY(std::copy(dir.begin(), dir.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 2);
         std::sort(vec.begin(), vec.end());
-        TEST_EQUAL(Test::format_range(vec), "[hello,world]"s);
+        TEST_EQUAL(RS::UnitTest::format_range(vec), "[hello,world]"s);
         TRY(dir = directory(d1, File::dotdot));
         TRY(std::copy(dir.begin(), dir.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 4);
         std::sort(vec.begin(), vec.end());
-        TEST_EQUAL(Test::format_range(vec), "[.,..,hello,world]"s);
+        TEST_EQUAL(RS::UnitTest::format_range(vec), "[.,..,hello,world]"s);
         TRY(dir = directory(d1, File::fullname));
         TRY(std::copy(dir.begin(), dir.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 2);
         std::sort(vec.begin(), vec.end());
-        TEST_EQUAL(Test::format_range(vec), "[__test_dir_1" SLASH "hello,__test_dir_1" SLASH "world]"s);
+        TEST_EQUAL(RS::UnitTest::format_range(vec), "[__test_dir_1" SLASH "hello,__test_dir_1" SLASH "world]"s);
         TEST_THROW(remove_file(d1), std::system_error);
         TEST(file_exists(d1));
         TEST(file_exists(f1));
@@ -545,7 +545,7 @@ namespace {
         TRY(dir = directory(d1));
         TRY(std::copy(dir.begin(), dir.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 0);
-        TEST_EQUAL(Test::format_range(vec), "[]");
+        TEST_EQUAL(RS::UnitTest::format_range(vec), "[]");
 
     }
 

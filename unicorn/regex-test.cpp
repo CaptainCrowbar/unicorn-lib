@@ -308,10 +308,10 @@ namespace {
 
         s = "";               TRY(mr = r.grep(s));  TEST_EQUAL(range_count(mr), 0);
         s = "42";             TRY(mr = r.grep(s));  TEST_EQUAL(range_count(mr), 0);
-        s = "Hello";          TRY(mr = r.grep(s));  TEST_EQUAL(range_count(mr), 1);  TRY(std::copy(mr.begin(), mr.end(), overwrite(v)));  TEST_EQUAL(Test::format_range(v), "[Hello]");
-        s = "(Hello)";        TRY(mr = r.grep(s));  TEST_EQUAL(range_count(mr), 1);  TRY(std::copy(mr.begin(), mr.end(), overwrite(v)));  TEST_EQUAL(Test::format_range(v), "[Hello]");
-        s = "Hello world";    TRY(mr = r.grep(s));  TEST_EQUAL(range_count(mr), 2);  TRY(std::copy(mr.begin(), mr.end(), overwrite(v)));  TEST_EQUAL(Test::format_range(v), "[Hello,world]");
-        s = "(Hello world)";  TRY(mr = r.grep(s));  TEST_EQUAL(range_count(mr), 2);  TRY(std::copy(mr.begin(), mr.end(), overwrite(v)));  TEST_EQUAL(Test::format_range(v), "[Hello,world]");
+        s = "Hello";          TRY(mr = r.grep(s));  TEST_EQUAL(range_count(mr), 1);  TRY(std::copy(mr.begin(), mr.end(), overwrite(v)));  TEST_EQUAL(RS::UnitTest::format_range(v), "[Hello]");
+        s = "(Hello)";        TRY(mr = r.grep(s));  TEST_EQUAL(range_count(mr), 1);  TRY(std::copy(mr.begin(), mr.end(), overwrite(v)));  TEST_EQUAL(RS::UnitTest::format_range(v), "[Hello]");
+        s = "Hello world";    TRY(mr = r.grep(s));  TEST_EQUAL(range_count(mr), 2);  TRY(std::copy(mr.begin(), mr.end(), overwrite(v)));  TEST_EQUAL(RS::UnitTest::format_range(v), "[Hello,world]");
+        s = "(Hello world)";  TRY(mr = r.grep(s));  TEST_EQUAL(range_count(mr), 2);  TRY(std::copy(mr.begin(), mr.end(), overwrite(v)));  TEST_EQUAL(RS::UnitTest::format_range(v), "[Hello,world]");
 
     }
 
@@ -323,12 +323,12 @@ namespace {
 
         TRY(r = Regex("/"));
 
-        s = "";                  TRY(sr = r.split(s));  TEST_EQUAL(range_count(sr), 1);  TEST_EQUAL(Test::format_range(sr), "[]");
-        s = "/";                 TRY(sr = r.split(s));  TEST_EQUAL(range_count(sr), 2);  TEST_EQUAL(Test::format_range(sr), "[,]");
-        s = "Hello";             TRY(sr = r.split(s));  TEST_EQUAL(range_count(sr), 1);  TEST_EQUAL(Test::format_range(sr), "[Hello]");
-        s = "Hello/world";       TRY(sr = r.split(s));  TEST_EQUAL(range_count(sr), 2);  TEST_EQUAL(Test::format_range(sr), "[Hello,world]");
-        s = "/Hello/world/";     TRY(sr = r.split(s));  TEST_EQUAL(range_count(sr), 4);  TEST_EQUAL(Test::format_range(sr), "[,Hello,world,]");
-        s = "//Hello//world//";  TRY(sr = r.split(s));  TEST_EQUAL(range_count(sr), 7);  TEST_EQUAL(Test::format_range(sr), "[,,Hello,,world,,]");
+        s = "";                  TRY(sr = r.split(s));  TEST_EQUAL(range_count(sr), 1);  TEST_EQUAL(RS::UnitTest::format_range(sr), "[]");
+        s = "/";                 TRY(sr = r.split(s));  TEST_EQUAL(range_count(sr), 2);  TEST_EQUAL(RS::UnitTest::format_range(sr), "[,]");
+        s = "Hello";             TRY(sr = r.split(s));  TEST_EQUAL(range_count(sr), 1);  TEST_EQUAL(RS::UnitTest::format_range(sr), "[Hello]");
+        s = "Hello/world";       TRY(sr = r.split(s));  TEST_EQUAL(range_count(sr), 2);  TEST_EQUAL(RS::UnitTest::format_range(sr), "[Hello,world]");
+        s = "/Hello/world/";     TRY(sr = r.split(s));  TEST_EQUAL(range_count(sr), 4);  TEST_EQUAL(RS::UnitTest::format_range(sr), "[,Hello,world,]");
+        s = "//Hello//world//";  TRY(sr = r.split(s));  TEST_EQUAL(range_count(sr), 7);  TEST_EQUAL(RS::UnitTest::format_range(sr), "[,,Hello,,world,,]");
 
     }
 
@@ -519,7 +519,7 @@ namespace {
         TRY(mr = r.grep(s1));
         TEST_EQUAL(range_count(mr), 2);
         TRY(std::copy(mr.begin(), mr.end(), overwrite(v)));
-        TEST_EQUAL(Test::format_range(v), "[Hello,world]");
+        TEST_EQUAL(RS::UnitTest::format_range(v), "[Hello,world]");
 
         Irange<SplitIterator> sr;
 
@@ -527,7 +527,7 @@ namespace {
         TRY(sr = r.split(s1));
         TEST_EQUAL(range_count(sr), 4);
         TRY(std::copy(sr.begin(), sr.end(), overwrite(v)));
-        TEST_EQUAL(Test::format_range(v), "[,Hello,world,]");
+        TEST_EQUAL(RS::UnitTest::format_range(v), "[,Hello,world,]");
 
         RegexFormat rf;
 

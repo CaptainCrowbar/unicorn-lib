@@ -1,5 +1,6 @@
 #include "unicorn/environment.hpp"
 #include "unicorn/string.hpp"
+#include "rs-core/thread.hpp"
 #include <cerrno>
 #include <cstdlib>
 #include <stdexcept>

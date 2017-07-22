@@ -1,6 +1,7 @@
 #include "unicorn/core.hpp"
 #include "unicorn/io.hpp"
 #include "unicorn/utf.hpp"
+#include "rs-core/io.hpp"
 #include "rs-core/unit-test.hpp"
 #include <algorithm>
 #include <string>

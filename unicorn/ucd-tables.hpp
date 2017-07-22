@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "rs-core/core.hpp"
+#include "rs-core/common.hpp"
 #include "unicorn/property-values.hpp"
 #include <algorithm>
 #include <array>

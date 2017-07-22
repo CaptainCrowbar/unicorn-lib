@@ -2,6 +2,7 @@
 #include "unicorn/format.hpp"
 #include "unicorn/mbcs.hpp"
 #include "unicorn/string.hpp"
+#include "rs-core/thread.hpp"
 #include <algorithm>
 #include <cerrno>
 #include <stdexcept>

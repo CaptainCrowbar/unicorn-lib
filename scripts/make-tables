@@ -199,7 +199,6 @@ with open('unicorn/iso-script-names.hpp', 'w', encoding='utf-8', newline='\n') a
     cpp.write('// Internal to the library, do not include this directly\n')
     cpp.write('// NOT INSTALLED\n')
     cpp.write('#pragma once\n')
-    cpp.write('#include "rs-core/core.hpp"\n')
     cpp.write('namespace RS {\n')
     cpp.write('namespace Unicorn {\n')
     cpp.write('namespace UnicornDetail {\n')

@@ -1,7 +1,6 @@
 // Internal to the library, do not include this directly
 // NOT INSTALLED
 #pragma once
-#include "rs-core/core.hpp"
 namespace RS {
 namespace Unicorn {
 namespace UnicornDetail {

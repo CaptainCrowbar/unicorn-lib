@@ -4,6 +4,7 @@
 #include "unicorn/character.hpp"
 #include "unicorn/regex.hpp"
 #include "unicorn/string.hpp"
+#include "rs-core/kwargs.hpp"
 #include <algorithm>
 #include <iostream>
 #include <ostream>

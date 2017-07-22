@@ -57,7 +57,7 @@ namespace {
         size_t lnum = 0;
         for (U8string line: table) {
             ++lnum;
-            size_t prev_failures = Test::test_failures();
+            size_t prev_failures = RS::UnitTest::test_failures();
             auto source32 = decode_hex(line);
             // Some of the examples contain mismatched surrogates
             if (! valid_string(source32))
@@ -89,7 +89,7 @@ namespace {
             TEST_EQUAL_RANGE(segments16, expect16);
             TEST_EQUAL_RANGE(segments32, expect32);
             TEST_EQUAL_RANGE(wsegments, wexpect);
-            if (Test::test_failures() > prev_failures) {
+            if (RS::UnitTest::test_failures() > prev_failures) {
                 FAIL(name + " " + dec(lnum) + ": " + line);
                 for (auto c: source32)
                     std::cout << "\t" << hex(c) << " " << word_break(c) << "\n";
