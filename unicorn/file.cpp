@@ -2,6 +2,8 @@
 #include "unicorn/format.hpp"
 #include "unicorn/mbcs.hpp"
 #include "unicorn/regex.hpp"
+#include "rs-core/thread.hpp"
+#include "rs-core/uuid.hpp"
 #include <cerrno>
 #include <chrono>
 #include <cstdio>

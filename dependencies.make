@@ -13,7 +13,7 @@ $(BUILD)/environment.o: unicorn/environment.cpp unicorn/character.hpp unicorn/co
 $(BUILD)/file-test.o: unicorn/file-test.cpp unicorn/character.hpp unicorn/core.hpp unicorn/file.hpp unicorn/property-values.hpp unicorn/segment.hpp unicorn/string.hpp unicorn/utf.hpp \
     /usr/local/include/rs-core/common.hpp /usr/local/include/rs-core/string.hpp /usr/local/include/rs-core/unit-test.hpp
 $(BUILD)/file.o: unicorn/file.cpp unicorn/character.hpp unicorn/core.hpp unicorn/file.hpp unicorn/format.hpp unicorn/mbcs.hpp unicorn/property-values.hpp unicorn/regex.hpp unicorn/segment.hpp unicorn/string.hpp unicorn/utf.hpp \
-    /usr/local/include/rs-core/common.hpp /usr/local/include/rs-core/float.hpp /usr/local/include/rs-core/random.hpp /usr/local/include/rs-core/string.hpp /usr/local/include/rs-core/time.hpp /usr/local/include/rs-core/uuid.hpp
+    /usr/local/include/rs-core/common.hpp /usr/local/include/rs-core/float.hpp /usr/local/include/rs-core/random.hpp /usr/local/include/rs-core/string.hpp /usr/local/include/rs-core/thread.hpp /usr/local/include/rs-core/time.hpp /usr/local/include/rs-core/uuid.hpp
 $(BUILD)/format-test.o: unicorn/format-test.cpp unicorn/character.hpp unicorn/core.hpp unicorn/format.hpp unicorn/property-values.hpp unicorn/segment.hpp unicorn/string.hpp unicorn/utf.hpp \
     /usr/local/include/rs-core/common.hpp /usr/local/include/rs-core/float.hpp /usr/local/include/rs-core/random.hpp /usr/local/include/rs-core/string.hpp /usr/local/include/rs-core/time.hpp /usr/local/include/rs-core/unit-test.hpp /usr/local/include/rs-core/uuid.hpp
 $(BUILD)/format.o: unicorn/format.cpp unicorn/character.hpp unicorn/core.hpp unicorn/format.hpp unicorn/property-values.hpp unicorn/regex.hpp unicorn/segment.hpp unicorn/string.hpp unicorn/utf.hpp \
