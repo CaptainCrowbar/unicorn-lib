@@ -22,7 +22,7 @@ namespace {
     const std::u16string utf16_example {0x430,0x4e8c,0xd800,0xdf02,0xdbff,0xdffd};
     const std::u32string utf32_example {0x430,0x4e8c,0x10302,0x10fffd};
 
-    #if defined(UNICORN_WCHAR_UTF16)
+    #if defined(RS_WCHAR_UTF16)
         const std::wstring wide_example(utf16_example.begin(), utf16_example.end());
     #else
         const std::wstring wide_example(utf32_example.begin(), utf32_example.end());

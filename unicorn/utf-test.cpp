@@ -34,7 +34,7 @@ namespace {
     const std::wstring bw {L"Hello"};
     const std::wstring zw {0, 0, 0};
 
-    #if defined(UNICORN_WCHAR_UTF16)
+    #if defined(RS_WCHAR_UTF16)
         const std::wstring cw(c16.begin(), c16.end());
         const std::wstring xw(x16.begin(), x16.end());
         const std::wstring yw(y16.begin(), y16.end());
@@ -102,7 +102,7 @@ namespace {
         TEST_EQUAL(UtfEncoding<char32_t>::encode(0x10302, buf32), 1);   TEST_EQUAL(buf32[0], 0x10302);
         TEST_EQUAL(UtfEncoding<char32_t>::encode(0x10fffd, buf32), 1);  TEST_EQUAL(buf32[0], 0x10fffd);
 
-        #if defined(UNICORN_WCHAR_UTF16)
+        #if defined(RS_WCHAR_UTF16)
 
             { wchar_t a[] {0x004d, 0};       TEST_EQUAL(UtfEncoding<wchar_t>::decode(a, 3, u), 1); }
             { wchar_t a[] {0x0430, 0};       TEST_EQUAL(UtfEncoding<wchar_t>::decode(a, 3, u), 1); }

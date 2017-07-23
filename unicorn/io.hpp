@@ -53,7 +53,7 @@ namespace RS {
         public InputIterator<FileReader, U8string> {
         public:
             FileReader() {}
-            #if defined(UNICORN_NATIVE_WCHAR)
+            #if defined(RS_NATIVE_WCHAR)
                 explicit FileReader(const U8string& file) { init(to_wstring(file), {}, {}, {}); }
                 FileReader(const U8string& file, uint32_t flags) { init(to_wstring(file), flags, {}, {}); }
                 FileReader(const U8string& file, uint32_t flags, const U8string& enc) { init(to_wstring(file), flags, to_utf8(enc), {}); }
@@ -93,7 +93,7 @@ namespace RS {
         inline Irange<FileReader> read_lines(const U8string& file, uint32_t flags, const U8string& enc, const U8string& eol) { return {{file, flags, enc, eol}, {}}; }
         inline Irange<FileReader> read_lines(const U8string& file, uint32_t flags, uint32_t enc, const U8string& eol) { return {{file, flags, enc, eol}, {}}; }
 
-        #if defined(UNICORN_NATIVE_WCHAR)
+        #if defined(RS_NATIVE_WCHAR)
             inline Irange<FileReader> read_lines(const NativeString& file, uint32_t flags = 0) { return {FileReader{file, flags}, {}}; }
             inline Irange<FileReader> read_lines(const NativeString& file, uint32_t flags, const U8string& enc) { return {{file, flags, enc}, {}}; }
             inline Irange<FileReader> read_lines(const NativeString& file, uint32_t flags, uint32_t enc) { return {{file, flags, enc}, {}}; }
@@ -107,7 +107,7 @@ namespace RS {
         public OutputIterator<FileWriter> {
         public:
             FileWriter() {}
-            #if defined(UNICORN_NATIVE_WCHAR)
+            #if defined(RS_NATIVE_WCHAR)
                 explicit FileWriter(const U8string& file) { init(to_wstring(file), {}, {}); }
                 FileWriter(const U8string& file, uint32_t flags) { init(to_wstring(file), flags, {}); }
                 FileWriter(const U8string& file, uint32_t flags, const U8string& enc) { init(to_wstring(file), flags, enc); }
