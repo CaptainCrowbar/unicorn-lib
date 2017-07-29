@@ -1,8 +1,6 @@
 #include "unicorn/ucd-tables.hpp"
 
-namespace RS {
-namespace Unicorn {
-namespace UnicornDetail {
+namespace RS::Unicorn::UnicornDetail {
 
 const KeyValue<char32_t, uint16_t> general_category_array[] {
 {0x0,0x4363},
@@ -19160,6 +19158,4 @@ const KeyValue<char32_t, Numeric_Type> numeric_type_array[] {
 
 const TableView<char32_t, Numeric_Type> numeric_type_table {std::begin(numeric_type_array), std::end(numeric_type_array)};
 
-}
-}
 }

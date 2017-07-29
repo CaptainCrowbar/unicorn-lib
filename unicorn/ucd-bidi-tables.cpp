@@ -1,8 +1,6 @@
 #include "unicorn/ucd-tables.hpp"
 
-namespace RS {
-namespace Unicorn {
-namespace UnicornDetail {
+namespace RS::Unicorn::UnicornDetail {
 
 const KeyValue<char32_t, Bidi_Class> bidi_class_array[] {
 {0x0,Bidi_Class::BN},
@@ -3070,6 +3068,4 @@ const KeyValue<char32_t, char32_t> bidi_paired_bracket_type_array[] {
 
 const TableView<char32_t, char32_t> bidi_paired_bracket_type_table {std::begin(bidi_paired_bracket_type_array), std::end(bidi_paired_bracket_type_array)};
 
-}
-}
 }

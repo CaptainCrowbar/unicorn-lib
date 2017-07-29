@@ -32,101 +32,97 @@ compositions are possible.
 
 using namespace std::literals;
 
-namespace RS {
+namespace RS::Unicorn {
 
-    namespace Unicorn {
+    namespace {
 
-        namespace {
-
-            void apply_decomposition(const U8string& src, std::u32string& dst, bool k) {
-                auto decompose = k ? compatibility_decomposition : canonical_decomposition;
-                size_t max_decompose = k ? max_compatibility_decomposition : max_canonical_decomposition;
-                char32_t buf[max_decompose];
-                dst.reserve(src.size());
-                size_t pos = 0;
-                for (char32_t c: utf_range(src)) {
-                    dst.resize(pos + max_decompose);
-                    size_t len = decompose(c, &dst[pos]);
-                    if (len == 0) {
-                        dst.resize(++pos);
-                        dst.back() = c;
-                    } else {
-                        dst.resize(pos + len);
-                        while (pos < dst.size()) {
-                            len = decompose(dst[pos], buf);
-                            if (len == 0)
-                                ++pos;
-                            else
-                                dst.replace(pos, 1, buf, len);
-                        }
+        void apply_decomposition(const U8string& src, std::u32string& dst, bool k) {
+            auto decompose = k ? compatibility_decomposition : canonical_decomposition;
+            size_t max_decompose = k ? max_compatibility_decomposition : max_canonical_decomposition;
+            char32_t buf[max_decompose];
+            dst.reserve(src.size());
+            size_t pos = 0;
+            for (char32_t c: utf_range(src)) {
+                dst.resize(pos + max_decompose);
+                size_t len = decompose(c, &dst[pos]);
+                if (len == 0) {
+                    dst.resize(++pos);
+                    dst.back() = c;
+                } else {
+                    dst.resize(pos + len);
+                    while (pos < dst.size()) {
+                        len = decompose(dst[pos], buf);
+                        if (len == 0)
+                            ++pos;
+                        else
+                            dst.replace(pos, 1, buf, len);
                     }
                 }
             }
+        }
 
-            void apply_ordering(std::u32string& str) {
-                auto i = str.begin(), j = i, e = str.end();
-                while (j != e) {
-                    i = std::find_if(j, e, combining_class);
-                    if (i == e)
-                        break;
-                    j = std::find_if_not(i, e, combining_class);
-                    std::stable_sort(i, j, [] (char32_t a, char32_t b)
-                        { return combining_class(a) < combining_class(b); });
-                }
+        void apply_ordering(std::u32string& str) {
+            auto i = str.begin(), j = i, e = str.end();
+            while (j != e) {
+                i = std::find_if(j, e, combining_class);
+                if (i == e)
+                    break;
+                j = std::find_if_not(i, e, combining_class);
+                std::stable_sort(i, j, [] (char32_t a, char32_t b)
+                    { return combining_class(a) < combining_class(b); });
             }
+        }
 
-            void apply_composition(std::u32string& str) {
-                if (str.size() < 2)
-                    return;
-                auto i = str.begin(), e = str.end();
-                while (i != e) {
-                    i = std::find_if_not(i, e, combining_class);
-                    if (i == e)
-                        break;
-                    bool combined = false;
-                    int prev_cc = 0;
-                    for (auto j = i + 1; j != e; ++j) {
-                        int cc = combining_class(*j);
-                        if (prev_cc == 0 || prev_cc < cc) {
-                            char32_t c = canonical_composition(*i, *j);
-                            if (c) {
-                                *i = c;
-                                str.erase(j);
-                                combined = true;
-                                break;
-                            }
-                        }
-                        if (cc == 0)
+        void apply_composition(std::u32string& str) {
+            if (str.size() < 2)
+                return;
+            auto i = str.begin(), e = str.end();
+            while (i != e) {
+                i = std::find_if_not(i, e, combining_class);
+                if (i == e)
+                    break;
+                bool combined = false;
+                int prev_cc = 0;
+                for (auto j = i + 1; j != e; ++j) {
+                    int cc = combining_class(*j);
+                    if (prev_cc == 0 || prev_cc < cc) {
+                        char32_t c = canonical_composition(*i, *j);
+                        if (c) {
+                            *i = c;
+                            str.erase(j);
+                            combined = true;
                             break;
-                        prev_cc = cc;
+                        }
                     }
-                    if (! combined)
-                        ++i;
+                    if (cc == 0)
+                        break;
+                    prev_cc = cc;
                 }
+                if (! combined)
+                    ++i;
             }
-
         }
 
-        U8string normalize(const U8string& src, NormalizationForm form) {
-            using namespace UnicornDetail;
-            std::u32string utf32;
-            apply_decomposition(src, utf32, form == NFKC || form == NFKD);
-            apply_ordering(utf32);
-            if (form == NFC || form == NFKC)
-                apply_composition(utf32);
-            return to_utf8(utf32);
-        }
+    }
 
-        void normalize_in(U8string& src, NormalizationForm form) {
-            using namespace UnicornDetail;
-            std::u32string utf32;
-            apply_decomposition(src, utf32, form == NFKC || form == NFKD);
-            apply_ordering(utf32);
-            if (form == NFC || form == NFKC)
-                apply_composition(utf32);
-            recode(utf32, src);
-        }
+    U8string normalize(const U8string& src, NormalizationForm form) {
+        using namespace UnicornDetail;
+        std::u32string utf32;
+        apply_decomposition(src, utf32, form == NFKC || form == NFKD);
+        apply_ordering(utf32);
+        if (form == NFC || form == NFKC)
+            apply_composition(utf32);
+        return to_utf8(utf32);
+    }
 
+    void normalize_in(U8string& src, NormalizationForm form) {
+        using namespace UnicornDetail;
+        std::u32string utf32;
+        apply_decomposition(src, utf32, form == NFKC || form == NFKD);
+        apply_ordering(utf32);
+        if (form == NFC || form == NFKC)
+            apply_composition(utf32);
+        recode(utf32, src);
     }
 
 }

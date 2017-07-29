@@ -1,8 +1,6 @@
 #include "unicorn/ucd-tables.hpp"
 
-namespace RS {
-namespace Unicorn {
-namespace UnicornDetail {
+namespace RS::Unicorn::UnicornDetail {
 
 const KeyValue<char32_t, int> combining_class_array[] {
 {0x0,0},
@@ -7164,6 +7162,4 @@ const KeyValue<std::array<char32_t, 2>, char32_t> composition_array[] {
 
 const TableView<std::array<char32_t, 2>, char32_t> composition_table {std::begin(composition_array), std::end(composition_array)};
 
-}
-}
 }

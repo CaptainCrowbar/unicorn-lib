@@ -1,8 +1,6 @@
 #include "unicorn/ucd-tables.hpp"
 
-namespace RS {
-namespace Unicorn {
-namespace UnicornDetail {
+namespace RS::Unicorn::UnicornDetail {
 
 const KeyValue<char32_t, PackedPair<long long>> numeric_value_array[] {
 {0x0,{0,1}},
@@ -1598,6 +1596,4 @@ const KeyValue<char32_t, PackedPair<long long>> numeric_value_array[] {
 
 const TableView<char32_t, PackedPair<long long>> numeric_value_table {std::begin(numeric_value_array), std::end(numeric_value_array)};
 
-}
-}
 }

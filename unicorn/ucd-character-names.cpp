@@ -1,8 +1,6 @@
 #include "unicorn/ucd-tables.hpp"
 
-namespace RS {
-namespace Unicorn {
-namespace UnicornDetail {
+namespace RS::Unicorn::UnicornDetail {
 
 const char* const main_names_data = 
 "\x78\x9c\x94\x5d\x59\x92\xe3\xb8\xae\xdd\x4a\x6e\xa0\x22\xac\x59\x0a\x7f\xc9\xb6\xd2\x56\xa5\x6d\xb9\x3c\x54\x5e\xe7\x9f\xc6\xfd"
@@ -5995,6 +5993,4 @@ const KeyValue<char32_t, char const*> corrected_names_array[] {
 
 const TableView<char32_t, char const*> corrected_names_table {std::begin(corrected_names_array), std::end(corrected_names_array)};
 
-}
-}
 }

@@ -4,8 +4,8 @@ import codecs
 import re
 import zlib
 
-head = '#include "unicorn/ucd-tables.hpp"\n\nnamespace RS {\nnamespace Unicorn {\nnamespace UnicornDetail {\n'
-tail = '\n}\n}\n}\n'
+head = '#include "unicorn/ucd-tables.hpp"\n\nnamespace RS::Unicorn::UnicornDetail {\n'
+tail = '\n}\n'
 
 def hex_chars(chars):
     return ','.join(['0x{0:x}'.format(c) for c in chars])

@@ -1,8 +1,6 @@
 #include "unicorn/ucd-tables.hpp"
 
-namespace RS {
-namespace Unicorn {
-namespace UnicornDetail {
+namespace RS::Unicorn::UnicornDetail {
 
 const KeyValue<char32_t, char32_t> other_lowercase_array[] {
 {0xaa,0xaa},
@@ -3006,6 +3004,4 @@ const KeyValue<char32_t, std::array<char32_t, 3>> full_casefold_array[] {
 
 const TableView<char32_t, std::array<char32_t, 3>> full_casefold_table {std::begin(full_casefold_array), std::end(full_casefold_array)};
 
-}
-}
 }
