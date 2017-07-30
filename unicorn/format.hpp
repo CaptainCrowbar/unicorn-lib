@@ -95,7 +95,6 @@ namespace RS::Unicorn {
 
         void translate_flags(const U8string& str, uint64_t& flags, int& prec, size_t& width, char32_t& pad);
         U8string format_float(long double t, uint64_t flags, int prec);
-        U8string format_roman(uint32_t n);
 
         template <typename T>
         U8string format_radix(T t, int base, int prec) {
@@ -136,7 +135,7 @@ namespace RS::Unicorn {
             if (flags & Format::binary)
                 s = format_radix(t, 2, prec);
             else if (flags & Format::roman)
-                s = format_roman(uint32_t(t));
+                s = roman(unsigned(t));
             else if (flags & Format::hex)
                 s = format_radix(t, 16, prec);
             else

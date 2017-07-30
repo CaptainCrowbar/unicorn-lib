@@ -213,26 +213,6 @@ namespace RS::Unicorn {
             return s;
         }
 
-        U8string format_roman(uint32_t n) {
-            struct char_value { const char* str; unsigned num; };
-            static const char_value table[] {
-                { "M", 1000 },
-                { "CM", 900 }, { "D", 500 }, { "CD", 400 }, { "C", 100 },
-                { "XC", 90 }, { "L", 50 }, { "XL", 40 }, { "X", 10 },
-                { "IX", 9 }, { "V", 5 }, { "IV", 4 }, { "I", 1 },
-            };
-            if (n == 0)
-                return "0";
-            U8string s;
-            for (auto& t: table) {
-                auto q = n / t.num;
-                n %= t.num;
-                for (unsigned long long i = 0; i < q; ++i)
-                    s += t.str;
-            }
-            return s;
-        }
-
         // Alignment and padding
 
         U8string format_align(U8string src, uint64_t flags, size_t width, char32_t pad) {
