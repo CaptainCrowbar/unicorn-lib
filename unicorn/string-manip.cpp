@@ -558,20 +558,20 @@ namespace RS::Unicorn {
         str.swap(result);
     }
 
-    std::vector<U8string> str_splitv(const U8string& src) {
-        std::vector<U8string> v;
+    Strings str_splitv(const U8string& src) {
+        Strings v;
         str_split(src, append(v));
         return v;
     }
 
-    std::vector<U8string> str_splitv_at(const U8string& src, const U8string& delim) {
-        std::vector<U8string> v;
+    Strings str_splitv_at(const U8string& src, const U8string& delim) {
+        Strings v;
         str_split_at(src, append(v), delim);
         return v;
     }
 
-    std::vector<U8string> str_splitv_by(const U8string& src, const U8string& delim) {
-        std::vector<U8string> v;
+    Strings str_splitv_by(const U8string& src, const U8string& delim) {
+        Strings v;
         str_split_by(src, append(v), delim);
         return v;
     }

@@ -386,7 +386,7 @@ character is not numeric, the numeric value will be zero (expressed as `0/1`).
 ## Script properties ##
 
 * `U8string` **`char_script`**`(char32_t c)`
-* `vector<U8string>` **`char_script_list`**`(char32_t c)`
+* `Strings` **`char_script_list`**`(char32_t c)`
 
 These return the principal script associated with a character, or a list of
 scripts (in unspecified order) for characters that are commonly used with

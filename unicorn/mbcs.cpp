@@ -169,7 +169,7 @@ namespace RS::Unicorn {
             static const auto match_integer = "\\d+"_re;
             static const auto match_unicode = "(?:cs|x)?(?:iso10646)?((?:ucs|utf)\\d+)(be|le|internal|swapped)?"_re;
             #ifdef _XOPEN_SOURCE
-                static const std::vector<U8string> codepage_prefixes {"cp","dos","ibm","ms","windows-"};
+                static const Strings codepage_prefixes {"cp","dos","ibm","ms","windows-"};
             #endif
             // Check for UTF encodings
             auto smashed = smash_name(name, true);

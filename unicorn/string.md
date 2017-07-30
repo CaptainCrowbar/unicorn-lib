@@ -422,9 +422,9 @@ are replaced. The string will be returned unchanged if `target` is empty or
 * `template <typename OutIter> void` **`str_split`**`(const U8string& src, OutIter dst)`
 * `template <typename OutIter> void` **`str_split_at`**`(const U8string& src, OutIter dst, const U8string& delim)`
 * `template <typename OutIter> void` **`str_split_by`**`(const U8string& src, OutIter dst, const U8string& delim)`
-* `vector<U8string>` **`str_splitv`**`(const U8string& src)`
-* `vector<U8string>` **`str_splitv_at`**`(const U8string& src, const U8string& delim)`
-* `vector<U8string>` **`str_splitv_by`**`(const U8string& src, const U8string& delim)`
+* `Strings` **`str_splitv`**`(const U8string& src)`
+* `Strings` **`str_splitv_at`**`(const U8string& src, const U8string& delim)`
+* `Strings` **`str_splitv_by`**`(const U8string& src, const U8string& delim)`
 
 These split a string into substrings, using the specified delimiter to mark
 the substring boundaries, and copying the resulting substrings into the

@@ -73,14 +73,13 @@ namespace RS::Unicorn {
             char32_t pad;    // Padding character
         };
         using sequence = std::vector<element>;
-        using string_list = std::vector<U8string>;
         U8string fmt;
         size_t num = 0;
         sequence seq;
         void add_index(unsigned index, const U8string& flags = {});
         void add_literal(const U8string& text);
-        void apply_format(string_list&, int) const {}
-        template <typename T, typename... Args> void apply_format(string_list& list, int index, const T& t, const Args&... args) const;
+        void apply_format(Strings&, int) const {}
+        template <typename T, typename... Args> void apply_format(Strings& list, int index, const T& t, const Args&... args) const;
 
     };
 
@@ -250,7 +249,7 @@ namespace RS::Unicorn {
 
     template <typename... Args>
     U8string Format::operator()(const Args&... args) const {
-        string_list list(seq.size());
+        Strings list(seq.size());
         for (size_t i = 0; i < seq.size(); ++i)
             if (seq[i].index == 0)
                 list[i] = seq[i].text;
@@ -259,7 +258,7 @@ namespace RS::Unicorn {
     }
 
     template <typename T, typename... Args>
-    void Format::apply_format(string_list& list, int index, const T& t, const Args&... args) const {
+    void Format::apply_format(Strings& list, int index, const T& t, const Args&... args) const {
         using namespace UnicornDetail;
         for (size_t i = 0; i < seq.size(); ++i) {
             if (seq[i].index == index) {

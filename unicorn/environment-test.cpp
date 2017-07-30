@@ -76,7 +76,7 @@ namespace {
             TEST_MATCH(s, "^(.+;)C:\\\\Windows(;.+)?$");
         #endif
 
-        std::vector<U8string> keys, values;
+        Strings keys, values;
         for (auto& kv: env) {
             TRY(keys.push_back(to_utf8(kv.first, Utf::replace)));
             TRY(values.push_back(to_utf8(kv.second, Utf::replace)));

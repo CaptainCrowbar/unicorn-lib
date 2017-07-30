@@ -173,7 +173,7 @@ namespace {
 
         Options opt2("Blank");
         U8string cmdline;
-        std::vector<U8string> sv;
+        Strings sv;
 
         TRY(opt1.add("list", "List option", Options::multi, Options::abbrev="l"));
 
@@ -234,7 +234,7 @@ namespace {
 
         Options opt2("Blank");
         U8string cmdline;
-        std::vector<U8string> sv;
+        Strings sv;
 
         TRY(opt1.add("head", "First anonymous argument", Options::anon));
 

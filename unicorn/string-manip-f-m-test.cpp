@@ -195,7 +195,7 @@ namespace {
 
     void check_join() {
 
-        std::vector<U8string> v;
+        Strings v;
 
         v.clear();                      TEST_EQUAL(str_join(v), "");
         v = {"Hello"};                  TEST_EQUAL(str_join(v), "Hello");

@@ -302,7 +302,7 @@ namespace {
         U8string s;
         Regex r;
         Irange<MatchIterator> mr;
-        std::vector<U8string> v;
+        Strings v;
 
         TRY(r = Regex("[a-z]+", Regex::caseless));
 
@@ -513,7 +513,7 @@ namespace {
         TRY(m = r.search(s1, 15));  TEST(! m.matched());  TEST_EQUAL(m.offset(), npos);  TEST_EQUAL(m.str(), "");
 
         Irange<MatchIterator> mr;
-        std::vector<std::string> v;
+        Strings v;
 
         TRY(r = Regex("\\w+", Regex::byte));
         TRY(mr = r.grep(s1));

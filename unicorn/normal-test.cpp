@@ -21,7 +21,7 @@ using namespace std::literals;
 
 namespace {
 
-    void norm_test(const std::vector<U8string>& u8data, size_t line, NormalizationForm form, size_t i, size_t j) {
+    void norm_test(const Strings& u8data, size_t line, NormalizationForm form, size_t i, size_t j) {
         auto& orig(u8data[i]);
         auto& expect(u8data[j]);
         U8string norm;
@@ -41,7 +41,7 @@ namespace {
     void do_main_tests(size_t b, size_t e) {
         e = std::min(e, range_count(normalization_test_table));
         b = std::min(b, e);
-        std::vector<U8string> hexcodes;
+        Strings hexcodes;
         std::vector<std::u32string> u32data;
         auto row_iter = std::begin(normalization_test_table) + b;
         for (size_t line = b; line < e; ++line) {
@@ -55,7 +55,7 @@ namespace {
             }
             TEST_EQUAL(u32data.size(), 5);
             if (u32data.size() == 5) {
-                std::vector<U8string> u8data;
+                Strings u8data;
                 for (auto& u: u32data)
                     u8data.push_back(to_utf8(u));
                 norm_test(u8data, line, NFC, 0, 1);

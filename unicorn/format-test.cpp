@@ -567,7 +567,7 @@ namespace {
     void check_range_formatting() {
 
         std::vector<int> iv0, iv1 {10, 20, 30, 40, 50};
-        std::vector<U8string> sv0, sv1 {"hello", "world", "goodbye"};
+        Strings sv0, sv1 {"hello", "world", "goodbye"};
         std::map<int, U8string> ism0, ism1 {{10, "hello"}, {20, "world"}, {30, "goodbye"}};
 
         TEST_EQUAL(format_str(iv0), "");

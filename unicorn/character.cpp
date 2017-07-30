@@ -697,15 +697,15 @@ namespace RS::Unicorn {
         class ScriptExtensionMap {
         public:
             ScriptExtensionMap();
-            std::vector<U8string> operator[](const char* cp) const;
+            Strings operator[](const char* cp) const;
         private:
-            std::unordered_map<const char*, std::vector<U8string>> map;
+            std::unordered_map<const char*, Strings> map;
         };
 
         ScriptExtensionMap::ScriptExtensionMap() {
             for (auto& kv: UnicornDetail::script_extensions_table) {
                 if (kv.value) {
-                    std::vector<U8string> scripts;
+                    Strings scripts;
                     U8string list(kv.value);
                     for (size_t i = 0; i < list.size(); i += 5)
                         scripts.push_back(list.substr(i, 4));
@@ -714,7 +714,7 @@ namespace RS::Unicorn {
             }
         }
 
-        std::vector<U8string> ScriptExtensionMap::operator[](const char* cp) const {
+        Strings ScriptExtensionMap::operator[](const char* cp) const {
             auto i = map.find(cp);
             if (i == map.end())
                 return {};
@@ -728,7 +728,7 @@ namespace RS::Unicorn {
         return decode_script(sparse_table_lookup(UnicornDetail::scripts_table, c));
     }
 
-    std::vector<U8string> char_script_list(char32_t c) {
+    Strings char_script_list(char32_t c) {
         static const ScriptExtensionMap map;
         auto cp = sparse_table_lookup(UnicornDetail::script_extensions_table, c);
         if (cp)

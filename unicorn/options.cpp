@@ -105,7 +105,7 @@ namespace RS::Unicorn {
     U8string Options::help_text() const {
         static constexpr auto length_flags = Length::graphemes | Length::narrow;
         U8string text = "\n" + app_info + "\n";
-        string_list prefixes, suffixes;
+        Strings prefixes, suffixes;
         std::vector<size_t> lengths;
         for (auto& opt: opts) {
             U8string prefix, suffix;
@@ -242,12 +242,12 @@ namespace RS::Unicorn {
             return npos;
     }
 
-    Options::string_list Options::find_values(const U8string& name) const {
+    Strings Options::find_values(const U8string& name) const {
         size_t i = find_index(name, true);
-        return i != npos ? opts[i].values : string_list();
+        return i != npos ? opts[i].values : Strings();
     }
 
-    Options::help_mode Options::parse_args(string_list args, uint32_t flags) {
+    Options::help_mode Options::parse_args(Strings args, uint32_t flags) {
         if (help_flag == -1)
             add(Options::help);
         clean_up_arguments(args, flags);
@@ -267,7 +267,7 @@ namespace RS::Unicorn {
         return help_mode::none;
     }
 
-    void Options::clean_up_arguments(string_list& args, uint32_t flags) {
+    void Options::clean_up_arguments(Strings& args, uint32_t flags) {
         if (! (flags & noprefix) && ! args.empty())
             args.erase(args.begin());
         if (flags & quoted)
@@ -276,8 +276,8 @@ namespace RS::Unicorn {
                     arg = arg.substr(1, arg.size() - 1);
     }
 
-    Options::string_list Options::parse_forced_anonymous(string_list& args) {
-        string_list anon;
+    Strings Options::parse_forced_anonymous(Strings& args) {
+        Strings anon;
         auto i = std::find(args.begin(), args.end(), "--");
         if (i != args.end()) {
             anon.assign(i + 1, args.end());
@@ -286,7 +286,7 @@ namespace RS::Unicorn {
         return anon;
     }
 
-    void Options::parse_attached_arguments(string_list& args) {
+    void Options::parse_attached_arguments(Strings& args) {
         size_t i = 0;
         while (i < args.size()) {
             if (arg_type(args[i]) != is_argument) {
@@ -302,7 +302,7 @@ namespace RS::Unicorn {
         }
     }
 
-    void Options::expand_abbreviations(string_list& args) {
+    void Options::expand_abbreviations(Strings& args) {
         size_t i = 0;
         while (i < args.size()) {
             if (arg_type(args[i]) == is_short_option) {
@@ -322,7 +322,7 @@ namespace RS::Unicorn {
         }
     }
 
-    void Options::extract_named_options(string_list& args) {
+    void Options::extract_named_options(Strings& args) {
         size_t a = 0;
         while (a < args.size()) {
             if (arg_type(args[a]) != is_long_option) {
@@ -359,7 +359,7 @@ namespace RS::Unicorn {
         }
     }
 
-    void Options::parse_remaining_anonymous(string_list& args, const string_list& anon) {
+    void Options::parse_remaining_anonymous(Strings& args, const Strings& anon) {
         args.insert(args.end(), anon.begin(), anon.end());
         for (auto& opt: opts) {
             if (args.empty())
@@ -413,7 +413,7 @@ namespace RS::Unicorn {
         opt.values.push_back(arg);
     }
 
-    void Options::unquote(const U8string& src, string_list& dst) {
+    void Options::unquote(const U8string& src, Strings& dst) {
         auto i = utf_begin(src), j = i, e = utf_end(src);
         while (i != e) {
             str_skipws(i, e);

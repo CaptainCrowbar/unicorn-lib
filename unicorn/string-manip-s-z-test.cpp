@@ -13,7 +13,7 @@ namespace {
 
     void check_split() {
 
-        std::vector<U8string> v;
+        Strings v;
 
         TRY(str_split(""s, overwrite(v)));                      TEST_EQUAL(v.size(), 0);  TEST_EQUAL(str_join(v, "/"), "");
         TRY(str_split("Hello"s, overwrite(v)));                 TEST_EQUAL(v.size(), 1);  TEST_EQUAL(str_join(v, "/"), "Hello");

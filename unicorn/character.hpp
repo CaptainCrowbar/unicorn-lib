@@ -243,7 +243,7 @@ namespace RS::Unicorn {
     // Script properties
 
     U8string char_script(char32_t c);
-    std::vector<U8string> char_script_list(char32_t c);
+    Strings char_script_list(char32_t c);
     U8string script_name(const U8string& abbr);
 
 }

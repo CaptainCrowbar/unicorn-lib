@@ -18,7 +18,7 @@ using namespace std::literals;
 namespace {
 
     std::u32string decode_hex(const U8string& code) {
-        std::vector<U8string> hexcodes;
+        Strings hexcodes;
         str_split_by(code, append(hexcodes), " /");
         std::u32string str;
         std::transform(hexcodes.begin(), hexcodes.end(), append(str), hexnum);
@@ -65,11 +65,11 @@ namespace {
             auto source8 = to_utf8(source32);
             auto source16 = to_utf16(source32);
             auto wsource = to_wstring(source32);
-            std::vector<U8string> breakdown;
+            Strings breakdown;
             str_split_by(line, append(breakdown), "/");
             std::vector<std::u32string> expect32;
             std::transform(breakdown.begin(), breakdown.end(), append(expect32), decode_hex);
-            std::vector<U8string> expect8(expect32.size());
+            Strings expect8(expect32.size());
             std::vector<std::u16string> expect16(expect32.size());
             std::vector<std::wstring> wexpect(expect32.size());
             for (size_t i = 0; i < expect32.size(); ++i) {
@@ -77,7 +77,7 @@ namespace {
                 expect16[i] = recode<char16_t>(expect32[i]);
                 wexpect[i] = recode<wchar_t>(expect32[i]);
             }
-            std::vector<U8string> segments8;
+            Strings segments8;
             std::vector<std::u16string> segments16;
             std::vector<std::u32string> segments32;
             std::vector<std::wstring> wsegments;

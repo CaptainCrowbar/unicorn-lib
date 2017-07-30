@@ -365,7 +365,7 @@ namespace {
     void check_file_system_operations() {
 
         U8string d1, d2, d3, f1, f2, f3, f4;
-        std::vector<std::string> vec;
+        Strings vec;
         FileId id1, id2;
 
         TEST(file_exists("."s));

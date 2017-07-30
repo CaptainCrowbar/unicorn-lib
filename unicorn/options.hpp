@@ -100,14 +100,13 @@ namespace RS::Unicorn {
         template <typename T> std::vector<T> get_list(const U8string& name) const;
         bool has(const U8string& name) const;
     private:
-        using string_list = std::vector<U8string>;
         enum class help_mode { none, version, usage };
         struct option_type {
             option_type() = default;
             template <typename... Args> option_type(const U8string& name, const U8string& info, const Args&... args);
             option_type(const U8string& info);
             option_type(const char* info): option_type(cstr(info)) {}
-            string_list values;
+            Strings values;
             U8string opt_name;
             U8string opt_info;
             U8string opt_abbrev;
@@ -129,26 +128,26 @@ namespace RS::Unicorn {
         option_list opts;
         void add_option(option_type opt);
         size_t find_index(U8string name, bool require = false) const;
-        string_list find_values(const U8string& name) const;
-        help_mode parse_args(string_list args, uint32_t flags);
-        void clean_up_arguments(string_list& args, uint32_t flags);
-        string_list parse_forced_anonymous(string_list& args);
-        void parse_attached_arguments(string_list& args);
-        void expand_abbreviations(string_list& args);
-        void extract_named_options(string_list& args);
-        void parse_remaining_anonymous(string_list& args, const string_list& anon);
+        Strings find_values(const U8string& name) const;
+        help_mode parse_args(Strings args, uint32_t flags);
+        void clean_up_arguments(Strings& args, uint32_t flags);
+        Strings parse_forced_anonymous(Strings& args);
+        void parse_attached_arguments(Strings& args);
+        void expand_abbreviations(Strings& args);
+        void extract_named_options(Strings& args);
+        void parse_remaining_anonymous(Strings& args, const Strings& anon);
         void check_required();
         void supply_defaults();
         void send_help(std::ostream& out, help_mode mode) const;
         template <typename C> static U8string arg_convert(const std::basic_string<C>& str, uint32_t /*flags*/) { return to_utf8(str); }
         static U8string arg_convert(const std::string& str, uint32_t flags);
         static void add_arg_to_opt(const U8string& arg, option_type& opt);
-        static void unquote(const U8string& src, string_list& dst);
+        static void unquote(const U8string& src, Strings& dst);
     };
 
     template <typename T>
     std::vector<T> Options::get_list(const U8string& name) const {
-        string_list svec = find_values(name);
+        Strings svec = find_values(name);
         std::vector<T> tvec;
         std::transform(svec.begin(), svec.end(), append(tvec), UnicornDetail::ArgConv<T>());
         return tvec;
@@ -156,7 +155,7 @@ namespace RS::Unicorn {
 
     template <typename C>
     bool Options::parse(const std::vector<std::basic_string<C>>& args, std::ostream& out, uint32_t flags) {
-        string_list u8vec;
+        Strings u8vec;
         std::transform(args.begin(), args.end(), append(u8vec),
             [=] (const std::basic_string<C>& s) { return arg_convert(s, flags); });
         auto help_wanted = parse_args(u8vec, flags);
@@ -167,7 +166,7 @@ namespace RS::Unicorn {
     template <typename C>
     bool Options::parse(const std::basic_string<C>& args, std::ostream& out, uint32_t flags) {
         auto u8args = arg_convert(args, flags);
-        string_list vec;
+        Strings vec;
         if (flags & quoted) {
             unquote(u8args, vec);
             flags &= ~ quoted;

@@ -28,9 +28,8 @@ namespace {
 
     void check_file_reader() {
 
-        using u8vector = std::vector<U8string>;
         U8string s;
-        u8vector vec;
+        Strings vec;
         Irange<FileReader> range;
         TempFile tempfile(testfile);
 
@@ -47,7 +46,7 @@ namespace {
         TRY(range = read_lines(testfile));
         TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 4);
-        TEST_EQUAL_RANGE(vec, (u8vector{
+        TEST_EQUAL_RANGE(vec, (Strings{
             "Last night I saw upon the stair\n",
             "A little man who wasn't there\n",
             "He wasn't there again today\n",
@@ -63,7 +62,7 @@ namespace {
         TRY(range = read_lines(testfile));
         TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 4);
-        TEST_EQUAL_RANGE(vec, (u8vector{
+        TEST_EQUAL_RANGE(vec, (Strings{
             "Last night I saw upon the stair\r\n",
             "A little man who wasn't there\r\n",
             "He wasn't there again today\r\n",
@@ -79,7 +78,7 @@ namespace {
         TRY(range = read_lines(testfile));
         TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 4);
-        TEST_EQUAL_RANGE(vec, (u8vector{
+        TEST_EQUAL_RANGE(vec, (Strings{
             "Last night I saw upon the stair\n",
             "A little man who wasn't there\n",
             "He wasn't there again today\n",
@@ -94,7 +93,7 @@ namespace {
         TRY(range = read_lines(testfile, {}, "windows-1252"s));
         TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 3);
-        TEST_EQUAL_RANGE(vec, (u8vector{
+        TEST_EQUAL_RANGE(vec, (Strings{
             u8"Dollar\n",
             u8"€uro\n",
             u8"Pound\n",
@@ -108,7 +107,7 @@ namespace {
         TRY(range = read_lines(testfile));
         TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 3);
-        TEST_EQUAL_RANGE(vec, (u8vector{
+        TEST_EQUAL_RANGE(vec, (Strings{
             u8"Dollar\n",
             u8"\ufffduro\n",
             u8"Pound\n",
@@ -126,43 +125,43 @@ namespace {
         TRY(range = read_lines(testfile, IO::bom));
         TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 2);
-        TEST_EQUAL_RANGE(vec, (u8vector{"Hello world\n", "Goodbye\n"}));
+        TEST_EQUAL_RANGE(vec, (Strings{"Hello world\n", "Goodbye\n"}));
 
         TRY(save_file(testfile, u8"\ufeffHello world\nGoodbye\n"));
         TRY(range = read_lines(testfile, IO::bom));
         TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 2);
-        TEST_EQUAL_RANGE(vec, (u8vector{"Hello world\n", "Goodbye\n"}));
+        TEST_EQUAL_RANGE(vec, (Strings{"Hello world\n", "Goodbye\n"}));
 
         TRY(save_file(testfile, "Hello world\nGoodbye\n"));
         TRY(range = read_lines(testfile, IO::lf));
         TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 2);
-        TEST_EQUAL_RANGE(vec, (u8vector{"Hello world\n", "Goodbye\n"}));
+        TEST_EQUAL_RANGE(vec, (Strings{"Hello world\n", "Goodbye\n"}));
         TRY(range = read_lines(testfile, IO::crlf));
         TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 2);
-        TEST_EQUAL_RANGE(vec, (u8vector{"Hello world\r\n", "Goodbye\r\n"}));
+        TEST_EQUAL_RANGE(vec, (Strings{"Hello world\r\n", "Goodbye\r\n"}));
 
         TRY(save_file(testfile, "Hello world\r\nGoodbye\r\n"));
         TRY(range = read_lines(testfile, IO::lf));
         TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 2);
-        TEST_EQUAL_RANGE(vec, (u8vector{"Hello world\n", "Goodbye\n"}));
+        TEST_EQUAL_RANGE(vec, (Strings{"Hello world\n", "Goodbye\n"}));
         TRY(range = read_lines(testfile, IO::crlf));
         TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 2);
-        TEST_EQUAL_RANGE(vec, (u8vector{"Hello world\r\n", "Goodbye\r\n"}));
+        TEST_EQUAL_RANGE(vec, (Strings{"Hello world\r\n", "Goodbye\r\n"}));
 
         TRY(save_file(testfile, "Hello world\rGoodbye\r"));
         TRY(range = read_lines(testfile, IO::lf));
         TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 2);
-        TEST_EQUAL_RANGE(vec, (u8vector{"Hello world\n", "Goodbye\n"}));
+        TEST_EQUAL_RANGE(vec, (Strings{"Hello world\n", "Goodbye\n"}));
         TRY(range = read_lines(testfile, IO::crlf));
         TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 2);
-        TEST_EQUAL_RANGE(vec, (u8vector{"Hello world\r\n", "Goodbye\r\n"}));
+        TEST_EQUAL_RANGE(vec, (Strings{"Hello world\r\n", "Goodbye\r\n"}));
 
         TRY(save_file(testfile,
             "\n"
@@ -177,7 +176,7 @@ namespace {
         TRY(range = read_lines(testfile));
         TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 8);
-        TEST_EQUAL_RANGE(vec, (u8vector{
+        TEST_EQUAL_RANGE(vec, (Strings{
             "\n",
             "Hello\n",
             "    \n",
@@ -190,7 +189,7 @@ namespace {
         TRY(range = read_lines(testfile, IO::striplf));
         TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 8);
-        TEST_EQUAL_RANGE(vec, (u8vector{
+        TEST_EQUAL_RANGE(vec, (Strings{
             "",
             "Hello",
             "    ",
@@ -203,7 +202,7 @@ namespace {
         TRY(range = read_lines(testfile, IO::striptws));
         TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 8);
-        TEST_EQUAL_RANGE(vec, (u8vector{
+        TEST_EQUAL_RANGE(vec, (Strings{
             "",
             "Hello",
             "",
@@ -216,7 +215,7 @@ namespace {
         TRY(range = read_lines(testfile, IO::stripws));
         TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 8);
-        TEST_EQUAL_RANGE(vec, (u8vector{
+        TEST_EQUAL_RANGE(vec, (Strings{
             "",
             "Hello",
             "",
@@ -229,7 +228,7 @@ namespace {
         TRY(range = read_lines(testfile, IO::notempty));
         TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 6);
-        TEST_EQUAL_RANGE(vec, (u8vector{
+        TEST_EQUAL_RANGE(vec, (Strings{
             "Hello\n",
             "    \n",
             "    North South    \n",
@@ -240,7 +239,7 @@ namespace {
         TRY(range = read_lines(testfile, IO::stripws | IO::notempty));
         TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 4);
-        TEST_EQUAL_RANGE(vec, (u8vector{
+        TEST_EQUAL_RANGE(vec, (Strings{
             "Hello",
             "North South",
             "East West",
@@ -275,26 +274,26 @@ namespace {
         TRY(range = read_lines(testfile, {}, ""s, "!!"s));
         TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 2);
-        TEST_EQUAL_RANGE(vec, (u8vector{"Hello world!!", "Goodbye!!"}));
+        TEST_EQUAL_RANGE(vec, (Strings{"Hello world!!", "Goodbye!!"}));
 
         TRY(save_file(testfile, "Hello world!!Goodbye!!"));
         TRY(range = read_lines(testfile, IO::striplf, ""s, "!!"s));
         TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 2);
-        TEST_EQUAL_RANGE(vec, (u8vector{"Hello world", "Goodbye"}));
+        TEST_EQUAL_RANGE(vec, (Strings{"Hello world", "Goodbye"}));
 
         TRY(save_file(testfile, "Hello world!!Goodbye!!"));
         TRY(range = read_lines(testfile, IO::lf, ""s, "!!"s));
         TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
         TEST_EQUAL(vec.size(), 2);
-        TEST_EQUAL_RANGE(vec, (u8vector{"Hello world\n", "Goodbye\n"}));
+        TEST_EQUAL_RANGE(vec, (Strings{"Hello world\n", "Goodbye\n"}));
 
     }
 
     void check_file_writer() {
 
         std::string s;
-        std::vector<U8string> vec;
+        Strings vec;
         FileWriter writer;
         TempFile tempfile(testfile);
 

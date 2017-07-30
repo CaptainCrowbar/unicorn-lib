@@ -419,9 +419,9 @@ namespace RS::Unicorn {
     void str_remove_in(U8string& str, const U8string& chars);
     U8string str_replace(const U8string& str, const U8string& target, const U8string& sub, size_t n = npos);
     void str_replace_in(U8string& str, const U8string& target, const U8string& sub, size_t n = npos);
-    std::vector<U8string> str_splitv(const U8string& src);
-    std::vector<U8string> str_splitv_at(const U8string& src, const U8string& delim);
-    std::vector<U8string> str_splitv_by(const U8string& src, const U8string& delim);
+    Strings str_splitv(const U8string& src);
+    Strings str_splitv_at(const U8string& src, const U8string& delim);
+    Strings str_splitv_by(const U8string& src, const U8string& delim);
     U8string str_squeeze(const U8string& str);
     U8string str_squeeze(const U8string& str, const U8string& chars);
     U8string str_squeeze_trim(const U8string& str);
