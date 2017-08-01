@@ -627,8 +627,8 @@ not already there.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>U8string</code> <strong><code>str_wrap</code></strong><code>(const U8string&amp; str, uint32_t flags = 0, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos)</code></li>
-<li><code>void</code> <strong><code>str_wrap_in</code></strong><code>(U8string&amp; str, uint32_t flags = 0, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos)</code></li>
+<li><code>template &lt;typename... Args&gt; U8string</code> <strong><code>str_wrap</code></strong><code>(const U8string&amp; str, const Args&amp;... args)</code></li>
+<li><code>template &lt;typename... Args&gt; void</code> <strong><code>str_wrap_in</code></strong><code>(U8string&amp; str, const Args&amp;... args)</code></li>
 </ul>
 <p>Wrap the text in a string to a given width. Wrapping is done separately for
 each paragraph; paragraphs are delimited by two or more line breaks (as usual,
@@ -636,49 +636,80 @@ each paragraph; paragraphs are delimited by two or more line breaks (as usual,
 character (<code>U+2029</code>). Words are simply delimited by whitespace, which may not
 be appropriate for all languages; no attempt is made at anything more
 sophisticated such as hyphenation or locale-specific word breaking rules.</p>
-<p>If the <code>width</code> argument is zero or <code>npos</code>, the width is set to two characters
-less than the current terminal width, obtained from the <code>COLUMNS</code> environment
-variable; the terminal width is assumed to be 80 characters if <code>COLUMNS</code> is
-undefined or invalid. The <code>margin1</code> and <code>margin2</code> arguments determine the
-number of spaces used to indent the first and subsequent lines, respectively,
-of a paragraph (the width includes the indentation). If <code>margin2=npos</code>,
-<code>margin1</code> is used for all lines. The function will throw <code>std::length_error</code>
-if either margin is greater than or equal to the width.</p>
-<p>Any line breaking (within paragraphs) already present in the input text is
-discarded, except for the special behaviour described for <code>Wrap::preserve</code>
-below.</p>
+<p>The following keyword arguments are recognised:</p>
 <table>
 <thead>
 <tr>
-<th>Flag</th>
+<th>Keyword</th>
+<th>Type</th>
 <th>Description</th>
+<th>Default</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>Wrap::</code><strong><code>crlf</code></strong></td>
-<td>Use CR+LF for line breaks (default is LF)</td>
-</tr>
-<tr>
 <td><code>Wrap::</code><strong><code>enforce</code></strong></td>
+<td><code>bool</code></td>
 <td>Enforce right margin strictly</td>
+<td><code>false</code></td>
 </tr>
 <tr>
 <td><code>Wrap::</code><strong><code>preserve</code></strong></td>
+<td><code>bool</code></td>
 <td>Preserve layout on already indented lines</td>
+<td><code>false</code></td>
+</tr>
+<tr>
+<td><code>Wrap::</code><strong><code>flags</code></strong></td>
+<td><code>uint32_t</code></td>
+<td>Flags for string length</td>
+<td>0</td>
+</tr>
+<tr>
+<td><code>Wrap::</code><strong><code>margin</code></strong></td>
+<td><code>size_t</code></td>
+<td>Margin for first line</td>
+<td>0</td>
+</tr>
+<tr>
+<td><code>Wrap::</code><strong><code>margin2</code></strong></td>
+<td><code>size_t</code></td>
+<td>Margin for subsequent lines</td>
+<td>same as <code>margin</code></td>
+</tr>
+<tr>
+<td><code>Wrap::</code><strong><code>width</code></strong></td>
+<td><code>size_t</code></td>
+<td>Wrap width</td>
+<td>see below</td>
+</tr>
+<tr>
+<td><code>Wrap::</code><strong><code>newline</code></strong></td>
+<td><code>U8string</code></td>
+<td>Line break</td>
+<td><code>"\n"</code></td>
 </tr>
 </tbody>
 </table>
-<p>The <code>flags</code> argument determines the details of the word wrapping behaviour. In
-addition to the flags listed above, the standard flags for determining string
-length are respected.</p>
-<p>By default, a single <code>LF</code> is used to break lines; setting <code>Wrap::crlf</code> causes
-<code>CR+LF</code> to be used instead.</p>
+<p>By default, the width is set to two characters less than the current terminal
+width, obtained from the <code>COLUMNS</code> environment variable; the terminal width is
+assumed to be 80 characters if <code>COLUMNS</code> is undefined or invalid. The <code>margin</code>
+and <code>margin2</code> arguments determine the number of spaces used to indent the
+first and subsequent lines, respectively, of a paragraph (the width includes
+the indentation); if <code>margin2</code> is not supplied, it defaults to the same value
+as <code>margin</code>. The function will throw <code>std::length_error</code> if either margin is
+greater than or equal to the width.</p>
+<p>Width is measured using the usual rules for string length, controlled by the
+<code>flags</code> argument.</p>
+<p>The <code>newline</code> value is used for all line breaks on output; any line breaking
+already present in the input text is discarded. Paragraph breaks are replaced
+with two line breaks, regardless of their original spelling; a single line
+break is inserted at the end of the output. If the <code>preserve</code> flag is used,
+any paragraphs that start with an indented line are left in their original
+layout.</p>
 <p>If a single word is too long to fit on one line, the default behaviour is to
-allow it to violate the right margin. If the <code>Wrap::enforce</code> flag is set, this
-will cause the function to throw <code>std::length_error</code> instead.</p>
-<p>If the <code>Wrap::preserve</code> flag is set, any paragraphs that start with an
-indented line are left in their original format.</p>
+allow it to violate the right margin. If the <code>enforce</code> flag is used, this will
+cause the function to throw <code>std::length_error</code> instead.</p>
 </div>
 <h2 id="case-mapping-functions">Case mapping functions</h2>
 <div class="defns">

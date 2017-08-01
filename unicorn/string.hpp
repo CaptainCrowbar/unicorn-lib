@@ -4,6 +4,7 @@
 #include "unicorn/core.hpp"
 #include "unicorn/segment.hpp"
 #include "unicorn/utf.hpp"
+#include "rs-core/kwargs.hpp"
 #include <algorithm>
 #include <cerrno>
 #include <cmath>
@@ -309,14 +310,6 @@ namespace RS::Unicorn {
     // String manipulation functions
     // Defined in string-manip.cpp
 
-    struct Wrap {
-
-        static constexpr uint32_t crlf      = 1ul << 26;  // Use CR+LF for line breaks (default LF)
-        static constexpr uint32_t enforce   = 1ul << 27;  // Enforce right margin strictly
-        static constexpr uint32_t preserve  = 1ul << 28;  // Preserve layout on already indented lines
-
-    };
-
     namespace UnicornDetail {
 
         enum { trimleft = 1, trimright = 2 };
@@ -452,8 +445,64 @@ namespace RS::Unicorn {
     void str_unify_lines_in(U8string& str, const U8string& newline);
     void str_unify_lines_in(U8string& str, char32_t newline);
     void str_unify_lines_in(U8string& str);
-    U8string str_wrap(const U8string& str, uint32_t flags = 0, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos);
-    void str_wrap_in(U8string& str, uint32_t flags = 0, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos);
+
+    struct Wrap {
+
+        static constexpr Kwarg<bool> enforce = {};      // Enforce right margin strictly (default false)
+        static constexpr Kwarg<bool> preserve = {};     // Preserve layout on already indented lines (default false)
+        static constexpr Kwarg<uint32_t> flags = {};    // Flags for string length (default 0)
+        static constexpr Kwarg<size_t> margin = {};     // Margin for first line (default 0)
+        static constexpr Kwarg<size_t> margin2 = {};    // Margin for subsequent lines (default same as margin)
+        static constexpr Kwarg<size_t> width = {};      // Wrap width (default COLUMNS-2)
+        static constexpr Kwarg<U8string> newline = {};  // Line break (default "\n")
+
+    };
+
+    namespace UnicornDetail {
+
+        void str_wrap_helper(const U8string& src, U8string& dst, bool enforce, bool preserve, uint32_t flags, size_t margin, size_t margin2, size_t width, const U8string& newline);
+
+    }
+
+    template <typename... Args> U8string str_wrap(const U8string& str, const Args&... args) {
+        bool enforce = false;
+        bool preserve = false;
+        uint32_t flags = 0;
+        size_t margin = 0;
+        size_t margin2 = npos;
+        size_t width = npos;
+        U8string newline = "\n";
+        kwget(Wrap::enforce, enforce, args...);
+        kwget(Wrap::preserve, preserve, args...);
+        kwget(Wrap::flags, flags, args...);
+        kwget(Wrap::margin, margin, args...);
+        kwget(Wrap::margin2, margin2, args...);
+        kwget(Wrap::width, width, args...);
+        kwget(Wrap::newline, newline, args...);
+        U8string result;
+        UnicornDetail::str_wrap_helper(str, result, enforce, preserve, flags, margin, margin2, width, newline);
+        return result;
+    }
+
+    template <typename... Args> void str_wrap_in(U8string& str, const Args&... args) {
+        bool enforce = false;
+        bool preserve = false;
+        uint32_t flags = 0;
+        size_t margin = 0;
+        size_t margin2 = npos;
+        size_t width = npos;
+        U8string newline = "\n";
+        kwget(Wrap::enforce, enforce, args...);
+        kwget(Wrap::preserve, preserve, args...);
+        kwget(Wrap::flags, flags, args...);
+        kwget(Wrap::margin, margin, args...);
+        kwget(Wrap::margin2, margin2, args...);
+        kwget(Wrap::width, width, args...);
+        kwget(Wrap::newline, newline, args...);
+        U8string result;
+        UnicornDetail::str_wrap_helper(str, result, enforce, preserve, flags, margin, margin2, width, newline);
+        str = std::move(result);
+    }
 
     template <typename C, typename... Strings>
     U8string str_concat(const std::basic_string<C>& s, const Strings&... ss) {

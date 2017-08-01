@@ -529,8 +529,8 @@ Unicode line or paragraph breaking character is recognised and replaced; the
 string was completely empty, a line break will be added at the end if it was
 not already there.
 
-* `U8string` **`str_wrap`**`(const U8string& str, uint32_t flags = 0, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos)`
-* `void` **`str_wrap_in`**`(U8string& str, uint32_t flags = 0, size_t width = 0, size_t margin1 = 0, size_t margin2 = npos)`
+* `template <typename... Args> U8string` **`str_wrap`**`(const U8string& str, const Args&... args)`
+* `template <typename... Args> void` **`str_wrap_in`**`(U8string& str, const Args&... args)`
 
 Wrap the text in a string to a given width. Wrapping is done separately for
 each paragraph; paragraphs are delimited by two or more line breaks (as usual,
@@ -539,38 +539,40 @@ character (`U+2029`). Words are simply delimited by whitespace, which may not
 be appropriate for all languages; no attempt is made at anything more
 sophisticated such as hyphenation or locale-specific word breaking rules.
 
-If the `width` argument is zero or `npos`, the width is set to two characters
-less than the current terminal width, obtained from the `COLUMNS` environment
-variable; the terminal width is assumed to be 80 characters if `COLUMNS` is
-undefined or invalid. The `margin1` and `margin2` arguments determine the
-number of spaces used to indent the first and subsequent lines, respectively,
-of a paragraph (the width includes the indentation). If `margin2=npos`,
-`margin1` is used for all lines. The function will throw `std::length_error`
-if either margin is greater than or equal to the width.
+The following keyword arguments are recognised:
 
-Any line breaking (within paragraphs) already present in the input text is
-discarded, except for the special behaviour described for `Wrap::preserve`
-below.
+Keyword                 | Type        | Description                                | Default
+-------                 | ----        | -----------                                | -------
+`Wrap::`**`enforce`**   | `bool`      | Enforce right margin strictly              | `false`
+`Wrap::`**`preserve`**  | `bool`      | Preserve layout on already indented lines  | `false`
+`Wrap::`**`flags`**     | `uint32_t`  | Flags for string length                    | 0
+`Wrap::`**`margin`**    | `size_t`    | Margin for first line                      | 0
+`Wrap::`**`margin2`**   | `size_t`    | Margin for subsequent lines                | same as `margin`
+`Wrap::`**`width`**     | `size_t`    | Wrap width                                 | see below
+`Wrap::`**`newline`**   | `U8string`  | Line break                                 | `"\n"`
 
-Flag                    | Description
-----                    | -----------
-`Wrap::`**`crlf`**      | Use CR+LF for line breaks (default is LF)
-`Wrap::`**`enforce`**   | Enforce right margin strictly
-`Wrap::`**`preserve`**  | Preserve layout on already indented lines
+By default, the width is set to two characters less than the current terminal
+width, obtained from the `COLUMNS` environment variable; the terminal width is
+assumed to be 80 characters if `COLUMNS` is undefined or invalid. The `margin`
+and `margin2` arguments determine the number of spaces used to indent the
+first and subsequent lines, respectively, of a paragraph (the width includes
+the indentation); if `margin2` is not supplied, it defaults to the same value
+as `margin`. The function will throw `std::length_error` if either margin is
+greater than or equal to the width.
 
-The `flags` argument determines the details of the word wrapping behaviour. In
-addition to the flags listed above, the standard flags for determining string
-length are respected.
+Width is measured using the usual rules for string length, controlled by the
+`flags` argument.
 
-By default, a single `LF` is used to break lines; setting `Wrap::crlf` causes
-`CR+LF` to be used instead.
+The `newline` value is used for all line breaks on output; any line breaking
+already present in the input text is discarded. Paragraph breaks are replaced
+with two line breaks, regardless of their original spelling; a single line
+break is inserted at the end of the output. If the `preserve` flag is used,
+any paragraphs that start with an indented line are left in their original
+layout.
 
 If a single word is too long to fit on one line, the default behaviour is to
-allow it to violate the right margin. If the `Wrap::enforce` flag is set, this
-will cause the function to throw `std::length_error` instead.
-
-If the `Wrap::preserve` flag is set, any paragraphs that start with an
-indented line are left in their original format.
+allow it to violate the right margin. If the `enforce` flag is used, this will
+cause the function to throw `std::length_error` instead.
 
 ## Case mapping functions ##
 

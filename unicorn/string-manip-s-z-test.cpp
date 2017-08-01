@@ -435,6 +435,7 @@ namespace {
 
         TEST_EQUAL(str_wrap(""s), ""s);
         TEST_EQUAL(str_wrap("\r\n"s), ""s);
+
         s =
             "Lorem ipsum dolor sit amet,\r\n"
             "consectetur adipisicing elit,\r\n"
@@ -449,9 +450,10 @@ namespace {
             "aliqua. Ut enim ad minim veniam, quis\n"
             "nostrud exercitation ullamco laboris\n"
             "nisi ut aliquip ex ea commodo consequat.\n";
-        TEST_EQUAL(str_wrap(s, 0, 40), t);
-        TRY(str_wrap_in(s, 0, 40));
+        TEST_EQUAL(str_wrap(s, Wrap::width=40), t);
+        TRY(str_wrap_in(s, Wrap::width=40));
         TEST_EQUAL(s, t);
+
         s =
             "\r\n"
             "\r\n"
@@ -484,9 +486,10 @@ namespace {
             "\n"
             "Lorem ipsum dolor sit amet, consectetur\n"
             "adipisicing elit.\n";
-        TEST_EQUAL(str_wrap(s, 0, 40), t);
-        TRY(str_wrap_in(s, 0, 40));
+        TEST_EQUAL(str_wrap(s, Wrap::width=40), t);
+        TRY(str_wrap_in(s, Wrap::width=40));
         TEST_EQUAL(s, t);
+
         t =
             //...:....1....:....2....:....3....:....4....:....5
             "                    Lorem ipsum dolor sit amet,\n"
@@ -504,9 +507,10 @@ namespace {
             "\n"
             "                    Lorem ipsum dolor sit amet,\n"
             "          consectetur adipisicing elit.\n";
-        TEST_EQUAL(str_wrap(s, 0, 50, 20, 10), t);
-        TRY(str_wrap_in(s, 0, 50, 20, 10));
+        TEST_EQUAL(str_wrap(s, Wrap::width=50, Wrap::margin=20, Wrap::margin2=10), t);
+        TRY(str_wrap_in(s, Wrap::width=50, Wrap::margin=20, Wrap::margin2=10));
         TEST_EQUAL(s, t);
+
         s =
             "Lorem ipsum dolor sit amet,\r\n"
             "consectetur adipisicing elit,\r\n"
@@ -521,9 +525,10 @@ namespace {
             "aliqua. Ut enim ad minim veniam, quis\r\n"
             "nostrud exercitation ullamco laboris\r\n"
             "nisi ut aliquip ex ea commodo consequat.\r\n";
-        TEST_EQUAL(str_wrap(s, Wrap::crlf, 40), t);
-        TRY(str_wrap_in(s, Wrap::crlf, 40));
+        TEST_EQUAL(str_wrap(s, Wrap::newline="\r\n", Wrap::width=40), t);
+        TRY(str_wrap_in(s, Wrap::newline="\r\n", Wrap::width=40));
         TEST_EQUAL(s, t);
+
         s =
             "Lorem ipsum dolor sit amet,\r\n"
             "consectetur adipisicing elit,\r\n"
@@ -547,8 +552,8 @@ namespace {
             "\n"
             "Lorem ipsum dolor sit amet, consectetur\n"
             "adipisicing elit.\n";
-        TEST_EQUAL(str_wrap(s, Wrap::preserve, 40), t);
-        TRY(str_wrap_in(s, Wrap::preserve, 40));
+        TEST_EQUAL(str_wrap(s, Wrap::preserve, Wrap::width=40), t);
+        TRY(str_wrap_in(s, Wrap::preserve, Wrap::width=40));
         TEST_EQUAL(s, t);
 
     }
