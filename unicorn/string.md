@@ -545,7 +545,7 @@ Keyword                 | Type        | Description                             
 -------                 | ----        | -----------                                | -------
 `Wrap::`**`enforce`**   | `bool`      | Enforce right margin strictly              | `false`
 `Wrap::`**`preserve`**  | `bool`      | Preserve layout on already indented lines  | `false`
-`Wrap::`**`flags`**     | `uint32_t`  | Flags for string length                    | 0
+`Wrap::`**`flags`**     | `uint32_t`  | Flags for string length                    | `Length::characters`
 `Wrap::`**`margin`**    | `size_t`    | Margin for first line                      | 0
 `Wrap::`**`margin2`**   | `size_t`    | Margin for subsequent lines                | same as `margin`
 `Wrap::`**`width`**     | `size_t`    | Wrap width                                 | see below
