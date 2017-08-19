@@ -46,7 +46,7 @@ provide any other error handling options.</p>
 one that takes the subject string by <code>const</code> reference and returns the
 modified string, and one that takes it by non-<code>const</code> reference and modifies
 it in place. Usually the in-place version has a name ending with <code>_in</code> to
-distinguish them, since in many cases they have identical argument lists apart
+distinguish them, since in most cases they have identical argument lists apart
 from the <code>const</code> vs non-<code>const</code> argument, and therefore would not be reliably
 distinguished by overload resolution if they had the same name.</p>
 <p>In some cases the in-place version of the function takes a non-<code>const</code>
@@ -60,9 +60,10 @@ take iterators, behaviour is undefined if a pair of iterators that are
 expected to mark the beginning and end of a substring do not point to the same
 string or are in the wrong order.)</p>
 <p>Any in-place function that might modify its subject string invalidates any
-iterators (string or UTF) that were pointing into that string. Note that the
-iterators should still be considered to be invalidated even if the string
-turns out not to be actually modified in a particular call.</p>
+iterators (string or UTF) and references that were pointing into that string.
+Note that the iterators and references should still be considered to be
+invalidated even if the string turns out not to actually be modified by a
+specific call.</p>
 <p>Modified strings, or new strings returned by a function, are not guaranteed to
 preserve any particular normalization form that the original string may have
 been in.</p>
@@ -106,9 +107,9 @@ others, accept one of the following flags to indicate which definition of
 </tbody>
 </table>
 <p>The various methods of measurement are implemented in the <code>str_length()</code>
-function, described below; anything else that needs a string size will
-normally obtain it by calling <code>str_length()</code> (or a related function such as
-<code>str_find_index()</code>).</p>
+function and the <code>Length</code> class, described below; anything else that needs a
+string size will normally obtain it by calling <code>str_length()</code> (or a related
+function such as <code>str_find_index()</code>).</p>
 <p>By default, a string's length is a count of characters (Unicode scalar
 values); you can also select a count of grapheme clusters (user-perceived
 characters; see <a href="segment.html"><code>unicorn/segment</code></a>), or calculate the East
@@ -118,6 +119,9 @@ are handled, defaulting to narrow (one unit) or wide (two units). The
 <code>Length::graphemes</code> flag can be combined with either of the East Asian width
 options, giving a size based on the width of the base character of each
 grapheme cluster.</p>
+<p>Any function that accepts length flags will throw <code>std::invalid_argument</code> if
+an inconsistent combination of flags is passed (e.g.
+<code>Length::characters|Length::graphemes</code>).</p>
 <div class="defns">
 <ul>
 <li><code>template &lt;typename C&gt; size_t</code> <strong><code>str_length</code></strong><code>(const basic_string&lt;C&gt;&amp; str, uint32_t flags = 0)</code></li>
@@ -125,6 +129,25 @@ grapheme cluster.</p>
 <li><code>template &lt;typename C&gt; size_t</code> <strong><code>str_length</code></strong><code>(const UtfIterator&lt;C&gt;&amp; begin, const UtfIterator&lt;C&gt;&amp; end, uint32_t flags = 0)</code></li>
 </ul>
 <p>Return the length of the string, measured according to the flags supplied.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>struct</code> <strong><code>Length</code></strong><ul>
+<li><code>static constexpr uint32_t Length::</code><strong><code>characters</code></strong></li>
+<li><code>static constexpr uint32_t Length::</code><strong><code>graphemes</code></strong></li>
+<li><code>static constexpr uint32_t Length::</code><strong><code>narrow</code></strong></li>
+<li><code>static constexpr uint32_t Length::</code><strong><code>wide</code></strong></li>
+<li><code>uint32_t Length::</code><strong><code>flags</code></strong> <code>= 0</code></li>
+<li><code>Length::</code><strong><code>Length</code></strong><code>()</code></li>
+<li><code>explicit Length::</code><strong><code>Length</code></strong><code>(uint32_t length_flags)</code></li>
+<li><code>template &lt;typename C&gt; size_t Length::</code><strong><code>operator()</code></strong><code>(const std::basic_string&lt;C&gt;&amp; str) const</code></li>
+<li><code>template &lt;typename C&gt; size_t Length::</code><strong><code>operator()</code></strong><code>(const Irange&lt;UtfIterator&lt;C&gt;&gt;&amp; range) const</code></li>
+<li><code>template &lt;typename C&gt; size_t Length::</code><strong><code>operator()</code></strong><code>(const UtfIterator&lt;C&gt;&amp; b, const UtfIterator&lt;C&gt;&amp; e) const</code></li>
+</ul>
+</li>
+</ul>
+<p>A function object that performs the same length measurements as the
+<code>str_length()</code> functions.</p>
 </div>
 <div class="defns">
 <ul>

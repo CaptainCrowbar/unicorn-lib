@@ -80,12 +80,16 @@ namespace RS::Unicorn {
     // they have bit positions in the 0-25 range.
 
     struct Length {
-
         static constexpr uint32_t characters  = letter_to_mask('C');  // Measure string in characters (default)
         static constexpr uint32_t graphemes   = letter_to_mask('G');  // Measure string in grapheme clusters
         static constexpr uint32_t narrow      = letter_to_mask('N');  // East Asian width, defaulting to narrow
         static constexpr uint32_t wide        = letter_to_mask('W');  // East Asian width, defaulting to wide
-
+        uint32_t flags = 0;
+        Length() = default;
+        explicit Length(uint32_t length_flags);
+        template <typename C> size_t operator()(const std::basic_string<C>& str) const;
+        template <typename C> size_t operator()(const Irange<UtfIterator<C>>& range) const;
+        template <typename C> size_t operator()(const UtfIterator<C>& b, const UtfIterator<C>& e) const;
     };
 
     namespace UnicornDetail {
@@ -180,10 +184,19 @@ namespace RS::Unicorn {
 
     }
 
+    inline Length::Length(uint32_t length_flags):
+    flags(length_flags) {
+        UnicornDetail::check_length_flags(flags);
+    }
+
     template <typename C>
-    size_t str_length(const Irange<UtfIterator<C>>& range, uint32_t flags = 0) {
+    size_t Length::operator()(const std::basic_string<C>& str) const {
+        return (*this)(utf_range(str));
+    }
+
+    template <typename C>
+    size_t Length::operator()(const Irange<UtfIterator<C>>& range) const {
         using namespace UnicornDetail;
-        check_length_flags(flags);
         if (flags & Length::characters) {
             return range_count(range);
         } else if (flags & east_asian_flags) {
@@ -203,13 +216,23 @@ namespace RS::Unicorn {
     }
 
     template <typename C>
-    size_t str_length(const UtfIterator<C>& b, const UtfIterator<C>& e, uint32_t flags = 0) {
-        return str_length(irange(b, e), flags);
+    size_t Length::operator()(const UtfIterator<C>& b, const UtfIterator<C>& e) const {
+        return (*this)(irange(b, e));
     }
 
     template <typename C>
     size_t str_length(const std::basic_string<C>& str, uint32_t flags = 0) {
-        return str_length(utf_range(str), flags);
+        return Length(flags)(str);
+    }
+
+    template <typename C>
+    size_t str_length(const Irange<UtfIterator<C>>& range, uint32_t flags = 0) {
+        return Length(flags)(range);
+    }
+
+    template <typename C>
+    size_t str_length(const UtfIterator<C>& b, const UtfIterator<C>& e, uint32_t flags = 0) {
+        return Length(flags)(b, e);
     }
 
     template <typename C>

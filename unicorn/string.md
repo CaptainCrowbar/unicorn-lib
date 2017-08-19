@@ -29,7 +29,7 @@ Many of the string manipulation functions in this module come in two versions,
 one that takes the subject string by `const` reference and returns the
 modified string, and one that takes it by non-`const` reference and modifies
 it in place. Usually the in-place version has a name ending with `_in` to
-distinguish them, since in many cases they have identical argument lists apart
+distinguish them, since in most cases they have identical argument lists apart
 from the `const` vs non-`const` argument, and therefore would not be reliably
 distinguished by overload resolution if they had the same name.
 
@@ -45,9 +45,10 @@ expected to mark the beginning and end of a substring do not point to the same
 string or are in the wrong order.)
 
 Any in-place function that might modify its subject string invalidates any
-iterators (string or UTF) that were pointing into that string. Note that the
-iterators should still be considered to be invalidated even if the string
-turns out not to be actually modified in a particular call.
+iterators (string or UTF) and references that were pointing into that string.
+Note that the iterators and references should still be considered to be
+invalidated even if the string turns out not to actually be modified by a
+specific call.
 
 Modified strings, or new strings returned by a function, are not guaranteed to
 preserve any particular normalization form that the original string may have
@@ -78,9 +79,9 @@ Flag                        | Description
 `Length::`**`wide`**        | Calculate the East Asian width (ambiguous characters default to wide)
 
 The various methods of measurement are implemented in the `str_length()`
-function, described below; anything else that needs a string size will
-normally obtain it by calling `str_length()` (or a related function such as
-`str_find_index()`).
+function and the `Length` class, described below; anything else that needs a
+string size will normally obtain it by calling `str_length()` (or a related
+function such as `str_find_index()`).
 
 By default, a string's length is a count of characters (Unicode scalar
 values); you can also select a count of grapheme clusters (user-perceived
@@ -93,11 +94,30 @@ are handled, defaulting to narrow (one unit) or wide (two units). The
 options, giving a size based on the width of the base character of each
 grapheme cluster.
 
+Any function that accepts length flags will throw `std::invalid_argument` if
+an inconsistent combination of flags is passed (e.g.
+`Length::characters|Length::graphemes`).
+
 * `template <typename C> size_t` **`str_length`**`(const basic_string<C>& str, uint32_t flags = 0)`
 * `template <typename C> size_t` **`str_length`**`(const Irange<UtfIterator<C>>& range, uint32_t flags = 0)`
 * `template <typename C> size_t` **`str_length`**`(const UtfIterator<C>& begin, const UtfIterator<C>& end, uint32_t flags = 0)`
 
 Return the length of the string, measured according to the flags supplied.
+
+* `struct` **`Length`**
+    * `static constexpr uint32_t Length::`**`characters`**
+    * `static constexpr uint32_t Length::`**`graphemes`**
+    * `static constexpr uint32_t Length::`**`narrow`**
+    * `static constexpr uint32_t Length::`**`wide`**
+    * `uint32_t Length::`**`flags`** `= 0`
+    * `Length::`**`Length`**`()`
+    * `explicit Length::`**`Length`**`(uint32_t length_flags)`
+    * `template <typename C> size_t Length::`**`operator()`**`(const std::basic_string<C>& str) const`
+    * `template <typename C> size_t Length::`**`operator()`**`(const Irange<UtfIterator<C>>& range) const`
+    * `template <typename C> size_t Length::`**`operator()`**`(const UtfIterator<C>& b, const UtfIterator<C>& e) const`
+
+A function object that performs the same length measurements as the
+`str_length()` functions.
 
 * `template <typename C> UtfIterator<C>` **`str_find_index`**`(const basic_string<C>& str, size_t pos, uint32_t flags = 0)`
 * `template <typename C> UtfIterator<C>` **`str_find_index`**`(const Irange<UtfIterator<C>>& range, size_t pos, uint32_t flags = 0)`
