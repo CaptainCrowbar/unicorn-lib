@@ -196,7 +196,7 @@ namespace RS::Unicorn {
             }
         };
 
-        template <typename T, bool = RS_Detail::IsRangeType<T>::value>
+        template <typename T, bool = RS_Detail::CommonRangeType<T>::value>
         struct FormatObject {
             U8string operator()(T t, uint64_t /*flags*/, int /*prec*/) const {
                 std::ostringstream out;
