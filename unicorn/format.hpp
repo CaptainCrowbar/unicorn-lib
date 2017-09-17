@@ -94,7 +94,12 @@ namespace RS::Unicorn {
         // Formatting for specific types
 
         void translate_flags(const U8string& str, uint64_t& flags, int& prec, size_t& width, char32_t& pad);
-        U8string format_float(long double t, uint64_t flags, int prec);
+        U8string format_ldouble(long double t, uint64_t flags, int prec);
+
+        template <typename T>
+        U8string format_float(T t, uint64_t flags, int prec) {
+            return format_ldouble(static_cast<long double>(t), flags, prec);
+        }
 
         template <typename T>
         U8string format_radix(T t, int base, int prec) {

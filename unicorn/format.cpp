@@ -15,10 +15,15 @@ namespace RS::Unicorn {
 
             // These will always be called with x>=0 and prec>=0
 
-            U8string float_print(const char* format, long double x, int prec) {
+            U8string float_print(long double x, int prec, bool exp) {
                 std::vector<char> buf(32);
+                int len = 0;
                 for (;;) {
-                    if (snprintf(buf.data(), buf.size(), format, prec, x) < int(buf.size()))
+                    if (exp)
+                        len = snprintf(buf.data(), buf.size(), "%.*Le", prec, x);
+                    else
+                        len = snprintf(buf.data(), buf.size(), "%.*Lf", prec, x);
+                    if (len < int(buf.size()))
                         return buf.data();
                     buf.resize(2 * buf.size());
                 }
@@ -38,7 +43,7 @@ namespace RS::Unicorn {
 
             U8string float_digits(long double x, int prec) {
                 prec = std::max(prec, 1);
-                auto result = float_print("%.*Le", x, prec - 1);
+                auto result = float_print(x, prec - 1, true);
                 auto epos = result.find_first_of("Ee");
                 auto exponent = strtol(result.data() + epos + 1, nullptr, 10);
                 result.resize(epos);
@@ -60,7 +65,7 @@ namespace RS::Unicorn {
 
             U8string float_exp(long double x, int prec) {
                 prec = std::max(prec, 1);
-                auto result = float_print("%.*Le", x, prec - 1);
+                auto result = float_print(x, prec - 1, true);
                 auto epos = result.find_first_of("Ee");
                 char esign = 0;
                 if (result[epos + 1] == '-')
@@ -81,7 +86,7 @@ namespace RS::Unicorn {
             }
 
             U8string float_fixed(long double x, int prec) {
-                return float_print("%.*Lf", x, prec);
+                return float_print(x, prec, false);
             }
 
             U8string float_general(long double x, int prec) {
@@ -188,7 +193,7 @@ namespace RS::Unicorn {
             }
         }
 
-        U8string format_float(long double t, uint64_t flags, int prec) {
+        U8string format_ldouble(long double t, uint64_t flags, int prec) {
             using std::fabs;
             static constexpr auto format_flags = Format::digits | Format::exp | Format::fixed | Format::general;
             static constexpr auto sign_flags = Format::sign | Format::signz;
