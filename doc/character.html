@@ -64,6 +64,15 @@ and their basic properties.</p>
 </div>
 <div class="defns">
 <ul>
+<li><code>constexpr uint8_t</code> <strong><code>min_utf8_leading</code></strong> <code>=   0xc2  = Minimum leading byte in a multibyte UTF-8 character</code></li>
+<li><code>constexpr uint8_t</code> <strong><code>max_utf8_leading</code></strong> <code>=   0xf4  = Maximum leading byte in a multibyte UTF-8 character</code></li>
+<li><code>constexpr uint8_t</code> <strong><code>min_utf8_trailing</code></strong> <code>=  0x80  = Minimum trailing byte in a multibyte UTF-8 character</code></li>
+<li><code>constexpr uint8_t</code> <strong><code>max_utf8_trailing</code></strong> <code>=  0xbf  = Maximum trailing byte in a multibyte UTF-8 character</code></li>
+</ul>
+<p>UTF-8 code unit ranges.</p>
+</div>
+<div class="defns">
+<ul>
 <li><code>constexpr const char*</code> <strong><code>utf8_bom</code></strong> <code>=          "\xef\xbb\xbf"  = Byte order mark (U+FEFF) in UTF-8</code></li>
 <li><code>constexpr const char*</code> <strong><code>utf8_replacement</code></strong> <code>=  "\xef\xbf\xbd"  = Replacement character (U+FFFD) in UTF-8</code></li>
 </ul>

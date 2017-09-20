@@ -38,6 +38,13 @@ and their basic properties.
 
 Some useful Unicode code points.
 
+* `constexpr uint8_t` **`min_utf8_leading`** `=   0xc2  = Minimum leading byte in a multibyte UTF-8 character`
+* `constexpr uint8_t` **`max_utf8_leading`** `=   0xf4  = Maximum leading byte in a multibyte UTF-8 character`
+* `constexpr uint8_t` **`min_utf8_trailing`** `=  0x80  = Minimum trailing byte in a multibyte UTF-8 character`
+* `constexpr uint8_t` **`max_utf8_trailing`** `=  0xbf  = Maximum trailing byte in a multibyte UTF-8 character`
+
+UTF-8 code unit ranges.
+
 * `constexpr const char*` **`utf8_bom`** `=          "\xef\xbb\xbf"  = Byte order mark (U+FEFF) in UTF-8`
 * `constexpr const char*` **`utf8_replacement`** `=  "\xef\xbf\xbd"  = Replacement character (U+FFFD) in UTF-8`
 
