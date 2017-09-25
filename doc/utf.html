@@ -81,15 +81,16 @@ not accept the <code>Utf::ignore</code> option.</p>
 <h2 id="single-character-functions">Single character functions</h2>
 <div class="defns">
 <ul>
-<li><code>size_t</code> <strong><code>char_from_utf8</code></strong><code>(const char* src, char32_t&amp; dst) noexcept</code></li>
-<li><code>size_t</code> <strong><code>char_from_utf16</code></strong><code>(const char16_t* src, char32_t&amp; dst) noexcept</code></li>
+<li><code>size_t</code> <strong><code>char_from_utf8</code></strong><code>(const char* src, size_t n, char32_t&amp; dst) noexcept</code></li>
+<li><code>size_t</code> <strong><code>char_from_utf16</code></strong><code>(const char16_t* src, size_t n, char32_t&amp; dst) noexcept</code></li>
 <li><code>size_t</code> <strong><code>char_to_utf8</code></strong><code>(char32_t src, char* dst) noexcept</code></li>
 <li><code>size_t</code> <strong><code>char_to_utf16</code></strong><code>(char32_t src, char16_t* dst) noexcept</code></li>
 </ul>
-<p>Read one character from <code>src</code> and write the decoded or encoded form into
-<code>dst</code>, returning the number of code units read or written. If <code>src</code> does not
-contain a valid character, zero is returned and <code>dst</code> is left unchanged.
-Behaviour is undefined if a pointer argument is null.</p>
+<p>Read one character from <code>src</code> (reading up to <code>n</code> code units for the decoding
+functions), and write the decoded or encoded form into <code>dst</code>, returning the
+number of code units read or written. If <code>src</code> does not contain a valid
+character, zero is returned and <code>dst</code> is left unchanged. Behaviour is
+undefined if a pointer argument is null.</p>
 </div>
 <div class="defns">
 <ul>

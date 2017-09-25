@@ -128,8 +128,8 @@ namespace RS::Unicorn {
 
     // Single character functions
 
-    size_t char_from_utf8(const char* src, char32_t& dst) noexcept;
-    size_t char_from_utf16(const char16_t* src, char32_t& dst) noexcept;
+    size_t char_from_utf8(const char* src, size_t n, char32_t& dst) noexcept;
+    size_t char_from_utf16(const char16_t* src, size_t n, char32_t& dst) noexcept;
     size_t char_to_utf8(char32_t src, char* dst) noexcept;
     size_t char_to_utf16(char32_t src, char16_t* dst) noexcept;
 

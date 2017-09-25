@@ -138,22 +138,22 @@ namespace RS::Unicorn {
 
     // Single character functions
 
-    size_t char_from_utf8(const char* src, char32_t& dst) noexcept {
+    size_t char_from_utf8(const char* src, size_t n, char32_t& dst) noexcept {
         char32_t c = 0;
-        size_t n = UnicornDetail::UtfEncoding<char>::decode(src, 4, c);
+        size_t units = UnicornDetail::UtfEncoding<char>::decode(src, n, c);
         if (c == not_unicode)
             return 0;
         dst = c;
-        return n;
+        return units;
     }
 
-    size_t char_from_utf16(const char16_t* src, char32_t& dst) noexcept {
+    size_t char_from_utf16(const char16_t* src, size_t n, char32_t& dst) noexcept {
         char32_t c = 0;
-        size_t n = UnicornDetail::UtfEncoding<char16_t>::decode(src, 2, c);
+        size_t units = UnicornDetail::UtfEncoding<char16_t>::decode(src, n, c);
         if (c == not_unicode)
             return 0;
         dst = c;
-        return n;
+        return units;
     }
 
     size_t char_to_utf8(char32_t src, char* dst) noexcept {
