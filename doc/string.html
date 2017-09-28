@@ -90,7 +90,7 @@ others, accept one of the following flags to indicate which definition of
 <tbody>
 <tr>
 <td><code>Length::</code><strong><code>characters</code></strong></td>
-<td>Count the number of Unicode characters in the string (this is normally the default)</td>
+<td>Count the number of Unicode characters in the string</td>
 </tr>
 <tr>
 <td><code>Length::</code><strong><code>graphemes</code></strong></td>
@@ -106,19 +106,18 @@ others, accept one of the following flags to indicate which definition of
 </tr>
 </tbody>
 </table>
-<p>The various methods of measurement are implemented in the <code>str_length()</code>
-function and the <code>Length</code> class, described below; anything else that needs a
-string size will normally obtain it by calling <code>str_length()</code> (or a related
-function such as <code>str_find_index()</code>).</p>
-<p>By default, a string's length is a count of characters (Unicode scalar
-values); you can also select a count of grapheme clusters (user-perceived
-characters; see <a href="segment.html"><code>unicorn/segment</code></a>), or calculate the East
-Asian width.</p>
+<p>Functions that deal with string length usually return a count of grapheme
+clusters (user-perceived characters) by default; see also
+<a href="segment.html"><code>unicorn/segment</code></a>.</p>
 <p>The two options for East Asian width determine how ambiguous width characters
 are handled, defaulting to narrow (one unit) or wide (two units). The
 <code>Length::graphemes</code> flag can be combined with either of the East Asian width
 options, giving a size based on the width of the base character of each
 grapheme cluster.</p>
+<p>The various methods of measurement are implemented in the <code>str_length()</code>
+function and the <code>Length</code> class, described below; anything else that needs a
+string size will normally obtain it by calling <code>str_length()</code> (or a related
+function such as <code>str_find_index()</code>).</p>
 <p>Any function that accepts length flags will throw <code>std::invalid_argument</code> if
 an inconsistent combination of flags is passed (e.g.
 <code>Length::characters|Length::graphemes</code>).</p>

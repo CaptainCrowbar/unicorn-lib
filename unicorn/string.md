@@ -73,26 +73,25 @@ others, accept one of the following flags to indicate which definition of
 
 Flag                        | Description
 ----                        | -----------
-`Length::`**`characters`**  | Count the number of Unicode characters in the string (this is normally the default)
+`Length::`**`characters`**  | Count the number of Unicode characters in the string
 `Length::`**`graphemes`**   | Count the number of grapheme clusters (user-perceived characters) in the string
 `Length::`**`narrow`**      | Calculate the East Asian width (ambiguous characters default to narrow)
 `Length::`**`wide`**        | Calculate the East Asian width (ambiguous characters default to wide)
 
-The various methods of measurement are implemented in the `str_length()`
-function and the `Length` class, described below; anything else that needs a
-string size will normally obtain it by calling `str_length()` (or a related
-function such as `str_find_index()`).
-
-By default, a string's length is a count of characters (Unicode scalar
-values); you can also select a count of grapheme clusters (user-perceived
-characters; see [`unicorn/segment`](segment.html)), or calculate the East
-Asian width.
+Functions that deal with string length usually return a count of grapheme
+clusters (user-perceived characters) by default; see also
+[`unicorn/segment`](segment.html).
 
 The two options for East Asian width determine how ambiguous width characters
 are handled, defaulting to narrow (one unit) or wide (two units). The
 `Length::graphemes` flag can be combined with either of the East Asian width
 options, giving a size based on the width of the base character of each
 grapheme cluster.
+
+The various methods of measurement are implemented in the `str_length()`
+function and the `Length` class, described below; anything else that needs a
+string size will normally obtain it by calling `str_length()` (or a related
+function such as `str_find_index()`).
 
 Any function that accepts length flags will throw `std::invalid_argument` if
 an inconsistent combination of flags is passed (e.g.

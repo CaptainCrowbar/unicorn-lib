@@ -80,8 +80,8 @@ namespace RS::Unicorn {
     // they have bit positions in the 0-25 range.
 
     struct Length {
-        static constexpr uint32_t characters  = letter_to_mask('C');  // Measure string in characters (default)
-        static constexpr uint32_t graphemes   = letter_to_mask('G');  // Measure string in grapheme clusters
+        static constexpr uint32_t characters  = letter_to_mask('C');  // Measure string in characters
+        static constexpr uint32_t graphemes   = letter_to_mask('G');  // Measure string in grapheme clusters (default)
         static constexpr uint32_t narrow      = letter_to_mask('N');  // East Asian width, defaulting to narrow
         static constexpr uint32_t wide        = letter_to_mask('W');  // East Asian width, defaulting to wide
         uint32_t flags = 0;
@@ -111,7 +111,7 @@ namespace RS::Unicorn {
                     || ibits(flags & (Length::characters | east_asian_flags)) > 1)
                 throw std::invalid_argument("Inconsistent string length flags");
             if (ibits(flags & all_length_flags) == 0)
-                flags |= Length::characters;
+                flags |= Length::graphemes;
         }
 
         class EastAsianCount {
