@@ -95,7 +95,7 @@ namespace RS::Unicorn {
                 if (! nostdc && (c == 0 || (c >= U'\a' && c <= U'\r'))) {
                     append_escape_stdc(c, dst);
                 } else if (c <= 0x1f || c == 0x7f) {
-                    append_escape_x2(c, dst);
+                    append_escape_x2(char(c), dst);
                 } else if (c == U'\\' || c == quote || (punct && c < 0x80 && ascii_ispunct(char(c)))) {
                     dst += '\\';
                     dst += char(c);
@@ -104,7 +104,7 @@ namespace RS::Unicorn {
                 } else if (pcre) {
                     append_escape_pcre(c, dst);
                 } else if (c <= 0xffff) {
-                    append_escape_u4(c, dst);
+                    append_escape_u4(char16_t(c), dst);
                 } else {
                     append_escape_u8(c, dst);
                 }

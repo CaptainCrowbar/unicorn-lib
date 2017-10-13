@@ -43,12 +43,11 @@ namespace RS::Unicorn {
                 return s_dollar;
             }
             S name;
-            size_t end = ofs;
             if (src[ofs + 1] == c_dollar) {
                 ofs += 2;
                 return s_dollar;
             } else if (src[ofs + 1] == c_lbrace) {
-                end = src.find(c_rbrace, ofs + 2);
+                size_t end = src.find(c_rbrace, ofs + 2);
                 if (end == npos) {
                     ofs += 2;
                     return s_dollar_lbrace;

@@ -495,7 +495,8 @@ namespace RS::Unicorn {
 
     U8string str_remove(const U8string& str, const U8string& chars) {
         U8string dst;
-        std::copy_if(utf_begin(str), utf_end(str), utf_writer(dst), [&chars] (char32_t x) { return chars.find(x) == npos; });
+        auto uchars = to_utf32(chars);
+        std::copy_if(utf_begin(str), utf_end(str), utf_writer(dst), [&uchars] (char32_t x) { return uchars.find(x) == npos; });
         return dst;
     }
 
@@ -507,7 +508,8 @@ namespace RS::Unicorn {
 
     void str_remove_in(U8string& str, const U8string& chars) {
         U8string dst;
-        std::copy_if(utf_begin(str), utf_end(str), utf_writer(dst), [&chars] (char32_t x) { return chars.find(x) == npos; });
+        auto uchars = to_utf32(chars);
+        std::copy_if(utf_begin(str), utf_end(str), utf_writer(dst), [&uchars] (char32_t x) { return uchars.find(x) == npos; });
         str.swap(dst);
     }
 

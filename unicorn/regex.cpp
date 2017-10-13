@@ -599,7 +599,7 @@ namespace RS::Unicorn {
                     auto it = utf_begin(fragment);
                     char32_t buf[max_case_decomposition];
                     if (ascii) {
-                        *current += char_flag == 'l' ? ascii_tolower(*it) : ascii_toupper(*it);
+                        *current += char_flag == 'l' ? ascii_tolower(char(*it)) : ascii_toupper(char(*it));
                     } else {
                         size_t nbuf(char_flag == 'l' ? char_to_full_lowercase(*it, buf) : char_to_full_uppercase(*it, buf));
                         str_append(*current, buf, nbuf);
@@ -649,11 +649,11 @@ namespace RS::Unicorn {
             if (match.count(1))
                 add_tag(0);
             else if (match.count(2))
-                add_tag(decnum(to_utf8(match[2])));
+                add_tag(int(decnum(to_utf8(match[2]))));
             else if (match.count(3))
-                add_tag(decnum(to_utf8(match[3])));
+                add_tag(int(decnum(to_utf8(match[3]))));
             else if (match.count(4))
-                add_tag(decnum(to_utf8(match[4])));
+                add_tag(int(decnum(to_utf8(match[4]))));
             else if (match.count(5))
                 add_named(match[5]);
             else if (match.count(6))
@@ -661,9 +661,9 @@ namespace RS::Unicorn {
             else if (match.count(7))
                 add_tag(- int(match[7][0]));
             else if (match.count(8))
-                add_literal(hexnum(to_utf8(match[8])));
+                add_literal(char32_t(hexnum(to_utf8(match[8]))));
             else if (match.count(9))
-                add_literal(hexnum(to_utf8(match[9])));
+                add_literal(char32_t(hexnum(to_utf8(match[9]))));
             else if (match.count(10))
                 add_escape(match[10][0]);
             else if (match.count(11))

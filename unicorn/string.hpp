@@ -80,10 +80,10 @@ namespace RS::Unicorn {
     // they have bit positions in the 0-25 range.
 
     struct Length {
-        static constexpr uint32_t characters  = letter_to_mask('C');  // Measure string in characters
-        static constexpr uint32_t graphemes   = letter_to_mask('G');  // Measure string in grapheme clusters (default)
-        static constexpr uint32_t narrow      = letter_to_mask('N');  // East Asian width, defaulting to narrow
-        static constexpr uint32_t wide        = letter_to_mask('W');  // East Asian width, defaulting to wide
+        static constexpr auto characters  = uint32_t(letter_to_mask('C'));  // Measure string in characters
+        static constexpr auto graphemes   = uint32_t(letter_to_mask('G'));  // Measure string in grapheme clusters (default)
+        static constexpr auto narrow      = uint32_t(letter_to_mask('N'));  // East Asian width, defaulting to narrow
+        static constexpr auto wide        = uint32_t(letter_to_mask('W'));  // East Asian width, defaulting to wide
         uint32_t flags = 0;
         Length() = default;
         explicit Length(uint32_t length_flags);
@@ -323,7 +323,7 @@ namespace RS::Unicorn {
     Utf8Iterator str_find_last_not_of(const Utf8Iterator& b, const Utf8Iterator& e, const U8string& target);
     Utf8Iterator str_find_last_not_of(const Irange<Utf8Iterator>& range, const U8string& target);
     Utf8Iterator str_find_last_not_of(const U8string& str, const U8string& target);
-    std::pair<size_t, size_t> str_line_column(const U8string& str, size_t offset, size_t flags = 0);
+    std::pair<size_t, size_t> str_line_column(const U8string& str, size_t offset, uint32_t flags = 0);
     Irange<Utf8Iterator> str_search(const Utf8Iterator& b, const Utf8Iterator& e, const U8string& target);
     Irange<Utf8Iterator> str_search(const Irange<Utf8Iterator>& range, const U8string& target);
     Irange<Utf8Iterator> str_search(const U8string& str, const U8string& target);

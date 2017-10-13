@@ -133,7 +133,7 @@ namespace RS::Unicorn {
                 if (flags & Format::sign)
                     sign = '+';
             } else {
-                t = - t;
+                t = RS_Detail::SimpleAbs<T>()(t);
                 sign = '-';
             }
             U8string s;

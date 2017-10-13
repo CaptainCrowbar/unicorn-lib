@@ -133,7 +133,7 @@ namespace RS::Unicorn {
         return str_find_last_not_of(utf_begin(str), utf_end(str), target);
     }
 
-    std::pair<size_t, size_t> str_line_column(const U8string& str, size_t offset, size_t flags) {
+    std::pair<size_t, size_t> str_line_column(const U8string& str, size_t offset, uint32_t flags) {
         offset = std::min(offset, str.size());
         size_t line = 1;
         bool prev_lf = false;

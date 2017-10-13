@@ -39,7 +39,7 @@ namespace RS::Unicorn {
         void apply_decomposition(const U8string& src, std::u32string& dst, bool k) {
             auto decompose = k ? compatibility_decomposition : canonical_decomposition;
             size_t max_decompose = k ? max_compatibility_decomposition : max_canonical_decomposition;
-            char32_t buf[max_decompose];
+            std::u32string buf(max_decompose, char32_t(0));
             dst.reserve(src.size());
             size_t pos = 0;
             for (char32_t c: utf_range(src)) {
@@ -51,11 +51,11 @@ namespace RS::Unicorn {
                 } else {
                     dst.resize(pos + len);
                     while (pos < dst.size()) {
-                        len = decompose(dst[pos], buf);
+                        len = decompose(dst[pos], &buf[0]);
                         if (len == 0)
                             ++pos;
                         else
-                            dst.replace(pos, 1, buf, len);
+                            dst.replace(pos, 1, &buf[0], len);
                     }
                 }
             }

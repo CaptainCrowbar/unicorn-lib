@@ -305,8 +305,7 @@ names_bytes = names_list.encode('ascii')
 names_zip = zlib.compress(names_bytes)
 names_hex = codecs.encode(names_zip, 'hex_codec')
 names_hexstr = names_hex.decode('ascii')
-names_escape = re.sub(r'(..)', r'\x\1', names_hexstr)
-
+names_escape = re.sub(r'(..)', r"'\\x\1',", names_hexstr)
 corrected_names = {}
 
 def name_aliases_record(fields):
@@ -318,14 +317,13 @@ process_file('ucd/NameAliases.txt', name_aliases_record, 3)
 
 with open('unicorn/ucd-character-names.cpp', 'w', encoding='utf-8', newline='\n') as cpp:
     cpp.write(head)
-    cpp.write('\nconst char* const main_names_data = \n')
+    cpp.write('\nconst char main_names_data[] = {\n')
     pos = 0
     while pos < len(names_escape):
-        cpp.write('"')
-        cpp.write(names_escape[pos:pos+128])
-        cpp.write('"\n')
-        pos += 128
-    cpp.write(';\n\n')
+        cpp.write(names_escape[pos:pos+112])
+        cpp.write('\n')
+        pos += 112
+    cpp.write("'\\0'};\n\n")
     cpp.write('const size_t main_names_compressed = {0};\n'.format(len(names_zip)))
     cpp.write('const size_t main_names_expanded = {0};\n'.format(len(names_bytes)))
     write_table_header(cpp, 'char32_t', 'char const*', 'corrected_names')

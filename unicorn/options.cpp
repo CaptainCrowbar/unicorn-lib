@@ -253,11 +253,11 @@ namespace RS::Unicorn {
         clean_up_arguments(args, flags);
         if (help_flag && args.empty())
             return help_mode::usage;
-        auto anon = parse_forced_anonymous(args);
+        auto is_anon = parse_forced_anonymous(args);
         parse_attached_arguments(args);
         expand_abbreviations(args);
         extract_named_options(args);
-        parse_remaining_anonymous(args, anon);
+        parse_remaining_anonymous(args, is_anon);
         if (has("help"))
             return help_mode::usage;
         if (has("version"))
@@ -277,13 +277,13 @@ namespace RS::Unicorn {
     }
 
     Strings Options::parse_forced_anonymous(Strings& args) {
-        Strings anon;
+        Strings anon_args;
         auto i = std::find(args.begin(), args.end(), "--");
         if (i != args.end()) {
-            anon.assign(i + 1, args.end());
+            anon_args.assign(i + 1, args.end());
             args.erase(i, args.end());
         }
-        return anon;
+        return anon_args;
     }
 
     void Options::parse_attached_arguments(Strings& args) {
@@ -359,8 +359,8 @@ namespace RS::Unicorn {
         }
     }
 
-    void Options::parse_remaining_anonymous(Strings& args, const Strings& anon) {
-        args.insert(args.end(), anon.begin(), anon.end());
+    void Options::parse_remaining_anonymous(Strings& args, const Strings& anon_args) {
+        args.insert(args.end(), anon_args.begin(), anon_args.end());
         for (auto& opt: opts) {
             if (args.empty())
                 break;

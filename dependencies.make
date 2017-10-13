@@ -96,8 +96,17 @@ $(BUILD)/ucd-script-tables.o: unicorn/ucd-script-tables.cpp unicorn/property-val
     /usr/local/include/rs-core/common.hpp
 $(BUILD)/ucd-segmentation-test.o: unicorn/ucd-segmentation-test.cpp unicorn/property-values.hpp unicorn/ucd-tables.hpp \
     /usr/local/include/rs-core/common.hpp
+$(BUILD)/unit-test.o: unicorn/unit-test.cpp  \
+    /usr/local/include/rs-core/common.hpp /usr/local/include/rs-core/unit-test.hpp
 $(BUILD)/utf-test.o: unicorn/utf-test.cpp unicorn/character.hpp unicorn/core.hpp unicorn/property-values.hpp unicorn/utf.hpp \
     /usr/local/include/rs-core/common.hpp /usr/local/include/rs-core/string.hpp /usr/local/include/rs-core/unit-test.hpp
 $(BUILD)/utf.o: unicorn/utf.cpp unicorn/character.hpp unicorn/core.hpp unicorn/property-values.hpp unicorn/utf.hpp \
     /usr/local/include/rs-core/common.hpp /usr/local/include/rs-core/string.hpp
-LDLIBS += -lpcre -lz
+ifeq ($(LIBTAG),msvc)
+    LDLIBS += pcre.lib zlib.lib
+else
+    LDLIBS += -lpcre -lz
+endif
+ifeq ($(LIBTAG),msvc)
+    LDLIBS += shell32.lib advapi32.lib
+endif

@@ -135,7 +135,7 @@ namespace RS::Unicorn {
         void parse_attached_arguments(Strings& args);
         void expand_abbreviations(Strings& args);
         void extract_named_options(Strings& args);
-        void parse_remaining_anonymous(Strings& args, const Strings& anon);
+        void parse_remaining_anonymous(Strings& args, const Strings& anon_args);
         void check_required();
         void supply_defaults();
         void send_help(std::ostream& out, help_mode mode) const;

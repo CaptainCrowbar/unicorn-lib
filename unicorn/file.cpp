@@ -482,7 +482,7 @@ namespace RS::Unicorn {
                 std::wstring buf;
                 buf.resize(1024);
                 for (;;) {
-                    auto rc = GetLongPathNameW(file.data(), &buf[0], buf.size());
+                    auto rc = GetLongPathNameW(file.data(), &buf[0], uint32_t(buf.size()));
                     if (rc == 0)
                         return file;
                     if (rc < buf.size()) {
@@ -499,7 +499,7 @@ namespace RS::Unicorn {
                 std::wstring buf;
                 buf.resize(1024);
                 for (;;) {
-                    auto rc = GetFullPathNameW(file.data(), buf.size(), &buf[0], nullptr);
+                    auto rc = GetFullPathNameW(file.data(), uint32_t(buf.size()), &buf[0], nullptr);
                     if (rc == 0)
                         return file;
                     if (rc < buf.size()) {
@@ -515,7 +515,7 @@ namespace RS::Unicorn {
         std::wstring native_current_directory() {
             std::wstring name(256, L'\0');
             for (;;) {
-                auto rc = GetCurrentDirectoryW(name.size(), &name[0]);
+                auto rc = GetCurrentDirectoryW(uint32_t(name.size()), &name[0]);
                 if (rc == 0)
                     throw std::system_error(GetLastError(), windows_category());
                 if (rc < name.size()) {
@@ -608,7 +608,7 @@ namespace RS::Unicorn {
             }
             std::vector<FILE_NAME_INFO> buf(100);
             for (;;) {
-                if (GetFileInformationByHandleEx(handle.get(), FileNameInfo, &buf[0], buf.size() * sizeof(FILE_NAME_INFO)))
+                if (GetFileInformationByHandleEx(handle.get(), FileNameInfo, &buf[0], uint32_t(buf.size() * sizeof(FILE_NAME_INFO))))
                     return std::wstring(buf[0].FileName, buf[0].FileNameLength);
                 auto error = GetLastError();
                 if (error != ERROR_INSUFFICIENT_BUFFER)
@@ -752,7 +752,7 @@ namespace RS::Unicorn {
                 if (n) {
                     errno = 0;
                     fwrite(buf.data(), 1, n, out);
-                    int error = errno;
+                    error = errno;
                     if (error)
                         throw std::system_error(error, std::generic_category(), quote_file(dst));
                 }

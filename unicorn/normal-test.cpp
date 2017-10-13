@@ -21,6 +21,9 @@ using namespace std::literals;
 
 namespace {
 
+    using UnicornDetail::normalization_identity_table;
+    using UnicornDetail::normalization_test_table;
+
     void norm_test(const Strings& u8data, size_t line, NormalizationForm form, size_t i, size_t j) {
         auto& orig(u8data[i]);
         auto& expect(u8data[j]);
@@ -30,13 +33,6 @@ namespace {
         if (norm != expect)
             FAIL("Failed normalization test $1: $2 $3q => $4q"_fmt(line, form, orig, expect));
     }
-
-}
-
-namespace {
-
-    using UnicornDetail::normalization_identity_table;
-    using UnicornDetail::normalization_test_table;
 
     void do_main_tests(size_t b, size_t e) {
         e = std::min(e, range_count(normalization_test_table));
@@ -99,7 +95,7 @@ namespace {
 
 }
 
-TEST_MODULE(unicorn, normal) {
+void test_unicorn_normal_normalization() {
 
     auto norm_tests = range_count(normalization_test_table);
     std::vector<char32_t> identity_chars;

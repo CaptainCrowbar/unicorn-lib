@@ -18,7 +18,7 @@ namespace RS::Unicorn::UnicornDetail {
     // Types
 
     template <typename K, typename V>
-    struct __attribute__((__packed__)) KeyValue {
+    struct KeyValue {
         using key_type = K;
         using mapped_type = V;
         K key;
@@ -31,7 +31,7 @@ namespace RS::Unicorn::UnicornDetail {
     template <typename K, typename V> using TableView = Irange<const KeyValue<K, V>*>;
 
     template <typename T>
-    struct __attribute__((__packed__)) PackedPair {
+    struct PackedPair {
         using value_type = T;
         T first;
         T second;
@@ -140,7 +140,7 @@ namespace RS::Unicorn::UnicornDetail {
 
     // Character name tables
 
-    extern const char* const main_names_data;
+    extern const char main_names_data[];
     extern const size_t main_names_compressed;
     extern const size_t main_names_expanded;
     extern const TableView<char32_t, char const*> corrected_names_table;

@@ -184,7 +184,7 @@ namespace RS::Unicorn {
                     if (i != end && char_is_digit(*i))
                         i = str_to_int<size_t>(width, i);
                 } else if (char_is_ascii(*i) && ascii_isalpha(char(*i))) {
-                    flags |= letter_to_mask(*i++);
+                    flags |= letter_to_mask(char(*i++));
                 } else if (char_is_digit(*i)) {
                     i = str_to_int<int>(prec, i);
                 } else {
