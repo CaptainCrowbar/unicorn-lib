@@ -2,9 +2,9 @@
 #include "unicorn/format.hpp"
 #include "unicorn/mbcs.hpp"
 #include "unicorn/string.hpp"
-#include "rs-core/thread.hpp"
 #include <algorithm>
 #include <cerrno>
+#include <mutex>
 #include <stdexcept>
 #include <system_error>
 #include <utility>
@@ -163,7 +163,7 @@ namespace RS::Unicorn {
         uint32_t flags;
         U8string enc;
         SharedFile handle;
-        std::shared_ptr<Mutex> mutex;
+        std::shared_ptr<std::mutex> mutex;
     };
 
     void FileWriter::flush() {
@@ -179,8 +179,8 @@ namespace RS::Unicorn {
         static constexpr NC dash[] = {NC('-'), NC(0)};
         static constexpr NC ab[] = {NC('a'), NC('b'), NC(0)};
         static constexpr NC wb[] = {NC('w'), NC('b'), NC(0)};
-        static Mutex stdout_mutex;
-        static Mutex stderr_mutex;
+        static std::mutex stdout_mutex;
+        static std::mutex stderr_mutex;
         if (ibits(flags & (Utf::replace | Utf::throws)) > 1
                 || ibits(flags & (IO::append | IO::protect)) > 1
                 || ibits(flags & (IO::autoline | IO::writeline)) > 1
@@ -209,7 +209,7 @@ namespace RS::Unicorn {
             else if (impl->handle.get() == stderr)
                 impl->mutex.reset(&stderr_mutex, do_nothing);
             else
-                impl->mutex = std::make_shared<Mutex>();
+                impl->mutex = std::make_shared<std::mutex>();
         }
     }
 
@@ -262,7 +262,7 @@ namespace RS::Unicorn {
             std::string encoded;
             export_string(str, encoded, impl->enc, impl->flags & (Utf::replace | Utf::throws));
             if (impl->mutex) {
-                MutexLock lock(*impl->mutex);
+                auto lock = make_lock(*impl->mutex);
                 write_mbcs(encoded);
             } else {
                 write_mbcs(encoded);

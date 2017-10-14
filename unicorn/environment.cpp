@@ -1,8 +1,8 @@
 #include "unicorn/environment.hpp"
 #include "unicorn/string.hpp"
-#include "rs-core/thread.hpp"
 #include <cerrno>
 #include <cstdlib>
+#include <mutex>
 #include <stdexcept>
 #include <system_error>
 
@@ -16,7 +16,7 @@ namespace RS::Unicorn {
 
     namespace {
 
-        Mutex env_mutex;
+        std::mutex env_mutex;
 
         void check_env(const NativeString& name) {
             static const NativeString not_allowed{'\0','='};
@@ -266,26 +266,26 @@ namespace RS::Unicorn {
 
         std::string get_env(const std::string& name) {
             check_env(name);
-            MutexLock lock(env_mutex);
+            auto lock = make_lock(env_mutex);
             return cstr(getenv(name.data()));
         }
 
         bool has_env(const std::string& name) {
             check_env(name);
-            MutexLock lock(env_mutex);
+            auto lock = make_lock(env_mutex);
             return getenv(name.data()) != nullptr;
         }
 
         void set_env(const std::string& name, const std::string& value) {
             check_env(name, value);
-            MutexLock lock(env_mutex);
+            auto lock = make_lock(env_mutex);
             if (setenv(name.data(), value.data(), 1) == -1)
                 throw std::system_error(errno, std::generic_category(), "setenv()");
         }
 
         void unset_env(const std::string& name) {
             check_env(name);
-            MutexLock lock(env_mutex);
+            auto lock = make_lock(env_mutex);
             if (unsetenv(name.data()) == -1)
                 throw std::system_error(errno, std::generic_category(), "unsetenv()");
         }
@@ -298,19 +298,19 @@ namespace RS::Unicorn {
 
         std::wstring get_env(const std::wstring& name) {
             check_env(name);
-            MutexLock lock(env_mutex);
+            auto lock = make_lock(env_mutex);
             return cstr(_wgetenv(name.data()));
         }
 
         bool has_env(const std::wstring& name) {
             check_env(name);
-            MutexLock lock(env_mutex);
+            auto lock = make_lock(env_mutex);
             return _wgetenv(name.data()) != nullptr;
         }
 
         void set_env(const std::wstring& name, const std::wstring& value) {
             check_env(name, value);
-            MutexLock lock(env_mutex);
+            auto lock = make_lock(env_mutex);
             auto key_value = name + L'=' + value;
             if (_wputenv(key_value.data()) == -1)
                 throw std::system_error(errno, std::generic_category(), "_wputenv()");
@@ -318,7 +318,7 @@ namespace RS::Unicorn {
 
         void unset_env(const std::wstring& name) {
             check_env(name);
-            MutexLock lock(env_mutex);
+            auto lock = make_lock(env_mutex);
             set_env(name, {});
         }
 

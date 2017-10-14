@@ -3,12 +3,12 @@
 #include "unicorn/iana-character-sets.hpp"
 #include "unicorn/regex.hpp"
 #include "unicorn/string.hpp"
-#include "rs-core/thread.hpp"
 #include <algorithm>
 #include <cerrno>
 #include <cstdlib>
 #include <cstring>
 #include <map>
+#include <mutex>
 #include <unordered_map>
 #include <vector>
 
@@ -506,7 +506,7 @@ namespace RS::Unicorn {
 
         EncodingTag lookup_encoding(const U8string& name, uint32_t flags) {
             static std::map<U8string, EncodingTag> cache;
-            static Mutex mtx;
+            static std::mutex mtx;
             if (name.empty())
                 throw UnknownEncoding();
             if (flags & Mbcs::strict)
@@ -523,7 +523,7 @@ namespace RS::Unicorn {
             else if (lcname == "utf")
                 return EncodingTag();
             {
-                MutexLock lock(mtx);
+                auto lock = make_lock(mtx);
                 auto it = cache.find(lcname);
                 if (it != cache.end())
                     return it->second;
@@ -537,14 +537,14 @@ namespace RS::Unicorn {
                 tag = find_encoding(lcname);
             if (tag == EncodingTag())
                 throw UnknownEncoding(name);
-            MutexLock lock(mtx);
+            auto lock = make_lock(mtx);
             cache[lcname] = tag;
             return tag;
         }
 
         EncodingTag lookup_encoding(uint32_t page, uint32_t flags) {
             static std::map<uint32_t, EncodingTag> cache;
-            static Mutex mtx;
+            static std::mutex mtx;
             if (page == 0)
                 throw UnknownEncoding();
             if (flags & Mbcs::strict)
@@ -554,7 +554,7 @@ namespace RS::Unicorn {
                     return page;
                 #endif
             {
-                MutexLock lock(mtx);
+                auto lock = make_lock(mtx);
                 auto it = cache.find(page);
                 if (it != cache.end())
                     return it->second;
@@ -570,7 +570,7 @@ namespace RS::Unicorn {
             #endif
             if (tag == EncodingTag())
                 throw UnknownEncoding(page);
-            MutexLock lock(mtx);
+            auto lock = make_lock(mtx);
             cache[page] = tag;
             return tag;
         }

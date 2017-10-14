@@ -4,14 +4,12 @@
 #include "unicorn/normal.hpp"
 #include "unicorn/string.hpp"
 #include "unicorn/ucd-tables.hpp"
-#include "rs-core/thread.hpp"
 #include "rs-core/unit-test.hpp"
 #include <algorithm>
-#include <array>
-#include <cstdlib>
+#include <future>
 #include <iterator>
-#include <memory>
 #include <string>
+#include <thread>
 #include <vector>
 
 using namespace RS;
@@ -41,7 +39,7 @@ namespace {
         std::vector<std::u32string> u32data;
         auto row_iter = std::begin(normalization_test_table) + b;
         for (size_t line = b; line < e; ++line) {
-            auto& row = *row_iter++; // const std::array<char const*, 5>&
+            auto& row = *row_iter++;
             u32data.clear();
             for (auto&& field: row) {
                 u32data.push_back(std::u32string());
@@ -111,19 +109,23 @@ void test_unicorn_normal_normalization() {
 
     #else
 
-        auto thread_count = Thread::cpu_threads();
+        auto thread_count = std::thread::hardware_concurrency();
         auto per_thread = norm_tests / thread_count + 1;
-        std::vector<std::unique_ptr<Thread>> threads;
-        for (size_t base = 0; base < norm_tests; base += per_thread)
-            threads.push_back(std::make_unique<Thread>([=] { do_main_tests(base, base + per_thread); }));
+        std::vector<std::future<void>> threads;
+        for (size_t base = 0; base < norm_tests; base += per_thread) {
+            auto call = [=] { do_main_tests(base, base + per_thread); };
+            threads.push_back(std::async(call));
+        }
         for (auto& t: threads)
-            t->wait();
+            t.wait();
         threads.clear();
         per_thread = identity_chars.size() / thread_count + 1;
-        for (size_t base = 0; base < identity_chars.size(); base += per_thread)
-            threads.push_back(std::make_unique<Thread>([=] { do_identity_tests(identity_chars, base, base + per_thread); }));
+        for (size_t base = 0; base < identity_chars.size(); base += per_thread) {
+            auto call = [=] { do_identity_tests(identity_chars, base, base + per_thread); };
+            threads.push_back(std::async(call));
+        }
         for (auto& t: threads)
-            t->wait();
+            t.wait();
 
     #endif
 

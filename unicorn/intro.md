@@ -115,20 +115,15 @@ following usage guide:
 
 ## Compatibility ##
 
-Unicorn is written in C++14; you will need an up-to-date C++ compiler,
-probably a recent version of Clang or GCC. I developed it mainly on macOS,
-currently using Clang 7.0. All test builds are made using strict compilation
-mode (`-Wall -Wextra -Werror`).
+The library is written in C++14 (more or less); you will need an up-to-date
+C++ compiler. It has been tested with:
 
-Unicorn has also been tested with GCC 5.x and 6.x on Ubuntu GNU/Linux,
-[Cygwin](http://www.cygwin.com/) on Microsoft Windows, and native Windows
-using [Nuwen-Mingw](http://nuwen.net/mingw.html), although I can't promise
-that the most recent checkin will have been tested with all of those.
+* Apple Clang/Xcode 9 on MacOS
+* GCC 6 and 7 on Linux and Cygwin
+* Microsoft Visual Studio 2017 on Windows
 
-Currently, Unicorn will not work with any existing release of Microsoft Visual
-Studio. The latest release, VS 2015 update 2 probably has sufficiently good
-support for C++14 and for UTF-8 source code, so I hope to be able to port
-Unicorn to MSVC in the future.
+All test builds are made using a strict diagnostic mode (`-Wall -Wextra
+-Werror` on Clang and GCC, `/W4 /WX /permissive-` on MSVC).
 
 ## Design philosophy ##
 
@@ -289,7 +284,7 @@ all of these should be present or easily installed on most systems:
 * [PCRE](http://www.pcre.org/) (`-lpcre`)
 * [Zlib](http://www.zlib.net/) (`-lz`)
 * Iconv for Unix targets (on some systems this is implicit, on others it requires `-liconv`)
-* The system thread library (`-lpthread` on most Unix systems, `-mthreads` on Mingw)
+* The system thread library (`-lpthread` on most Unix systems)
 
 ## Using Unicorn ##
 

@@ -2,12 +2,12 @@
 #include "unicorn/format.hpp"
 #include "unicorn/mbcs.hpp"
 #include "unicorn/regex.hpp"
-#include "rs-core/thread.hpp"
 #include "rs-core/uuid.hpp"
 #include <cerrno>
 #include <chrono>
 #include <cstdio>
 #include <exception>
+#include <mutex>
 #include <random>
 #include <system_error>
 #include <type_traits>
@@ -692,7 +692,7 @@ namespace RS::Unicorn {
                     return uuid.str();
                 }
             private:
-                Mutex mtx;
+                std::mutex mtx;
                 std::minstd_rand rng;
                 RandomUuid ruuid;
             };
