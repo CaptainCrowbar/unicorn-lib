@@ -318,7 +318,6 @@ namespace RS::Unicorn {
 
         void unset_env(const std::wstring& name) {
             check_env(name);
-            auto lock = make_lock(env_mutex);
             set_env(name, {});
         }
 
