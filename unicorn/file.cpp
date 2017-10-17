@@ -517,7 +517,7 @@ namespace RS::Unicorn {
             for (;;) {
                 auto rc = GetCurrentDirectoryW(uint32_t(name.size()), &name[0]);
                 if (rc == 0)
-                    throw std::system_error(GetLastError(), windows_category());
+                    throw std::system_error(GetLastError(), std::system_category());
                 if (rc < name.size()) {
                     name.resize(rc);
                     break;
@@ -665,12 +665,12 @@ namespace RS::Unicorn {
 
             void make_symlink_helper(const std::wstring& file, const std::wstring& link, uint32_t flags) {
                 if (! (flags & File::overwrite) && file_exists(link))
-                    throw std::system_error(ERROR_ALREADY_EXISTS, windows_category(), quote_file(link));
+                    throw std::system_error(ERROR_ALREADY_EXISTS, std::system_category(), quote_file(link));
                 DWORD wflags = file_is_directory(file) ? SYMBOLIC_LINK_FLAG_DIRECTORY : 0;
                 if (CreateSymbolicLinkW(link.data(), file.data(), wflags))
                     return;
                 auto error = GetLastError();
-                throw std::system_error(error, windows_category(), file_pair(link, file));
+                throw std::system_error(error, std::system_category(), file_pair(link, file));
             }
 
             bool move_file_helper(const std::wstring& src, const std::wstring& dst) noexcept {
@@ -712,7 +712,7 @@ namespace RS::Unicorn {
                 if (! ok) {
                     MoveFileW(tempname.data(), file.data());
                     if (error != ERROR_FILE_NOT_FOUND)
-                        throw std::system_error(error, windows_category(), quote_file(file));
+                        throw std::system_error(error, std::system_category(), quote_file(file));
                 }
             }
 

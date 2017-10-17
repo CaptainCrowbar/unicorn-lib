@@ -334,7 +334,7 @@ namespace RS::Unicorn {
                     if (err == ERROR_NO_UNICODE_TRANSLATION)
                         throw EncodingError(dec(tag));
                     else
-                        throw UnknownEncoding(dec(tag), windows_category().message(err));
+                        throw UnknownEncoding(dec(tag), std::system_category().message(err));
                 }
                 dst.resize(rc);
                 MultiByteToWideChar(tag, wflags, src.data(), int(src.size()), &dst[0], int(rc));
@@ -360,7 +360,7 @@ namespace RS::Unicorn {
                     if (err == ERROR_NO_UNICODE_TRANSLATION)
                         throw EncodingError(dec(tag));
                     else
-                        throw UnknownEncoding(dec(tag), windows_category().message(err));
+                        throw UnknownEncoding(dec(tag), std::system_category().message(err));
                 }
                 dst.resize(rc);
                 WideCharToMultiByte(tag, wflags, &src[0], int(src.size()), &dst[0], rc, nullptr, nullptr);
