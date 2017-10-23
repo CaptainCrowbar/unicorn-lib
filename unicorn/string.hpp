@@ -809,10 +809,12 @@ namespace RS::Unicorn {
     U8string str_lowercase(const U8string& str);
     U8string str_titlecase(const U8string& str);
     U8string str_casefold(const U8string& str);
+    U8string str_initial_titlecase(const U8string& str);
     void str_uppercase_in(U8string& str);
     void str_lowercase_in(U8string& str);
     void str_titlecase_in(U8string& str);
     void str_casefold_in(U8string& str);
+    void str_initial_titlecase_in(U8string& str);
 
     // Escaping and quoting functions
     // Defined in string-escape.cpp

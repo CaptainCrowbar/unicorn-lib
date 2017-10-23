@@ -31,7 +31,6 @@ void test_unicorn_string_case_conversions() {
     TEST_EQUAL(str_titlecase(u8""s), u8"");
     TEST_EQUAL(str_titlecase(u8"HELLO WORLD"s), u8"Hello World");
     TEST_EQUAL(str_titlecase(u8"hello world"s), u8"Hello World");
-    TEST_EQUAL(str_titlecase(u8"hello world"s), u8"Hello World");
     TEST_EQUAL(str_titlecase(u8"(hello-world)"s), u8"(Hello-World)");
     TEST_EQUAL(str_titlecase(u8"@hello@world@"s), u8"@Hello@World@");
     TEST_EQUAL(str_titlecase(u8"ΜΜΜ ΜΜΜ"s), u8"Μμμ Μμμ");
@@ -42,7 +41,6 @@ void test_unicorn_string_case_conversions() {
 
     s = u8"";               TRY(str_titlecase_in(s));  TEST_EQUAL(s, u8"");
     s = u8"HELLO WORLD";    TRY(str_titlecase_in(s));  TEST_EQUAL(s, u8"Hello World");
-    s = u8"hello world";    TRY(str_titlecase_in(s));  TEST_EQUAL(s, u8"Hello World");
     s = u8"hello world";    TRY(str_titlecase_in(s));  TEST_EQUAL(s, u8"Hello World");
     s = u8"(hello-world)";  TRY(str_titlecase_in(s));  TEST_EQUAL(s, u8"(Hello-World)");
     s = u8"@hello@world@";  TRY(str_titlecase_in(s));  TEST_EQUAL(s, u8"@Hello@World@");
@@ -59,5 +57,25 @@ void test_unicorn_string_case_conversions() {
     s = u8"";             TRY(str_casefold_in(s));  TEST_EQUAL(s, u8"");
     s = u8"HELLO WORLD";  TRY(str_casefold_in(s));  TEST_EQUAL(s, u8"hello world");
     s = u8"hello world";  TRY(str_casefold_in(s));  TEST_EQUAL(s, u8"hello world");
+
+    TEST_EQUAL(str_initial_titlecase(u8""s), u8"");
+    TEST_EQUAL(str_initial_titlecase(u8"HELLO WORLD"s), u8"HELLO WORLD");
+    TEST_EQUAL(str_initial_titlecase(u8"hello world"s), u8"Hello world");
+    TEST_EQUAL(str_initial_titlecase(u8"(hello-world)"s), u8"(hello-world)");
+    TEST_EQUAL(str_initial_titlecase(u8"ΜΜΜ ΜΜΜ"s), u8"ΜΜΜ ΜΜΜ");
+    TEST_EQUAL(str_initial_titlecase(u8"µµµ µµµ"s), u8"Μµµ µµµ");
+    TEST_EQUAL(str_initial_titlecase(u8"ǄǄǄ ǄǄǄ"s), u8"ǅǄǄ ǄǄǄ");
+    TEST_EQUAL(str_initial_titlecase(u8"ǅǅǅ ǅǅǅ"s), u8"ǅǅǅ ǅǅǅ");
+    TEST_EQUAL(str_initial_titlecase(u8"ǆǆǆ ǆǆǆ"s), u8"ǅǆǆ ǆǆǆ");
+
+    s = u8"";               TRY(str_initial_titlecase_in(s));  TEST_EQUAL(s, u8"");
+    s = u8"HELLO WORLD";    TRY(str_initial_titlecase_in(s));  TEST_EQUAL(s, u8"HELLO WORLD");
+    s = u8"hello world";    TRY(str_initial_titlecase_in(s));  TEST_EQUAL(s, u8"Hello world");
+    s = u8"(hello-world)";  TRY(str_initial_titlecase_in(s));  TEST_EQUAL(s, u8"(hello-world)");
+    s = u8"ΜΜΜ ΜΜΜ";        TRY(str_initial_titlecase_in(s));  TEST_EQUAL(s, u8"ΜΜΜ ΜΜΜ");
+    s = u8"µµµ µµµ";        TRY(str_initial_titlecase_in(s));  TEST_EQUAL(s, u8"Μµµ µµµ");
+    s = u8"ǄǄǄ ǄǄǄ";        TRY(str_initial_titlecase_in(s));  TEST_EQUAL(s, u8"ǅǄǄ ǄǄǄ");
+    s = u8"ǅǅǅ ǅǅǅ";        TRY(str_initial_titlecase_in(s));  TEST_EQUAL(s, u8"ǅǅǅ ǅǅǅ");
+    s = u8"ǆǆǆ ǆǆǆ";        TRY(str_initial_titlecase_in(s));  TEST_EQUAL(s, u8"ǅǆǆ ǆǆǆ");
 
 }

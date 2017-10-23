@@ -613,6 +613,12 @@ units or characters). These functions only perform the default case mappings
 recommended by the Unicode standard; they do not make any attempt at
 localisation.
 
+* `U8string` **`str_initial_titlecase`**`(const U8string& str)`
+* `void` **`str_initial_titlecase_in`**`(U8string& str)`
+
+These change just the first character of a string to title case, leaving the
+rest of the string unchanged.
+
 ## Escaping and quoting functions ##
 
 Flag                    | Description

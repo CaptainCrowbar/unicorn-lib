@@ -83,6 +83,18 @@ namespace RS::Unicorn {
         return casemap_helper(str, char_to_full_casefold);
     }
 
+    U8string str_initial_titlecase(const U8string& str) {
+        if (str.empty())
+            return {};
+        auto i = utf_begin(str);
+        char32_t buf[max_case_decomposition];
+        size_t n = char_to_full_titlecase(*i, buf);
+        U8string dst;
+        recode(buf, n, dst);
+        dst.append(str, i.count(), npos);
+        return dst;
+    }
+
     void str_uppercase_in(U8string& str) {
         auto result = str_uppercase(str);
         str.swap(result);
@@ -100,6 +112,11 @@ namespace RS::Unicorn {
 
     void str_casefold_in(U8string& str) {
         auto result = str_casefold(str);
+        str.swap(result);
+    }
+
+    void str_initial_titlecase_in(U8string& str) {
+        auto result = str_initial_titlecase(str);
         str.swap(result);
     }
 
