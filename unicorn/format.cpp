@@ -293,7 +293,7 @@ namespace RS::Unicorn {
         static constexpr auto format_flags = Format::iso | Format::common;
         if (ibits(flags & format_flags) > 1)
             throw std::invalid_argument("Inconsistent formatting flags");
-        auto zone = flags & Format::local ? Zone::local : Zone::utc;
+        auto zone = flags & Format::local ? local_zone : utc_zone;
         if (flags & Format::common)
             return format_date(t, "%c"s, zone);
         auto result = format_date(t, prec, zone);

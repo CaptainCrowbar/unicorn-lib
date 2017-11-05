@@ -507,7 +507,7 @@ void test_unicorn_format_date_and_time() {
     system_clock::time_point ldate, udate;
 
     TRY(udate = make_date(2000, 1, 2, 3, 4, 5.678));
-    TRY(ldate = make_date(2000, 1, 2, 3, 4, 5.678, Zone::local));
+    TRY(ldate = make_date(2000, 1, 2, 3, 4, 5.678, local_zone));
 
     TEST_EQUAL(format_str(udate), "2000-01-02 03:04:05");
     TEST_EQUAL(format_str(udate, "3"), "2000-01-02 03:04:05.678");
