@@ -83,7 +83,7 @@ void test_unicorn_format_integers() {
     TEST_EQUAL(format_str(42, "x8"), "0000002a");
     TEST_EQUAL(format_str(-42, "x8"), "-0000002a");
 
-    TEST_EQUAL(format_str(0, "r"), "0");
+    TEST_EQUAL(format_str(0, "r"), "");
     TEST_EQUAL(format_str(1, "r"), "I");
     TEST_EQUAL(format_str(42, "r"), "XLII");
     TEST_EQUAL(format_str(1111, "r"), "MCXI");

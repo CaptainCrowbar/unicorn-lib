@@ -162,7 +162,7 @@ Flag                     | Letter  | Description
 `Format::`**`decimal`**  |`n`      | Format as a decimal number (default)
 `Format::`**`binary`**   |`b`      | Format as a binary number
 `Format::`**`hex`**      |`x`      | Format as a hexadecimal number
-`Format::`**`roman`**    |`r`      | Format as a Roman numeral
+`Format::`**`roman`**    |`r`      | Format as a Roman numeral; empty string if less than 1
 `Format::`**`sign`**     |`s`      | Always show a sign
 `Format::`**`signz`**    |`S`      | Always show a sign unless the value is zero
 
