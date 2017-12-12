@@ -24,7 +24,7 @@ void test_unicorn_io_file_reader() {
     U8string s;
     Strings vec;
     Irange<FileReader> range;
-    ScopeExit guard([=] { testfile.remove(); });
+    auto guard = scope_exit([=] { testfile.remove(); });
 
     TEST_THROW(range = read_lines(nonesuch.name()), std::system_error);
     TRY(range = read_lines(nonesuch.name(), IO::pretend));
@@ -288,7 +288,7 @@ void test_unicorn_io_file_writer() {
     std::string s;
     Strings vec;
     FileWriter writer;
-    ScopeExit guard([=] { testfile.remove(); });
+    auto guard = scope_exit([=] { testfile.remove(); });
 
     vec = {
         "Last night I saw upon the stair\n",
