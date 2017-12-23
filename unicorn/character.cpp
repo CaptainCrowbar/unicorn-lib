@@ -371,8 +371,8 @@ namespace RS::Unicorn {
             U8string names_list(main_names_expanded, 0);
             auto src = reinterpret_cast<const uint8_t*>(main_names_data);
             auto dst = reinterpret_cast<uint8_t*>(&names_list[0]);
-            auto dstlen = (unsigned long)main_names_expanded;
-            auto rc = uncompress(dst, &dstlen, src, (unsigned long)main_names_compressed);
+            auto dstlen = static_cast<unsigned long>(main_names_expanded);
+            auto rc = uncompress(dst, &dstlen, src, static_cast<unsigned long>(main_names_compressed));
             if (rc != Z_OK)
                 throw ZlibError(rc);
             size_t i = 0;
