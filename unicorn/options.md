@@ -105,7 +105,7 @@ Keyword                    | Type        | Description
 `Options::`**`integer`**   | `bool`      | The argument value must be an integer.
 `Options::`**`multi`**     | `bool`      | This option may be followed by multiple arguments.
 `Options::`**`pattern`**   | `U8string`  | The argument value must match this regular expression.
-`Options::`**`require`**   | `bool`      | This option is mandatory.
+`Options::`**`required`**  | `bool`      | This option is mandatory.
 `Options::`**`uinteger`**  | `bool`      | The argument value must be an unsigned integer.
 
 Boolean options can be supplied in negated form, by giving a name starting
