@@ -36,7 +36,7 @@ namespace RS::Unicorn {
 
     namespace {
 
-        void apply_decomposition(const U8string& src, std::u32string& dst, bool k) {
+        void apply_decomposition(const Ustring& src, std::u32string& dst, bool k) {
             auto decompose = k ? compatibility_decomposition : canonical_decomposition;
             size_t max_decompose = k ? max_compatibility_decomposition : max_canonical_decomposition;
             std::u32string buf(max_decompose, char32_t(0));
@@ -105,7 +105,7 @@ namespace RS::Unicorn {
 
     }
 
-    U8string normalize(const U8string& src, NormalizationForm form) {
+    Ustring normalize(const Ustring& src, NormalizationForm form) {
         using namespace UnicornDetail;
         std::u32string utf32;
         apply_decomposition(src, utf32, form == NFKC || form == NFKD);
@@ -115,7 +115,7 @@ namespace RS::Unicorn {
         return to_utf8(utf32);
     }
 
-    void normalize_in(U8string& src, NormalizationForm form) {
+    void normalize_in(Ustring& src, NormalizationForm form) {
         using namespace UnicornDetail;
         std::u32string utf32;
         apply_decomposition(src, utf32, form == NFKC || form == NFKD);

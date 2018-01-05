@@ -6,8 +6,8 @@ namespace RS::Unicorn {
     namespace {
 
         template <typename F>
-        const U8string casemap_helper(const U8string& src, F f) {
-            U8string dst;
+        const Ustring casemap_helper(const Ustring& src, F f) {
+            Ustring dst;
             char32_t buf[max_case_decomposition];
             auto out = utf_writer(dst);
             for (auto c: utf_range(src)) {
@@ -44,12 +44,12 @@ namespace RS::Unicorn {
 
     }
 
-    U8string str_uppercase(const U8string& str) {
+    Ustring str_uppercase(const Ustring& str) {
         return casemap_helper(str, char_to_full_uppercase);
     }
 
-    U8string str_lowercase(const U8string& str) {
-        U8string dst;
+    Ustring str_lowercase(const Ustring& str) {
+        Ustring dst;
         LowerChar lc;
         auto range = utf_range(str);
         auto out = utf_writer(dst);
@@ -58,8 +58,8 @@ namespace RS::Unicorn {
         return dst;
     }
 
-    U8string str_titlecase(const U8string& str) {
-        U8string dst;
+    Ustring str_titlecase(const Ustring& str) {
+        Ustring dst;
         LowerChar lc;
         auto e = utf_end(str);
         auto out = utf_writer(dst);
@@ -79,43 +79,43 @@ namespace RS::Unicorn {
         return dst;
     }
 
-    U8string str_casefold(const U8string& str) {
+    Ustring str_casefold(const Ustring& str) {
         return casemap_helper(str, char_to_full_casefold);
     }
 
-    U8string str_initial_titlecase(const U8string& str) {
+    Ustring str_initial_titlecase(const Ustring& str) {
         if (str.empty())
             return {};
         auto i = utf_begin(str);
         char32_t buf[max_case_decomposition];
         size_t n = char_to_full_titlecase(*i, buf);
-        U8string dst;
+        Ustring dst;
         recode(buf, n, dst);
         dst.append(str, i.count(), npos);
         return dst;
     }
 
-    void str_uppercase_in(U8string& str) {
+    void str_uppercase_in(Ustring& str) {
         auto result = str_uppercase(str);
         str.swap(result);
     }
 
-    void str_lowercase_in(U8string& str) {
+    void str_lowercase_in(Ustring& str) {
         auto result = str_lowercase(str);
         str.swap(result);
     }
 
-    void str_titlecase_in(U8string& str) {
+    void str_titlecase_in(Ustring& str) {
         auto result = str_titlecase(str);
         str.swap(result);
     }
 
-    void str_casefold_in(U8string& str) {
+    void str_casefold_in(Ustring& str) {
         auto result = str_casefold(str);
         str.swap(result);
     }
 
-    void str_initial_titlecase_in(U8string& str) {
+    void str_initial_titlecase_in(Ustring& str) {
         auto result = str_initial_titlecase(str);
         str.swap(result);
     }

@@ -222,7 +222,7 @@ void test_unicorn_file_name_operations() {
 
 void test_unicorn_file_path_operations() {
 
-    std::pair<U8string, U8string> p;
+    std::pair<Ustring, Ustring> p;
 
     TRY(p = split_path(""s));           TEST_EQUAL(p.first, "");        TEST_EQUAL(p.second, "");
     TRY(p = split_file(""s));           TEST_EQUAL(p.first, "");        TEST_EQUAL(p.second, "");
@@ -330,13 +330,13 @@ void test_unicorn_file_path_operations() {
 
 void test_unicorn_file_path_resolution() {
 
-    U8string cwd = current_directory(), res;
+    Ustring cwd = current_directory(), res;
 
     #ifdef _XOPEN_SOURCE
-        U8string home = cstr(getenv("HOME"));
+        Ustring home = cstr(getenv("HOME"));
     #endif
 
-    std::vector<std::pair<U8string, U8string>> tests = {
+    std::vector<std::pair<Ustring, Ustring>> tests = {
         #ifdef _XOPEN_SOURCE
             {  "",             "",                   },
             {  "Makefile",     cwd + "/Makefile",    },
@@ -366,7 +366,7 @@ void test_unicorn_file_path_resolution() {
 
 void test_unicorn_file_system_operations() {
 
-    U8string d1, d2, d3, f1, f2, f3, f4;
+    Ustring d1, d2, d3, f1, f2, f3, f4;
     Strings vec;
     FileId id1 = {}, id2 = {};
     size_t size1 = 0, size2 = 0;

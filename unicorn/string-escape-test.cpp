@@ -8,7 +8,7 @@ using namespace std::literals;
 
 void test_unicorn_string_escape_encode_uri() {
 
-    U8string s1, s2;
+    Ustring s1, s2;
 
     s1 = "";                         TRY(s2 = str_encode_uri(s1));  TEST_EQUAL(s2, "");
     s1 = "Hello world";              TRY(s2 = str_encode_uri(s1));  TEST_EQUAL(s2, "Hello%20world");
@@ -66,7 +66,7 @@ void test_unicorn_string_escape_encode_uri() {
 
 void test_unicorn_string_escape_backslash() {
 
-    U8string s1, s2;
+    Ustring s1, s2;
 
     s1 = "";                                             TRY(s2 = str_escape(s1));                  TEST_EQUAL(s2, "");
     s1 = "Hello world";                                  TRY(s2 = str_escape(s1));                  TEST_EQUAL(s2, "Hello world");
@@ -112,7 +112,7 @@ void test_unicorn_string_escape_backslash() {
 
 void test_unicorn_string_escape_quote() {
 
-    U8string s1, s2;
+    Ustring s1, s2;
 
     s1 = "";                                             TRY(s2 = str_quote(s1));                  TEST_EQUAL(s2, "\"\"");
     s1 = "Hello world";                                  TRY(s2 = str_quote(s1));                  TEST_EQUAL(s2, "\"Hello world\"");

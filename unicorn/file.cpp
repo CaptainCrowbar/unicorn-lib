@@ -29,8 +29,8 @@ namespace RS::Unicorn {
 
     namespace {
 
-        template <typename C> U8string quote_file(const std::basic_string<C>& name) { return quote(to_utf8(name)); }
-        U8string file_pair(const NativeString& f1, const NativeString& f2) { return quote_file(f1) + " -> " + quote_file(f2); }
+        template <typename C> Ustring quote_file(const std::basic_string<C>& name) { return quote(to_utf8(name)); }
+        Ustring file_pair(const NativeString& f1, const NativeString& f2) { return quote_file(f1) + " -> " + quote_file(f2); }
 
         #ifdef _XOPEN_SOURCE
 
@@ -101,7 +101,7 @@ namespace RS::Unicorn {
         }
 
         std::istream& operator>>(std::istream& in, FileId& f) {
-            U8string s(32, '0');
+            Ustring s(32, '0');
             for (char& c: s) {
                 auto x = in.get();
                 if (x == EOF)
@@ -136,19 +136,19 @@ namespace RS::Unicorn {
 
     }
 
-    bool is_legal_mac_leaf_name(const U8string& file) {
+    bool is_legal_mac_leaf_name(const Ustring& file) {
         return valid_string(file) && is_legal_posix_leaf_name(file);
     }
 
-    bool is_legal_mac_path_name(const U8string& file) {
+    bool is_legal_mac_path_name(const Ustring& file) {
         return valid_string(file) && is_legal_posix_path_name(file);
     }
 
-    bool is_legal_posix_leaf_name(const U8string& file) {
+    bool is_legal_posix_leaf_name(const Ustring& file) {
         return ! file.empty() && file.find_first_of("\0/"s) == npos;
     }
 
-    bool is_legal_posix_path_name(const U8string& file) {
+    bool is_legal_posix_path_name(const Ustring& file) {
         if (file.empty() || file.find('\0') != npos)
             return false;
         size_t i = file.find_first_not_of('/');
@@ -162,7 +162,7 @@ namespace RS::Unicorn {
     }
 
     bool is_legal_windows_path_name(const std::wstring& file) {
-        static const U8string illegal_chars = "\0\"*:<>?|"s;
+        static const Ustring illegal_chars = "\0\"*:<>?|"s;
         static const Regex abs_pattern(windows_absolute, match_flags);
         static const Regex illegal_pattern(R"(([:\\]|^))"s + windows_illegal_names + R"(([:\\]|$))"s, match_flags);
         if (file.empty())
@@ -179,15 +179,15 @@ namespace RS::Unicorn {
 
     #ifdef _XOPEN_SOURCE
 
-        bool file_is_absolute(const U8string& file) {
+        bool file_is_absolute(const Ustring& file) {
             return file[0] == '/';
         }
 
-        bool file_is_relative(const U8string& file) {
+        bool file_is_relative(const Ustring& file) {
             return ! file.empty() && ! file_is_absolute(file);
         }
 
-        bool file_is_root(const U8string& file) {
+        bool file_is_root(const Ustring& file) {
             static const Regex root_pattern(posix_root, match_flags);
             return bool(root_pattern.match(file));
         }
@@ -221,7 +221,7 @@ namespace RS::Unicorn {
 
     #endif
 
-    std::pair<U8string, U8string> split_path(const U8string& file, uint32_t flags) {
+    std::pair<Ustring, Ustring> split_path(const Ustring& file, uint32_t flags) {
         auto nfile = UnicornDetail::normalize_path(file);
         auto cut = nfile.find_last_of(file_delimiter);
         #ifndef _XOPEN_SOURCE
@@ -240,7 +240,7 @@ namespace RS::Unicorn {
         }
     }
 
-    std::pair<U8string, U8string> split_file(const U8string& file) {
+    std::pair<Ustring, Ustring> split_file(const Ustring& file) {
         auto nfile = UnicornDetail::normalize_path(file);
         auto cut = nfile.find_last_of(file_delimiter);
         #ifndef _XOPEN_SOURCE
@@ -329,7 +329,7 @@ namespace RS::Unicorn {
         namespace {
 
             template <typename Getpw, typename T>
-            U8string call_getpw(Getpw* getpw, T arg) {
+            Ustring call_getpw(Getpw* getpw, T arg) {
                 std::vector<char> workbuf(1024);
                 passwd pwdbuf;
                 passwd* pwdptr = nullptr;
@@ -343,8 +343,8 @@ namespace RS::Unicorn {
                 }
             }
 
-            U8string user_home(const U8string& user) {
-                U8string home;
+            Ustring user_home(const Ustring& user) {
+                Ustring home;
                 if (user.empty()) {
                     home = cstr(getenv("HOME"));
                     if (home.empty())
@@ -357,8 +357,8 @@ namespace RS::Unicorn {
 
         }
 
-        U8string current_directory() {
-            U8string name(256, '\0');
+        Ustring current_directory() {
+            Ustring name(256, '\0');
             for (;;) {
                 if (getcwd(&name[0], name.size()))
                     break;
@@ -373,12 +373,12 @@ namespace RS::Unicorn {
             return name;
         }
 
-        bool file_exists(const U8string& file) {
+        bool file_exists(const Ustring& file) {
             struct stat s;
             return stat(file.data(), &s) == 0;
         }
 
-        FileId file_id(const U8string& file, uint32_t flags) {
+        FileId file_id(const Ustring& file, uint32_t flags) {
             struct stat s;
             int rc;
             if (flags & File::follow)
@@ -392,22 +392,22 @@ namespace RS::Unicorn {
             return {dev, ino};
         }
 
-        bool file_is_directory(const U8string& file) {
+        bool file_is_directory(const Ustring& file) {
             struct stat s;
             return stat(file.data(), &s) == 0 && S_ISDIR(s.st_mode);
         }
 
-        bool file_is_hidden(const U8string& file) {
+        bool file_is_hidden(const Ustring& file) {
             auto leaf = split_path(file).second;
             return leaf[0] == '.' && leaf != "." && leaf != "..";
         }
 
-        bool file_is_symlink(const U8string& file) {
+        bool file_is_symlink(const Ustring& file) {
             struct stat s;
             return lstat(file.data(), &s) == 0 && S_ISLNK(s.st_mode);
         }
 
-        uint64_t file_size(const U8string& file, uint32_t flags) {
+        uint64_t file_size(const Ustring& file, uint32_t flags) {
             struct stat s;
             if (lstat(file.data(), &s) != 0)
                 return 0;
@@ -418,8 +418,8 @@ namespace RS::Unicorn {
             return bytes;
         }
 
-        U8string resolve_path(const U8string& file) {
-            U8string result = file;
+        Ustring resolve_path(const Ustring& file) {
+            Ustring result = file;
             size_t pos = 0;
             // Three or more leading slashes are equivalent to one (Posix)
             if (result.size() >= 3) {
@@ -437,12 +437,12 @@ namespace RS::Unicorn {
             }
             // Replace ~[user] with the home directory
             if (result[0] == '~') {
-                U8string user, tail;
+                Ustring user, tail;
                 pos = result.find('/');
                 user = result.substr(1, pos - 1);
                 if (pos != npos)
                     tail = result.substr(pos + 1, npos);
-                U8string head = user_home(user);
+                Ustring head = user_home(user);
                 if (! head.empty())
                     result = file_path(head, tail);
             }
@@ -453,7 +453,7 @@ namespace RS::Unicorn {
             return trim_dots(result);
         }
 
-        U8string resolve_symlink(const U8string& file) {
+        Ustring resolve_symlink(const Ustring& file) {
             if (! file_is_symlink(file))
                 return file;
             std::vector<char> buf(256);
@@ -467,7 +467,7 @@ namespace RS::Unicorn {
                         throw std::system_error(error, std::generic_category(), quote_file(file));
                 }
                 if (size_t(rc) <= buf.size() - 2)
-                    return U8string(buf.data(), rc);
+                    return Ustring(buf.data(), rc);
                 buf.resize(2 * buf.size());
             }
         }
@@ -628,24 +628,24 @@ namespace RS::Unicorn {
             constexpr int fail_exists = EEXIST;
             constexpr int fail_not_found = ENOENT;
 
-            int mkdir_helper(const U8string& dir) {
+            int mkdir_helper(const Ustring& dir) {
                 errno = 0;
                 mkdir(dir.data(), 0777);
                 return errno;
             }
 
-            void make_symlink_helper(const U8string& file, const U8string& link, uint32_t /*flags*/) {
+            void make_symlink_helper(const Ustring& file, const Ustring& link, uint32_t /*flags*/) {
                 if (symlink(file.data(), link.data()) == 0)
                     return;
                 int error = errno;
                 throw std::system_error(error, std::generic_category(), file_pair(link, file));
             }
 
-            bool move_file_helper(const U8string& src, const U8string& dst) noexcept {
+            bool move_file_helper(const Ustring& src, const Ustring& dst) noexcept {
                 return rename(src.data(), dst.data()) == 0;
             }
 
-            void remove_file_helper(const U8string& file) {
+            void remove_file_helper(const Ustring& file) {
                 int rc = std::remove(file.data());
                 int error = errno;
                 if (rc != 0 && error != ENOENT)
@@ -686,7 +686,7 @@ namespace RS::Unicorn {
             public:
                 RandomName():
                     rng(uint32_t(std::chrono::high_resolution_clock::now().time_since_epoch().count())) {}
-                U8string operator()() {
+                Ustring operator()() {
                     auto lock = make_lock(mtx);
                     auto uuid = ruuid(rng);
                     return uuid.str();

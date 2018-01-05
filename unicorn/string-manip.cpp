@@ -17,7 +17,7 @@ namespace RS::Unicorn {
             const std::u32string* x;
         };
 
-        void insert_padding(U8string& str, size_t old_length, size_t new_length, char32_t c, uint32_t flags, char side) {
+        void insert_padding(Ustring& str, size_t old_length, size_t new_length, char32_t c, uint32_t flags, char side) {
             size_t pad_chars = new_length - old_length;
             if (flags & UnicornDetail::east_asian_flags) {
                 auto eaw = east_asian_width(c);
@@ -39,7 +39,7 @@ namespace RS::Unicorn {
             }
         }
 
-        void squeeze_helper(const U8string& src, U8string& dst, bool trim) {
+        void squeeze_helper(const Ustring& src, Ustring& dst, bool trim) {
             auto i = utf_begin(src), end = utf_end(src);
             if (trim)
                 i = std::find_if_not(i, end, char_is_white_space);
@@ -54,7 +54,7 @@ namespace RS::Unicorn {
             }
         }
 
-        void squeeze_helper(const U8string& src, U8string& dst, bool trim, const U8string& chars) {
+        void squeeze_helper(const Ustring& src, Ustring& dst, bool trim, const Ustring& chars) {
             if (chars.empty()) {
                 dst = src;
                 return;
@@ -95,7 +95,7 @@ namespace RS::Unicorn {
             }
         }
 
-        U8string expand_tabs(const U8string& str, const std::vector<size_t>& tabs, uint32_t flags) {
+        Ustring expand_tabs(const Ustring& str, const std::vector<size_t>& tabs, uint32_t flags) {
             std::vector<size_t> xtabs = {0};
             for (auto t: tabs)
                 if (t > xtabs.back())
@@ -103,7 +103,7 @@ namespace RS::Unicorn {
             size_t delta = 8;
             if (xtabs.size() > 1)
                 delta = xtabs.end()[-1] - xtabs.end()[-2];
-            U8string result;
+            Ustring result;
             auto line_begin = utf_begin(str), str_end = utf_end(str);
             while (line_begin != str_end) {
                 auto t = xtabs.begin(), t_end = xtabs.end();
@@ -138,25 +138,25 @@ namespace RS::Unicorn {
 
     }
 
-    void str_append(U8string& str, const Utf8Iterator& suffix_begin, const Utf8Iterator& suffix_end) {
+    void str_append(Ustring& str, const Utf8Iterator& suffix_begin, const Utf8Iterator& suffix_end) {
         str.append(suffix_begin.source(), suffix_begin.offset(), suffix_end.offset() - suffix_begin.offset());
     }
 
-    void str_append(U8string& str, const Irange<Utf8Iterator>& suffix) {
+    void str_append(Ustring& str, const Irange<Utf8Iterator>& suffix) {
         str_append(str, suffix.begin(), suffix.end());
     }
 
-    void str_append(U8string& str, const char* suffix) {
+    void str_append(Ustring& str, const char* suffix) {
         if (suffix)
             str += suffix;
     }
 
-    void str_append(U8string& dst, const char* ptr, size_t n) {
+    void str_append(Ustring& dst, const char* ptr, size_t n) {
         if (ptr)
             dst.append(ptr, n);
     }
 
-    void str_append_chars(U8string& dst, size_t n, char32_t c) {
+    void str_append_chars(Ustring& dst, size_t n, char32_t c) {
         auto s = str_char(c);
         if (s.size() == 1)
             dst.append(n, s[0]);
@@ -164,9 +164,9 @@ namespace RS::Unicorn {
             dst += str_repeat(s, n);
     }
 
-    U8string str_char(char32_t c) {
+    Ustring str_char(char32_t c) {
         using namespace UnicornDetail;
-        U8string str(4, '\0');
+        Ustring str(4, '\0');
         auto len = UtfEncoding<char>::encode(c, &str[0]);
         if (len == 0)
             len = UtfEncoding<char>::encode(replacement_char, &str[0]);
@@ -174,11 +174,11 @@ namespace RS::Unicorn {
         return str;
     }
 
-    U8string str_chars(size_t n, char32_t c) {
+    Ustring str_chars(size_t n, char32_t c) {
         using namespace UnicornDetail;
         if (n == 0)
             return {};
-        U8string str(4, '\0');
+        Ustring str(4, '\0');
         auto len = UtfEncoding<char>::encode(c, &str[0]);
         if (len == 0)
             len = UtfEncoding<char>::encode(replacement_char, &str[0]);
@@ -186,25 +186,25 @@ namespace RS::Unicorn {
         return str_repeat(str, n);
     }
 
-    U8string str_drop_prefix(const U8string& str, const U8string& prefix) {
+    Ustring str_drop_prefix(const Ustring& str, const Ustring& prefix) {
         return str_starts_with(str, prefix) ? str.substr(prefix.size()) : str;
     }
 
-    void str_drop_prefix_in(U8string& str, const U8string& prefix) noexcept {
+    void str_drop_prefix_in(Ustring& str, const Ustring& prefix) noexcept {
         if (str_starts_with(str, prefix))
             str.erase(0, prefix.size());
     }
 
-    U8string str_drop_suffix(const U8string& str, const U8string& suffix) {
+    Ustring str_drop_suffix(const Ustring& str, const Ustring& suffix) {
         return str_ends_with(str, suffix) ? str.substr(0, str.size() - suffix.size()) : str;
     }
 
-    void str_drop_suffix_in(U8string& str, const U8string& suffix) noexcept {
+    void str_drop_suffix_in(Ustring& str, const Ustring& suffix) noexcept {
         if (str_ends_with(str, suffix))
             str.resize(str.size() - suffix.size());
     }
 
-    U8string str_erase_left(const U8string& str, size_t length) {
+    Ustring str_erase_left(const Ustring& str, size_t length) {
         if (length == 0)
             return str;
         auto range = utf_range(str);
@@ -216,7 +216,7 @@ namespace RS::Unicorn {
             return str.substr(i.offset(), npos);
     }
 
-    void str_erase_left_in(U8string& str, size_t length) noexcept {
+    void str_erase_left_in(Ustring& str, size_t length) noexcept {
         if (length == 0)
             return;
         auto range = utf_range(str);
@@ -228,7 +228,7 @@ namespace RS::Unicorn {
             str.erase(0, i.offset());
     }
 
-    U8string str_erase_right(const U8string& str, size_t length) {
+    Ustring str_erase_right(const Ustring& str, size_t length) {
         if (length == 0)
             return str;
         auto range = utf_range(str);
@@ -240,7 +240,7 @@ namespace RS::Unicorn {
             return str.substr(0, i.offset());
     }
 
-    void str_erase_right_in(U8string& str, size_t length) noexcept {
+    void str_erase_right_in(Ustring& str, size_t length) noexcept {
         if (length == 0)
             return;
         auto range = utf_range(str);
@@ -252,16 +252,16 @@ namespace RS::Unicorn {
             str.erase(i.offset(), npos);
     }
 
-    U8string str_expand_tabs(const U8string& str) {
+    Ustring str_expand_tabs(const Ustring& str) {
         return UnicornDetail::expand_tabs(str, {}, {});
     }
 
-    void str_expand_tabs_in(U8string& str) {
+    void str_expand_tabs_in(Ustring& str) {
         auto result = str_expand_tabs(str);
         str.swap(result);
     }
 
-    U8string str_fix_left(const U8string& str, size_t length, char32_t c, uint32_t flags) {
+    Ustring str_fix_left(const Ustring& str, size_t length, char32_t c, uint32_t flags) {
         size_t offset = str_find_offset(str, length, flags);
         if (offset == npos) {
             auto result = str;
@@ -272,7 +272,7 @@ namespace RS::Unicorn {
         }
     }
 
-    void str_fix_left_in(U8string& str, size_t length, char32_t c, uint32_t flags) {
+    void str_fix_left_in(Ustring& str, size_t length, char32_t c, uint32_t flags) {
         size_t offset = str_find_offset(str, length, flags);
         if (offset == npos)
             insert_padding(str, str_length(str, flags), length, c, flags, 'R');
@@ -280,7 +280,7 @@ namespace RS::Unicorn {
             str.erase(offset, npos);
     }
 
-    U8string str_fix_right(const U8string& str, size_t length, char32_t c, uint32_t flags) {
+    Ustring str_fix_right(const Ustring& str, size_t length, char32_t c, uint32_t flags) {
         size_t old_length = str_length(str, flags);
         if (old_length < length) {
             auto result = str;
@@ -292,7 +292,7 @@ namespace RS::Unicorn {
         }
     }
 
-    void str_fix_right_in(U8string& str, size_t length, char32_t c, uint32_t flags) {
+    void str_fix_right_in(Ustring& str, size_t length, char32_t c, uint32_t flags) {
         size_t old_length = str_length(str, flags);
         if (old_length < length) {
             insert_padding(str, old_length, length, c, flags, 'L');
@@ -302,65 +302,65 @@ namespace RS::Unicorn {
         }
     }
 
-    U8string str_insert(const Utf8Iterator& dst, const Utf8Iterator& src_begin, const Utf8Iterator& src_end) {
-        U8string result(dst.source(), 0, dst.offset());
+    Ustring str_insert(const Utf8Iterator& dst, const Utf8Iterator& src_begin, const Utf8Iterator& src_end) {
+        Ustring result(dst.source(), 0, dst.offset());
         result.append(src_begin.source(), src_begin.offset(), src_end.offset() - src_begin.offset());
         result.append(dst.source(), dst.offset(), npos);
         return result;
     }
 
-    U8string str_insert(const Utf8Iterator& dst, const Irange<Utf8Iterator>& src) {
+    Ustring str_insert(const Utf8Iterator& dst, const Irange<Utf8Iterator>& src) {
         return str_insert(dst, src.begin(), src.end());
     }
 
-    U8string str_insert(const Utf8Iterator& dst, const U8string& src) {
-        U8string result(dst.source(), 0, dst.offset());
+    Ustring str_insert(const Utf8Iterator& dst, const Ustring& src) {
+        Ustring result(dst.source(), 0, dst.offset());
         result += src;
         result.append(dst.source(), dst.offset(), npos);
         return result;
     }
 
-    U8string str_insert(const Utf8Iterator& dst_begin, const Utf8Iterator& dst_end,
+    Ustring str_insert(const Utf8Iterator& dst_begin, const Utf8Iterator& dst_end,
             const Utf8Iterator& src_begin, const Utf8Iterator& src_end) {
-        U8string result(dst_begin.source(), 0, dst_begin.offset());
+        Ustring result(dst_begin.source(), 0, dst_begin.offset());
         result.append(src_begin.source(), src_begin.offset(), src_end.offset() - src_begin.offset());
         result.append(dst_end.source(), dst_end.offset(), npos);
         return result;
     }
 
-    U8string str_insert(const Irange<Utf8Iterator>& dst, const Irange<Utf8Iterator>& src) {
+    Ustring str_insert(const Irange<Utf8Iterator>& dst, const Irange<Utf8Iterator>& src) {
         return str_insert(dst.begin(), dst.end(), src.begin(), src.end());
     }
 
-    U8string str_insert(const Utf8Iterator& dst_begin, const Utf8Iterator& dst_end, const U8string& src) {
-        U8string result(dst_begin.source(), 0, dst_begin.offset());
+    Ustring str_insert(const Utf8Iterator& dst_begin, const Utf8Iterator& dst_end, const Ustring& src) {
+        Ustring result(dst_begin.source(), 0, dst_begin.offset());
         result += src;
         result.append(dst_end.source(), dst_end.offset(), npos);
         return result;
     }
 
-    U8string str_insert(const Irange<Utf8Iterator>& dst, const U8string& src) {
+    Ustring str_insert(const Irange<Utf8Iterator>& dst, const Ustring& src) {
         return str_insert(dst.begin(), dst.end(), utf_begin(src), utf_end(src));
     }
 
-    Irange<Utf8Iterator> str_insert_in(U8string& dst, const Utf8Iterator& where,
+    Irange<Utf8Iterator> str_insert_in(Ustring& dst, const Utf8Iterator& where,
             const Utf8Iterator& src_begin, const Utf8Iterator& src_end) {
         size_t ofs1 = where.offset(), ofs2 = src_begin.offset(), n = src_end.offset() - ofs2;
         dst.insert(ofs1, src_begin.source(), ofs2, n);
         return {utf_iterator(dst, ofs1), utf_iterator(dst, ofs1 + n)};
     }
 
-    Irange<Utf8Iterator> str_insert_in(U8string& dst, const Utf8Iterator& where, const Irange<Utf8Iterator>& src) {
+    Irange<Utf8Iterator> str_insert_in(Ustring& dst, const Utf8Iterator& where, const Irange<Utf8Iterator>& src) {
         return str_insert_in(dst, where, src.begin(), src.end());
     }
 
-    Irange<Utf8Iterator> str_insert_in(U8string& dst, const Utf8Iterator& where, const U8string& src) {
+    Irange<Utf8Iterator> str_insert_in(Ustring& dst, const Utf8Iterator& where, const Ustring& src) {
         size_t ofs = where.offset();
         dst.insert(ofs, src);
         return {utf_iterator(dst, ofs), utf_iterator(dst, ofs + src.size())};
     }
 
-    Irange<Utf8Iterator> str_insert_in(U8string& dst, const Utf8Iterator& range_begin, const Utf8Iterator& range_end,
+    Irange<Utf8Iterator> str_insert_in(Ustring& dst, const Utf8Iterator& range_begin, const Utf8Iterator& range_end,
             const Utf8Iterator& src_begin, const Utf8Iterator& src_end) {
         size_t ofs1 = range_begin.offset(), n1 = range_end.offset() - ofs1,
             ofs2 = src_begin.offset(), n2 = src_end.offset() - ofs2;
@@ -368,22 +368,22 @@ namespace RS::Unicorn {
         return {utf_iterator(dst, ofs1), utf_iterator(dst, ofs1 + n2)};
     }
 
-    Irange<Utf8Iterator> str_insert_in(U8string& dst, const Irange<Utf8Iterator>& range, const Irange<Utf8Iterator>& src) {
+    Irange<Utf8Iterator> str_insert_in(Ustring& dst, const Irange<Utf8Iterator>& range, const Irange<Utf8Iterator>& src) {
         return str_insert_in(dst, range.begin(), range.end(), src.begin(), src.end());
     }
 
-    Irange<Utf8Iterator> str_insert_in(U8string& dst, const Utf8Iterator& range_begin, const Utf8Iterator& range_end,
-            const U8string& src) {
+    Irange<Utf8Iterator> str_insert_in(Ustring& dst, const Utf8Iterator& range_begin, const Utf8Iterator& range_end,
+            const Ustring& src) {
         size_t ofs = range_begin.offset(), n = range_end.offset() - ofs;
         dst.replace(ofs, n, src);
         return {utf_iterator(dst, ofs), utf_iterator(dst, ofs + src.size())};
     }
 
-    Irange<Utf8Iterator> str_insert_in(U8string& dst, const Irange<Utf8Iterator>& range, const U8string& src) {
+    Irange<Utf8Iterator> str_insert_in(Ustring& dst, const Irange<Utf8Iterator>& range, const Ustring& src) {
         return str_insert_in(dst, range.begin(), range.end(), utf_begin(src), utf_end(src));
     }
 
-    U8string str_pad_left(const U8string& str, size_t length, char32_t c, uint32_t flags) {
+    Ustring str_pad_left(const Ustring& str, size_t length, char32_t c, uint32_t flags) {
         size_t old_length = str_length(str, flags);
         if (length > old_length) {
             auto result = str;
@@ -394,13 +394,13 @@ namespace RS::Unicorn {
         }
     }
 
-    void str_pad_left_in(U8string& str, size_t length, char32_t c, uint32_t flags) {
+    void str_pad_left_in(Ustring& str, size_t length, char32_t c, uint32_t flags) {
         size_t old_length = str_length(str, flags);
         if (length > old_length)
             insert_padding(str, old_length, length, c, flags, 'L');
     }
 
-    U8string str_pad_right(const U8string& str, size_t length, char32_t c, uint32_t flags) {
+    Ustring str_pad_right(const Ustring& str, size_t length, char32_t c, uint32_t flags) {
         size_t old_length = str_length(str, flags);
         if (length > old_length) {
             auto result = str;
@@ -411,13 +411,13 @@ namespace RS::Unicorn {
         }
     }
 
-    void str_pad_right_in(U8string& str, size_t length, char32_t c, uint32_t flags) {
+    void str_pad_right_in(Ustring& str, size_t length, char32_t c, uint32_t flags) {
         size_t old_length = str_length(str, flags);
         if (length > old_length)
             insert_padding(str, old_length, length, c, flags, 'R');
     }
 
-    bool str_partition(const U8string& str, U8string& prefix, U8string& suffix) {
+    bool str_partition(const Ustring& str, Ustring& prefix, Ustring& suffix) {
         if (str.empty()) {
             prefix.clear();
             suffix.clear();
@@ -437,7 +437,7 @@ namespace RS::Unicorn {
         return true;
     }
 
-    bool str_partition_at(const U8string& str, U8string& prefix, U8string& suffix, const U8string& delim) {
+    bool str_partition_at(const Ustring& str, Ustring& prefix, Ustring& suffix, const Ustring& delim) {
         size_t pos = delim.empty() ? npos : str.find(delim);
         if (pos == npos) {
             prefix = str;
@@ -451,7 +451,7 @@ namespace RS::Unicorn {
         }
     }
 
-    bool str_partition_by(const U8string& str, U8string& prefix, U8string& suffix, const U8string& delim) {
+    bool str_partition_by(const Ustring& str, Ustring& prefix, Ustring& suffix, const Ustring& delim) {
         if (str.empty() || delim.empty()) {
             prefix = str;
             suffix.clear();
@@ -487,39 +487,39 @@ namespace RS::Unicorn {
         return i != npos;
     }
 
-    U8string str_remove(const U8string& str, char32_t c) {
-        U8string dst;
+    Ustring str_remove(const Ustring& str, char32_t c) {
+        Ustring dst;
         std::copy_if(utf_begin(str), utf_end(str), utf_writer(dst), [c] (char32_t x) { return x != c; });
         return dst;
     }
 
-    U8string str_remove(const U8string& str, const U8string& chars) {
-        U8string dst;
+    Ustring str_remove(const Ustring& str, const Ustring& chars) {
+        Ustring dst;
         auto uchars = to_utf32(chars);
         std::copy_if(utf_begin(str), utf_end(str), utf_writer(dst), [&uchars] (char32_t x) { return uchars.find(x) == npos; });
         return dst;
     }
 
-    void str_remove_in(U8string& str, char32_t c) {
-        U8string dst;
+    void str_remove_in(Ustring& str, char32_t c) {
+        Ustring dst;
         std::copy_if(utf_begin(str), utf_end(str), utf_writer(dst), [c] (char32_t x) { return x != c; });
         str.swap(dst);
     }
 
-    void str_remove_in(U8string& str, const U8string& chars) {
-        U8string dst;
+    void str_remove_in(Ustring& str, const Ustring& chars) {
+        Ustring dst;
         auto uchars = to_utf32(chars);
         std::copy_if(utf_begin(str), utf_end(str), utf_writer(dst), [&uchars] (char32_t x) { return uchars.find(x) == npos; });
         str.swap(dst);
     }
 
-    U8string str_repeat(const U8string& str, size_t n) {
+    Ustring str_repeat(const Ustring& str, size_t n) {
         if (n == 0 || str.empty())
             return {};
         if (n == 1)
             return str;
         if (str.size() == 1)
-            return U8string(n, str[0]);
+            return Ustring(n, str[0]);
         size_t size = n * str.size();
         auto dst = str;
         dst.reserve(size);
@@ -529,15 +529,15 @@ namespace RS::Unicorn {
         return dst;
     }
 
-    void str_repeat_in(U8string& str, size_t n) {
+    void str_repeat_in(Ustring& str, size_t n) {
         auto dst = str_repeat(str, n);
         str.swap(dst);
     }
 
-    U8string str_replace(const U8string& str, const U8string& target, const U8string& sub, size_t n) {
+    Ustring str_replace(const Ustring& str, const Ustring& target, const Ustring& sub, size_t n) {
         if (target.empty() || n == 0)
             return str;
-        U8string dst;
+        Ustring dst;
         size_t i = 0, size = str.size(), tsize = target.size();
         for (size_t k = 0; k < n && i < size; ++k) {
             auto j = str.find(target, i);
@@ -555,85 +555,85 @@ namespace RS::Unicorn {
         return dst;
     }
 
-    void str_replace_in(U8string& str, const U8string& target, const U8string& sub, size_t n) {
+    void str_replace_in(Ustring& str, const Ustring& target, const Ustring& sub, size_t n) {
         auto result = str_replace(str, target, sub, n);
         str.swap(result);
     }
 
-    Strings str_splitv(const U8string& src) {
+    Strings str_splitv(const Ustring& src) {
         Strings v;
         str_split(src, append(v));
         return v;
     }
 
-    Strings str_splitv_at(const U8string& src, const U8string& delim) {
+    Strings str_splitv_at(const Ustring& src, const Ustring& delim) {
         Strings v;
         str_split_at(src, append(v), delim);
         return v;
     }
 
-    Strings str_splitv_by(const U8string& src, const U8string& delim) {
+    Strings str_splitv_by(const Ustring& src, const Ustring& delim) {
         Strings v;
         str_split_by(src, append(v), delim);
         return v;
     }
 
-    U8string str_squeeze(const U8string& str) {
-        U8string dst;
+    Ustring str_squeeze(const Ustring& str) {
+        Ustring dst;
         squeeze_helper(str, dst, false);
         return dst;
     }
 
-    U8string str_squeeze(const U8string& str, const U8string& chars) {
-        U8string dst;
+    Ustring str_squeeze(const Ustring& str, const Ustring& chars) {
+        Ustring dst;
         squeeze_helper(str, dst, false, chars);
         return dst;
     }
 
-    U8string str_squeeze_trim(const U8string& str) {
-        U8string dst;
+    Ustring str_squeeze_trim(const Ustring& str) {
+        Ustring dst;
         squeeze_helper(str, dst, true);
         return dst;
     }
 
-    U8string str_squeeze_trim(const U8string& str, const U8string& chars) {
-        U8string dst;
+    Ustring str_squeeze_trim(const Ustring& str, const Ustring& chars) {
+        Ustring dst;
         squeeze_helper(str, dst, true, chars);
         return dst;
     }
 
-    void str_squeeze_in(U8string& str) {
-        U8string dst;
+    void str_squeeze_in(Ustring& str) {
+        Ustring dst;
         squeeze_helper(str, dst, false);
         str.swap(dst);
     }
 
-    void str_squeeze_in(U8string& str, const U8string& chars) {
-        U8string dst;
+    void str_squeeze_in(Ustring& str, const Ustring& chars) {
+        Ustring dst;
         squeeze_helper(str, dst, false, chars);
         str.swap(dst);
     }
 
-    void str_squeeze_trim_in(U8string& str) {
-        U8string dst;
+    void str_squeeze_trim_in(Ustring& str) {
+        Ustring dst;
         squeeze_helper(str, dst, true);
         str.swap(dst);
     }
 
-    void str_squeeze_trim_in(U8string& str, const U8string& chars) {
-        U8string dst;
+    void str_squeeze_trim_in(Ustring& str, const Ustring& chars) {
+        Ustring dst;
         squeeze_helper(str, dst, true, chars);
         str.swap(dst);
     }
 
-    U8string str_substring(const U8string& str, size_t offset, size_t count) {
+    Ustring str_substring(const Ustring& str, size_t offset, size_t count) {
         if (offset < str.size())
             return str.substr(offset, count);
         else
             return {};
     }
 
-    U8string utf_substring(const U8string& str, size_t index, size_t length, uint32_t flags) {
+    Ustring utf_substring(const Ustring& str, size_t index, size_t length, uint32_t flags) {
         UnicornDetail::check_length_flags(flags);
         auto b = utf_begin(str), e = utf_end(str);
         auto i = str_find_index(b, e, index, flags);
@@ -641,13 +641,13 @@ namespace RS::Unicorn {
         return u_str(i, j);
     }
 
-    U8string str_translate(const U8string& str, const U8string& target, const U8string& sub) {
+    Ustring str_translate(const Ustring& str, const Ustring& target, const Ustring& sub) {
         if (target.empty() || sub.empty())
             return str;
         auto t = to_utf32(target), s = to_utf32(sub);
         if (s.size() < t.size())
             s.resize(t.size(), s.back());
-        U8string dst;
+        Ustring dst;
         dst.reserve(str.size());
         for (auto c: utf_range(str)) {
             size_t pos = t.find(c);
@@ -658,62 +658,62 @@ namespace RS::Unicorn {
         return dst;
     }
 
-    void str_translate_in(U8string& str, const U8string& target, const U8string& sub) {
+    void str_translate_in(Ustring& str, const Ustring& target, const Ustring& sub) {
         auto result = str_translate(str, target, sub);
         str.swap(result);
     }
 
-    U8string str_trim(const U8string& str, const U8string& chars) {
+    Ustring str_trim(const Ustring& str, const Ustring& chars) {
         return str_trim_if(str, CharIn(to_utf32(chars)));
     }
 
-    U8string str_trim(const U8string& str) {
+    Ustring str_trim(const Ustring& str) {
         return str_trim_if(str, char_is_white_space);
     }
 
-    U8string str_trim_left(const U8string& str, const U8string& chars) {
+    Ustring str_trim_left(const Ustring& str, const Ustring& chars) {
         return str_trim_left_if(str, CharIn(to_utf32(chars)));
     }
 
-    U8string str_trim_left(const U8string& str) {
+    Ustring str_trim_left(const Ustring& str) {
         return str_trim_left_if(str, char_is_white_space);
     }
 
-    U8string str_trim_right(const U8string& str, const U8string& chars) {
+    Ustring str_trim_right(const Ustring& str, const Ustring& chars) {
         return str_trim_right_if(str, CharIn(to_utf32(chars)));
     }
 
-    U8string str_trim_right(const U8string& str) {
+    Ustring str_trim_right(const Ustring& str) {
         return str_trim_right_if(str, char_is_white_space);
     }
 
-    void str_trim_in(U8string& str, const U8string& chars) {
+    void str_trim_in(Ustring& str, const Ustring& chars) {
         str_trim_in_if(str, CharIn(to_utf32(chars)));
     }
 
-    void str_trim_in(U8string& str) {
+    void str_trim_in(Ustring& str) {
         str_trim_in_if(str, char_is_white_space);
     }
 
-    void str_trim_left_in(U8string& str, const U8string& chars) {
+    void str_trim_left_in(Ustring& str, const Ustring& chars) {
         str_trim_left_in_if(str, CharIn(to_utf32(chars)));
     }
 
-    void str_trim_left_in(U8string& str) {
+    void str_trim_left_in(Ustring& str) {
         str_trim_left_in_if(str, char_is_white_space);
     }
 
-    void str_trim_right_in(U8string& str, const U8string& chars) {
+    void str_trim_right_in(Ustring& str, const Ustring& chars) {
         str_trim_right_in_if(str, CharIn(to_utf32(chars)));
     }
 
-    void str_trim_right_in(U8string& str) {
+    void str_trim_right_in(Ustring& str) {
         str_trim_right_in_if(str, char_is_white_space);
     }
 
-    U8string str_unify_lines(const U8string& str, const U8string& newline) {
+    Ustring str_unify_lines(const Ustring& str, const Ustring& newline) {
         auto i = utf_begin(str), e = utf_end(str);
-        U8string result;
+        Ustring result;
         bool last_break = false;
         while (i != e) {
             auto j = std::find_if(i, e, char_is_line_break);
@@ -736,24 +736,24 @@ namespace RS::Unicorn {
         return result;
     }
 
-    U8string str_unify_lines(const U8string& str, char32_t newline) {
+    Ustring str_unify_lines(const Ustring& str, char32_t newline) {
         return str_unify_lines(str, str_char(newline));
     }
 
-    U8string str_unify_lines(const U8string& str) {
+    Ustring str_unify_lines(const Ustring& str) {
         return str_unify_lines(str, "\n");
     }
 
-    void str_unify_lines_in(U8string& str, const U8string& newline) {
+    void str_unify_lines_in(Ustring& str, const Ustring& newline) {
         auto result = str_unify_lines(str, newline);
         str.swap(result);
     }
 
-    void str_unify_lines_in(U8string& str, char32_t newline) {
+    void str_unify_lines_in(Ustring& str, char32_t newline) {
         str_unify_lines_in(str, str_char(newline));
     }
 
-    void str_unify_lines_in(U8string& str) {
+    void str_unify_lines_in(Ustring& str) {
         str_unify_lines_in(str, "\n");
     }
 
@@ -763,11 +763,11 @@ namespace RS::Unicorn {
     constexpr Kwarg<size_t> Wrap::margin;
     constexpr Kwarg<size_t> Wrap::margin2;
     constexpr Kwarg<size_t> Wrap::width;
-    constexpr Kwarg<U8string> Wrap::newline;
+    constexpr Kwarg<Ustring> Wrap::newline;
 
     namespace UnicornDetail {
 
-        void str_wrap_helper(const U8string& src, U8string& dst, bool enforce, bool preserve, uint32_t flags, size_t margin, size_t margin2, size_t width, const U8string& newline) {
+        void str_wrap_helper(const Ustring& src, Ustring& dst, bool enforce, bool preserve, uint32_t flags, size_t margin, size_t margin2, size_t width, const Ustring& newline) {
             if (width == npos) {
                 auto columns = decnum(cstr(getenv("COLUMNS")));
                 if (columns < 3)

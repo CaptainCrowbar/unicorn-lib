@@ -62,7 +62,7 @@ complete decomposition process has been applied.
 
 ## Basic character functions ##
 
-* `U8string` **`char_as_hex`**`(char32_t c)`
+* `Ustring` **`char_as_hex`**`(char32_t c)`
 
 Formats a code point in the conventional `U+XXXX` notation.
 
@@ -175,7 +175,7 @@ that the underscore character is counted as a letter instead of a punctuation
 mark.
 
 * `function<bool(char32_t)>` **`gc_predicate`**`(GC cat)`
-* `function<bool(char32_t)>` **`gc_predicate`**`(const U8string& cat)`
+* `function<bool(char32_t)>` **`gc_predicate`**`(const Ustring& cat)`
 * `function<bool(char32_t)>` **`gc_predicate`**`(const char* cat)`
 
 These return function objects that can be used to test a character for
@@ -186,10 +186,10 @@ connector punctuation, or dash punctuation. Following the convention suggested
 by the Unicode standard, the special category `"LC"` or `"L&"` tests for a
 cased letter, i.e. equivalent to `"Lltu"`.
 
-* `U8string` **`decode_gc`**`(GC cat)`
+* `Ustring` **`decode_gc`**`(GC cat)`
 * `constexpr GC` **`encode_gc`**`(char c1, char c2) noexcept`
 * `constexpr GC` **`encode_gc`**`(const char* cat) noexcept`
-* `GC` **`encode_gc`**`(const U8string& cat) noexcept`
+* `GC` **`encode_gc`**`(const Ustring& cat) noexcept`
 
 These convert between a GC abbreviation (passed as either a pair of letters or
 a string) and its integer code. The result of `encode_gc()` is unspecified if
@@ -239,13 +239,13 @@ Properties relevant to the Unicode bidirectional algorithm.
 
 ## Block properties ##
 
-* `U8string` **`char_block`**`(char32_t c)`
+* `Ustring` **`char_block`**`(char32_t c)`
 
 Returns the name of the block to which a character belongs, or an empty string
 if it is not part of any block.
 
 * `struct` **`BlockInfo`**
-    * `U8string BlockInfo::`**`name`**
+    * `Ustring BlockInfo::`**`name`**
     * `char32_t BlockInfo::`**`first`**
     * `char32_t BlockInfo::`**`last`**
 * `const vector<BlockInfo>&` **`unicode_block_list`**`()`
@@ -287,7 +287,7 @@ library).
 
 ## Character names ##
 
-* `U8string` **`char_name`**`(char32_t c, uint32_t flags = 0)`
+* `Ustring` **`char_name`**`(char32_t c, uint32_t flags = 0)`
 
 Flag                    | Description
 ----                    | -----------
@@ -392,7 +392,7 @@ character is not numeric, the numeric value will be zero (expressed as `0/1`).
 
 ## Script properties ##
 
-* `U8string` **`char_script`**`(char32_t c)`
+* `Ustring` **`char_script`**`(char32_t c)`
 * `Strings` **`char_script_list`**`(char32_t c)`
 
 These return the principal script associated with a character, or a list of
@@ -400,7 +400,7 @@ scripts (in unspecified order) for characters that are commonly used with
 multiple scripts. These return the ISO 15924 four letter abbreviations of the
 script names; use `script_name()` to convert these to full names.
 
-* `U8string` **`script_name`**`(const U8string& abbr)`
+* `Ustring` **`script_name`**`(const Ustring& abbr)`
 
 Converts an ISO 15924 script code (case insensitive) to the full name of the
 script. Unrecognised codes will return an empty string.

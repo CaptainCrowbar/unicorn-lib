@@ -21,7 +21,7 @@ namespace {
 
 void test_unicorn_io_file_reader() {
 
-    U8string s;
+    Ustring s;
     Strings vec;
     Irange<FileReader> range;
     auto guard = scope_exit([=] { testfile.remove(); });

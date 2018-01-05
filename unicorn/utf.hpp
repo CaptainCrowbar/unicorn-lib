@@ -122,7 +122,7 @@ namespace RS::Unicorn {
         };
 
         template <typename C> inline void append_error(std::basic_string<C>& str) { str += static_cast<C>(replacement_char); }
-        inline void append_error(U8string& str) { str += utf8_replacement; }
+        inline void append_error(Ustring& str) { str += utf8_replacement; }
 
     }
 
@@ -553,7 +553,7 @@ namespace RS::Unicorn {
     }
 
     template <typename C>
-    U8string to_utf8(const std::basic_string<C>& src, uint32_t flags = 0) {
+    Ustring to_utf8(const std::basic_string<C>& src, uint32_t flags = 0) {
         return recode<char>(src, flags);
     }
 

@@ -18,7 +18,7 @@ namespace {
     // 00010302  d800 df02  f0 90 8c 82
     // 0010fffd  dbff dffd  f4 8f bf bd
 
-    const U8string utf8_example {"\xd0\xb0\xe4\xba\x8c\xf0\x90\x8c\x82\xf4\x8f\xbf\xbd"};
+    const Ustring utf8_example {"\xd0\xb0\xe4\xba\x8c\xf0\x90\x8c\x82\xf4\x8f\xbf\xbd"};
     const std::u16string utf16_example {0x430,0x4e8c,0xd800,0xdf02,0xdbff,0xdffd};
     const std::u32string utf32_example {0x430,0x4e8c,0x10302,0x10fffd};
 
@@ -32,7 +32,7 @@ namespace {
 
 void test_unicorn_string_size_measurement_flags() {
 
-    U8string s8;
+    Ustring s8;
     std::u16string s16;
     std::u32string s32;
 

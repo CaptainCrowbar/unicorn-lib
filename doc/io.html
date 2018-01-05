@@ -15,7 +15,7 @@
 output, with automatic conversion between Unicode and external legacy
 encodings, as well as other conveniences such as normalization of line breaks.</p>
 <p>File names can be supplied either as UTF-8 strings or as native character
-strings (these are different types only on Windows; on Unix the <code>U8string</code> and
+strings (these are different types only on Windows; on Unix the <code>Ustring</code> and
 <code>NativeString</code> versions are the same function). Constructors that take a
 <code>NativeString</code> can be used with non-Unicode file names; see
 <a href="file.html"><code>unicorn/file</code></a> for the details of how file name encodings are
@@ -37,22 +37,22 @@ handled.</p>
 <li><code>class</code> <strong><code>FileReader</code></strong><ul>
 <li><code>using FileReader::</code><strong><code>difference_type</code></strong> <code>= ptrdiff_t</code></li>
 <li><code>using FileReader::</code><strong><code>iterator_category</code></strong> <code>= std::input_iterator_tag</code></li>
-<li><code>using FileReader::</code><strong><code>pointer</code></strong> <code>= const U8string*</code></li>
-<li><code>using FileReader::</code><strong><code>reference</code></strong> <code>= const U8string&amp;</code></li>
-<li><code>using FileReader::</code><strong><code>value_type</code></strong> <code>= U8string</code></li>
+<li><code>using FileReader::</code><strong><code>pointer</code></strong> <code>= const Ustring*</code></li>
+<li><code>using FileReader::</code><strong><code>reference</code></strong> <code>= const Ustring&amp;</code></li>
+<li><code>using FileReader::</code><strong><code>value_type</code></strong> <code>= Ustring</code></li>
 <li><code>FileReader::</code><strong><code>FileReader</code></strong><code>()</code></li>
-<li><code>explicit FileReader::</code><strong><code>FileReader</code></strong><code>(const U8string&amp; file)</code></li>
-<li><code>FileReader::</code><strong><code>FileReader</code></strong><code>(const U8string&amp; file, uint32_t flags)</code></li>
-<li><code>FileReader::</code><strong><code>FileReader</code></strong><code>(const U8string&amp; file, uint32_t flags, const U8string&amp; enc)</code></li>
-<li><code>FileReader::</code><strong><code>FileReader</code></strong><code>(const U8string&amp; file, uint32_t flags, uint32_t enc)</code></li>
-<li><code>FileReader::</code><strong><code>FileReader</code></strong><code>(const U8string&amp; file, uint32_t flags, const U8string&amp; enc, const U8string&amp; eol)</code></li>
-<li><code>FileReader::</code><strong><code>FileReader</code></strong><code>(const U8string&amp; file, uint32_t flags, uint32_t enc, const U8string&amp; eol)</code></li>
+<li><code>explicit FileReader::</code><strong><code>FileReader</code></strong><code>(const Ustring&amp; file)</code></li>
+<li><code>FileReader::</code><strong><code>FileReader</code></strong><code>(const Ustring&amp; file, uint32_t flags)</code></li>
+<li><code>FileReader::</code><strong><code>FileReader</code></strong><code>(const Ustring&amp; file, uint32_t flags, const Ustring&amp; enc)</code></li>
+<li><code>FileReader::</code><strong><code>FileReader</code></strong><code>(const Ustring&amp; file, uint32_t flags, uint32_t enc)</code></li>
+<li><code>FileReader::</code><strong><code>FileReader</code></strong><code>(const Ustring&amp; file, uint32_t flags, const Ustring&amp; enc, const Ustring&amp; eol)</code></li>
+<li><code>FileReader::</code><strong><code>FileReader</code></strong><code>(const Ustring&amp; file, uint32_t flags, uint32_t enc, const Ustring&amp; eol)</code></li>
 <li><code>explicit FileReader::</code><strong><code>FileReader</code></strong><code>(const NativeString&amp; file)</code></li>
 <li><code>FileReader::</code><strong><code>FileReader</code></strong><code>(const NativeString&amp; file, uint32_t flags)</code></li>
-<li><code>FileReader::</code><strong><code>FileReader</code></strong><code>(const NativeString&amp; file, uint32_t flags, const U8string&amp; enc)</code></li>
+<li><code>FileReader::</code><strong><code>FileReader</code></strong><code>(const NativeString&amp; file, uint32_t flags, const Ustring&amp; enc)</code></li>
 <li><code>FileReader::</code><strong><code>FileReader</code></strong><code>(const NativeString&amp; file, uint32_t flags, uint32_t enc)</code></li>
-<li><code>FileReader::</code><strong><code>FileReader</code></strong><code>(const NativeString&amp; file, uint32_t flags, const U8string&amp; enc, const U8string&amp; eol)</code></li>
-<li><code>FileReader::</code><strong><code>FileReader</code></strong><code>(const NativeString&amp; file, uint32_t flags, uint32_t enc, const U8string&amp; eol)</code></li>
+<li><code>FileReader::</code><strong><code>FileReader</code></strong><code>(const NativeString&amp; file, uint32_t flags, const Ustring&amp; enc, const Ustring&amp; eol)</code></li>
+<li><code>FileReader::</code><strong><code>FileReader</code></strong><code>(const NativeString&amp; file, uint32_t flags, uint32_t enc, const Ustring&amp; eol)</code></li>
 <li><code>size_t FileReader::</code><strong><code>line</code></strong><code>() const noexcept</code></li>
 <li><em>[standard input iterator operations]</em></li>
 </ul>
@@ -133,16 +133,16 @@ modified by the flags below.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const U8string&amp; file, uint32_t flags = 0)</code></li>
-<li><code>Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const U8string&amp; file, uint32_t flags, const U8string&amp; enc)</code></li>
-<li><code>Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const U8string&amp; file, uint32_t flags, uint32_t enc)</code></li>
-<li><code>Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const U8string&amp; file, uint32_t flags, const U8string&amp; enc, const U8string&amp; eol)</code></li>
-<li><code>Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const U8string&amp; file, uint32_t flags, uint32_t enc, const U8string&amp; eol)</code></li>
+<li><code>Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const Ustring&amp; file, uint32_t flags = 0)</code></li>
+<li><code>Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const Ustring&amp; file, uint32_t flags, const Ustring&amp; enc)</code></li>
+<li><code>Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const Ustring&amp; file, uint32_t flags, uint32_t enc)</code></li>
+<li><code>Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const Ustring&amp; file, uint32_t flags, const Ustring&amp; enc, const Ustring&amp; eol)</code></li>
+<li><code>Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const Ustring&amp; file, uint32_t flags, uint32_t enc, const Ustring&amp; eol)</code></li>
 <li><code>Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const NativeString&amp; file, uint32_t flags = 0)</code></li>
-<li><code>Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const NativeString&amp; file, uint32_t flags, const U8string&amp; enc)</code></li>
+<li><code>Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const NativeString&amp; file, uint32_t flags, const Ustring&amp; enc)</code></li>
 <li><code>Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const NativeString&amp; file, uint32_t flags, uint32_t enc)</code></li>
-<li><code>Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const NativeString&amp; file, uint32_t flags, const U8string&amp; enc, const U8string&amp; eol)</code></li>
-<li><code>Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const NativeString&amp; file, uint32_t flags, uint32_t enc, const U8string&amp; eol)</code></li>
+<li><code>Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const NativeString&amp; file, uint32_t flags, const Ustring&amp; enc, const Ustring&amp; eol)</code></li>
+<li><code>Irange&lt;FileReader&gt;</code> <strong><code>read_lines</code></strong><code>(const NativeString&amp; file, uint32_t flags, uint32_t enc, const Ustring&amp; eol)</code></li>
 </ul>
 <p>These construct a pair of iterators, from which the lines in a file can be
 read. The arguments are interpreted as described above.</p>
@@ -157,13 +157,13 @@ read. The arguments are interpreted as described above.</p>
 <li><code>using FileWriter::</code><strong><code>reference</code></strong> <code>= void</code></li>
 <li><code>using FileWriter::</code><strong><code>value_type</code></strong> <code>= void</code></li>
 <li><code>FileWriter::</code><strong><code>FileWriter</code></strong><code>()</code></li>
-<li><code>explicit FileWriter::</code><strong><code>FileWriter</code></strong><code>(const U8string&amp; file)</code></li>
-<li><code>FileWriter::</code><strong><code>FileWriter</code></strong><code>(const U8string&amp; file, uint32_t flags)</code></li>
-<li><code>FileWriter::</code><strong><code>FileWriter</code></strong><code>(const U8string&amp; file, uint32_t flags, const U8string&amp; enc)</code></li>
-<li><code>FileWriter::</code><strong><code>FileWriter</code></strong><code>(const U8string&amp; file, uint32_t flags, uint32_t enc)</code></li>
+<li><code>explicit FileWriter::</code><strong><code>FileWriter</code></strong><code>(const Ustring&amp; file)</code></li>
+<li><code>FileWriter::</code><strong><code>FileWriter</code></strong><code>(const Ustring&amp; file, uint32_t flags)</code></li>
+<li><code>FileWriter::</code><strong><code>FileWriter</code></strong><code>(const Ustring&amp; file, uint32_t flags, const Ustring&amp; enc)</code></li>
+<li><code>FileWriter::</code><strong><code>FileWriter</code></strong><code>(const Ustring&amp; file, uint32_t flags, uint32_t enc)</code></li>
 <li><code>explicit FileWriter::</code><strong><code>FileWriter</code></strong><code>(const NativeString&amp; file)</code></li>
 <li><code>FileWriter::</code><strong><code>FileWriter</code></strong><code>(const NativeString&amp; file, uint32_t flags)</code></li>
-<li><code>FileWriter::</code><strong><code>FileWriter</code></strong><code>(const NativeString&amp; file, uint32_t flags, const U8string&amp; enc)</code></li>
+<li><code>FileWriter::</code><strong><code>FileWriter</code></strong><code>(const NativeString&amp; file, uint32_t flags, const Ustring&amp; enc)</code></li>
 <li><code>FileWriter::</code><strong><code>FileWriter</code></strong><code>(const NativeString&amp; file, uint32_t flags, uint32_t enc)</code></li>
 <li><code>void FileWriter::</code><strong><code>flush</code></strong><code>()</code></li>
 <li><em>[standard output iterator operations]</em></li>

@@ -22,14 +22,14 @@ namespace RS::Unicorn {
 
         template <typename T>
         struct ArgConv<T, false, false> {
-            T operator()(const U8string& s) const {
+            T operator()(const Ustring& s) const {
                 return s.empty() ? T() : static_cast<T>(s);
             }
         };
 
         template <typename T>
         struct ArgConv<T, true, false> {
-            T operator()(const U8string& s) const {
+            T operator()(const Ustring& s) const {
                 if (s.empty())
                     return T(0);
                 else if (s.size() >= 3 && s[0] == '0' && (s[1] == 'X' || s[1] == 'x'))
@@ -41,14 +41,14 @@ namespace RS::Unicorn {
 
         template <typename T>
         struct ArgConv<T, false, true> {
-            T operator()(const U8string& s) const {
+            T operator()(const Ustring& s) const {
                 return s.empty() ? T(0) : T(si_to_float(s));
             }
         };
 
         template <typename C>
         struct ArgConv<std::basic_string<C>, false, false> {
-            std::basic_string<C> operator()(const U8string& s) const {
+            std::basic_string<C> operator()(const Ustring& s) const {
                 return recode<C>(s);
             }
         };
@@ -60,12 +60,12 @@ namespace RS::Unicorn {
     public:
         class command_error: public std::runtime_error {
         public:
-            explicit command_error(const U8string& details, const U8string& arg = {}, const U8string& arg2 = {});
+            explicit command_error(const Ustring& details, const Ustring& arg = {}, const Ustring& arg2 = {});
         };
         class spec_error: public std::runtime_error {
         public:
-            explicit spec_error(const U8string& option);
-            spec_error(const U8string& details, const U8string& option);
+            explicit spec_error(const Ustring& option);
+            spec_error(const Ustring& details, const Ustring& option);
         };
         enum special_options { help, autohelp };
         static constexpr uint32_t locale    = 1;  // Argument list is in local encoding
@@ -79,39 +79,39 @@ namespace RS::Unicorn {
             floating = {},  // Argument must be a floating point number
             multi = {},     // Option may have multiple arguments
             required = {};  // Option is required
-        static constexpr Kwarg<U8string>
+        static constexpr Kwarg<Ustring>
             abbrev = {},    // Single letter abbreviation
             defvalue = {},  // Default value if not supplied
             group = {},     // Mutual exclusion group name
             pattern = {};   // Argument must match this regular expression
         Options() = default;
-        explicit Options(const U8string& info): app_info(str_trim(info)) {}
-        template <typename... Args> Options& add(const U8string& name, const U8string& info, const Args&... args)
+        explicit Options(const Ustring& info): app_info(str_trim(info)) {}
+        template <typename... Args> Options& add(const Ustring& name, const Ustring& info, const Args&... args)
             { add_option(option_type(name, info, args...)); return *this; }
-        Options& add(const U8string& info);
+        Options& add(const Ustring& info);
         Options& add(special_options flag);
         void add_help(bool automatic = false);
-        U8string help_text() const;
-        U8string version_text() const { return app_info; }
+        Ustring help_text() const;
+        Ustring version_text() const { return app_info; }
         template <typename C> bool parse(const std::vector<std::basic_string<C>>& args, std::ostream& out = std::cout, uint32_t flags = 0);
         template <typename C> bool parse(const std::basic_string<C>& args, std::ostream& out = std::cout, uint32_t flags = 0);
         template <typename C> bool parse(int argc, C** argv, std::ostream& out = std::cout, uint32_t flags = 0);
-        template <typename T> T get(const U8string& name) const { return UnicornDetail::ArgConv<T>()(str_join(find_values(name), " ")); }
-        template <typename T> std::vector<T> get_list(const U8string& name) const;
-        bool has(const U8string& name) const;
+        template <typename T> T get(const Ustring& name) const { return UnicornDetail::ArgConv<T>()(str_join(find_values(name), " ")); }
+        template <typename T> std::vector<T> get_list(const Ustring& name) const;
+        bool has(const Ustring& name) const;
     private:
         enum class help_mode { none, version, usage };
         struct option_type {
             option_type() = default;
-            template <typename... Args> option_type(const U8string& name, const U8string& info, const Args&... args);
-            option_type(const U8string& info);
+            template <typename... Args> option_type(const Ustring& name, const Ustring& info, const Args&... args);
+            option_type(const Ustring& info);
             option_type(const char* info): option_type(cstr(info)) {}
             Strings values;
-            U8string opt_name;
-            U8string opt_info;
-            U8string opt_abbrev;
-            U8string opt_defvalue;
-            U8string opt_group;
+            Ustring opt_name;
+            Ustring opt_info;
+            Ustring opt_abbrev;
+            Ustring opt_defvalue;
+            Ustring opt_group;
             Regex opt_pattern;
             bool is_found = false;
             bool is_anon = false;
@@ -123,12 +123,12 @@ namespace RS::Unicorn {
             bool is_required = false;
         };
         using option_list = std::vector<option_type>;
-        U8string app_info;
+        Ustring app_info;
         int help_flag = -1;
         option_list opts;
         void add_option(option_type opt);
-        size_t find_index(U8string name, bool require = false) const;
-        Strings find_values(const U8string& name) const;
+        size_t find_index(Ustring name, bool require = false) const;
+        Strings find_values(const Ustring& name) const;
         help_mode parse_args(Strings args, uint32_t flags);
         void clean_up_arguments(Strings& args, uint32_t flags);
         Strings parse_forced_anonymous(Strings& args);
@@ -139,14 +139,14 @@ namespace RS::Unicorn {
         void check_required();
         void supply_defaults();
         void send_help(std::ostream& out, help_mode mode) const;
-        template <typename C> static U8string arg_convert(const std::basic_string<C>& str, uint32_t /*flags*/) { return to_utf8(str); }
-        static U8string arg_convert(const std::string& str, uint32_t flags);
-        static void add_arg_to_opt(const U8string& arg, option_type& opt);
-        static void unquote(const U8string& src, Strings& dst);
+        template <typename C> static Ustring arg_convert(const std::basic_string<C>& str, uint32_t /*flags*/) { return to_utf8(str); }
+        static Ustring arg_convert(const std::string& str, uint32_t flags);
+        static void add_arg_to_opt(const Ustring& arg, option_type& opt);
+        static void unquote(const Ustring& src, Strings& dst);
     };
 
     template <typename T>
-    std::vector<T> Options::get_list(const U8string& name) const {
+    std::vector<T> Options::get_list(const Ustring& name) const {
         Strings svec = find_values(name);
         std::vector<T> tvec;
         std::transform(svec.begin(), svec.end(), append(tvec), UnicornDetail::ArgConv<T>());
@@ -188,8 +188,8 @@ namespace RS::Unicorn {
     }
 
     template <typename... Args>
-    Options::option_type::option_type(const U8string& name, const U8string& info, const Args&... args) {
-        U8string patstr;
+    Options::option_type::option_type(const Ustring& name, const Ustring& info, const Args&... args) {
+        Ustring patstr;
         opt_name = name;
         opt_info = info;
         kwget(anon, is_anon, args...);
@@ -207,7 +207,7 @@ namespace RS::Unicorn {
             opt_pattern = Regex(patstr);
     }
 
-    inline Options::option_type::option_type(const U8string& info) {
+    inline Options::option_type::option_type(const Ustring& info) {
         opt_info = str_trim_right(info);
         if (opt_info.empty())
             throw spec_error("Empty information string");

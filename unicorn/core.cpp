@@ -7,8 +7,8 @@ namespace RS::Unicorn {
 
     // Exceptions
 
-    U8string EncodingError::prefix(const U8string& encoding, size_t offset) {
-        U8string s = "Encoding error";
+    Ustring EncodingError::prefix(const Ustring& encoding, size_t offset) {
+        Ustring s = "Encoding error";
         if (! encoding.empty())
             s += " (" + encoding + ")";
         if (offset > 0)

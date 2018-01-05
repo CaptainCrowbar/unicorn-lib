@@ -10,7 +10,7 @@ using namespace std::literals;
 
 void test_unicorn_string_manip_pad_left() {
 
-    U8string s;
+    Ustring s;
 
     TEST_EQUAL(str_pad_left(""s, 0), "");
     TEST_EQUAL(str_pad_left(""s, 1), " ");
@@ -72,7 +72,7 @@ void test_unicorn_string_manip_pad_left() {
 
 void test_unicorn_string_manip_pad_right() {
 
-    U8string s;
+    Ustring s;
 
     TEST_EQUAL(str_pad_right(""s, 0), "");
     TEST_EQUAL(str_pad_right(""s, 1), " ");
@@ -134,7 +134,7 @@ void test_unicorn_string_manip_pad_right() {
 
 void test_unicorn_string_manip_partition() {
 
-    U8string s, t;
+    Ustring s, t;
 
     TEST(! str_partition(""s, s, t));                     TEST_EQUAL(s, "");       TEST_EQUAL(t, "");
     TEST(! str_partition("Hello"s, s, t));                TEST_EQUAL(s, "Hello");  TEST_EQUAL(t, "");
@@ -168,7 +168,7 @@ void test_unicorn_string_manip_partition() {
 
 void test_unicorn_string_manip_remove() {
 
-    U8string s, t;
+    Ustring s, t;
 
     s = u8"";             TRY(t = str_remove(s, U'o'));                                         TEST_EQUAL(t, u8"");
     s = u8"";             TRY(t = str_remove(s, u8"aeiou"));                                    TEST_EQUAL(t, u8"");
@@ -192,7 +192,7 @@ void test_unicorn_string_manip_remove() {
 
 void test_unicorn_string_manip_repeat() {
 
-    U8string s;
+    Ustring s;
 
     TEST_EQUAL(str_repeat("", 0), "");
     TEST_EQUAL(str_repeat("", 1), "");
@@ -226,7 +226,7 @@ void test_unicorn_string_manip_repeat() {
 
 void test_unicorn_string_manip_replace() {
 
-    U8string s;
+    Ustring s;
 
     TEST_EQUAL(str_replace(""s, "", ""), "");
     TEST_EQUAL(str_replace("(abc)"s, "", ""), "(abc)");

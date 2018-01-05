@@ -48,20 +48,20 @@ the following information on the standard output:
 ## Options class ##
 
 * `class Options::`**`command_error`**`: public std::runtime_error`
-    * `explicit command_error::`**`command_error`**`(const U8string& details, const U8string& arg = {}, const U8string& arg2 = {})`
+    * `explicit command_error::`**`command_error`**`(const Ustring& details, const Ustring& arg = {}, const Ustring& arg2 = {})`
 
 Thrown by `Options::parse()` during argument parsing, to report that the
 command line arguments supplied by the user were not consistent with the
 option specification.
 
 * `class Options::`**`spec_error`**`: public std::runtime_error`
-    * `explicit spec_error::`**`spec_error`**`(const U8string& option)`
-    * `spec_error::`**`spec_error`**`(const U8string& details, const U8string& option)`
+    * `explicit spec_error::`**`spec_error`**`(const Ustring& option)`
+    * `spec_error::`**`spec_error`**`(const Ustring& details, const Ustring& option)`
 
 Thrown by `Options::add()` during the creation of an option specification, to
 report an invalid combination of properties.
 
-* `explicit Options::`**`Options`**`(const U8string& info)`
+* `explicit Options::`**`Options`**`(const Ustring& info)`
 
 Constructor to initialize an option specification. The `info` argument is a
 string containing the basic description of the program, typically something
@@ -78,8 +78,8 @@ the user runs it with the `"--version"` option.
 Other life cycle functions. (The default constructor should not normally be
 used and is supplied only to enable move initialization in some cases.)
 
-* `template <typename... Args> Options& Options::`**`add`**`(const U8string& name, const U8string& info, const Args&... args)`
-* `Options& Options::`**`add`**`(const U8string& info)`
+* `template <typename... Args> Options& Options::`**`add`**`(const Ustring& name, const Ustring& info, const Args&... args)`
+* `Options& Options::`**`add`**`(const Ustring& info)`
 * `Options& Options::`**`add`**`([private type] flag)`
 
 A program will normally construct an `Options` object and use multiple calls
@@ -96,15 +96,15 @@ optional keyword arguments, as listed below.
 
 Keyword                    | Type        | Description
 -------                    | ----        | -----------
-`Options::`**`abbrev`**    | `U8string`  | A single letter abbreviation for the option (e.g. `"-x"`; the hyphen is optional).
+`Options::`**`abbrev`**    | `Ustring`  | A single letter abbreviation for the option (e.g. `"-x"`; the hyphen is optional).
 `Options::`**`anon`**      | `bool`      | Anonymous arguments (not claimed by any other option) will be assigned to this option.
 `Options::`**`boolean`**   | `bool`      | This option is a boolean switch and does not take arguments.
-`Options::`**`defvalue`**  | `U8string`  | Use this default value if the option is not supplied by the user.
+`Options::`**`defvalue`**  | `Ustring`  | Use this default value if the option is not supplied by the user.
 `Options::`**`floating`**  | `bool`      | The argument value must be a floating point number.
-`Options::`**`group`**     | `U8string`  | Assign the option to a mutual exclusion group; at most one option from a group is allowed.
+`Options::`**`group`**     | `Ustring`  | Assign the option to a mutual exclusion group; at most one option from a group is allowed.
 `Options::`**`integer`**   | `bool`      | The argument value must be an integer.
 `Options::`**`multi`**     | `bool`      | This option may be followed by multiple arguments.
-`Options::`**`pattern`**   | `U8string`  | The argument value must match this regular expression.
+`Options::`**`pattern`**   | `Ustring`  | The argument value must match this regular expression.
 `Options::`**`required`**  | `bool`      | This option is mandatory.
 `Options::`**`uinteger`**  | `bool`      | The argument value must be an unsigned integer.
 
@@ -144,8 +144,8 @@ if you do not add them here. If the `autohelp` flag is used, calling the
 program with no arguments will be interpreted as a request for help (i.e. an
 empty argument list is equivalent to `"--help"`).
 
-* `U8string Options::`**`help_text`**`() const`
-* `U8string Options::`**`version_text`**`() const`
+* `Ustring Options::`**`help_text`**`() const`
+* `Ustring Options::`**`version_text`**`() const`
 
 These are the same texts that will be presented to the user by the `"--help"`
 and `"--version"` options. The help text is constructed automatically by the
@@ -201,9 +201,9 @@ true:
 Behaviour is unspecified if `parse()` is called more than once on the same
 `Options` object.
 
-* `template <typename T> T Options::`**`get`**`(const U8string& name) const`
-* `template <typename T> vector<T> Options::`**`get_list`**`(const U8string& name) const`
-* `bool Options::`**`has`**`(const U8string& name) const`
+* `template <typename T> T Options::`**`get`**`(const Ustring& name) const`
+* `template <typename T> vector<T> Options::`**`get_list`**`(const Ustring& name) const`
+* `bool Options::`**`has`**`(const Ustring& name) const`
 
 These return information about the options and arguments found in the command
 line. The option name can be supplied with or without leading hyphens. Only

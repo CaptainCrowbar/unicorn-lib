@@ -10,7 +10,7 @@ using namespace std::literals;
 
 void test_unicorn_string_case_conversions() {
 
-    U8string s;
+    Ustring s;
 
     TEST_EQUAL(str_uppercase(u8""s), u8"");
     TEST_EQUAL(str_uppercase(u8"HELLO WORLD"s), u8"HELLO WORLD");

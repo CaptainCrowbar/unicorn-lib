@@ -50,18 +50,18 @@ encoding.</p>
 <p>To make it possible to deal with this situation, this module uses the
 <code>NativeString</code> type from the <a href="core.html"><code>unicorn/core</code></a> module, which is
 <code>string</code> on Unix systems and <code>wstring</code> on Windows. Most of the functions in
-this module come in <code>U8string</code> and <code>NativeString</code> versions; on Windows these
-are separate overloads, while on Unix <code>U8string</code> and <code>NativeString</code> are really
+this module come in <code>Ustring</code> and <code>NativeString</code> versions; on Windows these
+are separate overloads, while on Unix <code>Ustring</code> and <code>NativeString</code> are really
 the same type (<code>std::string</code>), and only one version of each function is
 needed.</p>
 <p>Functions that take a <code>NativeString</code> can operate on, and may return, file
-names with invalid encoding. If the <code>U8string</code> function is a separate
+names with invalid encoding. If the <code>Ustring</code> function is a separate
 overload, it will convert invalid Unicode names using the usual character
 replacement rule, which may result in unexpected behaviour if there are any
 files on your system with non-Unicode names.</p>
 <p>In short, use the <code>NativeString</code> versions of the functions here if you need
 reliable handling of all filenames, including those containing invalid
-Unicode; use the <code>U8string</code> versions if you expect all the files you deal with
+Unicode; use the <code>Ustring</code> versions if you expect all the files you deal with
 to have valid Unicode names, and you don't mind if non-Unicode names are
 slightly mangled.</p>
 <p>The examples in the documentation below mostly use Unix-style file names for
@@ -144,13 +144,13 @@ and the Windows versions are aware of UNC paths <span
 class="nobr">(<code>"\\?\path..."</code>).</span></p>
 <div class="defns">
 <ul>
-<li><code>bool</code> <strong><code>file_is_absolute</code></strong><code>(const U8string&amp; file)</code></li>
+<li><code>bool</code> <strong><code>file_is_absolute</code></strong><code>(const Ustring&amp; file)</code></li>
 <li><code>bool</code> <strong><code>file_is_absolute</code></strong><code>(const NativeString&amp; file)</code></li>
-<li><code>bool</code> <strong><code>file_is_relative</code></strong><code>(const U8string&amp; file)</code></li>
+<li><code>bool</code> <strong><code>file_is_relative</code></strong><code>(const Ustring&amp; file)</code></li>
 <li><code>bool</code> <strong><code>file_is_relative</code></strong><code>(const NativeString&amp; file)</code></li>
-<li><code>bool</code> <strong><code>file_is_drive_absolute</code></strong><code>(const U8string&amp; file)</code></li>
+<li><code>bool</code> <strong><code>file_is_drive_absolute</code></strong><code>(const Ustring&amp; file)</code></li>
 <li><code>bool</code> <strong><code>file_is_drive_absolute</code></strong><code>(const NativeString&amp; file)</code></li>
-<li><code>bool</code> <strong><code>file_is_drive_relative</code></strong><code>(const U8string&amp; file)</code></li>
+<li><code>bool</code> <strong><code>file_is_drive_relative</code></strong><code>(const Ustring&amp; file)</code></li>
 <li><code>bool</code> <strong><code>file_is_drive_relative</code></strong><code>(const NativeString&amp; file)</code></li>
 </ul>
 <p>These indicate whether a file name is absolute or relative; exactly one of
@@ -164,7 +164,7 @@ on Unix.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>bool</code> <strong><code>file_is_root</code></strong><code>(const U8string&amp; file)</code></li>
+<li><code>bool</code> <strong><code>file_is_root</code></strong><code>(const Ustring&amp; file)</code></li>
 <li><code>bool</code> <strong><code>file_is_root</code></strong><code>(const NativeString&amp; file)</code></li>
 </ul>
 <p>True if the file name refers to the root of a directory tree (note that this
@@ -173,7 +173,7 @@ identifying the root of a physical file system).</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename... Args&gt; U8string</code> <strong><code>file_path</code></strong><code>(const U8string&amp; file, Args... args)</code></li>
+<li><code>template &lt;typename... Args&gt; Ustring</code> <strong><code>file_path</code></strong><code>(const Ustring&amp; file, Args... args)</code></li>
 <li><code>template &lt;typename... Args&gt; NativeString</code> <strong><code>file_path</code></strong><code>(const NativeString&amp; file, Args... args)</code></li>
 </ul>
 <p>Assembles a directory path from a series of path elements or relative paths.
@@ -187,17 +187,17 @@ file_path("/foo", "/bar", "hello.txt") == "/bar/hello.txt"
 </div>
 <div class="defns">
 <ul>
-<li><code>bool</code> <strong><code>is_legal_leaf_name</code></strong><code>(const U8string&amp; file)</code></li>
+<li><code>bool</code> <strong><code>is_legal_leaf_name</code></strong><code>(const Ustring&amp; file)</code></li>
 <li><code>bool</code> <strong><code>is_legal_leaf_name</code></strong><code>(const NativeString&amp; file)</code></li>
-<li><code>bool</code> <strong><code>is_legal_path_name</code></strong><code>(const U8string&amp; file)</code></li>
+<li><code>bool</code> <strong><code>is_legal_path_name</code></strong><code>(const Ustring&amp; file)</code></li>
 <li><code>bool</code> <strong><code>is_legal_path_name</code></strong><code>(const NativeString&amp; file)</code></li>
-<li><code>bool</code> <strong><code>is_legal_mac_leaf_name</code></strong><code>(const U8string&amp; file)</code></li>
-<li><code>bool</code> <strong><code>is_legal_mac_path_name</code></strong><code>(const U8string&amp; file)</code></li>
-<li><code>bool</code> <strong><code>is_legal_posix_leaf_name</code></strong><code>(const U8string&amp; file)</code></li>
-<li><code>bool</code> <strong><code>is_legal_posix_path_name</code></strong><code>(const U8string&amp; file)</code></li>
-<li><code>bool</code> <strong><code>is_legal_windows_leaf_name</code></strong><code>(const U8string&amp; file)</code></li>
+<li><code>bool</code> <strong><code>is_legal_mac_leaf_name</code></strong><code>(const Ustring&amp; file)</code></li>
+<li><code>bool</code> <strong><code>is_legal_mac_path_name</code></strong><code>(const Ustring&amp; file)</code></li>
+<li><code>bool</code> <strong><code>is_legal_posix_leaf_name</code></strong><code>(const Ustring&amp; file)</code></li>
+<li><code>bool</code> <strong><code>is_legal_posix_path_name</code></strong><code>(const Ustring&amp; file)</code></li>
+<li><code>bool</code> <strong><code>is_legal_windows_leaf_name</code></strong><code>(const Ustring&amp; file)</code></li>
 <li><code>bool</code> <strong><code>is_legal_windows_leaf_name</code></strong><code>(const wstring&amp; file)</code></li>
-<li><code>bool</code> <strong><code>is_legal_windows_path_name</code></strong><code>(const U8string&amp; file)</code></li>
+<li><code>bool</code> <strong><code>is_legal_windows_path_name</code></strong><code>(const Ustring&amp; file)</code></li>
 <li><code>bool</code> <strong><code>is_legal_windows_path_name</code></strong><code>(const wstring&amp; file)</code></li>
 </ul>
 <p>These indicate whether a string is a legal file name. The first two functions
@@ -215,9 +215,9 @@ does not impose any file name restrictions beyond the standard Posix rules.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>pair&lt;U8string, U8string&gt;</code> <strong><code>split_path</code></strong><code>(const U8string&amp; file, uint32_t flags = 0)</code></li>
+<li><code>pair&lt;Ustring, Ustring&gt;</code> <strong><code>split_path</code></strong><code>(const Ustring&amp; file, uint32_t flags = 0)</code></li>
 <li><code>pair&lt;NativeString, NativeString&gt;</code> <strong><code>split_path</code></strong><code>(const NativeString&amp; file, uint32_t flags = 0)</code></li>
-<li><code>pair&lt;U8string, U8string&gt;</code> <strong><code>split_file</code></strong><code>(const U8string&amp; file)</code></li>
+<li><code>pair&lt;Ustring, Ustring&gt;</code> <strong><code>split_file</code></strong><code>(const Ustring&amp; file)</code></li>
 <li><code>pair&lt;NativeString, NativeString&gt;</code> <strong><code>split_file</code></strong><code>(const NativeString&amp; file)</code></li>
 </ul>
 <p>These functions break down a file name into its constituent parts. The
@@ -248,7 +248,7 @@ split_file(".hello") == {".hello", ""}
 <p>These functions perform read-only operations on the file system.</p>
 <div class="defns">
 <ul>
-<li><code>U8string</code> <strong><code>current_directory</code></strong><code>()</code></li>
+<li><code>Ustring</code> <strong><code>current_directory</code></strong><code>()</code></li>
 <li><code>NativeString</code> <strong><code>native_current_directory</code></strong><code>()</code></li>
 </ul>
 <p>Query the current working directory of the calling process. These may throw
@@ -257,7 +257,7 @@ permission problems.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>bool</code> <strong><code>file_exists</code></strong><code>(const U8string&amp; file)</code></li>
+<li><code>bool</code> <strong><code>file_exists</code></strong><code>(const Ustring&amp; file)</code></li>
 <li><code>bool</code> <strong><code>file_exists</code></strong><code>(const NativeString&amp; file)</code></li>
 </ul>
 <p>Query whether a file exists. This may give a false negative if the file exists
@@ -265,7 +265,7 @@ but is not accessible to the calling process.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>FileId</code> <strong><code>file_id</code></strong><code>(const U8string&amp; file, uint32_t flags = 0)</code></li>
+<li><code>FileId</code> <strong><code>file_id</code></strong><code>(const Ustring&amp; file, uint32_t flags = 0)</code></li>
 <li><code>FileId</code> <strong><code>file_id</code></strong><code>(const NativeString&amp; file, uint32_t flags = 0)</code></li>
 </ul>
 <p>Returns a unique file identifier, intended to identify the file even if it is
@@ -281,7 +281,7 @@ throw <code>std::system_error</code> in unusual cases.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>bool</code> <strong><code>file_is_directory</code></strong><code>(const U8string&amp; file)</code></li>
+<li><code>bool</code> <strong><code>file_is_directory</code></strong><code>(const Ustring&amp; file)</code></li>
 <li><code>bool</code> <strong><code>file_is_directory</code></strong><code>(const NativeString&amp; file)</code></li>
 </ul>
 <p>Query whether a file is a directory. This will return <code>false</code> if the file does
@@ -290,7 +290,7 @@ accessible to the calling process.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>bool</code> <strong><code>file_is_hidden</code></strong><code>(const U8string&amp; file)</code></li>
+<li><code>bool</code> <strong><code>file_is_hidden</code></strong><code>(const Ustring&amp; file)</code></li>
 <li><code>bool</code> <strong><code>file_is_hidden</code></strong><code>(const NativeString&amp; file)</code></li>
 </ul>
 <p>True if the file is normally hidden. This will return <code>false</code> if the file does
@@ -300,14 +300,14 @@ Windows this is a metadata property.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>bool</code> <strong><code>file_is_symlink</code></strong><code>(const U8string&amp; file)</code></li>
+<li><code>bool</code> <strong><code>file_is_symlink</code></strong><code>(const Ustring&amp; file)</code></li>
 <li><code>bool</code> <strong><code>file_is_symlink</code></strong><code>(const NativeString&amp; file)</code></li>
 </ul>
 <p>True if the file is a symbolic link.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>uint64_t</code> <strong><code>file_size</code></strong><code>(const U8string&amp; file, uint32_t flags = 0)</code></li>
+<li><code>uint64_t</code> <strong><code>file_size</code></strong><code>(const Ustring&amp; file, uint32_t flags = 0)</code></li>
 <li><code>uint64_t</code> <strong><code>file_size</code></strong><code>(const NativeString&amp; file, uint32_t flags = 0)</code></li>
 </ul>
 <p>Returns the size of the file in bytes. This will return zero if the file does
@@ -319,7 +319,7 @@ followed).</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>U8string</code> <strong><code>resolve_path</code></strong><code>(const U8string&amp; file)</code></li>
+<li><code>Ustring</code> <strong><code>resolve_path</code></strong><code>(const Ustring&amp; file)</code></li>
 <li><code>NativeString</code> <strong><code>resolve_path</code></strong><code>(const NativeString&amp; file)</code></li>
 </ul>
 <p>Resolves a relative path to an absolute one. On Unix this includes resolving
@@ -330,7 +330,7 @@ already absolute will not necessarily be returned unchanged.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>U8string</code> <strong><code>resolve_symlink</code></strong><code>(const U8string&amp; file)</code></li>
+<li><code>Ustring</code> <strong><code>resolve_symlink</code></strong><code>(const Ustring&amp; file)</code></li>
 <li><code>NativeString</code> <strong><code>resolve_symlink</code></strong><code>(const NativeString&amp; file)</code></li>
 </ul>
 <p>Returns the file pointed to by a symlink. If the argument names a file that
@@ -346,7 +346,7 @@ appear to be any way to retrieve it).</p>
 system.</p>
 <div class="defns">
 <ul>
-<li><code>void</code> <strong><code>copy_file</code></strong><code>(const U8string&amp; src, const U8string&amp; dst, uint32_t flags = 0)</code></li>
+<li><code>void</code> <strong><code>copy_file</code></strong><code>(const Ustring&amp; src, const Ustring&amp; dst, uint32_t flags = 0)</code></li>
 <li><code>void</code> <strong><code>copy_file</code></strong><code>(const NativeString&amp; src, const NativeString&amp; dst, uint32_t flags = 0)</code></li>
 </ul>
 <p>Copy a file. If the <code>File::recurse</code> flag is used, this will copy a directory
@@ -365,7 +365,7 @@ file or directory.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>void</code> <strong><code>make_directory</code></strong><code>(const U8string&amp; dir, uint32_t flags = 0)</code></li>
+<li><code>void</code> <strong><code>make_directory</code></strong><code>(const Ustring&amp; dir, uint32_t flags = 0)</code></li>
 <li><code>void</code> <strong><code>make_directory</code></strong><code>(const NativeString&amp; dir, uint32_t flags = 0)</code></li>
 </ul>
 <p>Create a directory (with default permissions). It will do nothing if the
@@ -382,7 +382,7 @@ directory.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>void</code> <strong><code>make_symlink</code></strong><code>(const U8string&amp; file, const U8string&amp; link, uint32_t flags = 0)</code></li>
+<li><code>void</code> <strong><code>make_symlink</code></strong><code>(const Ustring&amp; file, const Ustring&amp; link, uint32_t flags = 0)</code></li>
 <li><code>void</code> <strong><code>make_symlink</code></strong><code>(const NativeString&amp; file, const NativeString&amp; link, uint32_t flags = 0)</code></li>
 </ul>
 <p>Creates a symlink named <code>link</code> pointing to <code>file</code>. This will do nothing if the
@@ -395,7 +395,7 @@ but the necessary flags were not supplied.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>void</code> <strong><code>move_file</code></strong><code>(const U8string&amp; src, const U8string&amp; dst, uint32_t flags = 0)</code></li>
+<li><code>void</code> <strong><code>move_file</code></strong><code>(const Ustring&amp; src, const Ustring&amp; dst, uint32_t flags = 0)</code></li>
 <li><code>void</code> <strong><code>move_file</code></strong><code>(const NativeString&amp; src, const NativeString&amp; dst, uint32_t flags = 0)</code></li>
 </ul>
 <p>Rename a file or directory. This will attempt to use the operating system's
@@ -408,7 +408,7 @@ needed if an existing directory is to be replaced). This will throw
 </div>
 <div class="defns">
 <ul>
-<li><code>void</code> <strong><code>remove_file</code></strong><code>(const U8string&amp; file, uint32_t flags = 0)</code></li>
+<li><code>void</code> <strong><code>remove_file</code></strong><code>(const Ustring&amp; file, uint32_t flags = 0)</code></li>
 <li><code>void</code> <strong><code>remove_file</code></strong><code>(const NativeString&amp; file, uint32_t flags = 0)</code></li>
 </ul>
 <p>Delete a file or directory. If the <code>File::recurse</code> flag is set, directories
@@ -425,7 +425,7 @@ caller does not have permission to delete the file.</p>
 <li><code>class</code> <strong><code>[Native]DirectoryIterator</code></strong><ul>
 <li><code>using [Native]DirectoryIterator::</code><strong><code>difference_type</code></strong> <code>= ptrdiff_t</code></li>
 <li><code>using [Native]DirectoryIterator::</code><strong><code>iterator_category</code></strong> <code>= std::input_iterator_tag</code></li>
-<li><code>using [Native]DirectoryIterator::</code><strong><code>value_type</code></strong> <code>= [NativeString or U8string]</code></li>
+<li><code>using [Native]DirectoryIterator::</code><strong><code>value_type</code></strong> <code>= [NativeString or Ustring]</code></li>
 <li><code>using [Native]DirectoryIterator::</code><strong><code>pointer</code></strong> <code>= const value_type*</code></li>
 <li><code>using [Native]DirectoryIterator::</code><strong><code>reference</code></strong> <code>= const value_type&amp;</code></li>
 <li><code>[Native]DirectoryIterator::</code><strong><code>[Native]DirectoryIterator</code></strong><code>()</code></li>
@@ -433,7 +433,7 @@ caller does not have permission to delete the file.</p>
 <li><em>[standard iterator operations]</em></li>
 </ul>
 </li>
-<li><code>Irange&lt;DirectoryIterator&gt;</code> <strong><code>directory</code></strong><code>(const U8string&amp; dir, uint32_t flags = 0)</code></li>
+<li><code>Irange&lt;DirectoryIterator&gt;</code> <strong><code>directory</code></strong><code>(const Ustring&amp; dir, uint32_t flags = 0)</code></li>
 <li><code>Irange&lt;NativeDirectoryIterator&gt;</code> <strong><code>directory</code></strong><code>(const NativeString&amp; dir, uint32_t flags = 0)</code></li>
 </ul>
 <p>An iterator over the files in a directory. Normally you should call the
@@ -445,10 +445,10 @@ APIs work).</p>
 directory iterator types: <code>NativeDirectoryIterator</code> has a value type of
 <code>NativeString</code>, and returns the actual file names even if they are not valid
 Unicode (unless the <code>File::unicode</code> option is used); <code>DirectoryIterator</code> has a
-value type of <code>U8string</code>, and converts file names using the usual substitution
+value type of <code>Ustring</code>, and converts file names using the usual substitution
 convention if the original name is invalid.</p>
 <p>On Unix, <code>DirectoryIterator</code> and <code>NativeDirectoryIterator</code> are the same type.
-Although the value type is nominally <code>U8string</code>, file names that are not valid
+Although the value type is nominally <code>Ustring</code>, file names that are not valid
 UTF-8 (on systems where this is possible) are passed through unchanged.</p>
 <p>The following flags are recognised:</p>
 <table>

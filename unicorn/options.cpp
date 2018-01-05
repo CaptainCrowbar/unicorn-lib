@@ -20,7 +20,7 @@ namespace RS::Unicorn {
             is_short_option = 's',
         };
 
-        ArgType arg_type(const U8string& arg) {
+        ArgType arg_type(const Ustring& arg) {
             if (arg.size() < 2 || arg[0] != '-' || ascii_isdigit(arg[1]))
                 return is_argument;
             else if (arg[1] != '-' && arg[1] != '=')
@@ -31,8 +31,8 @@ namespace RS::Unicorn {
                 throw Options::command_error("Argument not recognised", arg);
         }
 
-        U8string cmd_error(const U8string& details, const U8string& arg, const U8string& arg2) {
-            U8string msg = details;
+        Ustring cmd_error(const Ustring& details, const Ustring& arg, const Ustring& arg2) {
+            Ustring msg = details;
             if (! arg.empty() || ! arg2.empty())
                 msg += ": ";
             if (! arg.empty())
@@ -54,22 +54,22 @@ namespace RS::Unicorn {
         Options::floating,
         Options::multi,
         Options::required;
-    constexpr Kwarg<U8string>
+    constexpr Kwarg<Ustring>
         Options::abbrev,
         Options::defvalue,
         Options::group,
         Options::pattern;
 
-    Options::command_error::command_error(const U8string& details, const U8string& arg, const U8string& arg2):
+    Options::command_error::command_error(const Ustring& details, const Ustring& arg, const Ustring& arg2):
     std::runtime_error(cmd_error(details, arg, arg2)) {}
 
-    Options::spec_error::spec_error(const U8string& option):
+    Options::spec_error::spec_error(const Ustring& option):
     std::runtime_error("Invalid option spec: $1q"_fmt(option)) {}
 
-    Options::spec_error::spec_error(const U8string& details, const U8string& option):
+    Options::spec_error::spec_error(const Ustring& details, const Ustring& option):
     std::runtime_error("$1: $2q"_fmt(details, option)) {}
 
-    Options& Options::add(const U8string& info) {
+    Options& Options::add(const Ustring& info) {
         if (app_info.empty())
             app_info = str_trim(info);
         else
@@ -102,13 +102,13 @@ namespace RS::Unicorn {
         return *this;
     }
 
-    U8string Options::help_text() const {
+    Ustring Options::help_text() const {
         static constexpr auto length_flags = Length::graphemes | Length::narrow;
-        U8string text = "\n" + app_info + "\n";
+        Ustring text = "\n" + app_info + "\n";
         Strings prefixes, suffixes;
         std::vector<size_t> lengths;
         for (auto& opt: opts) {
-            U8string prefix, suffix;
+            Ustring prefix, suffix;
             size_t length = 0;
             if (! opt.opt_name.empty()) {
                 if (opt.is_anon)
@@ -132,7 +132,7 @@ namespace RS::Unicorn {
                         prefix += " ...";
                 }
                 length = str_length(prefix, length_flags);
-                U8string extra;
+                Ustring extra;
                 if (opt.is_required) {
                     extra = "required";
                 } else if (! opt.opt_defvalue.empty() && ! opt.is_boolean && opt.opt_info.find("default") == npos) {
@@ -172,7 +172,7 @@ namespace RS::Unicorn {
                     text += "Options:\n\n";
                     opthdr = true;
                 }
-                U8string prefix = str_pad_right(prefixes[i], maxlen, U' ', length_flags);
+                Ustring prefix = str_pad_right(prefixes[i], maxlen, U' ', length_flags);
                 text += "    $1  = $2\n"_fmt(prefix, suffixes[i]);
             }
             was_info = is_info;
@@ -186,14 +186,14 @@ namespace RS::Unicorn {
         return text;
     }
 
-    bool Options::has(const U8string& name) const {
+    bool Options::has(const Ustring& name) const {
         size_t i = find_index(name, true);
         return i != npos && opts[i].is_found;
     }
 
     void Options::add_option(option_type opt) {
         str_trim_in(opt.opt_name, "-"s + ascii_whitespace);
-        U8string tag = opt.opt_name;
+        Ustring tag = opt.opt_name;
         if (str_length(opt.opt_name) < 2)
             throw spec_error(tag);
         bool neg = opt.opt_name.substr(0, 3) == "no-";
@@ -226,7 +226,7 @@ namespace RS::Unicorn {
         opts.push_back(opt);
     }
 
-    size_t Options::find_index(U8string name, bool require) const {
+    size_t Options::find_index(Ustring name, bool require) const {
         str_trim_in(name, "-");
         if (name.substr(0, 3) == "no-")
             name.erase(0, 3);
@@ -242,7 +242,7 @@ namespace RS::Unicorn {
             return npos;
     }
 
-    Strings Options::find_values(const U8string& name) const {
+    Strings Options::find_values(const Ustring& name) const {
         size_t i = find_index(name, true);
         return i != npos ? opts[i].values : Strings();
     }
@@ -290,7 +290,7 @@ namespace RS::Unicorn {
         size_t i = 0;
         while (i < args.size()) {
             if (arg_type(args[i]) != is_argument) {
-                U8string key, value;
+                Ustring key, value;
                 bool paired = str_partition_at(args[i], key, value, "=");
                 if (paired) {
                     args[i] = key;
@@ -389,7 +389,7 @@ namespace RS::Unicorn {
     }
 
     void Options::send_help(std::ostream& out, help_mode mode) const {
-        U8string message;
+        Ustring message;
         switch (mode) {
             case help_mode::version:  message = app_info + '\n'; break;
             case help_mode::usage:    message = help_text(); break;
@@ -399,21 +399,21 @@ namespace RS::Unicorn {
             out << message;
     }
 
-    U8string Options::arg_convert(const std::string& str, uint32_t flags) {
+    Ustring Options::arg_convert(const std::string& str, uint32_t flags) {
         if (! (flags & locale))
             return str;
-        U8string utf8;
+        Ustring utf8;
         import_string(str, utf8, local_encoding());
         return utf8;
     }
 
-    void Options::add_arg_to_opt(const U8string& arg, option_type& opt) {
+    void Options::add_arg_to_opt(const Ustring& arg, option_type& opt) {
         if (! opt.opt_pattern.empty() && (opt.is_required || ! arg.empty()) && ! opt.opt_pattern.match(arg))
             throw command_error("Invalid argument to option", "--" + opt.opt_name, arg);
         opt.values.push_back(arg);
     }
 
-    void Options::unquote(const U8string& src, Strings& dst) {
+    void Options::unquote(const Ustring& src, Strings& dst) {
         auto i = utf_begin(src), j = i, e = utf_end(src);
         while (i != e) {
             str_skipws(i, e);

@@ -48,7 +48,7 @@ convenience. User defined flags can also be used, as described below under the
 <h2 id="basic-formatting-functions">Basic formatting functions</h2>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename T&gt; U8string</code> <strong><code>format_type</code></strong><code>(const T&amp; t, uint64_t flags, int prec)</code></li>
+<li><code>template &lt;typename T&gt; Ustring</code> <strong><code>format_type</code></strong><code>(const T&amp; t, uint64_t flags, int prec)</code></li>
 </ul>
 <p>This is the core formatting function. The details of how the flags and
 precision are interpreted depend on the type being formatted. This function
@@ -62,16 +62,16 @@ listed here; their behaviour is described in more detail below.</p>
 <li><code>signed char</code>, <code>unsigned char</code>, <code>short</code>, <code>unsigned short</code>, <code>int</code>, <code>unsigned</code>, <code>long</code>, <code>unsigned long</code>, <code>long long</code>, <code>unsigned long long</code></li>
 <li><code>float</code>, <code>double</code>, <code>long double</code></li>
 <li><code>[const] char*</code>, <code>[const] char16_t*</code>, <code>[const] char32_t*</code>, <code>[const] wchar_t*</code></li>
-<li><code>U8string</code>, <code>u16string</code>, <code>u32string</code>, <code>wstring</code></li>
+<li><code>Ustring</code>, <code>u16string</code>, <code>u32string</code>, <code>wstring</code></li>
 <li><code>std::chrono::duration&lt;R, P&gt;</code>, <code>std::chrono::system_clock::time_point</code></li>
 <li><code>RS::Uuid</code>, <code>RS::Version</code></li>
 </ul>
 </div>
 <div class="defns">
 <ul>
-<li><!-- DEFN --> <code>template &lt;typename T&gt; U8string</code> <strong><code>format_str</code></strong><code>(const T&amp; t, uint64_t flags = 0, int prec = -1, size_t width = 0, char32_t pad = U' ')</code></li>
-<li><code>template &lt;typename T&gt; U8string</code> <strong><code>format_str</code></strong><code>(const T&amp; t, const U8string&amp; flags)</code></li>
-<li><code>template &lt;typename T&gt; U8string</code> <strong><code>format_str</code></strong><code>(const T&amp; t, const char* flags)</code></li>
+<li><!-- DEFN --> <code>template &lt;typename T&gt; Ustring</code> <strong><code>format_str</code></strong><code>(const T&amp; t, uint64_t flags = 0, int prec = -1, size_t width = 0, char32_t pad = U' ')</code></li>
+<li><code>template &lt;typename T&gt; Ustring</code> <strong><code>format_str</code></strong><code>(const T&amp; t, const Ustring&amp; flags)</code></li>
+<li><code>template &lt;typename T&gt; Ustring</code> <strong><code>format_str</code></strong><code>(const T&amp; t, const char* flags)</code></li>
 </ul>
 <p>These call <code>format_type()</code> to format their first argument, with additional
 global options. The first version accepts the same arguments as
@@ -168,16 +168,16 @@ alignment), it will be interpreted as a precision:</p>
 <ul>
 <li><code>class</code> <strong><code>Format</code></strong><ul>
 <li><code>Format::</code><strong><code>Format</code></strong><code>()</code></li>
-<li><code>explicit Format::</code><strong><code>Format</code></strong><code>(const U8string&amp; format)</code></li>
+<li><code>explicit Format::</code><strong><code>Format</code></strong><code>(const Ustring&amp; format)</code></li>
 <li><code>Format::</code><strong><code>Format</code></strong><code>(const Format&amp; f)</code></li>
 <li><code>Format::</code><strong><code>Format</code></strong><code>(Format&amp;&amp; f) noexcept</code></li>
 <li><code>Format::</code><strong><code>~Format</code></strong><code>() noexcept</code></li>
 <li><code>Format&amp; Format::</code><strong><code>operator=</code></strong><code>(const Format&amp; f)</code></li>
 <li><code>Format&amp; Format::</code><strong><code>operator=</code></strong><code>(Format&amp;&amp; f) noexcept</code></li>
-<li><code>template &lt;typename... Args&gt; U8string Format::</code><strong><code>operator()</code></strong><code>(const Args&amp;... args) const</code></li>
+<li><code>template &lt;typename... Args&gt; Ustring Format::</code><strong><code>operator()</code></strong><code>(const Args&amp;... args) const</code></li>
 <li><code>bool Format::</code><strong><code>empty</code></strong><code>() const noexcept</code></li>
 <li><code>size_t Format::</code><strong><code>fields</code></strong><code>() const</code></li>
-<li><code>U8string Format::</code><strong><code>format</code></strong><code>() const</code></li>
+<li><code>Ustring Format::</code><strong><code>format</code></strong><code>() const</code></li>
 </ul>
 </li>
 </ul>
@@ -192,8 +192,8 @@ letter or digit that would be read as part of the placeholder in the absence
 of braces.</p>
 <p>Example:</p>
 <pre><code>Format f("Hello $1, your number is $2f3");
-U8string a = f("Alice", 42); // "Hello Alice, your number is 42.000"
-U8string b = f("Bob", 1.23); // "Hello Bob, your number is 1.230"
+Ustring a = f("Alice", 42); // "Hello Alice, your number is 42.000"
+Ustring b = f("Bob", 1.23); // "Hello Bob, your number is 1.230"
 </code></pre>
 <p>Use <code>"$$"</code> to insert a literal dollar sign in the format string.</p>
 </div>

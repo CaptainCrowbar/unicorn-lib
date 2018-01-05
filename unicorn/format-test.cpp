@@ -566,7 +566,7 @@ void test_unicorn_format_ranges() {
 
     std::vector<int> iv0, iv1 {10, 20, 30, 40, 50};
     Strings sv0, sv1 {"hello", "world", "goodbye"};
-    std::map<int, U8string> ism0, ism1 {{10, "hello"}, {20, "world"}, {30, "goodbye"}};
+    std::map<int, Ustring> ism0, ism1 {{10, "hello"}, {20, "world"}, {30, "goodbye"}};
 
     TEST_EQUAL(format_str(iv0), "");
     TEST_EQUAL(format_str(iv1), "10,20,30,40,50");

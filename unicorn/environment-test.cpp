@@ -8,7 +8,7 @@ using namespace RS::Unicorn;
 
 void test_unicorn_environment_query_functions() {
 
-    U8string s;
+    Ustring s;
 
     TEST(has_env("PATH"));
     TRY(s = get_env("PATH"));
@@ -27,7 +27,7 @@ void test_unicorn_environment_query_functions() {
 
 void test_unicorn_environment_update_functions() {
 
-    U8string s;
+    Ustring s;
 
     TEST(! has_env("UNICORN_TEST_ENV"));
     TRY(set_env("UNICORN_TEST_ENV", "Hello world"));
@@ -42,7 +42,7 @@ void test_unicorn_environment_update_functions() {
 void test_unicorn_environment_block() {
 
     Environment env;
-    U8string s;
+    Ustring s;
 
     TEST(env.empty());
     TEST_EQUAL(env.size(), 0);
@@ -86,7 +86,7 @@ void test_unicorn_environment_block() {
 
 void test_unicorn_environment_string_expansion() {
 
-    U8string s, t, columns, lines, home;
+    Ustring s, t, columns, lines, home;
 
     TRY(columns = get_env("COLUMNS"));
     TRY(lines = get_env("LINES"));

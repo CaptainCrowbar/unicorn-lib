@@ -3,7 +3,7 @@
 
 namespace RS::Unicorn {
 
-    size_t str_common(const U8string& s1, const U8string& s2, size_t start) noexcept {
+    size_t str_common(const Ustring& s1, const Ustring& s2, size_t start) noexcept {
         if (start >= s1.size() || start >= s2.size())
             return 0;
         auto p = s1.data() + start;
@@ -11,7 +11,7 @@ namespace RS::Unicorn {
         return p - s1.data() - start;
     }
 
-    size_t str_common_utf(const U8string& s1, const U8string& s2, size_t start) noexcept {
+    size_t str_common_utf(const Ustring& s1, const Ustring& s2, size_t start) noexcept {
         size_t n = str_common(s1, s2, start);
         if (n == 0)
             return 0;
@@ -24,7 +24,7 @@ namespace RS::Unicorn {
         return pos - start;
     }
 
-    bool str_expect(Utf8Iterator& i, const Utf8Iterator& end, const U8string& prefix) {
+    bool str_expect(Utf8Iterator& i, const Utf8Iterator& end, const Ustring& prefix) {
         size_t psize = prefix.size();
         if (psize == 0 || end.offset() - i.offset() < psize
                 || memcmp(i.source().data() + i.offset(), prefix.data(), psize) != 0)
@@ -33,7 +33,7 @@ namespace RS::Unicorn {
         return true;
     }
 
-    bool str_expect(Utf8Iterator& i, const U8string& prefix) {
+    bool str_expect(Utf8Iterator& i, const Ustring& prefix) {
         return str_expect(i, utf_end(i.source()), prefix);
     }
 
@@ -45,7 +45,7 @@ namespace RS::Unicorn {
         return std::find(range.begin(), range.end(), c);
     }
 
-    Utf8Iterator str_find_char(const U8string& str, char32_t c) {
+    Utf8Iterator str_find_char(const Ustring& str, char32_t c) {
         return utf_iterator(str, str.find(str_char(c)));
     }
 
@@ -63,39 +63,39 @@ namespace RS::Unicorn {
         return str_find_last_char(range.begin(), range.end(), c);
     }
 
-    Utf8Iterator str_find_last_char(const U8string& str, char32_t c) {
+    Utf8Iterator str_find_last_char(const Ustring& str, char32_t c) {
         return utf_iterator(str, str.rfind(str_char(c)));
     }
 
-    Utf8Iterator str_find_first_of(const Utf8Iterator& b, const Utf8Iterator& e, const U8string& target) {
+    Utf8Iterator str_find_first_of(const Utf8Iterator& b, const Utf8Iterator& e, const Ustring& target) {
         auto u_target = to_utf32(target);
         return std::find_if(b, e,
             [&] (char32_t c) { return u_target.find(c) != npos; });
     }
 
-    Utf8Iterator str_find_first_of(const Irange<Utf8Iterator>& range, const U8string& target) {
+    Utf8Iterator str_find_first_of(const Irange<Utf8Iterator>& range, const Ustring& target) {
         return str_find_first_of(range.begin(), range.end(), target);
     }
 
-    Utf8Iterator str_find_first_of(const U8string& str, const U8string& target) {
+    Utf8Iterator str_find_first_of(const Ustring& str, const Ustring& target) {
         return str_find_first_of(utf_begin(str), utf_end(str), target);
     }
 
-    Utf8Iterator str_find_first_not_of(const Utf8Iterator& b, const Utf8Iterator& e, const U8string& target) {
+    Utf8Iterator str_find_first_not_of(const Utf8Iterator& b, const Utf8Iterator& e, const Ustring& target) {
         auto u_target = to_utf32(target);
         return std::find_if(b, e,
             [&] (char32_t c) { return u_target.find(c) == npos; });
     }
 
-    Utf8Iterator str_find_first_not_of(const Irange<Utf8Iterator>& range, const U8string& target) {
+    Utf8Iterator str_find_first_not_of(const Irange<Utf8Iterator>& range, const Ustring& target) {
         return str_find_first_not_of(range.begin(), range.end(), target);
     }
 
-    Utf8Iterator str_find_first_not_of(const U8string& str, const U8string& target) {
+    Utf8Iterator str_find_first_not_of(const Ustring& str, const Ustring& target) {
         return str_find_first_not_of(utf_begin(str), utf_end(str), target);
     }
 
-    Utf8Iterator str_find_last_of(const Utf8Iterator& b, const Utf8Iterator& e, const U8string& target) {
+    Utf8Iterator str_find_last_of(const Utf8Iterator& b, const Utf8Iterator& e, const Ustring& target) {
         auto u_target = to_utf32(target);
         auto i = e;
         while (i != b) {
@@ -106,15 +106,15 @@ namespace RS::Unicorn {
         return e;
     }
 
-    Utf8Iterator str_find_last_of(const Irange<Utf8Iterator>& range, const U8string& target) {
+    Utf8Iterator str_find_last_of(const Irange<Utf8Iterator>& range, const Ustring& target) {
         return str_find_last_of(range.begin(), range.end(), target);
     }
 
-    Utf8Iterator str_find_last_of(const U8string& str, const U8string& target) {
+    Utf8Iterator str_find_last_of(const Ustring& str, const Ustring& target) {
         return str_find_last_of(utf_begin(str), utf_end(str), target);
     }
 
-    Utf8Iterator str_find_last_not_of(const Utf8Iterator& b, const Utf8Iterator& e, const U8string& target) {
+    Utf8Iterator str_find_last_not_of(const Utf8Iterator& b, const Utf8Iterator& e, const Ustring& target) {
         auto u_target = to_utf32(target);
         auto i = e;
         while (i != b) {
@@ -125,15 +125,15 @@ namespace RS::Unicorn {
         return e;
     }
 
-    Utf8Iterator str_find_last_not_of(const Irange<Utf8Iterator>& range, const U8string& target) {
+    Utf8Iterator str_find_last_not_of(const Irange<Utf8Iterator>& range, const Ustring& target) {
         return str_find_last_not_of(range.begin(), range.end(), target);
     }
 
-    Utf8Iterator str_find_last_not_of(const U8string& str, const U8string& target) {
+    Utf8Iterator str_find_last_not_of(const Ustring& str, const Ustring& target) {
         return str_find_last_not_of(utf_begin(str), utf_end(str), target);
     }
 
-    std::pair<size_t, size_t> str_line_column(const U8string& str, size_t offset, uint32_t flags) {
+    std::pair<size_t, size_t> str_line_column(const Ustring& str, size_t offset, uint32_t flags) {
         offset = std::min(offset, str.size());
         size_t line = 1;
         bool prev_lf = false;
@@ -167,7 +167,7 @@ namespace RS::Unicorn {
         return {line, column};
     }
 
-    Irange<Utf8Iterator> str_search(const Utf8Iterator& b, const Utf8Iterator& e, const U8string& target) {
+    Irange<Utf8Iterator> str_search(const Utf8Iterator& b, const Utf8Iterator& e, const Ustring& target) {
         auto u_target = to_utf32(target);
         auto ub = u_target.begin(), ue = u_target.end();
         auto i = std::search(b, e, ub, ue);
@@ -177,11 +177,11 @@ namespace RS::Unicorn {
         return {i, j};
     }
 
-    Irange<Utf8Iterator> str_search(const Irange<Utf8Iterator>& range, const U8string& target) {
+    Irange<Utf8Iterator> str_search(const Irange<Utf8Iterator>& range, const Ustring& target) {
         return str_search(range.begin(), range.end(), target);
     }
 
-    Irange<Utf8Iterator> str_search(const U8string& str, const U8string& target) {
+    Irange<Utf8Iterator> str_search(const Ustring& str, const Ustring& target) {
         return str_search(utf_begin(str), utf_end(str), target);
     }
 

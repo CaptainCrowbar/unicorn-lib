@@ -42,14 +42,14 @@ namespace RS::Unicorn {
             public:
                 RS_NO_COPY_MOVE(Iconv)
                 iconv_t cd;
-                Iconv(const U8string& from, const U8string& to) { cd = iconv_open(to.data(), from.data()); }
+                Iconv(const Ustring& from, const Ustring& to) { cd = iconv_open(to.data(), from.data()); }
                 ~Iconv() { if (*this) iconv_close(cd); }
                 explicit operator bool() const { return cd != iconv_t(-1); }
                 bool operator!() const { return cd == iconv_t(-1); }
                 void reset() { if (*this) iconv(cd, nullptr, nullptr, nullptr, nullptr); }
             };
 
-            bool valid_iconv(U8string tag) { return bool(Iconv(tag, "utf-8"s)); }
+            bool valid_iconv(Ustring tag) { return bool(Iconv(tag, "utf-8"s)); }
 
         #else
 
@@ -66,8 +66,8 @@ namespace RS::Unicorn {
         static constexpr uint32_t no_recurse = uint32_t(1) << 31;
         static constexpr auto wchar_tag = sizeof(wchar_t) == 2 ? utf16_tag : utf32_tag;
 
-        U8string smash_name(const U8string& name, bool stripz) {
-            U8string result;
+        Ustring smash_name(const Ustring& name, bool stripz) {
+            Ustring result;
             size_t i = 0, size = name.size();
             while (i < size) {
                 while (i < size && ! ascii_isalnum(name[i]))
@@ -92,14 +92,14 @@ namespace RS::Unicorn {
         }
 
         class NameIterator:
-        public ForwardIterator<NameIterator, const U8string> {
+        public ForwardIterator<NameIterator, const Ustring> {
         public:
             explicit NameIterator(const char* ptr = nullptr): s(), p(ptr), q(ptr) { ++*this; }
-            const U8string& operator*() const noexcept { return s; }
+            const Ustring& operator*() const noexcept { return s; }
             NameIterator& operator++();
             bool operator==(const NameIterator& rhs) const noexcept { return p == rhs.p; }
         private:
-            U8string s;
+            Ustring s;
             const char* p;
             const char* q;
         };
@@ -129,13 +129,13 @@ namespace RS::Unicorn {
                 auto i = pages.find(page);
                 return i == pages.end() ? nullptr : i->second;
             }
-            const CharsetInfo* operator[](const U8string& name) const {
+            const CharsetInfo* operator[](const Ustring& name) const {
                 auto i = names.find(name);
                 return i == names.end() ? nullptr : i->second;
             }
         private:
             using page_map = std::unordered_map<uint32_t, const CharsetInfo*>;
-            using name_map = std::unordered_map<U8string, const CharsetInfo*>;
+            using name_map = std::unordered_map<Ustring, const CharsetInfo*>;
             page_map pages;
             name_map names;
         };
@@ -163,7 +163,7 @@ namespace RS::Unicorn {
             return c;
         }
 
-        EncodingTag find_encoding(const U8string& name) {
+        EncodingTag find_encoding(const Ustring& name) {
             static const CharsetMap map;
             static const auto match_codepage = "(?:cp|dos|ibm|ms|windows)-?(\\d+)"_re_i;
             static const auto match_integer = "\\d+"_re;
@@ -175,10 +175,10 @@ namespace RS::Unicorn {
             auto smashed = smash_name(name, true);
             auto match = match_unicode.match(smashed);
             if (match) {
-                U8string m1 = match[1];
+                Ustring m1 = match[1];
                 if (m1 == "utf8")
                     return utf8_tag;
-                U8string m2 = match[2];
+                Ustring m2 = match[2];
                 bool swap = false;
                 swap = (m2 == "be" && little_endian_target)
                     || (m2 == "le" && big_endian_target)
@@ -268,8 +268,8 @@ namespace RS::Unicorn {
 
         #ifdef _XOPEN_SOURCE
 
-            void native_recode(const std::string& src, std::string& dst, const U8string& from, const U8string& to,
-                    const U8string& tag, uint32_t flags) {
+            void native_recode(const std::string& src, std::string& dst, const Ustring& from, const Ustring& to,
+                    const Ustring& tag, uint32_t flags) {
                 Iconv conv(from, to);
                 if (! conv)
                     throw UnknownEncoding(tag);
@@ -314,11 +314,11 @@ namespace RS::Unicorn {
 
         #ifdef _XOPEN_SOURCE
 
-            void native_import(const std::string& src, std::string& dst, U8string tag, uint32_t flags) {
+            void native_import(const std::string& src, std::string& dst, Ustring tag, uint32_t flags) {
                 native_recode(src, dst, tag, "utf-8"s, tag, flags);
             }
 
-            void native_export(const std::string& src, std::string& dst, U8string tag, uint32_t flags) {
+            void native_export(const std::string& src, std::string& dst, Ustring tag, uint32_t flags) {
                 native_recode(src, dst, "utf-8"s, tag, tag, flags);
             }
 
@@ -429,7 +429,7 @@ namespace RS::Unicorn {
         }
 
         template <typename E>
-        void import_string_helper(const std::string& src, U8string& dst, E enc, uint32_t flags) {
+        void import_string_helper(const std::string& src, Ustring& dst, E enc, uint32_t flags) {
             check_mbcs_flags(flags);
             auto tag = lookup_encoding(enc, flags);
             if (src.empty()) {
@@ -447,7 +447,7 @@ namespace RS::Unicorn {
         }
 
         template <typename E>
-        void export_string_helper(const U8string& src, std::string& dst, E enc, uint32_t flags) {
+        void export_string_helper(const Ustring& src, std::string& dst, E enc, uint32_t flags) {
             check_mbcs_flags(flags);
             auto tag = lookup_encoding(enc, flags);
             if (src.empty()) {
@@ -464,7 +464,7 @@ namespace RS::Unicorn {
 
     namespace UnicornDetail {
 
-        U8string guess_utf(const std::string& str) {
+        Ustring guess_utf(const std::string& str) {
             constexpr size_t max_check_bytes = 100;
             if (str.empty())
                 return "utf-8";
@@ -504,8 +504,8 @@ namespace RS::Unicorn {
             return "utf-8";
         }
 
-        EncodingTag lookup_encoding(const U8string& name, uint32_t flags) {
-            static std::map<U8string, EncodingTag> cache;
+        EncodingTag lookup_encoding(const Ustring& name, uint32_t flags) {
+            static std::map<Ustring, EncodingTag> cache;
             static std::mutex mtx;
             if (name.empty())
                 throw UnknownEncoding();
@@ -583,21 +583,21 @@ namespace RS::Unicorn {
     std::runtime_error(assemble({}, {})),
     enc() {}
 
-    UnknownEncoding::UnknownEncoding(const U8string& encoding, const U8string& details):
+    UnknownEncoding::UnknownEncoding(const Ustring& encoding, const Ustring& details):
     std::runtime_error(assemble(encoding, details)),
-    enc(std::make_shared<U8string>(encoding)) {}
+    enc(std::make_shared<Ustring>(encoding)) {}
 
-    UnknownEncoding::UnknownEncoding(uint32_t encoding, const U8string& details):
+    UnknownEncoding::UnknownEncoding(uint32_t encoding, const Ustring& details):
     std::runtime_error(assemble(dec(encoding), details)),
-    enc(std::make_shared<U8string>(dec(encoding))) {}
+    enc(std::make_shared<Ustring>(dec(encoding))) {}
 
     const char* UnknownEncoding::encoding() const noexcept {
         static const char c = 0;
         return enc ? enc->data() : &c;
     }
 
-    U8string UnknownEncoding::assemble(const U8string& encoding, const U8string& details) {
-        U8string s = "Unknown encoding";
+    Ustring UnknownEncoding::assemble(const Ustring& encoding, const Ustring& details) {
+        Ustring s = "Unknown encoding";
         if (! encoding.empty()) {
             s += ": ";
             s += encoding;
@@ -611,10 +611,10 @@ namespace RS::Unicorn {
 
     // Utility functions
 
-    U8string local_encoding(const U8string& default_encoding) {
+    Ustring local_encoding(const Ustring& default_encoding) {
         #ifdef _XOPEN_SOURCE
             static constexpr const char* locale_vars[] {"LC_ALL", "LC_CTYPE", "LANG"};
-            U8string name;
+            Ustring name;
             for (auto key: locale_vars) {
                 std::string value = cstr(getenv(key));
                 size_t dot = value.find('.');
@@ -639,19 +639,19 @@ namespace RS::Unicorn {
 
     // Conversion functions
 
-    void import_string(const std::string& src, U8string& dst, const U8string& enc, uint32_t flags) {
+    void import_string(const std::string& src, Ustring& dst, const Ustring& enc, uint32_t flags) {
         import_string_helper(src, dst, to_utf8(enc), flags);
     }
 
-    void import_string(const std::string& src, U8string& dst, uint32_t enc, uint32_t flags) {
+    void import_string(const std::string& src, Ustring& dst, uint32_t enc, uint32_t flags) {
         import_string_helper(src, dst, enc, flags);
     }
 
-    void export_string(const U8string& src, std::string& dst, const U8string& enc, uint32_t flags) {
+    void export_string(const Ustring& src, std::string& dst, const Ustring& enc, uint32_t flags) {
         export_string_helper(src, dst, to_utf8(enc), flags);
     }
 
-    void export_string(const U8string& src, std::string& dst, uint32_t enc, uint32_t flags) {
+    void export_string(const Ustring& src, std::string& dst, uint32_t enc, uint32_t flags) {
         export_string_helper(src, dst, enc, flags);
     }
 

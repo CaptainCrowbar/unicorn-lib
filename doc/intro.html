@@ -60,7 +60,7 @@ int main(int argc, char** argv) {
 
     try {
 
-        const U8string description =
+        const Ustring description =
             "This program reads a text file, splits it into words, "
             "converts each word to normalization form NFC and lower case, "
             "and writes out a list of all words encountered more than once, "
@@ -77,13 +77,13 @@ int main(int argc, char** argv) {
         if (opt.parse(argc, argv))
             return 0;
 
-        auto input_file = opt.get&lt;U8string&gt;("input");
-        auto output_file = opt.get&lt;U8string&gt;("output");
-        auto input_encoding = opt.get&lt;U8string&gt;("encoding");
+        auto input_file = opt.get&lt;Ustring&gt;("input");
+        auto output_file = opt.get&lt;Ustring&gt;("output");
+        auto input_encoding = opt.get&lt;Ustring&gt;("encoding");
 
         // Read all the words in the input file
 
-        std::map&lt;U8string, size_t&gt; census;
+        std::map&lt;Ustring, size_t&gt; census;
 
         for (auto&amp; line: read_lines(input_file, IO::standin, input_encoding))
             for (auto&amp; word: word_range(line, alpha_words))
@@ -91,7 +91,7 @@ int main(int argc, char** argv) {
 
         // Order them by descending frequency
 
-        std::multimap&lt;size_t, U8string, std::greater&lt;&gt;&gt; frequencies;
+        std::multimap&lt;size_t, Ustring, std::greater&lt;&gt;&gt; frequencies;
 
         for (auto&amp; pair: census)
             if (pair.second &gt; 1)
@@ -149,15 +149,15 @@ than adding its own new string type. I would have preferred to also work with
 standard C++ regular expressions instead of creating a new regex class, but
 this turned out to be impractical (see the <a href="regex.html"><code>unicorn/regex</code></a>
 documentation for the details).</p>
-<p>UTF-8, 16, and 32 strings are represented by <code>U8string</code>, <code>u16string</code>, and
+<p>UTF-8, 16, and 32 strings are represented by <code>Ustring</code>, <code>u16string</code>, and
 <code>u32string</code> respectively; you can also use <code>wstring</code> for UTF-16 or 32,
 whichever is appropriate for your system (systems where <code>wstring</code> is not
-UTF-16 or 32 are not supported). The name <code>U8string</code> is an alias for
-<code>std::string</code>; the intention here is that <code>U8string</code> is used for strings
+UTF-16 or 32 are not supported). The name <code>Ustring</code> is an alias for
+<code>std::string</code>; the intention here is that <code>Ustring</code> is used for strings
 required to contain valid UTF-8 (or ASCII), while plain <code>string</code> is used for
 strings in some other encoding, or for when a string is used simply as an
 array of bytes with no assumptions about encoding. This is intended purely as
-an aid to code clarity, and has no effect on the compiler; <code>U8string</code> is just
+an aid to code clarity, and has no effect on the compiler; <code>Ustring</code> is just
 an alias for <code>string</code>, not a new type.</p>
 <p>Unicorn assumes that most or all of your string processing will be done in
 Unicode. Programs that need to work with text in other formats should convert

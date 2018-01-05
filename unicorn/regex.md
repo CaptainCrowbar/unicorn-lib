@@ -21,7 +21,7 @@ version of PCRE; at some point I intend to convert it to use PCRE2 instead.
 Refer to the PCRE documentation for details of the regular expression syntax.
 
 Although the regex functions in this module are specified in terms of
-`U8string` arguments, Unicorn regexes support both UTF-8 and byte oriented
+`Ustring` arguments, Unicorn regexes support both UTF-8 and byte oriented
 matching. Byte regexes (selected with the `Regex::byte` flag) simply treat a
 string as a sequence of arbitrary bytes, with no assumptions about content
 encoding, and will work with non-Unicode strings. The `\xHH` escape code
@@ -225,7 +225,7 @@ scalar value or, for byte mode regexes, if it is greater than `0xff`.
 ## Supporting types ##
 
 * `class` **`RegexError`**`: public std::runtime_error`
-    * `RegexError::`**`RegexError`**`(int error, const U8string& pattern, const U8string& message = "")`
+    * `RegexError::`**`RegexError`**`(int error, const Ustring& pattern, const Ustring& message = "")`
     * `int RegexError::`**`error`**`() const noexcept`
     * `const char* RegexError::`**`pattern`**`() const noexcept`
 
@@ -239,7 +239,7 @@ underlying PCRE call reports an error.
 The regular expression class.
 
 * `Regex::`**`Regex`**`()`
-* `explicit Regex::`**`Regex`**`(const U8string& pattern, uint32_t flags = 0)`
+* `explicit Regex::`**`Regex`**`(const Ustring& pattern, uint32_t flags = 0)`
 * `Regex::`**`Regex`**`(const Regex& r)`
 * `Regex::`**`Regex`**`(Regex&& r) noexcept`
 * `Regex::`**`~Regex`**`() noexcept`
@@ -252,13 +252,13 @@ from an empty pattern. The second constructor will throw
 `RegexError` if the pattern is invalid. See above for full details of how the
 flags are interpreted.
 
-* `Match Regex::`**`anchor`**`(const U8string& text, size_t offset = 0) const`
+* `Match Regex::`**`anchor`**`(const Ustring& text, size_t offset = 0) const`
 * `Match Regex::`**`anchor`**`(const Utf8Iterator& start) const`
-* `Match Regex::`**`match`**`(const U8string& text, size_t offset = 0) const`
+* `Match Regex::`**`match`**`(const Ustring& text, size_t offset = 0) const`
 * `Match Regex::`**`match`**`(const Utf8Iterator& start) const`
-* `Match Regex::`**`search`**`(const U8string& text, size_t offset = 0) const`
+* `Match Regex::`**`search`**`(const Ustring& text, size_t offset = 0) const`
 * `Match Regex::`**`search`**`(const Utf8Iterator& start) const`
-* `Match Regex::`**`operator()`**`(const U8string& text, size_t offset = 0) const`
+* `Match Regex::`**`operator()`**`(const Ustring& text, size_t offset = 0) const`
 * `Match Regex::`**`operator()`**`(const Utf8Iterator& start) const`
 
 These are the regex matching functions. The `search()` functions return a
@@ -283,7 +283,7 @@ execution time).
 **Caution:** Behaviour is undefined if you use the UTF iterator versions of
 these functions with a byte mode regex.
 
-* `size_t Regex::`**`count`**`(const U8string& text) const`
+* `size_t Regex::`**`count`**`(const Ustring& text) const`
 
 Returns the number of non-overlapping matches found in the text.
 
@@ -291,8 +291,8 @@ Returns the number of non-overlapping matches found in the text.
 
 True if the pattern is empty.
 
-* `U8string Regex::`**`extract`**`(const U8string& fmt, const U8string& text, size_t n = npos) const`
-* `U8string Regex::`**`format`**`(const U8string& fmt, const U8string& text, size_t n = npos) const`
+* `Ustring Regex::`**`extract`**`(const Ustring& fmt, const Ustring& text, size_t n = npos) const`
+* `Ustring Regex::`**`format`**`(const Ustring& fmt, const Ustring& text, size_t n = npos) const`
 
 The `format()` function uses the formatting string to transform the text,
 replacing the first `n` matching substrings (all of them by default) with the
@@ -301,7 +301,7 @@ corresponding reformatted text, and returning the resulting string. The
 formatting in the same way as `format()`, but discards the unmatched text
 between matches.
 
-* `MatchRange Regex::`**`grep`**`(const U8string& text) const`
+* `MatchRange Regex::`**`grep`**`(const Ustring& text) const`
 
 This returns a range object that can be used to iterate over all matches
 within the subject string. Refer to the `MatchIterator` class (below) for
@@ -312,18 +312,18 @@ further details.
 Returns the number of groups in the regex (the number of parenthesized
 captures, plus one for the complete match).
 
-* `size_t Regex::`**`named`**`(const U8string& name) const noexcept`
+* `size_t Regex::`**`named`**`(const Ustring& name) const noexcept`
 
 If the regex includes any named captures, this returns the group index (1
 based) corresponding to the given name. It will return zero if there is no
 capture by that name (or if the regex does not use named captures).
 
-* `U8string Regex::`**`pattern`**`() const`
+* `Ustring Regex::`**`pattern`**`() const`
 * `uint32_t Regex::`**`flags`**`() const noexcept`
 
 These return the construction arguments.
 
-* `SplitRange Regex::`**`split`**`(const U8string& text) const`
+* `SplitRange Regex::`**`split`**`(const Ustring& text) const`
 
 This returns a range object that can be used to iterate over the substrings
 delimited by matches within the subject string, effectively splitting the
@@ -335,15 +335,15 @@ string using regex matches as delimiters. Refer to the `SplitIterator` class
 
 Swap two regex objects.
 
-* `template <typename F> U8string Regex::`**`transform`**`(const U8string& text, F f, size_t n = npos) const`
-* `template <typename F> void Regex::`**`transform_in`**`(U8string& text, F f, size_t n = npos) const`
+* `template <typename F> Ustring Regex::`**`transform`**`(const Ustring& text, F f, size_t n = npos) const`
+* `template <typename F> void Regex::`**`transform_in`**`(Ustring& text, F f, size_t n = npos) const`
 
 Apply a user supplied transformation to each match (or the first `n` matches)
 in the text. Each match `m` in `text` is replaced by `f(m)`. The
 transformation function can take either a `string` or a `Match` as its
 argument, but must return a `string` (or something convertible to a `string`).
 
-* `static U8string Regex::`**`escape`**`(const U8string& str)`
+* `static Ustring Regex::`**`escape`**`(const Ustring& str)`
 
 Returns a copy of the argument string, modified by inserting escape characters
 where necessary to produce a pattern that will exactly match the original
@@ -399,8 +399,8 @@ matching function rather than directly constructed by the user.
 
 True if the match failed or matched an empty string.
 
-* `U8string Match::`**`first`**`() const`
-* `U8string Match::`**`last`**`() const`
+* `Ustring Match::`**`first`**`() const`
+* `Ustring Match::`**`last`**`() const`
 
 These return the first and last non-empty capture groups (not counting the
 complete match), or empty strings if there are no such groups.
@@ -438,9 +438,9 @@ from the start of the subject string. If the match was unsuccessful, or if the
 index refers to a group that does not exist in the regex or was not included
 in the match, the two offsets will both be `npos` and the size will be zero.
 
-* `U8string::const_iterator Match::`**`s_begin`**`(size_t i = 0) const noexcept`
-* `U8string::const_iterator Match::`**`s_end`**`(size_t i = 0) const noexcept`
-* `Irange<U8string::const_iterator> Match::`**`s_range`**`(size_t i = 0) const noexcept`
+* `Ustring::const_iterator Match::`**`s_begin`**`(size_t i = 0) const noexcept`
+* `Ustring::const_iterator Match::`**`s_end`**`(size_t i = 0) const noexcept`
+* `Irange<Ustring::const_iterator> Match::`**`s_range`**`(size_t i = 0) const noexcept`
 * `Utf8Iterator Match::`**`u_begin`**`(size_t i = 0) const noexcept`
 * `Utf8Iterator Match::`**`u_end`**`(size_t i = 0) const noexcept`
 * `Irange<Utf8Iterator> Match::`**`u_range`**`(size_t i = 0) const noexcept`
@@ -457,10 +457,10 @@ always use the string iterators and not the UTF iterators, which are not
 meaningful when the string is not being interpreted as UTF-8. Behaviour is
 undefined in this situation.
 
-* `U8string Match::`**`str`**`(size_t i = 0) const`
-* `U8string Match::`**`named`**`(const U8string& name) const`
-* `U8string Match::`**`operator[]`**`(size_t i) const`
-* `Match::`**`operator U8string`**`() const`
+* `Ustring Match::`**`str`**`(size_t i = 0) const`
+* `Ustring Match::`**`named`**`(const Ustring& name) const`
+* `Ustring Match::`**`operator[]`**`(size_t i) const`
+* `Match::`**`operator Ustring`**`() const`
 
 The `str()` and `named()` functions return a copy of the substring matched by
 a numbered or named group, or an empty string if the group does not exist or
@@ -484,8 +484,8 @@ format string only once by constructing a regex format object will be more
 efficient if the same formatting operation is going to be applied many times.
 
 * `RegexFormat::`**`RegexFormat`**`()`
-* `RegexFormat::`**`RegexFormat`**`(const Regex& pattern, const U8string& format)`
-* `RegexFormat::`**`RegexFormat`**`(const U8string& pattern, const U8string& format, uint32_t flags = 0)`
+* `RegexFormat::`**`RegexFormat`**`(const Regex& pattern, const Ustring& format)`
+* `RegexFormat::`**`RegexFormat`**`(const Ustring& pattern, const Ustring& format, uint32_t flags = 0)`
 * `RegexFormat::`**`RegexFormat`**`(const RegexFormat& f)`
 * `RegexFormat::`**`RegexFormat`**`(RegexFormat&& f) noexcept`
 * `RegexFormat::`**`~RegexFormat`**`() noexcept`
@@ -497,9 +497,9 @@ as a precompiled regex or a pattern and flag set) and a format string. The
 third constructor can throw the same exceptions as the corresponding regex
 constructor.
 
-* `U8string RegexFormat::`**`format`**`(const U8string& text, size_t n = npos) const`
-* `U8string RegexFormat::`**`extract`**`(const U8string& text, size_t n = npos) const`
-* `U8string RegexFormat::`**`operator()`**`(const U8string& text, size_t n = npos) const`
+* `Ustring RegexFormat::`**`format`**`(const Ustring& text, size_t n = npos) const`
+* `Ustring RegexFormat::`**`extract`**`(const Ustring& text, size_t n = npos) const`
+* `Ustring RegexFormat::`**`operator()`**`(const Ustring& text, size_t n = npos) const`
 
 The `format()` function (and the equivalent function call operator) uses the
 formatting string to transform the text, replacing the first `n` matching
@@ -510,8 +510,8 @@ first `n` matches, discarding the unmatched text between them.
 `regex.format(fmt,text)`, and similarly for `extract()`.
 
 * `Regex RegexFormat::`**`regex`**`() const`
-* `U8string RegexFormat::`**`format`**`() const`
-* `U8string RegexFormat::`**`pattern`**`() const`
+* `Ustring RegexFormat::`**`format`**`() const`
+* `Ustring RegexFormat::`**`pattern`**`() const`
 * `uint32_t RegexFormat::`**`flags`**`() const noexcept`
 
 These functions query the construction parameters. The `pattern()` and
@@ -532,7 +532,7 @@ Swap two objects.
     * `using MatchIterator::`**`reference`** `= const Match&`
     * `using MatchIterator::`**`value_type`** `= Match`
     * `MatchIterator::`**`MatchIterator`**`()`
-    * `MatchIterator::`**`MatchIterator`**`(const Regex& re, const U8string& text)`
+    * `MatchIterator::`**`MatchIterator`**`(const Regex& re, const Ustring& text)`
     * _[standard iterator operations]_
 * `using` **`MatchRange`** `= Irange<MatchIterator>`
 
@@ -543,11 +543,11 @@ constructed directly by the user.
 * `class` **`SplitIterator`**
     * `using SplitIterator::`**`difference_type`** `= ptrdiff_t`
     * `using SplitIterator::`**`iterator_category`** `= std::forward_iterator_tag`
-    * `using SplitIterator::`**`pointer`** `= const U8string*`
-    * `using SplitIterator::`**`reference`** `= const U8string&`
-    * `using SplitIterator::`**`value_type`** `= U8string`
+    * `using SplitIterator::`**`pointer`** `= const Ustring*`
+    * `using SplitIterator::`**`reference`** `= const Ustring&`
+    * `using SplitIterator::`**`value_type`** `= Ustring`
     * `SplitIterator::`**`SplitIterator`**`()`
-    * `SplitIterator::`**`SplitIterator`**`(const Regex& re, const U8string& text)`
+    * `SplitIterator::`**`SplitIterator`**`(const Regex& re, const Ustring& text)`
     * _[standard iterator operations]_
 * `using` **`SplitRange`** `= Irange<SplitIterator>`
 

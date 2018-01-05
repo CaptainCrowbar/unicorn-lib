@@ -54,7 +54,7 @@ Options:
 <div class="defns">
 <ul>
 <li><code>class Options::</code><strong><code>command_error</code></strong><code>: public std::runtime_error</code><ul>
-<li><code>explicit command_error::</code><strong><code>command_error</code></strong><code>(const U8string&amp; details, const U8string&amp; arg = {}, const U8string&amp; arg2 = {})</code></li>
+<li><code>explicit command_error::</code><strong><code>command_error</code></strong><code>(const Ustring&amp; details, const Ustring&amp; arg = {}, const Ustring&amp; arg2 = {})</code></li>
 </ul>
 </li>
 </ul>
@@ -65,8 +65,8 @@ option specification.</p>
 <div class="defns">
 <ul>
 <li><code>class Options::</code><strong><code>spec_error</code></strong><code>: public std::runtime_error</code><ul>
-<li><code>explicit spec_error::</code><strong><code>spec_error</code></strong><code>(const U8string&amp; option)</code></li>
-<li><code>spec_error::</code><strong><code>spec_error</code></strong><code>(const U8string&amp; details, const U8string&amp; option)</code></li>
+<li><code>explicit spec_error::</code><strong><code>spec_error</code></strong><code>(const Ustring&amp; option)</code></li>
+<li><code>spec_error::</code><strong><code>spec_error</code></strong><code>(const Ustring&amp; details, const Ustring&amp; option)</code></li>
 </ul>
 </li>
 </ul>
@@ -75,7 +75,7 @@ report an invalid combination of properties.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>explicit Options::</code><strong><code>Options</code></strong><code>(const U8string&amp; info)</code></li>
+<li><code>explicit Options::</code><strong><code>Options</code></strong><code>(const Ustring&amp; info)</code></li>
 </ul>
 <p>Constructor to initialize an option specification. The <code>info</code> argument is a
 string containing the basic description of the program, typically something
@@ -96,8 +96,8 @@ used and is supplied only to enable move initialization in some cases.)</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename... Args&gt; Options&amp; Options::</code><strong><code>add</code></strong><code>(const U8string&amp; name, const U8string&amp; info, const Args&amp;... args)</code></li>
-<li><code>Options&amp; Options::</code><strong><code>add</code></strong><code>(const U8string&amp; info)</code></li>
+<li><code>template &lt;typename... Args&gt; Options&amp; Options::</code><strong><code>add</code></strong><code>(const Ustring&amp; name, const Ustring&amp; info, const Args&amp;... args)</code></li>
+<li><code>Options&amp; Options::</code><strong><code>add</code></strong><code>(const Ustring&amp; info)</code></li>
 <li><code>Options&amp; Options::</code><strong><code>add</code></strong><code>([private type] flag)</code></li>
 </ul>
 <p>A program will normally construct an <code>Options</code> object and use multiple calls
@@ -121,7 +121,7 @@ optional keyword arguments, as listed below.</p>
 <tbody>
 <tr>
 <td><code>Options::</code><strong><code>abbrev</code></strong></td>
-<td><code>U8string</code></td>
+<td><code>Ustring</code></td>
 <td>A single letter abbreviation for the option (e.g. <code>"-x"</code>; the hyphen is optional).</td>
 </tr>
 <tr>
@@ -136,7 +136,7 @@ optional keyword arguments, as listed below.</p>
 </tr>
 <tr>
 <td><code>Options::</code><strong><code>defvalue</code></strong></td>
-<td><code>U8string</code></td>
+<td><code>Ustring</code></td>
 <td>Use this default value if the option is not supplied by the user.</td>
 </tr>
 <tr>
@@ -146,7 +146,7 @@ optional keyword arguments, as listed below.</p>
 </tr>
 <tr>
 <td><code>Options::</code><strong><code>group</code></strong></td>
-<td><code>U8string</code></td>
+<td><code>Ustring</code></td>
 <td>Assign the option to a mutual exclusion group; at most one option from a group is allowed.</td>
 </tr>
 <tr>
@@ -161,7 +161,7 @@ optional keyword arguments, as listed below.</p>
 </tr>
 <tr>
 <td><code>Options::</code><strong><code>pattern</code></strong></td>
-<td><code>U8string</code></td>
+<td><code>Ustring</code></td>
 <td>The argument value must match this regular expression.</td>
 </tr>
 <tr>
@@ -213,8 +213,8 @@ empty argument list is equivalent to <code>"--help"</code>).</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>U8string Options::</code><strong><code>help_text</code></strong><code>() const</code></li>
-<li><code>U8string Options::</code><strong><code>version_text</code></strong><code>() const</code></li>
+<li><code>Ustring Options::</code><strong><code>help_text</code></strong><code>() const</code></li>
+<li><code>Ustring Options::</code><strong><code>version_text</code></strong><code>() const</code></li>
 </ul>
 <p>These are the same texts that will be presented to the user by the <code>"--help"</code>
 and <code>"--version"</code> options. The help text is constructed automatically by the
@@ -285,9 +285,9 @@ true:</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename T&gt; T Options::</code><strong><code>get</code></strong><code>(const U8string&amp; name) const</code></li>
-<li><code>template &lt;typename T&gt; vector&lt;T&gt; Options::</code><strong><code>get_list</code></strong><code>(const U8string&amp; name) const</code></li>
-<li><code>bool Options::</code><strong><code>has</code></strong><code>(const U8string&amp; name) const</code></li>
+<li><code>template &lt;typename T&gt; T Options::</code><strong><code>get</code></strong><code>(const Ustring&amp; name) const</code></li>
+<li><code>template &lt;typename T&gt; vector&lt;T&gt; Options::</code><strong><code>get_list</code></strong><code>(const Ustring&amp; name) const</code></li>
+<li><code>bool Options::</code><strong><code>has</code></strong><code>(const Ustring&amp; name) const</code></li>
 </ul>
 <p>These return information about the options and arguments found in the command
 line. The option name can be supplied with or without leading hyphens. Only

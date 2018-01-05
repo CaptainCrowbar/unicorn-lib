@@ -186,23 +186,23 @@ namespace RS::Unicorn {
 
     #ifndef _XOPEN_SOURCE
 
-        U8string Environment::expand(const U8string& src, uint32_t flags) {
+        Ustring Environment::expand(const Ustring& src, uint32_t flags) {
             return do_expand_env(src, flags, this);
         }
 
-        U8string Environment::get(const U8string& name) {
+        Ustring Environment::get(const Ustring& name) {
             return to_utf8(get(to_wstring(name)));
         }
 
-        bool Environment::has(const U8string& name) {
+        bool Environment::has(const Ustring& name) {
             return has(to_wstring(name));
         }
 
-        void Environment::set(const U8string& name, const U8string& value) {
+        void Environment::set(const Ustring& name, const Ustring& value) {
             return set(to_wstring(name), to_wstring(value));
         }
 
-        void Environment::unset(const U8string& name) {
+        void Environment::unset(const Ustring& name) {
             unset(to_wstring(name));
         }
 

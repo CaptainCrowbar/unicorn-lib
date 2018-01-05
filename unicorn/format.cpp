@@ -15,7 +15,7 @@ namespace RS::Unicorn {
 
             // These will always be called with x>=0 and prec>=0
 
-            U8string float_print(long double x, int prec, bool exp) {
+            Ustring float_print(long double x, int prec, bool exp) {
                 std::vector<char> buf(32);
                 int len = 0;
                 for (;;) {
@@ -29,11 +29,11 @@ namespace RS::Unicorn {
                 }
             }
 
-            void float_strip(U8string& str) {
+            void float_strip(Ustring& str) {
                 static const Regex pattern("(.*)(\\.(?:\\d*[1-9])?)(0+)(e.*)?");
                 auto match = pattern.match(str);
                 if (match) {
-                    U8string result = match[1];
+                    Ustring result = match[1];
                     if (match.count(2) != 1)
                         result += match[2];
                     result += match[4];
@@ -41,7 +41,7 @@ namespace RS::Unicorn {
                 }
             }
 
-            U8string float_digits(long double x, int prec) {
+            Ustring float_digits(long double x, int prec) {
                 prec = std::max(prec, 1);
                 auto result = float_print(x, prec - 1, true);
                 auto epos = result.find_first_of("Ee");
@@ -63,7 +63,7 @@ namespace RS::Unicorn {
                 return result;
             }
 
-            U8string float_exp(long double x, int prec) {
+            Ustring float_exp(long double x, int prec) {
                 prec = std::max(prec, 1);
                 auto result = float_print(x, prec - 1, true);
                 auto epos = result.find_first_of("Ee");
@@ -71,7 +71,7 @@ namespace RS::Unicorn {
                 if (result[epos + 1] == '-')
                     esign = '-';
                 auto epos2 = result.find_first_not_of("+-0", epos + 1);
-                U8string exponent;
+                Ustring exponent;
                 if (epos2 < result.size())
                     exponent = result.substr(epos2);
                 result.resize(epos);
@@ -85,11 +85,11 @@ namespace RS::Unicorn {
                 return result;
             }
 
-            U8string float_fixed(long double x, int prec) {
+            Ustring float_fixed(long double x, int prec) {
                 return float_print(x, prec, false);
             }
 
-            U8string float_general(long double x, int prec) {
+            Ustring float_general(long double x, int prec) {
                 using std::floor;
                 using std::log10;
                 if (x == 0)
@@ -107,8 +107,8 @@ namespace RS::Unicorn {
                 return dform.size() <= eform.size() ? dform : eform;
             }
 
-            U8string string_escape(const U8string& s, uint64_t mode) {
-                U8string result;
+            Ustring string_escape(const Ustring& s, uint64_t mode) {
+                Ustring result;
                 result.reserve(s.size() + 2);
                 if (mode & Format::quote)
                     result += '\"';
@@ -147,10 +147,10 @@ namespace RS::Unicorn {
             }
 
             template <typename Range>
-            U8string string_values(const Range& s, int base, int prec, int defprec) {
+            Ustring string_values(const Range& s, int base, int prec, int defprec) {
                 if (prec < 0)
                     prec = defprec;
-                U8string result;
+                Ustring result;
                 for (auto c: s) {
                     result += format_radix(char_to_uint(c), base, prec);
                     result += ' ';
@@ -164,7 +164,7 @@ namespace RS::Unicorn {
 
         // Formatting for specific types
 
-        void translate_flags(const U8string& str, uint64_t& flags, int& prec, size_t& width, char32_t& pad) {
+        void translate_flags(const Ustring& str, uint64_t& flags, int& prec, size_t& width, char32_t& pad) {
             flags = 0;
             prec = -1;
             width = 0;
@@ -193,7 +193,7 @@ namespace RS::Unicorn {
             }
         }
 
-        U8string format_ldouble(long double t, uint64_t flags, int prec) {
+        Ustring format_ldouble(long double t, uint64_t flags, int prec) {
             using std::fabs;
             static constexpr auto format_flags = Format::digits | Format::exp | Format::fixed | Format::general;
             static constexpr auto sign_flags = Format::sign | Format::signz;
@@ -202,7 +202,7 @@ namespace RS::Unicorn {
             if (prec < 0)
                 prec = 6;
             auto mag = fabs(t);
-            U8string s;
+            Ustring s;
             if (flags & Format::digits)
                 s = float_digits(mag, prec);
             else if (flags & Format::exp)
@@ -220,7 +220,7 @@ namespace RS::Unicorn {
 
         // Alignment and padding
 
-        U8string format_align(U8string src, uint64_t flags, size_t width, char32_t pad) {
+        Ustring format_align(Ustring src, uint64_t flags, size_t width, char32_t pad) {
             if (ibits(flags & (Format::left | Format::centre | Format::right)) > 1)
                 throw std::invalid_argument("Inconsistent formatting alignment flags");
             if (ibits(flags & (Format::lower | Format::title | Format::upper)) > 1)
@@ -235,7 +235,7 @@ namespace RS::Unicorn {
             if (width <= len)
                 return src;
             size_t extra = width - len;
-            U8string dst;
+            Ustring dst;
             if (flags & Format::right)
                 str_append_chars(dst, extra, pad);
             else if (flags & Format::centre)
@@ -252,7 +252,7 @@ namespace RS::Unicorn {
 
     // Basic formattng functions
 
-    U8string format_type(bool t, uint64_t flags, int /*prec*/) {
+    Ustring format_type(bool t, uint64_t flags, int /*prec*/) {
         static constexpr auto format_flags = Format::binary | Format::tf | Format::yesno;
         if (ibits(flags & format_flags) > 1)
             throw std::invalid_argument("Inconsistent formatting flags");
@@ -264,7 +264,7 @@ namespace RS::Unicorn {
             return t ? "true" : "false";
     }
 
-    U8string format_type(const U8string& t, uint64_t flags, int prec) {
+    Ustring format_type(const Ustring& t, uint64_t flags, int prec) {
         using namespace UnicornDetail;
         static constexpr auto format_flags = Format::ascii | Format::ascquote | Format::escape | Format::decimal | Format::hex | Format::hex8 | Format::hex16 | Format::quote;
         if (ibits(flags & format_flags) > 1)
@@ -289,7 +289,7 @@ namespace RS::Unicorn {
             return t;
     }
 
-    U8string format_type(system_clock::time_point t, uint64_t flags, int prec) {
+    Ustring format_type(system_clock::time_point t, uint64_t flags, int prec) {
         static constexpr auto format_flags = Format::iso | Format::common;
         if (ibits(flags & format_flags) > 1)
             throw std::invalid_argument("Inconsistent formatting flags");
@@ -307,7 +307,7 @@ namespace RS::Unicorn {
 
     // Formatter class
 
-    Format::Format(const U8string& format):
+    Format::Format(const Ustring& format):
     fmt(format), seq() {
         auto i = utf_begin(format), end = utf_end(format);
         while (i != end) {
@@ -316,7 +316,7 @@ namespace RS::Unicorn {
             i = std::next(j);
             if (i == end)
                 break;
-            U8string prefix, suffix;
+            Ustring prefix, suffix;
             if (char_is_digit(*i)) {
                 auto k = std::find_if_not(i, end, char_is_digit);
                 j = std::find_if_not(k, end, char_is_alphanumeric);
@@ -344,7 +344,7 @@ namespace RS::Unicorn {
         }
     }
 
-    void Format::add_index(unsigned index, const U8string& flags) {
+    void Format::add_index(unsigned index, const Ustring& flags) {
         using namespace UnicornDetail;
         element elem;
         elem.index = index;
@@ -354,7 +354,7 @@ namespace RS::Unicorn {
             num = index;
     }
 
-    void Format::add_literal(const U8string& text) {
+    void Format::add_literal(const Ustring& text) {
         if (! text.empty()) {
             if (seq.empty() || seq.back().index != 0)
                 seq.push_back({0, text, 0, 0, 0, 0});

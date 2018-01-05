@@ -12,7 +12,7 @@ using namespace std::literals;
 
 void test_unicorn_string_algorithm_common() {
 
-    U8string a, b = "Hello", c = "Hello world", d = "Hellfire", e = "Goodbye";
+    Ustring a, b = "Hello", c = "Hello world", d = "Hellfire", e = "Goodbye";
     size_t n = 0;
 
     TRY(n = str_common(a, b));      TEST_EQUAL(n, 0);
@@ -27,7 +27,7 @@ void test_unicorn_string_algorithm_common() {
     // "αβγδ" = Unicode 3b1 3b1 3b1 3c4 = UTF-8 ce b1 ce b2 ce b3 ce b4
     // "αβδε" = Unicode 3b1 3b1 3c4 3c5 = UTF-8 ce b1 ce b2 ce b4 ce b5
 
-    U8string x = u8"αβγδ", y = u8"αβδε";
+    Ustring x = u8"αβγδ", y = u8"αβδε";
 
     TRY(n = str_common(x, y));      TEST_EQUAL(n, 5);
     TRY(n = str_common_utf(x, y));  TEST_EQUAL(n, 4);
@@ -36,7 +36,7 @@ void test_unicorn_string_algorithm_common() {
 
 void test_unicorn_string_algorithm_expect() {
 
-    U8string a, b = u8"Hello world", c = u8"€uro ∈lement";
+    Ustring a, b = u8"Hello world", c = u8"€uro ∈lement";
     Utf8Iterator i;
 
     TRY(i = utf_begin(a));  TEST(! str_expect(i, u8""s));                TEST_EQUAL(std::distance(utf_begin(a), i), 0);
@@ -59,7 +59,7 @@ void test_unicorn_string_algorithm_expect() {
 
 void test_unicorn_string_algorithm_find_char() {
 
-    U8string s;
+    Ustring s;
     Utf8Iterator i;
 
     s = u8"€uro €uro €uro";
@@ -84,7 +84,7 @@ void test_unicorn_string_algorithm_find_char() {
 
 void test_unicorn_string_algorithm_find_first() {
 
-    U8string s;
+    Ustring s;
     Utf8Iterator i;
 
     s = u8"€uro ∈lement";
@@ -117,7 +117,7 @@ void test_unicorn_string_algorithm_find_first() {
 
 void test_unicorn_string_algorithm_line_column() {
 
-    U8string s0 = "",
+    Ustring s0 = "",
         s1 = "Hello world",
         s2 = "Hello world\nGoodbye\n",
         s3 = "Hello world\r\nGoodbye\r\n";
@@ -153,7 +153,7 @@ void test_unicorn_string_algorithm_line_column() {
 
 void test_unicorn_string_algorithm_search() {
 
-    U8string s = u8"€uro ∈lement";
+    Ustring s = u8"€uro ∈lement";
     Irange<Utf8Iterator> r;
 
     TRY(r = str_search(s, u8""));                    TEST_EQUAL(std::distance(utf_begin(s), r.first), 0);   TEST_EQUAL(std::distance(r.first, r.second), 0);
@@ -169,7 +169,7 @@ void test_unicorn_string_algorithm_search() {
 
 void test_unicorn_string_algorithm_skipws() {
 
-    U8string s;
+    Ustring s;
     Utf8Iterator i;
 
     s = u8""s;                   TRY(i = utf_begin(s));  TEST_EQUAL(str_skipws(i), 0);  TEST_EQUAL(std::distance(utf_begin(s), i), 0);

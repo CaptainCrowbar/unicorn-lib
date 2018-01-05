@@ -70,13 +70,13 @@ namespace RS::Unicorn {
 
         #ifdef _XOPEN_SOURCE
 
-            inline U8string normalize_path(const U8string& path) {
+            inline Ustring normalize_path(const Ustring& path) {
                 return path;
             }
 
         #else
 
-            inline U8string normalize_path(const U8string& path) {
+            inline Ustring normalize_path(const Ustring& path) {
                 auto result = path;
                 std::replace(result.begin(), result.end(), '/', '\\');
                 return result;
@@ -92,34 +92,34 @@ namespace RS::Unicorn {
 
     }
 
-    bool is_legal_mac_leaf_name(const U8string& file);
-    bool is_legal_mac_path_name(const U8string& file);
-    bool is_legal_posix_leaf_name(const U8string& file);
-    bool is_legal_posix_path_name(const U8string& file);
+    bool is_legal_mac_leaf_name(const Ustring& file);
+    bool is_legal_mac_path_name(const Ustring& file);
+    bool is_legal_posix_leaf_name(const Ustring& file);
+    bool is_legal_posix_path_name(const Ustring& file);
     bool is_legal_windows_leaf_name(const std::wstring& file);
     bool is_legal_windows_path_name(const std::wstring& file);
-    inline bool is_legal_windows_leaf_name(const U8string& file) { return is_legal_windows_leaf_name(to_wstring(file)); }
-    inline bool is_legal_windows_path_name(const U8string& file) { return is_legal_windows_path_name(to_wstring(file)); }
+    inline bool is_legal_windows_leaf_name(const Ustring& file) { return is_legal_windows_leaf_name(to_wstring(file)); }
+    inline bool is_legal_windows_path_name(const Ustring& file) { return is_legal_windows_path_name(to_wstring(file)); }
 
     #ifdef _XOPEN_SOURCE
 
         #ifdef __APPLE__
 
-            inline bool is_legal_leaf_name(const U8string& file) { return is_legal_mac_leaf_name(file); }
-            inline bool is_legal_path_name(const U8string& file) { return is_legal_mac_path_name(file); }
+            inline bool is_legal_leaf_name(const Ustring& file) { return is_legal_mac_leaf_name(file); }
+            inline bool is_legal_path_name(const Ustring& file) { return is_legal_mac_path_name(file); }
 
         #else
 
-            inline bool is_legal_leaf_name(const U8string& file) { return is_legal_posix_leaf_name(file); }
-            inline bool is_legal_path_name(const U8string& file) { return is_legal_posix_path_name(file); }
+            inline bool is_legal_leaf_name(const Ustring& file) { return is_legal_posix_leaf_name(file); }
+            inline bool is_legal_path_name(const Ustring& file) { return is_legal_posix_path_name(file); }
 
         #endif
 
-        bool file_is_absolute(const U8string& file);
-        bool file_is_relative(const U8string& file);
-        bool file_is_root(const U8string& file);
-        inline bool file_is_drive_absolute(const U8string& /*file*/) { return false; }
-        inline bool file_is_drive_relative(const U8string& /*file*/) { return false; }
+        bool file_is_absolute(const Ustring& file);
+        bool file_is_relative(const Ustring& file);
+        bool file_is_root(const Ustring& file);
+        inline bool file_is_drive_absolute(const Ustring& /*file*/) { return false; }
+        inline bool file_is_drive_relative(const Ustring& /*file*/) { return false; }
 
     #else
 
@@ -128,24 +128,24 @@ namespace RS::Unicorn {
         bool file_is_drive_absolute(const std::wstring& file);
         bool file_is_drive_relative(const std::wstring& file);
         bool file_is_root(const std::wstring& file);
-        inline bool file_is_absolute(const U8string& file) { return file_is_absolute(to_wstring(file)); }
-        inline bool file_is_relative(const U8string& file) { return file_is_relative(to_wstring(file)); }
-        inline bool file_is_drive_absolute(const U8string& file) { return file_is_drive_absolute(to_wstring(file)); }
-        inline bool file_is_drive_relative(const U8string& file) { return file_is_drive_relative(to_wstring(file)); }
-        inline bool file_is_root(const U8string& file) { return file_is_root(to_wstring(file)); }
+        inline bool file_is_absolute(const Ustring& file) { return file_is_absolute(to_wstring(file)); }
+        inline bool file_is_relative(const Ustring& file) { return file_is_relative(to_wstring(file)); }
+        inline bool file_is_drive_absolute(const Ustring& file) { return file_is_drive_absolute(to_wstring(file)); }
+        inline bool file_is_drive_relative(const Ustring& file) { return file_is_drive_relative(to_wstring(file)); }
+        inline bool file_is_root(const Ustring& file) { return file_is_root(to_wstring(file)); }
         inline bool is_legal_leaf_name(const std::wstring& file) { return is_legal_windows_leaf_name(file); }
-        inline bool is_legal_leaf_name(const U8string& file) { return is_legal_windows_leaf_name(file); }
+        inline bool is_legal_leaf_name(const Ustring& file) { return is_legal_windows_leaf_name(file); }
         inline bool is_legal_path_name(const std::wstring& file) { return is_legal_windows_path_name(file); }
-        inline bool is_legal_path_name(const U8string& file) { return is_legal_windows_path_name(file); }
+        inline bool is_legal_path_name(const Ustring& file) { return is_legal_windows_path_name(file); }
 
     #endif
 
-    inline U8string file_path(const U8string& file) { return UnicornDetail::normalize_path(file); }
+    inline Ustring file_path(const Ustring& file) { return UnicornDetail::normalize_path(file); }
 
     template <typename... Args>
-    U8string file_path(const U8string& file1, const U8string& file2, Args... args) {
+    Ustring file_path(const Ustring& file1, const Ustring& file2, Args... args) {
         using namespace UnicornDetail;
-        U8string prefix = normalize_path(file1), suffix = normalize_path(file2);
+        Ustring prefix = normalize_path(file1), suffix = normalize_path(file2);
         if (prefix.empty() || (! suffix.empty() && ! file_is_relative(suffix)))
             return file_path(suffix, args...);
         if (suffix.empty())
@@ -155,8 +155,8 @@ namespace RS::Unicorn {
         return file_path(prefix + suffix, args...);
     }
 
-    std::pair<U8string, U8string> split_path(const U8string& file, uint32_t flags = 0);
-    std::pair<U8string, U8string> split_file(const U8string& file);
+    std::pair<Ustring, Ustring> split_path(const Ustring& file, uint32_t flags = 0);
+    std::pair<Ustring, Ustring> split_file(const Ustring& file);
 
     #ifndef _XOPEN_SOURCE
 
@@ -185,16 +185,16 @@ namespace RS::Unicorn {
 
     #ifdef _XOPEN_SOURCE
 
-        U8string current_directory();
-        bool file_exists(const U8string& file);
-        FileId file_id(const U8string& file, uint32_t flags = 0);
-        bool file_is_directory(const U8string& file);
-        bool file_is_hidden(const U8string& file);
-        bool file_is_symlink(const U8string& file);
-        uint64_t file_size(const U8string& file, uint32_t flags = 0);
-        U8string resolve_path(const U8string& file);
-        U8string resolve_symlink(const U8string& file);
-        inline U8string native_current_directory() { return current_directory(); }
+        Ustring current_directory();
+        bool file_exists(const Ustring& file);
+        FileId file_id(const Ustring& file, uint32_t flags = 0);
+        bool file_is_directory(const Ustring& file);
+        bool file_is_hidden(const Ustring& file);
+        bool file_is_symlink(const Ustring& file);
+        uint64_t file_size(const Ustring& file, uint32_t flags = 0);
+        Ustring resolve_path(const Ustring& file);
+        Ustring resolve_symlink(const Ustring& file);
+        inline Ustring native_current_directory() { return current_directory(); }
 
     #else
 
@@ -207,15 +207,15 @@ namespace RS::Unicorn {
         uint64_t file_size(const std::wstring& file, uint32_t flags = 0);
         std::wstring resolve_path(const std::wstring& file);
         std::wstring resolve_symlink(const std::wstring& file);
-        inline U8string current_directory() { return to_utf8(native_current_directory()); }
-        inline bool file_exists(const U8string& file) { return file_exists(to_wstring(file)); }
-        inline FileId file_id(const U8string& file, uint32_t flags = 0) { return file_id(to_wstring(file), flags); }
-        inline bool file_is_directory(const U8string& file) { return file_is_directory(to_wstring(file)); }
-        inline bool file_is_hidden(const U8string& file) { return file_is_hidden(to_wstring(file)); }
-        inline bool file_is_symlink(const U8string& file) { return file_is_symlink(to_wstring(file)); }
-        inline uint64_t file_size(const U8string& file, uint32_t flags = 0) { return file_size(to_wstring(file), flags); }
-        inline U8string resolve_path(const U8string& file) { return to_utf8(resolve_path(to_wstring(file))); }
-        inline U8string resolve_symlink(const U8string& file) { return to_utf8(resolve_symlink(to_wstring(file))); }
+        inline Ustring current_directory() { return to_utf8(native_current_directory()); }
+        inline bool file_exists(const Ustring& file) { return file_exists(to_wstring(file)); }
+        inline FileId file_id(const Ustring& file, uint32_t flags = 0) { return file_id(to_wstring(file), flags); }
+        inline bool file_is_directory(const Ustring& file) { return file_is_directory(to_wstring(file)); }
+        inline bool file_is_hidden(const Ustring& file) { return file_is_hidden(to_wstring(file)); }
+        inline bool file_is_symlink(const Ustring& file) { return file_is_symlink(to_wstring(file)); }
+        inline uint64_t file_size(const Ustring& file, uint32_t flags = 0) { return file_size(to_wstring(file), flags); }
+        inline Ustring resolve_path(const Ustring& file) { return to_utf8(resolve_path(to_wstring(file))); }
+        inline Ustring resolve_symlink(const Ustring& file) { return to_utf8(resolve_symlink(to_wstring(file))); }
 
     #endif
 
@@ -229,15 +229,15 @@ namespace RS::Unicorn {
 
     #ifndef _XOPEN_SOURCE
 
-        inline void copy_file(const U8string& src, const U8string& dst, uint32_t flags = 0)
+        inline void copy_file(const Ustring& src, const Ustring& dst, uint32_t flags = 0)
             { return copy_file(to_wstring(src), to_wstring(dst), flags); }
-        inline void make_directory(const U8string& dir, uint32_t flags = 0)
+        inline void make_directory(const Ustring& dir, uint32_t flags = 0)
             { return make_directory(to_wstring(dir), flags); }
-        inline void make_symlink(const U8string& file, const U8string& link, uint32_t flags = 0)
+        inline void make_symlink(const Ustring& file, const Ustring& link, uint32_t flags = 0)
             { return make_symlink(to_wstring(file), to_wstring(link), flags); }
-        inline void move_file(const U8string& src, const U8string& dst, uint32_t flags = 0)
+        inline void move_file(const Ustring& src, const Ustring& dst, uint32_t flags = 0)
             { return move_file(to_wstring(src), to_wstring(dst), flags); }
-        inline void remove_file(const U8string& file, uint32_t flags = 0)
+        inline void remove_file(const Ustring& file, uint32_t flags = 0)
             { return remove_file(to_wstring(file), flags); }
 
     #endif
@@ -273,20 +273,20 @@ namespace RS::Unicorn {
     #else
 
         class DirectoryIterator:
-        public InputIterator<DirectoryIterator, const U8string> {
+        public InputIterator<DirectoryIterator, const Ustring> {
         public:
             DirectoryIterator() = default;
-            explicit DirectoryIterator(const U8string& dir, uint32_t flags = 0):
+            explicit DirectoryIterator(const Ustring& dir, uint32_t flags = 0):
                 nat(to_wstring(dir), flags), current(to_utf8(*nat)) {}
-            const U8string& operator*() const noexcept { return current; }
+            const Ustring& operator*() const noexcept { return current; }
             DirectoryIterator& operator++() { ++nat; current = to_utf8(*nat); return *this; }
             bool operator==(const DirectoryIterator& rhs) const noexcept { return nat == rhs.nat; }
         private:
             NativeDirectoryIterator nat;
-            U8string current;
+            Ustring current;
         };
 
-        inline Irange<DirectoryIterator> directory(const U8string& dir, uint32_t flags = 0)
+        inline Irange<DirectoryIterator> directory(const Ustring& dir, uint32_t flags = 0)
             { return {DirectoryIterator(dir, flags), DirectoryIterator()}; }
 
     #endif

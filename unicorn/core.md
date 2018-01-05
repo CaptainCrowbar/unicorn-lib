@@ -27,8 +27,8 @@ derived from this are individually documented.
 
 * `class` **`EncodingError`**`: public std::runtime_error`
     * `EncodingError::`**`EncodingError`**`()`
-    * `explicit EncodingError::`**`EncodingError`**`(const U8string& encoding, size_t offset = 0, char32_t c = 0)`
-    * `template <typename C> EncodingError::`**`EncodingError`**`(const U8string& encoding, size_t offset, const C* ptr, size_t n = 1)`
+    * `explicit EncodingError::`**`EncodingError`**`(const Ustring& encoding, size_t offset = 0, char32_t c = 0)`
+    * `template <typename C> EncodingError::`**`EncodingError`**`(const Ustring& encoding, size_t offset, const C* ptr, size_t n = 1)`
     * `const char* EncodingError::`**`encoding`**`() noexcept const`
     * `size_t EncodingError::`**`offset`**`() const noexcept`
 

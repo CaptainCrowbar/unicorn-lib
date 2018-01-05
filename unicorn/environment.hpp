@@ -50,12 +50,12 @@ namespace RS::Unicorn {
         void set(const NativeString& name, const NativeString& value);
         void unset(const NativeString& name);
         #ifndef _XOPEN_SOURCE
-            U8string operator[](const U8string& name) { return get(name); }
-            U8string expand(const U8string& src, uint32_t flags = native);
-            U8string get(const U8string& name);
-            bool has(const U8string& name);
-            void set(const U8string& name, const U8string& value);
-            void unset(const U8string& name);
+            Ustring operator[](const Ustring& name) { return get(name); }
+            Ustring expand(const Ustring& src, uint32_t flags = native);
+            Ustring get(const Ustring& name);
+            bool has(const Ustring& name);
+            void set(const Ustring& name, const Ustring& value);
+            void unset(const Ustring& name);
         #endif
         iterator begin() const { return iterator(map.begin()); }
         iterator end() const { return iterator(map.end()); }
@@ -90,23 +90,23 @@ namespace RS::Unicorn {
         void set_env(const std::wstring& name, const std::wstring& value);
         void unset_env(const std::wstring& name);
 
-        inline U8string expand_env(const U8string& src, uint32_t flags = Environment::native) {
+        inline Ustring expand_env(const Ustring& src, uint32_t flags = Environment::native) {
             return to_utf8(expand_env(to_wstring(src, Utf::replace), flags), Utf::replace);
         }
 
-        inline U8string get_env(const U8string& name) {
+        inline Ustring get_env(const Ustring& name) {
             return to_utf8(get_env(to_wstring(name, Utf::replace)), Utf::replace);
         }
 
-        inline bool has_env(const U8string& name) {
+        inline bool has_env(const Ustring& name) {
             return has_env(to_wstring(name, Utf::replace));
         }
 
-        inline void set_env(const U8string& name, const U8string& value) {
+        inline void set_env(const Ustring& name, const Ustring& value) {
             set_env(to_wstring(name, Utf::replace), to_wstring(value, Utf::replace));
         }
 
-        inline void unset_env(const U8string& name) {
+        inline void unset_env(const Ustring& name) {
             unset_env(to_wstring(name, Utf::replace));
         }
 

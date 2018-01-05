@@ -3,7 +3,7 @@
 
 namespace RS::Unicorn {
 
-    int str_compare_3way(const U8string& lhs, const U8string& rhs) {
+    int str_compare_3way(const Ustring& lhs, const Ustring& rhs) {
         size_t size1 = lhs.size(), size2 = rhs.size();
         size_t common = std::min(lhs.size(), rhs.size());
         int rc = memcmp(lhs.data(), rhs.data(), common);
@@ -13,7 +13,7 @@ namespace RS::Unicorn {
             return size1 < size2 ? -1 : size1 == size2 ? 0 : 1;
     }
 
-    bool str_icase_compare(const U8string& lhs, const U8string& rhs) noexcept {
+    bool str_icase_compare(const Ustring& lhs, const Ustring& rhs) noexcept {
         if (lhs.empty() || rhs.empty())
             return ! rhs.empty();
         auto u1 = utf_range(lhs), u2 = utf_range(rhs);
@@ -42,7 +42,7 @@ namespace RS::Unicorn {
         }
     }
 
-    bool str_icase_equal(const U8string& lhs, const U8string& rhs) noexcept {
+    bool str_icase_equal(const Ustring& lhs, const Ustring& rhs) noexcept {
         if (lhs.empty() && rhs.empty())
             return true;
         if (lhs.size() != rhs.size())
@@ -87,7 +87,7 @@ namespace RS::Unicorn {
         struct NaturalSegment:
         Irange<Utf8Iterator> {
             bool is_number = false;
-            U8string cooked;
+            Ustring cooked;
             void cook() {
                 if (first == second)
                     return;
@@ -97,7 +97,7 @@ namespace RS::Unicorn {
                         ++i;
                     str_append(cooked, i, second);
                 } else {
-                    U8string s;
+                    Ustring s;
                     for (char32_t c: *this)
                         if (char_is_significant(c))
                             str_append_char(s, c);
@@ -150,7 +150,7 @@ namespace RS::Unicorn {
 
     }
 
-    bool str_natural_compare(const U8string& lhs, const U8string& rhs) noexcept {
+    bool str_natural_compare(const Ustring& lhs, const Ustring& rhs) noexcept {
         auto b1 = utf_begin(lhs), e1 = utf_end(lhs), b2 = utf_begin(rhs), e2 = utf_end(rhs);
         NaturalSegmentIterator s1(b1, e1), s1_end(e1, e1), s2(b2, e2), s2_end(e2, e2);
         for (; s1 != s1_end && s2 != s2_end; ++s1, ++s2) {

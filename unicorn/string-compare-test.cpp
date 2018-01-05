@@ -66,14 +66,14 @@ void test_unicorn_string_compare_case_insensitive() {
 
 void test_unicorn_string_compare_natural() {
 
-    U8string s0 = "";
-    U8string s1 = "abc 123";
-    U8string s2 = "abc 45";
-    U8string s3 = "ABC 67";
-    U8string s4 = "abc 000123";
-    U8string s5 = "abc 123 string_compare";
-    U8string s6 = "abc 123 456";
-    U8string s7 = "+abc 123";
+    Ustring s0 = "";
+    Ustring s1 = "abc 123";
+    Ustring s2 = "abc 45";
+    Ustring s3 = "ABC 67";
+    Ustring s4 = "abc 000123";
+    Ustring s5 = "abc 123 string_compare";
+    Ustring s6 = "abc 123 456";
+    Ustring s7 = "+abc 123";
 
     TEST(! str_natural_compare(s0, s0));
     TEST(! str_natural_compare(s1, s1));
@@ -96,8 +96,8 @@ void test_unicorn_string_compare_natural() {
 
 void test_unicorn_string_compare_utf_compare() {
 
-    U8string a8 = u8"\uff00\U00010000";
-    U8string b8 = u8"\U00010000\uff00";
+    Ustring a8 = u8"\uff00\U00010000";
+    Ustring b8 = u8"\U00010000\uff00";
     std::u16string a16 = u"\uff00\U00010000";
     std::u16string b16 = u"\U00010000\uff00";
     std::u32string a32 = U"\uff00\U00010000";

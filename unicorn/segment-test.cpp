@@ -17,7 +17,7 @@ using namespace std::literals;
 
 namespace {
 
-    std::u32string decode_hex(const U8string& code) {
+    std::u32string decode_hex(const Ustring& code) {
         Strings hexcodes;
         str_split_by(code, append(hexcodes), " /");
         std::u32string str;
@@ -53,9 +53,9 @@ namespace {
     };
 
     template <typename Split>
-    void segmentation_test(const U8string& name, Irange<char const* const*> table) {
+    void segmentation_test(const Ustring& name, Irange<char const* const*> table) {
         size_t lnum = 0;
-        for (U8string line: table) {
+        for (Ustring line: table) {
             ++lnum;
             size_t prev_failures = RS::UnitTest::test_failures();
             auto source32 = decode_hex(line);

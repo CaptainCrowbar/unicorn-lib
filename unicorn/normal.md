@@ -18,8 +18,8 @@ of converting Unicode strings into the four standard normalization forms.
 
 The standard Unicode normalization forms.
 
-* `U8string` **`normalize`**`(const U8string& src, NormalizationForm form)`
-* `void` **`normalize_in`**`(U8string& src, NormalizationForm form)`
+* `Ustring` **`normalize`**`(const Ustring& src, NormalizationForm form)`
+* `void` **`normalize_in`**`(Ustring& src, NormalizationForm form)`
 
 Convert a string to one of the normalized forms. The `normalize()` function
 returns the normalized string, while `normalize_in()` updates the source

@@ -38,8 +38,8 @@ encodings, as well as external UTF encodings with a specific byte order.</p>
 <ul>
 <li><code>class</code> <strong><code>UnknownEncoding</code></strong><code>: public std::runtime_error</code><ul>
 <li><code>UnknownEncoding::</code><strong><code>UnknownEncoding</code></strong><code>()</code></li>
-<li><code>explicit UnknownEncoding::</code><strong><code>UnknownEncoding</code></strong><code>(const U8string&amp; encoding, const U8string&amp; details = {})</code></li>
-<li><code>explicit UnknownEncoding::</code><strong><code>UnknownEncoding</code></strong><code>(uint32_t encoding, const U8string&amp; details = {})</code></li>
+<li><code>explicit UnknownEncoding::</code><strong><code>UnknownEncoding</code></strong><code>(const Ustring&amp; encoding, const Ustring&amp; details = {})</code></li>
+<li><code>explicit UnknownEncoding::</code><strong><code>UnknownEncoding</code></strong><code>(uint32_t encoding, const Ustring&amp; details = {})</code></li>
 <li><code>const char* UnknownEncoding::</code><strong><code>encoding</code></strong><code>() const noexcept</code></li>
 </ul>
 </li>
@@ -49,10 +49,10 @@ encodings, as well as external UTF encodings with a specific byte order.</p>
 <h2 id="conversion-functions">Conversion functions</h2>
 <div class="defns">
 <ul>
-<li><code>void</code> <strong><code>import_string</code></strong><code>(const string&amp; src, U8string&amp; dst, const U8string&amp; enc = "", uint32_t flags = 0)</code></li>
-<li><code>void</code> <strong><code>import_string</code></strong><code>(const string&amp; src, U8string&amp; dst, uint32_t enc, uint32_t flags = 0)</code></li>
-<li><code>void</code> <strong><code>export_string</code></strong><code>(const U8string&amp; src, string&amp; dst, const U8string&amp; enc = "", uint32_t flags = 0)</code></li>
-<li><code>void</code> <strong><code>export_string</code></strong><code>(const U8string&amp; src, string&amp; dst, uint32_t enc, uint32_t flags = 0)</code></li>
+<li><code>void</code> <strong><code>import_string</code></strong><code>(const string&amp; src, Ustring&amp; dst, const Ustring&amp; enc = "", uint32_t flags = 0)</code></li>
+<li><code>void</code> <strong><code>import_string</code></strong><code>(const string&amp; src, Ustring&amp; dst, uint32_t enc, uint32_t flags = 0)</code></li>
+<li><code>void</code> <strong><code>export_string</code></strong><code>(const Ustring&amp; src, string&amp; dst, const Ustring&amp; enc = "", uint32_t flags = 0)</code></li>
+<li><code>void</code> <strong><code>export_string</code></strong><code>(const Ustring&amp; src, string&amp; dst, uint32_t enc, uint32_t flags = 0)</code></li>
 </ul>
 <p>These functions convert from an external multibyte encoding to UTF-8
 (<code>import_string()</code>), and from UTF-8 to an external multibyte encoding
@@ -99,7 +99,7 @@ will go ahead and replace invalid data without reporting an error.</p>
 <h2 id="utility-functions">Utility functions</h2>
 <div class="defns">
 <ul>
-<li><code>U8string</code> <strong><code>local_encoding</code></strong><code>(const U8string&amp; default_encoding = "utf-8")</code></li>
+<li><code>Ustring</code> <strong><code>local_encoding</code></strong><code>(const Ustring&amp; default_encoding = "utf-8")</code></li>
 </ul>
 <p>Returns the encoding of the current default locale. The default value will be
 returned if no encoding information can be obtained from the operating system.</p></body>

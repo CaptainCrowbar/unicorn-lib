@@ -48,7 +48,7 @@ namespace RS::Unicorn {
 
     // Basic character functions
 
-    inline U8string char_as_hex(char32_t c) { return "U+" + ascii_uppercase(hex(c, 4)); }
+    inline Ustring char_as_hex(char32_t c) { return "U+" + ascii_uppercase(hex(c, 4)); }
     constexpr bool char_is_digit(char32_t c) noexcept { return c >= U'0' && c <= U'9'; }
     constexpr bool char_is_xdigit(char32_t c) noexcept { return (c >= U'0' && c <= U'9') || (c >= U'A' && c <= U'F') || (c >= U'a' && c <= U'f'); }
     constexpr bool char_is_ascii(char32_t c) noexcept { return c <= last_ascii_char; }
@@ -124,13 +124,13 @@ namespace RS::Unicorn {
     inline bool char_is_separator(char32_t c) noexcept { return char_primary_category(c) == 'Z'; }
 
     std::function<bool(char32_t)> gc_predicate(GC cat);
-    std::function<bool(char32_t)> gc_predicate(const U8string& cat);
+    std::function<bool(char32_t)> gc_predicate(const Ustring& cat);
     std::function<bool(char32_t)> gc_predicate(const char* cat);
 
-    inline U8string decode_gc(GC cat) { return {char((uint16_t(cat) >> 8) & 0xff), char(uint16_t(cat) & 0xff)}; }
+    inline Ustring decode_gc(GC cat) { return {char((uint16_t(cat) >> 8) & 0xff), char(uint16_t(cat) & 0xff)}; }
     constexpr GC encode_gc(char c1, char c2) noexcept { return GC(unicornDetail::encode_gc(c1, c2)); }
     constexpr GC encode_gc(const char* cat) noexcept { return cat && *cat ? encode_gc(cat[0], cat[1]) : GC(); }
-    inline GC encode_gc(const U8string& cat) noexcept { return encode_gc(cat.data()); }
+    inline GC encode_gc(const Ustring& cat) noexcept { return encode_gc(cat.data()); }
     std::vector<GC> gc_list();
     const char* gc_name(GC cat) noexcept;
 
@@ -168,12 +168,12 @@ namespace RS::Unicorn {
     // Block properties
 
     struct BlockInfo {
-        U8string name;
+        Ustring name;
         char32_t first;
         char32_t last;
     };
 
-    U8string char_block(char32_t c);
+    Ustring char_block(char32_t c);
     const std::vector<BlockInfo>& unicode_block_list();
 
     // Case folding properties
@@ -205,7 +205,7 @@ namespace RS::Unicorn {
 
     };
 
-    U8string char_name(char32_t c, uint32_t flags = 0);
+    Ustring char_name(char32_t c, uint32_t flags = 0);
 
     // Decomposition properties
 
@@ -246,8 +246,8 @@ namespace RS::Unicorn {
 
     // Script properties
 
-    U8string char_script(char32_t c);
+    Ustring char_script(char32_t c);
     Strings char_script_list(char32_t c);
-    U8string script_name(const U8string& abbr);
+    Ustring script_name(const Ustring& abbr);
 
 }

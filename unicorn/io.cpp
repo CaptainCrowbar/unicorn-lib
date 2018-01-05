@@ -20,7 +20,7 @@ namespace RS::Unicorn {
         using SharedFile = std::shared_ptr<FILE>;
 
         void checked_fclose(FILE* f) { if (f) fclose(f); }
-        template <typename C> U8string quote_file(const std::basic_string<C>& name) { return quote(to_utf8(name)); }
+        template <typename C> Ustring quote_file(const std::basic_string<C>& name) { return quote(to_utf8(name)); }
 
         SharedFile shared_fopen(const NativeString& file, const NativeString& mode, bool check) {
             FILE* f =
@@ -41,19 +41,19 @@ namespace RS::Unicorn {
     // Class FileReader
 
     struct FileReader::impl_type {
-        U8string line8;
+        Ustring line8;
         std::string rdbuf;
         NativeString name;
         uint32_t flags;
-        U8string enc;
-        U8string eol;
+        Ustring enc;
+        Ustring eol;
         SharedFile handle;
         size_t lines;
         bool is_ready() noexcept { return handle.get() && ! ferror(handle.get()) && ! feof(handle.get()); }
     };
 
-    const U8string& FileReader::operator*() const noexcept {
-        static const U8string dummy;
+    const Ustring& FileReader::operator*() const noexcept {
+        static const Ustring dummy;
         return impl ? impl->line8 : dummy;
     }
 
@@ -68,7 +68,7 @@ namespace RS::Unicorn {
         return impl ? impl->lines : size_t(0);
     }
 
-    void FileReader::init(const NativeString& file, uint32_t flags, const U8string& enc, const U8string& eol) {
+    void FileReader::init(const NativeString& file, uint32_t flags, const Ustring& enc, const Ustring& eol) {
         static constexpr NC dash[] = {NC('-'), NC(0)};
         static constexpr NC rb[] = {NC('r'), NC('b'), NC(0)};
         if (ibits(flags & (Utf::replace | Utf::throws)) > 1
@@ -158,10 +158,10 @@ namespace RS::Unicorn {
     // Class FileWriter
 
     struct FileWriter::impl_type {
-        U8string wrbuf;
+        Ustring wrbuf;
         NativeString name;
         uint32_t flags;
-        U8string enc;
+        Ustring enc;
         SharedFile handle;
         std::shared_ptr<std::mutex> mutex;
     };
@@ -175,7 +175,7 @@ namespace RS::Unicorn {
         }
     }
 
-    void FileWriter::init(const NativeString& file, uint32_t flags, const U8string& enc) {
+    void FileWriter::init(const NativeString& file, uint32_t flags, const Ustring& enc) {
         static constexpr NC dash[] = {NC('-'), NC(0)};
         static constexpr NC ab[] = {NC('a'), NC('b'), NC(0)};
         static constexpr NC wb[] = {NC('w'), NC('b'), NC(0)};
@@ -213,12 +213,12 @@ namespace RS::Unicorn {
         }
     }
 
-    void FileWriter::fix_text(U8string& str) const {
+    void FileWriter::fix_text(Ustring& str) const {
         if ((impl->flags & IO::writeline) || ((impl->flags & IO::autoline)
                 && (str.empty() || ! char_is_line_break(str_last_char(str)))))
             str += '\n';
         if (impl->flags & (IO::lf | IO::crlf)) {
-            U8string brk = (impl->flags & IO::crlf) ? "\r\n"s : "\n"s;
+            Ustring brk = (impl->flags & IO::crlf) ? "\r\n"s : "\n"s;
             auto i = utf_begin(str);
             while (i.offset() < str.size()) {
                 if (*i == '\r' && str[i.offset() + 1] == '\n')
@@ -231,7 +231,7 @@ namespace RS::Unicorn {
         }
     }
 
-    void FileWriter::write(U8string str) {
+    void FileWriter::write(Ustring str) {
         if (! impl)
             throw std::system_error(std::make_error_code(std::errc::bad_file_descriptor));
         fix_text(str);

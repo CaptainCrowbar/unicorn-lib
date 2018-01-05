@@ -32,7 +32,7 @@ namespace {
 void test_unicorn_mbcs_locale_detection() {
 
     std::string s;
-    U8string loc;
+    Ustring loc;
     TRY(loc = local_encoding());
     if (loc.empty())
         loc = "<unknown>";
@@ -94,7 +94,7 @@ void test_unicorn_mbcs_encoding_queries() {
 
 void test_unicorn_mbcs_to_unicode() {
 
-    U8string s8;
+    Ustring s8;
     std::u16string s16;
     std::u32string s32;
 
@@ -176,7 +176,7 @@ void test_unicorn_mbcs_from_unicode() {
 void test_unicorn_mbcs_local_encoding_round_trip() {
 
     std::string s;
-    U8string s8;
+    Ustring s8;
 
     TRY(export_string(euro_utf8, s, "char"));
     TRY(import_string(s, s8, "char"));

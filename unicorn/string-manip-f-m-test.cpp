@@ -12,7 +12,7 @@ using namespace std::literals;
 
 void test_unicorn_string_manip_fix_left() {
 
-    U8string s;
+    Ustring s;
 
     TEST_EQUAL(str_fix_left(""s, 0), "");
     TEST_EQUAL(str_fix_left(""s, 1), " ");
@@ -68,7 +68,7 @@ void test_unicorn_string_manip_fix_left() {
 
 void test_unicorn_string_manip_fix_right() {
 
-    U8string s;
+    Ustring s;
 
     TEST_EQUAL(str_fix_right(""s, 0), "");
     TEST_EQUAL(str_fix_right(""s, 1), " ");
@@ -124,7 +124,7 @@ void test_unicorn_string_manip_fix_right() {
 
 void test_unicorn_string_manip_insert() {
 
-    U8string s, t;
+    Ustring s, t;
     Utf8Iterator i, j;
 
     s = u8"Hello world";

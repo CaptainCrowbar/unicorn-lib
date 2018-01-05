@@ -25,7 +25,7 @@ namespace {
     void norm_test(const Strings& u8data, size_t line, NormalizationForm form, size_t i, size_t j) {
         auto& orig(u8data[i]);
         auto& expect(u8data[j]);
-        U8string norm;
+        Ustring norm;
         TRY(norm = normalize(orig, form));
         TEST_EQUAL(norm, expect);
         if (norm != expect)
@@ -43,7 +43,7 @@ namespace {
             u32data.clear();
             for (auto&& field: row) {
                 u32data.push_back(std::u32string());
-                str_split(U8string(field), overwrite(hexcodes));
+                str_split(Ustring(field), overwrite(hexcodes));
                 for (auto&& hc: hexcodes)
                     u32data.back() += char32_t(strtoul(hc.data(), nullptr, 16));
             }
@@ -79,7 +79,7 @@ namespace {
     void do_identity_tests(const std::vector<char32_t>& uchars, size_t b, size_t e) {
         e = std::min(e, uchars.size());
         b = std::min(b, e);
-        U8string s;
+        Ustring s;
         std::u32string us;
         for (size_t i = b; i < e; ++i) {
             us = {uchars[i]};

@@ -10,7 +10,7 @@ namespace RS::Unicorn {
         constexpr const char* uri_comp_escaped = "!\"#$%&'()*+,/:;<=>?@[\\]^`{|}";
         constexpr const char* uri_full_escaped = "\"%<>\\^`{|}";
 
-        void append_hex_digits(uint32_t x, U8string& dst) {
+        void append_hex_digits(uint32_t x, Ustring& dst) {
             size_t pos = dst.size();
             do {
                 dst += hexdigits[x % 16];
@@ -19,20 +19,20 @@ namespace RS::Unicorn {
             std::reverse(dst.begin() + pos, dst.end());
         }
 
-        void append_hex_digits(uint32_t x, U8string& dst, size_t digits) {
+        void append_hex_digits(uint32_t x, Ustring& dst, size_t digits) {
             size_t pos = dst.size();
             dst.append(digits, '0');
             for (auto i = ptrdiff_t(digits) - 1; i >= 0 && x != 0; --i, x /= 16)
                 dst[pos + i] = hexdigits[x % 16];
         }
 
-        void append_escape_pcre(char32_t c, U8string& dst) {
+        void append_escape_pcre(char32_t c, Ustring& dst) {
             dst += "\\x{";
             append_hex_digits(c, dst);
             dst += '}';
         }
 
-        void append_escape_stdc(char32_t c, U8string& dst) {
+        void append_escape_stdc(char32_t c, Ustring& dst) {
             switch (c) {
                 case 0:     dst += "\\0"; break;
                 case '\a':  dst += "\\a"; break;
@@ -46,22 +46,22 @@ namespace RS::Unicorn {
             }
         }
 
-        void append_escape_u4(char16_t c, U8string& dst) {
+        void append_escape_u4(char16_t c, Ustring& dst) {
             dst += "\\u";
             append_hex_digits(c, dst, 4);
         }
 
-        void append_escape_u8(char32_t c, U8string& dst) {
+        void append_escape_u8(char32_t c, Ustring& dst) {
             dst += "\\U";
             append_hex_digits(c, dst, 8);
         }
 
-        void append_escape_x2(char c, U8string& dst) {
+        void append_escape_x2(char c, Ustring& dst) {
             dst += "\\x";
             append_hex_digits(uint8_t(c), dst, 2);
         }
 
-        void encode_uri_helper(const U8string& src, U8string& dst, const char* escaped) {
+        void encode_uri_helper(const Ustring& src, Ustring& dst, const char* escaped) {
             for (auto in = utf_begin(src), end = utf_end(src); in != end; ++in) {
                 if (*in >= 33 && *in <= 126 && ! strchr(escaped, char(*in))) {
                     dst += char(*in);
@@ -74,7 +74,7 @@ namespace RS::Unicorn {
             }
         }
 
-        void unencode_uri_helper(const U8string& src, U8string& dst) {
+        void unencode_uri_helper(const Ustring& src, Ustring& dst) {
             size_t i = 0, size = src.size();
             while (i < size) {
                 if (src[i] == '%' && size - i >= 3 && ascii_isxdigit(src[i + 1]) && ascii_isxdigit(src[i + 2])) {
@@ -86,7 +86,7 @@ namespace RS::Unicorn {
             }
         }
 
-        void escape_helper(const U8string& src, U8string& dst, uint32_t flags, char32_t quote = 0xffffffff) {
+        void escape_helper(const Ustring& src, Ustring& dst, uint32_t flags, char32_t quote = 0xffffffff) {
             const bool ascii = flags & (Escape::ascii | Escape::pcre);
             const bool nostdc = flags & Escape::nostdc;
             const bool pcre = flags & Escape::pcre;
@@ -136,7 +136,7 @@ namespace RS::Unicorn {
             }
         }
 
-        Utf8Iterator unescape_helper(const Utf8Iterator& begin, const Utf8Iterator& end, U8string& dst, char32_t quote = 0xffffffff) {
+        Utf8Iterator unescape_helper(const Utf8Iterator& begin, const Utf8Iterator& end, Ustring& dst, char32_t quote = 0xffffffff) {
             auto i = begin, j = begin;
             while (i != end) {
                 for (j = i; j != end && *j != U'\\' && *j != quote; ++j) {}
@@ -168,7 +168,7 @@ namespace RS::Unicorn {
             return end;
         }
 
-        void unquote_helper(const U8string& src, U8string& dst, char32_t quote) {
+        void unquote_helper(const Ustring& src, Ustring& dst, char32_t quote) {
             auto i = utf_begin(src), j = i, end = utf_end(src);
             while (i != end) {
                 j = unescape_helper(i, end, dst, quote);
@@ -178,90 +178,90 @@ namespace RS::Unicorn {
 
     }
 
-    U8string str_encode_uri(const U8string& str) {
-        U8string result;
+    Ustring str_encode_uri(const Ustring& str) {
+        Ustring result;
         encode_uri_helper(str, result, uri_full_escaped);
         return result;
     }
 
-    U8string str_encode_uri_component(const U8string& str) {
-        U8string result;
+    Ustring str_encode_uri_component(const Ustring& str) {
+        Ustring result;
         encode_uri_helper(str, result, uri_comp_escaped);
         return result;
     }
 
-    void str_encode_uri_in(U8string& str) {
-        U8string result;
+    void str_encode_uri_in(Ustring& str) {
+        Ustring result;
         encode_uri_helper(str, result, uri_full_escaped);
         str = move(result);
     }
 
-    void str_encode_uri_component_in(U8string& str) {
-        U8string result;
+    void str_encode_uri_component_in(Ustring& str) {
+        Ustring result;
         encode_uri_helper(str, result, uri_comp_escaped);
         str = move(result);
     }
 
-    U8string str_unencode_uri(const U8string& str) {
-        U8string result;
+    Ustring str_unencode_uri(const Ustring& str) {
+        Ustring result;
         unencode_uri_helper(str, result);
         return result;
     }
 
-    void str_unencode_uri_in(U8string& str) {
-        U8string result;
+    void str_unencode_uri_in(Ustring& str) {
+        Ustring result;
         unencode_uri_helper(str, result);
         str = move(result);
     }
 
-    U8string str_escape(const U8string& str, uint32_t flags) {
-        U8string result;
+    Ustring str_escape(const Ustring& str, uint32_t flags) {
+        Ustring result;
         escape_helper(str, result, flags);
         return result;
     }
 
-    void str_escape_in(U8string& str, uint32_t flags) {
-        U8string result;
+    void str_escape_in(Ustring& str, uint32_t flags) {
+        Ustring result;
         escape_helper(str, result, flags);
         str = move(result);
     }
 
-    U8string str_unescape(const U8string& str) {
-        U8string result;
+    Ustring str_unescape(const Ustring& str) {
+        Ustring result;
         unescape_helper(utf_begin(str), utf_end(str), result);
         return result;
     }
 
-    void str_unescape_in(U8string& str) {
-        U8string result;
+    void str_unescape_in(Ustring& str) {
+        Ustring result;
         unescape_helper(utf_begin(str), utf_end(str), result);
         str = move(result);
     }
 
-    U8string str_quote(const U8string& str, uint32_t flags, char32_t quote) {
-        U8string result;
+    Ustring str_quote(const Ustring& str, uint32_t flags, char32_t quote) {
+        Ustring result;
         str_append_char(result, quote);
         escape_helper(str, result, flags, quote);
         str_append_char(result, quote);
         return result;
     }
 
-    void str_quote_in(U8string& str, uint32_t flags, char32_t quote) {
-        U8string result;
+    void str_quote_in(Ustring& str, uint32_t flags, char32_t quote) {
+        Ustring result;
         str_append_char(result, quote);
         escape_helper(str, result, flags, quote);
         str_append_char(result, quote);
         str = move(result);
     }
 
-    U8string str_unquote(const U8string& str, char32_t quote) {
-        U8string result;
+    Ustring str_unquote(const Ustring& str, char32_t quote) {
+        Ustring result;
         unquote_helper(str, result, quote);
         return result;
     }
 
-    void str_unquote_in(U8string& str, char32_t quote) {
-        U8string result;
+    void str_unquote_in(Ustring& str, char32_t quote) {
+        Ustring result;
         unquote_helper(str, result, quote);
         str = move(result);
     }

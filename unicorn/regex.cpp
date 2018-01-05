@@ -100,7 +100,7 @@ namespace RS::Unicorn {
             return n + 1;
         }
 
-        size_t PcreRef::named_group(const U8string& name) const noexcept {
+        size_t PcreRef::named_group(const Ustring& name) const noexcept {
             if (! pc)
                 return npos;
             auto rc = pcre_get_stringnumber(get_pcre(*this), name.data());
@@ -124,21 +124,21 @@ namespace RS::Unicorn {
 
     // Exceptions
 
-    RegexError::RegexError(int error, const U8string& pattern, const U8string& message):
+    RegexError::RegexError(int error, const Ustring& pattern, const Ustring& message):
         std::runtime_error(assemble(error, pattern, message)),
         err(error),
-        pat(std::make_shared<U8string>(pattern)) {}
+        pat(std::make_shared<Ustring>(pattern)) {}
 
-    U8string RegexError::assemble(int error, const U8string& pattern, const U8string& message) {
-        U8string text = "Regex error " + dec(error);
-        U8string errmsg = message.empty() ? translate(error) : message;
+    Ustring RegexError::assemble(int error, const Ustring& pattern, const Ustring& message) {
+        Ustring text = "Regex error " + dec(error);
+        Ustring errmsg = message.empty() ? translate(error) : message;
         if (! errmsg.empty())
             text += ": " + errmsg;
         text += "; pattern: " + quote(pattern);
         return text;
     }
 
-    U8string RegexError::translate(int error) {
+    Ustring RegexError::translate(int error) {
         if (error < 0 && error > - int(range_count(error_table)))
             return error_table[- error];
         else
@@ -147,7 +147,7 @@ namespace RS::Unicorn {
 
     // Regex match class
 
-    U8string Match::first() const {
+    Ustring Match::first() const {
         if (! matched() || ! text)
             return {};
         size_t n = groups();
@@ -157,7 +157,7 @@ namespace RS::Unicorn {
         return {};
     }
 
-    U8string Match::last() const {
+    Ustring Match::last() const {
         if (! matched() || ! text)
             return {};
         size_t n = groups();
@@ -167,14 +167,14 @@ namespace RS::Unicorn {
         return {};
     }
 
-    U8string::const_iterator Match::s_begin(size_t i) const noexcept {
+    Ustring::const_iterator Match::s_begin(size_t i) const noexcept {
         if (text && is_group(i))
             return text->begin() + offset(i);
         else
             return {};
     }
 
-    U8string::const_iterator Match::s_end(size_t i) const noexcept {
+    Ustring::const_iterator Match::s_end(size_t i) const noexcept {
         if (text && is_group(i))
             return text->begin() + endpos(i);
         else
@@ -189,7 +189,7 @@ namespace RS::Unicorn {
         std::swap(text, m.text);
     }
 
-    U8string Match::str(size_t i) const {
+    Ustring Match::str(size_t i) const {
         if (text && is_group(i))
             return text->substr(ofs[2 * i],
                 ofs[2 * i + 1] - ofs[2 * i]);
@@ -211,7 +211,7 @@ namespace RS::Unicorn {
             return {};
     }
 
-    void Match::init(const Regex& r, const U8string& s) {
+    void Match::init(const Regex& r, const Ustring& s) {
         ofs.clear();
         fset = r.fset;
         ref = r.ref;
@@ -219,7 +219,7 @@ namespace RS::Unicorn {
         text = &s;
     }
 
-    void Match::next(const U8string& pattern, size_t start, int anchors) {
+    void Match::next(const Ustring& pattern, size_t start, int anchors) {
         status = PCRE_ERROR_NOMATCH;
         if (! ref || start > text->size())
             return;
@@ -281,7 +281,7 @@ namespace RS::Unicorn {
     constexpr uint32_t Regex::prefershort;
     constexpr uint32_t Regex::ucp;
 
-    Regex::Regex(const U8string& pattern, uint32_t flags) {
+    Regex::Regex(const Ustring& pattern, uint32_t flags) {
         if (ibits(flags & (newlineanycrlf | newlinecr | newlinecrlf | newlinelf)) > 1
                 || ibits(flags & (notempty | notemptyatstart)) > 1
                 || ibits(flags & (partialhard | partialsoft)) > 1)
@@ -343,7 +343,7 @@ namespace RS::Unicorn {
         ref = {pc, ex};
     }
 
-    size_t Regex::count(const U8string& text) const {
+    size_t Regex::count(const Ustring& text) const {
         Match m;
         m.init(*this, text);
         size_t n = 0, ofs = 0;
@@ -357,19 +357,19 @@ namespace RS::Unicorn {
         return n;
     }
 
-    U8string Regex::extract(const U8string& fmt, const U8string& text, size_t n) const {
+    Ustring Regex::extract(const Ustring& fmt, const Ustring& text, size_t n) const {
         return RegexFormat(*this, fmt).extract(text, n);
     }
 
-    U8string Regex::format(const U8string& fmt, const U8string& text, size_t n) const {
+    Ustring Regex::format(const Ustring& fmt, const Ustring& text, size_t n) const {
         return RegexFormat(*this, fmt).format(text, n);
     }
 
-    MatchRange Regex::grep(const U8string& text) const {
+    MatchRange Regex::grep(const Ustring& text) const {
         return {{*this, text}, {}};
     }
 
-    SplitRange Regex::split(const U8string& text) const {
+    SplitRange Regex::split(const Ustring& text) const {
         return {{*this, text}, {}};
     }
 
@@ -379,9 +379,9 @@ namespace RS::Unicorn {
         ref.swap(r.ref);
     }
 
-    U8string Regex::escape(const U8string& str) {
+    Ustring Regex::escape(const Ustring& str) {
         static constexpr const char* hexdigits = "0123456789abcdef";
-        U8string dst;
+        Ustring dst;
         for (auto c: str) {
             auto u = uint8_t(c);
             switch (c) {
@@ -430,7 +430,7 @@ namespace RS::Unicorn {
         return v;
     }
 
-    Match Regex::exec(const U8string& text, size_t offset, int anchors) const {
+    Match Regex::exec(const Ustring& text, size_t offset, int anchors) const {
         Match m;
         m.init(*this, text);
         m.next(pattern(), offset, anchors);
@@ -447,7 +447,7 @@ namespace RS::Unicorn {
 
     namespace UnicornDetail {
 
-        void regex_match_transform(const Regex& re, const U8string& src, U8string& dst, std::function<U8string(const Match&)> f, size_t n) {
+        void regex_match_transform(const Regex& re, const Ustring& src, Ustring& dst, std::function<Ustring(const Match&)> f, size_t n) {
             auto matches = re.grep(src);
             auto m = matches.begin(), end = matches.end();
             size_t prev = 0;
@@ -459,7 +459,7 @@ namespace RS::Unicorn {
             dst.append(src, prev, npos);
         }
 
-        void regex_string_transform(const Regex& re, const U8string& src, U8string& dst, std::function<U8string(const U8string&)> f, size_t n) {
+        void regex_string_transform(const Regex& re, const Ustring& src, Ustring& dst, std::function<Ustring(const Ustring&)> f, size_t n) {
             auto matches = re.grep(src);
             auto m = matches.begin(), end = matches.end();
             size_t prev = 0;
@@ -475,14 +475,14 @@ namespace RS::Unicorn {
 
     // Regex formatting class
 
-    RegexFormat::RegexFormat(const Regex& pattern, const U8string& format):
+    RegexFormat::RegexFormat(const Regex& pattern, const Ustring& format):
         fmt(format),
         reg(pattern),
         seq() {
             parse();
         }
 
-    RegexFormat::RegexFormat(const U8string& pattern, const U8string& format, uint32_t flags):
+    RegexFormat::RegexFormat(const Ustring& pattern, const Ustring& format, uint32_t flags):
         RegexFormat(Regex(pattern, flags), format) {}
 
     void RegexFormat::swap(RegexFormat& r) noexcept {
@@ -508,7 +508,7 @@ namespace RS::Unicorn {
         add_literal(u);
     }
 
-    void RegexFormat::add_literal(const U8string& text) {
+    void RegexFormat::add_literal(const Ustring& text) {
         if (! text.empty()) {
             if (seq.empty() || seq.back().index != literal)
                 seq.push_back({literal, text});
@@ -517,7 +517,7 @@ namespace RS::Unicorn {
         }
     }
 
-    void RegexFormat::add_literal(const U8string& text, size_t offset, size_t count) {
+    void RegexFormat::add_literal(const Ustring& text, size_t offset, size_t count) {
         if (offset < text.size() && count > 0)
             add_literal(text.substr(offset, count));
     }
@@ -536,10 +536,10 @@ namespace RS::Unicorn {
         }
     }
 
-    U8string RegexFormat::apply(const U8string& text, size_t n, bool full) const {
+    Ustring RegexFormat::apply(const Ustring& text, size_t n, bool full) const {
         using namespace UnicornDetail;
-        U8string block, dst;
-        U8string* current = &dst;
+        Ustring block, dst;
+        Ustring* current = &dst;
         char block_flag = 0, char_flag = 0;
         bool ascii = (reg.flags() & Regex::byte) != 0;
         auto end_block = [&] {
@@ -570,7 +570,7 @@ namespace RS::Unicorn {
                 dst.append(text, prev, m.offset() - prev);
             block_flag = char_flag = 0;
             for (auto& elem: seq) {
-                U8string fragment;
+                Ustring fragment;
                 if (elem.index >= 0) {
                     fragment = m.str(elem.index);
                 } else if (elem.index == literal) {
@@ -678,7 +678,7 @@ namespace RS::Unicorn {
 
     // Iterator over regex matches
 
-    MatchIterator::MatchIterator(const Regex& re, const U8string& text):
+    MatchIterator::MatchIterator(const Regex& re, const Ustring& text):
         mat(re.search(text)),
         pat(re.pattern()) {}
 
@@ -694,7 +694,7 @@ namespace RS::Unicorn {
 
     // Iterator over substrings between matches
 
-    SplitIterator::SplitIterator(const Regex& re, const U8string& text):
+    SplitIterator::SplitIterator(const Regex& re, const Ustring& text):
         iter(re, text), start(0),
         value() {
             update();

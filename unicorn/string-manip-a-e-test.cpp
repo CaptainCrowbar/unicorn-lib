@@ -19,11 +19,11 @@ void test_unicorn_string_manip_append() {
     // 00010302  d800 df02  f0 90 8c 82
     // 0010fffd  dbff dffd  f4 8f bf bd
 
-    const U8string utf8_example {"\xd0\xb0\xe4\xba\x8c\xf0\x90\x8c\x82\xf4\x8f\xbf\xbd"};
+    const Ustring utf8_example {"\xd0\xb0\xe4\xba\x8c\xf0\x90\x8c\x82\xf4\x8f\xbf\xbd"};
     const std::u16string utf16_example {0x430,0x4e8c,0xd800,0xdf02,0xdbff,0xdffd};
     const std::u32string utf32_example {0x430,0x4e8c,0x10302,0x10fffd};
 
-    U8string s, t;
+    Ustring s, t;
     std::u16string t16;
     std::u32string t32;
 
@@ -358,7 +358,7 @@ void test_unicorn_string_manip_concat() {
 
 void test_unicorn_string_manip_drop() {
 
-    U8string s;
+    Ustring s;
 
     TEST_EQUAL(str_drop_prefix(""s, ""), "");
     TEST_EQUAL(str_drop_prefix("Hello"s, ""), "Hello");
@@ -408,7 +408,7 @@ void test_unicorn_string_manip_drop() {
 
 void test_unicorn_string_manip_erase() {
 
-    U8string s;
+    Ustring s;
     std::u16string s16;
     std::u32string s32;
 
@@ -446,15 +446,15 @@ void test_unicorn_string_manip_expand() {
 
     std::vector<int> tabs {5,10,15,20};
 
-    const U8string a = u8"";
-    const U8string b = u8"Hello world\tGoodbye";
-    const U8string c = u8"ab\tcd\tef\tgh\tij\tkl\tmn\top";
-    const U8string d = u8"ab\tcd\nef\tgh\nij\tkl\nmn\top";
-    const U8string e = u8"abc\t\t\txyz";
-    const U8string f = u8"€uro\t∈lement\t∃";
-    const U8string g = u8"\tabc\txyz\t";
+    const Ustring a = u8"";
+    const Ustring b = u8"Hello world\tGoodbye";
+    const Ustring c = u8"ab\tcd\tef\tgh\tij\tkl\tmn\top";
+    const Ustring d = u8"ab\tcd\nef\tgh\nij\tkl\nmn\top";
+    const Ustring e = u8"abc\t\t\txyz";
+    const Ustring f = u8"€uro\t∈lement\t∃";
+    const Ustring g = u8"\tabc\txyz\t";
 
-    U8string s;
+    Ustring s;
 
     TRY(s = str_expand_tabs(a));               TEST_EQUAL(s, u8"");
     TRY(s = str_expand_tabs(b));               TEST_EQUAL(s, u8"Hello world     Goodbye");

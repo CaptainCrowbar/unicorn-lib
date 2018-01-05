@@ -21,18 +21,18 @@ Constant used to control how encoding names are interpreted (see below).
 
 * `class` **`UnknownEncoding`**`: public std::runtime_error`
     * `UnknownEncoding::`**`UnknownEncoding`**`()`
-    * `explicit UnknownEncoding::`**`UnknownEncoding`**`(const U8string& encoding, const U8string& details = {})`
-    * `explicit UnknownEncoding::`**`UnknownEncoding`**`(uint32_t encoding, const U8string& details = {})`
+    * `explicit UnknownEncoding::`**`UnknownEncoding`**`(const Ustring& encoding, const Ustring& details = {})`
+    * `explicit UnknownEncoding::`**`UnknownEncoding`**`(uint32_t encoding, const Ustring& details = {})`
     * `const char* UnknownEncoding::`**`encoding`**`() const noexcept`
 
 Exception thrown to report an unknown encoding name or number.
 
 ## Conversion functions ##
 
-* `void` **`import_string`**`(const string& src, U8string& dst, const U8string& enc = "", uint32_t flags = 0)`
-* `void` **`import_string`**`(const string& src, U8string& dst, uint32_t enc, uint32_t flags = 0)`
-* `void` **`export_string`**`(const U8string& src, string& dst, const U8string& enc = "", uint32_t flags = 0)`
-* `void` **`export_string`**`(const U8string& src, string& dst, uint32_t enc, uint32_t flags = 0)`
+* `void` **`import_string`**`(const string& src, Ustring& dst, const Ustring& enc = "", uint32_t flags = 0)`
+* `void` **`import_string`**`(const string& src, Ustring& dst, uint32_t enc, uint32_t flags = 0)`
+* `void` **`export_string`**`(const Ustring& src, string& dst, const Ustring& enc = "", uint32_t flags = 0)`
+* `void` **`export_string`**`(const Ustring& src, string& dst, uint32_t enc, uint32_t flags = 0)`
 
 These functions convert from an external multibyte encoding to UTF-8
 (`import_string()`), and from UTF-8 to an external multibyte encoding
@@ -84,7 +84,7 @@ will go ahead and replace invalid data without reporting an error.
 
 ## Utility functions ##
 
-* `U8string` **`local_encoding`**`(const U8string& default_encoding = "utf-8")`
+* `Ustring` **`local_encoding`**`(const Ustring& default_encoding = "utf-8")`
 
 Returns the encoding of the current default locale. The default value will be
 returned if no encoding information can be obtained from the operating system.

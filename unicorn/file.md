@@ -33,20 +33,20 @@ encoding.
 To make it possible to deal with this situation, this module uses the
 `NativeString` type from the [`unicorn/core`](core.html) module, which is
 `string` on Unix systems and `wstring` on Windows. Most of the functions in
-this module come in `U8string` and `NativeString` versions; on Windows these
-are separate overloads, while on Unix `U8string` and `NativeString` are really
+this module come in `Ustring` and `NativeString` versions; on Windows these
+are separate overloads, while on Unix `Ustring` and `NativeString` are really
 the same type (`std::string`), and only one version of each function is
 needed.
 
 Functions that take a `NativeString` can operate on, and may return, file
-names with invalid encoding. If the `U8string` function is a separate
+names with invalid encoding. If the `Ustring` function is a separate
 overload, it will convert invalid Unicode names using the usual character
 replacement rule, which may result in unexpected behaviour if there are any
 files on your system with non-Unicode names.
 
 In short, use the `NativeString` versions of the functions here if you need
 reliable handling of all filenames, including those containing invalid
-Unicode; use the `U8string` versions if you expect all the files you deal with
+Unicode; use the `Ustring` versions if you expect all the files you deal with
 to have valid Unicode names, and you don't mind if non-Unicode names are
 slightly mangled.
 
@@ -106,13 +106,13 @@ convention for network paths <span class="nobr">(`"//server/path..."`),</span>
 and the Windows versions are aware of UNC paths <span
 class="nobr">(`"\\?\path..."`).</span>
 
-* `bool` **`file_is_absolute`**`(const U8string& file)`
+* `bool` **`file_is_absolute`**`(const Ustring& file)`
 * `bool` **`file_is_absolute`**`(const NativeString& file)`
-* `bool` **`file_is_relative`**`(const U8string& file)`
+* `bool` **`file_is_relative`**`(const Ustring& file)`
 * `bool` **`file_is_relative`**`(const NativeString& file)`
-* `bool` **`file_is_drive_absolute`**`(const U8string& file)`
+* `bool` **`file_is_drive_absolute`**`(const Ustring& file)`
 * `bool` **`file_is_drive_absolute`**`(const NativeString& file)`
-* `bool` **`file_is_drive_relative`**`(const U8string& file)`
+* `bool` **`file_is_drive_relative`**`(const Ustring& file)`
 * `bool` **`file_is_drive_relative`**`(const NativeString& file)`
 
 These indicate whether a file name is absolute or relative; exactly one of
@@ -125,14 +125,14 @@ absolute with respect to an unspecified current drive <span
 class="nobr">(`"\path..."`).</span> Both of these functions are always false
 on Unix.
 
-* `bool` **`file_is_root`**`(const U8string& file)`
+* `bool` **`file_is_root`**`(const Ustring& file)`
 * `bool` **`file_is_root`**`(const NativeString& file)`
 
 True if the file name refers to the root of a directory tree (note that this
 is a purely syntactic operation on the file name, and is not the same as
 identifying the root of a physical file system).
 
-* `template <typename... Args> U8string` **`file_path`**`(const U8string& file, Args... args)`
+* `template <typename... Args> Ustring` **`file_path`**`(const Ustring& file, Args... args)`
 * `template <typename... Args> NativeString` **`file_path`**`(const NativeString& file, Args... args)`
 
 Assembles a directory path from a series of path elements or relative paths.
@@ -145,17 +145,17 @@ Examples:
     file_path("foo", "bar", "hello.txt") == "foo/bar/hello.txt"
     file_path("/foo", "/bar", "hello.txt") == "/bar/hello.txt"
 
-* `bool` **`is_legal_leaf_name`**`(const U8string& file)`
+* `bool` **`is_legal_leaf_name`**`(const Ustring& file)`
 * `bool` **`is_legal_leaf_name`**`(const NativeString& file)`
-* `bool` **`is_legal_path_name`**`(const U8string& file)`
+* `bool` **`is_legal_path_name`**`(const Ustring& file)`
 * `bool` **`is_legal_path_name`**`(const NativeString& file)`
-* `bool` **`is_legal_mac_leaf_name`**`(const U8string& file)`
-* `bool` **`is_legal_mac_path_name`**`(const U8string& file)`
-* `bool` **`is_legal_posix_leaf_name`**`(const U8string& file)`
-* `bool` **`is_legal_posix_path_name`**`(const U8string& file)`
-* `bool` **`is_legal_windows_leaf_name`**`(const U8string& file)`
+* `bool` **`is_legal_mac_leaf_name`**`(const Ustring& file)`
+* `bool` **`is_legal_mac_path_name`**`(const Ustring& file)`
+* `bool` **`is_legal_posix_leaf_name`**`(const Ustring& file)`
+* `bool` **`is_legal_posix_path_name`**`(const Ustring& file)`
+* `bool` **`is_legal_windows_leaf_name`**`(const Ustring& file)`
 * `bool` **`is_legal_windows_leaf_name`**`(const wstring& file)`
-* `bool` **`is_legal_windows_path_name`**`(const U8string& file)`
+* `bool` **`is_legal_windows_path_name`**`(const Ustring& file)`
 * `bool` **`is_legal_windows_path_name`**`(const wstring& file)`
 
 These indicate whether a string is a legal file name. The first two functions
@@ -173,9 +173,9 @@ different system and therefore will not necessarily follow exactly the same
 rules. There are no separate functions for Linux because as far as I know it
 does not impose any file name restrictions beyond the standard Posix rules.
 
-* `pair<U8string, U8string>` **`split_path`**`(const U8string& file, uint32_t flags = 0)`
+* `pair<Ustring, Ustring>` **`split_path`**`(const Ustring& file, uint32_t flags = 0)`
 * `pair<NativeString, NativeString>` **`split_path`**`(const NativeString& file, uint32_t flags = 0)`
-* `pair<U8string, U8string>` **`split_file`**`(const U8string& file)`
+* `pair<Ustring, Ustring>` **`split_file`**`(const Ustring& file)`
 * `pair<NativeString, NativeString>` **`split_file`**`(const NativeString& file)`
 
 These functions break down a file name into its constituent parts. The
@@ -209,20 +209,20 @@ Examples:
 
 These functions perform read-only operations on the file system.
 
-* `U8string` **`current_directory`**`()`
+* `Ustring` **`current_directory`**`()`
 * `NativeString` **`native_current_directory`**`()`
 
 Query the current working directory of the calling process. These may throw
 `std::system_error` in some unusual cases of failure, usually involving access
 permission problems.
 
-* `bool` **`file_exists`**`(const U8string& file)`
+* `bool` **`file_exists`**`(const Ustring& file)`
 * `bool` **`file_exists`**`(const NativeString& file)`
 
 Query whether a file exists. This may give a false negative if the file exists
 but is not accessible to the calling process.
 
-* `FileId` **`file_id`**`(const U8string& file, uint32_t flags = 0)`
+* `FileId` **`file_id`**`(const Ustring& file, uint32_t flags = 0)`
 * `FileId` **`file_id`**`(const NativeString& file, uint32_t flags = 0)`
 
 Returns a unique file identifier, intended to identify the file even if it is
@@ -237,14 +237,14 @@ Windows. Completely reliable file identification cannot be guaranteed in the
 presence of parallel remote mounts or similar trickery. On some systems it may
 throw `std::system_error` in unusual cases.
 
-* `bool` **`file_is_directory`**`(const U8string& file)`
+* `bool` **`file_is_directory`**`(const Ustring& file)`
 * `bool` **`file_is_directory`**`(const NativeString& file)`
 
 Query whether a file is a directory. This will return `false` if the file does
 not exist; it may give a false negative if the directory exists but is not
 accessible to the calling process.
 
-* `bool` **`file_is_hidden`**`(const U8string& file)`
+* `bool` **`file_is_hidden`**`(const Ustring& file)`
 * `bool` **`file_is_hidden`**`(const NativeString& file)`
 
 True if the file is normally hidden. This will return `false` if the file does
@@ -252,12 +252,12 @@ not exist or is not accessible to the calling process. On Unix this is based
 on the file name (a file is hidden if its name starts with a dot), but on
 Windows this is a metadata property.
 
-* `bool` **`file_is_symlink`**`(const U8string& file)`
+* `bool` **`file_is_symlink`**`(const Ustring& file)`
 * `bool` **`file_is_symlink`**`(const NativeString& file)`
 
 True if the file is a symbolic link.
 
-* `uint64_t` **`file_size`**`(const U8string& file, uint32_t flags = 0)`
+* `uint64_t` **`file_size`**`(const Ustring& file, uint32_t flags = 0)`
 * `uint64_t` **`file_size`**`(const NativeString& file, uint32_t flags = 0)`
 
 Returns the size of the file in bytes. This will return zero if the file does
@@ -267,7 +267,7 @@ be zero on some systems) is returned; if the `File::recurse` flag is supplied,
 the directory's contents will be recursively scanned (symbolic links are not
 followed).
 
-* `U8string` **`resolve_path`**`(const U8string& file)`
+* `Ustring` **`resolve_path`**`(const Ustring& file)`
 * `NativeString` **`resolve_path`**`(const NativeString& file)`
 
 Resolves a relative path to an absolute one. On Unix this includes resolving
@@ -276,7 +276,7 @@ path. It will remove redundant path components such as a trailing `"/."`, and
 on Windows it will expand short file names to long ones, so a path that was
 already absolute will not necessarily be returned unchanged.
 
-* `U8string` **`resolve_symlink`**`(const U8string& file)`
+* `Ustring` **`resolve_symlink`**`(const Ustring& file)`
 * `NativeString` **`resolve_symlink`**`(const NativeString& file)`
 
 Returns the file pointed to by a symlink. If the argument names a file that
@@ -292,7 +292,7 @@ appear to be any way to retrieve it).
 These functions perform operations that require write access to the file
 system.
 
-* `void` **`copy_file`**`(const U8string& src, const U8string& dst, uint32_t flags = 0)`
+* `void` **`copy_file`**`(const Ustring& src, const Ustring& dst, uint32_t flags = 0)`
 * `void` **`copy_file`**`(const NativeString& src, const NativeString& dst, uint32_t flags = 0)`
 
 Copy a file. If the `File::recurse` flag is used, this will copy a directory
@@ -310,7 +310,7 @@ necessarily a non-atomic operation; there is always the possibility that an
 interruption or a race condition between threads will leave a partially copied
 file or directory.
 
-* `void` **`make_directory`**`(const U8string& dir, uint32_t flags = 0)`
+* `void` **`make_directory`**`(const Ustring& dir, uint32_t flags = 0)`
 * `void` **`make_directory`**`(const NativeString& dir, uint32_t flags = 0)`
 
 Create a directory (with default permissions). It will do nothing if the
@@ -326,7 +326,7 @@ legal filename, if the parent directory does not exist and the `File::recurse`
 flag was not set, or if the caller does not have permission to create the
 directory.
 
-* `void` **`make_symlink`**`(const U8string& file, const U8string& link, uint32_t flags = 0)`
+* `void` **`make_symlink`**`(const Ustring& file, const Ustring& link, uint32_t flags = 0)`
 * `void` **`make_symlink`**`(const NativeString& file, const NativeString& link, uint32_t flags = 0)`
 
 Creates a symlink named `link` pointing to `file`. This will do nothing if the
@@ -337,7 +337,7 @@ also set. This will throw `std::system_error` if the symlink cannot be
 created, or if a file or directory of the same name as `link` already exists
 but the necessary flags were not supplied.
 
-* `void` **`move_file`**`(const U8string& src, const U8string& dst, uint32_t flags = 0)`
+* `void` **`move_file`**`(const Ustring& src, const Ustring& dst, uint32_t flags = 0)`
 * `void` **`move_file`**`(const NativeString& src, const NativeString& dst, uint32_t flags = 0)`
 
 Rename a file or directory. This will attempt to use the operating system's
@@ -348,7 +348,7 @@ and directories are always moved recursively (the `File::recurse` flag is only
 needed if an existing directory is to be replaced). This will throw
 `std::system_error` if anything goes wrong.
 
-* `void` **`remove_file`**`(const U8string& file, uint32_t flags = 0)`
+* `void` **`remove_file`**`(const Ustring& file, uint32_t flags = 0)`
 * `void` **`remove_file`**`(const NativeString& file, uint32_t flags = 0)`
 
 Delete a file or directory. If the `File::recurse` flag is set, directories
@@ -364,13 +364,13 @@ caller does not have permission to delete the file.
 * `class` **`[Native]DirectoryIterator`**
     * `using [Native]DirectoryIterator::`**`difference_type`** `= ptrdiff_t`
     * `using [Native]DirectoryIterator::`**`iterator_category`** `= std::input_iterator_tag`
-    * `using [Native]DirectoryIterator::`**`value_type`** `= [NativeString or U8string]`
+    * `using [Native]DirectoryIterator::`**`value_type`** `= [NativeString or Ustring]`
     * `using [Native]DirectoryIterator::`**`pointer`** `= const value_type*`
     * `using [Native]DirectoryIterator::`**`reference`** `= const value_type&`
     * `[Native]DirectoryIterator::`**`[Native]DirectoryIterator`**`()`
     * `explicit [Native]DirectoryIterator::`**`[Native]DirectoryIterator`**`(const value_type& dir, uint32_t flags = 0)`
     * _[standard iterator operations]_
-* `Irange<DirectoryIterator>` **`directory`**`(const U8string& dir, uint32_t flags = 0)`
+* `Irange<DirectoryIterator>` **`directory`**`(const Ustring& dir, uint32_t flags = 0)`
 * `Irange<NativeDirectoryIterator>` **`directory`**`(const NativeString& dir, uint32_t flags = 0)`
 
 An iterator over the files in a directory. Normally you should call the
@@ -383,11 +383,11 @@ On systems (Windows) where the native string type is not 8-bit, there are two
 directory iterator types: `NativeDirectoryIterator` has a value type of
 `NativeString`, and returns the actual file names even if they are not valid
 Unicode (unless the `File::unicode` option is used); `DirectoryIterator` has a
-value type of `U8string`, and converts file names using the usual substitution
+value type of `Ustring`, and converts file names using the usual substitution
 convention if the original name is invalid.
 
 On Unix, `DirectoryIterator` and `NativeDirectoryIterator` are the same type.
-Although the value type is nominally `U8string`, file names that are not valid
+Although the value type is nominally `Ustring`, file names that are not valid
 UTF-8 (on systems where this is possible) are passed through unchanged.
 
 The following flags are recognised:

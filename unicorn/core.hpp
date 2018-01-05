@@ -23,7 +23,7 @@ namespace RS::Unicorn {
     class InitializationError:
     public std::runtime_error {
     public:
-        explicit InitializationError(const U8string& message):
+        explicit InitializationError(const Ustring& message):
             std::runtime_error(message) {}
     };
 
@@ -32,26 +32,26 @@ namespace RS::Unicorn {
     public:
         EncodingError():
             std::runtime_error(prefix({}, 0)), enc(), ofs(0) {}
-        explicit EncodingError(const U8string& encoding, size_t offset = 0, char32_t c = 0):
-            std::runtime_error(prefix(encoding, offset) + hexcode(&c, 1)), enc(std::make_shared<U8string>(encoding)), ofs(offset) {}
+        explicit EncodingError(const Ustring& encoding, size_t offset = 0, char32_t c = 0):
+            std::runtime_error(prefix(encoding, offset) + hexcode(&c, 1)), enc(std::make_shared<Ustring>(encoding)), ofs(offset) {}
         template <typename C>
-            EncodingError(const U8string& encoding, size_t offset, const C* ptr, size_t n = 1):
-            std::runtime_error(prefix(encoding, offset) + hexcode(ptr, n)), enc(std::make_shared<U8string>(encoding)), ofs(offset) {}
+            EncodingError(const Ustring& encoding, size_t offset, const C* ptr, size_t n = 1):
+            std::runtime_error(prefix(encoding, offset) + hexcode(ptr, n)), enc(std::make_shared<Ustring>(encoding)), ofs(offset) {}
         const char* encoding() const noexcept { static const char c = 0; return enc ? enc->data() : &c; }
         size_t offset() const noexcept { return ofs; }
     private:
-        std::shared_ptr<U8string> enc;
+        std::shared_ptr<Ustring> enc;
         size_t ofs;
-        static U8string prefix(const U8string& encoding, size_t offset);
-        template <typename C> static U8string hexcode(const C* ptr, size_t n);
+        static Ustring prefix(const Ustring& encoding, size_t offset);
+        template <typename C> static Ustring hexcode(const C* ptr, size_t n);
     };
 
     template <typename C>
-    U8string EncodingError::hexcode(const C* ptr, size_t n) {
+    Ustring EncodingError::hexcode(const C* ptr, size_t n) {
         using utype = std::make_unsigned_t<C>;
         if (! ptr || ! n)
             return {};
-        U8string s = "; hex";
+        Ustring s = "; hex";
         auto uptr = reinterpret_cast<const utype*>(ptr);
         for (size_t i = 0; i < n; ++i) {
             s += ' ';

@@ -27,7 +27,7 @@ void test_unicorn_regex_version_information() {
 
 void test_unicorn_regex_utf8() {
 
-    U8string s;
+    Ustring s;
     Regex r;
     Match m;
     Utf8Iterator u;
@@ -38,7 +38,7 @@ void test_unicorn_regex_utf8() {
     TEST_EQUAL(r.flags(), 0);
 
     TEST(! m.matched());
-    TEST_EQUAL(U8string(m.s_begin(), m.s_end()), "");
+    TEST_EQUAL(Ustring(m.s_begin(), m.s_end()), "");
     TEST_EQUAL(u_str(m.u_begin(), m.u_end()), "");
 
     TRY(r = Regex("[a-z]+"));
@@ -59,9 +59,9 @@ void test_unicorn_regex_utf8() {
     TEST_EQUAL(m.str(), "ello");
     TEST_EQUAL(m.str(0), "ello");
     TEST_EQUAL(m.str(1), "");
-    TEST_EQUAL(U8string(m.s_begin(), m.s_end()), "ello");
-    TEST_EQUAL(U8string(m.s_begin(0), m.s_end(0)), "ello");
-    TEST_EQUAL(U8string(m.s_begin(1), m.s_end(1)), "");
+    TEST_EQUAL(Ustring(m.s_begin(), m.s_end()), "ello");
+    TEST_EQUAL(Ustring(m.s_begin(0), m.s_end(0)), "ello");
+    TEST_EQUAL(Ustring(m.s_begin(1), m.s_end(1)), "");
     TEST_EQUAL(u_str(m.u_begin(), m.u_end()), "ello");
     TEST_EQUAL(u_str(m.u_begin(0), m.u_end(0)), "ello");
     TEST_EQUAL(u_str(m.u_begin(1), m.u_end(1)), "");
@@ -76,7 +76,7 @@ void test_unicorn_regex_utf8() {
     TEST_EQUAL(m.endpos(), npos);
     TEST_EQUAL(m.count(), 0);
     TEST_EQUAL(m.str(), "");
-    TEST_EQUAL(U8string(m.s_begin(), m.s_end()), "");
+    TEST_EQUAL(Ustring(m.s_begin(), m.s_end()), "");
     TEST_EQUAL(u_str(m.u_begin(), m.u_end()), "");
 
     TRY(r = Regex("[a-z]+", Regex::dfa));
@@ -190,8 +190,8 @@ void test_unicorn_regex_utf8() {
     TEST_EQUAL(m.str(), "Hello world");
     TEST_EQUAL(m.str(0), "Hello world");
     TEST_EQUAL(m[0], "Hello world");
-    TEST_EQUAL(U8string(m.s_begin(), m.s_end()), "Hello world");
-    TEST_EQUAL(U8string(m.s_begin(0), m.s_end(0)), "Hello world");
+    TEST_EQUAL(Ustring(m.s_begin(), m.s_end()), "Hello world");
+    TEST_EQUAL(Ustring(m.s_begin(0), m.s_end(0)), "Hello world");
     TEST_EQUAL(u_str(m.u_begin(), m.u_end()), "Hello world");
     TEST_EQUAL(u_str(m.u_begin(0), m.u_end(0)), "Hello world");
     TEST_EQUAL(m.offset(1), 0);
@@ -199,14 +199,14 @@ void test_unicorn_regex_utf8() {
     TEST_EQUAL(m.count(1), 5);
     TEST_EQUAL(m.str(1), "Hello");
     TEST_EQUAL(m[1], "Hello");
-    TEST_EQUAL(U8string(m.s_begin(1), m.s_end(1)), "Hello");
+    TEST_EQUAL(Ustring(m.s_begin(1), m.s_end(1)), "Hello");
     TEST_EQUAL(u_str(m.u_begin(1), m.u_end(1)), "Hello");
     TEST_EQUAL(m.offset(2), 6);
     TEST_EQUAL(m.endpos(2), 11);
     TEST_EQUAL(m.count(2), 5);
     TEST_EQUAL(m.str(2), "world");
     TEST_EQUAL(m[2], "world");
-    TEST_EQUAL(U8string(m.s_begin(2), m.s_end(2)), "world");
+    TEST_EQUAL(Ustring(m.s_begin(2), m.s_end(2)), "world");
     TEST_EQUAL(u_str(m.u_begin(2), m.u_end(2)), "world");
     TEST(m.matched(0));
     TEST(m.matched(1));
@@ -289,7 +289,7 @@ void test_unicorn_regex_utf8() {
     TRY(r = Regex("^.?$|^(..+?)\\1+$"));
 
     for (int n = 0; n <= 100; ++n) {
-        TEST_EQUAL(! r.match(U8string(n, 'x')), is_prime(n));
+        TEST_EQUAL(! r.match(Ustring(n, 'x')), is_prime(n));
         TEST_EQUAL(! r.match(str_repeat(u8"€", n)), is_prime(n));
     }
 
@@ -297,7 +297,7 @@ void test_unicorn_regex_utf8() {
 
 void test_unicorn_regex_match_ranges() {
 
-    U8string s;
+    Ustring s;
     Regex r;
     Irange<MatchIterator> mr;
     Strings v;
@@ -315,7 +315,7 @@ void test_unicorn_regex_match_ranges() {
 
 void test_unicorn_regex_split_ranges() {
 
-    U8string s;
+    Ustring s;
     Regex r;
     Irange<SplitIterator> sr;
 
@@ -332,7 +332,7 @@ void test_unicorn_regex_split_ranges() {
 
 void test_unicorn_regex_formatting() {
 
-    U8string s;
+    Ustring s;
     RegexFormat rf;
 
     TRY(rf = RegexFormat("\\s+", "*"));
@@ -448,8 +448,8 @@ void test_unicorn_regex_formatting() {
 void test_unicorn_regex_transform() {
 
     Regex r;
-    U8string s1, s2;
-    auto sf = [] (const U8string& s) { return s + s; };
+    Ustring s1, s2;
+    auto sf = [] (const Ustring& s) { return s + s; };
     auto mf = [] (const Match& m) { return m.first() + m.last(); };
 
     s1 = "Hello world";

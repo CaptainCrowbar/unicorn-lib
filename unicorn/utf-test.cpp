@@ -12,12 +12,12 @@ using namespace std::literals;
 
 namespace {
 
-    const U8string a8 {};
-    const U8string b8 {"Hello"};
-    const U8string c8 {"\x4d\xd0\xb0\xe4\xba\x8c\xf0\x90\x8c\x82\xf4\x8f\xbf\xbd"};
+    const Ustring a8 {};
+    const Ustring b8 {"Hello"};
+    const Ustring c8 {"\x4d\xd0\xb0\xe4\xba\x8c\xf0\x90\x8c\x82\xf4\x8f\xbf\xbd"};
     const std::string x8 {"Hello\xffworld"};
-    const U8string y8 {"Hello\xef\xbf\xbdworld"};
-    const U8string z8 {"\0\0\0"s};
+    const Ustring y8 {"Hello\xef\xbf\xbdworld"};
+    const Ustring z8 {"\0\0\0"s};
     const std::u16string a16 {};
     const std::u16string b16 {u"Hello"};
     const std::u16string c16 {0x4d,0x430,0x4e8c,0xd800,0xdf02,0xdbff,0xdffd};
@@ -69,12 +69,12 @@ void test_unicorn_utf_basic_conversions() {
     { char a[] = "\xf0\x90\x8c\x82";  TEST_EQUAL(UtfEncoding<char>::decode(a, 5, u), 4);  TEST_EQUAL(u, 0x10302); }
     { char a[] = "\xf4\x8f\xbf\xbd";  TEST_EQUAL(UtfEncoding<char>::decode(a, 5, u), 4);  TEST_EQUAL(u, 0x10fffd); }
 
-    TEST_EQUAL(UtfEncoding<char>::encode(0, buf8), 1);         TEST_EQUAL(U8string(buf8, 1), "\0"s);
-    TEST_EQUAL(UtfEncoding<char>::encode(0x4d, buf8), 1);      TEST_EQUAL(U8string(buf8, 1), "\x4d");
-    TEST_EQUAL(UtfEncoding<char>::encode(0x430, buf8), 2);     TEST_EQUAL(U8string(buf8, 2), "\xd0\xb0");
-    TEST_EQUAL(UtfEncoding<char>::encode(0x4e8c, buf8), 3);    TEST_EQUAL(U8string(buf8, 3), "\xe4\xba\x8c");
-    TEST_EQUAL(UtfEncoding<char>::encode(0x10302, buf8), 4);   TEST_EQUAL(U8string(buf8, 4), "\xf0\x90\x8c\x82");
-    TEST_EQUAL(UtfEncoding<char>::encode(0x10fffd, buf8), 4);  TEST_EQUAL(U8string(buf8, 4), "\xf4\x8f\xbf\xbd");
+    TEST_EQUAL(UtfEncoding<char>::encode(0, buf8), 1);         TEST_EQUAL(Ustring(buf8, 1), "\0"s);
+    TEST_EQUAL(UtfEncoding<char>::encode(0x4d, buf8), 1);      TEST_EQUAL(Ustring(buf8, 1), "\x4d");
+    TEST_EQUAL(UtfEncoding<char>::encode(0x430, buf8), 2);     TEST_EQUAL(Ustring(buf8, 2), "\xd0\xb0");
+    TEST_EQUAL(UtfEncoding<char>::encode(0x4e8c, buf8), 3);    TEST_EQUAL(Ustring(buf8, 3), "\xe4\xba\x8c");
+    TEST_EQUAL(UtfEncoding<char>::encode(0x10302, buf8), 4);   TEST_EQUAL(Ustring(buf8, 4), "\xf0\x90\x8c\x82");
+    TEST_EQUAL(UtfEncoding<char>::encode(0x10fffd, buf8), 4);  TEST_EQUAL(Ustring(buf8, 4), "\xf4\x8f\xbf\xbd");
 
     { char16_t a[] {0x0000, 0};       TEST_EQUAL(UtfEncoding<char16_t>::decode(a, 3, u), 1);  TEST_EQUAL(u, 0); }
     { char16_t a[] {0x004d, 0};       TEST_EQUAL(UtfEncoding<char16_t>::decode(a, 3, u), 1);  TEST_EQUAL(u, 0x4d); }
@@ -142,12 +142,12 @@ void test_unicorn_utf_basic_conversions() {
     { char a[] = "\xf4\x8f\xbf\xbd";  u = 0;  TEST_EQUAL(char_from_utf8(a, 4, u), 4);  TEST_EQUAL(u, 0x10fffd); }
     { char a[] = "\xff\xff\xff\xff";  u = 0;  TEST_EQUAL(char_from_utf8(a, 4, u), 0);  TEST_EQUAL(u, 0); }
 
-    TEST_EQUAL(char_to_utf8(0, buf8), 1);         TEST_EQUAL(U8string(buf8, 1), "\0"s);
-    TEST_EQUAL(char_to_utf8(0x4d, buf8), 1);      TEST_EQUAL(U8string(buf8, 1), "\x4d");
-    TEST_EQUAL(char_to_utf8(0x430, buf8), 2);     TEST_EQUAL(U8string(buf8, 2), "\xd0\xb0");
-    TEST_EQUAL(char_to_utf8(0x4e8c, buf8), 3);    TEST_EQUAL(U8string(buf8, 3), "\xe4\xba\x8c");
-    TEST_EQUAL(char_to_utf8(0x10302, buf8), 4);   TEST_EQUAL(U8string(buf8, 4), "\xf0\x90\x8c\x82");
-    TEST_EQUAL(char_to_utf8(0x10fffd, buf8), 4);  TEST_EQUAL(U8string(buf8, 4), "\xf4\x8f\xbf\xbd");
+    TEST_EQUAL(char_to_utf8(0, buf8), 1);         TEST_EQUAL(Ustring(buf8, 1), "\0"s);
+    TEST_EQUAL(char_to_utf8(0x4d, buf8), 1);      TEST_EQUAL(Ustring(buf8, 1), "\x4d");
+    TEST_EQUAL(char_to_utf8(0x430, buf8), 2);     TEST_EQUAL(Ustring(buf8, 2), "\xd0\xb0");
+    TEST_EQUAL(char_to_utf8(0x4e8c, buf8), 3);    TEST_EQUAL(Ustring(buf8, 3), "\xe4\xba\x8c");
+    TEST_EQUAL(char_to_utf8(0x10302, buf8), 4);   TEST_EQUAL(Ustring(buf8, 4), "\xf0\x90\x8c\x82");
+    TEST_EQUAL(char_to_utf8(0x10fffd, buf8), 4);  TEST_EQUAL(Ustring(buf8, 4), "\xf4\x8f\xbf\xbd");
     TEST_EQUAL(char_to_utf8(0xd800, buf8), 0);
     TEST_EQUAL(char_to_utf8(0x110000, buf8), 0);
 
@@ -311,7 +311,7 @@ void test_unicorn_utf_decoding_iterators() {
 
 void test_unicorn_utf_decoding_ranges() {
 
-    U8string s8;
+    Ustring s8;
     std::u16string s16;
     std::u32string s32;
     std::wstring sw;
@@ -400,7 +400,7 @@ void test_unicorn_utf_decoding_ranges() {
 
 void test_unicorn_utf_implicit_recoding() {
 
-    U8string s8;
+    Ustring s8;
     std::u16string s16;
     std::u32string s32;
     std::wstring sw;
@@ -620,7 +620,7 @@ void test_unicorn_utf_explicit_recoding() {
 
 void test_unicorn_utf_string_validation() {
 
-    U8string s8;
+    Ustring s8;
     std::u16string s16;
     std::u32string s32;
     std::wstring sw;
@@ -696,7 +696,7 @@ void test_unicorn_utf_string_validation() {
 
 void test_unicorn_utf_error_handling() {
 
-    U8string s8;
+    Ustring s8;
     std::u16string s16;
     std::u32string s32;
     std::wstring sw;

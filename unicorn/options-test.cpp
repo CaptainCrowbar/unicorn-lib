@@ -18,7 +18,7 @@ namespace {
 void test_unicorn_options_basic() {
 
     Options opt2;
-    U8string cmdline;
+    Ustring cmdline;
 
     TRY(opt1 = Options("App version 1.0"));
     TEST_EQUAL(opt1.version_text(), "App version 1.0");
@@ -59,19 +59,19 @@ void test_unicorn_options_basic() {
         TEST(! opt2.parse(cmdline, nowhere));
         TEST_EQUAL(out.str(), "");
         TEST(! opt2.has("alpha"));
-        TEST_EQUAL(opt2.get<U8string>("alpha"), "ABC");
+        TEST_EQUAL(opt2.get<Ustring>("alpha"), "ABC");
         TEST(! opt2.has("number"));
         TEST_EQUAL(opt2.get<int>("number"), 123);
         TEST_THROW_MATCH(opt2.has("nonexistent"), Options::spec_error, ": \"--nonexistent\"$");
-        TEST_THROW_MATCH(opt2.get<U8string>("nonexistent"), Options::spec_error, ": \"--nonexistent\"$");
-        TEST_THROW_MATCH(opt2.get_list<U8string>("nonexistent"), Options::spec_error, ": \"--nonexistent\"$");
+        TEST_THROW_MATCH(opt2.get<Ustring>("nonexistent"), Options::spec_error, ": \"--nonexistent\"$");
+        TEST_THROW_MATCH(opt2.get_list<Ustring>("nonexistent"), Options::spec_error, ": \"--nonexistent\"$");
     }
 
     TRY(opt2 = opt1);
     cmdline = "app --alpha xyz -n 999";
     TEST(! opt2.parse(cmdline, nowhere));
     TEST(opt2.has("alpha"));
-    TEST_EQUAL(opt2.get<U8string>("alpha"), "xyz");
+    TEST_EQUAL(opt2.get<Ustring>("alpha"), "xyz");
     TEST(opt2.has("number"));
     TEST_EQUAL(opt2.get<int>("number"), 999);
 
@@ -79,7 +79,7 @@ void test_unicorn_options_basic() {
     cmdline = "app --alpha=xyz -n=999";
     TEST(! opt2.parse(cmdline, nowhere));
     TEST(opt2.has("alpha"));
-    TEST_EQUAL(opt2.get<U8string>("alpha"), "xyz");
+    TEST_EQUAL(opt2.get<Ustring>("alpha"), "xyz");
     TEST(opt2.has("number"));
     TEST_EQUAL(opt2.get<int>("number"), 999);
 
@@ -87,7 +87,7 @@ void test_unicorn_options_basic() {
     cmdline = "app --alpha -n";
     TEST(! opt2.parse(cmdline, nowhere));
     TEST(opt2.has("alpha"));
-    TEST_EQUAL(opt2.get<U8string>("alpha"), "ABC");
+    TEST_EQUAL(opt2.get<Ustring>("alpha"), "ABC");
     TEST(opt2.has("number"));
     TEST_EQUAL(opt2.get<int>("number"), 123);
 
@@ -99,7 +99,7 @@ void test_unicorn_options_basic() {
     cmdline = "app -a xyz -n 999";
     TEST(! opt2.parse(cmdline, nowhere, Options::quoted));
     TEST(opt2.has("alpha"));
-    TEST_EQUAL(opt2.get<U8string>("alpha"), "xyz");
+    TEST_EQUAL(opt2.get<Ustring>("alpha"), "xyz");
     TEST(opt2.has("number"));
     TEST_EQUAL(opt2.get<int>("number"), 999);
 
@@ -107,7 +107,7 @@ void test_unicorn_options_basic() {
     cmdline = "app -a \"xyz\" -n \"999\"";
     TEST(! opt2.parse(cmdline, nowhere, Options::quoted));
     TEST(opt2.has("alpha"));
-    TEST_EQUAL(opt2.get<U8string>("alpha"), "xyz");
+    TEST_EQUAL(opt2.get<Ustring>("alpha"), "xyz");
     TEST(opt2.has("number"));
     TEST_EQUAL(opt2.get<int>("number"), 999);
 
@@ -115,20 +115,20 @@ void test_unicorn_options_basic() {
     cmdline = "app -a \"uvw xyz\"";
     TEST(! opt2.parse(cmdline, nowhere, Options::quoted));
     TEST(opt2.has("alpha"));
-    TEST_EQUAL(opt2.get<U8string>("alpha"), "uvw xyz");
+    TEST_EQUAL(opt2.get<Ustring>("alpha"), "uvw xyz");
 
     TRY(opt2 = opt1);
     cmdline = "app -a \"\"\"uvw\"\" \"\"xyz\"\"\"";
     TEST(! opt2.parse(cmdline, nowhere, Options::quoted));
     TEST(opt2.has("alpha"));
-    TEST_EQUAL(opt2.get<U8string>("alpha"), "\"uvw\" \"xyz\"");
+    TEST_EQUAL(opt2.get<Ustring>("alpha"), "\"uvw\" \"xyz\"");
 
 }
 
 void test_unicorn_options_boolean() {
 
     Options opt2("Blank");
-    U8string cmdline;
+    Ustring cmdline;
 
     TRY(opt1.add("--foo", "Positive option", Options::boolean, Options::abbrev="f"));
     TRY(opt1.add("--no-bar", "Negative option", Options::boolean));
@@ -140,8 +140,8 @@ void test_unicorn_options_boolean() {
     TEST(! opt2.has("bar"));
     TEST(! opt2.get<bool>("foo"));
     TEST(opt2.get<bool>("bar"));
-    TEST_EQUAL(opt2.get<U8string>("foo"), "");
-    TEST_EQUAL(opt2.get<U8string>("bar"), "1");
+    TEST_EQUAL(opt2.get<Ustring>("foo"), "");
+    TEST_EQUAL(opt2.get<Ustring>("bar"), "1");
 
     TRY(opt2 = opt1);
     cmdline = "app --foo --bar";
@@ -150,8 +150,8 @@ void test_unicorn_options_boolean() {
     TEST(opt2.has("bar"));
     TEST(opt2.get<bool>("foo"));
     TEST(opt2.get<bool>("bar"));
-    TEST_EQUAL(opt2.get<U8string>("foo"), "1");
-    TEST_EQUAL(opt2.get<U8string>("bar"), "1");
+    TEST_EQUAL(opt2.get<Ustring>("foo"), "1");
+    TEST_EQUAL(opt2.get<Ustring>("bar"), "1");
 
     TRY(opt2 = opt1);
     cmdline = "app --no-foo --no-bar";
@@ -160,22 +160,22 @@ void test_unicorn_options_boolean() {
     TEST(opt2.has("bar"));
     TEST(! opt2.get<bool>("foo"));
     TEST(! opt2.get<bool>("bar"));
-    TEST_EQUAL(opt2.get<U8string>("foo"), "0");
-    TEST_EQUAL(opt2.get<U8string>("bar"), "0");
+    TEST_EQUAL(opt2.get<Ustring>("foo"), "0");
+    TEST_EQUAL(opt2.get<Ustring>("bar"), "0");
 
     TRY(opt2 = opt1);
     cmdline = "app -f";
     TEST(! opt2.parse(cmdline, nowhere));
     TEST(opt2.has("foo"));
     TEST(opt2.get<bool>("foo"));
-    TEST_EQUAL(opt2.get<U8string>("foo"), "1");
+    TEST_EQUAL(opt2.get<Ustring>("foo"), "1");
 
 }
 
 void test_unicorn_options_multiple() {
 
     Options opt2("Blank");
-    U8string cmdline;
+    Ustring cmdline;
     Strings sv;
 
     TRY(opt1.add("list", "List option", Options::multi, Options::abbrev="l"));
@@ -184,16 +184,16 @@ void test_unicorn_options_multiple() {
     cmdline = "app";
     TEST(! opt2.parse(cmdline, nowhere));
     TEST(! opt2.has("list"));
-    TEST_EQUAL(opt2.get<U8string>("list"), "");
-    TRY(sv = opt2.get_list<U8string>("list"));
+    TEST_EQUAL(opt2.get<Ustring>("list"), "");
+    TRY(sv = opt2.get_list<Ustring>("list"));
     TEST(sv.empty());
 
     TRY(opt2 = opt1);
     cmdline = "app --list abc";
     TEST(! opt2.parse(cmdline, nowhere));
     TEST(opt2.has("list"));
-    TEST_EQUAL(opt2.get<U8string>("list"), "abc");
-    TRY(sv = opt2.get_list<U8string>("list"));
+    TEST_EQUAL(opt2.get<Ustring>("list"), "abc");
+    TRY(sv = opt2.get_list<Ustring>("list"));
     TEST_EQUAL(sv.size(), 1);
     TEST_EQUAL(to_str(sv), "[abc]");
 
@@ -201,8 +201,8 @@ void test_unicorn_options_multiple() {
     cmdline = "app --list abc def ghi";
     TEST(! opt2.parse(cmdline, nowhere));
     TEST(opt2.has("list"));
-    TEST_EQUAL(opt2.get<U8string>("list"), "abc def ghi");
-    TRY(sv = opt2.get_list<U8string>("list"));
+    TEST_EQUAL(opt2.get<Ustring>("list"), "abc def ghi");
+    TRY(sv = opt2.get_list<Ustring>("list"));
     TEST_EQUAL(sv.size(), 3);
     TEST_EQUAL(to_str(sv), "[abc,def,ghi]");
 
@@ -211,7 +211,7 @@ void test_unicorn_options_multiple() {
 void test_unicorn_options_required() {
 
     Options opt2("Blank");
-    U8string cmdline;
+    Ustring cmdline;
 
     TRY(opt1.add("required", "Required option", Options::required, Options::abbrev="r"));
 
@@ -223,7 +223,7 @@ void test_unicorn_options_required() {
     cmdline = "app --required abc";
     TEST(! opt2.parse(cmdline, nowhere));
     TEST(opt2.has("required"));
-    TEST_EQUAL(opt2.get<U8string>("required"), "abc");
+    TEST_EQUAL(opt2.get<Ustring>("required"), "abc");
 
     TRY(opt2 = opt1);
     cmdline = "app --version";
@@ -236,7 +236,7 @@ void test_unicorn_options_required() {
 void test_unicorn_options_anonymous() {
 
     Options opt2("Blank");
-    U8string cmdline;
+    Ustring cmdline;
     Strings sv;
 
     TRY(opt1.add("head", "First anonymous argument", Options::anon));
@@ -245,13 +245,13 @@ void test_unicorn_options_anonymous() {
     cmdline = "app --required abc";
     TEST(! opt2.parse(cmdline, nowhere));
     TEST(! opt2.has("head"));
-    TEST_EQUAL(opt2.get<U8string>("head"), "");
+    TEST_EQUAL(opt2.get<Ustring>("head"), "");
 
     TRY(opt2 = opt1);
     cmdline = "app --required abc def";
     TEST(! opt2.parse(cmdline, nowhere));
     TEST(opt2.has("head"));
-    TEST_EQUAL(opt2.get<U8string>("head"), "def");
+    TEST_EQUAL(opt2.get<Ustring>("head"), "def");
 
     TRY(opt2 = opt1);
     cmdline = "app --required abc def ghi";
@@ -263,30 +263,30 @@ void test_unicorn_options_anonymous() {
     cmdline = "app --required abc";
     TEST(! opt2.parse(cmdline, nowhere));
     TEST(! opt2.has("head"));
-    TEST_EQUAL(opt2.get<U8string>("head"), "");
+    TEST_EQUAL(opt2.get<Ustring>("head"), "");
     TEST(! opt2.has("tail"));
-    TEST_EQUAL(opt2.get<U8string>("tail"), "");
-    TRY(sv = opt2.get_list<U8string>("tail"));
+    TEST_EQUAL(opt2.get<Ustring>("tail"), "");
+    TRY(sv = opt2.get_list<Ustring>("tail"));
     TEST(sv.empty());
 
     TRY(opt2 = opt1);
     cmdline = "app --required abc def";
     TEST(! opt2.parse(cmdline, nowhere));
     TEST(opt2.has("head"));
-    TEST_EQUAL(opt2.get<U8string>("head"), "def");
+    TEST_EQUAL(opt2.get<Ustring>("head"), "def");
     TEST(! opt2.has("tail"));
-    TEST_EQUAL(opt2.get<U8string>("tail"), "");
-    TRY(sv = opt2.get_list<U8string>("tail"));
+    TEST_EQUAL(opt2.get<Ustring>("tail"), "");
+    TRY(sv = opt2.get_list<Ustring>("tail"));
     TEST(sv.empty());
 
     TRY(opt2 = opt1);
     cmdline = "app --required abc def ghi";
     TEST(! opt2.parse(cmdline, nowhere));
     TEST(opt2.has("head"));
-    TEST_EQUAL(opt2.get<U8string>("head"), "def");
+    TEST_EQUAL(opt2.get<Ustring>("head"), "def");
     TEST(opt2.has("tail"));
-    TEST_EQUAL(opt2.get<U8string>("tail"), "ghi");
-    TRY(sv = opt2.get_list<U8string>("tail"));
+    TEST_EQUAL(opt2.get<Ustring>("tail"), "ghi");
+    TRY(sv = opt2.get_list<Ustring>("tail"));
     TEST_EQUAL(sv.size(), 1);
     TEST_EQUAL(to_str(sv), "[ghi]");
 
@@ -294,10 +294,10 @@ void test_unicorn_options_anonymous() {
     cmdline = "app --required abc def ghi jkl";
     TEST(! opt2.parse(cmdline, nowhere));
     TEST(opt2.has("head"));
-    TEST_EQUAL(opt2.get<U8string>("head"), "def");
+    TEST_EQUAL(opt2.get<Ustring>("head"), "def");
     TEST(opt2.has("tail"));
-    TEST_EQUAL(opt2.get<U8string>("tail"), "ghi jkl");
-    TRY(sv = opt2.get_list<U8string>("tail"));
+    TEST_EQUAL(opt2.get<Ustring>("tail"), "ghi jkl");
+    TRY(sv = opt2.get_list<Ustring>("tail"));
     TEST_EQUAL(sv.size(), 2);
     TEST_EQUAL(to_str(sv), "[ghi,jkl]");
 
@@ -312,12 +312,12 @@ void test_unicorn_options_group() {
     TRY(opt2.add("group2b", "Group 2 b", Options::group="eccles"));
 
     Options opt3("Blank");
-    U8string cmdline;
+    Ustring cmdline;
 
     TRY(opt3 = opt2);
     cmdline = "app --group1a abc";
     TEST(! opt3.parse(cmdline, nowhere));
-    TEST_EQUAL(opt3.get<U8string>("group1a"), "abc");
+    TEST_EQUAL(opt3.get<Ustring>("group1a"), "abc");
 
     TRY(opt3 = opt2);
     cmdline = "app --group1a abc --group1b def";
@@ -326,8 +326,8 @@ void test_unicorn_options_group() {
     TRY(opt3 = opt2);
     cmdline = "app --group1a abc --group2a def";
     TEST(! opt3.parse(cmdline, nowhere));
-    TEST_EQUAL(opt3.get<U8string>("group1a"), "abc");
-    TEST_EQUAL(opt3.get<U8string>("group2a"), "def");
+    TEST_EQUAL(opt3.get<Ustring>("group1a"), "abc");
+    TEST_EQUAL(opt3.get<Ustring>("group2a"), "def");
 
 }
 
@@ -339,18 +339,18 @@ void test_unicorn_options_patterns() {
     TEST_THROW_MATCH(opt2.add("word", "Word", Options::defvalue="*", Options::pattern="\\w+"), Options::spec_error, ": \"word\"$");
 
     Options opt3("Blank");
-    U8string cmdline;
+    Ustring cmdline;
 
     TRY(opt3 = opt2);
     cmdline = "app --alpha abc --number 123";
     TEST(! opt3.parse(cmdline, nowhere));
-    TEST_EQUAL(opt3.get<U8string>("alpha"), "abc");
+    TEST_EQUAL(opt3.get<Ustring>("alpha"), "abc");
     TEST_EQUAL(opt3.get<int>("number"), 123);
 
     TRY(opt3 = opt2);
     cmdline = "app abc -n 123";
     TEST(! opt3.parse(cmdline, nowhere));
-    TEST_EQUAL(opt3.get<U8string>("alpha"), "abc");
+    TEST_EQUAL(opt3.get<Ustring>("alpha"), "abc");
     TEST_EQUAL(opt3.get<int>("number"), 123);
 
     TRY(opt3 = opt2);
@@ -432,20 +432,20 @@ void test_unicorn_options_patterns() {
     cmdline = "app -s hello 42";
     TEST(! opt3.parse(cmdline, nowhere));
     TEST_EQUAL(opt3.get<int>("int"), 42);
-    TEST_EQUAL(opt3.get<U8string>("str"), "hello");
+    TEST_EQUAL(opt3.get<Ustring>("str"), "hello");
 
     TRY(opt3 = opt2);
     cmdline = "app 42 -s hello";
     TEST(! opt3.parse(cmdline, nowhere));
     TEST_EQUAL(opt3.get<int>("int"), 42);
-    TEST_EQUAL(opt3.get<U8string>("str"), "hello");
+    TEST_EQUAL(opt3.get<Ustring>("str"), "hello");
 
 }
 
 void test_unicorn_options_help() {
 
     Options opt2("Blank");
-    U8string cmdline;
+    Ustring cmdline;
 
     {
         TRY(opt2 = opt1);
@@ -503,7 +503,7 @@ void test_unicorn_options_help() {
 void test_unicorn_options_insertions() {
 
     Options opt("App version 1.0");
-    U8string help;
+    Ustring help;
 
     TRY(opt = Options("App 1.0"));
     TRY(opt.add("Intro."));

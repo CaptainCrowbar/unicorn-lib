@@ -12,7 +12,7 @@ using namespace std::literals;
 
 void test_unicorn_string_conversion_decimal_integers() {
 
-    U8string s;
+    Ustring s;
     int8_t i8;
     uint8_t u8;
     int16_t i16;
@@ -148,7 +148,7 @@ void test_unicorn_string_conversion_decimal_integers() {
 
 void test_unicorn_string_conversion_hexadecimal_integers() {
 
-    U8string s = "ffxyz";
+    Ustring s = "ffxyz";
     int8_t i8;
     uint8_t u8;
     int16_t i16;
@@ -260,7 +260,7 @@ void test_unicorn_string_conversion_hexadecimal_integers() {
 
 void test_unicorn_string_conversion_floating_point() {
 
-    U8string s;
+    Ustring s;
     float f;
     double d;
     long double ld;
