@@ -7,13 +7,8 @@ namespace RS::Unicorn {
     namespace {
 
         template <typename P>
-        inline P prop(const std::deque<P>& buf, ptrdiff_t i) {
-            if (i < 0)
-                return P::SOT;
-            else if (size_t(i) >= buf.size())
-                return P::EOT;
-            else
-                return buf[i];
+        inline P prop(const std::deque<P>& buf, size_t i) {
+            return i < buf.size() ? buf[i] : P::EOT;
         }
 
     }
@@ -27,8 +22,8 @@ namespace RS::Unicorn {
             using P = Grapheme_Cluster_Break;
             if (buf.empty())
                 return 0;
-            ptrdiff_t size = buf.size();
-            for (ptrdiff_t i = 1; i < size; ++i) {
+            size_t size = buf.size();
+            for (size_t i = 1; i < size; ++i) {
                 // Break at the start and end of text.
                 // GB1. sot ÷
                 // GB2. ÷ eot
@@ -76,8 +71,8 @@ namespace RS::Unicorn {
             using P = Word_Break;
             if (buf.empty())
                 return 0;
-            ptrdiff_t size = buf.size();
-            for (ptrdiff_t i = 1; i < size; ++i) {
+            size_t size = buf.size();
+            for (size_t i = 1; i < size; ++i) {
                 // Break at the start and end of text.
                 // WB1. sot ÷
                 // WB2. ÷ eot
@@ -98,7 +93,7 @@ namespace RS::Unicorn {
                 // WB4. X (Extend | Format)* → X
                 if (next == P::Extend || next == P::Format)
                     continue;
-                ptrdiff_t j = i;
+                size_t j = i;
                 do prev = prop(buf, --j);
                     while (prev == P::Extend || prev == P::Format);
                 P prev2;
@@ -193,8 +188,8 @@ namespace RS::Unicorn {
             using P = Sentence_Break;
             if (buf.empty())
                 return 0;
-            ptrdiff_t size = buf.size();
-            for (ptrdiff_t i = 1; i < size; ++i) {
+            size_t size = buf.size();
+            for (size_t i = 1; i < size; ++i) {
                 // Break at the start and end of text.
                 // SB1. sot ÷
                 // SB2. ÷ eot
@@ -213,7 +208,7 @@ namespace RS::Unicorn {
                 // SB5. X (Extend | Format)* → X
                 if (next == P::Extend || next == P::Format)
                     continue;
-                ptrdiff_t j = i;
+                size_t j = i;
                 do prev = prop(buf, --j);
                     while (prev == P::Extend || prev == P::Format);
                 P prev2;

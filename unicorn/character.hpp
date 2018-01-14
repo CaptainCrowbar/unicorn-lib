@@ -216,18 +216,6 @@ namespace RS::Unicorn {
 
     // Enumeration properties
 
-    std::ostream& operator<<(std::ostream& o, Bidi_Class x);
-    std::ostream& operator<<(std::ostream& o, East_Asian_Width x);
-    std::ostream& operator<<(std::ostream& o, Grapheme_Cluster_Break x);
-    std::ostream& operator<<(std::ostream& o, Hangul_Syllable_Type x);
-    std::ostream& operator<<(std::ostream& o, Indic_Positional_Category x);
-    std::ostream& operator<<(std::ostream& o, Indic_Syllabic_Category x);
-    std::ostream& operator<<(std::ostream& o, Joining_Group x);
-    std::ostream& operator<<(std::ostream& o, Joining_Type x);
-    std::ostream& operator<<(std::ostream& o, Line_Break x);
-    std::ostream& operator<<(std::ostream& o, Numeric_Type x);
-    std::ostream& operator<<(std::ostream& o, Sentence_Break x);
-    std::ostream& operator<<(std::ostream& o, Word_Break x);
     East_Asian_Width east_asian_width(char32_t c) noexcept;
     Grapheme_Cluster_Break grapheme_cluster_break(char32_t c) noexcept;
     Hangul_Syllable_Type hangul_syllable_type(char32_t c) noexcept;
