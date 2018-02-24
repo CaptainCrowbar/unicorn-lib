@@ -4,6 +4,7 @@
 #include "unicorn/character.hpp"
 #include "unicorn/string.hpp"
 #include "unicorn/utf.hpp"
+#include "rs-core/meta.hpp"
 #include "rs-core/time.hpp"
 #include "rs-core/uuid.hpp"
 #include <algorithm>
@@ -201,7 +202,7 @@ namespace RS::Unicorn {
             }
         };
 
-        template <typename T, bool = RS_Detail::CommonRangeType<T>::value>
+        template <typename T, bool = Meta::is_range<T>>
         struct FormatObject {
             Ustring operator()(T t, uint64_t /*flags*/, int /*prec*/) const {
                 std::ostringstream out;
