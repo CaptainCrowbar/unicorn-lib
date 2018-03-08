@@ -8,8 +8,6 @@
 
 #ifdef _XOPEN_SOURCE
     extern char** environ;
-#else
-    extern wchar_t** _wenviron;
 #endif
 
 namespace RS::Unicorn {
