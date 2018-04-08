@@ -142,7 +142,7 @@ optional keyword arguments, as listed below.</p>
 <tr>
 <td><code>Options::</code><strong><code>floating</code></strong></td>
 <td><code>bool</code></td>
-<td>The argument value must be a floating point number.</td>
+<td>The argument value must be a floating point number (an integer is accepted).</td>
 </tr>
 <tr>
 <td><code>Options::</code><strong><code>group</code></strong></td>
@@ -183,7 +183,7 @@ is <code>true</code>; the <code>"--no-whatever"</code> form can be used to switc
 <ul>
 <li>The option name has less than two characters (not counting any leading hyphens).</li>
 <li>The name or abbreviation has already been used by an earlier entry.</li>
-<li>The info string is empty (this also applies to the first version of <code>add()</code>).</li>
+<li>The info string is empty (this also applies to the second version of <code>add()</code>).</li>
 <li>An abbreviation is supplied that is longer than one character (not counting a leading hyphen), or is not alphanumeric.</li>
 <li>An option starting with <code>"--no-"</code> is not boolean or has an abbreviation.</li>
 <li>The <code>boolean</code> tag is combined with <code>anon</code>, <code>defvalue</code>, <code>multi</code>, <code>pattern</code>, or <code>require</code>.</li>
@@ -207,7 +207,7 @@ automatic help flag. The argument can be one of:</p>
 <p>Either of these will add the <code>"--help"</code> and <code>"--version"</code> options, with the
 abbreviations <code>"-h"</code> and <code>"-v"</code> if these have not already been assigned to
 other options. They will be automatically added at the end of the option list
-if you do not add them here. If the <code>autohelp</code> flag is used, calling the
+if you do not add them this way. If the <code>autohelp</code> flag is used, calling the
 program with no arguments will be interpreted as a request for help (i.e. an
 empty argument list is equivalent to <code>"--help"</code>).</p>
 </div>

@@ -94,19 +94,19 @@ leading hyphens). The `info` string is the description of the option that will
 be presented to the user when help is requested. These may be followed by
 optional keyword arguments, as listed below.
 
-Keyword                    | Type        | Description
--------                    | ----        | -----------
+Keyword                    | Type       | Description
+-------                    | ----       | -----------
 `Options::`**`abbrev`**    | `Ustring`  | A single letter abbreviation for the option (e.g. `"-x"`; the hyphen is optional).
-`Options::`**`anon`**      | `bool`      | Anonymous arguments (not claimed by any other option) will be assigned to this option.
-`Options::`**`boolean`**   | `bool`      | This option is a boolean switch and does not take arguments.
+`Options::`**`anon`**      | `bool`     | Anonymous arguments (not claimed by any other option) will be assigned to this option.
+`Options::`**`boolean`**   | `bool`     | This option is a boolean switch and does not take arguments.
 `Options::`**`defvalue`**  | `Ustring`  | Use this default value if the option is not supplied by the user.
-`Options::`**`floating`**  | `bool`      | The argument value must be a floating point number.
+`Options::`**`floating`**  | `bool`     | The argument value must be a floating point number (an integer is accepted).
 `Options::`**`group`**     | `Ustring`  | Assign the option to a mutual exclusion group; at most one option from a group is allowed.
-`Options::`**`integer`**   | `bool`      | The argument value must be an integer.
-`Options::`**`multi`**     | `bool`      | This option may be followed by multiple arguments.
+`Options::`**`integer`**   | `bool`     | The argument value must be an integer.
+`Options::`**`multi`**     | `bool`     | This option may be followed by multiple arguments.
 `Options::`**`pattern`**   | `Ustring`  | The argument value must match this regular expression.
-`Options::`**`required`**  | `bool`      | This option is mandatory.
-`Options::`**`uinteger`**  | `bool`      | The argument value must be an unsigned integer.
+`Options::`**`required`**  | `bool`     | This option is mandatory.
+`Options::`**`uinteger`**  | `bool`     | The argument value must be an unsigned integer.
 
 Boolean options can be supplied in negated form, by giving a name starting
 with `"--no-"` (or `"no-"`). This creates a boolean option whose default value
@@ -116,7 +116,7 @@ Adding an option will throw `spec_error` if any of the following is true:
 
 * The option name has less than two characters (not counting any leading hyphens).
 * The name or abbreviation has already been used by an earlier entry.
-* The info string is empty (this also applies to the first version of `add()`).
+* The info string is empty (this also applies to the second version of `add()`).
 * An abbreviation is supplied that is longer than one character (not counting a leading hyphen), or is not alphanumeric.
 * An option starting with `"--no-"` is not boolean or has an abbreviation.
 * The `boolean` tag is combined with `anon`, `defvalue`, `multi`, `pattern`, or `require`.
@@ -140,7 +140,7 @@ automatic help flag. The argument can be one of:
 Either of these will add the `"--help"` and `"--version"` options, with the
 abbreviations `"-h"` and `"-v"` if these have not already been assigned to
 other options. They will be automatically added at the end of the option list
-if you do not add them here. If the `autohelp` flag is used, calling the
+if you do not add them this way. If the `autohelp` flag is used, calling the
 program with no arguments will be interpreted as a request for help (i.e. an
 empty argument list is equivalent to `"--help"`).
 

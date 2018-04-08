@@ -548,8 +548,8 @@ Unicode line or paragraph breaking character is recognised and replaced; the
 string was completely empty, a line break will be added at the end if it was
 not already there.
 
-* `template <typename... Args> Ustring` **`str_wrap`**`(const Ustring& str, const Args&... args)`
-* `template <typename... Args> void` **`str_wrap_in`**`(Ustring& str, const Args&... args)`
+* `template <typename... Args> Ustring` **`str_wrap`**`(const Ustring& str, Args... args)`
+* `template <typename... Args> void` **`str_wrap_in`**`(Ustring& str, Args... args)`
 
 Wrap the text in a string to a given width. Wrapping is done separately for
 each paragraph; paragraphs are delimited by two or more line breaks (as usual,
@@ -568,7 +568,7 @@ Keyword                 | Type        | Description                             
 `Wrap::`**`margin`**    | `size_t`    | Margin for first line                      | 0
 `Wrap::`**`margin2`**   | `size_t`    | Margin for subsequent lines                | same as `margin`
 `Wrap::`**`width`**     | `size_t`    | Wrap width                                 | see below
-`Wrap::`**`newline`**   | `Ustring`  | Line break                                 | `"\n"`
+`Wrap::`**`newline`**   | `Ustring`   | Line break                                 | `"\n"`
 
 By default, the width is set to two characters less than the current terminal
 width, obtained from the `COLUMNS` environment variable; the terminal width is

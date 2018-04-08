@@ -68,26 +68,23 @@ namespace RS::Unicorn {
             spec_error(const Ustring& details, const Ustring& option);
         };
         enum special_options { help, autohelp };
-        static constexpr uint32_t locale    = 1;  // Argument list is in local encoding
-        static constexpr uint32_t noprefix  = 2;  // First argument is not the command name
-        static constexpr uint32_t quoted    = 4;  // Allow arguments to be quoted
-        static constexpr Kwarg<bool>
-            anon = {},      // Assign anonymous arguments to this option
-            boolean = {},   // Boolean option
-            integer = {},   // Argument must be an integer
-            uinteger = {},  // Argument must be an unsigned integer
-            floating = {},  // Argument must be a floating point number
-            multi = {},     // Option may have multiple arguments
-            required = {};  // Option is required
-        static constexpr Kwarg<Ustring>
-            abbrev = {},    // Single letter abbreviation
-            defvalue = {},  // Default value if not supplied
-            group = {},     // Mutual exclusion group name
-            pattern = {};   // Argument must match this regular expression
+        static constexpr uint32_t locale = 1;           // Argument list is in local encoding
+        static constexpr uint32_t noprefix = 2;         // First argument is not the command name
+        static constexpr uint32_t quoted = 4;           // Allow arguments to be quoted
+        static constexpr Kwarg<bool, 'a'> anon;         // Assign anonymous arguments to this option
+        static constexpr Kwarg<bool, 'b'> boolean;      // Boolean option
+        static constexpr Kwarg<bool, 'i'> integer;      // Argument must be an integer
+        static constexpr Kwarg<bool, 'u'> uinteger;     // Argument must be an unsigned integer
+        static constexpr Kwarg<bool, 'f'> floating;     // Argument must be a floating point number
+        static constexpr Kwarg<bool, 'm'> multi;        // Option may have multiple arguments
+        static constexpr Kwarg<bool, 'r'> required;     // Option is required
+        static constexpr Kwarg<Ustring, 'a'> abbrev;    // Single letter abbreviation
+        static constexpr Kwarg<Ustring, 'd'> defvalue;  // Default value if not supplied
+        static constexpr Kwarg<Ustring, 'g'> group;     // Mutual exclusion group name
+        static constexpr Kwarg<Ustring, 'p'> pattern;   // Argument must match this regular expression
         Options() = default;
         explicit Options(const Ustring& info): app_info(str_trim(info)) {}
-        template <typename... Args> Options& add(const Ustring& name, const Ustring& info, const Args&... args)
-            { add_option(option_type(name, info, args...)); return *this; }
+        template <typename... Args> Options& add(const Ustring& name, const Ustring& info, Args... args);
         Options& add(const Ustring& info);
         Options& add(special_options flag);
         void add_help(bool automatic = false);
@@ -103,7 +100,7 @@ namespace RS::Unicorn {
         enum class help_mode { none, version, usage };
         struct option_type {
             option_type() = default;
-            template <typename... Args> option_type(const Ustring& name, const Ustring& info, const Args&... args);
+            template <typename... Args> option_type(const Ustring& name, const Ustring& info, Args... args);
             option_type(const Ustring& info);
             option_type(const char* info): option_type(cstr(info)) {}
             Strings values;
@@ -144,6 +141,12 @@ namespace RS::Unicorn {
         static void add_arg_to_opt(const Ustring& arg, option_type& opt);
         static void unquote(const Ustring& src, Strings& dst);
     };
+
+    template <typename... Args>
+    Options& Options::add(const Ustring& name, const Ustring& info, Args... args) {
+        add_option(option_type(name, info, args...));
+        return *this;
+    }
 
     template <typename T>
     std::vector<T> Options::get_list(const Ustring& name) const {
@@ -188,21 +191,21 @@ namespace RS::Unicorn {
     }
 
     template <typename... Args>
-    Options::option_type::option_type(const Ustring& name, const Ustring& info, const Args&... args) {
+    Options::option_type::option_type(const Ustring& name, const Ustring& info, Args... args) {
         Ustring patstr;
         opt_name = name;
         opt_info = info;
-        kwget(anon, is_anon, args...);
-        kwget(boolean, is_boolean, args...);
-        kwget(integer, is_integer, args...);
-        kwget(uinteger, is_uinteger, args...);
-        kwget(floating, is_floating, args...);
-        kwget(multi, is_multi, args...);
-        kwget(required, is_required, args...);
-        kwget(abbrev, opt_abbrev, args...);
-        kwget(defvalue, opt_defvalue, args...);
-        kwget(group, opt_group, args...);
-        kwget(pattern, patstr, args...);
+        is_anon = kwget(anon, false, args...);
+        is_boolean = kwget(boolean, false, args...);
+        is_integer = kwget(integer, false, args...);
+        is_uinteger = kwget(uinteger, false, args...);
+        is_floating = kwget(floating, false, args...);
+        is_multi = kwget(multi, false, args...);
+        is_required = kwget(required, false, args...);
+        opt_abbrev = kwget(abbrev, Ustring(), args...);
+        opt_defvalue = kwget(defvalue, Ustring(), args...);
+        opt_group = kwget(group, Ustring(), args...);
+        patstr = kwget(pattern, Ustring(), args...);
         if (! patstr.empty())
             opt_pattern = Regex(patstr);
     }

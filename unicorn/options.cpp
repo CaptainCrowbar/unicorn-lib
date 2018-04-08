@@ -46,20 +46,6 @@ namespace RS::Unicorn {
 
     }
 
-    constexpr Kwarg<bool>
-        Options::anon,
-        Options::boolean,
-        Options::integer,
-        Options::uinteger,
-        Options::floating,
-        Options::multi,
-        Options::required;
-    constexpr Kwarg<Ustring>
-        Options::abbrev,
-        Options::defvalue,
-        Options::group,
-        Options::pattern;
-
     Options::command_error::command_error(const Ustring& details, const Ustring& arg, const Ustring& arg2):
     std::runtime_error(cmd_error(details, arg, arg2)) {}
 

@@ -649,8 +649,8 @@ not already there.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename... Args&gt; Ustring</code> <strong><code>str_wrap</code></strong><code>(const Ustring&amp; str, const Args&amp;... args)</code></li>
-<li><code>template &lt;typename... Args&gt; void</code> <strong><code>str_wrap_in</code></strong><code>(Ustring&amp; str, const Args&amp;... args)</code></li>
+<li><code>template &lt;typename... Args&gt; Ustring</code> <strong><code>str_wrap</code></strong><code>(const Ustring&amp; str, Args... args)</code></li>
+<li><code>template &lt;typename... Args&gt; void</code> <strong><code>str_wrap_in</code></strong><code>(Ustring&amp; str, Args... args)</code></li>
 </ul>
 <p>Wrap the text in a string to a given width. Wrapping is done separately for
 each paragraph; paragraphs are delimited by two or more line breaks (as usual,

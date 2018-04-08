@@ -757,14 +757,6 @@ namespace RS::Unicorn {
         str_unify_lines_in(str, "\n");
     }
 
-    constexpr Kwarg<bool> Wrap::enforce;
-    constexpr Kwarg<bool> Wrap::preserve;
-    constexpr Kwarg<uint32_t> Wrap::flags;
-    constexpr Kwarg<size_t> Wrap::margin;
-    constexpr Kwarg<size_t> Wrap::margin2;
-    constexpr Kwarg<size_t> Wrap::width;
-    constexpr Kwarg<Ustring> Wrap::newline;
-
     namespace UnicornDetail {
 
         void str_wrap_helper(const Ustring& src, Ustring& dst, bool enforce, bool preserve, uint32_t flags, size_t margin, size_t margin2, size_t width, const Ustring& newline) {
