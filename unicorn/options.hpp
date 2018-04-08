@@ -68,20 +68,20 @@ namespace RS::Unicorn {
             spec_error(const Ustring& details, const Ustring& option);
         };
         enum special_options { help, autohelp };
-        static constexpr uint32_t locale = 1;           // Argument list is in local encoding
-        static constexpr uint32_t noprefix = 2;         // First argument is not the command name
-        static constexpr uint32_t quoted = 4;           // Allow arguments to be quoted
-        static constexpr Kwarg<bool, 'a'> anon;         // Assign anonymous arguments to this option
-        static constexpr Kwarg<bool, 'b'> boolean;      // Boolean option
-        static constexpr Kwarg<bool, 'i'> integer;      // Argument must be an integer
-        static constexpr Kwarg<bool, 'u'> uinteger;     // Argument must be an unsigned integer
-        static constexpr Kwarg<bool, 'f'> floating;     // Argument must be a floating point number
-        static constexpr Kwarg<bool, 'm'> multi;        // Option may have multiple arguments
-        static constexpr Kwarg<bool, 'r'> required;     // Option is required
-        static constexpr Kwarg<Ustring, 'a'> abbrev;    // Single letter abbreviation
-        static constexpr Kwarg<Ustring, 'd'> defvalue;  // Default value if not supplied
-        static constexpr Kwarg<Ustring, 'g'> group;     // Mutual exclusion group name
-        static constexpr Kwarg<Ustring, 'p'> pattern;   // Argument must match this regular expression
+        static constexpr uint32_t locale = 1;                // Argument list is in local encoding
+        static constexpr uint32_t noprefix = 2;              // First argument is not the command name
+        static constexpr uint32_t quoted = 4;                // Allow arguments to be quoted
+        static constexpr Kwarg<bool, 'a'> anon = {};         // Assign anonymous arguments to this option
+        static constexpr Kwarg<bool, 'b'> boolean = {};      // Boolean option
+        static constexpr Kwarg<bool, 'i'> integer = {};      // Argument must be an integer
+        static constexpr Kwarg<bool, 'u'> uinteger = {};     // Argument must be an unsigned integer
+        static constexpr Kwarg<bool, 'f'> floating = {};     // Argument must be a floating point number
+        static constexpr Kwarg<bool, 'm'> multi = {};        // Option may have multiple arguments
+        static constexpr Kwarg<bool, 'r'> required = {};     // Option is required
+        static constexpr Kwarg<Ustring, 'a'> abbrev = {};    // Single letter abbreviation
+        static constexpr Kwarg<Ustring, 'd'> defvalue = {};  // Default value if not supplied
+        static constexpr Kwarg<Ustring, 'g'> group = {};     // Mutual exclusion group name
+        static constexpr Kwarg<Ustring, 'p'> pattern = {};   // Argument must match this regular expression
         Options() = default;
         explicit Options(const Ustring& info): app_info(str_trim(info)) {}
         template <typename... Args> Options& add(const Ustring& name, const Ustring& info, Args... args);

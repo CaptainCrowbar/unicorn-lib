@@ -471,13 +471,13 @@ namespace RS::Unicorn {
 
     struct Wrap {
 
-        static constexpr Kwarg<bool, 1> enforce;    // Enforce right margin strictly (default false)
-        static constexpr Kwarg<bool, 2> preserve;   // Preserve layout on already indented lines (default false)
-        static constexpr Kwarg<uint32_t> flags;     // Flags for string length (default 0)
-        static constexpr Kwarg<size_t, 1> margin;   // Margin for first line (default 0)
-        static constexpr Kwarg<size_t, 2> margin2;  // Margin for subsequent lines (default same as margin)
-        static constexpr Kwarg<size_t, 3> width;    // Wrap width (default COLUMNS-2)
-        static constexpr Kwarg<Ustring> newline;    // Line break (default "\n")
+        static constexpr Kwarg<bool, 1> enforce = {};    // Enforce right margin strictly (default false)
+        static constexpr Kwarg<bool, 2> preserve = {};   // Preserve layout on already indented lines (default false)
+        static constexpr Kwarg<uint32_t> flags = {};     // Flags for string length (default 0)
+        static constexpr Kwarg<size_t, 1> margin = {};   // Margin for first line (default 0)
+        static constexpr Kwarg<size_t, 2> margin2 = {};  // Margin for subsequent lines (default same as margin)
+        static constexpr Kwarg<size_t, 3> width = {};    // Wrap width (default COLUMNS-2)
+        static constexpr Kwarg<Ustring> newline = {};    // Line break (default "\n")
 
     };
 
