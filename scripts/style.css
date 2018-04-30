@@ -1,0 +1,146 @@
+body {
+    background-color:  white;
+    border-bottom:     1px solid #444;
+    color:             #444;
+    font-family:       "Lucida Grande", Helvetica, Verdana, Arial, sans-serif;
+    font-size:         14px;
+    margin:            2em;
+    margin-top:        1em;
+    padding-bottom:    1em;
+}
+
+h1 {
+    border-top:      1px solid #444;
+    color:           #666;
+    font-size:       200%;
+    padding-bottom:  0.25em;
+    padding-top:     0.5em;
+    text-align:      left;
+}
+
+h2 {
+    border-top:      1px solid #444;
+    color:           #666;
+    font-size:       150%;
+    margin-top:      1.5em;
+    padding-bottom:  0.25em;
+    padding-top:     0.25em;
+    text-align:      left;
+}
+
+h3 {
+    color:       #666;
+    font-size:   125%;
+    text-align:  left;
+}
+
+h4 {
+    font-size:    100%;
+    font-style:   italic;
+    font-weight:  normal;
+    text-align:   left;
+}
+
+p {
+    max-width:  60em;
+}
+
+a {
+    text-decoration:  none;
+}
+
+a:link, a:link code {
+    color:  #00e;
+}
+
+a:hover, a:hover code {
+    background-color:  #ccc;
+    border-radius:     0.25em;
+}
+
+a:visited, a:visited code {
+    color:  #70b;
+}
+
+li {
+    margin-right:  5em;
+}
+
+table {
+    margin-top:     0.5em;
+    margin-bottom:  0.5em;
+    margin-left:    2em;
+}
+
+th, td {
+    border:          1px solid;
+    border-radius:   0.25em;
+    padding-bottom:  0.1em;
+    padding-left:    0.5em;
+    padding-right:   0.5em;
+    padding-top:     0.1em;
+    text-align:      left;
+    vertical-align:  top;
+}
+
+th {
+    background-color:  #ccd;
+    border-color:      #bbc;
+    font-weight:       bold;
+}
+
+td {
+    background-color:  #eef;
+    border-color:      #dde;
+}
+
+code {
+    color:        #262;
+    font-family:  "DejaVu Sans Mono", Menlo, "Lucida Console", monospace;
+    font-size:    12px;
+}
+
+code strong, strong code, td strong code {
+    color:  #048;
+}
+
+li code {
+    white-space:  pre-wrap;
+}
+
+th code, td code {
+    color:  #262;
+}
+
+pre {
+    background-color:  #efe;
+    border:            1px solid #454;
+    border-radius:     0.5em;
+    color:             #262;
+    font-family:       "DejaVu Sans Mono", Menlo, "Lucida Console", monospace;
+    font-size:         12px;
+    margin-left:       4em;
+    margin-right:      6em;
+    max-width:         80em;
+    padding:           1em;
+    white-space:       pre-wrap;
+}
+
+pre code, td code, th code {
+    background:  transparent;
+    border:      none;
+    margin:      0;
+    padding:     0;
+}
+
+.nobr { white-space: nowrap; }
+
+div.defns {
+    border:         1px solid #8c8;
+    border-radius:  1em;
+    margin-top:     0.5em;
+    margin-bottom:  0.5em;
+    margin-right:   4em;
+    padding-left:   1em;
+    padding-right:  1em;
+}

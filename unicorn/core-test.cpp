@@ -1,5 +1,5 @@
 #include "unicorn/core.hpp"
-#include "rs-core/unit-test.hpp"
+#include "unicorn/unit-test.hpp"
 #include <iostream>
 #include <string>
 

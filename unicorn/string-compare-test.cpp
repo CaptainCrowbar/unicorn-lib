@@ -1,6 +1,6 @@
 #include "unicorn/string.hpp"
 #include "unicorn/core.hpp"
-#include "rs-core/unit-test.hpp"
+#include "unicorn/unit-test.hpp"
 
 using namespace RS;
 using namespace RS::Unicorn;

@@ -1,7 +1,7 @@
 #include "unicorn/core.hpp"
 #include "unicorn/regex.hpp"
 #include "unicorn/string.hpp"
-#include "rs-core/unit-test.hpp"
+#include "unicorn/unit-test.hpp"
 #include <algorithm>
 #include <iostream>
 #include <string>

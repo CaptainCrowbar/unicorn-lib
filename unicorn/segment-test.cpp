@@ -1,10 +1,10 @@
-#include "unicorn/core.hpp"
 #include "unicorn/segment.hpp"
 #include "unicorn/character.hpp"
+#include "unicorn/core.hpp"
 #include "unicorn/string.hpp"
 #include "unicorn/ucd-tables.hpp"
+#include "unicorn/unit-test.hpp"
 #include "unicorn/utf.hpp"
-#include "rs-core/unit-test.hpp"
 #include <algorithm>
 #include <iostream>
 #include <cstdlib>

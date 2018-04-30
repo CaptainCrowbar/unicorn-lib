@@ -1,0 +1,98 @@
+#!/usr/bin/env python3
+
+import markdown
+import re
+import sys
+
+# Check the command line arguments
+
+if len(sys.argv) != 3:
+    print('*** Usage: make-doc <doc.md> <doc.html>')
+    sys.exit(1)
+
+src=sys.argv[1]
+dst=sys.argv[2]
+
+# Read the Markdown doc
+
+with open(src, 'r', encoding='utf-8') as s:
+    md = s.read()
+
+# Find the blocks we want to tag as <div>
+
+def block_type(block):
+    if block.startswith('#'):
+        return 'head'
+    elif block.startswith('* [') or block.startswith('* `#include') or block.startswith('* <!-- TEXT -->'):
+        return 'text'
+    elif block.startswith('* ') or block.startswith('<!-- DEFN -->'):
+        return 'defn'
+    elif block.endswith(':'):
+        return 'lead'
+    else:
+        return 'text'
+
+blocks = md.split("\n\n")
+start = 0
+while start < len(blocks) and not blocks[start].startswith('##'):
+    start += 1
+if start == len(blocks):
+    start = 0
+while start < len(blocks) and block_type(blocks[start]) != 'defn':
+    start += 1
+
+if start < len(blocks):
+    md = "\n\n".join(blocks[0:start]) + '\n'
+    div = False
+    if start > 0 and blocks[start - 1].endswith(':'):
+        prev = 'lead'
+    else:
+        prev = 'text'
+    for block in blocks[start:]:
+        type = block_type(block)
+        if type == 'defn' and prev == 'lead':
+            type = 'text'
+        if div and (type == 'head' or type == 'defn'):
+            md += '\n[[-DIV]]\n'
+            div = False
+        if type == 'defn':
+            md += '\n[[+DIV]]\n'
+            div = True
+        md += '\n' + block + '\n'
+        prev = type
+
+# Convert Mardown to HTML
+
+html = (
+    markdown.markdown(md, extensions=[
+        'markdown.extensions.extra',
+        'markdown.extensions.toc'
+    ])
+    .replace('<p>[[+DIV]]</p>', '<div class="defns">')
+    .replace('<p>[[-DIV]]</p>', '</div>')
+)
+
+# Add a document header and trailer
+
+head = '''<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>{0}</title>
+<link type="text/css" rel="stylesheet" href="style.css"/>
+</head>
+<body>
+'''
+
+tail = '''</body>
+</html>
+'''
+
+title = md.split('\n', 1)[0].strip('# ')
+title = re.sub(r'\[([^()\[\]]+)\]\([^()\[\]]+\)', r'\1', title)
+html = head.format(title) + html + tail
+
+# WRite the HTML doc
+
+with open(dst, 'w', encoding='utf-8') as d:
+    d.write(html)

@@ -1,0 +1,174 @@
+#!/usr/bin/env python3
+
+import os
+import re
+import sys
+
+def is_header_file(file):
+    ext = os.path.splitext(file)[1]
+    return ext == '.h' or ext == '.hpp'
+
+def is_source_file(file):
+    ext = os.path.splitext(file)[1]
+    return ext == '.c' or ext == '.cpp' or ext == '.m' or ext == '.mm'
+
+def exclude_special_cases(file):
+    if os.path.islink(file) and os.path.realpath(file).startswith('/usr/local/Cellar/'):
+        return True # Homebrew
+    elif file.startswith('/usr/local/include/nlohmann/'):
+        return True # nlohmann/json
+    else:
+        return False
+
+def find_all_files(file, headers, sources=None, root=None):
+    path = os.path.normpath(os.path.expanduser(file))
+    if not os.path.exists(path) or exclude_special_cases(path):
+        return
+    if root is None:
+        root = path
+    if os.path.isdir(path):
+        for leaf in os.listdir(path):
+            child = os.path.join(path, leaf)
+            find_all_files(child, headers, sources, root)
+    elif is_header_file(file):
+        include = os.path.relpath(path, root)
+        if include not in headers:
+            headers[include] = path
+    elif sources is not None and is_source_file(file):
+        sources.add(path)
+
+headers = {} # include name => full path
+sources = set()
+find_all_files('.', headers, sources)
+find_all_files('/usr/local/include', headers)
+
+match_include = re.compile(R'^\s*#\s*include\s*[<"]([^"<>]+\.\w+)[">]')
+
+def get_includes(file):
+    includes = set()
+    for line in open(file, 'r', encoding='utf-8'):
+        match = match_include.search(line)
+        if match and match[1] in headers:
+            includes.add(match[1])
+    return includes
+
+shallow_deps = {} # source or header => set of required headers
+for src in sources:
+    shallow_deps[src] = get_includes(src)
+for hdr in headers:
+    shallow_deps[hdr] = get_includes(headers[hdr])
+    shallow_deps[hdr].discard(hdr)
+
+full_deps = {}
+while shallow_deps:
+    full_keys = set(full_deps.keys())
+    more_deps = {}
+    for file in shallow_deps:
+        file_headers = shallow_deps[file]
+        if file_headers.issubset(full_keys):
+            shallow_headers = list(file_headers)
+            for hdr in shallow_headers:
+                file_headers.update(full_deps[hdr])
+            more_deps[file] = file_headers
+    if not more_deps:
+        print('*** Dependency loop detected')
+        print(shallow_deps)
+        sys.exit(1)
+    for file in more_deps:
+        del shallow_deps[file]
+    full_deps.update(more_deps)
+
+source_deps = {} # source => {search dir => set of headers}
+relevant_files = set()
+relevant_files.update(sources)
+for src in sources:
+    source_deps[src] = {}
+    deps = source_deps[src]
+    deps[''] = set()
+    for hdr in full_deps[src]:
+        hdr_path = headers[hdr]
+        relevant_files.add(hdr_path)
+        if os.path.isabs(hdr_path):
+            folder, leaf = os.path.split(hdr_path)
+            if folder not in deps:
+                deps[folder] = set()
+        else:
+            folder = ''
+        deps[folder].add(hdr_path)
+
+# exclude_lib = None
+# prefix, _, suffix = os.path.basename(os.getcwd()).rpartition('-')
+# if suffix == 'lib':
+#     if os.path.isdir(prefix):
+#         exclude_lib = prefix
+#     elif os.path.isdir('rs-' + prefix):
+#         exclude_lib = 'rs-' + prefix
+
+# match_library = re.compile(R'^\s*RS_LDLIB\(([^()]+)\)')
+
+# def get_libraries(file, libraries):
+#     for line in open(file, 'r', encoding='utf-8'):
+#         match = match_library.search(line)
+#         if match:
+#             system_libs = match[1]
+#             if ':' in system_libs:
+#                 system, _, libs = system_libs.partition(':')
+#             else:
+#                 system = ''
+#                 libs = system_libs
+#             system = system.strip()
+#             if system not in libraries:
+#                 libraries[system] = []
+#             for lib in libs.split():
+#                 if lib != exclude_lib and lib not in libraries[system]:
+#                     libraries[system].append(lib)
+
+# libraries = {} # system => list of libs
+# for file in sorted(relevant_files):
+#     get_libraries(file, libraries)
+
+out = open('dependencies.make', 'w', encoding='utf-8')
+
+for src in sorted(sources):
+    deps = source_deps[src]
+    obj = re.sub(R'^[^/]+/(.+)\.\w+$', R'\1.o', src)
+    text = '$(BUILD)/{0}: {1} {2}'.format(obj, src, ' '.join(sorted(deps[''])))
+    for folder in sorted(deps):
+        if folder:
+            text += ' \\\n    ' + ' '.join(sorted(deps[folder]))
+    print(text, file=out)
+
+# def gcc_lib(name):
+#     if name.startswith('framework:'):
+#         return '-framework ' + name.partition(':')[2]
+#     else:
+#         return '-l' + name
+
+# def msvc_lib(name):
+#     if name == 'z':
+#         return name + 'lib.lib'
+#     elif name == 'curl' or name == 'sodium':
+#         return 'lib' + name + '.lib'
+#     else:
+#         return name + '.lib'
+
+# if '' in libraries:
+#     msvc_libs = [msvc_lib(lib) for lib in libraries['']]
+#     gcc_libs = [gcc_lib(lib) for lib in libraries['']]
+#     print('ifeq ($(LIBTAG),msvc)', file=out)
+#     print('    LDLIBS += ' + ' '.join(msvc_libs), file=out)
+#     print('else', file=out)
+#     print('    LDLIBS += ' + ' '.join(gcc_libs), file=out)
+#     print('endif', file=out)
+#     del libraries['']
+
+# for system in sorted(libraries):
+#     libs = libraries[system]
+#     if libs:
+#         print('ifeq ($(LIBTAG),{0})'.format(system), file=out)
+#         if system == 'msvc':
+#             ldlibs = [msvc_lib(lib) for lib in libs]
+#         else:
+#             ldlibs = [gcc_lib(lib) for lib in libs]
+#         print('    LDLIBS += ' + ' '.join(ldlibs), file=out)
+#         print('endif', file=out)

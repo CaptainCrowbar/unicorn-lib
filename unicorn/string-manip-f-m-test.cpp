@@ -1,8 +1,8 @@
 #include "unicorn/string.hpp"
-#include "unicorn/core.hpp"
 #include "unicorn/character.hpp"
+#include "unicorn/core.hpp"
+#include "unicorn/unit-test.hpp"
 #include "unicorn/utf.hpp"
-#include "rs-core/unit-test.hpp"
 #include <iterator>
 #include <vector>
 

@@ -13,4 +13,5 @@
 #include "unicorn/regex.hpp"
 #include "unicorn/segment.hpp"
 #include "unicorn/string.hpp"
+#include "unicorn/unit-test.hpp"
 #include "unicorn/utf.hpp"

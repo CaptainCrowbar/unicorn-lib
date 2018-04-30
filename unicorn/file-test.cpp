@@ -1,7 +1,7 @@
-#include "unicorn/core.hpp"
 #include "unicorn/file.hpp"
+#include "unicorn/core.hpp"
+#include "unicorn/unit-test.hpp"
 #include "unicorn/utf.hpp"
-#include "rs-core/unit-test.hpp"
 #include <algorithm>
 #include <cstdlib>
 #include <fstream>

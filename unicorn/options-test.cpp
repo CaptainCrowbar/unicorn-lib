@@ -1,6 +1,6 @@
 #include "unicorn/core.hpp"
 #include "unicorn/options.hpp"
-#include "rs-core/unit-test.hpp"
+#include "unicorn/unit-test.hpp"
 #include <sstream>
 #include <vector>
 
