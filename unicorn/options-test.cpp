@@ -52,20 +52,16 @@ void test_unicorn_options_basic() {
         );
     }
 
-    {
-        TRY(opt2 = opt1);
-        cmdline = "app";
-        std::ostringstream out;
-        TEST(! opt2.parse(cmdline, nowhere));
-        TEST_EQUAL(out.str(), "");
-        TEST(! opt2.has("alpha"));
-        TEST_EQUAL(opt2.get<Ustring>("alpha"), "ABC");
-        TEST(! opt2.has("number"));
-        TEST_EQUAL(opt2.get<int>("number"), 123);
-        TEST_THROW_MATCH(opt2.has("nonexistent"), Options::spec_error, ": \"--nonexistent\"$");
-        TEST_THROW_MATCH(opt2.get<Ustring>("nonexistent"), Options::spec_error, ": \"--nonexistent\"$");
-        TEST_THROW_MATCH(opt2.get_list<Ustring>("nonexistent"), Options::spec_error, ": \"--nonexistent\"$");
-    }
+    TRY(opt2 = opt1);
+    cmdline = "app";
+    TEST(! opt2.parse(cmdline, nowhere));
+    TEST(! opt2.has("alpha"));
+    TEST_EQUAL(opt2.get<Ustring>("alpha"), "ABC");
+    TEST(! opt2.has("number"));
+    TEST_EQUAL(opt2.get<int>("number"), 123);
+    TEST_THROW_MATCH(opt2.has("nonexistent"), Options::spec_error, ": \"--nonexistent\"$");
+    TEST_THROW_MATCH(opt2.get<Ustring>("nonexistent"), Options::spec_error, ": \"--nonexistent\"$");
+    TEST_THROW_MATCH(opt2.get_list<Ustring>("nonexistent"), Options::spec_error, ": \"--nonexistent\"$");
 
     TRY(opt2 = opt1);
     cmdline = "app --alpha xyz -n 999";
