@@ -9,6 +9,8 @@
 #include <type_traits>
 #include <vector>
 
+RS_LDLIB(pcre);
+
 namespace RS::Unicorn {
 
     // Forward declarations
