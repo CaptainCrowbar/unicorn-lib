@@ -8,7 +8,7 @@
 #include <string>
 #include <type_traits>
 
-RS_LDLIB(unicorn);
+RS_LDLIB(unicorn z);
 
 namespace RS::Unicorn {
 
