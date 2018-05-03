@@ -96,36 +96,36 @@ for src in sources:
             folder = ''
         deps[folder].add(hdr_path)
 
-# exclude_lib = None
-# prefix, _, suffix = os.path.basename(os.getcwd()).rpartition('-')
-# if suffix == 'lib':
-#     if os.path.isdir(prefix):
-#         exclude_lib = prefix
-#     elif os.path.isdir('rs-' + prefix):
-#         exclude_lib = 'rs-' + prefix
+exclude_lib = None
+prefix, _, suffix = os.path.basename(os.getcwd()).rpartition('-')
+if suffix == 'lib':
+    if os.path.isdir(prefix):
+        exclude_lib = prefix
+    elif os.path.isdir('rs-' + prefix):
+        exclude_lib = 'rs-' + prefix
 
-# match_library = re.compile(R'^\s*RS_LDLIB\(([^()]+)\)')
+match_library = re.compile(R'^\s*RS_LDLIB\(([^()]+)\)')
 
-# def get_libraries(file, libraries):
-#     for line in open(file, 'r', encoding='utf-8'):
-#         match = match_library.search(line)
-#         if match:
-#             system_libs = match[1]
-#             if ':' in system_libs:
-#                 system, _, libs = system_libs.partition(':')
-#             else:
-#                 system = ''
-#                 libs = system_libs
-#             system = system.strip()
-#             if system not in libraries:
-#                 libraries[system] = []
-#             for lib in libs.split():
-#                 if lib != exclude_lib and lib not in libraries[system]:
-#                     libraries[system].append(lib)
+def get_libraries(file, libraries):
+    for line in open(file, 'r', encoding='utf-8'):
+        match = match_library.search(line)
+        if match:
+            system_libs = match[1]
+            if ':' in system_libs:
+                system, _, libs = system_libs.partition(':')
+            else:
+                system = ''
+                libs = system_libs
+            system = system.strip()
+            if system not in libraries:
+                libraries[system] = []
+            for lib in libs.split():
+                if lib != exclude_lib and lib not in libraries[system]:
+                    libraries[system].append(lib)
 
-# libraries = {} # system => list of libs
-# for file in sorted(relevant_files):
-#     get_libraries(file, libraries)
+libraries = {} # system => list of libs
+for file in sorted(relevant_files):
+    get_libraries(file, libraries)
 
 out = open('dependencies.make', 'w', encoding='utf-8')
 
@@ -138,37 +138,37 @@ for src in sorted(sources):
             text += ' \\\n    ' + ' '.join(sorted(deps[folder]))
     print(text, file=out)
 
-# def gcc_lib(name):
-#     if name.startswith('framework:'):
-#         return '-framework ' + name.partition(':')[2]
-#     else:
-#         return '-l' + name
+def gcc_lib(name):
+    if name.startswith('framework:'):
+        return '-framework ' + name.partition(':')[2]
+    else:
+        return '-l' + name
 
-# def msvc_lib(name):
-#     if name == 'z':
-#         return name + 'lib.lib'
-#     elif name == 'curl' or name == 'sodium':
-#         return 'lib' + name + '.lib'
-#     else:
-#         return name + '.lib'
+def msvc_lib(name):
+    if name == 'z':
+        return name + 'lib.lib'
+    elif name == 'curl' or name == 'sodium':
+        return 'lib' + name + '.lib'
+    else:
+        return name + '.lib'
 
-# if '' in libraries:
-#     msvc_libs = [msvc_lib(lib) for lib in libraries['']]
-#     gcc_libs = [gcc_lib(lib) for lib in libraries['']]
-#     print('ifeq ($(LIBTAG),msvc)', file=out)
-#     print('    LDLIBS += ' + ' '.join(msvc_libs), file=out)
-#     print('else', file=out)
-#     print('    LDLIBS += ' + ' '.join(gcc_libs), file=out)
-#     print('endif', file=out)
-#     del libraries['']
+if '' in libraries:
+    msvc_libs = [msvc_lib(lib) for lib in libraries['']]
+    gcc_libs = [gcc_lib(lib) for lib in libraries['']]
+    print('ifeq ($(LIBTAG),msvc)', file=out)
+    print('    LDLIBS += ' + ' '.join(msvc_libs), file=out)
+    print('else', file=out)
+    print('    LDLIBS += ' + ' '.join(gcc_libs), file=out)
+    print('endif', file=out)
+    del libraries['']
 
-# for system in sorted(libraries):
-#     libs = libraries[system]
-#     if libs:
-#         print('ifeq ($(LIBTAG),{0})'.format(system), file=out)
-#         if system == 'msvc':
-#             ldlibs = [msvc_lib(lib) for lib in libs]
-#         else:
-#             ldlibs = [gcc_lib(lib) for lib in libs]
-#         print('    LDLIBS += ' + ' '.join(ldlibs), file=out)
-#         print('endif', file=out)
+for system in sorted(libraries):
+    libs = libraries[system]
+    if libs:
+        print('ifeq ($(LIBTAG),{0})'.format(system), file=out)
+        if system == 'msvc':
+            ldlibs = [msvc_lib(lib) for lib in libs]
+        else:
+            ldlibs = [gcc_lib(lib) for lib in libs]
+        print('    LDLIBS += ' + ' '.join(ldlibs), file=out)
+        print('endif', file=out)

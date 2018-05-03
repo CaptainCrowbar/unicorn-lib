@@ -102,3 +102,17 @@ $(BUILD)/utf-test.o: unicorn/utf-test.cpp unicorn/character.hpp unicorn/core.hpp
     /usr/local/include/rs-core/common.hpp /usr/local/include/rs-core/meta-internal.hpp /usr/local/include/rs-core/meta.hpp /usr/local/include/rs-core/string.hpp
 $(BUILD)/utf.o: unicorn/utf.cpp unicorn/character.hpp unicorn/core.hpp unicorn/property-values.hpp unicorn/utf.hpp \
     /usr/local/include/rs-core/common.hpp /usr/local/include/rs-core/meta-internal.hpp /usr/local/include/rs-core/meta.hpp /usr/local/include/rs-core/string.hpp
+ifeq ($(LIBTAG),msvc)
+    LDLIBS += zlib.lib pcre.lib
+else
+    LDLIBS += -lz -lpcre
+endif
+ifeq ($(LIBTAG),cygwin)
+    LDLIBS += -lcrypto
+endif
+ifeq ($(LIBTAG),linux)
+    LDLIBS += -lcrypto
+endif
+ifeq ($(LIBTAG),msvc)
+    LDLIBS += advapi32.lib shell32.lib
+endif
