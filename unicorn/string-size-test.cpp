@@ -239,6 +239,14 @@ void test_unicorn_string_size_measurement_flags() {
     TRY(s8 = u8"ààà\u3000\u3000\u3000");                TEST_EQUAL(str_length(utf_range(s8), Length::narrow), 9);       TEST_EQUAL(str_length(utf_begin(s8), utf_end(s8), Length::narrow), 9);
     TRY(s8 = u8"ààà\u3000\u3000\u3000");                TEST_EQUAL(str_length(utf_range(s8), Length::wide), 12);        TEST_EQUAL(str_length(utf_begin(s8), utf_end(s8), Length::wide), 12);
 
+    TRY(s8 = u8R"(¯\_(ツ)_/¯)");
+    TEST_EQUAL(str_length(s8, Length::characters), 9);
+    TEST_EQUAL(str_length(s8, Length::graphemes), 9);
+    TEST_EQUAL(str_length(s8, Length::narrow), 10);
+    TEST_EQUAL(str_length(s8, Length::wide), 10);
+    TEST_EQUAL(str_length(s8, Length::graphemes | Length::narrow), 10);
+    TEST_EQUAL(str_length(s8, Length::graphemes | Length::wide), 10);
+
 }
 
 void test_unicorn_string_size_find_offset() {
