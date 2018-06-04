@@ -1,9 +1,9 @@
 #pragma once
 
-#include "unicorn/core.hpp"
 #include "unicorn/character.hpp"
 #include "unicorn/file.hpp"
 #include "unicorn/utf.hpp"
+#include "unicorn/utility.hpp"
 #include <cstdio>
 #include <memory>
 #include <string>

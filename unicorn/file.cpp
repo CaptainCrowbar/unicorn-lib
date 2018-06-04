@@ -2,9 +2,7 @@
 #include "unicorn/format.hpp"
 #include "unicorn/mbcs.hpp"
 #include "unicorn/regex.hpp"
-#include "rs-core/uuid.hpp"
 #include <cerrno>
-#include <chrono>
 #include <cstdio>
 #include <exception>
 #include <mutex>
@@ -685,16 +683,19 @@ namespace RS::Unicorn {
             class RandomName {
             public:
                 RandomName():
-                    rng(uint32_t(std::chrono::high_resolution_clock::now().time_since_epoch().count())) {}
+                    dist(0, uint64_t(-1)) {
+                        std::random_device dev;
+                        rng.seed(dev());
+                    }
                 Ustring operator()() {
                     auto lock = make_lock(mtx);
-                    auto uuid = ruuid(rng);
-                    return uuid.str();
+                    uint64_t x = dist(rng);
+                    return hex(x);
                 }
             private:
                 std::mutex mtx;
                 std::minstd_rand rng;
-                RandomUuid ruuid;
+                std::uniform_int_distribution<uint64_t> dist;
             };
 
             void remove_file_helper(const std::wstring& file) {

@@ -1,9 +1,10 @@
 #pragma once
 
-#include "unicorn/core.hpp"
 #include "unicorn/character.hpp"
+#include "unicorn/utility.hpp"
 #include <algorithm>
 #include <cstring>
+#include <stdexcept>
 #include <string>
 #include <utility>
 
@@ -125,6 +126,37 @@ namespace RS::Unicorn {
         inline void append_error(Ustring& str) { str += utf8_replacement; }
 
     }
+
+    // Exceptions
+
+    class EncodingError:
+    public std::runtime_error {
+    public:
+        EncodingError(): std::runtime_error(prefix({}, 0)), enc(), ofs(0) {}
+        explicit EncodingError(const Ustring& encoding, size_t offset = 0, char32_t c = 0):
+            std::runtime_error(prefix(encoding, offset) + hexcode(&c, 1)), enc(std::make_shared<Ustring>(encoding)), ofs(offset) {}
+        template <typename C> EncodingError(const Ustring& encoding, size_t offset, const C* ptr, size_t n = 1):
+            std::runtime_error(prefix(encoding, offset) + hexcode(ptr, n)), enc(std::make_shared<Ustring>(encoding)), ofs(offset) {}
+        const char* encoding() const noexcept { static const char c = 0; return enc ? enc->data() : &c; }
+        size_t offset() const noexcept { return ofs; }
+    private:
+        std::shared_ptr<Ustring> enc;
+        size_t ofs;
+        static Ustring prefix(const Ustring& encoding, size_t offset);
+        template <typename C> static Ustring hexcode(const C* ptr, size_t n);
+    };
+
+        template <typename C>
+        Ustring EncodingError::hexcode(const C* ptr, size_t n) {
+            using utype = std::make_unsigned_t<C>;
+            if (! ptr || ! n)
+                return {};
+            Ustring s = "; hex";
+            auto uptr = reinterpret_cast<const utype*>(ptr);
+            for (size_t i = 0; i < n; ++i)
+                s += ' ' + hex(uptr[i]);
+            return s;
+        }
 
     // Single character functions
 

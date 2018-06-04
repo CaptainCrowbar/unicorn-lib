@@ -1,5 +1,4 @@
 #include "unicorn/mbcs.hpp"
-#include "unicorn/core.hpp"
 #include "unicorn/unit-test.hpp"
 #include "unicorn/utf.hpp"
 #include <cerrno>

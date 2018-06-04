@@ -23,6 +23,7 @@ UTF-32; <code>wstring</code> may hold either UTF-16 or UTF-32, depending on the 
 <li><a href="#unicorn-library-utf-encodings">Unicorn Library: UTF Encodings</a><ul>
 <li><a href="#contents">Contents</a></li>
 <li><a href="#constants">Constants</a></li>
+<li><a href="#exceptions">Exceptions</a></li>
 <li><a href="#single-character-functions">Single character functions</a></li>
 <li><a href="#utf-decoding-iterator">UTF decoding iterator</a></li>
 <li><a href="#utf-encoding-iterator">UTF encoding iterator</a></li>
@@ -78,6 +79,25 @@ validity, only at the point of input and output. Unlike the UTF conversion
 functions in this module, the functions in <a href="mbcs.html"><code>unicorn/mbcs</code></a> that
 convert between Unicode and other encodings default to <code>Utf::replace</code>, and do
 not accept the <code>Utf::ignore</code> option.</p>
+<h2 id="exceptions">Exceptions</h2>
+<div class="defns">
+<ul>
+<li><code>class</code> <strong><code>EncodingError</code></strong><code>: public std::runtime_error</code><ul>
+<li><code>EncodingError::</code><strong><code>EncodingError</code></strong><code>()</code></li>
+<li><code>explicit EncodingError::</code><strong><code>EncodingError</code></strong><code>(const Ustring&amp; encoding, size_t offset = 0, char32_t c = 0)</code></li>
+<li><code>template &lt;typename C&gt; EncodingError::</code><strong><code>EncodingError</code></strong><code>(const Ustring&amp; encoding, size_t offset, const C* ptr, size_t n = 1)</code></li>
+<li><code>const char* EncodingError::</code><strong><code>encoding</code></strong><code>() noexcept const</code></li>
+<li><code>size_t EncodingError::</code><strong><code>offset</code></strong><code>() const noexcept</code></li>
+</ul>
+</li>
+</ul>
+<p>An exception thrown to indicate a text encoding error encountered when
+converting a string from one encoding to another, or when checking an encoded
+string for validity. The offset of the offending data within the source string
+(when available) can be retrieved through the <code>offset()</code> method. If possible,
+a hexadecimal representation of the offending data will be included in the
+error message.</p>
+</div>
 <h2 id="single-character-functions">Single character functions</h2>
 <div class="defns">
 <ul>

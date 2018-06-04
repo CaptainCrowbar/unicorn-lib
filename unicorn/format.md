@@ -8,9 +8,7 @@ This module provides facilities for formatting various kinds of data as
 Unicode strings, in a manner similar to `printf()` in C, `str.format()` in
 Python, etc. Formatters are supplied for commonly used standard types
 (booleans, integers, floating point, characters, strings, and time points and
-durations), as well as for the `Uuid` and `Version` types from my core
-utilities library; user defined formatters for other types can also be
-supplied.
+durations); user defined formatters for other types can also be supplied.
 
 Basic formatting for range types (containers and arrays) is provided; these
 will be written in comma delimited form. Pairs will be written in
@@ -44,7 +42,6 @@ listed here; their behaviour is described in more detail below.
 * `[const] char*`, `[const] char16_t*`, `[const] char32_t*`, `[const] wchar_t*`
 * `Ustring`, `u16string`, `u32string`, `wstring`
 * `std::chrono::duration<R, P>`, `std::chrono::system_clock::time_point`
-* `RS::Uuid`, `RS::Version`
 
 * <!-- DEFN --> `template <typename T> Ustring` **`format_str`**`(const T& t, uint64_t flags = 0, int prec = -1, size_t width = 0, char32_t pad = U' ')`
 * `template <typename T> Ustring` **`format_str`**`(const T& t, const Ustring& flags)`
@@ -137,8 +134,6 @@ Use `"$$"` to insert a literal dollar sign in the format string.
 Formatting object literal.
 
 ## Formatting for specific types ##
-
-No type-specific flags are defined for `RS::Uuid` and `RS::Version`.
 
 ### Boolean formatting ###
 

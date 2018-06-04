@@ -15,9 +15,11 @@ It implements most of the main requirements of the
 currently supporting Unicode version 8.0.</p>
 <p>The library is divided into the modules listed below; you can import only the
 ones you need, or import the whole API using <code>#include "unicorn/library.hpp"</code>.
-Everything in the Unicorn library is in <code>namespace RS::Unicorn</code> (or a
-subordinate namespace inside <code>Unicorn</code>). You can either qualify all calls with
-the <code>RS::Unicorn::</code> prefix, or use <code>using namespace RS::Unicorn</code>.</p>
+Everything in the Unicorn library is in <code>namespace RS::Unicorn</code>, or a
+subordinate namespace inside <code>Unicorn</code> (except the contents of the
+<code>unicorn/utility</code> module, which is in <code>namespace RS</code>). You can either qualify
+all calls with the <code>RS::Unicorn::</code> prefix, or use <code>using namespace
+RS::Unicorn</code>.</p>
 <p>The Unicorn library depends on the utilities and unit testing framework in my
 <a href="https://github.com/CaptainCrowbar/rs-core-lib">core library</a>.</p>
 <ul>
@@ -25,8 +27,8 @@ the <code>RS::Unicorn::</code> prefix, or use <code>using namespace RS::Unicorn<
 <li><a href="intro.html">Introduction to the Unicorn Library</a></li>
 </ul>
 </li>
-<li><strong>Core definitions</strong><ul>
-<li><a href="core.html"><code>"unicorn/core.hpp"</code></a> -- Core definitions.</li>
+<li><strong>Utilities</strong><ul>
+<li><a href="utility.html"><code>"unicorn/utility.hpp"</code></a> -- Basic utilities.</li>
 </ul>
 </li>
 <li><strong>Character and string encoding</strong><ul>

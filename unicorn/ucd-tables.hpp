@@ -3,8 +3,8 @@
 
 #pragma once
 
-#include "rs-core/common.hpp"
 #include "unicorn/property-values.hpp"
+#include "unicorn/utility.hpp"
 #include <algorithm>
 #include <array>
 #include <iterator>

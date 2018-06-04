@@ -52,6 +52,22 @@ functions in this module, the functions in [`unicorn/mbcs`](mbcs.html) that
 convert between Unicode and other encodings default to `Utf::replace`, and do
 not accept the `Utf::ignore` option.
 
+## Exceptions ##
+
+* `class` **`EncodingError`**`: public std::runtime_error`
+    * `EncodingError::`**`EncodingError`**`()`
+    * `explicit EncodingError::`**`EncodingError`**`(const Ustring& encoding, size_t offset = 0, char32_t c = 0)`
+    * `template <typename C> EncodingError::`**`EncodingError`**`(const Ustring& encoding, size_t offset, const C* ptr, size_t n = 1)`
+    * `const char* EncodingError::`**`encoding`**`() noexcept const`
+    * `size_t EncodingError::`**`offset`**`() const noexcept`
+
+An exception thrown to indicate a text encoding error encountered when
+converting a string from one encoding to another, or when checking an encoded
+string for validity. The offset of the offending data within the source string
+(when available) can be retrieved through the `offset()` method. If possible,
+a hexadecimal representation of the offending data will be included in the
+error message.
+
 ## Single character functions ##
 
 * `size_t` **`char_from_utf8`**`(const char* src, size_t n, char32_t& dst) noexcept`

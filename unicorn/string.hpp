@@ -1,9 +1,9 @@
 #pragma once
 
 #include "unicorn/character.hpp"
-#include "unicorn/core.hpp"
 #include "unicorn/segment.hpp"
 #include "unicorn/utf.hpp"
+#include "unicorn/utility.hpp"
 #include "rs-core/kwargs.hpp"
 #include <algorithm>
 #include <cerrno>

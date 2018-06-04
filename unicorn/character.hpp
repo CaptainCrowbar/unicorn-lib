@@ -1,16 +1,36 @@
 #pragma once
 
-#include "unicorn/core.hpp"
 #include "unicorn/property-values.hpp"
+#include "unicorn/utility.hpp"
 #include "rs-core/string.hpp"
 #include <cstring>
 #include <functional>
+#include <map>
 #include <ostream>
+#include <stdexcept>
 #include <type_traits>
 #include <utility>
 #include <vector>
 
+RS_LDLIB(unicorn z);
+
 namespace RS::Unicorn {
+
+    // Version information
+
+    namespace UnicornDetail {
+
+        struct UnicodeVersionTable {
+            std::map<Version, char32_t> table;
+            UnicodeVersionTable();
+        };
+
+        const UnicodeVersionTable& unicode_version_table();
+
+    }
+
+    Version unicorn_version() noexcept;
+    Version unicode_version() noexcept;
 
     // Constants
 
@@ -46,6 +66,14 @@ namespace RS::Unicorn {
     constexpr size_t max_canonical_decomposition      = 2;               // Maximum length of a canonical decomposition
     constexpr size_t max_compatibility_decomposition  = 18;              // Maximum length of a compatibility decomposition
 
+    // Exceptions
+
+    class InitializationError:
+    public std::runtime_error {
+    public:
+        explicit InitializationError(const Ustring& message): std::runtime_error(message) {}
+    };
+
     // Basic character functions
 
     inline Ustring char_as_hex(char32_t c) { return "U+" + ascii_uppercase(hex(c, 4)); }
@@ -66,6 +94,10 @@ namespace RS::Unicorn {
             || (c >= first_private_use_b_char && c <= last_private_use_b_char);
     }
     template <typename C> constexpr uint32_t char_to_uint(C c) noexcept { return std::make_unsigned_t<C>(c); }
+
+    template <typename T> constexpr bool is_character_type =
+        std::is_same<T, char>::value || std::is_same<T, char16_t>::value
+        || std::is_same<T, char32_t>::value || std::is_same<T, wchar_t>::value;
 
     // General category
 

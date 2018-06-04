@@ -2,8 +2,8 @@
 
 #include "unicorn/unit-test.hpp"
 
-extern void test_unicorn_core_character_types();
-extern void test_unicorn_core_version_information();
+extern void test_unicorn_utility_module();
+extern void test_unicorn_character_version_information();
 extern void test_unicorn_character_basic_functions();
 extern void test_unicorn_character_general_category();
 extern void test_unicorn_character_boolean_properties();
@@ -32,8 +32,6 @@ extern void test_unicorn_format_floating_point();
 extern void test_unicorn_format_characters();
 extern void test_unicorn_format_strings();
 extern void test_unicorn_format_date_and_time();
-extern void test_unicorn_format_uuid();
-extern void test_unicorn_format_version();
 extern void test_unicorn_format_ranges();
 extern void test_unicorn_format_alignment_and_padding();
 extern void test_unicorn_format_case_mapping();
@@ -132,8 +130,8 @@ int main() {
 
     static const RS::UnitTest::test_index index = {
 
-        { "unicorn/core/character-types", test_unicorn_core_character_types },
-        { "unicorn/core/version-information", test_unicorn_core_version_information },
+        { "unicorn/utility/module", test_unicorn_utility_module },
+        { "unicorn/character/version-information", test_unicorn_character_version_information },
         { "unicorn/character/basic-functions", test_unicorn_character_basic_functions },
         { "unicorn/character/general-category", test_unicorn_character_general_category },
         { "unicorn/character/boolean-properties", test_unicorn_character_boolean_properties },
@@ -162,8 +160,6 @@ int main() {
         { "unicorn/format/characters", test_unicorn_format_characters },
         { "unicorn/format/strings", test_unicorn_format_strings },
         { "unicorn/format/date-and-time", test_unicorn_format_date_and_time },
-        { "unicorn/format/uuid", test_unicorn_format_uuid },
-        { "unicorn/format/version", test_unicorn_format_version },
         { "unicorn/format/ranges", test_unicorn_format_ranges },
         { "unicorn/format/alignment-and-padding", test_unicorn_format_alignment_and_padding },
         { "unicorn/format/case-mapping", test_unicorn_format_case_mapping },

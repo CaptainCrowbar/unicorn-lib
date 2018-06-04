@@ -1,5 +1,4 @@
 #include "unicorn/string.hpp"
-#include "unicorn/core.hpp"
 #include "unicorn/unit-test.hpp"
 
 using namespace RS;

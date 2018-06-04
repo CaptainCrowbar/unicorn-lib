@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "unicorn/utility.hpp"
 #include <cstdint>
 
 // Windows brain damage

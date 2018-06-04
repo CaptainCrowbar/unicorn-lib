@@ -1,6 +1,7 @@
 #pragma once
 
-#include "unicorn/core.hpp"
+#include "unicorn/character.hpp"
+#include "unicorn/utility.hpp"
 
 namespace RS::Unicorn {
 

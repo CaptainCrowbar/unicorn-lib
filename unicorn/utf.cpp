@@ -100,8 +100,7 @@ namespace RS::Unicorn {
                 dst = src[0];
                 return 1;
             } else if (n >= 2 && char_is_high_surrogate(src[0]) && char_is_low_surrogate(src[1])) {
-                dst = 0x10000 + ((char32_t(src[0]) & 0x3ff) << 10)
-                    + (char32_t(src[1]) & 0x3ff);
+                dst = 0x10000 + ((char32_t(src[0]) & 0x3ff) << 10) + (char32_t(src[1]) & 0x3ff);
                 return 2;
             } else {
                 dst = not_unicode;
@@ -114,8 +113,7 @@ namespace RS::Unicorn {
                 dst = src[pos - 1];
                 return 1;
             } else if (pos >= 2 && char_is_high_surrogate(src[pos - 2]) && char_is_low_surrogate(src[pos - 1])) {
-                dst = 0x10000 + ((char32_t(src[pos - 2]) & 0x3ff) << 10)
-                    + (char32_t(src[pos - 1]) & 0x3ff);
+                dst = 0x10000 + ((char32_t(src[pos - 2]) & 0x3ff) << 10) + (char32_t(src[pos - 1]) & 0x3ff);
                 return 2;
             } else {
                 dst = not_unicode;
@@ -134,6 +132,17 @@ namespace RS::Unicorn {
             }
         }
 
+    }
+
+    // Exceptions
+
+    Ustring EncodingError::prefix(const Ustring& encoding, size_t offset) {
+        Ustring s = "Encoding error";
+        if (! encoding.empty())
+            s += " (" + encoding + ")";
+        if (offset > 0)
+            s += "; offset " + dec(offset);
+        return s;
     }
 
     // Single character functions

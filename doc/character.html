@@ -12,13 +12,16 @@
 <li><code>#include "unicorn/character.hpp"</code></li>
 </ul>
 <p>This module contains functions and constants relating to Unicode characters
-and their basic properties.</p>
+and their basic properties, as well as version information about the Unicorn
+library itself.</p>
 <h2 id="contents">Contents</h2>
 <div class="toc">
 <ul>
 <li><a href="#unicorn-library-character-properties">Unicorn Library: Character Properties</a><ul>
 <li><a href="#contents">Contents</a></li>
+<li><a href="#version-information">Version information</a></li>
 <li><a href="#constants">Constants</a></li>
+<li><a href="#exceptions">Exceptions</a></li>
 <li><a href="#basic-character-functions">Basic character functions</a></li>
 <li><a href="#general-category">General category</a></li>
 <li><a href="#boolean-properties">Boolean properties</a></li>
@@ -33,6 +36,15 @@ and their basic properties.</p>
 </ul>
 </li>
 </ul>
+</div>
+<h2 id="version-information">Version information</h2>
+<div class="defns">
+<ul>
+<li><code>Version</code> <strong><code>unicorn_version</code></strong><code>() noexcept</code></li>
+<li><code>Version</code> <strong><code>unicode_version</code></strong><code>() noexcept</code></li>
+</ul>
+<p>These return the version of the Unicorn library and the supported version of
+the Unicode standard.</p>
 </div>
 <h2 id="constants">Constants</h2>
 <div class="defns">
@@ -90,6 +102,15 @@ size of a single decomposition step; decomposition is normally applied
 recursively, so a single character may end up exceeding these sizes after the
 complete decomposition process has been applied.</p>
 </div>
+<h2 id="exceptions">Exceptions</h2>
+<div class="defns">
+<ul>
+<li><code>class</code> <strong><code>InitializationError</code></strong><code>: public std::runtime_error</code></li>
+</ul>
+<p>An abstract base class for internal errors that may happen while loading the
+Unicode tables used by the character functions. Functions that can throw
+exceptions derived from this are individually documented.</p>
+</div>
 <h2 id="basic-character-functions">Basic character functions</h2>
 <div class="defns">
 <ul>
@@ -133,6 +154,13 @@ Unicode code point. This should be used in preference to simply casting a
 character to an integer, because plain <code>char</code> is signed on most systems; this
 means that 8 bit code points are negative when stored in a <code>char</code>, and casting
 them directly to an unsigned integer will give the wrong answer.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>template &lt;typename T&gt; constexpr bool</code> <strong><code>is_character_type</code></strong></li>
+</ul>
+<p>True if <code>T</code> is one of the character types recognized by the Unicorn library
+(<code>char</code>, <code>char16_t</code>, <code>char32_t</code>, or <code>wchar_t</code>).</p>
 </div>
 <h2 id="general-category">General category</h2>
 <div class="defns">

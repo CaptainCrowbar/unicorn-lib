@@ -15,9 +15,7 @@
 Unicode strings, in a manner similar to <code>printf()</code> in C, <code>str.format()</code> in
 Python, etc. Formatters are supplied for commonly used standard types
 (booleans, integers, floating point, characters, strings, and time points and
-durations), as well as for the <code>Uuid</code> and <code>Version</code> types from my core
-utilities library; user defined formatters for other types can also be
-supplied.</p>
+durations); user defined formatters for other types can also be supplied.</p>
 <p>Basic formatting for range types (containers and arrays) is provided; these
 will be written in comma delimited form. Pairs will be written in
 <code>"key:value"</code> format. More elaborate formatting for ranges is beyond the scope
@@ -64,7 +62,6 @@ listed here; their behaviour is described in more detail below.</p>
 <li><code>[const] char*</code>, <code>[const] char16_t*</code>, <code>[const] char32_t*</code>, <code>[const] wchar_t*</code></li>
 <li><code>Ustring</code>, <code>u16string</code>, <code>u32string</code>, <code>wstring</code></li>
 <li><code>std::chrono::duration&lt;R, P&gt;</code>, <code>std::chrono::system_clock::time_point</code></li>
-<li><code>RS::Uuid</code>, <code>RS::Version</code></li>
 </ul>
 </div>
 <div class="defns">
@@ -207,7 +204,6 @@ Ustring b = f("Bob", 1.23); // "Hello Bob, your number is 1.230"
 <p>Formatting object literal.</p>
 </div>
 <h2 id="formatting-for-specific-types">Formatting for specific types</h2>
-<p>No type-specific flags are defined for <code>RS::Uuid</code> and <code>RS::Version</code>.</p>
 <h3 id="boolean-formatting">Boolean formatting</h3>
 <div class="defns">
 <!-- DEFN -->

@@ -5,11 +5,20 @@ _Unicode library for C++ by Ross Smith_
 * `#include "unicorn/character.hpp"`
 
 This module contains functions and constants relating to Unicode characters
-and their basic properties.
+and their basic properties, as well as version information about the Unicorn
+library itself.
 
 ## Contents ##
 
 [TOC]
+
+## Version information ##
+
+* `Version` **`unicorn_version`**`() noexcept`
+* `Version` **`unicode_version`**`() noexcept`
+
+These return the version of the Unicorn library and the supported version of
+the Unicode standard.
 
 ## Constants ##
 
@@ -60,6 +69,14 @@ size of a single decomposition step; decomposition is normally applied
 recursively, so a single character may end up exceeding these sizes after the
 complete decomposition process has been applied.
 
+## Exceptions ##
+
+* `class` **`InitializationError`**`: public std::runtime_error`
+
+An abstract base class for internal errors that may happen while loading the
+Unicode tables used by the character functions. Functions that can throw
+exceptions derived from this are individually documented.
+
 ## Basic character functions ##
 
 * `Ustring` **`char_as_hex`**`(char32_t c)`
@@ -97,6 +114,11 @@ Unicode code point. This should be used in preference to simply casting a
 character to an integer, because plain `char` is signed on most systems; this
 means that 8 bit code points are negative when stored in a `char`, and casting
 them directly to an unsigned integer will give the wrong answer.
+
+* `template <typename T> constexpr bool` **`is_character_type`**
+
+True if `T` is one of the character types recognized by the Unicorn library
+(`char`, `char16_t`, `char32_t`, or `wchar_t`).
 
 ## General category ##
 

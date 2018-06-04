@@ -292,11 +292,12 @@ You can import the whole library using `#include "unicorn/library.hpp"`, or
 include the individual modules that you need. Link with `-lunicorn`, and with
 the other required libraries described above.
 
-Everything in the Unicorn library is in `namespace RS::Unicorn` (or a
-subordinate namespace inside `Unicorn`). You can either qualify all calls with
-the `RS::Unicorn::` prefix, or use `using namespace RS::Unicorn`.
+Everything in the Unicorn library is in `namespace RS::Unicorn`, or a
+subordinate namespace inside `Unicorn` (except the contents of the
+`unicorn/utility` module, which is in `namespace RS`). You can either qualify
+all calls with the `RS::Unicorn::` prefix, or use `using namespace
+RS::Unicorn`.
 
 Unicorn calls my [core utilities library](https://github.com/CaptainCrowbar/rs-core-lib).
-This consists only of a single header (and a second one if you build the unit
-tests); no special build actions are required beyond making sure the compiler
-can find the `"rs-core/core.hpp"` header.
+This is a header only library; no special build actions are required beyond
+making sure the compiler can find the `"rs-core/*.hpp"` headers.

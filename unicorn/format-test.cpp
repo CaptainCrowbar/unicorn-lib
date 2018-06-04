@@ -1,5 +1,4 @@
 #include "unicorn/format.hpp"
-#include "unicorn/core.hpp"
 #include "unicorn/unit-test.hpp"
 #include "rs-core/time.hpp"
 #include <chrono>
@@ -539,26 +538,6 @@ void test_unicorn_format_date_and_time() {
     TRY(from_seconds(-1234567, t));    TEST_EQUAL(format_str(t, "3"), "-14d06h56m07.000s");
     TRY(from_seconds(-12345678, t));   TEST_EQUAL(format_str(t, "3"), "-142d21h21m18.000s");
     TRY(from_seconds(-123456789, t));  TEST_EQUAL(format_str(t, "3"), "-1428d21h33m09.000s");
-
-}
-
-void test_unicorn_format_uuid() {
-
-    Uuid u1, u2 = {0x01,0x23,0x45,0x67,0x89,0xab,0xcd,0xef,0x01,0x23,0x45,0x67,0x89,0xab,0xcd,0xef};
-
-    TEST_EQUAL(format_str(u1), "00000000-0000-0000-0000-000000000000");
-    TEST_EQUAL(format_str(u2), "01234567-89ab-cdef-0123-456789abcdef");
-
-}
-
-void test_unicorn_format_version() {
-
-    Version v1 {1, 0, 0}, v2 {2, 3, 4};
-
-    TEST_EQUAL(format_str(v1), "1.0");
-    TEST_EQUAL(format_str(v2), "2.3.4");
-    TEST_EQUAL(format_str(v1, "4"), "1.0.0.0");
-    TEST_EQUAL(format_str(v2, "4"), "2.3.4.0");
 
 }
 

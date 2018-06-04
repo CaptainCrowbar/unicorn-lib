@@ -1,4 +1,3 @@
-#include "unicorn/core.hpp"
 #include "unicorn/options.hpp"
 #include "unicorn/unit-test.hpp"
 #include <sstream>

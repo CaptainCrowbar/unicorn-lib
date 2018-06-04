@@ -1,12 +1,11 @@
 #pragma once
 
-#include "unicorn/core.hpp"
 #include "unicorn/character.hpp"
 #include "unicorn/string.hpp"
 #include "unicorn/utf.hpp"
+#include "unicorn/utility.hpp"
 #include "rs-core/meta.hpp"
 #include "rs-core/time.hpp"
-#include "rs-core/uuid.hpp"
 #include <algorithm>
 #include <chrono>
 #include <iterator>
@@ -185,8 +184,6 @@ namespace RS::Unicorn {
     inline Ustring format_type(float t, uint64_t flags, int prec)               { return UnicornDetail::format_float(t, flags, prec); }
     inline Ustring format_type(double t, uint64_t flags, int prec)              { return UnicornDetail::format_float(t, flags, prec); }
     inline Ustring format_type(long double t, uint64_t flags, int prec)         { return UnicornDetail::format_float(t, flags, prec); }
-    inline Ustring format_type(Uuid t, uint64_t /*flags*/, int /*prec*/)        { return t.str(); }
-    inline Ustring format_type(Version t, uint64_t /*flags*/, int prec)         { return prec >= 0 ? t.str(prec) : t.str(); }
 
     namespace UnicornDetail {
 
