@@ -2,7 +2,7 @@
 
 namespace RS::Unicorn::UnicornDetail {
 
-const KeyValue<char32_t, uint32_t> scripts_array[] {
+const std::array<KeyValue<char32_t, uint32_t>, 1434> scripts_array = {{
 {0x0,2054781305},
 {0x41,1818326126},
 {0x5b,2054781305},
@@ -1437,11 +1437,11 @@ const KeyValue<char32_t, uint32_t> scripts_array[] {
 {0xe0080,2054847098},
 {0xe0100,2053729896},
 {0xe01f0,2054847098},
-};
+}};
 
-const TableView<char32_t, uint32_t> scripts_table {std::begin(scripts_array), std::end(scripts_array)};
+const TableView<char32_t, uint32_t> scripts_table {&scripts_array[0], &scripts_array[0] + scripts_array.size()};
 
-const KeyValue<char32_t, char const*> script_extensions_array[] {
+const std::array<KeyValue<char32_t, char const*>, 156> script_extensions_array = {{
 {0x0,static_cast<char const*>(0)},
 {0x342,"Grek"},
 {0x343,static_cast<char const*>(0)},
@@ -1598,8 +1598,8 @@ const KeyValue<char32_t, char const*> script_extensions_array[] {
 {0x1bca4,static_cast<char const*>(0)},
 {0x1d360,"Hani"},
 {0x1d372,static_cast<char const*>(0)},
-};
+}};
 
-const TableView<char32_t, char const*> script_extensions_table {std::begin(script_extensions_array), std::end(script_extensions_array)};
+const TableView<char32_t, char const*> script_extensions_table {&script_extensions_array[0], &script_extensions_array[0] + script_extensions_array.size()};
 
 }

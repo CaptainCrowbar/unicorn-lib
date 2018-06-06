@@ -47,6 +47,7 @@
 #include <cwchar>
 #include <exception>
 #include <functional>
+#include <iostream>
 #include <iterator>
 #include <mutex>
 #include <ostream>
@@ -59,6 +60,14 @@
 #include <type_traits>
 #include <utility>
 #include <vector>
+
+// Microsoft brain damage
+
+#ifdef _MSC_VER
+    #pragma warning(disable: 4127) // conditional expression is constant
+    #pragma warning(disable: 4250) // class inherits member by dominance
+    #pragma warning(disable: 4310) // cast truncates constant value
+#endif
 
 // Preprocessor macros
 

@@ -2,7 +2,7 @@
 
 namespace RS::Unicorn::UnicornDetail {
 
-const KeyValue<char32_t, uint16_t> general_category_array[] {
+const std::array<KeyValue<char32_t, uint16_t>, 3566> general_category_array = {{
 {0x0,0x4363},
 {0x20,0x5a73},
 {0x21,0x506f},
@@ -3569,11 +3569,11 @@ const KeyValue<char32_t, uint16_t> general_category_array[] {
 {0xffffe,0x436e},
 {0x100000,0x436f},
 {0x10fffe,0x436e},
-};
+}};
 
-const TableView<char32_t, uint16_t> general_category_table {std::begin(general_category_array), std::end(general_category_array)};
+const TableView<char32_t, uint16_t> general_category_table {&general_category_array[0], &general_category_array[0] + general_category_array.size()};
 
-const KeyValue<char32_t, Joining_Type> joining_type_array[] {
+const std::array<KeyValue<char32_t, Joining_Type>, 161> joining_type_array = {{
 {0x0,static_cast<Joining_Type>(0)},
 {0x600,Joining_Type::Non_Joining},
 {0x606,static_cast<Joining_Type>(0)},
@@ -3735,11 +3735,11 @@ const KeyValue<char32_t, Joining_Type> joining_type_array[] {
 {0x10bad,Joining_Type::Dual_Joining},
 {0x10baf,Joining_Type::Non_Joining},
 {0x10bb0,static_cast<Joining_Type>(0)},
-};
+}};
 
-const TableView<char32_t, Joining_Type> joining_type_table {std::begin(joining_type_array), std::end(joining_type_array)};
+const TableView<char32_t, Joining_Type> joining_type_table {&joining_type_array[0], &joining_type_array[0] + joining_type_array.size()};
 
-const KeyValue<char32_t, Joining_Group> joining_group_array[] {
+const std::array<KeyValue<char32_t, Joining_Group>, 193> joining_group_array = {{
 {0x0,static_cast<Joining_Group>(0)},
 {0x620,Joining_Group::Yeh},
 {0x621,static_cast<Joining_Group>(0)},
@@ -3933,11 +3933,11 @@ const KeyValue<char32_t, Joining_Group> joining_group_array[] {
 {0x10aee,Joining_Group::Manichaean_Twenty},
 {0x10aef,Joining_Group::Manichaean_Hundred},
 {0x10af0,static_cast<Joining_Group>(0)},
-};
+}};
 
-const TableView<char32_t, Joining_Group> joining_group_table {std::begin(joining_group_array), std::end(joining_group_array)};
+const TableView<char32_t, Joining_Group> joining_group_table {&joining_group_array[0], &joining_group_array[0] + joining_group_array.size()};
 
-const KeyValue<char32_t, char32_t> default_ignorable_array[] {
+const std::array<KeyValue<char32_t, char32_t>, 17> default_ignorable_array = {{
 {0xad,0xad},
 {0x34f,0x34f},
 {0x61c,0x61c},
@@ -3955,11 +3955,11 @@ const KeyValue<char32_t, char32_t> default_ignorable_array[] {
 {0x1bca0,0x1bca3},
 {0x1d173,0x1d17a},
 {0xe0000,0xe0fff},
-};
+}};
 
-const TableView<char32_t, char32_t> default_ignorable_table {std::begin(default_ignorable_array), std::end(default_ignorable_array)};
+const TableView<char32_t, char32_t> default_ignorable_table {&default_ignorable_array[0], &default_ignorable_array[0] + default_ignorable_array.size()};
 
-const KeyValue<char32_t, char32_t> soft_dotted_array[] {
+const std::array<KeyValue<char32_t, char32_t>, 31> soft_dotted_array = {{
 {0x69,0x6a},
 {0x12f,0x12f},
 {0x249,0x249},
@@ -3991,11 +3991,11 @@ const KeyValue<char32_t, char32_t> soft_dotted_array[] {
 {0x1d62a,0x1d62b},
 {0x1d65e,0x1d65f},
 {0x1d692,0x1d693},
-};
+}};
 
-const TableView<char32_t, char32_t> soft_dotted_table {std::begin(soft_dotted_array), std::end(soft_dotted_array)};
+const TableView<char32_t, char32_t> soft_dotted_table {&soft_dotted_array[0], &soft_dotted_array[0] + soft_dotted_array.size()};
 
-const KeyValue<char32_t, char32_t> white_space_array[] {
+const std::array<KeyValue<char32_t, char32_t>, 10> white_space_array = {{
 {0x9,0xd},
 {0x20,0x20},
 {0x85,0x85},
@@ -4006,11 +4006,11 @@ const KeyValue<char32_t, char32_t> white_space_array[] {
 {0x202f,0x202f},
 {0x205f,0x205f},
 {0x3000,0x3000},
-};
+}};
 
-const TableView<char32_t, char32_t> white_space_table {std::begin(white_space_array), std::end(white_space_array)};
+const TableView<char32_t, char32_t> white_space_table {&white_space_array[0], &white_space_array[0] + white_space_array.size()};
 
-const KeyValue<char32_t, char32_t> id_start_array[] {
+const std::array<KeyValue<char32_t, char32_t>, 555> id_start_array = {{
 {0x41,0x5a},
 {0x61,0x7a},
 {0xaa,0xaa},
@@ -4566,11 +4566,11 @@ const KeyValue<char32_t, char32_t> id_start_array[] {
 {0x2b740,0x2b81d},
 {0x2b820,0x2cea1},
 {0x2f800,0x2fa1d},
-};
+}};
 
-const TableView<char32_t, char32_t> id_start_table {std::begin(id_start_array), std::end(id_start_array)};
+const TableView<char32_t, char32_t> id_start_table {&id_start_array[0], &id_start_array[0] + id_start_array.size()};
 
-const KeyValue<char32_t, char32_t> id_nonstart_array[] {
+const std::array<KeyValue<char32_t, char32_t>, 293> id_nonstart_array = {{
 {0x30,0x39},
 {0x5f,0x5f},
 {0xb7,0xb7},
@@ -4864,11 +4864,11 @@ const KeyValue<char32_t, char32_t> id_nonstart_array[] {
 {0x1daa1,0x1daaf},
 {0x1e8d0,0x1e8d6},
 {0xe0100,0xe01ef},
-};
+}};
 
-const TableView<char32_t, char32_t> id_nonstart_table {std::begin(id_nonstart_array), std::end(id_nonstart_array)};
+const TableView<char32_t, char32_t> id_nonstart_table {&id_nonstart_array[0], &id_nonstart_array[0] + id_nonstart_array.size()};
 
-const KeyValue<char32_t, char32_t> xid_start_array[] {
+const std::array<KeyValue<char32_t, char32_t>, 562> xid_start_array = {{
 {0x41,0x5a},
 {0x61,0x7a},
 {0xaa,0xaa},
@@ -5431,11 +5431,11 @@ const KeyValue<char32_t, char32_t> xid_start_array[] {
 {0x2b740,0x2b81d},
 {0x2b820,0x2cea1},
 {0x2f800,0x2fa1d},
-};
+}};
 
-const TableView<char32_t, char32_t> xid_start_table {std::begin(xid_start_array), std::end(xid_start_array)};
+const TableView<char32_t, char32_t> xid_start_table {&xid_start_array[0], &xid_start_array[0] + xid_start_array.size()};
 
-const KeyValue<char32_t, char32_t> xid_nonstart_array[] {
+const std::array<KeyValue<char32_t, char32_t>, 294> xid_nonstart_array = {{
 {0x30,0x39},
 {0x5f,0x5f},
 {0xb7,0xb7},
@@ -5730,11 +5730,11 @@ const KeyValue<char32_t, char32_t> xid_nonstart_array[] {
 {0x1daa1,0x1daaf},
 {0x1e8d0,0x1e8d6},
 {0xe0100,0xe01ef},
-};
+}};
 
-const TableView<char32_t, char32_t> xid_nonstart_table {std::begin(xid_nonstart_array), std::end(xid_nonstart_array)};
+const TableView<char32_t, char32_t> xid_nonstart_table {&xid_nonstart_array[0], &xid_nonstart_array[0] + xid_nonstart_array.size()};
 
-const KeyValue<char32_t, char32_t> pattern_syntax_array[] {
+const std::array<KeyValue<char32_t, char32_t>, 28> pattern_syntax_array = {{
 {0x21,0x2f},
 {0x3a,0x40},
 {0x5b,0x5e},
@@ -5763,21 +5763,21 @@ const KeyValue<char32_t, char32_t> pattern_syntax_array[] {
 {0x3030,0x3030},
 {0xfd3e,0xfd3f},
 {0xfe45,0xfe46},
-};
+}};
 
-const TableView<char32_t, char32_t> pattern_syntax_table {std::begin(pattern_syntax_array), std::end(pattern_syntax_array)};
+const TableView<char32_t, char32_t> pattern_syntax_table {&pattern_syntax_array[0], &pattern_syntax_array[0] + pattern_syntax_array.size()};
 
-const KeyValue<char32_t, char32_t> pattern_white_space_array[] {
+const std::array<KeyValue<char32_t, char32_t>, 5> pattern_white_space_array = {{
 {0x9,0xd},
 {0x20,0x20},
 {0x85,0x85},
 {0x200e,0x200f},
 {0x2028,0x2029},
-};
+}};
 
-const TableView<char32_t, char32_t> pattern_white_space_table {std::begin(pattern_white_space_array), std::end(pattern_white_space_array)};
+const TableView<char32_t, char32_t> pattern_white_space_table {&pattern_white_space_array[0], &pattern_white_space_array[0] + pattern_white_space_array.size()};
 
-const KeyValue<char32_t, East_Asian_Width> east_asian_width_array[] {
+const std::array<KeyValue<char32_t, East_Asian_Width>, 1562> east_asian_width_array = {{
 {0x0,East_Asian_Width::N},
 {0x20,East_Asian_Width::Na},
 {0x7f,East_Asian_Width::N},
@@ -7340,11 +7340,11 @@ const KeyValue<char32_t, East_Asian_Width> east_asian_width_array[] {
 {0xffffe,static_cast<East_Asian_Width>(0)},
 {0x100000,East_Asian_Width::A},
 {0x10fffe,static_cast<East_Asian_Width>(0)},
-};
+}};
 
-const TableView<char32_t, East_Asian_Width> east_asian_width_table {std::begin(east_asian_width_array), std::end(east_asian_width_array)};
+const TableView<char32_t, East_Asian_Width> east_asian_width_table {&east_asian_width_array[0], &east_asian_width_array[0] + east_asian_width_array.size()};
 
-const KeyValue<char32_t, Hangul_Syllable_Type> hangul_syllable_type_array[] {
+const std::array<KeyValue<char32_t, Hangul_Syllable_Type>, 810> hangul_syllable_type_array = {{
 {0x0,static_cast<Hangul_Syllable_Type>(0)},
 {0x1100,Hangul_Syllable_Type::L},
 {0x1160,Hangul_Syllable_Type::V},
@@ -8155,11 +8155,11 @@ const KeyValue<char32_t, Hangul_Syllable_Type> hangul_syllable_type_array[] {
 {0xd7c7,static_cast<Hangul_Syllable_Type>(0)},
 {0xd7cb,Hangul_Syllable_Type::T},
 {0xd7fc,static_cast<Hangul_Syllable_Type>(0)},
-};
+}};
 
-const TableView<char32_t, Hangul_Syllable_Type> hangul_syllable_type_table {std::begin(hangul_syllable_type_array), std::end(hangul_syllable_type_array)};
+const TableView<char32_t, Hangul_Syllable_Type> hangul_syllable_type_table {&hangul_syllable_type_array[0], &hangul_syllable_type_array[0] + hangul_syllable_type_array.size()};
 
-const KeyValue<char32_t, Indic_Positional_Category> indic_positional_category_array[] {
+const std::array<KeyValue<char32_t, Indic_Positional_Category>, 664> indic_positional_category_array = {{
 {0x0,static_cast<Indic_Positional_Category>(0)},
 {0x900,Indic_Positional_Category::Top},
 {0x903,Indic_Positional_Category::Right},
@@ -8824,11 +8824,11 @@ const KeyValue<char32_t, Indic_Positional_Category> indic_positional_category_ar
 {0x11728,Indic_Positional_Category::Bottom},
 {0x11729,Indic_Positional_Category::Top},
 {0x1172c,static_cast<Indic_Positional_Category>(0)},
-};
+}};
 
-const TableView<char32_t, Indic_Positional_Category> indic_positional_category_table {std::begin(indic_positional_category_array), std::end(indic_positional_category_array)};
+const TableView<char32_t, Indic_Positional_Category> indic_positional_category_table {&indic_positional_category_array[0], &indic_positional_category_array[0] + indic_positional_category_array.size()};
 
-const KeyValue<char32_t, Indic_Syllabic_Category> indic_syllabic_category_array[] {
+const std::array<KeyValue<char32_t, Indic_Syllabic_Category>, 889> indic_syllabic_category_array = {{
 {0x0,static_cast<Indic_Syllabic_Category>(0)},
 {0x2d,Indic_Syllabic_Category::Consonant_Placeholder},
 {0x2e,static_cast<Indic_Syllabic_Category>(0)},
@@ -9718,11 +9718,11 @@ const KeyValue<char32_t, Indic_Syllabic_Category> indic_syllabic_category_array[
 {0x1172c,static_cast<Indic_Syllabic_Category>(0)},
 {0x11730,Indic_Syllabic_Category::Number},
 {0x1173c,static_cast<Indic_Syllabic_Category>(0)},
-};
+}};
 
-const TableView<char32_t, Indic_Syllabic_Category> indic_syllabic_category_table {std::begin(indic_syllabic_category_array), std::end(indic_syllabic_category_array)};
+const TableView<char32_t, Indic_Syllabic_Category> indic_syllabic_category_table {&indic_syllabic_category_array[0], &indic_syllabic_category_array[0] + indic_syllabic_category_array.size()};
 
-const KeyValue<char32_t, Grapheme_Cluster_Break> grapheme_cluster_break_array[] {
+const std::array<KeyValue<char32_t, Grapheme_Cluster_Break>, 1502> grapheme_cluster_break_array = {{
 {0x0,Grapheme_Cluster_Break::Control},
 {0xa,Grapheme_Cluster_Break::LF},
 {0xb,Grapheme_Cluster_Break::Control},
@@ -11225,11 +11225,11 @@ const KeyValue<char32_t, Grapheme_Cluster_Break> grapheme_cluster_break_array[] 
 {0xe0100,Grapheme_Cluster_Break::Extend},
 {0xe01f0,Grapheme_Cluster_Break::Control},
 {0xe1000,static_cast<Grapheme_Cluster_Break>(0)},
-};
+}};
 
-const TableView<char32_t, Grapheme_Cluster_Break> grapheme_cluster_break_table {std::begin(grapheme_cluster_break_array), std::end(grapheme_cluster_break_array)};
+const TableView<char32_t, Grapheme_Cluster_Break> grapheme_cluster_break_table {&grapheme_cluster_break_array[0], &grapheme_cluster_break_array[0] + grapheme_cluster_break_array.size()};
 
-const KeyValue<char32_t, Line_Break> line_break_array[] {
+const std::array<KeyValue<char32_t, Line_Break>, 3096> line_break_array = {{
 {0x0,Line_Break::CM},
 {0x9,Line_Break::BA},
 {0xa,Line_Break::LF},
@@ -14326,11 +14326,11 @@ const KeyValue<char32_t, Line_Break> line_break_array[] {
 {0xffffe,static_cast<Line_Break>(0)},
 {0x100000,Line_Break::XX},
 {0x10fffe,static_cast<Line_Break>(0)},
-};
+}};
 
-const TableView<char32_t, Line_Break> line_break_table {std::begin(line_break_array), std::end(line_break_array)};
+const TableView<char32_t, Line_Break> line_break_table {&line_break_array[0], &line_break_array[0] + line_break_array.size()};
 
-const KeyValue<char32_t, Sentence_Break> sentence_break_array[] {
+const std::array<KeyValue<char32_t, Sentence_Break>, 2896> sentence_break_array = {{
 {0x0,static_cast<Sentence_Break>(0)},
 {0x9,Sentence_Break::Sp},
 {0xa,Sentence_Break::LF},
@@ -17227,11 +17227,11 @@ const KeyValue<char32_t, Sentence_Break> sentence_break_array[] {
 {0xe0080,static_cast<Sentence_Break>(0)},
 {0xe0100,Sentence_Break::Extend},
 {0xe01f0,static_cast<Sentence_Break>(0)},
-};
+}};
 
-const TableView<char32_t, Sentence_Break> sentence_break_table {std::begin(sentence_break_array), std::end(sentence_break_array)};
+const TableView<char32_t, Sentence_Break> sentence_break_table {&sentence_break_array[0], &sentence_break_array[0] + sentence_break_array.size()};
 
-const KeyValue<char32_t, Word_Break> word_break_array[] {
+const std::array<KeyValue<char32_t, Word_Break>, 1524> word_break_array = {{
 {0x0,static_cast<Word_Break>(0)},
 {0xa,Word_Break::LF},
 {0xb,Word_Break::Newline},
@@ -18756,11 +18756,11 @@ const KeyValue<char32_t, Word_Break> word_break_array[] {
 {0xe0080,static_cast<Word_Break>(0)},
 {0xe0100,Word_Break::Extend},
 {0xe01f0,static_cast<Word_Break>(0)},
-};
+}};
 
-const TableView<char32_t, Word_Break> word_break_table {std::begin(word_break_array), std::end(word_break_array)};
+const TableView<char32_t, Word_Break> word_break_table {&word_break_array[0], &word_break_array[0] + word_break_array.size()};
 
-const KeyValue<char32_t, Numeric_Type> numeric_type_array[] {
+const std::array<KeyValue<char32_t, Numeric_Type>, 393> numeric_type_array = {{
 {0x0,static_cast<Numeric_Type>(0)},
 {0x30,Numeric_Type::Decimal},
 {0x3a,static_cast<Numeric_Type>(0)},
@@ -19154,8 +19154,8 @@ const KeyValue<char32_t, Numeric_Type> numeric_type_array[] {
 {0x2626e,static_cast<Numeric_Type>(0)},
 {0x2f890,Numeric_Type::Numeric},
 {0x2f891,static_cast<Numeric_Type>(0)},
-};
+}};
 
-const TableView<char32_t, Numeric_Type> numeric_type_table {std::begin(numeric_type_array), std::end(numeric_type_array)};
+const TableView<char32_t, Numeric_Type> numeric_type_table {&numeric_type_array[0], &numeric_type_array[0] + numeric_type_array.size()};
 
 }

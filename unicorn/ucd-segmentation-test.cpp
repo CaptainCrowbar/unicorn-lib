@@ -2,7 +2,7 @@
 
 namespace RS::Unicorn::UnicornDetail {
 
-char const* const grapheme_break_test_array[] {
+const std::array<char const*, 402> grapheme_break_test_array = {{
 /*1*/ "0020/0020",
 /*2*/ "0020 0308/0020",
 /*3*/ "0020/000D",
@@ -405,11 +405,11 @@ char const* const grapheme_break_test_array[] {
 /*400*/ "1F1E6 1F1E7 200D/1F1E8",
 /*401*/ "0020 200D/0646",
 /*402*/ "0646 200D/0020",
-};
+}};
 
-const Irange<char const* const*> grapheme_break_test_table {std::begin(grapheme_break_test_array), std::end(grapheme_break_test_array)};
+const Irange<char const* const*> grapheme_break_test_table {&grapheme_break_test_array[0], &grapheme_break_test_array[0] + grapheme_break_test_array.size()};
 
-char const* const word_break_test_array[] {
+const std::array<char const*, 1489> word_break_test_array = {{
 /*1*/ "0001/0001",
 /*2*/ "0001 0308/0001",
 /*3*/ "0001/000D",
@@ -1899,11 +1899,11 @@ char const* const word_break_test_array[] {
 /*1487*/ "0061/002C/002C/0061",
 /*1488*/ "0061 005F 0031/002C/002C/0061",
 /*1489*/ "0061 005F 0061/002C/002C/0061",
-};
+}};
 
-const Irange<char const* const*> word_break_test_table {std::begin(word_break_test_array), std::end(word_break_test_array)};
+const Irange<char const* const*> word_break_test_table {&word_break_test_array[0], &word_break_test_array[0] + word_break_test_array.size()};
 
-char const* const sentence_break_test_array[] {
+const std::array<char const*, 503> sentence_break_test_array = {{
 /*1*/ "0001 0001",
 /*2*/ "0001 0308 0001",
 /*3*/ "0001 000D",
@@ -2407,8 +2407,8 @@ char const* const sentence_break_test_array[] {
 /*501*/ "1F1E6 1F1E7 200D 1F1E8",
 /*502*/ "0020 200D 0646",
 /*503*/ "0646 200D 0020",
-};
+}};
 
-const Irange<char const* const*> sentence_break_test_table {std::begin(sentence_break_test_array), std::end(sentence_break_test_array)};
+const Irange<char const* const*> sentence_break_test_table {&sentence_break_test_array[0], &sentence_break_test_array[0] + sentence_break_test_array.size()};
 
 }

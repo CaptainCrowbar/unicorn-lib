@@ -1,11 +1,12 @@
 // Internal to the library, do not include this directly
 // NOT INSTALLED
 #pragma once
+#include <array>
 namespace RS {
 namespace Unicorn {
 namespace UnicornDetail {
 struct ScriptInfo { const char* abbr; const char* name; };
-constexpr ScriptInfo iso_script_names[] {
+constexpr std::array<ScriptInfo, 175> iso_script_names = {{
 {"adlm","Adlam"},
 {"afak","Afaka"},
 {"aghb","Caucasian_Albanian"},
@@ -181,7 +182,7 @@ constexpr ScriptInfo iso_script_names[] {
 {"zxxx","Code_for_unwritten_documents"},
 {"zyyy","Common"},
 {"zzzz","Unknown"},
-};
+}};
 }
 }
 }

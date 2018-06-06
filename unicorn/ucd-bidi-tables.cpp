@@ -2,7 +2,7 @@
 
 namespace RS::Unicorn::UnicornDetail {
 
-const KeyValue<char32_t, Bidi_Class> bidi_class_array[] {
+const std::array<KeyValue<char32_t, Bidi_Class>, 1892> bidi_class_array = {{
 {0x0,Bidi_Class::BN},
 {0x9,Bidi_Class::S},
 {0xa,Bidi_Class::B},
@@ -1895,11 +1895,11 @@ const KeyValue<char32_t, Bidi_Class> bidi_class_array[] {
 {0xffffe,static_cast<Bidi_Class>(0)},
 {0x100000,Bidi_Class::L},
 {0x10fffe,static_cast<Bidi_Class>(0)},
-};
+}};
 
-const TableView<char32_t, Bidi_Class> bidi_class_table {std::begin(bidi_class_array), std::end(bidi_class_array)};
+const TableView<char32_t, Bidi_Class> bidi_class_table {&bidi_class_array[0], &bidi_class_array[0] + bidi_class_array.size()};
 
-char32_t const bidi_mirrored_array[] {
+const std::array<char32_t, 545> bidi_mirrored_array = {{
 0x28,
 0x29,
 0x3c,
@@ -2445,11 +2445,11 @@ char32_t const bidi_mirrored_array[] {
 0x1d74f,
 0x1d789,
 0x1d7c3,
-};
+}};
 
-const Irange<char32_t const*> bidi_mirrored_table {std::begin(bidi_mirrored_array), std::end(bidi_mirrored_array)};
+const Irange<char32_t const*> bidi_mirrored_table {&bidi_mirrored_array[0], &bidi_mirrored_array[0] + bidi_mirrored_array.size()};
 
-const KeyValue<char32_t, char32_t> bidi_mirroring_glyph_array[] {
+const std::array<KeyValue<char32_t, char32_t>, 364> bidi_mirroring_glyph_array = {{
 {0x28,0x29},
 {0x29,0x28},
 {0x3c,0x3e},
@@ -2814,11 +2814,11 @@ const KeyValue<char32_t, char32_t> bidi_mirroring_glyph_array[] {
 {0xff60,0xff5f},
 {0xff62,0xff63},
 {0xff63,0xff62},
-};
+}};
 
-const TableView<char32_t, char32_t> bidi_mirroring_glyph_table {std::begin(bidi_mirroring_glyph_array), std::end(bidi_mirroring_glyph_array)};
+const TableView<char32_t, char32_t> bidi_mirroring_glyph_table {&bidi_mirroring_glyph_array[0], &bidi_mirroring_glyph_array[0] + bidi_mirroring_glyph_array.size()};
 
-const KeyValue<char32_t, char32_t> bidi_paired_bracket_array[] {
+const std::array<KeyValue<char32_t, char32_t>, 120> bidi_paired_bracket_array = {{
 {0x28,0x29},
 {0x29,0x28},
 {0x5b,0x5d},
@@ -2939,11 +2939,11 @@ const KeyValue<char32_t, char32_t> bidi_paired_bracket_array[] {
 {0xff60,0xff5f},
 {0xff62,0xff63},
 {0xff63,0xff62},
-};
+}};
 
-const TableView<char32_t, char32_t> bidi_paired_bracket_table {std::begin(bidi_paired_bracket_array), std::end(bidi_paired_bracket_array)};
+const TableView<char32_t, char32_t> bidi_paired_bracket_table {&bidi_paired_bracket_array[0], &bidi_paired_bracket_array[0] + bidi_paired_bracket_array.size()};
 
-const KeyValue<char32_t, char32_t> bidi_paired_bracket_type_array[] {
+const std::array<KeyValue<char32_t, char32_t>, 120> bidi_paired_bracket_type_array = {{
 {0x28,0x6f},
 {0x29,0x63},
 {0x5b,0x6f},
@@ -3064,8 +3064,8 @@ const KeyValue<char32_t, char32_t> bidi_paired_bracket_type_array[] {
 {0xff60,0x63},
 {0xff62,0x6f},
 {0xff63,0x63},
-};
+}};
 
-const TableView<char32_t, char32_t> bidi_paired_bracket_type_table {std::begin(bidi_paired_bracket_type_array), std::end(bidi_paired_bracket_type_array)};
+const TableView<char32_t, char32_t> bidi_paired_bracket_type_table {&bidi_paired_bracket_type_array[0], &bidi_paired_bracket_type_array[0] + bidi_paired_bracket_type_array.size()};
 
 }

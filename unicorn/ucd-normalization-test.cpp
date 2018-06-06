@@ -2,7 +2,7 @@
 
 namespace RS::Unicorn::UnicornDetail {
 
-std::array<char const*, 5> const normalization_test_array[] {
+const std::array<std::array<char const*, 5>, 18593> normalization_test_array = {{
 /*1*/ {{"1E0A","1E0A","0044 0307","1E0A","0044 0307"}},
 /*2*/ {{"1E0C","1E0C","0044 0323","1E0C","0044 0323"}},
 /*3*/ {{"1E0A 0323","1E0C 0307","0044 0323 0307","1E0C 0307","0044 0323 0307"}},
@@ -18596,11 +18596,11 @@ std::array<char const*, 5> const normalization_test_array[] {
 /*18591*/ {{"114B9 0334 114BD","114B9 0334 114BD","114B9 0334 114BD","114B9 0334 114BD","114B9 0334 114BD"}},
 /*18592*/ {{"115B8 0334 115AF","115B8 0334 115AF","115B8 0334 115AF","115B8 0334 115AF","115B8 0334 115AF"}},
 /*18593*/ {{"115B9 0334 115AF","115B9 0334 115AF","115B9 0334 115AF","115B9 0334 115AF","115B9 0334 115AF"}},
-};
+}};
 
-const Irange<std::array<char const*, 5> const*> normalization_test_table {std::begin(normalization_test_array), std::end(normalization_test_array)};
+const Irange<std::array<char const*, 5> const*> normalization_test_table {&normalization_test_array[0], &normalization_test_array[0] + normalization_test_array.size()};
 
-const KeyValue<char32_t, char32_t> normalization_identity_array[] {
+const std::array<KeyValue<char32_t, char32_t>, 392> normalization_identity_array = {{
 {0x0,0x9f},
 {0xa1,0xa7},
 {0xa9,0xa9},
@@ -18993,8 +18993,8 @@ const KeyValue<char32_t, char32_t> normalization_identity_array[] {
 {0x1f249,0x1f24f},
 {0x1f252,0x2f7ff},
 {0x2fa1e,0x10ffff},
-};
+}};
 
-const TableView<char32_t, char32_t> normalization_identity_table {std::begin(normalization_identity_array), std::end(normalization_identity_array)};
+const TableView<char32_t, char32_t> normalization_identity_table {&normalization_identity_array[0], &normalization_identity_array[0] + normalization_identity_array.size()};
 
 }

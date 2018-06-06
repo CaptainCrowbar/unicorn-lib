@@ -2,7 +2,7 @@
 
 namespace RS::Unicorn::UnicornDetail {
 
-const KeyValue<char32_t, PackedPair<long long>> numeric_value_array[] {
+const std::array<KeyValue<char32_t, PackedPair<long long>>, 1589> numeric_value_array = {{
 {0x0,{0,1}},
 {0x31,{1,1}},
 {0x32,{2,1}},
@@ -1592,8 +1592,8 @@ const KeyValue<char32_t, PackedPair<long long>> numeric_value_array[] {
 {0x2626e,{0,1}},
 {0x2f890,{9,1}},
 {0x2f891,{0,1}},
-};
+}};
 
-const TableView<char32_t, PackedPair<long long>> numeric_value_table {std::begin(numeric_value_array), std::end(numeric_value_array)};
+const TableView<char32_t, PackedPair<long long>> numeric_value_table {&numeric_value_array[0], &numeric_value_array[0] + numeric_value_array.size()};
 
 }

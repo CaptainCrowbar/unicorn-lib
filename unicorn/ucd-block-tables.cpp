@@ -2,7 +2,7 @@
 
 namespace RS::Unicorn::UnicornDetail {
 
-const KeyValue<char32_t, char const*> blocks_array[] {
+const std::array<KeyValue<char32_t, char const*>, 305> blocks_array = {{
 {0x0,"Basic Latin"},
 {0x80,"Latin-1 Supplement"},
 {0x100,"Latin Extended-A"},
@@ -308,8 +308,8 @@ const KeyValue<char32_t, char const*> blocks_array[] {
 {0xf0000,"Supplementary Private Use Area-A"},
 {0x100000,"Supplementary Private Use Area-B"},
 {0x110000,static_cast<char const*>(0)},
-};
+}};
 
-const TableView<char32_t, char const*> blocks_table {std::begin(blocks_array), std::end(blocks_array)};
+const TableView<char32_t, char const*> blocks_table {&blocks_array[0], &blocks_array[0] + blocks_array.size()};
 
 }

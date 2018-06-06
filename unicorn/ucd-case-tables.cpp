@@ -2,7 +2,7 @@
 
 namespace RS::Unicorn::UnicornDetail {
 
-const KeyValue<char32_t, char32_t> other_lowercase_array[] {
+const std::array<KeyValue<char32_t, char32_t>, 20> other_lowercase_array = {{
 {0xaa,0xaa},
 {0xba,0xba},
 {0x2b0,0x2b8},
@@ -23,21 +23,21 @@ const KeyValue<char32_t, char32_t> other_lowercase_array[] {
 {0xa770,0xa770},
 {0xa7f8,0xa7f9},
 {0xab5c,0xab5f},
-};
+}};
 
-const TableView<char32_t, char32_t> other_lowercase_table {std::begin(other_lowercase_array), std::end(other_lowercase_array)};
+const TableView<char32_t, char32_t> other_lowercase_table {&other_lowercase_array[0], &other_lowercase_array[0] + other_lowercase_array.size()};
 
-const KeyValue<char32_t, char32_t> other_uppercase_array[] {
+const std::array<KeyValue<char32_t, char32_t>, 5> other_uppercase_array = {{
 {0x2160,0x216f},
 {0x24b6,0x24cf},
 {0x1f130,0x1f149},
 {0x1f150,0x1f169},
 {0x1f170,0x1f189},
-};
+}};
 
-const TableView<char32_t, char32_t> other_uppercase_table {std::begin(other_uppercase_array), std::end(other_uppercase_array)};
+const TableView<char32_t, char32_t> other_uppercase_table {&other_uppercase_array[0], &other_uppercase_array[0] + other_uppercase_array.size()};
 
-const KeyValue<char32_t, char32_t> simple_uppercase_array[] {
+const std::array<KeyValue<char32_t, char32_t>, 1241> simple_uppercase_array = {{
 {0x61,0x41},
 {0x62,0x42},
 {0x63,0x43},
@@ -1279,11 +1279,11 @@ const KeyValue<char32_t, char32_t> simple_uppercase_array[] {
 {0x118dd,0x118bd},
 {0x118de,0x118be},
 {0x118df,0x118bf},
-};
+}};
 
-const TableView<char32_t, char32_t> simple_uppercase_table {std::begin(simple_uppercase_array), std::end(simple_uppercase_array)};
+const TableView<char32_t, char32_t> simple_uppercase_table {&simple_uppercase_array[0], &simple_uppercase_array[0] + simple_uppercase_array.size()};
 
-const KeyValue<char32_t, char32_t> simple_lowercase_array[] {
+const std::array<KeyValue<char32_t, char32_t>, 1233> simple_lowercase_array = {{
 {0x41,0x61},
 {0x42,0x62},
 {0x43,0x63},
@@ -2517,11 +2517,11 @@ const KeyValue<char32_t, char32_t> simple_lowercase_array[] {
 {0x118bd,0x118dd},
 {0x118be,0x118de},
 {0x118bf,0x118df},
-};
+}};
 
-const TableView<char32_t, char32_t> simple_lowercase_table {std::begin(simple_lowercase_array), std::end(simple_lowercase_array)};
+const TableView<char32_t, char32_t> simple_lowercase_table {&simple_lowercase_array[0], &simple_lowercase_array[0] + simple_lowercase_array.size()};
 
-const KeyValue<char32_t, char32_t> simple_titlecase_array[] {
+const std::array<KeyValue<char32_t, char32_t>, 12> simple_titlecase_array = {{
 {0x1c4,0x1c5},
 {0x1c5,0x1c5},
 {0x1c6,0x1c5},
@@ -2534,11 +2534,11 @@ const KeyValue<char32_t, char32_t> simple_titlecase_array[] {
 {0x1f1,0x1f2},
 {0x1f2,0x1f2},
 {0x1f3,0x1f2},
-};
+}};
 
-const TableView<char32_t, char32_t> simple_titlecase_table {std::begin(simple_titlecase_array), std::end(simple_titlecase_array)};
+const TableView<char32_t, char32_t> simple_titlecase_table {&simple_titlecase_array[0], &simple_titlecase_array[0] + simple_titlecase_array.size()};
 
-const KeyValue<char32_t, char32_t> simple_casefold_array[] {
+const std::array<KeyValue<char32_t, char32_t>, 186> simple_casefold_array = {{
 {0xb5,0x3bc},
 {0x130,0x130},
 {0x17f,0x73},
@@ -2725,11 +2725,11 @@ const KeyValue<char32_t, char32_t> simple_casefold_array[] {
 {0xabbd,0x13ed},
 {0xabbe,0x13ee},
 {0xabbf,0x13ef},
-};
+}};
 
-const TableView<char32_t, char32_t> simple_casefold_table {std::begin(simple_casefold_array), std::end(simple_casefold_array)};
+const TableView<char32_t, char32_t> simple_casefold_table {&simple_casefold_array[0], &simple_casefold_array[0] + simple_casefold_array.size()};
 
-const KeyValue<char32_t, std::array<char32_t, 3>> full_uppercase_array[] {
+const std::array<KeyValue<char32_t, std::array<char32_t, 3>>, 102> full_uppercase_array = {{
 {0xdf,{{0x53,0x53,0x0}}},
 {0x149,{{0x2bc,0x4e,0x0}}},
 {0x1f0,{{0x4a,0x30c,0x0}}},
@@ -2832,17 +2832,17 @@ const KeyValue<char32_t, std::array<char32_t, 3>> full_uppercase_array[] {
 {0xfb15,{{0x544,0x53b,0x0}}},
 {0xfb16,{{0x54e,0x546,0x0}}},
 {0xfb17,{{0x544,0x53d,0x0}}},
-};
+}};
 
-const TableView<char32_t, std::array<char32_t, 3>> full_uppercase_table {std::begin(full_uppercase_array), std::end(full_uppercase_array)};
+const TableView<char32_t, std::array<char32_t, 3>> full_uppercase_table {&full_uppercase_array[0], &full_uppercase_array[0] + full_uppercase_array.size()};
 
-const KeyValue<char32_t, std::array<char32_t, 3>> full_lowercase_array[] {
+const std::array<KeyValue<char32_t, std::array<char32_t, 3>>, 1> full_lowercase_array = {{
 {0x130,{{0x69,0x307,0x0}}},
-};
+}};
 
-const TableView<char32_t, std::array<char32_t, 3>> full_lowercase_table {std::begin(full_lowercase_array), std::end(full_lowercase_array)};
+const TableView<char32_t, std::array<char32_t, 3>> full_lowercase_table {&full_lowercase_array[0], &full_lowercase_array[0] + full_lowercase_array.size()};
 
-const KeyValue<char32_t, std::array<char32_t, 3>> full_titlecase_array[] {
+const std::array<KeyValue<char32_t, std::array<char32_t, 3>>, 48> full_titlecase_array = {{
 {0xdf,{{0x53,0x73,0x0}}},
 {0x149,{{0x2bc,0x4e,0x0}}},
 {0x1f0,{{0x4a,0x30c,0x0}}},
@@ -2891,11 +2891,11 @@ const KeyValue<char32_t, std::array<char32_t, 3>> full_titlecase_array[] {
 {0xfb15,{{0x544,0x56b,0x0}}},
 {0xfb16,{{0x54e,0x576,0x0}}},
 {0xfb17,{{0x544,0x56d,0x0}}},
-};
+}};
 
-const TableView<char32_t, std::array<char32_t, 3>> full_titlecase_table {std::begin(full_titlecase_array), std::end(full_titlecase_array)};
+const TableView<char32_t, std::array<char32_t, 3>> full_titlecase_table {&full_titlecase_array[0], &full_titlecase_array[0] + full_titlecase_array.size()};
 
-const KeyValue<char32_t, std::array<char32_t, 3>> full_casefold_array[] {
+const std::array<KeyValue<char32_t, std::array<char32_t, 3>>, 104> full_casefold_array = {{
 {0xdf,{{0x73,0x73,0x0}}},
 {0x130,{{0x69,0x307,0x0}}},
 {0x149,{{0x2bc,0x6e,0x0}}},
@@ -3000,8 +3000,8 @@ const KeyValue<char32_t, std::array<char32_t, 3>> full_casefold_array[] {
 {0xfb15,{{0x574,0x56b,0x0}}},
 {0xfb16,{{0x57e,0x576,0x0}}},
 {0xfb17,{{0x574,0x56d,0x0}}},
-};
+}};
 
-const TableView<char32_t, std::array<char32_t, 3>> full_casefold_table {std::begin(full_casefold_array), std::end(full_casefold_array)};
+const TableView<char32_t, std::array<char32_t, 3>> full_casefold_table {&full_casefold_array[0], &full_casefold_array[0] + full_casefold_array.size()};
 
 }

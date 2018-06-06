@@ -54,16 +54,16 @@ def process_file(filename, callback, minfields, delim=';'):
                         fields = fields[0:minfields]
                     callback([f.strip() for f in fields])
 
-def write_array_header(cpp, entrytype, name):
-    cpp.write('\n{0} const {1}_array[] {{\n'.format(entrytype, name))
+def write_array_header(cpp, entrytype, name, number):
+    cpp.write('\nconst std::array<{0}, {1}> {2}_array = {{{{\n'.format(entrytype, number, name))
 
 def write_array_footer(cpp, entrytype, name):
-    cpp.write('};\n\n')
-    cpp.write('const Irange<{0} const*> {1}_table {{std::begin({1}_array), std::end({1}_array)}};\n'.format(entrytype, name))
+    cpp.write('}};\n\n')
+    cpp.write('const Irange<{0} const*> {1}_table {{&{1}_array[0], &{1}_array[0] + {1}_array.size()}};\n'.format(entrytype, name))
 
 # Explicit array of individual strings:
 def write_array(cpp, name, table, entrytype, nlines=False):
-    write_array_header(cpp, entrytype, name)
+    write_array_header(cpp, entrytype, name, len(table))
     lnum = 0
     for entry in table:
         lnum += 1
@@ -74,7 +74,7 @@ def write_array(cpp, name, table, entrytype, nlines=False):
 
 # Explicit array of individual characters:
 def write_charset(cpp, name, table):
-    write_array_header(cpp, 'char32_t', name)
+    write_array_header(cpp, 'char32_t', name, len(table))
     for entry in table:
         cpp.write('0x{0:x},\n'.format(entry))
     write_array_footer(cpp, 'char32_t', name)
@@ -82,7 +82,7 @@ def write_charset(cpp, name, table):
 # Explicit array of fixed-size arrays:
 def write_nested_array(cpp, name, table, columntype, nlines=False):
     entrytype = 'std::array<{0}, {1}>'.format(columntype, len(table[0]))
-    write_array_header(cpp, entrytype, name)
+    write_array_header(cpp, entrytype, name, len(table))
     lnum = 0
     for row in table:
         lnum += 1
@@ -91,19 +91,19 @@ def write_nested_array(cpp, name, table, columntype, nlines=False):
         cpp.write('{{{{{0}}}}},\n'.format(','.join(row)))
     write_array_footer(cpp, entrytype, name)
 
-def write_table_header(cpp, ktype, vtype, name):
-    cpp.write('\nconst KeyValue<{0}, {1}> {2}_array[] {{\n'.format(ktype, vtype, name))
+def write_table_header(cpp, ktype, vtype, name, number):
+    cpp.write('\nconst std::array<KeyValue<{0}, {1}>, {2}> {3}_array = {{{{\n'.format(ktype, vtype, number, name))
 
 def write_table_footer(cpp, ktype, vtype, name):
-    cpp.write('};\n\n')
-    cpp.write('const TableView<{0}, {1}> {2}_table {{std::begin({2}_array), std::end({2}_array)}};\n'.format(ktype, vtype, name))
+    cpp.write('}};\n\n')
+    cpp.write('const TableView<{0}, {1}> {2}_table {{&{2}_array[0], &{2}_array[0] + {2}_array.size()}};\n'.format(ktype, vtype, name))
 
 # Explicit map from a character to one or more characters:
 def write_charmap(cpp, name, table, keysize=1, valsize=1):
     codes = sorted(table)
     ktype = field_type(keysize)
     vtype = field_type(valsize)
-    write_table_header(cpp, ktype, vtype, name)
+    write_table_header(cpp, ktype, vtype, name, len(codes))
     for c in codes:
         cpp.write('{{{0},{1}}},\n'.format(field_value(c, keysize), field_value(table[c], valsize)))
     write_table_footer(cpp, ktype, vtype, name)
@@ -123,7 +123,14 @@ def write_sparse_set(cpp, name, table):
 def write_sparse_table(cpp, vtype, name, table, defval=None):
     if defval == None:
         defval = 'static_cast<{0}>(0)'.format(vtype)
-    write_table_header(cpp, 'char32_t', vtype, name)
+    number = 0
+    lastv = None
+    for k in range(0, max(table) + 2):
+        v = table.get(k, defval)
+        if v != lastv:
+            number += 1
+        lastv = v
+    write_table_header(cpp, 'char32_t', vtype, name, number)
     lastv = None
     for k in range(0, max(table) + 2):
         v = table.get(k, defval)
@@ -199,14 +206,15 @@ with open('unicorn/iso-script-names.hpp', 'w', encoding='utf-8', newline='\n') a
     cpp.write('// Internal to the library, do not include this directly\n')
     cpp.write('// NOT INSTALLED\n')
     cpp.write('#pragma once\n')
+    cpp.write('#include <array>\n')
     cpp.write('namespace RS {\n')
     cpp.write('namespace Unicorn {\n')
     cpp.write('namespace UnicornDetail {\n')
     cpp.write('struct ScriptInfo { const char* abbr; const char* name; };\n')
-    cpp.write('constexpr ScriptInfo iso_script_names[] {\n')
+    cpp.write('constexpr std::array<ScriptInfo, {0}> iso_script_names = {{{{\n'.format(len(script_code_names)))
     for code in sorted(script_code_names):
         cpp.write('{{"{0}","{1}"}},\n'.format(code, script_code_names[code]))
-    cpp.write('};\n')
+    cpp.write('}};\n')
     cpp.write('}\n')
     cpp.write('}\n')
     cpp.write('}\n')
@@ -326,7 +334,7 @@ with open('unicorn/ucd-character-names.cpp', 'w', encoding='utf-8', newline='\n'
     cpp.write("'\\0'};\n\n")
     cpp.write('const size_t main_names_compressed = {0};\n'.format(len(names_zip)))
     cpp.write('const size_t main_names_expanded = {0};\n'.format(len(names_bytes)))
-    write_table_header(cpp, 'char32_t', 'char const*', 'corrected_names')
+    write_table_header(cpp, 'char32_t', 'char const*', 'corrected_names', len(corrected_names))
     for c in sorted(corrected_names):
         cpp.write('{{0x{0:x},"{1}"}},\n'.format(c, corrected_names[c]))
     write_table_footer(cpp, 'char32_t', 'char const*', 'corrected_names')

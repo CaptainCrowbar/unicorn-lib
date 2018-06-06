@@ -2,7 +2,7 @@
 
 namespace RS::Unicorn::UnicornDetail {
 
-const KeyValue<char32_t, int> combining_class_array[] {
+const std::array<KeyValue<char32_t, int>, 474> combining_class_array = {{
 {0x0,0},
 {0x300,230},
 {0x315,232},
@@ -477,11 +477,11 @@ const KeyValue<char32_t, int> combining_class_array[] {
 {0x1d245,0},
 {0x1e8d0,220},
 {0x1e8d7,0},
-};
+}};
 
-const TableView<char32_t, int> combining_class_table {std::begin(combining_class_array), std::end(combining_class_array)};
+const TableView<char32_t, int> combining_class_table {&combining_class_array[0], &combining_class_array[0] + combining_class_array.size()};
 
-const KeyValue<char32_t, std::array<char32_t, 2>> canonical_array[] {
+const std::array<KeyValue<char32_t, std::array<char32_t, 2>>, 2060> canonical_array = {{
 {0xc0,{{0x41,0x300}}},
 {0xc1,{{0x41,0x301}}},
 {0xc2,{{0x41,0x302}}},
@@ -2542,11 +2542,11 @@ const KeyValue<char32_t, std::array<char32_t, 2>> canonical_array[] {
 {0x2fa1b,{{0x9f16,0x0}}},
 {0x2fa1c,{{0x9f3b,0x0}}},
 {0x2fa1d,{{0x2a600,0x0}}},
-};
+}};
 
-const TableView<char32_t, std::array<char32_t, 2>> canonical_table {std::begin(canonical_array), std::end(canonical_array)};
+const TableView<char32_t, std::array<char32_t, 2>> canonical_table {&canonical_array[0], &canonical_array[0] + canonical_array.size()};
 
-const KeyValue<char32_t, std::array<char32_t, 3>> short_compatibility_array[] {
+const std::array<KeyValue<char32_t, std::array<char32_t, 3>>, 3572> short_compatibility_array = {{
 {0xa0,{{0x20,0x0,0x0}}},
 {0xa8,{{0x20,0x308,0x0}}},
 {0xaa,{{0x61,0x0,0x0}}},
@@ -6119,11 +6119,11 @@ const KeyValue<char32_t, std::array<char32_t, 3>> short_compatibility_array[] {
 {0x1f248,{{0x3014,0x6557,0x3015}}},
 {0x1f250,{{0x5f97,0x0,0x0}}},
 {0x1f251,{{0x53ef,0x0,0x0}}},
-};
+}};
 
-const TableView<char32_t, std::array<char32_t, 3>> short_compatibility_table {std::begin(short_compatibility_array), std::end(short_compatibility_array)};
+const TableView<char32_t, std::array<char32_t, 3>> short_compatibility_table {&short_compatibility_array[0], &short_compatibility_array[0] + short_compatibility_array.size()};
 
-const KeyValue<char32_t, std::array<char32_t, 18>> long_compatibility_array[] {
+const std::array<KeyValue<char32_t, std::array<char32_t, 18>>, 89> long_compatibility_array = {{
 {0x2057,{{0x2032,0x2032,0x2032,0x2032,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0}}},
 {0x2152,{{0x31,0x2044,0x31,0x30,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0}}},
 {0x2167,{{0x56,0x49,0x49,0x49,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0}}},
@@ -6213,11 +6213,11 @@ const KeyValue<char32_t, std::array<char32_t, 18>> long_compatibility_array[] {
 {0xfdfa,{{0x635,0x644,0x649,0x20,0x627,0x644,0x644,0x647,0x20,0x639,0x644,0x64a,0x647,0x20,0x648,0x633,0x644,0x645}}},
 {0xfdfb,{{0x62c,0x644,0x20,0x62c,0x644,0x627,0x644,0x647,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0}}},
 {0xfdfc,{{0x631,0x6cc,0x627,0x644,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0}}},
-};
+}};
 
-const TableView<char32_t, std::array<char32_t, 18>> long_compatibility_table {std::begin(long_compatibility_array), std::end(long_compatibility_array)};
+const TableView<char32_t, std::array<char32_t, 18>> long_compatibility_table {&long_compatibility_array[0], &long_compatibility_array[0] + long_compatibility_array.size()};
 
-const KeyValue<std::array<char32_t, 2>, char32_t> composition_array[] {
+const std::array<KeyValue<std::array<char32_t, 2>, char32_t>, 940> composition_array = {{
 {{{0x3c,0x338}},0x226e},
 {{{0x3d,0x338}},0x2260},
 {{{0x3e,0x338}},0x226f},
@@ -7158,8 +7158,8 @@ const KeyValue<std::array<char32_t, 2>, char32_t> composition_array[] {
 {{{0x114b9,0x114bd}},0x114be},
 {{{0x115b8,0x115af}},0x115ba},
 {{{0x115b9,0x115af}},0x115bb},
-};
+}};
 
-const TableView<std::array<char32_t, 2>, char32_t> composition_table {std::begin(composition_array), std::end(composition_array)};
+const TableView<std::array<char32_t, 2>, char32_t> composition_table {&composition_array[0], &composition_array[0] + composition_array.size()};
 
 }

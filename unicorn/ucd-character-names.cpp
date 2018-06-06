@@ -11929,7 +11929,7 @@ const char main_names_data[] = {
 const size_t main_names_compressed = 190734;
 const size_t main_names_expanded = 942915;
 
-const KeyValue<char32_t, char const*> corrected_names_array[] {
+const std::array<KeyValue<char32_t, char const*>, 19> corrected_names_array = {{
 {0x1a2,"LATIN CAPITAL LETTER GHA"},
 {0x1a3,"LATIN SMALL LETTER GHA"},
 {0x709,"SYRIAC SUBLINEAR COLON SKEWED LEFT"},
@@ -11949,8 +11949,8 @@ const KeyValue<char32_t, char const*> corrected_names_array[] {
 {0x122d4,"CUNEIFORM SIGN NU11 TENU"},
 {0x122d5,"CUNEIFORM SIGN NU11 OVER NU11 BUR OVER BUR"},
 {0x1d0c5,"BYZANTINE MUSICAL SYMBOL FTHORA SKLIRON CHROMA VASIS"},
-};
+}};
 
-const TableView<char32_t, char const*> corrected_names_table {std::begin(corrected_names_array), std::end(corrected_names_array)};
+const TableView<char32_t, char const*> corrected_names_table {&corrected_names_array[0], &corrected_names_array[0] + corrected_names_array.size()};
 
 }
