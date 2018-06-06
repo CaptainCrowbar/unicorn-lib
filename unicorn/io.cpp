@@ -20,6 +20,7 @@ namespace RS::Unicorn {
         using SharedFile = std::shared_ptr<FILE>;
 
         void checked_fclose(FILE* f) { if (f) fclose(f); }
+        void null_delete(void*) noexcept {}
         template <typename C> Ustring quote_file(const std::basic_string<C>& name) { return quote(to_utf8(name)); }
 
         SharedFile shared_fopen(const NativeString& file, const NativeString& mode, bool check) {
@@ -83,7 +84,7 @@ namespace RS::Unicorn {
         if (enc.empty() || enc == "0")
             impl->enc = "utf-8";
         if ((flags & IO::standin) && (file.empty() || file == dash))
-            impl->handle.reset(stdin, do_nothing);
+            impl->handle.reset(stdin, null_delete);
         else
             impl->handle = shared_fopen(file, rb, ! (flags & IO::pretend));
         ++*this;
@@ -195,9 +196,9 @@ namespace RS::Unicorn {
         if (enc.empty() || enc == "0")
             impl->enc = "utf-8";
         if ((flags & IO::standout) && (file.empty() || file == dash))
-            impl->handle.reset(stdout, do_nothing);
+            impl->handle.reset(stdout, null_delete);
         else if ((flags & IO::standerr) && (file.empty() || file == dash))
-            impl->handle.reset(stderr, do_nothing);
+            impl->handle.reset(stderr, null_delete);
         else if ((flags & IO::protect) && file_exists(file))
             throw std::system_error(std::make_error_code(std::errc::file_exists), quote_file(file));
         else
@@ -205,9 +206,9 @@ namespace RS::Unicorn {
                 flags & IO::append ? ab : wb, true);
         if (flags & IO::mutex) {
             if (impl->handle.get() == stdout)
-                impl->mutex.reset(&stdout_mutex, do_nothing);
+                impl->mutex.reset(&stdout_mutex, null_delete);
             else if (impl->handle.get() == stderr)
-                impl->mutex.reset(&stderr_mutex, do_nothing);
+                impl->mutex.reset(&stderr_mutex, null_delete);
             else
                 impl->mutex = std::make_shared<std::mutex>();
         }

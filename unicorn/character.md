@@ -366,7 +366,7 @@ or zero if the character does not have a decomposition of the relevant type.
 * `enum class` **`Joining_Type`**
     * `Dual_Joining, Join_Causing, Left_Joining, Non_Joining, Right_Joining, Transparent`
 * `enum class` **`Line_Break`**
-    * `XX, AI, AL, B2, BA, BB, BK, CB, CJ, CL, CM, CP, CR, EX, GL, H2, H3, HL, HY, ID, IN, IS, JL, JT, JV, LF, NL, NS, NU, OP, PO, PR, QU, RI, SA, SG, SP, SY, WJ, ZW`
+    * `XX, AI, AL, B2, BA, BB, BK, CB, CJ, CL, CM, CP, CR, EX, GL, H2, H3, HL, HY, ID, IN_, IS, JL, JT, JV, LF, NL, NS, NU, OP, PO, PR, QU, RI, SA, SG, SP, SY, WJ, ZW`
 * `enum class` **`Numeric_Type`**
     * `None, Decimal, Digit, Numeric`
 * `enum class` **`Sentence_Break`**
@@ -388,7 +388,8 @@ or zero if the character does not have a decomposition of the relevant type.
 
 Enumeration property values. The spelling of the class and value names follows
 their spelling in the Unicode standard, which is not entirely consistent about
-naming conventions.
+naming conventions. (An exception is `Line_Break::IN_`, marked up to avoid
+colliding with the Windows macro `IN`.)
 
 * `East_Asian_Width` **`east_asian_width`**`(char32_t c) noexcept`
 * `Grapheme_Cluster_Break` **`grapheme_cluster_break`**`(char32_t c) noexcept`

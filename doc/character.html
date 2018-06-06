@@ -498,7 +498,7 @@ or zero if the character does not have a decomposition of the relevant type.</p>
 </ul>
 </li>
 <li><code>enum class</code> <strong><code>Line_Break</code></strong><ul>
-<li><code>XX, AI, AL, B2, BA, BB, BK, CB, CJ, CL, CM, CP, CR, EX, GL, H2, H3, HL, HY, ID, IN, IS, JL, JT, JV, LF, NL, NS, NU, OP, PO, PR, QU, RI, SA, SG, SP, SY, WJ, ZW</code></li>
+<li><code>XX, AI, AL, B2, BA, BB, BK, CB, CJ, CL, CM, CP, CR, EX, GL, H2, H3, HL, HY, ID, IN_, IS, JL, JT, JV, LF, NL, NS, NU, OP, PO, PR, QU, RI, SA, SG, SP, SY, WJ, ZW</code></li>
 </ul>
 </li>
 <li><code>enum class</code> <strong><code>Numeric_Type</code></strong><ul>
@@ -528,7 +528,8 @@ or zero if the character does not have a decomposition of the relevant type.</p>
 </ul>
 <p>Enumeration property values. The spelling of the class and value names follows
 their spelling in the Unicode standard, which is not entirely consistent about
-naming conventions.</p>
+naming conventions. (An exception is <code>Line_Break::IN_</code>, marked up to avoid
+colliding with the Windows macro <code>IN</code>.)</p>
 </div>
 <div class="defns">
 <ul>

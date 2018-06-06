@@ -66,10 +66,8 @@ namespace RS::Unicorn {
                 if (*in >= 33 && *in <= 126 && ! strchr(escaped, char(*in))) {
                     dst += char(*in);
                 } else {
-                    for (char c: in.range()) {
-                        dst += '%';
-                        RS_Detail::append_hex_byte(uint8_t(c), dst);
-                    }
+                    for (char c: in.range())
+                        dst += '%' + hex(uint8_t(c));
                 }
             }
         }

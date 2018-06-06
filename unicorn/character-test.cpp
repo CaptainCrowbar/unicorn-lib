@@ -1296,7 +1296,7 @@ void test_unicorn_character_decomposition_properties() {
         ++decomp_census[entry.key];
     for (auto&& entry: decomp_census)
         if (entry.second > 1)
-            FAIL("U+" + hex(entry.first) + " appears in " + dec(entry.second) + " decomposition tables");
+            FAIL("U+" + hex(entry.first) + " appears in " + std::to_string(entry.second) + " decomposition tables");
 
     for (auto&& entry: UnicornDetail::composition_table)
         TEST_EQUAL(combining_class(entry.key[0]), 0);
@@ -1439,7 +1439,7 @@ void test_unicorn_character_enumeration_properties() {
     TEST_PROPERTY_STRING(Line_Break, HL);
     TEST_PROPERTY_STRING(Line_Break, HY);
     TEST_PROPERTY_STRING(Line_Break, ID);
-    TEST_PROPERTY_STRING(Line_Break, IN);
+    TEST_PROPERTY_STRING(Line_Break, IN_);
     TEST_PROPERTY_STRING(Line_Break, IS);
     TEST_PROPERTY_STRING(Line_Break, JL);
     TEST_PROPERTY_STRING(Line_Break, JT);
@@ -1597,7 +1597,7 @@ void test_unicorn_character_enumeration_properties() {
     TEST_EQUAL(to_str(line_break(0x5d0)), "Line_Break::HL");
     TEST_EQUAL(to_str(line_break(0x2d)), "Line_Break::HY");
     TEST_EQUAL(to_str(line_break(0x231a)), "Line_Break::ID");
-    TEST_EQUAL(to_str(line_break(0x2024)), "Line_Break::IN");
+    TEST_EQUAL(to_str(line_break(0x2024)), "Line_Break::IN_");
     TEST_EQUAL(to_str(line_break(0x2c)), "Line_Break::IS");
     TEST_EQUAL(to_str(line_break(0x1100)), "Line_Break::JL");
     TEST_EQUAL(to_str(line_break(0x11a8)), "Line_Break::JT");

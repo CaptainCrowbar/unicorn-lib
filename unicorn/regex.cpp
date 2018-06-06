@@ -130,7 +130,7 @@ namespace RS::Unicorn {
         pat(std::make_shared<Ustring>(pattern)) {}
 
     Ustring RegexError::assemble(int error, const Ustring& pattern, const Ustring& message) {
-        Ustring text = "Regex error " + dec(error);
+        Ustring text = "Regex error " + std::to_string(error);
         Ustring errmsg = message.empty() ? translate(error) : message;
         if (! errmsg.empty())
             text += ": " + errmsg;

@@ -87,7 +87,7 @@ namespace RS::Unicorn {
     #ifdef _XOPEN_SOURCE
 
         size_t FileId::hash() const noexcept {
-            return hash_value(hi, lo);
+            return std::hash<uint64_t>()(hi) + std::hash<uint64_t>()(lo);
         }
 
         bool operator==(const FileId& lhs, const FileId& rhs) noexcept {

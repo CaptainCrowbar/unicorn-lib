@@ -55,22 +55,22 @@ namespace RS::Unicorn {
             explicit FileReader(const Ustring& file) { init(to_wstring(file), {}, {}, {}); }
             FileReader(const Ustring& file, uint32_t flags) { init(to_wstring(file), flags, {}, {}); }
             FileReader(const Ustring& file, uint32_t flags, const Ustring& enc) { init(to_wstring(file), flags, to_utf8(enc), {}); }
-            FileReader(const Ustring& file, uint32_t flags, uint32_t enc) { init(to_wstring(file), flags, dec(enc), {}); }
+            FileReader(const Ustring& file, uint32_t flags, uint32_t enc) { init(to_wstring(file), flags, std::to_string(enc), {}); }
             FileReader(const Ustring& file, uint32_t flags, const Ustring& enc, const Ustring& eol) { init(to_wstring(file), flags, to_utf8(enc), to_utf8(eol)); }
-            FileReader(const Ustring& file, uint32_t flags, uint32_t enc, const Ustring& eol) { init(to_wstring(file), flags, dec(enc), to_utf8(eol)); }
+            FileReader(const Ustring& file, uint32_t flags, uint32_t enc, const Ustring& eol) { init(to_wstring(file), flags, std::to_string(enc), to_utf8(eol)); }
             explicit FileReader(const NativeString& file) { init(file, {}, {}, {}); }
             FileReader(const NativeString& file, uint32_t flags) { init(file, flags, {}, {}); }
             FileReader(const NativeString& file, uint32_t flags, const Ustring& enc) { init(file, flags, enc, {}); }
-            FileReader(const NativeString& file, uint32_t flags, uint32_t enc) { init(file, flags, dec(enc), {}); }
+            FileReader(const NativeString& file, uint32_t flags, uint32_t enc) { init(file, flags, std::to_string(enc), {}); }
             FileReader(const NativeString& file, uint32_t flags, const Ustring& enc, const Ustring& eol) { init(file, flags, enc, eol); }
-            FileReader(const NativeString& file, uint32_t flags, uint32_t enc, const Ustring& eol) { init(file, flags, dec(enc), eol); }
+            FileReader(const NativeString& file, uint32_t flags, uint32_t enc, const Ustring& eol) { init(file, flags, std::to_string(enc), eol); }
         #else
             explicit FileReader(const Ustring& file) { init(file, {}, {}, {}); }
             FileReader(const Ustring& file, uint32_t flags) { init(file, flags, {}, {}); }
             FileReader(const Ustring& file, uint32_t flags, const Ustring& enc) { init(file, flags, enc, {}); }
-            FileReader(const Ustring& file, uint32_t flags, uint32_t enc) { init(file, flags, dec(enc), {}); }
+            FileReader(const Ustring& file, uint32_t flags, uint32_t enc) { init(file, flags, std::to_string(enc), {}); }
             FileReader(const Ustring& file, uint32_t flags, const Ustring& enc, const Ustring& eol) { init(file, flags, enc, eol); }
-            FileReader(const Ustring& file, uint32_t flags, uint32_t enc, const Ustring& eol) { init(file, flags, dec(enc), eol); }
+            FileReader(const Ustring& file, uint32_t flags, uint32_t enc, const Ustring& eol) { init(file, flags, std::to_string(enc), eol); }
         #endif
         const Ustring& operator*() const noexcept;
         FileReader& operator++();
@@ -109,16 +109,16 @@ namespace RS::Unicorn {
             explicit FileWriter(const Ustring& file) { init(to_wstring(file), {}, {}); }
             FileWriter(const Ustring& file, uint32_t flags) { init(to_wstring(file), flags, {}); }
             FileWriter(const Ustring& file, uint32_t flags, const Ustring& enc) { init(to_wstring(file), flags, enc); }
-            FileWriter(const Ustring& file, uint32_t flags, uint32_t enc) { init(to_wstring(file), flags, dec(enc)); }
+            FileWriter(const Ustring& file, uint32_t flags, uint32_t enc) { init(to_wstring(file), flags, std::to_string(enc)); }
             explicit FileWriter(const NativeString& file) { init(file, {}, {}); }
             FileWriter(const NativeString& file, uint32_t flags) { init(file, flags, {}); }
             FileWriter(const NativeString& file, uint32_t flags, const Ustring& enc) { init(file, flags, enc); }
-            FileWriter(const NativeString& file, uint32_t flags, uint32_t enc) { init(file, flags, dec(enc)); }
+            FileWriter(const NativeString& file, uint32_t flags, uint32_t enc) { init(file, flags, std::to_string(enc)); }
         #else
             explicit FileWriter(const Ustring& file) { init(file, {}, {}); }
             FileWriter(const Ustring& file, uint32_t flags) { init(file, flags, {}); }
             FileWriter(const Ustring& file, uint32_t flags, const Ustring& enc) { init(file, flags, enc); }
-            FileWriter(const Ustring& file, uint32_t flags, uint32_t enc) { init(file, flags, dec(enc)); }
+            FileWriter(const Ustring& file, uint32_t flags, uint32_t enc) { init(file, flags, std::to_string(enc)); }
         #endif
         FileWriter& operator=(const Ustring& str) { write(str); return *this; }
         FileWriter& operator=(const char* str) { write(cstr(str)); return *this; }

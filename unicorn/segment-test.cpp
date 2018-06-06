@@ -89,7 +89,7 @@ namespace {
             TEST_EQUAL_RANGE(segments32, expect32);
             TEST_EQUAL_RANGE(wsegments, wexpect);
             if (RS::UnitTest::test_failures() > prev_failures) {
-                FAIL(name + " " + dec(lnum) + ": " + line);
+                FAIL(name + " " + std::to_string(lnum) + ": " + line);
                 for (auto c: source32)
                     std::cout << "\t" << hex(c) << " " << word_break(c) << "\n";
                 break;

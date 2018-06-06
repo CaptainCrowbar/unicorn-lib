@@ -141,7 +141,7 @@ namespace RS::Unicorn {
         if (! encoding.empty())
             s += " (" + encoding + ")";
         if (offset > 0)
-            s += "; offset " + dec(offset);
+            s += "; offset " + std::to_string(offset);
         return s;
     }
 

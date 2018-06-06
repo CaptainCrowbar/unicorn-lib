@@ -259,7 +259,7 @@ void test_unicorn_io_file_reader() {
     TRY(range = read_lines(testfile));
     s.clear();
     for (auto fr = range.begin(); fr != range.end(); ++fr)
-        TRY(s += dec(fr.line()) + ":"+ *fr);
+        TRY(s += std::to_string(fr.line()) + ":"+ *fr);
     TEST_EQUAL(s,
         "1:\n"
         "2:Hello\n"
@@ -273,7 +273,7 @@ void test_unicorn_io_file_reader() {
     TRY(range = read_lines(testfile, IO::stripws | IO::notempty));
     s.clear();
     for (auto fr = range.begin(); fr != range.end(); ++fr)
-        TRY(s += dec(fr.line()) + ":"+ *fr + "\n");
+        TRY(s += std::to_string(fr.line()) + ":"+ *fr + "\n");
     TEST_EQUAL(s,
         "2:Hello\n"
         "4:North South\n"

@@ -294,10 +294,6 @@ the other required libraries described above.
 
 Everything in the Unicorn library is in `namespace RS::Unicorn`, or a
 subordinate namespace inside `Unicorn` (except the contents of the
-`unicorn/utility` module, which is in `namespace RS`). You can either qualify
-all calls with the `RS::Unicorn::` prefix, or use `using namespace
-RS::Unicorn`.
-
-Unicorn calls my [core utilities library](https://github.com/CaptainCrowbar/rs-core-lib).
-This is a header only library; no special build actions are required beyond
-making sure the compiler can find the `"rs-core/*.hpp"` headers.
+`unicorn/utility` module, whose contents are in `namespace RS` or `RS::Meta`).
+You can either qualify all calls with the `RS::Unicorn::` prefix, or use
+`using namespace RS::Unicorn`.

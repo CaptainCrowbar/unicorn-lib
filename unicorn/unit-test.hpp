@@ -81,11 +81,13 @@
 // This simply evaluates the expression, ignoring any result. The test fails
 // if an exception is thrown.
 
-#include "rs-core/common.hpp"
+#include "unicorn/utility.hpp"
 #include <algorithm>
 #include <atomic>
 #include <chrono>
+#include <cmath>
 #include <cstddef>
+#include <cstdlib>
 #include <exception>
 #include <iostream>
 #include <iterator>
@@ -214,7 +216,7 @@
 #define TEST_NEAR_EPSILON(lhs, rhs, tolerance) \
     do { \
         bool local_test_status = false; \
-        TEST_IMPL(local_test_status, fabs(double(lhs) - double(rhs)) <= double(tolerance), \
+        TEST_IMPL(local_test_status, std::abs(double(lhs) - double(rhs)) <= double(tolerance), \
             #lhs " approx == " #rhs); \
         if (! local_test_status) { \
             RS::UnitTest::record_failure(); \
@@ -479,7 +481,7 @@ namespace RS {
         static bool range_near(const R1& r1, const R2& r2, double tolerance) {
             auto i = std::begin(r1), e1 = std::end(r1);
             auto j = std::begin(r2), e2 = std::end(r2);
-            for (; i != e1 && j != e2 && fabs(double(*i) - double(*j)) <= tolerance; ++i, ++j) {}
+            for (; i != e1 && j != e2 && std::abs(double(*i) - double(*j)) <= tolerance; ++i, ++j) {}
             return i == e1 && j == e2;
         }
 
@@ -501,10 +503,10 @@ namespace RS {
                             result += char(uc);
                         } else if (uc <= 0xff) {
                             result += "\\x";
-                            result += RS_Detail::hexfmt(uc, 2);
+                            result += hex(uc, 2);
                         } else {
                             result += "\\x{";
-                            result += RS_Detail::hexfmt(uc, 1);
+                            result += hex(uc, 1);
                             result += "}";
                         }
                         break;
@@ -517,9 +519,9 @@ namespace RS {
         template <typename T> static const void* preformat(T* t) noexcept { return t; }
         static unsigned preformat(unsigned char t) noexcept { return t; }
         static int preformat(signed char t) noexcept { return t; }
-        static std::string preformat(char16_t t) noexcept { return "U+" + RS_Detail::hexfmt(t, 4); }
-        static std::string preformat(char32_t t) noexcept { return "U+" + RS_Detail::hexfmt(t, 4); }
-        static std::string preformat(wchar_t t) noexcept { return "U+" + RS_Detail::hexfmt(std::make_unsigned_t<wchar_t>(t), 4); }
+        static std::string preformat(char16_t t) noexcept { return "U+" + hex(t, 4); }
+        static std::string preformat(char32_t t) noexcept { return "U+" + hex(t, 4); }
+        static std::string preformat(wchar_t t) noexcept { return "U+" + hex(std::make_unsigned_t<wchar_t>(t), 4); }
         static std::string preformat(const std::string& t) { return preformat_string(t); }
         static std::string preformat(const std::u16string& t) { return preformat_string(t); }
         static std::string preformat(const std::u32string& t) { return preformat_string(t); }

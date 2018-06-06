@@ -5,11 +5,6 @@
 #include "unicorn/utility.hpp"
 #include <cstdint>
 
-// Windows brain damage
-#if defined(IN)
-    #undef IN
-#endif
-
 namespace RS::Unicorn {
 
     RS_ENUM_CLASS(Bidi_Class, int, 0,
@@ -73,7 +68,7 @@ namespace RS::Unicorn {
 
     RS_ENUM_CLASS(Line_Break, int, 0,
         XX, AI, AL, B2, BA, BB, BK, CB, CJ, CL, CM, CP, CR, EX, GL, H2, H3,
-        HL, HY, ID, IN, IS, JL, JT, JV, LF, NL, NS, NU, OP, PO, PR, QU, RI,
+        HL, HY, ID, IN_, IS, JL, JT, JV, LF, NL, NS, NU, OP, PO, PR, QU, RI,
         SA, SG, SP, SY, WJ, ZW
     )
 

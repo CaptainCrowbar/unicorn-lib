@@ -4,8 +4,6 @@
 #include "unicorn/string.hpp"
 #include "unicorn/utf.hpp"
 #include "unicorn/utility.hpp"
-#include "rs-core/meta.hpp"
-#include "rs-core/time.hpp"
 #include <algorithm>
 #include <chrono>
 #include <iterator>

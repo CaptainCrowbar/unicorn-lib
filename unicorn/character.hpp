@@ -2,7 +2,6 @@
 
 #include "unicorn/property-values.hpp"
 #include "unicorn/utility.hpp"
-#include "rs-core/string.hpp"
 #include <cstring>
 #include <functional>
 #include <map>

@@ -2,7 +2,17 @@
 
 #include "unicorn/unit-test.hpp"
 
-extern void test_unicorn_utility_module();
+extern void test_unicorn_utility_preprocessor_macros();
+extern void test_unicorn_utility_constants();
+extern void test_unicorn_utility_algorithms();
+extern void test_unicorn_utility_arithmetic_functions();
+extern void test_unicorn_utility_date_and_time_functions();
+extern void test_unicorn_utility_keyword_arguments();
+extern void test_unicorn_utility_metaprogramming();
+extern void test_unicorn_utility_range_types();
+extern void test_unicorn_utility_scope_guards();
+extern void test_unicorn_utility_string_functions();
+extern void test_unicorn_utility_version_number();
 extern void test_unicorn_character_version_information();
 extern void test_unicorn_character_basic_functions();
 extern void test_unicorn_character_general_category();
@@ -130,7 +140,17 @@ int main() {
 
     static const RS::UnitTest::test_index index = {
 
-        { "unicorn/utility/module", test_unicorn_utility_module },
+        { "unicorn/utility/preprocessor-macros", test_unicorn_utility_preprocessor_macros },
+        { "unicorn/utility/constants", test_unicorn_utility_constants },
+        { "unicorn/utility/algorithms", test_unicorn_utility_algorithms },
+        { "unicorn/utility/arithmetic-functions", test_unicorn_utility_arithmetic_functions },
+        { "unicorn/utility/date-and-time-functions", test_unicorn_utility_date_and_time_functions },
+        { "unicorn/utility/keyword-arguments", test_unicorn_utility_keyword_arguments },
+        { "unicorn/utility/metaprogramming", test_unicorn_utility_metaprogramming },
+        { "unicorn/utility/range-types", test_unicorn_utility_range_types },
+        { "unicorn/utility/scope-guards", test_unicorn_utility_scope_guards },
+        { "unicorn/utility/string-functions", test_unicorn_utility_string_functions },
+        { "unicorn/utility/version-number", test_unicorn_utility_version_number },
         { "unicorn/character/version-information", test_unicorn_character_version_information },
         { "unicorn/character/basic-functions", test_unicorn_character_basic_functions },
         { "unicorn/character/general-category", test_unicorn_character_general_category },

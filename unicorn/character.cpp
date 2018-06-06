@@ -358,7 +358,7 @@ namespace RS::Unicorn {
                     case Z_MEM_ERROR:      return "Z_MEM_ERROR";
                     case Z_BUF_ERROR:      return "Z_BUF_ERROR";
                     case Z_VERSION_ERROR:  return "Z_VERSION_ERROR";
-                    default:               return dec(error);
+                    default:               return std::to_string(error);
                 }
             }
         };

@@ -378,6 +378,11 @@ process_file('ucd/auxiliary/SentenceBreakProperty.txt', EnumUcdRecord(sentence_b
 process_file('ucd/auxiliary/WordBreakProperty.txt', EnumUcdRecord(word_break, 'Word_Break::'), 2)
 process_file('ucd/extracted/DerivedNumericType.txt', EnumUcdRecord(numeric_type, 'Numeric_Type::'), 2)
 
+for code in line_break:
+    value = line_break[code]
+    if value == 'Line_Break::IN':
+        line_break[code] = value + '_';
+
 id_nonstart = id_continue - id_start
 xid_nonstart = xid_continue - xid_start
 

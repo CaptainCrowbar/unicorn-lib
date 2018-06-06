@@ -16,13 +16,10 @@ subordinate namespace inside `Unicorn` (except the contents of the
 all calls with the `RS::Unicorn::` prefix, or use `using namespace
 RS::Unicorn`.
 
-The Unicorn library depends on the utilities and unit testing framework in my
-[core library](https://github.com/CaptainCrowbar/rs-core-lib).
-
 * <!-- TEXT --> **Documentation**
     * [Introduction to the Unicorn Library](intro.html)
 * **Utilities**
-    * [`"unicorn/utility.hpp"`](utility.html) -- Basic utilities.
+    * [`"unicorn/utility.hpp"`](utility.html) -- Basic utilities (not Unicode related).
 * **Character and string encoding**
     * [`"unicorn/character.hpp"`](character.html) -- Unicode characters and their basic properties.
     * [`"unicorn/utf.hpp"`](utf.html) -- The standard UTF encodings, and conversions between them.

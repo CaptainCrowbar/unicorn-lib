@@ -332,9 +332,9 @@ namespace RS::Unicorn {
                 if (rc == 0) {
                     auto err = GetLastError();
                     if (err == ERROR_NO_UNICODE_TRANSLATION)
-                        throw EncodingError(dec(tag));
+                        throw EncodingError(std::to_string(tag));
                     else
-                        throw UnknownEncoding(dec(tag), std::system_category().message(err));
+                        throw UnknownEncoding(std::to_string(tag), std::system_category().message(err));
                 }
                 dst.resize(rc);
                 MultiByteToWideChar(tag, wflags, src.data(), int(src.size()), &dst[0], int(rc));
@@ -358,9 +358,9 @@ namespace RS::Unicorn {
                 }
                 if (rc == 0) {
                     if (err == ERROR_NO_UNICODE_TRANSLATION)
-                        throw EncodingError(dec(tag));
+                        throw EncodingError(std::to_string(tag));
                     else
-                        throw UnknownEncoding(dec(tag), std::system_category().message(err));
+                        throw UnknownEncoding(std::to_string(tag), std::system_category().message(err));
                 }
                 dst.resize(rc);
                 WideCharToMultiByte(tag, wflags, &src[0], int(src.size()), &dst[0], rc, nullptr, nullptr);
@@ -549,7 +549,7 @@ namespace RS::Unicorn {
                 throw UnknownEncoding();
             if (flags & Mbcs::strict)
                 #ifdef _XOPEN_SOURCE
-                    return dec(page);
+                    return std::to_string(page);
                 #else
                     return page;
                 #endif
@@ -562,7 +562,7 @@ namespace RS::Unicorn {
             auto tag = EncodingTag();
             #ifdef _XOPEN_SOURCE
                 if (! (flags & no_recurse))
-                    tag = lookup_encoding(dec(page), no_recurse);
+                    tag = lookup_encoding(std::to_string(page), no_recurse);
             #else
                 if (page == utf8_tag || page == utf16_tag || page == utf16swap_tag
                         || page == utf32_tag || page == utf32swap_tag || valid_codepage(page))
@@ -588,8 +588,8 @@ namespace RS::Unicorn {
     enc(std::make_shared<Ustring>(encoding)) {}
 
     UnknownEncoding::UnknownEncoding(uint32_t encoding, const Ustring& details):
-    std::runtime_error(assemble(dec(encoding), details)),
-    enc(std::make_shared<Ustring>(dec(encoding))) {}
+    std::runtime_error(assemble(std::to_string(encoding), details)),
+    enc(std::make_shared<Ustring>(std::to_string(encoding))) {}
 
     const char* UnknownEncoding::encoding() const noexcept {
         static const char c = 0;
@@ -632,7 +632,7 @@ namespace RS::Unicorn {
         #else
             CPINFOEX info;
             if (GetCPInfoEx(CP_THREAD_ACP, 0, &info) && info.CodePage > 0)
-                return dec(info.CodePage);
+                return std::to_string(info.CodePage);
         #endif
         return default_encoding;
     }
