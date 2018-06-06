@@ -49,7 +49,6 @@ $(BUILD)/unit-test.o: unicorn/unit-test.cpp unicorn/unit-test.hpp unicorn/utilit
 $(BUILD)/utf-test.o: unicorn/utf-test.cpp unicorn/character.hpp unicorn/property-values.hpp unicorn/unit-test.hpp unicorn/utf.hpp unicorn/utility.hpp
 $(BUILD)/utf.o: unicorn/utf.cpp unicorn/character.hpp unicorn/property-values.hpp unicorn/utf.hpp unicorn/utility.hpp
 $(BUILD)/utility-test.o: unicorn/utility-test.cpp unicorn/unit-test.hpp unicorn/utility.hpp
-$(BUILD)/utility.o: unicorn/utility.cpp unicorn/utility.hpp
 ifeq ($(LIBTAG),msvc)
     LDLIBS += zlib.lib pcre.lib
 else
