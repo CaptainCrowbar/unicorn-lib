@@ -45,6 +45,7 @@ $(BUILD)/ucd-numeric-tables.o: unicorn/ucd-numeric-tables.cpp unicorn/property-v
 $(BUILD)/ucd-property-tables.o: unicorn/ucd-property-tables.cpp unicorn/property-values.hpp unicorn/ucd-tables.hpp unicorn/utility.hpp
 $(BUILD)/ucd-script-tables.o: unicorn/ucd-script-tables.cpp unicorn/property-values.hpp unicorn/ucd-tables.hpp unicorn/utility.hpp
 $(BUILD)/ucd-segmentation-test.o: unicorn/ucd-segmentation-test.cpp unicorn/property-values.hpp unicorn/ucd-tables.hpp unicorn/utility.hpp
+$(BUILD)/unit-test.o: unicorn/unit-test.cpp unicorn/unit-test.hpp unicorn/utility.hpp
 $(BUILD)/utf-test.o: unicorn/utf-test.cpp unicorn/character.hpp unicorn/property-values.hpp unicorn/unit-test.hpp unicorn/utf.hpp unicorn/utility.hpp
 $(BUILD)/utf.o: unicorn/utf.cpp unicorn/character.hpp unicorn/property-values.hpp unicorn/utf.hpp unicorn/utility.hpp
 $(BUILD)/utility-test.o: unicorn/utility-test.cpp unicorn/unit-test.hpp unicorn/utility.hpp
