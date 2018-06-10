@@ -10,18 +10,11 @@
 
 # Project identity
 
+LIBROOT ?= ..
 project_name := $(shell ls */*.{c,h,cpp,hpp} 2>/dev/null | sed -E 's!/.*!!'| uniq -c | sort | tail -n 1 | sed -E 's!^[ 0-9]+!!')
 project_tag := $(shell echo "$$PWD" | sed -E 's!^([^/]*/)*([^/]*-)?!!')
 dependency_file := dependencies.make
 install_prefix := /usr/local
-
-ifneq ($(wildcard scripts),)
-	scripts_dir := scripts
-else ifdef LIBROOT
-	scripts_dir := $(LIBROOT)/core-lib/scripts
-else
-	scripts_dir := ../core-lib/scripts
-endif
 
 # Toolset identity
 
@@ -233,7 +226,7 @@ clean-all:
 	rm -rf build doc *.stackdump __test_*
 
 dep:
-	$(scripts_dir)/make-dependencies
+	$(LIBROOT)/unicorn-lib/scripts/make-dependencies
 
 help: help-suffix
 
@@ -521,20 +514,20 @@ $(project_name)/library.hpp: $(library_headers)
 	echo $(sort $(library_headers)) | tr ' ' '\n' | sed -E 's/.+/#include "&"/' >> $@
 
 $(project_name)/unit-test.cpp: $(filter-out $(project_name)/unit-test.cpp,$(test_sources))
-	$(scripts_dir)/make-tests
+	$(LIBROOT)/unicorn-lib/scripts/make-tests
 
 ifeq ($(doc_index),)
-doc/index.html: $(doc_sources) $(scripts_dir)/make-doc $(scripts_dir)/make-index
+doc/index.html: $(doc_sources) $(LIBROOT)/unicorn-lib/scripts/make-doc $(LIBROOT)/core-lib/scripts/make-index
 	@mkdir -p $(dir $@)
-	$(scripts_dir)/make-index > __index__.md
-	$(scripts_dir)/make-doc __index__.md $@
+	$(LIBROOT)/core-lib/scripts/make-index > __index__.md
+	$(LIBROOT)/unicorn-lib/scripts/make-doc __index__.md $@
 	rm -f __index__.md
 endif
 
-doc/%.html: $(project_name)/%.md $(scripts_dir)/make-doc
+doc/%.html: $(project_name)/%.md $(LIBROOT)/unicorn-lib/scripts/make-doc
 	@mkdir -p $(dir $@)
-	$(scripts_dir)/make-doc $< $@
+	$(LIBROOT)/unicorn-lib/scripts/make-doc $< $@
 
-doc/style.css: $(scripts_dir)/style.css
+doc/style.css: $(LIBROOT)/unicorn-lib/scripts/style.css
 	@mkdir -p $(dir $@)
 	cp $< $@
