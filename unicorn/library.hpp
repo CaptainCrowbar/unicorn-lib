@@ -2,12 +2,12 @@
 
 #include "unicorn/character.hpp"
 #include "unicorn/environment.hpp"
-#include "unicorn/file.hpp"
 #include "unicorn/format.hpp"
 #include "unicorn/io.hpp"
 #include "unicorn/mbcs.hpp"
 #include "unicorn/normal.hpp"
 #include "unicorn/options.hpp"
+#include "unicorn/path.hpp"
 #include "unicorn/property-values.hpp"
 #include "unicorn/regex.hpp"
 #include "unicorn/segment.hpp"

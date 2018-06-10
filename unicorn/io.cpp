@@ -1,6 +1,7 @@
 #include "unicorn/io.hpp"
 #include "unicorn/format.hpp"
 #include "unicorn/mbcs.hpp"
+#include "unicorn/path.hpp"
 #include "unicorn/string.hpp"
 #include <algorithm>
 #include <cerrno>
@@ -21,19 +22,18 @@ namespace RS::Unicorn {
 
         void checked_fclose(FILE* f) { if (f) fclose(f); }
         void null_delete(void*) noexcept {}
-        template <typename C> Ustring quote_file(const std::basic_string<C>& name) { return quote(to_utf8(name)); }
 
-        SharedFile shared_fopen(const NativeString& file, const NativeString& mode, bool check) {
+        SharedFile shared_fopen(const Path& file, const NativeString& mode, bool check) {
             FILE* f =
                 #ifdef _XOPEN_SOURCE
                     fopen
                 #else
                     _wfopen
                 #endif
-                (file.data(), mode.data());
+                (file.c_name(), mode.data());
             int error = errno;
             if (check && f == nullptr)
-                throw std::system_error(error, std::generic_category(), quote_file(file));
+                throw std::system_error(error, std::generic_category(), quote(file.name()));
             return {f, checked_fclose};
         }
 
@@ -44,7 +44,7 @@ namespace RS::Unicorn {
     struct FileReader::impl_type {
         Ustring line8;
         std::string rdbuf;
-        NativeString name;
+        Path file;
         uint32_t flags;
         Ustring enc;
         Ustring eol;
@@ -69,21 +69,21 @@ namespace RS::Unicorn {
         return impl ? impl->lines : size_t(0);
     }
 
-    void FileReader::init(const NativeString& file, uint32_t flags, const Ustring& enc, const Ustring& eol) {
+    void FileReader::init(const Path& file, uint32_t flags, const Ustring& enc, const Ustring& eol) {
         static constexpr NC dash[] = {NC('-'), NC(0)};
         static constexpr NC rb[] = {NC('r'), NC('b'), NC(0)};
         if (ibits(flags & (Utf::replace | Utf::throws)) > 1
                 || ibits(flags & (IO::crlf | IO::lf | IO::striplf | IO::striptws | IO::stripws)) > 1)
             throw std::invalid_argument("Inconsistent file I/O flags");
         impl = std::make_shared<impl_type>();
-        impl->name = file;
+        impl->file = file;
         impl->flags = flags;
         impl->enc = enc;
         impl->eol = eol;
         impl->lines = 0;
         if (enc.empty() || enc == "0")
             impl->enc = "utf-8";
-        if ((flags & IO::standin) && (file.empty() || file == dash))
+        if ((flags & IO::standin) && (file.empty() || file.os_view() == dash))
             impl->handle.reset(stdin, null_delete);
         else
             impl->handle = shared_fopen(file, rb, ! (flags & IO::pretend));
@@ -153,14 +153,14 @@ namespace RS::Unicorn {
         auto err = errno;
         impl->rdbuf.resize(offset + rc);
         if (ferror(impl->handle.get()))
-            throw std::system_error(err, std::generic_category(), quote_file(impl->name));
+            throw std::system_error(err, std::generic_category(), quote(impl->file.name()));
     }
 
     // Class FileWriter
 
     struct FileWriter::impl_type {
         Ustring wrbuf;
-        NativeString name;
+        Path file;
         uint32_t flags;
         Ustring enc;
         SharedFile handle;
@@ -172,11 +172,11 @@ namespace RS::Unicorn {
             throw std::system_error(std::make_error_code(std::errc::bad_file_descriptor));
         if (fflush(impl->handle.get()) == EOF) {
             int err = errno;
-            throw std::system_error(err, std::generic_category(), quote_file(impl->name));
+            throw std::system_error(err, std::generic_category(), quote(impl->file.name()));
         }
     }
 
-    void FileWriter::init(const NativeString& file, uint32_t flags, const Ustring& enc) {
+    void FileWriter::init(const Path& file, uint32_t flags, const Ustring& enc) {
         static constexpr NC dash[] = {NC('-'), NC(0)};
         static constexpr NC ab[] = {NC('a'), NC('b'), NC(0)};
         static constexpr NC wb[] = {NC('w'), NC('b'), NC(0)};
@@ -190,20 +190,19 @@ namespace RS::Unicorn {
                 || ibits(flags & (IO::standerr | IO::standout)) > 1)
             throw std::invalid_argument("Inconsistent file I/O flags");
         impl = std::make_shared<impl_type>();
-        impl->name = file;
+        impl->file = file;
         impl->flags = flags;
         impl->enc = enc;
         if (enc.empty() || enc == "0")
             impl->enc = "utf-8";
-        if ((flags & IO::standout) && (file.empty() || file == dash))
+        if ((flags & IO::standout) && (file.empty() || file.os_view() == dash))
             impl->handle.reset(stdout, null_delete);
-        else if ((flags & IO::standerr) && (file.empty() || file == dash))
+        else if ((flags & IO::standerr) && (file.empty() || file.os_view() == dash))
             impl->handle.reset(stderr, null_delete);
-        else if ((flags & IO::protect) && file_exists(file))
-            throw std::system_error(std::make_error_code(std::errc::file_exists), quote_file(file));
+        else if ((flags & IO::protect) && file.exists())
+            throw std::system_error(std::make_error_code(std::errc::file_exists), quote(file.name()));
         else
-            impl->handle = shared_fopen(file,
-                flags & IO::append ? ab : wb, true);
+            impl->handle = shared_fopen(file, flags & IO::append ? ab : wb, true);
         if (flags & IO::mutex) {
             if (impl->handle.get() == stdout)
                 impl->mutex.reset(&stdout_mutex, null_delete);
@@ -275,7 +274,7 @@ namespace RS::Unicorn {
         fwrite(str.data(), 1, str.size(), impl->handle.get());
         auto err = errno;
         if (ferror(impl->handle.get()))
-            throw std::system_error(err, std::generic_category(), quote_file(impl->name));
+            throw std::system_error(err, std::generic_category(), quote(impl->file.name()));
         if (impl->flags & (IO::linebuf | IO::unbuf))
             flush();
     }

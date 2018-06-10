@@ -2,18 +2,18 @@ $(BUILD)/character-test.o: unicorn/character-test.cpp unicorn/character.hpp unic
 $(BUILD)/character.o: unicorn/character.cpp unicorn/character.hpp unicorn/iso-script-names.hpp unicorn/property-values.hpp unicorn/ucd-tables.hpp unicorn/utility.hpp
 $(BUILD)/environment-test.o: unicorn/environment-test.cpp unicorn/character.hpp unicorn/environment.hpp unicorn/property-values.hpp unicorn/unit-test.hpp unicorn/utf.hpp unicorn/utility.hpp
 $(BUILD)/environment.o: unicorn/environment.cpp unicorn/character.hpp unicorn/environment.hpp unicorn/property-values.hpp unicorn/segment.hpp unicorn/string.hpp unicorn/utf.hpp unicorn/utility.hpp
-$(BUILD)/file-test.o: unicorn/file-test.cpp unicorn/character.hpp unicorn/file.hpp unicorn/property-values.hpp unicorn/segment.hpp unicorn/string.hpp unicorn/unit-test.hpp unicorn/utf.hpp unicorn/utility.hpp
-$(BUILD)/file.o: unicorn/file.cpp unicorn/character.hpp unicorn/file.hpp unicorn/format.hpp unicorn/mbcs.hpp unicorn/property-values.hpp unicorn/regex.hpp unicorn/segment.hpp unicorn/string.hpp unicorn/utf.hpp unicorn/utility.hpp
 $(BUILD)/format-test.o: unicorn/format-test.cpp unicorn/character.hpp unicorn/format.hpp unicorn/property-values.hpp unicorn/segment.hpp unicorn/string.hpp unicorn/unit-test.hpp unicorn/utf.hpp unicorn/utility.hpp
 $(BUILD)/format.o: unicorn/format.cpp unicorn/character.hpp unicorn/format.hpp unicorn/property-values.hpp unicorn/regex.hpp unicorn/segment.hpp unicorn/string.hpp unicorn/utf.hpp unicorn/utility.hpp
-$(BUILD)/io-test.o: unicorn/io-test.cpp unicorn/character.hpp unicorn/file.hpp unicorn/io.hpp unicorn/property-values.hpp unicorn/segment.hpp unicorn/string.hpp unicorn/unit-test.hpp unicorn/utf.hpp unicorn/utility.hpp
-$(BUILD)/io.o: unicorn/io.cpp unicorn/character.hpp unicorn/file.hpp unicorn/format.hpp unicorn/io.hpp unicorn/mbcs.hpp unicorn/property-values.hpp unicorn/segment.hpp unicorn/string.hpp unicorn/utf.hpp unicorn/utility.hpp
+$(BUILD)/io-test.o: unicorn/io-test.cpp unicorn/character.hpp unicorn/io.hpp unicorn/path.hpp unicorn/property-values.hpp unicorn/unit-test.hpp unicorn/utf.hpp unicorn/utility.hpp
+$(BUILD)/io.o: unicorn/io.cpp unicorn/character.hpp unicorn/format.hpp unicorn/io.hpp unicorn/mbcs.hpp unicorn/path.hpp unicorn/property-values.hpp unicorn/segment.hpp unicorn/string.hpp unicorn/utf.hpp unicorn/utility.hpp
 $(BUILD)/mbcs-test.o: unicorn/mbcs-test.cpp unicorn/character.hpp unicorn/mbcs.hpp unicorn/property-values.hpp unicorn/unit-test.hpp unicorn/utf.hpp unicorn/utility.hpp
 $(BUILD)/mbcs.o: unicorn/mbcs.cpp unicorn/character.hpp unicorn/iana-character-sets.hpp unicorn/mbcs.hpp unicorn/property-values.hpp unicorn/regex.hpp unicorn/segment.hpp unicorn/string.hpp unicorn/utf.hpp unicorn/utility.hpp
 $(BUILD)/normal-test.o: unicorn/normal-test.cpp unicorn/character.hpp unicorn/format.hpp unicorn/normal.hpp unicorn/property-values.hpp unicorn/segment.hpp unicorn/string.hpp unicorn/ucd-tables.hpp unicorn/unit-test.hpp unicorn/utf.hpp unicorn/utility.hpp
 $(BUILD)/normal.o: unicorn/normal.cpp unicorn/character.hpp unicorn/normal.hpp unicorn/property-values.hpp unicorn/utf.hpp unicorn/utility.hpp
 $(BUILD)/options-test.o: unicorn/options-test.cpp unicorn/character.hpp unicorn/options.hpp unicorn/property-values.hpp unicorn/regex.hpp unicorn/segment.hpp unicorn/string.hpp unicorn/unit-test.hpp unicorn/utf.hpp unicorn/utility.hpp
 $(BUILD)/options.o: unicorn/options.cpp unicorn/character.hpp unicorn/format.hpp unicorn/mbcs.hpp unicorn/options.hpp unicorn/property-values.hpp unicorn/regex.hpp unicorn/segment.hpp unicorn/string.hpp unicorn/utf.hpp unicorn/utility.hpp
+$(BUILD)/path-test.o: unicorn/path-test.cpp unicorn/character.hpp unicorn/path.hpp unicorn/property-values.hpp unicorn/unit-test.hpp unicorn/utf.hpp unicorn/utility.hpp
+$(BUILD)/path.o: unicorn/path.cpp unicorn/character.hpp unicorn/path.hpp unicorn/property-values.hpp unicorn/segment.hpp unicorn/string.hpp unicorn/utf.hpp unicorn/utility.hpp
 $(BUILD)/regex-test.o: unicorn/regex-test.cpp unicorn/character.hpp unicorn/property-values.hpp unicorn/regex.hpp unicorn/segment.hpp unicorn/string.hpp unicorn/unit-test.hpp unicorn/utf.hpp unicorn/utility.hpp
 $(BUILD)/regex.o: unicorn/regex.cpp unicorn/character.hpp unicorn/property-values.hpp unicorn/regex.hpp unicorn/segment.hpp unicorn/string.hpp unicorn/utf.hpp unicorn/utility.hpp
 $(BUILD)/segment-test.o: unicorn/segment-test.cpp unicorn/character.hpp unicorn/property-values.hpp unicorn/segment.hpp unicorn/string.hpp unicorn/ucd-tables.hpp unicorn/unit-test.hpp unicorn/utf.hpp unicorn/utility.hpp
@@ -45,7 +45,6 @@ $(BUILD)/ucd-numeric-tables.o: unicorn/ucd-numeric-tables.cpp unicorn/property-v
 $(BUILD)/ucd-property-tables.o: unicorn/ucd-property-tables.cpp unicorn/property-values.hpp unicorn/ucd-tables.hpp unicorn/utility.hpp
 $(BUILD)/ucd-script-tables.o: unicorn/ucd-script-tables.cpp unicorn/property-values.hpp unicorn/ucd-tables.hpp unicorn/utility.hpp
 $(BUILD)/ucd-segmentation-test.o: unicorn/ucd-segmentation-test.cpp unicorn/property-values.hpp unicorn/ucd-tables.hpp unicorn/utility.hpp
-$(BUILD)/unit-test.o: unicorn/unit-test.cpp unicorn/unit-test.hpp unicorn/utility.hpp
 $(BUILD)/utf-test.o: unicorn/utf-test.cpp unicorn/character.hpp unicorn/property-values.hpp unicorn/unit-test.hpp unicorn/utf.hpp unicorn/utility.hpp
 $(BUILD)/utf.o: unicorn/utf.cpp unicorn/character.hpp unicorn/property-values.hpp unicorn/utf.hpp unicorn/utility.hpp
 $(BUILD)/utility-test.o: unicorn/utility-test.cpp unicorn/unit-test.hpp unicorn/utility.hpp

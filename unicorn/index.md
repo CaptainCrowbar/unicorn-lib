@@ -22,17 +22,17 @@ RS::Unicorn`.
     * [`"unicorn/utility.hpp"`](utility.html) -- Basic utilities (not Unicode related).
 * **Character and string encoding**
     * [`"unicorn/character.hpp"`](character.html) -- Unicode characters and their basic properties.
-    * [`"unicorn/utf.hpp"`](utf.html) -- The standard UTF encodings, and conversions between them.
     * [`"unicorn/mbcs.hpp"`](mbcs.html) -- Conversion between UTF and non-Unicode encodings.
+    * [`"unicorn/utf.hpp"`](utf.html) -- The standard UTF encodings, and conversions between them.
 * **Operations on strings**
-    * [`"unicorn/string.hpp"`](string.html) -- A collection of generic string manipulation functions.
-    * [`"unicorn/regex.hpp"`](regex.html) -- Unicode regular expressions.
     * [`"unicorn/normal.hpp"`](normal.html) -- The standard Unicode normalization forms.
+    * [`"unicorn/regex.hpp"`](regex.html) -- Unicode regular expressions.
+    * [`"unicorn/string.hpp"`](string.html) -- A collection of generic string manipulation functions.
 * **Text formatting and parsing**
-    * [`"unicorn/segment.hpp"`](segment.html) -- Breaking text up into characters, words, sentences, lines, and paragraphs.
     * [`"unicorn/format.hpp"`](format.html) -- Formatting various kinds of data as Unicode strings.
+    * [`"unicorn/segment.hpp"`](segment.html) -- Breaking text up into characters, words, sentences, lines, and paragraphs.
 * **Interfacing with the outside world**
     * [`"unicorn/environment.hpp"`](environment.html) -- Environment variables.
-    * [`"unicorn/file.hpp"`](file.html) -- Basic operations on the file system.
     * [`"unicorn/io.hpp"`](io.html) -- File input and output.
     * [`"unicorn/options.hpp"`](options.html) -- Parsing command line options.
+    * [`"unicorn/path.hpp"`](path.html) -- File names and file system operations.

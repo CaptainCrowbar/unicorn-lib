@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8"/>
+<title>Unicorn Library: File Path</title>
+<link type="text/css" rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<h1 id="unicorn-library-file-path"><a href="index.html">Unicorn Library</a>: File Path</h1>
+<p><em>Unicode library for C++ by Ross Smith</em></p>
+<ul>
+<li><code>#include "unicorn/path.hpp"</code></li>
+</ul>
+<h2 id="contents">Contents</h2>
+<div class="toc">
+<ul>
+<li><a href="#unicorn-library-file-path">Unicorn Library: File Path</a><ul>
+<li><a href="#contents">Contents</a></li>
+<li><a href="#introduction">Introduction</a><ul>
+<li><a href="#exceptions">Exceptions</a></li>
+</ul>
+</li>
+<li><a href="#class-path">Class Path</a><ul>
+<li><a href="#member-types">Member types</a></li>
+<li><a href="#member-constants">Member constants</a></li>
+<li><a href="#life-cycle-functions">Life cycle functions</a></li>
+<li><a href="#path-name-functions">Path name functions</a></li>
+<li><a href="#file-system-query-functions">File system query functions</a></li>
+<li><a href="#file-system-update-functions">File system update functions</a></li>
+<li><a href="#io-functions">I/O functions</a></li>
+<li><a href="#process-state-functions">Process state functions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="introduction">Introduction</h2>
+<p>The <code>Path</code> class holds a file system path as a string. Internally, the file
+name is stored as a <code>std::string</code> on Unix, or a <code>std::wstring</code> on Windows, but
+can be converted from a different string type on construction, and retrieved
+either in its native format or as a UTF-8 string. The class provides a set of
+file system operations, such as file renaming and deletion, directory search,
+and so on.</p>
+<p>File handling in Unicode always has the problem that the actual file names on
+most systems are not guaranteed to be valid Unicode. On most Unix systems, a
+file name is an arbitrary sequence of bytes, with no restrictions other than
+excluding the null and slash characters; while file names on systems such as
+Linux are usually expected to be encoded in UTF-8 when they contain non-ASCII
+characters, this is not enforced in any way. On Microsoft Windows, using the
+NTFS file system, file names are nominally UTF-16 (with a short list of
+disallowed characters), but not all of the wide character API functions that
+deal with files check for valid encoding; it's not hard to create a file whose
+name is an arbitrary sequence of 16-bit integers. The HFS+ file system
+formerly used by Apple on macOS and iOS appears to be the only widely used
+file system that actually does enforce valid Unicode names at the file system
+level, although it then proceeds to complicate matters by using a proprietary
+normalization scheme that does not match any of the four standard ones, and in
+any case the new APFS file system does not appear to enforce any kind of
+encoding.</p>
+<p>To deal with this situation, the default behaviour of <code>Path</code> when constructed
+from a native file name string (<code>std::string</code> on Unix, <code>std::wstring</code> on
+Windows) is to copy the string verbatim, without checking for or correcting
+any UTF encoding. When converting from any other string type, however, the
+default is to enforce valid UTF encoding in the converted string, which may
+result in loss of information if the original string was not valid UTF.
+Optionally, conversion behaviour can be controlled by explicitly supplying one
+of the standard conversion mode flags from the Unicorn library:</p>
+<!-- TEXT -->
+
+<ul>
+<li><code>Utf::</code><strong><code>ignore</code></strong>   <em>- Assume valid UTF input</em></li>
+<li><code>Utf::</code><strong><code>replace</code></strong>  <em>- Replace invalid UTF with <code>U+FFFD</code></em></li>
+<li><code>Utf::</code><strong><code>throws</code></strong>   <em>- Throw <code>EncodingError</code> on invalid UTF</em></li>
+</ul>
+<p>The examples in the documentation below mostly use Unix-style file names for
+simplicity; the equivalent code on Windows will make the obvious substitutions
+of backslashes for slashes, and drive roots such as <code>"C:\"</code> for <code>"/"</code>.</p>
+<p>The term "leaf name" is used here to mean the name of an individual file
+within a directory, with no directory path prefix (for example, the leaf name
+of <code>"/foo/bar/hello.txt"</code>, or <code>"C:\foo\bar\hello.txt"</code>, is <code>"hello.txt"</code>).</p>
+<h3 id="exceptions">Exceptions</h3>
+<!-- TEXT -->
+
+<ul>
+<li>Any function that accepts a <code>flags</code> argument will throw <code>std::invalid_argument</code> if an invalid combination of flags is supplied.</li>
+<li>Any function that accepts UTF conversion flags will throw <code>EncodingError</code> if the <code>Utf::throws</code> flag is given and the input string is invalid.</li>
+<li>Any function not marked <code>noexcept</code> may throw <code>std::bad_alloc</code>.</li>
+<li>Exception behaviour is only documented for individual functions where it varies from the above rules.</li>
+</ul>
+<h2 id="class-path">Class Path</h2>
+<h3 id="member-types">Member types</h3>
+<div class="defns">
+<ul>
+<li><code>using Path::</code><strong><code>character_type</code></strong> <code>= [char on Unix, wchar_t on Windows]</code></li>
+<li><code>using Path::</code><strong><code>flag_type</code></strong> <code>= [unsigned integer type]</code></li>
+<li><code>using Path::</code><strong><code>id_type</code></strong> <code>= std::pair&lt;uint64_t, uint64_t&gt;</code></li>
+<li><code>using Path::</code><strong><code>string_type</code></strong> <code>= [std::string on Unix, std::wstring on Windows]</code></li>
+<li><code>using Path::</code><strong><code>string_view_type</code></strong> <code>= [std::string_view on Unix, std::wstring_view on Windows]</code></li>
+</ul>
+<p>Type aliases.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>class Path::</code><strong><code>deep_search_iterator</code></strong><ul>
+<li><em>Const input iterator</em></li>
+<li><em>Value type is</em> <code>Path</code></li>
+</ul>
+</li>
+<li><code>using Path::</code><strong><code>deep_search_range</code></strong> <code>= Irange&lt;deep_search_iterator&gt;</code></li>
+<li><code>class Path::</code><strong><code>directory_iterator</code></strong><ul>
+<li><em>Const input iterator</em></li>
+<li><em>Value type is</em> <code>Path</code></li>
+</ul>
+</li>
+<li><code>using Path::</code><strong><code>directory_range</code></strong> <code>= Irange&lt;directory_iterator&gt;</code></li>
+</ul>
+<p>Iterators over the files in a directory.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>enum class Path::</code><strong><code>form</code></strong><ul>
+<li><code>Path::form::</code><strong><code>empty</code></strong></li>
+<li><code>Path::form::</code><strong><code>absolute</code></strong></li>
+<li><code>Path::form::</code><strong><code>drive_absolute</code></strong></li>
+<li><code>Path::form::</code><strong><code>drive_relative</code></strong></li>
+<li><code>Path::form::</code><strong><code>relative</code></strong></li>
+</ul>
+</li>
+</ul>
+<p>An enumeration of the possible formats for a path.</p>
+</div>
+<h3 id="member-constants">Member constants</h3>
+<div class="defns">
+<ul>
+<li><code>static constexpr char Path::</code><strong><code>delimiter</code></strong> <code>= ['/' on Unix, '\' on Windows]</code></li>
+<li><code>static constexpr character_type Path::</code><strong><code>native_delimiter</code></strong> <code>= ['/' on Unix, L'\' on Windows]</code></li>
+<li><code>static constexpr bool Path::</code><strong><code>native_case</code></strong> <code>= [false on Windows or Mac, true on other Unix systems]</code></li>
+</ul>
+<p>Information about the native path format. The <code>native_case</code> flag indicates
+whether or not the operating system normally expects file names to be case
+sensitive, although mounted non-native file systems may exhibit different
+behaviour.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>static constexpr Path::flag_type Path::</code><strong><code>append</code></strong>       <em>- If the file already exists, append to it instead of overwriting</em></li>
+<li><code>static constexpr Path::flag_type Path::</code><strong><code>bottom_up</code></strong>    <em>- Search a directory tree in bottom up order instead of top down</em></li>
+<li><code>static constexpr Path::flag_type Path::</code><strong><code>legal_name</code></strong>   <em>- Fail if the file name is illegal for the operating system</em></li>
+<li><code>static constexpr Path::flag_type Path::</code><strong><code>may_copy</code></strong>     <em>- Fall back on copying files if the original operation is not possible</em></li>
+<li><code>static constexpr Path::flag_type Path::</code><strong><code>may_fail</code></strong>     <em>- Return a default value instead of throwing if the operation fails</em></li>
+<li><code>static constexpr Path::flag_type Path::</code><strong><code>no_follow</code></strong>    <em>- Don't follow symlinks</em></li>
+<li><code>static constexpr Path::flag_type Path::</code><strong><code>no_hidden</code></strong>    <em>- Ignore hidden files</em></li>
+<li><code>static constexpr Path::flag_type Path::</code><strong><code>overwrite</code></strong>    <em>- Replace the file if it already exists</em></li>
+<li><code>static constexpr Path::flag_type Path::</code><strong><code>recurse</code></strong>      <em>- Perform directory operations recursively</em></li>
+<li><code>static constexpr Path::flag_type Path::</code><strong><code>std_default</code></strong>  <em>- If the path is empty or <code>"-"</code>, use standard input or output instead</em></li>
+<li><code>static constexpr Path::flag_type Path::</code><strong><code>unicode</code></strong>      <em>- Ignore files whose names are not valid UTF</em></li>
+</ul>
+<p>Flags controlling the behaviour of some of the path functions. Further details
+of the resulting behaviour are given with the relevant functions. Where
+documented, the UTF conversion flags (<code>Utf::ignore/replace/throws</code>)
+can also be combined with some of these.</p>
+</div>
+<h3 id="life-cycle-functions">Life cycle functions</h3>
+<div class="defns">
+<ul>
+<li><code>Path::</code><strong><code>Path</code></strong><code>() noexcept</code></li>
+</ul>
+<p>Default constructor, equivalent to constructing from an empty string.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>template &lt;typename C&gt; Path::</code><strong><code>Path</code></strong><code>(const std::basic_string&lt;C&gt;&amp; file, flag_type flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; Path::</code><strong><code>Path</code></strong><code>(const std::basic_string_view&lt;C&gt;&amp; file, flag_type flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; Path::</code><strong><code>Path</code></strong><code>(const C* file, flag_type flags = 0)</code></li>
+</ul>
+<p>Constructors (and implicit conversions) from a string. Any standard string
+type can be passed as a file name; if no conversion mode flag is explicitly
+supplied, the name will simply be copied verbatim with no encoding checks if
+the input string's character type is the same size as the native encoding (one
+byte on Unix, two on Windows); otherwise, the conversion mode defaults to
+<code>Utf::replace</code>. Besides an optional conversion mode, the <code>legal_name</code> flag can
+also be supplied, in which case the constructor will throw
+<code>std::invalid_argument</code> if a file name whose format is illegal for the
+operating system is supplied.</p>
+<p>On construction, paths are brought into a canonical form according to the
+following rules;</p>
+<!-- TEXT -->
+
+<ul>
+<li>On Windows, replace any slash delimiters with backslashes</li>
+<li>Trim redundant leading slashes</li>
+<li>Replace <code>/./</code> with <code>/</code> throughout</li>
+<li>Replace redundant multiple slashes with one</li>
+<li>Trim trailing <code>/</code> and <code>/.</code></li>
+<li>On Windows, ensure a trailing slash on network paths</li>
+<li>On Windows, convert the drive letter to upper case</li>
+</ul>
+<p>If required, UTF validation is done before canonicalization, OS specific
+legality checks after canonicalization.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>Path::</code><strong><code>~Path</code></strong><code>() noexcept</code></li>
+<li><code>Path::</code><strong><code>Path</code></strong><code>(const Path&amp; p)</code></li>
+<li><code>Path::</code><strong><code>Path</code></strong><code>(Path&amp;&amp; p) noexcept</code></li>
+<li><code>Path&amp; Path::</code><strong><code>operator=</code></strong><code>(const Path&amp; p)</code></li>
+<li><code>Path&amp; Path::</code><strong><code>operator=</code></strong><code>(Path&amp;&amp; p) noexcept</code></li>
+</ul>
+<p>Other life cycle operations.</p>
+</div>
+<h3 id="path-name-functions">Path name functions</h3>
+<p>These operate on the path purely as a string, making no contact with the
+actual file system.</p>
+<div class="defns">
+<ul>
+<li><code>Ustring Path::</code><strong><code>name</code></strong><code>(flag_type flags = Utf::replace) const</code></li>
+<li><code>Ustring</code> <strong><code>to_str</code></strong><code>(const Path&amp; p)</code></li>
+<li><code>std::ostream&amp;</code> <strong><code>operator&lt;&lt;</code></strong><code>(std::ostream&amp; out, const Path&amp; p)</code></li>
+</ul>
+<p>These return the full path as UTF-8, possibly involving an encoding conversion
+step.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>string_type Path::</code><strong><code>os_name</code></strong><code>() const</code></li>
+<li><code>string_view_type Path::</code><strong><code>os_view</code></strong><code>() const noexcept</code></li>
+<li><code>const character_type* Path::</code><strong><code>c_name</code></strong><code>() const noexcept</code></li>
+</ul>
+<p>These return the full path in its native form, with no conversion.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>Ustring Path::</code><strong><code>as_url</code></strong><code>(flag_type flags = Utf::replace) const</code></li>
+</ul>
+<p>Returns the file name as a UTF-8 <code>"file://..."</code> URL. This will throw
+<code>std::invalid_argument</code> if the path is not absolute.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>std::vector&lt;Ustring&gt; Path::</code><strong><code>breakdown</code></strong><code>() const</code></li>
+<li><code>std::vector&lt;string_type&gt; Path::</code><strong><code>os_breakdown</code></strong><code>() const</code></li>
+</ul>
+<p>Break the path down into its directory and file elements. If the path is
+absolute, the first element will be the root path.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>Path Path::</code><strong><code>change_ext</code></strong><code>(Uview new_ext) const</code></li>
+</ul>
+<p>Replace the file extension with a new one. The new extension can be supplied
+with or without a leading dot, or can be an empty string to remove the
+extension. This will throw <code>std::invalid_argument</code> if the path is empty or is
+a root path.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>bool Path::</code><strong><code>empty</code></strong><code>() const noexcept</code></li>
+<li><code>bool Path::</code><strong><code>is_absolute</code></strong><code>() const noexcept</code></li>
+<li><code>bool Path::</code><strong><code>is_drive_absolute</code></strong><code>() const noexcept</code></li>
+<li><code>bool Path::</code><strong><code>is_drive_relative</code></strong><code>() const noexcept</code></li>
+<li><code>bool Path::</code><strong><code>is_relative</code></strong><code>() const noexcept</code></li>
+<li><code>Path::form Path::</code><strong><code>path_form</code></strong><code>() const noexcept</code></li>
+</ul>
+<p>Query which syntactic form the path has. Of the first five functions, exactly
+one will always be true for any path; <code>path_form()</code> returns the type as an
+enumeration value. The concepts of a "drive absolute" (e.g. <code>"\foo"</code>) or
+"drive relative" (e.g. <code>"C:foo"</code>) path are specific to Windows; on Unix,
+<code>is_drive_absolute()</code> and <code>is_drive_relative()</code> are always false, and
+<code>path_form()</code> will never return one of those values.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>bool Path::</code><strong><code>is_leaf</code></strong><code>() const noexcept</code></li>
+</ul>
+<p>True if the path is a leaf name (one with no directory prefix).</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>bool Path::</code><strong><code>is_legal</code></strong><code>() const noexcept</code></li>
+</ul>
+<p>True if the path is legal for this operating system.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>bool Path::</code><strong><code>is_root</code></strong><code>() const noexcept</code></li>
+</ul>
+<p>True if the path is the root of a logical file system. This is a purely
+syntactic check and does not attempt to check against actual mount points. On
+Unix this is true only for <code>"/"</code> (except that Windows-style network paths are
+recognized on Cygwin); on Windows, this checks for a drive letter (e.g.
+<code>"C:\"</code>) or network path (e.g. <code>"\\server\"</code>).</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>bool Path::</code><strong><code>is_unicode</code></strong><code>() const noexcept</code></li>
+</ul>
+<p>True if the name is a valid UTF encoding.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>size_t Path::</code><strong><code>hash</code></strong><code>() const noexcept</code></li>
+<li><code>struct std::</code><strong><code>hash</code></strong><code>&lt;Path&gt;</code></li>
+</ul>
+<p>Hash function. This simply returns the standard hash of the internal string.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>Path Path::</code><strong><code>relative_to</code></strong><code>(const Path&amp; base) const</code></li>
+</ul>
+<p>Returns a relative path locating the current path relative to the given base
+path. The current and base paths must be either both absolute or both
+relative; if they are relative, they are assumed to be relative to the same
+origin. This will throw <code>std::invalid_argument</code> if the current path and base
+path are not both absolute or both relative.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>std::pair&lt;Ustring, Ustring&gt; Path::</code><strong><code>split_leaf</code></strong><code>() const</code></li>
+<li><code>std::pair&lt;string_type, string_type&gt; Path::</code><strong><code>split_os_leaf</code></strong><code>() const</code></li>
+</ul>
+<p>Splits the path's leaf name into a base and extension; the extension begins
+with the last dot, provided this is not the first or last character of the
+leaf name. The part of the path before the leaf name is not included in the
+return value. If the path is a root path, both strings will be empty. For
+example, <code>"/foo/bar/hello.txt"</code> will return <code>{"hello",".txt"}</code>.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>std::pair&lt;Path, Path&gt; Path::</code><strong><code>split_path</code></strong><code>() const</code></li>
+</ul>
+<p>Splits the path into a directory path and a leaf name. If the path is a root
+path, the leaf name will be empty. For example, <code>"/foo/bar/hello.txt"</code> will
+return <code>{"/foo/bar","hello.txt"}</code>.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>std::pair&lt;Path, Path&gt; Path::</code><strong><code>split_root</code></strong><code>() const</code></li>
+</ul>
+<p>Splits the path into a root path and a path relative to the root. For example,
+<code>"/foo/bar/hello.txt"</code> will return <code>{"/","foo/bar/hello.txt"}</code>.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>static Path Path::</code><strong><code>common</code></strong><code>(const Path&amp; lhs, const Path&amp; rhs)</code></li>
+<li><code>template &lt;typename Range&gt; static Path Path::</code><strong><code>common</code></strong><code>(const Range&amp; files)</code></li>
+</ul>
+<p>Return the longest common prefix of two or more paths. The return value will
+be a complete path (i.e. it will not split a path element in half if two path
+elements happen to share a substring). The returned path will be empty if the
+argument paths are a mixture of absolute and relative paths, or (on Windows)
+if they are absolute but do not all have the same root. For example,
+<code>common("/a/b/c/d/e/f","/a/b/c/x/y/z")</code> will return <code>"/a/b/c"</code>.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>static Path Path::</code><strong><code>join</code></strong><code>(const Path&amp; lhs, const Path&amp; rhs)</code></li>
+<li><code>template &lt;typename Range&gt; static Path Path::</code><strong><code>join</code></strong><code>(const Range&amp; files)</code></li>
+<li><code>Path</code> <strong><code>operator/</code></strong><code>(const Path&amp; lhs, const Path&amp; rhs)</code></li>
+<li><code>Path&amp;</code> <strong><code>operator/=</code></strong><code>(Path&amp; lhs, const Path&amp; rhs)</code></li>
+</ul>
+<p>Join two paths. This will discard the LHS and return the RHS unchanged if the
+LHS is empty or the RHS is absolute; otherwise, the resulting path is obtained
+by assuming the RHS is relative to the LHS.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>bool</code> <strong><code>operator==</code></strong><code>(const Path&amp; lhs, const Path&amp; rhs) noexcept</code></li>
+<li><code>bool</code> <strong><code>operator!=</code></strong><code>(const Path&amp; lhs, const Path&amp; rhs) noexcept</code></li>
+<li><code>bool</code> <strong><code>operator&lt;</code></strong><code>(const Path&amp; lhs, const Path&amp; rhs) noexcept</code></li>
+<li><code>bool</code> <strong><code>operator&gt;</code></strong><code>(const Path&amp; lhs, const Path&amp; rhs) noexcept</code></li>
+<li><code>bool</code> <strong><code>operator&lt;=</code></strong><code>(const Path&amp; lhs, const Path&amp; rhs) noexcept</code></li>
+<li><code>bool</code> <strong><code>operator&gt;=</code></strong><code>(const Path&amp; lhs, const Path&amp; rhs) noexcept</code></li>
+</ul>
+<p>Comparison operators. These perform lexicographical comparison by code unit,
+not by code point, because the path string may not be a valid encoding; on
+Windows this means that paths that contain characters outside the BMP will not
+necessarily sort in Unicode order.</p>
+</div>
+<h3 id="file-system-query-functions">File system query functions</h3>
+<p>These require read-only access to the file system. All functions not marked
+<code>noexcept</code> can throw <code>std::system_error</code> if the underlying system API fails,
+in addition to any explicitly documented exceptions.</p>
+<div class="defns">
+<ul>
+<li><code>system_clock::time_point Path::</code><strong><code>access_time</code></strong><code>(flag_type flags = 0) const noexcept</code></li>
+<li><code>system_clock::time_point Path::</code><strong><code>create_time</code></strong><code>(flag_type flags = 0) const noexcept</code></li>
+<li><code>system_clock::time_point Path::</code><strong><code>modify_time</code></strong><code>(flag_type flags = 0) const noexcept</code></li>
+<li><code>system_clock::time_point Path::</code><strong><code>status_time</code></strong><code>(flag_type flags = 0) const noexcept</code></li>
+</ul>
+<p>Query the file's time metadata; see also the corresponding update functions
+below. The four possible time properties are detailed below. The query
+functions will return the epoch if the file does not exist or is not
+accessible. If the <code>no_follow</code> flag is set, and the path refers to a symlink,
+these will operate (if possible) on the symlink rather than the target file.</p>
+<table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Interpretation</th>
+<th>Apple</th>
+<th>Other Unix</th>
+<th>Windows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Access time</td>
+<td>When the file's content was last read (Posix <code>atime</code>)</td>
+<td>Read/write</td>
+<td>Read/write</td>
+<td>Read/write</td>
+</tr>
+<tr>
+<td>Create time</td>
+<td>When the file was created</td>
+<td>Read only</td>
+<td>Not supported</td>
+<td>Read/write</td>
+</tr>
+<tr>
+<td>Modify time</td>
+<td>When the file's content was last modified (Posix <code>mtime</code>)</td>
+<td>Read/write</td>
+<td>Read/write</td>
+<td>Read/write</td>
+</tr>
+<tr>
+<td>Status time</td>
+<td>When the file's metadata was last modified (Posix <code>ctime</code>)</td>
+<td>Read only</td>
+<td>Read only</td>
+<td>Not supported</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="defns">
+<ul>
+<li><code>directory_range Path::</code><strong><code>directory</code></strong><code>(flag_type flags = 0) const</code></li>
+<li><code>deep_search_range Path::</code><strong><code>deep_search</code></strong><code>(flag_type flags = 0) const</code></li>
+</ul>
+<p>Return an iterator range over the files within a directory, either the
+immediate directory members (<code>directory()</code>) or a recursive search of all child
+directories (<code>deep_search()</code>).</p>
+<p>The range will be empty if the path does not exist or is not a directory. The
+order in which files are returned is unspecified. If the directory's contents
+are changed while iteration is in progress, it is unspecified whether the
+changes will be visible to the caller. If the <code>no_hidden</code> flag is set, hidden
+files will not be included. If the <code>unicode</code> flag is set, files whose names
+are not valid UTF will not be included (this test is applied to the whole
+path, so a directory whose own name is invalid will appear to be empty).</p>
+<p>By default, <code>deep_search()</code> visits files in top down order (a directory is
+seen before its contents); if the <code>bottom_up</code> flag is set, bottom up order is
+used instead (a directory's contents are seen before the directory itself).
+Deep search iterators otherwise take the same flags, and follow the same
+rules, as directory iterator.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>bool Path::</code><strong><code>exists</code></strong><code>(flag_type flags = 0) const noexcept</code></li>
+</ul>
+<p>Query whether a file exists. This may give a false negative if the file exists
+but is not accessible to the calling process. The <code>no_follow</code> flag prevents
+this function from following symbolic links.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>id_type Path::</code><strong><code>id</code></strong><code>(flag_type flags = 0) const noexcept</code></li>
+</ul>
+<p>Returns a unique file identifier, intended to identify the file even if it is
+referred to by different paths. It will return a null ID if the file does not
+exist or the caller does not have permission to query its properties. This is
+based on the file's device and inode numbers, but completely reliable file
+identification cannot be guaranteed in the presence of parallel remote mounts
+or similar trickery. The <code>no_follow</code> flag prevents this function from
+following symbolic links.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>bool Path::</code><strong><code>is_directory</code></strong><code>(flag_type flags = 0) const noexcept</code></li>
+<li><code>bool Path::</code><strong><code>is_file</code></strong><code>(flag_type flags = 0) const noexcept</code></li>
+<li><code>bool Path::</code><strong><code>is_special</code></strong><code>(flag_type flags = 0) const noexcept</code></li>
+</ul>
+<p>Query the file type. Exactly one of these will be true if <code>exists()</code> is true.
+These may give a false negative if the file exists but is not accessible to
+the calling process. The <code>no_follow</code> flag prevents this function from
+following symbolic links.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>bool Path::</code><strong><code>is_hidden</code></strong><code>() const noexcept</code></li>
+</ul>
+<p>True if the file is normally hidden. On Unix this is based on the file name (a
+file is hidden if its name starts with a dot), and the file's existence is not
+checked; on Windows this is a metadata property, and will return false if the
+file does not exist or is not accessible to the caller.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>bool Path::</code><strong><code>is_symlink</code></strong><code>() const noexcept</code></li>
+</ul>
+<p>True if the file is a symbolic link. I haven't tried to support the
+complicated symlink-like concepts on NTFS; this simply always returns false on
+Windows.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>Path Path::</code><strong><code>resolve</code></strong><code>() const</code></li>
+</ul>
+<p>This resolves a relative path to an absolute one. If the path is empty, this
+will return the current directory. On Unix, if the path is absolute, it will
+be returned unchanged, but on Windows any short filenames in the original path
+will be resolved to long names even if the path was absolute.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>Path Path::</code><strong><code>resolve_symlink</code></strong><code>() const</code></li>
+</ul>
+<p>Returns the file pointed to by a symlink. This will just return the original
+path unchanged if it is not a symlink.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>uint64_t Path::</code><strong><code>size</code></strong><code>(flag_type flags = 0) const</code></li>
+</ul>
+<p>Returns the size of a file in bytes. If the <code>no_follow</code> flag is set, and the
+path refers to a symlink, this will return the size of the link instead of the
+target file. If the <code>recurse</code> flag is set, and the path refers to a directory,
+this will recursively determine the total size of the directory and everything
+in it (symlinks below the outermost directory will not be followed).</p>
+</div>
+<h3 id="file-system-update-functions">File system update functions</h3>
+<p>These require write access to the file system. All of these can throw
+<code>std::system_error</code> if the underlying system API fails, in addition to any
+explicitly documented exceptions.</p>
+<div class="defns">
+<ul>
+<li><code>void Path::</code><strong><code>copy_to</code></strong><code>(const Path&amp; dst, flag_type flags = 0) const</code></li>
+</ul>
+<p>Copy a file from the current path to the destination path. If the <code>overwrite</code>
+flag is set, this will replace any existing file at the destination. If the
+<code>recurse</code> flag is set, and the path refers to a directory, it will be copied
+recursively. This will fail if the source file does not exist, if the source
+and destination are the same file, if the destination already exists and
+<code>overwrite</code> was not set, or if the source is a directory and <code>recurse</code> was not
+set.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>void Path::</code><strong><code>create</code></strong><code>() const</code></li>
+</ul>
+<p>If the file does not exist, an empty file with default permissions is created.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>void Path::</code><strong><code>make_directory</code></strong><code>(flag_type flags = 0) const</code></li>
+</ul>
+<p>Create a directory, with default permissions, at the current path. If the
+<code>overwrite</code> flag is set, and the path exists but is not a directory, it will
+be replaced. If the <code>recurse</code> flag is set, any missing parent directories will
+also be created (like <code>mkdir -p</code>). This will do nothing if the directory
+already exists; it will fail if the path exists but is not a directory, and
+the <code>overwrite</code> flag was not set.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>void Path::</code><strong><code>make_symlink</code></strong><code>(const Path&amp; linkname, flag_type flags = 0) const</code></li>
+</ul>
+<p>Create a symlink at <code>linkname</code>, pointing to the current path. If the
+<code>may_copy</code> flag is set, this will copy the file (recursively) if a symlink
+can't be created. If the <code>overwrite</code> flag is set, any existing file at
+<code>linkname</code> will be replaced. This will do nothing if the link already exists
+and points to the correct file. The existence of the target path is not
+checked. This will fail if a file already exists at <code>linkname</code>, it is not a
+symlink already pointing to the target path, and the <code>overwrite</code> flag was not
+set. On Windows this will always fail unless the <code>may_copy</code> flag is set.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>void Path::</code><strong><code>move_to</code></strong><code>(const Path&amp; dst, flag_type flags = 0) const</code></li>
+</ul>
+<p>Move a file from the current path to the destination path. If the <code>may_copy</code>
+flag is set, this will attempt to copy the file and then delete the original
+if the move fails (this may leave two copies of a file if the operation fails
+partway through). If the <code>overwrite</code> flag is set, this will replace any
+existing file at the destination. This will do nothing if the source and
+destination are the same file. This will fail if the source file does not
+exist, or if the destination already exists and <code>overwrite</code> was not set.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>void Path::</code><strong><code>remove</code></strong><code>(flag_type flags = 0) const</code></li>
+</ul>
+<p>Delete a file. This will do nothing if the file already does not exist. If the
+<code>recurse</code> flag is set, this will delete directories recursively (like <code>rm
+-rf</code>).</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>void Path::</code><strong><code>set_access_time</code></strong><code>(flag_type flags = 0) const</code></li>
+<li><code>void Path::</code><strong><code>set_access_time</code></strong><code>(system_clock::time_point t, flag_type flags = 0) const</code></li>
+<li><code>void Path::</code><strong><code>set_create_time</code></strong><code>(flag_type flags = 0) const</code></li>
+<li><code>void Path::</code><strong><code>set_create_time</code></strong><code>(system_clock::time_point t, flag_type flags = 0) const</code></li>
+<li><code>void Path::</code><strong><code>set_modify_time</code></strong><code>(flag_type flags = 0) const</code></li>
+<li><code>void Path::</code><strong><code>set_modify_time</code></strong><code>(system_clock::time_point t, flag_type flags = 0) const</code></li>
+<li><code>void Path::</code><strong><code>set_status_time</code></strong><code>(flag_type flags = 0) const</code></li>
+<li><code>void Path::</code><strong><code>set_status_time</code></strong><code>(system_clock::time_point t, flag_type flags = 0) const</code></li>
+</ul>
+<p>Modify the file's time metadata. Refer to the corresponding query functions
+(above) for details of the interpretation of the four time properties.</p>
+<p>The functions that do not take a time argument will set it to the current
+time. If the <code>no_follow</code> flag is set, and the path refers to a symlink, these
+will operate (if possible) on the symlink rather than the target file. The
+setter functions will throw <code>std::system_error</code> if the file does not exist, if
+the calling process does not have permission to modify the requested time
+field, or if that field is not defined, or not modifiable, on this operating
+system.</p>
+<p>Query and update functions are included for all four times for symmetry and
+futureproofing, but no known operating system supports explicitly setting the
+file metadata modification time, and the current implementation of
+<code>set_status_time()</code> will always fail.</p>
+</div>
+<h3 id="io-functions">I/O functions</h3>
+<p>All of these functions may throw <code>std::ios::failure</code> if anything goes wrong.</p>
+<div class="defns">
+<ul>
+<li><code>void Path::</code><strong><code>load</code></strong><code>(std::string&amp; dst, size_t maxlen = npos, flag_type flags = 0) const</code></li>
+</ul>
+<p>Read the contents of a file into a string (erasing its former contents).
+Optionally, a maximum number of bytes can be specified. If the <code>may_fail</code> flag
+is set, this will return an empty string if the file does not exist or a read
+error occurs. If the <code>std_default</code> flag is set, this will read from standard
+input if the path is an empty string or <code>"-"</code>.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>void Path::</code><strong><code>save</code></strong><code>(std::string_view src, flag_type flags = 0) const</code></li>
+</ul>
+<p>Writes the contents of a string to a file. If the <code>append</code> flag is set and the
+file already exists, the new data will be appended to it; otherwise, it will
+be overwritten. If the <code>std_default</code> flag is set, this will write to standard
+output if the path is an empty string or <code>"-"</code>.</p>
+</div>
+<h3 id="process-state-functions">Process state functions</h3>
+<p>All of these functions may throw <code>std::system_error</code> if the underlying system
+API fails.</p>
+<div class="defns">
+<ul>
+<li><code>void Path::</code><strong><code>change_directory</code></strong><code>() const</code></li>
+<li><code>static Path Path::</code><strong><code>current_directory</code></strong><code>()</code></li>
+</ul>
+<p>Query or set the calling process's current working directory. Remember that
+this is not thread safe.</p></body>
+</html>

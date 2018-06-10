@@ -1,4 +1,5 @@
 #include "unicorn/io.hpp"
+#include "unicorn/path.hpp"
 #include "unicorn/unit-test.hpp"
 #include "unicorn/utf.hpp"
 #include <algorithm>

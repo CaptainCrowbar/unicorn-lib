@@ -8,13 +8,6 @@ The functions and classes in this module provided line oriented input and
 output, with automatic conversion between Unicode and external legacy
 encodings, as well as other conveniences such as normalization of line breaks.
 
-File names can be supplied either as UTF-8 strings or as native character
-strings (these are different types only on Windows; on Unix the `Ustring` and
-`NativeString` versions are the same function). Constructors that take a
-`NativeString` can be used with non-Unicode file names; see
-[`unicorn/file`](file.html) for the details of how file name encodings are
-handled.
-
 ## Contents ##
 
 [TOC]
@@ -28,18 +21,12 @@ handled.
     * `using FileReader::`**`reference`** `= const Ustring&`
     * `using FileReader::`**`value_type`** `= Ustring`
     * `FileReader::`**`FileReader`**`()`
-    * `explicit FileReader::`**`FileReader`**`(const Ustring& file)`
-    * `FileReader::`**`FileReader`**`(const Ustring& file, uint32_t flags)`
-    * `FileReader::`**`FileReader`**`(const Ustring& file, uint32_t flags, const Ustring& enc)`
-    * `FileReader::`**`FileReader`**`(const Ustring& file, uint32_t flags, uint32_t enc)`
-    * `FileReader::`**`FileReader`**`(const Ustring& file, uint32_t flags, const Ustring& enc, const Ustring& eol)`
-    * `FileReader::`**`FileReader`**`(const Ustring& file, uint32_t flags, uint32_t enc, const Ustring& eol)`
-    * `explicit FileReader::`**`FileReader`**`(const NativeString& file)`
-    * `FileReader::`**`FileReader`**`(const NativeString& file, uint32_t flags)`
-    * `FileReader::`**`FileReader`**`(const NativeString& file, uint32_t flags, const Ustring& enc)`
-    * `FileReader::`**`FileReader`**`(const NativeString& file, uint32_t flags, uint32_t enc)`
-    * `FileReader::`**`FileReader`**`(const NativeString& file, uint32_t flags, const Ustring& enc, const Ustring& eol)`
-    * `FileReader::`**`FileReader`**`(const NativeString& file, uint32_t flags, uint32_t enc, const Ustring& eol)`
+    * `explicit FileReader::`**`FileReader`**`(const Path& file)`
+    * `FileReader::`**`FileReader`**`(const Path& file, uint32_t flags)`
+    * `FileReader::`**`FileReader`**`(const Path& file, uint32_t flags, const Ustring& enc)`
+    * `FileReader::`**`FileReader`**`(const Path& file, uint32_t flags, uint32_t enc)`
+    * `FileReader::`**`FileReader`**`(const Path& file, uint32_t flags, const Ustring& enc, const Ustring& eol)`
+    * `FileReader::`**`FileReader`**`(const Path& file, uint32_t flags, uint32_t enc, const Ustring& eol)`
     * `size_t FileReader::`**`line`**`() const noexcept`
     * _[standard input iterator operations]_
 
@@ -48,7 +35,7 @@ of these by calling one of the `read_lines()` functions described below,
 rather than constructing the iterator type explicitly.
 
 The constructors open the file for input. The `flags` argument contains a
-combination of flags controlling the  iterator's behaviour (described below).
+combination of flags controlling the iterator's behaviour (described below).
 The `enc` argument is an optional encoding name or number, indicating what
 encoding is expected to be found in the file (see [`unicorn/mbcs`](mbcs.html)
 for the details of how these work); if no encoding is supplied, it will assume
@@ -67,7 +54,7 @@ modified by the flags below.
 
 Flag                  | Description
 ----                  | -----------
-`IO::`**`stdin`**     | Read from standard input if the file name is `"-"` or an empty string
+`IO::`**`standin`**   | Read from standard input if the file name is `"-"` or an empty string
 `IO::`**`pretend`**   | Treat a nonexistent file as empty instead of throwing an exception
 `IO::`**`bom`**       | Strip a leading byte order mark if one is found
 `IO::`**`lf`**        | Convert all line breaks to `LF`
@@ -79,16 +66,11 @@ Flag                  | Description
 `Utf::`**`replace`**  | Replace invalid encoding with `U+FFFD` (default)
 `Utf::`**`throws`**   | Throw `EncodingError` if invalid encoding is encountered
 
-* `Irange<FileReader>` **`read_lines`**`(const Ustring& file, uint32_t flags = 0)`
-* `Irange<FileReader>` **`read_lines`**`(const Ustring& file, uint32_t flags, const Ustring& enc)`
-* `Irange<FileReader>` **`read_lines`**`(const Ustring& file, uint32_t flags, uint32_t enc)`
-* `Irange<FileReader>` **`read_lines`**`(const Ustring& file, uint32_t flags, const Ustring& enc, const Ustring& eol)`
-* `Irange<FileReader>` **`read_lines`**`(const Ustring& file, uint32_t flags, uint32_t enc, const Ustring& eol)`
-* `Irange<FileReader>` **`read_lines`**`(const NativeString& file, uint32_t flags = 0)`
-* `Irange<FileReader>` **`read_lines`**`(const NativeString& file, uint32_t flags, const Ustring& enc)`
-* `Irange<FileReader>` **`read_lines`**`(const NativeString& file, uint32_t flags, uint32_t enc)`
-* `Irange<FileReader>` **`read_lines`**`(const NativeString& file, uint32_t flags, const Ustring& enc, const Ustring& eol)`
-* `Irange<FileReader>` **`read_lines`**`(const NativeString& file, uint32_t flags, uint32_t enc, const Ustring& eol)`
+* `Irange<FileReader>` **`read_lines`**`(const Path& file, uint32_t flags = 0)`
+* `Irange<FileReader>` **`read_lines`**`(const Path& file, uint32_t flags, const Ustring& enc)`
+* `Irange<FileReader>` **`read_lines`**`(const Path& file, uint32_t flags, uint32_t enc)`
+* `Irange<FileReader>` **`read_lines`**`(const Path& file, uint32_t flags, const Ustring& enc, const Ustring& eol)`
+* `Irange<FileReader>` **`read_lines`**`(const Path& file, uint32_t flags, uint32_t enc, const Ustring& eol)`
 
 These construct a pair of iterators, from which the lines in a file can be
 read. The arguments are interpreted as described above.
@@ -102,14 +84,10 @@ read. The arguments are interpreted as described above.
     * `using FileWriter::`**`reference`** `= void`
     * `using FileWriter::`**`value_type`** `= void`
     * `FileWriter::`**`FileWriter`**`()`
-    * `explicit FileWriter::`**`FileWriter`**`(const Ustring& file)`
-    * `FileWriter::`**`FileWriter`**`(const Ustring& file, uint32_t flags)`
-    * `FileWriter::`**`FileWriter`**`(const Ustring& file, uint32_t flags, const Ustring& enc)`
-    * `FileWriter::`**`FileWriter`**`(const Ustring& file, uint32_t flags, uint32_t enc)`
-    * `explicit FileWriter::`**`FileWriter`**`(const NativeString& file)`
-    * `FileWriter::`**`FileWriter`**`(const NativeString& file, uint32_t flags)`
-    * `FileWriter::`**`FileWriter`**`(const NativeString& file, uint32_t flags, const Ustring& enc)`
-    * `FileWriter::`**`FileWriter`**`(const NativeString& file, uint32_t flags, uint32_t enc)`
+    * `explicit FileWriter::`**`FileWriter`**`(const Path& file)`
+    * `FileWriter::`**`FileWriter`**`(const Path& file, uint32_t flags)`
+    * `FileWriter::`**`FileWriter`**`(const Path& file, uint32_t flags, const Ustring& enc)`
+    * `FileWriter::`**`FileWriter`**`(const Path& file, uint32_t flags, uint32_t enc)`
     * `void FileWriter::`**`flush`**`()`
     * _[standard output iterator operations]_
 
@@ -121,7 +99,11 @@ under the same circumstances.
 The default behaviour, if none of the flags below are used, is to simply write
 any string assigned to the iterator into the file, converted if necessary to
 the encoding specified in the constructor (UTF-8 by default). Text need not be
-written one line at a time; a single output string can contain multiple lines.
+written one line at a time; a single output string can contain multiple lines,
+and need not end on a line boundary.
+
+By default, output follows whatever buffering behaviour the `<cstdio>` library
+defaults to. Flags can be used to select line buffered or unbuffered output.
 
 See the [`unicorn/mbcs`](mbcs.html) documentation for the behaviour of the
 error handling flags on output.

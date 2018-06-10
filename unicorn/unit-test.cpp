@@ -31,11 +31,6 @@ extern void test_unicorn_environment_query_functions();
 extern void test_unicorn_environment_update_functions();
 extern void test_unicorn_environment_block();
 extern void test_unicorn_environment_string_expansion();
-extern void test_unicorn_file_legal_names();
-extern void test_unicorn_file_name_operations();
-extern void test_unicorn_file_path_operations();
-extern void test_unicorn_file_path_resolution();
-extern void test_unicorn_file_system_operations();
 extern void test_unicorn_format_booleans();
 extern void test_unicorn_format_integers();
 extern void test_unicorn_format_floating_point();
@@ -65,6 +60,22 @@ extern void test_unicorn_options_group();
 extern void test_unicorn_options_patterns();
 extern void test_unicorn_options_help();
 extern void test_unicorn_options_insertions();
+extern void test_unicorn_path_legal_names();
+extern void test_unicorn_path_unicode_names();
+extern void test_unicorn_path_name_normalization();
+extern void test_unicorn_path_name_properties();
+extern void test_unicorn_path_name_breakdown();
+extern void test_unicorn_path_name_combination();
+extern void test_unicorn_path_name_manipulation();
+extern void test_unicorn_path_resolution();
+extern void test_unicorn_path_directory_iterators();
+extern void test_unicorn_path_file_system_queries();
+extern void test_unicorn_path_file_system_updates();
+extern void test_unicorn_path_current_directory();
+extern void test_unicorn_path_deep_search();
+extern void test_unicorn_path_io();
+extern void test_unicorn_path_links();
+extern void test_unicorn_path_metadata();
 extern void test_unicorn_regex_version_information();
 extern void test_unicorn_regex_utf8();
 extern void test_unicorn_regex_match_ranges();
@@ -169,11 +180,6 @@ int main() {
         { "unicorn/environment/update-functions", test_unicorn_environment_update_functions },
         { "unicorn/environment/block", test_unicorn_environment_block },
         { "unicorn/environment/string-expansion", test_unicorn_environment_string_expansion },
-        { "unicorn/file/legal-names", test_unicorn_file_legal_names },
-        { "unicorn/file/name-operations", test_unicorn_file_name_operations },
-        { "unicorn/file/path-operations", test_unicorn_file_path_operations },
-        { "unicorn/file/path-resolution", test_unicorn_file_path_resolution },
-        { "unicorn/file/system-operations", test_unicorn_file_system_operations },
         { "unicorn/format/booleans", test_unicorn_format_booleans },
         { "unicorn/format/integers", test_unicorn_format_integers },
         { "unicorn/format/floating-point", test_unicorn_format_floating_point },
@@ -203,6 +209,22 @@ int main() {
         { "unicorn/options/patterns", test_unicorn_options_patterns },
         { "unicorn/options/help", test_unicorn_options_help },
         { "unicorn/options/insertions", test_unicorn_options_insertions },
+        { "unicorn/path/legal-names", test_unicorn_path_legal_names },
+        { "unicorn/path/unicode-names", test_unicorn_path_unicode_names },
+        { "unicorn/path/name-normalization", test_unicorn_path_name_normalization },
+        { "unicorn/path/name-properties", test_unicorn_path_name_properties },
+        { "unicorn/path/name-breakdown", test_unicorn_path_name_breakdown },
+        { "unicorn/path/name-combination", test_unicorn_path_name_combination },
+        { "unicorn/path/name-manipulation", test_unicorn_path_name_manipulation },
+        { "unicorn/path/resolution", test_unicorn_path_resolution },
+        { "unicorn/path/directory-iterators", test_unicorn_path_directory_iterators },
+        { "unicorn/path/file-system-queries", test_unicorn_path_file_system_queries },
+        { "unicorn/path/file-system-updates", test_unicorn_path_file_system_updates },
+        { "unicorn/path/current-directory", test_unicorn_path_current_directory },
+        { "unicorn/path/deep-search", test_unicorn_path_deep_search },
+        { "unicorn/path/io", test_unicorn_path_io },
+        { "unicorn/path/links", test_unicorn_path_links },
+        { "unicorn/path/metadata", test_unicorn_path_metadata },
         { "unicorn/regex/version-information", test_unicorn_regex_version_information },
         { "unicorn/regex/utf8", test_unicorn_regex_utf8 },
         { "unicorn/regex/match-ranges", test_unicorn_regex_match_ranges },

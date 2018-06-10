@@ -69,7 +69,7 @@ ifeq ($(build_host),cygwin)
 endif
 
 ifeq ($(cross_target),msvc)
-	install_prefix := ~/Dropbox/Lib/msvc
+	install_prefix := $(HOME)/Dropbox/Lib/msvc
 	windows_prefix := $(shell cygpath -aw $(install_prefix))
 	vcpkg_prefix := $(VCPKG_ROOT)/installed/x64-windows
 	CXX := cl
