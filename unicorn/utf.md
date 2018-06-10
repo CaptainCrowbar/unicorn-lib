@@ -109,13 +109,14 @@ four functions will be true for any value of the argument.
     * `UtfIterator::`**`UtfIterator`**`() noexcept`
     * `explicit UtfIterator::`**`UtfIterator`**`(const string_type& src)`
     * `UtfIterator::`**`UtfIterator`**`(const string_type& src, size_t offset, uint32_t flags = 0)`
-    * `const string_type& UtfIterator::`**`source`**`() const noexcept`
-    * `size_t UtfIterator::`**`offset`**`() const noexcept`
     * `size_t UtfIterator::`**`count`**`() const noexcept`
+    * `size_t UtfIterator::`**`offset`**`() const noexcept`
     * `UtfIterator UtfIterator::`**`offset_by`**`(ptrdiff_t n) const noexcept`
-    * `Irange<const C*> UtfIterator::`**`range`**`() const noexcept`
+    * `const C* UtfIterator::`**`ptr`**`() const noexcept`
+    * `const string_type& UtfIterator::`**`source`**`() const noexcept`
     * `string_type` **`str`**`() const`
     * `bool UtfIterator::`**`valid`**`() const noexcept`
+    * `std::basic_string_view<C> UtfIterator::`**`view`**`() const noexcept`
     * _[standard iterator operations]_
 
 This is a bidirectional iterator over any UTF-encoded text. The template
@@ -148,13 +149,17 @@ Besides the normal operations that can be applied to an iterator,
 state. The `source()` function returns a reference to the underlying encoded
 string. The `offset()` and `count()` functions return the position and length
 (in code units) of the current encoded character (or the group of code units
-currently being interpreted as an invalid character). The `range()` function
-returns the same sequence of code units as a pair of pointers.
+currently being interpreted as an invalid character). The `view()` function
+returns the same sequence of code units as a string view.
 
 The `offset_by()` function returns an iterator moved by the specified number
 of code units. The resulting offset will be clamped to the bounds of the
 source string; behaviour is the same as for the constructor if it is not on a
 character boundary.
+
+The `ptr()` function returns a pointer to the start of the encoded character,
+a pointer to the end of the underlying string if the iterator is past the end,
+or a null pointer if the iterator was default constructed.
 
 The `str()` function returns a copy of the code units making up the current
 character. This will be empty if the iterator is default constructed or past

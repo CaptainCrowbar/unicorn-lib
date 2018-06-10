@@ -6,6 +6,7 @@
 #include <cstring>
 #include <stdexcept>
 #include <string>
+#include <string_view>
 #include <utility>
 
 namespace RS::Unicorn {
@@ -223,13 +224,14 @@ namespace RS::Unicorn {
         const char32_t& operator*() const noexcept { return u; }
         UtfIterator& operator++();
         UtfIterator& operator--();
-        const string_type& source() const noexcept { return *sptr; }
-        size_t offset() const noexcept { return ofs; }
         size_t count() const noexcept { return units; }
+        size_t offset() const noexcept { return ofs; }
         UtfIterator offset_by(ptrdiff_t n) const noexcept;
-        Irange<const C*> range() const noexcept;
+        const C* ptr() const noexcept { return sptr ? sptr->data() + ofs : nullptr; }
+        const string_type& source() const noexcept { return *sptr; }
         string_type str() const { return sptr ? sptr->substr(ofs, units) : string_type(); }
         bool valid() const noexcept { return ok; }
+        std::basic_string_view<C> view() const noexcept;
         friend bool operator==(const UtfIterator& lhs, const UtfIterator& rhs) noexcept { return lhs.ofs == rhs.ofs; }
     private:
         const string_type* sptr = nullptr;  // Source string
@@ -295,11 +297,11 @@ namespace RS::Unicorn {
     }
 
     template <typename C>
-    Irange<const C*> UtfIterator<C>::range() const noexcept {
+    std::basic_string_view<C> UtfIterator<C>::view() const noexcept {
         if (sptr)
-            return {sptr->data() + ofs, sptr->data() + ofs + units};
+            return {sptr->data() + ofs, units};
         else
-            return {nullptr, nullptr};
+            return {};
     }
 
     using Utf8Iterator = UtfIterator<char>;
