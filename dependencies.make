@@ -14,8 +14,8 @@ $(BUILD)/options-test.o: unicorn/options-test.cpp unicorn/character.hpp unicorn/
 $(BUILD)/options.o: unicorn/options.cpp unicorn/character.hpp unicorn/format.hpp unicorn/mbcs.hpp unicorn/options.hpp unicorn/property-values.hpp unicorn/regex.hpp unicorn/segment.hpp unicorn/string.hpp unicorn/utf.hpp unicorn/utility.hpp
 $(BUILD)/path-test.o: unicorn/path-test.cpp unicorn/character.hpp unicorn/path.hpp unicorn/property-values.hpp unicorn/unit-test.hpp unicorn/utf.hpp unicorn/utility.hpp
 $(BUILD)/path.o: unicorn/path.cpp unicorn/character.hpp unicorn/path.hpp unicorn/property-values.hpp unicorn/segment.hpp unicorn/string.hpp unicorn/utf.hpp unicorn/utility.hpp
-$(BUILD)/regex-test.o: unicorn/regex-test.cpp unicorn/character.hpp unicorn/property-values.hpp unicorn/regex.hpp unicorn/segment.hpp unicorn/string.hpp unicorn/unit-test.hpp unicorn/utf.hpp unicorn/utility.hpp
-$(BUILD)/regex.o: unicorn/regex.cpp unicorn/character.hpp unicorn/property-values.hpp unicorn/regex.hpp unicorn/segment.hpp unicorn/string.hpp unicorn/utf.hpp unicorn/utility.hpp
+$(BUILD)/regex-test.o: unicorn/regex-test.cpp unicorn/character.hpp unicorn/property-values.hpp unicorn/regex.hpp unicorn/unit-test.hpp unicorn/utf.hpp unicorn/utility.hpp
+$(BUILD)/regex.o: unicorn/regex.cpp unicorn/character.hpp unicorn/property-values.hpp unicorn/regex.hpp unicorn/utf.hpp unicorn/utility.hpp
 $(BUILD)/segment-test.o: unicorn/segment-test.cpp unicorn/character.hpp unicorn/property-values.hpp unicorn/segment.hpp unicorn/string.hpp unicorn/ucd-tables.hpp unicorn/unit-test.hpp unicorn/utf.hpp unicorn/utility.hpp
 $(BUILD)/segment.o: unicorn/segment.cpp unicorn/character.hpp unicorn/property-values.hpp unicorn/segment.hpp unicorn/utf.hpp unicorn/utility.hpp
 $(BUILD)/string-algorithm-test.o: unicorn/string-algorithm-test.cpp unicorn/character.hpp unicorn/property-values.hpp unicorn/segment.hpp unicorn/string.hpp unicorn/unit-test.hpp unicorn/utf.hpp unicorn/utility.hpp
@@ -50,7 +50,7 @@ $(BUILD)/utf-test.o: unicorn/utf-test.cpp unicorn/character.hpp unicorn/property
 $(BUILD)/utf.o: unicorn/utf.cpp unicorn/character.hpp unicorn/property-values.hpp unicorn/utf.hpp unicorn/utility.hpp
 $(BUILD)/utility-test.o: unicorn/utility-test.cpp unicorn/unit-test.hpp unicorn/utility.hpp
 ifeq ($(LIBTAG),msvc)
-    LDLIBS += zlib.lib pcre.lib
+    LDLIBS += zlib.lib pcre2-8.lib
 else
-    LDLIBS += -lz -lpcre
+    LDLIBS += -lz -lpcre2-8
 endif

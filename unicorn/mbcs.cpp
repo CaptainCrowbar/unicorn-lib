@@ -18,7 +18,6 @@
     #include <windows.h>
 #endif
 
-using namespace RS::Unicorn::Literals;
 using namespace std::literals;
 
 namespace RS::Unicorn {
@@ -165,20 +164,20 @@ namespace RS::Unicorn {
 
         EncodingTag find_encoding(const Ustring& name) {
             static const CharsetMap map;
-            static const auto match_codepage = "(?:cp|dos|ibm|ms|windows)-?(\\d+)"_re_i;
-            static const auto match_integer = "\\d+"_re;
-            static const auto match_unicode = "(?:cs|x)?(?:iso10646)?((?:ucs|utf)\\d+)(be|le|internal|swapped)?"_re;
+            static const Regex match_codepage("(?:cp|dos|ibm|ms|windows)-?(\\d+)", Regex::full | Regex::icase);
+            static const Regex match_integer("\\d+", Regex::full);
+            static const Regex match_unicode("(?:cs|x)?(?:iso10646)?((?:ucs|utf)\\d+)(be|le|internal|swapped)?", Regex::full);
             #ifdef _XOPEN_SOURCE
                 static const Strings codepage_prefixes {"cp","dos","ibm","ms","windows-"};
             #endif
             // Check for UTF encodings
             auto smashed = smash_name(name, true);
-            auto match = match_unicode.match(smashed);
+            auto match = match_unicode(smashed);
             if (match) {
-                Ustring m1 = match[1];
+                Ustring m1(match[1]);
                 if (m1 == "utf8")
                     return utf8_tag;
-                Ustring m2 = match[2];
+                Ustring m2(match[2]);
                 bool swap = false;
                 swap = (m2 == "be" && little_endian_target)
                     || (m2 == "le" && big_endian_target)
@@ -197,11 +196,11 @@ namespace RS::Unicorn {
             auto current = name;
             if (str_starts_with(current, "cs") || str_starts_with(current, "x-"))
                 current.erase(0, 2);
-            match = match_codepage.match(current);
+            match = match_codepage(current);
             if (match)
                 current = match[1];
             const CharsetInfo* csp = nullptr;
-            if (match || match_integer.match(current)) {
+            if (match || match_integer(current)) {
                 // Name is an integer, presumably a code page
                 auto page = uint32_t(decnum(current));
                 #ifdef _XOPEN_SOURCE

@@ -76,15 +76,14 @@ extern void test_unicorn_path_deep_search();
 extern void test_unicorn_path_io();
 extern void test_unicorn_path_links();
 extern void test_unicorn_path_metadata();
-extern void test_unicorn_regex_version_information();
-extern void test_unicorn_regex_utf8();
-extern void test_unicorn_regex_match_ranges();
-extern void test_unicorn_regex_split_ranges();
-extern void test_unicorn_regex_formatting();
+extern void test_unicorn_regex_version();
+extern void test_unicorn_regex_basic_matching();
+extern void test_unicorn_regex_compile_flags();
+extern void test_unicorn_regex_runtime_flags();
+extern void test_unicorn_regex_grep();
+extern void test_unicorn_regex_substitute();
 extern void test_unicorn_regex_transform();
-extern void test_unicorn_regex_string_escaping();
-extern void test_unicorn_regex_bytes();
-extern void test_unicorn_regex_literals();
+extern void test_unicorn_regex_escape();
 extern void test_unicorn_segment_graphemes();
 extern void test_unicorn_segment_words();
 extern void test_unicorn_segment_lines();
@@ -225,15 +224,14 @@ int main() {
         { "unicorn/path/io", test_unicorn_path_io },
         { "unicorn/path/links", test_unicorn_path_links },
         { "unicorn/path/metadata", test_unicorn_path_metadata },
-        { "unicorn/regex/version-information", test_unicorn_regex_version_information },
-        { "unicorn/regex/utf8", test_unicorn_regex_utf8 },
-        { "unicorn/regex/match-ranges", test_unicorn_regex_match_ranges },
-        { "unicorn/regex/split-ranges", test_unicorn_regex_split_ranges },
-        { "unicorn/regex/formatting", test_unicorn_regex_formatting },
+        { "unicorn/regex/version", test_unicorn_regex_version },
+        { "unicorn/regex/basic-matching", test_unicorn_regex_basic_matching },
+        { "unicorn/regex/compile-flags", test_unicorn_regex_compile_flags },
+        { "unicorn/regex/runtime-flags", test_unicorn_regex_runtime_flags },
+        { "unicorn/regex/grep", test_unicorn_regex_grep },
+        { "unicorn/regex/substitute", test_unicorn_regex_substitute },
         { "unicorn/regex/transform", test_unicorn_regex_transform },
-        { "unicorn/regex/string-escaping", test_unicorn_regex_string_escaping },
-        { "unicorn/regex/bytes", test_unicorn_regex_bytes },
-        { "unicorn/regex/literals", test_unicorn_regex_literals },
+        { "unicorn/regex/escape", test_unicorn_regex_escape },
         { "unicorn/segment/graphemes", test_unicorn_segment_graphemes },
         { "unicorn/segment/words", test_unicorn_segment_words },
         { "unicorn/segment/lines", test_unicorn_segment_lines },

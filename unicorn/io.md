@@ -54,15 +54,15 @@ modified by the flags below.
 
 Flag                  | Description
 ----                  | -----------
-`IO::`**`standin`**   | Read from standard input if the file name is `"-"` or an empty string
-`IO::`**`pretend`**   | Treat a nonexistent file as empty instead of throwing an exception
 `IO::`**`bom`**       | Strip a leading byte order mark if one is found
-`IO::`**`lf`**        | Convert all line breaks to `LF`
 `IO::`**`crlf`**      | Convert all line breaks to `CR+LF`
+`IO::`**`lf`**        | Convert all line breaks to `LF`
+`IO::`**`notempty`**  | Skip empty lines (after any whitespace stripping)
+`IO::`**`pretend`**   | Treat a nonexistent file as empty instead of throwing an exception
+`IO::`**`standin`**   | Read from standard input if the file name is `"-"` or an empty string
 `IO::`**`striplf`**   | Strip trailing line breaks from each line
 `IO::`**`striptws`**  | Strip trailing whitespace from each line (implies `striplf`)
 `IO::`**`stripws`**   | Strip leading and trailing whitespace from each line (implies `striplf`)
-`IO::`**`notempty`**  | Skip empty lines (after any whitespace stripping)
 `Utf::`**`replace`**  | Replace invalid encoding with `U+FFFD` (default)
 `Utf::`**`throws`**   | Throw `EncodingError` if invalid encoding is encountered
 
@@ -110,17 +110,17 @@ error handling flags on output.
 
 Flag                   | Description
 ----                   | -----------
-`IO::`**`standout`**   | Write to standard output if the file name is `"-"` or an empty string
-`IO::`**`standerr`**   | Write to standard error if the file name is `"-"` or an empty string
 `IO::`**`append`**     | Open an existing file for appending instead of overwriting it
-`IO::`**`protect`**    | Throw `system_error(file_exists)` if the file already exists
-`IO::`**`bom`**        | Insert a leading byte order mark if the first output string does not contain one
-`IO::`**`lf`**         | Convert all line breaks to `LF`
-`IO::`**`crlf`**       | Convert all line breaks to `CR+LF`
-`IO::`**`writeline`**  | Write a line feed after every write
 `IO::`**`autoline`**   | Write a line feed after every write that does not already end with one
+`IO::`**`bom`**        | Insert a leading byte order mark if the first output string does not contain one
+`IO::`**`crlf`**       | Convert all line breaks to `CR+LF`
+`IO::`**`lf`**         | Convert all line breaks to `LF`
 `IO::`**`linebuf`**    | Line buffered output
-`IO::`**`unbuf`**      | Unbuffered output
 `IO::`**`mutex`**      | Hold a per-file mutex while writing, to allow coherent multithreaded output
+`IO::`**`protect`**    | Throw `system_error(file_exists)` if the file already exists
+`IO::`**`standerr`**   | Write to standard error if the file name is `"-"` or an empty string
+`IO::`**`standout`**   | Write to standard output if the file name is `"-"` or an empty string
+`IO::`**`unbuf`**      | Unbuffered output
+`IO::`**`writeline`**  | Write a line feed after every write
 `Utf::`**`replace`**   | Replace encoding errors (default)
 `Utf::`**`throws`**    | Throw `EncodingError` on encoding errors

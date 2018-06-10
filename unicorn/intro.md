@@ -281,7 +281,7 @@ Python 3 to be callable as `python3`.
 Unicorn requires some other libraries to be linked with programs that use it;
 all of these should be present or easily installed on most systems:
 
-* [PCRE](http://www.pcre.org/) (`-lpcre`)
+* [PCRE2](http://www.pcre.org/) (`-lpcre2-8`)
 * [Zlib](http://www.zlib.net/) (`-lz`)
 * Iconv for Unix targets (on some systems this is implicit, on others it requires `-liconv`)
 * The system thread library (`-lpthread` on most Unix systems)

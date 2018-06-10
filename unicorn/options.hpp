@@ -206,7 +206,7 @@ namespace RS::Unicorn {
         opt_group = kwget(group, Ustring(), args...);
         patstr = kwget(pattern, Ustring(), args...);
         if (! patstr.empty())
-            opt_pattern = Regex(patstr);
+            opt_pattern = Regex(patstr, Regex::full);
     }
 
     inline Options::option_type::option_type(const Ustring& info) {

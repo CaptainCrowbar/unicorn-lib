@@ -30,10 +30,10 @@ namespace RS::Unicorn {
             }
 
             void float_strip(Ustring& str) {
-                static const Regex pattern("(.*)(\\.(?:\\d*[1-9])?)(0+)(e.*)?");
-                auto match = pattern.match(str);
+                static const Regex pattern("(.*)(\\.(?:\\d*[1-9])?)(0+)(e.*)?", Regex::full);
+                auto match = pattern(str);
                 if (match) {
-                    Ustring result = match[1];
+                    Ustring result(match[1]);
                     if (match.count(2) != 1)
                         result += match[2];
                     result += match[4];

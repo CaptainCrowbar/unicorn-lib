@@ -10,9 +10,9 @@ namespace RS::Unicorn {
 
     namespace {
 
-        const auto match_integer = "0x[[:xdigit:]]+|[+-]?\\d+((\\.\\d+)? ?[kmgtpezy]\\w*)?"_re_i;
-        const auto match_uinteger = "0x[[:xdigit:]]+|\\d+((\\.\\d+)? ?[kmgtpezy]\\w*)?"_re_i;
-        const auto match_float = "[+-]?(\\d+(\\.\\d*)?|\\.\\d+)(e[+-]?\\d+)?( ?[kmgtpezy]\\w*)?"_re_i;
+        const Regex match_float("[+-]?(\\d+(\\.\\d*)?|\\.\\d+)(e[+-]?\\d+)?( ?[kmgtpezy]\\w*)?", Regex::full | Regex::icase);
+        const Regex match_integer("0x[[:xdigit:]]+|[+-]?\\d+((\\.\\d+)? ?[kmgtpezy]\\w*)?", Regex::full | Regex::icase);
+        const Regex match_unsigned("0x[[:xdigit:]]+|\\d+((\\.\\d+)? ?[kmgtpezy]\\w*)?", Regex::full | Regex::icase);
 
         enum ArgType {
             is_argument = 'a',
@@ -123,7 +123,7 @@ namespace RS::Unicorn {
                     extra = "required";
                 } else if (! opt.opt_defvalue.empty() && ! opt.is_boolean && opt.opt_info.find("default") == npos) {
                     extra = "default ";
-                    if (match_integer.match(opt.opt_defvalue) || match_float.match(opt.opt_defvalue))
+                    if (match_integer(opt.opt_defvalue) || match_float(opt.opt_defvalue))
                         extra += opt.opt_defvalue;
                     else
                         extra += "$1q"_fmt(opt.opt_defvalue);
@@ -198,10 +198,10 @@ namespace RS::Unicorn {
         if (opt.is_integer)
             opt.opt_pattern = match_integer;
         else if (opt.is_uinteger)
-            opt.opt_pattern = match_uinteger;
+            opt.opt_pattern = match_unsigned;
         else if (opt.is_floating)
             opt.opt_pattern = match_float;
-        if (! opt.opt_defvalue.empty() && ! opt.opt_pattern.empty() && ! opt.opt_pattern.match(opt.opt_defvalue))
+        if (! opt.opt_defvalue.empty() && ! opt.opt_pattern.empty() && ! opt.opt_pattern(opt.opt_defvalue))
             throw spec_error(tag);
         if (neg) {
             opt.opt_name.erase(0, 3);
@@ -394,7 +394,7 @@ namespace RS::Unicorn {
     }
 
     void Options::add_arg_to_opt(const Ustring& arg, option_type& opt) {
-        if (! opt.opt_pattern.empty() && (opt.is_required || ! arg.empty()) && ! opt.opt_pattern.match(arg))
+        if (! opt.opt_pattern.empty() && (opt.is_required || ! arg.empty()) && ! opt.opt_pattern(arg))
             throw command_error("Invalid argument to option", "--" + opt.opt_name, arg);
         opt.values.push_back(arg);
     }

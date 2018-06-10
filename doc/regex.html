@@ -16,43 +16,45 @@
 <ul>
 <li><a href="#unicorn-library-regular-expressions">Unicorn Library: Regular Expressions</a><ul>
 <li><a href="#contents">Contents</a></li>
-<li><a href="#introduction">Introduction</a></li>
-<li><a href="#unicornregex-vs-stdregex">Unicorn::Regex vs std::regex</a></li>
-<li><a href="#regex-options">Regex options</a></li>
-<li><a href="#formatting-syntax">Formatting syntax</a></li>
-<li><a href="#supporting-types">Supporting types</a></li>
-<li><a href="#regular-expression-class">Regular expression class</a></li>
+<li><a href="#introduction">Introduction</a><ul>
+<li><a href="#rsregex-vs-stdregex">RS::Regex vs std::regex</a></li>
+</ul>
+</li>
+<li><a href="#regex-class">Regex class</a><ul>
+<li><a href="#regex-flags">Regex flags</a></li>
+<li><a href="#member-types">Member types</a></li>
+<li><a href="#member-functions">Member functions</a></li>
+<li><a href="#exceptions">Exceptions</a></li>
 <li><a href="#regex-match-class">Regex match class</a></li>
-<li><a href="#regex-formatting-class">Regex formatting class</a></li>
-<li><a href="#regex-iterator-classes">Regex iterator classes</a></li>
+<li><a href="#regex-transform-class">Regex transform class</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 </div>
 <h2 id="introduction">Introduction</h2>
 <p>This module provides Unicode-aware regular expressions, and related classes
-and functions. It calls the widely available <a href="http://www.pcre.org/">PCRE</a>
-(Perl Compatible Regular Expressions) library. Unicorn's regexes use the 8 bit
-version of the PCRE library, which must have been built with the optional
-UTF-8 support enabled (PCRE can also be built as 16 and 32 bit libraries, but
-these are not used by Unicorn). The module currently uses the traditional
-version of PCRE; at some point I intend to convert it to use PCRE2 instead.</p>
-<p>Refer to the PCRE documentation for details of the regular expression syntax.</p>
-<p>Although the regex functions in this module are specified in terms of
-<code>Ustring</code> arguments, Unicorn regexes support both UTF-8 and byte oriented
-matching. Byte regexes (selected with the <code>Regex::byte</code> flag) simply treat a
-string as a sequence of arbitrary bytes, with no assumptions about content
-encoding, and will work with non-Unicode strings. The <code>\xHH</code> escape code
-(where H is a hexadecimal digit) always matches a single byte even if the
-value is greater than <code>\x7f</code> (in a UTF-8 regex this would match a multibyte
-encoded character); the <code>\x{hex}</code> escape code can still be used, but it will
-be treated as a syntax error if the value is greater than <code>\x{ff}</code>.</p>
-<h2 id="unicornregex-vs-stdregex">Unicorn::Regex vs std::regex</h2>
-<p>It would have been convenient to use standard C++11 regular expressions in
-Unicorn, in the same way as the standard string classes have been used instead
-of creating a new custom string class specific to Unicorn. Unfortunately, this
-turns out to be impractical; for several reasons, standard regular expressions
-are inadequate for use with generalized Unicode strings.</p>
+and functions. It calls the widely available <a href="http://www.pcre.org/">PCRE2</a>
+(Perl Compatible Regular Expressions) library. The <code>Regex</code> class uses the
+8-bit version of the PCRE library, which must have been built with the
+optional UTF-8 support enabled (PCRE2 can also be built as 16 and 32-bit
+libraries, but these are not used here).</p>
+<p>Refer to the PCRE2 documentation for details of the regular expression syntax.</p>
+<p>The <code>Regex</code> class supports both UTF-8 and byte oriented matching. Byte regexes
+(selected with the <code>Regex::byte</code> flag) simply treat a string as a sequence of
+arbitrary bytes, with no assumptions about content encoding, and will work
+with non-Unicode strings. The <code>\xHH</code> escape code (where H is a hexadecimal
+digit) always matches a single byte even if the value is greater than <code>\x7f</code>
+(in a UTF-8 regex this would match a multibyte encoded character); the
+<code>\x{hex}</code> escape code can still be used, but it will be treated as a syntax
+error if the value is greater than <code>\x{ff}</code>.</p>
+<h3 id="rsregex-vs-stdregex"><code>RS::Regex</code> vs <code>std::regex</code></h3>
+<p>It would have been convenient to use standard C++11 regular expressions here,
+in the same way as the standard string classes have been used instead of
+creating a new custom string class. Unfortunately, this turns out to be
+impractical; for several reasons, standard regular expressions are inadequate
+for use with Unicode strings.</p>
 <p>The most obvious reason is that standard C++ regexes are not actually required
 to support Unicode strings at all. Unlike <code>std::basic_string</code>, for which
 specializations for 8, 16, and 32 bit characters are required to exist, only
@@ -62,756 +64,480 @@ below for a caveat on this) and <code>wchar_t</code> (the system's wide characte
 encoding, which can reasonably be expected to be either UTF-16 or UTF-32, but
 which one varies with the OS). In short, standard regexes can only be relied
 on to support one of the three UTF encodings, and we don't know which one.</p>
-<p>(Strictly speaking, not even that is required; the C++ standard does not
+<p>Strictly speaking, not even that is required; the C++ standard does not
 actually require the wide character encoding to be UTF-16 or 32. It is on all
-systems I know of, though, and the Unicorn library explicitly does not support
-systems on which it is not one of those.)</p>
+systems I know of, though, and my code explicitly does not support systems on
+which it is not one of those.</p>
 <p>An implementation is allowed to instantiate <code>std::basic_regex</code> for other
 character types, but in practise most do not, and in any case even an
 implementation that supplied specializations for all four character types
-would still not be reliably usable with UTF-8 (since the plain <code>char</code> encoding
-is not guaranteed to be UTF-8).</p>
+would still not be reliably usable with UTF-8 (since the 8-bit encoding is not
+guaranteed to be UTF-8).</p>
 <p>The second problem with standard regexes is that, by the rules of the C++
 standard, they <em>cannot</em> properly support UTF-8 strings. The regex grammar
 (based on that of JavaScript/EcmaScript, with a few changes) matches on an
 element by element basis; a "character", as far as regex matching is
-concerned, is a single code unit, not a Unicode scalar value (which may be
-represented by more than one code unit). This still allows literal matching of
+concerned, is a single code unit, not a Unicode scalar value that may be
+represented by more than one code unit. This still allows literal matching of
 multi-unit UTF-8 characters (the encoding will be the same in the regex and
 the subject string, so they will match unit for unit), but makes it impossible
 to match multi-unit characters to non-literal regex elements; for example,
-<code>std::regex(".")</code> will not match <code>u8"€"</code> (even if the system encoding is
-UTF-8). For the same reason, it is impossible to specify a character range
-that includes multibyte characters (e.g. <code>std::regex(u8"[À-ÿ]")</code> will not do
-what you probably expected).</p>
+even if the system encoding is UTF-8, <code>std::regex(".")</code> will still not match
+<code>u8"€"</code> (which is three bytes long). For the same reason, it is impossible to
+specify a character range that includes multibyte characters; for example,
+<code>std::regex(u8"[à-ÿ]")</code> will not do what you probably expected, regardless of
+encoding.</p>
 <p>Finally, standard regexes don't support the <code>\p{...}</code> and <code>\P{...}</code> character
 classes, which match on Unicode properties. This may be a minor obstacle
 compared to either of the above showstoppers, but even by itself it would be a
 serious handicap in a library dedicated to Unicode support.</p>
 <p>For all of the above reasons, I felt I had no choice but to abandon standard
-C++ regexes, and base Unicorn's regular expressions on the widely used PCRE
-library instead.</p>
-<h2 id="regex-options">Regex options</h2>
+C++ regexes, and base my regular expressions on PCRE2 instead.</p>
+<h2 id="regex-class">Regex class</h2>
+<h3 id="regex-flags">Regex flags</h3>
+<div class="defns">
+<!-- DEFN -->
+
 <table>
 <thead>
 <tr>
 <th>Flag</th>
 <th>Description</th>
-<th>PCRE equivalent</th>
 </tr>
 </thead>
 <tbody>
 <tr>
+<td></td>
+<td><strong>Pattern compilation flags</strong></td>
+</tr>
+<tr>
+<td><code>Regex::</code><strong><code>ascii</code></strong></td>
+<td>Character classes match only ASCII</td>
+</tr>
+<tr>
 <td><code>Regex::</code><strong><code>byte</code></strong></td>
-<td>Match in byte mode instead of UTF-8</td>
-<td><code>~PCRE_UTF8</code></td>
+<td>Treat the pattern and subject string as bytes instead of UTF-8</td>
 </tr>
 <tr>
-<td><code>Regex::</code><strong><code>caseless</code></strong></td>
-<td>Matching is case insensitive</td>
-<td><code>PCRE_CASELESS</code></td>
+<td><code>Regex::</code><strong><code>crlf</code></strong></td>
+<td>Lines end with <code>CR+LF</code> instead of just <code>LF</code></td>
 </tr>
 <tr>
-<td><code>Regex::</code><strong><code>dfa</code></strong></td>
-<td>Use the alternative DFA matching algorithm</td>
-<td><code>pcre_dfa_exec()</code></td>
+<td><code>Regex::</code><strong><code>dollar_end</code></strong></td>
+<td><code>$</code> does not match line breaks at the end of the subject string</td>
 </tr>
 <tr>
-<td><code>Regex::</code><strong><code>dollarnewline</code></strong></td>
-<td><code>$</code> may match line breaks preceding the end of the string</td>
-<td><code>~PCRE_DOLLAR_ENDONLY</code></td>
-</tr>
-<tr>
-<td><code>Regex::</code><strong><code>dotinline</code></strong></td>
-<td><code>.</code> does not match line breaks</td>
-<td><code>~PCRE_DOTALL</code></td>
+<td><code>Regex::</code><strong><code>dot_all</code></strong></td>
+<td><code>.</code> matches all characters including line breaks</td>
 </tr>
 <tr>
 <td><code>Regex::</code><strong><code>extended</code></strong></td>
-<td>Free-form mode; ignore whitespace and comments marked with <code>#</code></td>
-<td><code>PCRE_EXTENDED</code></td>
+<td>Free-form layout, ignore whitespace and comments starting with <code>#</code></td>
 </tr>
 <tr>
-<td><code>Regex::</code><strong><code>firstline</code></strong></td>
-<td>Any match must start in the first line of the subject string</td>
-<td><code>PCRE_FIRSTLINE</code></td>
+<td><code>Regex::</code><strong><code>first_line</code></strong></td>
+<td>The match must start in the first line of the subject string</td>
+</tr>
+<tr>
+<td><code>Regex::</code><strong><code>icase</code></strong></td>
+<td>Matching is case insensitive</td>
+</tr>
+<tr>
+<td><code>Regex::</code><strong><code>line</code></strong></td>
+<td>Only match a complete line</td>
 </tr>
 <tr>
 <td><code>Regex::</code><strong><code>multiline</code></strong></td>
-<td>Multiline mode; <code>^</code> and <code>$</code> match the beginning and end of each line</td>
-<td><code>PCRE_MULTILINE</code></td>
+<td><code>^</code> and <code>$</code> match the beginning and end of every line</td>
 </tr>
 <tr>
-<td><code>Regex::</code><strong><code>newlineanycrlf</code></strong></td>
-<td>Any of CR, LF, or CR+LF is recognised as a line break</td>
-<td><code>PCRE_NEWLINE_ANYCRLF</code></td>
-</tr>
-<tr>
-<td><code>Regex::</code><strong><code>newlinecr</code></strong></td>
-<td>Only CR is recognised as a line break</td>
-<td><code>PCRE_NEWLINE_CR</code></td>
-</tr>
-<tr>
-<td><code>Regex::</code><strong><code>newlinecrlf</code></strong></td>
-<td>Only CR+LF is recognised as a line break</td>
-<td><code>PCRE_NEWLINE_CRLF</code></td>
-</tr>
-<tr>
-<td><code>Regex::</code><strong><code>newlinelf</code></strong></td>
-<td>Only LF is recognised as a line break</td>
-<td><code>PCRE_NEWLINE_LF</code></td>
-</tr>
-<tr>
-<td><code>Regex::</code><strong><code>noautocapture</code></strong></td>
-<td>Parentheses do not automatically capture; only named captures are recorded</td>
-<td><code>PCRE_NO_AUTO_CAPTURE</code></td>
-</tr>
-<tr>
-<td><code>Regex::</code><strong><code>nostartoptimize</code></strong></td>
-<td>Disable some optimizations that affect <code>(*COMMIT)</code> and <code>(*MARK)</code> handling</td>
-<td><code>PCRE_NO_START_OPTIMIZE</code></td>
-</tr>
-<tr>
-<td><code>Regex::</code><strong><code>notbol</code></strong></td>
-<td>Do not match <code>^</code> at the start of the subject string</td>
-<td><code>PCRE_NOTBOL</code></td>
-</tr>
-<tr>
-<td><code>Regex::</code><strong><code>notempty</code></strong></td>
-<td>Do not match an empty string</td>
-<td><code>PCRE_NOTEMPTY</code></td>
-</tr>
-<tr>
-<td><code>Regex::</code><strong><code>notemptyatstart</code></strong></td>
-<td>Do not match an empty string at the start of the subject string</td>
-<td><code>PCRE_NOTEMPTY_ATSTART</code></td>
-</tr>
-<tr>
-<td><code>Regex::</code><strong><code>noteol</code></strong></td>
-<td>Do not match <code>$</code> at the end of the subject string</td>
-<td><code>PCRE_NOTEOL</code></td>
-</tr>
-<tr>
-<td><code>Regex::</code><strong><code>noutfcheck</code></strong></td>
-<td>Skip UTF validity checks (ignored in byte mode)</td>
-<td><code>PCRE_NO_UTF8_CHECK</code></td>
+<td><code>Regex::</code><strong><code>no_capture</code></strong></td>
+<td>Parenthesized groups are not captured (named captures still work)</td>
 </tr>
 <tr>
 <td><code>Regex::</code><strong><code>optimize</code></strong></td>
 <td>Optimize the regex using PCRE's JIT compiler</td>
-<td><code>PCRE_STUDY_JIT_COMPILE</code></td>
 </tr>
 <tr>
-<td><code>Regex::</code><strong><code>partialhard</code></strong></td>
-<td>Hard partial matching; prefer a partial match to a full match</td>
-<td><code>PCRE_PARTIAL_HARD</code></td>
+<td><code>Regex::</code><strong><code>word</code></strong></td>
+<td>Only match a complete word</td>
 </tr>
 <tr>
-<td><code>Regex::</code><strong><code>partialsoft</code></strong></td>
-<td>Soft partial matching; prefer a full match to a partial match</td>
-<td><code>PCRE_PARTIAL_SOFT</code></td>
+<td></td>
+<td><strong>Pattern matching flags</strong></td>
 </tr>
 <tr>
-<td><code>Regex::</code><strong><code>prefershort</code></strong></td>
-<td>Quantifiers are non-greedy in NFA mode; prefer shorter matches in DFA mode</td>
-<td><code>PCRE_UNGREEDY,PCRE_DFA_SHORTEST</code></td>
+<td><code>Regex::</code><strong><code>anchor</code></strong></td>
+<td>Anchor the match at the start of the subject string</td>
 </tr>
 <tr>
-<td><code>Regex::</code><strong><code>ucp</code></strong></td>
-<td>Backslash-escape character sets use Unicode properties, instead of just ASCII</td>
-<td><code>PCRE_UCP</code></td>
+<td><code>Regex::</code><strong><code>full</code></strong></td>
+<td>Match the complete subject string</td>
+</tr>
+<tr>
+<td><code>Regex::</code><strong><code>not_empty</code></strong></td>
+<td>Do not match an empty string</td>
+</tr>
+<tr>
+<td><code>Regex::</code><strong><code>not_empty_start</code></strong></td>
+<td>Do not match an empty string at the start of the subject string</td>
+</tr>
+<tr>
+<td><code>Regex::</code><strong><code>not_line</code></strong></td>
+<td>Do not match <code>^</code> or <code>$</code> at the start or end of the subject string</td>
+</tr>
+<tr>
+<td><code>Regex::</code><strong><code>partial_hard</code></strong></td>
+<td>Enable hard partial matching (prefer partial match to full match)</td>
+</tr>
+<tr>
+<td><code>Regex::</code><strong><code>partial_soft</code></strong></td>
+<td>Enable soft partial matching (prefer full match to partial match)</td>
+</tr>
+<tr>
+<td></td>
+<td><strong>Other flags</strong></td>
+</tr>
+<tr>
+<td><code>Regex::</code><strong><code>global</code></strong></td>
+<td>Replace all matches instead of only the first</td>
+</tr>
+<tr>
+<td><code>Regex::</code><strong><code>no_utf_check</code></strong></td>
+<td>Assume the pattern or subject string is valid UTF-8</td>
 </tr>
 </tbody>
 </table>
-<p>Flags controlling regular expression matching behaviour. These are members of
-the <code>Regex</code> class but documented here for convenience. Most of these
-correspond directly to PCRE flags, but note that all flags must be specified
-when the regex is constructed (unlike PCRE, where some flags can be set at
-execution time).</p>
-<p>Note that some of the flags (<code>Regex::byte</code>, <code>Regex::dollarnewline</code>, and
-<code>Regex::dotinline</code>) have the reverse sense to the corresponding PCRE flags
-(<code>PCRE_UTF8</code>, <code>PCRE_DOLLAR_ENDONLY</code>, and <code>PCRE_DOTALL</code>, respectively). This is
-simply because I felt that the reversed state was the more natural default in
-these cases.</p>
-<p>The four line breaking flags (<code>Regex::newlineanycrlf</code>, <code>Regex::newlinecr</code>,
-<code>Regex::newlinecrlf</code>, and <code>Regex::newlinelf</code>) also affect the behaviour of the
-<code>\R</code> escape code, which matches any of CR, LF, or CR+LF if any of these flags
-are set (this corresponds to the <code>PCRE_BSR_ANYCRLF</code> flag). The default
-behaviour, if none of these is set, recognises any Unicode line break (LF, VT,
-FF, CR, CR+LF, <code>U+0085 NEXT LINE</code>, <code>U+2028 LINE SEPARATOR</code>, and <code>U+2029
-PARAGRAPH SEPARATOR</code>; the last three are not recognised in byte mode),
-corresponding to the <code>PCRE_NEWLINE_ANY</code> and <code>PCRE_BSR_UNICODE</code> flags.</p>
-<p>All regex constructors, and any functions that take a pattern and flags and
-implicitly construct a regex, will throw <code>std::invalid_argument</code> if the flags
-supplied are inconsistent:</p>
+<p>These are bitmasks of the <code>Regex::flag_type</code> type. Wherever a regex function
+takes a <code>flags</code> argument, the value is expected to be a bitwise-or combination
+of these.</p>
+<p>The pattern compilation flags must be supplied when the <code>Regex</code> object is
+constructed, while the pattern matching flags can be supplied later, in a call
+to a matching or substitution function. However, any flag can be supplied at
+construction time; matching flags will be saved and applied at match time.
+Flags supplied at construction time cannot be overridden at match time.</p>
+<p>Notes on specific flags:</p>
 <ul>
-<li>At most one of <code>Regex::newlineanycrlf</code>, <code>Regex::newlinecr</code>, <code>Regex::newlinecrlf</code>, and <code>Regex::newlinelf</code> may be used.</li>
-<li><code>Regex::byte</code> can only be used with 8-bit strings.</li>
-<li><code>Regex::byte</code> and <code>Regex::ucp</code> may not be combined.</li>
-<li><code>Regex::notempty</code> and <code>Regex::notemptyatstart</code> may not be combined.</li>
-<li><code>Regex::partialhard</code> and <code>Regex::partialsoft</code> may not be combined.</li>
+<li>The <code>ascii</code> flag causes backslash character classes (<code>\[BbDdRSsWw]</code>), and
+some Posix character classes, to match only ASCII characters instead of
+matching Unicode properties. This has no effect when combined with the <code>byte</code>
+flag, since only ASCII characters are matched in byte mode anyway.</li>
+<li>The <code>optimize</code> flag will enable PCRE2's JIT compiler if possible, but this
+can be silently blocked under some circumstances (see the PCRE2 documentation
+for details). In particular, specifying any of the partial matching flags at
+match time will disable the optimizer if the same flag was not present at
+compile time.</li>
+<li>The <code>global</code> flag causes all matches to be replaced in <code>Regex::replace()</code>
+and <code>Regex::transform::operator()</code>. It has no effect in any other context.</li>
+<li>The <code>no_utf_check</code> flag has a slightly different effect depending on where
+it is used: it skips the normal UTF-8 validity check for the pattern string
+when used at compile time, for the subject string at match time, and for the
+subject and replacement strings at replacement time. In all cases, behaviour
+is undefined if the string is not valid UTF-8. This flag has no effect in byte
+mode.</li>
 </ul>
-<p><strong>Caution:</strong> If you use the <code>Regex::noutfcheck</code> flag, be careful about
-sanitizing your strings; behaviour is undefined if this flag is present and
-any regex pattern, subject string, or format string is not valid Unicode.</p>
-<h2 id="formatting-syntax">Formatting syntax</h2>
-<p>Formatting strings are used in the <code>format()</code> and <code>extract()</code> methods of
-<code>Regex</code> and <code>RegexFormat</code>, to generate a modified string by using a regex to
-match substrings in the original subject string, and then replacing each
-matching substring with a new one generated from the format string.</p>
-<p>Most characters in a format string are taken literally. If a format string
-does not contain any <code>$</code> or <code>\</code> escape characters, each match will simply be
-replaced by the format string without further processing.</p>
-<p>The following escape codes are recognised in a format string:</p>
-<table>
-<thead>
-<tr>
-<th>Code</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>$0</code>, <code>$&amp;</code></td>
-<td>The complete match</td>
-</tr>
-<tr>
-<td><code>$number</code>, <code>${number}</code>, <code>\digit</code></td>
-<td>Capture group, identified by number</td>
-</tr>
-<tr>
-<td><code>$name</code>, <code>${name}</code></td>
-<td>Capture group, identified by name</td>
-</tr>
-<tr>
-<td><code>$-</code></td>
-<td>The first non-empty capture group</td>
-</tr>
-<tr>
-<td><code>$+</code></td>
-<td>The last non-empty capture group</td>
-</tr>
-<tr>
-<td><code>$&lt;</code></td>
-<td>The text between the previous match and this one</td>
-</tr>
-<tr>
-<td><code>$&gt;</code></td>
-<td>The text between this match and the next one</td>
-</tr>
-<tr>
-<td><code>$[</code></td>
-<td>The text before the current match</td>
-</tr>
-<tr>
-<td><code>$]</code></td>
-<td>The text after the current match</td>
-</tr>
-<tr>
-<td><code>$_</code></td>
-<td>The complete subject string</td>
-</tr>
-<tr>
-<td><code>\xHH</code>, <code>\x{HHH...}</code></td>
-<td>Unicode character, identified by hexadecimal code point</td>
-</tr>
-<tr>
-<td><code>\0</code></td>
-<td>Null character (<code>\x00</code>)</td>
-</tr>
-<tr>
-<td><code>\a</code></td>
-<td>Alert character (<code>\x07</code>)</td>
-</tr>
-<tr>
-<td><code>\b</code></td>
-<td>Backspace character (<code>\x08</code>)</td>
-</tr>
-<tr>
-<td><code>\t</code></td>
-<td>Horizontal tab character (<code>\x09</code>)</td>
-</tr>
-<tr>
-<td><code>\n</code></td>
-<td>Line feed character (<code>\x0a</code>)</td>
-</tr>
-<tr>
-<td><code>\v</code></td>
-<td>Vertical tab character (<code>\x0b</code>)</td>
-</tr>
-<tr>
-<td><code>\f</code></td>
-<td>Form feed character (<code>\x0c</code>)</td>
-</tr>
-<tr>
-<td><code>\r</code></td>
-<td>Carriage return character (<code>\x0d</code>)</td>
-</tr>
-<tr>
-<td><code>\e</code></td>
-<td>Escape character (<code>\x1b</code>)</td>
-</tr>
-<tr>
-<td><code>\l</code></td>
-<td>Convert the next character to lower case</td>
-</tr>
-<tr>
-<td><code>\u</code></td>
-<td>Convert the next character to upper case</td>
-</tr>
-<tr>
-<td><code>\L...\E</code></td>
-<td>Convert the delimited text to lower case</td>
-</tr>
-<tr>
-<td><code>\T...\E</code></td>
-<td>Convert the delimited text to title case</td>
-</tr>
-<tr>
-<td><code>\U...\E</code></td>
-<td>Convert the delimited text to upper case</td>
-</tr>
-<tr>
-<td><code>\Q...\E</code></td>
-<td>Copy the delimited text literally, ignoring all escape codes except <code>\E</code></td>
-</tr>
-<tr>
-<td><code>$$</code>, <code>\$</code></td>
-<td>Literal dollar sign</td>
-</tr>
-<tr>
-<td><code>$\</code>, <code>\\</code></td>
-<td>Literal backslash</td>
-</tr>
-</tbody>
-</table>
-<p>Braces are only needed around a capture group number or name prefixed with <code>$</code>
-if it is immediately followed by a literal digit or letter that would
-otherwise be interpreted as part of the group number or name, or, for named
-groups, if the name contains characters that are not alphanumeric. In the
-<code>\digit</code> form, the group number must be a single digit from 1 to 9. The <code>$-</code>
-and <code>$+</code> codes will be replaced with empty strings if there are no non-empty
-captures.</p>
-<p>The <code>$&lt;</code>, <code>$&gt;</code>, <code>$[</code>, <code>$]</code>, and <code>$_</code> codes are mostly useful with the
-<code>extract()</code> method rather than <code>format()</code>, since <code>format()</code> copies the
-unmatched parts of the subject string anyway. If this is the first match in
-the subject string, <code>$&lt;</code> starts at the beginning of the string; if this is the
-last match, <code>$&gt;</code> runs to the end of the string. If there is only one match,
-<code>$&lt;</code> and <code>$&gt;</code> are the same as <code>$[</code> and <code>$]</code>.</p>
-<p>If the number of matches is limited (by setting the <code>n</code> argument in the
-<code>extract()</code> or <code>format()</code> functions), unhandled matches are not counted; <code>$&gt;</code>
-runs from the end of the last handled match to the end of the subject string,
-regardless of whether or not there would have been any more matches if <code>n</code> had
-been larger.</p>
-<p>If a <code>$</code> or <code>\</code> escape prefix is followed by an unrecognised second character,
-the escape character is discarded and the second character is copied literally
-into the output string.</p>
-<p>When the case conversion codes (<code>\[luLTU]</code>) are used with byte mode regexes,
-only ASCII characters will be converted.</p>
-<p>If the format string contains <code>\x{HHH...}</code> escape codes, an <code>EncodingError</code>
-exception will be thrown if the hexadecimal number is not a valid Unicode
-scalar value or, for byte mode regexes, if it is greater than <code>0xff</code>.</p>
-<h2 id="supporting-types">Supporting types</h2>
+</div>
+<h3 id="member-types">Member types</h3>
 <div class="defns">
 <ul>
-<li><code>class</code> <strong><code>RegexError</code></strong><code>: public std::runtime_error</code><ul>
-<li><code>RegexError::</code><strong><code>RegexError</code></strong><code>(int error, const Ustring&amp; pattern, const Ustring&amp; message = "")</code></li>
-<li><code>int RegexError::</code><strong><code>error</code></strong><code>() const noexcept</code></li>
-<li><code>const char* RegexError::</code><strong><code>pattern</code></strong><code>() const noexcept</code></li>
+<li><code>class Regex::</code><strong><code>error</code></strong></li>
+<li><code>class Regex::</code><strong><code>match</code></strong></li>
+<li><code>class Regex::</code><strong><code>transform</code></strong></li>
+</ul>
+<p>These are individually described below.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>using Regex::</code><strong><code>flag_type</code></strong> <code>= [unsigned integer type]</code></li>
+</ul>
+<p>The type used for bitmask flags.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>class Regex::</code><strong><code>match_iterator</code></strong><ul>
+<li><em>Const forward iterator</em></li>
+<li><em>Value type is</em> <code>Regex::match</code></li>
 </ul>
 </li>
+<li><code>using Regex::</code><strong><code>match_range</code></strong> <code>= Irange&lt;match_iterator&gt;</code></li>
 </ul>
-<p>This is thrown from a regex constructor or matching function when the
-underlying PCRE call reports an error.</p>
+<p>An iterator over the non-overlapping matches found within a subject string for
+a given regex, returned by <code>Regex::grep()</code>.</p>
 </div>
-<h2 id="regular-expression-class">Regular expression class</h2>
 <div class="defns">
 <ul>
-<li><code>class</code> <strong><code>Regex</code></strong></li>
+<li><code>class Regex::</code><strong><code>split_iterator</code></strong><ul>
+<li><em>Const forward iterator</em></li>
+<li><em>Value type is</em> <code>std::string_view</code></li>
 </ul>
-<p>The regular expression class.</p>
+</li>
+<li><code>using Regex::</code><strong><code>split_range</code></strong> <code>= Irange&lt;split_iterator&gt;</code></li>
+</ul>
+<p>An iterator over the substrings between matches for a given regex, returned by
+<code>Regex::split()</code>.</p>
 </div>
+<h3 id="member-functions">Member functions</h3>
 <div class="defns">
 <ul>
 <li><code>Regex::</code><strong><code>Regex</code></strong><code>()</code></li>
-<li><code>explicit Regex::</code><strong><code>Regex</code></strong><code>(const Ustring&amp; pattern, uint32_t flags = 0)</code></li>
+<li><code>explicit Regex::</code><strong><code>Regex</code></strong><code>(std::string_view pattern, flag_type flags = 0)</code></li>
 <li><code>Regex::</code><strong><code>Regex</code></strong><code>(const Regex&amp; r)</code></li>
 <li><code>Regex::</code><strong><code>Regex</code></strong><code>(Regex&amp;&amp; r) noexcept</code></li>
 <li><code>Regex::</code><strong><code>~Regex</code></strong><code>() noexcept</code></li>
 <li><code>Regex&amp; Regex::</code><strong><code>operator=</code></strong><code>(const Regex&amp; r)</code></li>
 <li><code>Regex&amp; Regex::</code><strong><code>operator=</code></strong><code>(Regex&amp;&amp; r) noexcept</code></li>
 </ul>
-<p>Life cycle functions. The default constructor is equivalent to construction
-from an empty pattern. The second constructor will throw
-<code>std::invalid_argument</code> if an invalid combination of flags is passed, or
-<code>RegexError</code> if the pattern is invalid. See above for full details of how the
-flags are interpreted.</p>
+<p>Life cycle operations. The default constructor creates a null regex that will
+never match anything. The second constructor takes the pattern string and
+optionally a flags bitmask, and will throw <code>Regex::error</code> if the pattern is
+invalid or an invalid combination of flags is passed.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>Match Regex::</code><strong><code>anchor</code></strong><code>(const Ustring&amp; text, size_t offset = 0) const</code></li>
-<li><code>Match Regex::</code><strong><code>anchor</code></strong><code>(const Utf8Iterator&amp; start) const</code></li>
-<li><code>Match Regex::</code><strong><code>match</code></strong><code>(const Ustring&amp; text, size_t offset = 0) const</code></li>
-<li><code>Match Regex::</code><strong><code>match</code></strong><code>(const Utf8Iterator&amp; start) const</code></li>
-<li><code>Match Regex::</code><strong><code>search</code></strong><code>(const Ustring&amp; text, size_t offset = 0) const</code></li>
-<li><code>Match Regex::</code><strong><code>search</code></strong><code>(const Utf8Iterator&amp; start) const</code></li>
-<li><code>Match Regex::</code><strong><code>operator()</code></strong><code>(const Ustring&amp; text, size_t offset = 0) const</code></li>
-<li><code>Match Regex::</code><strong><code>operator()</code></strong><code>(const Utf8Iterator&amp; start) const</code></li>
+<li><code>std::string Regex::</code><strong><code>pattern</code></strong><code>() const</code></li>
+<li><code>Regex::flag_type Regex::</code><strong><code>flags</code></strong><code>() const noexcept</code></li>
+<li><code>std::string</code> <strong><code>to_str</code></strong><code>(const Regex&amp; re)</code></li>
+<li><code>std::ostream&amp;</code> <strong><code>operator&lt;&lt;</code></strong><code>(std::ostream&amp; out, const Regex&amp; re)</code></li>
 </ul>
-<p>These are the regex matching functions. The <code>search()</code> functions return a
-successful match if the pattern matches anywhere in the subject string;
-<code>anchor()</code> matches only at the start of the subject string; <code>match()</code> is
-successful only if the pattern matches the complete string. The function call
-operators are equivalent to <code>search()</code>.</p>
-<p>These functions can accept a starting offset into the subject string as either
-an integer (interpreted as an offset in code units), or a UTF iterator for
-Unicode regexes. The subject string itself is not explicitly required in the
-second version, since it can be obtained from the iterator. When a nonzero
-offset is passed, or an iterator that does not point to the beginning of the
-string, the search begins at the specified point in the string, but the text
-preceding it will still be taken into account in lookbehind assertions.</p>
-<p>All of these will throw <code>RegexError</code> if anything goes wrong (this will be rare
-in practise since most errors will have been caught when the regex was
-constructed, but a few kinds of regex error are not detected by PCRE until
-execution time).</p>
-<p><strong>Caution:</strong> Behaviour is undefined if you use the UTF iterator versions of
-these functions with a byte mode regex.</p>
-</div>
-<div class="defns">
-<ul>
-<li><code>size_t Regex::</code><strong><code>count</code></strong><code>(const Ustring&amp; text) const</code></li>
-</ul>
-<p>Returns the number of non-overlapping matches found in the text.</p>
+<p>Return the pattern string or flags supplied to the constructor. The <code>to_str()</code>
+function and the output operator return the same string as <code>pattern()</code>. If the
+<code>Regex</code> object was default constructed, <code>pattern()</code> is empty and <code>flags()</code> is
+zero, but this is not equivalent to a regex constructed from an empty string.</p>
 </div>
 <div class="defns">
 <ul>
 <li><code>bool Regex::</code><strong><code>empty</code></strong><code>() const noexcept</code></li>
+<li><code>bool Regex::</code><strong><code>is_null</code></strong><code>() const noexcept</code></li>
 </ul>
-<p>True if the pattern is empty.</p>
-</div>
-<div class="defns">
-<ul>
-<li><code>Ustring Regex::</code><strong><code>extract</code></strong><code>(const Ustring&amp; fmt, const Ustring&amp; text, size_t n = npos) const</code></li>
-<li><code>Ustring Regex::</code><strong><code>format</code></strong><code>(const Ustring&amp; fmt, const Ustring&amp; text, size_t n = npos) const</code></li>
-</ul>
-<p>The <code>format()</code> function uses the formatting string to transform the text,
-replacing the first <code>n</code> matching substrings (all of them by default) with the
-corresponding reformatted text, and returning the resulting string. The
-<code>extract()</code> function also copies the first <code>n</code> matching substrings, applying
-formatting in the same way as <code>format()</code>, but discards the unmatched text
-between matches.</p>
-</div>
-<div class="defns">
-<ul>
-<li><code>MatchRange Regex::</code><strong><code>grep</code></strong><code>(const Ustring&amp; text) const</code></li>
-</ul>
-<p>This returns a range object that can be used to iterate over all matches
-within the subject string. Refer to the <code>MatchIterator</code> class (below) for
-further details.</p>
+<p>The <code>is_null()</code> function is true if the regex was default constructed;
+<code>empty()</code> is true if <code>is_null()</code> is true or the pattern is an empty string.</p>
 </div>
 <div class="defns">
 <ul>
 <li><code>size_t Regex::</code><strong><code>groups</code></strong><code>() const noexcept</code></li>
 </ul>
-<p>Returns the number of groups in the regex (the number of parenthesized
-captures, plus one for the complete match).</p>
+<p>Returns the number of capture groups in the pattern, including the complete
+match (<code>$0</code>).</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>size_t Regex::</code><strong><code>named</code></strong><code>(const Ustring&amp; name) const noexcept</code></li>
+<li><code>size_t Regex::</code><strong><code>named</code></strong><code>(std::string_view name) const</code></li>
 </ul>
-<p>If the regex includes any named captures, this returns the group index (1
-based) corresponding to the given name. It will return zero if there is no
-capture by that name (or if the regex does not use named captures).</p>
+<p>Returns the capture group number corresponding to the given group name, or
+<code>npos</code> if the name was not present.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>Ustring Regex::</code><strong><code>pattern</code></strong><code>() const</code></li>
-<li><code>uint32_t Regex::</code><strong><code>flags</code></strong><code>() const noexcept</code></li>
+<li><code>Regex::match Regex::</code><strong><code>search</code></strong><code>(std::string_view str, size_t pos = 0, flag_type flags = 0) const</code></li>
+<li><code>Regex::match Regex::</code><strong><code>search</code></strong><code>(const Utf8Iterator&amp; start, flag_type flags = 0) const</code></li>
+<li><code>Regex::match Regex::</code><strong><code>operator()</code></strong><code>(std::string_view str, size_t pos = 0, flag_type flags = 0) const</code></li>
+<li><code>Regex::match Regex::</code><strong><code>operator()</code></strong><code>(const Utf8Iterator&amp; start, flag_type flags = 0) const</code></li>
 </ul>
-<p>These return the construction arguments.</p>
+<p>This is the basic regex matching function (the operator is a synonym for the
+<code>search()</code> function). When a non-zero offset is passed, or an iterator that
+does not point to the beginning of the string, the search begins at the
+specified point in the string, but the text preceding it will still be taken
+into account in lookbehind assertions. Matching will always fail if the
+starting position is beyond the end of the subject string (but may succeed if
+it is at the end and the pattern can match an empty substring). This will
+throw <code>Regex::error</code> if the flags are inconsistent, if the starting offset is
+not at a character boundary in a UTF-8 string (in the absence of either the
+<code>byte</code> or <code>no_utf_check</code> flags), if the UTF iterator version is called on a
+byte-mode regex, or if a very complicated matching task exceeds PCRE2's
+internal limits.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>SplitRange Regex::</code><strong><code>split</code></strong><code>(const Ustring&amp; text) const</code></li>
+<li><code>size_t Regex::</code><strong><code>count</code></strong><code>(std::string_view str, size_t pos = 0, flag_type flags = 0) const</code></li>
+<li><code>size_t Regex::</code><strong><code>count</code></strong><code>(const Utf8Iterator&amp; start, flag_type flags = 0) const</code></li>
 </ul>
-<p>This returns a range object that can be used to iterate over the substrings
-delimited by matches within the subject string, effectively splitting the
-string using regex matches as delimiters. Refer to the <code>SplitIterator</code> class
-(below) for further details.</p>
+<p>Returns the number of non-overlapping matches in the subject string.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>void Regex::</code><strong><code>swap</code></strong><code>(Regex&amp; r) noexcept</code></li>
-<li><code>void</code> <strong><code>swap</code></strong><code>(Regex&amp; lhs, Regex&amp; rhs) noexcept</code></li>
+<li><code>Regex::match_range Regex::</code><strong><code>grep</code></strong><code>(std::string_view str, size_t pos = 0, flag_type flags = 0) const</code></li>
+<li><code>Regex::match_range Regex::</code><strong><code>grep</code></strong><code>(const Utf8Iterator&amp; start, flag_type flags = 0) const</code></li>
 </ul>
-<p>Swap two regex objects.</p>
+<p>Returns a pair of iterators over all matches in the subject string, optionally
+starting at a given byte offset. It can throw the same exceptions as
+<code>search()</code>.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename F&gt; Ustring Regex::</code><strong><code>transform</code></strong><code>(const Ustring&amp; text, F f, size_t n = npos) const</code></li>
-<li><code>template &lt;typename F&gt; void Regex::</code><strong><code>transform_in</code></strong><code>(Ustring&amp; text, F f, size_t n = npos) const</code></li>
+<li><code>std::tuple&lt;std::string_view, std::string_view, std::string_view&gt; Regex::</code><strong><code>partition</code></strong><code>(std::string_view str, size_t pos = 0, flag_type flags = 0) const</code></li>
 </ul>
-<p>Apply a user supplied transformation to each match (or the first <code>n</code> matches)
-in the text. Each match <code>m</code> in <code>text</code> is replaced by <code>f(m)</code>. The
-transformation function can take either a <code>string</code> or a <code>Match</code> as its
-argument, but must return a <code>string</code> (or something convertible to a <code>string</code>).</p>
+<p>Finds the first match in the string, and returns three string views covering
+the part of the subject string before the match (including anything before the
+starting offset), the match itself, and the part after the match. If there is
+no match, the first field in the return value will be the full subject string,
+and the other two will be empty (but will point to the end of the string
+instead of being null). This can throw the same exceptions as <code>search()</code>.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>static Ustring Regex::</code><strong><code>escape</code></strong><code>(const Ustring&amp; str)</code></li>
+<li><code>std::string Regex::</code><strong><code>replace</code></strong><code>(std::string_view str, std::string_view fmt, size_t pos = 0, flag_type flags = 0) const</code></li>
 </ul>
-<p>Returns a copy of the argument string, modified by inserting escape characters
-where necessary to produce a pattern that will exactly match the original
-string and nothing else. (You can get the same effect by enclosing the text in
-<code>"\Q...\E"</code> delimiters, provided the text does not contain <code>"\E"</code>.)</p>
+<p>Replaces the first match (if any) with the given format string, following
+PCRE2's full set of replacement rules. If the <code>global</code> flag is used, this will
+replace all matches instead of only the first. This can throw the same
+exceptions as <code>search()</code>.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>Version Regex::</code><strong><code>pcre_version</code></strong><code>() noexcept</code></li>
-<li><code>Version Regex::</code><strong><code>unicode_version</code></strong><code>() noexcept</code></li>
+<li><code>Regex::split_range Regex::</code><strong><code>split</code></strong><code>(std::string_view str, size_t pos = 0, flag_type flags = 0) const</code></li>
 </ul>
-<p>These returns the version of PCRE used to build this library, and the PCRE
-library's version of Unicode (because the PCRE library is built separately,
-this is not guaranteed to be the same as the version used by the rest of the
-Unicorn library).</p>
+<p>Returns a pair of iterators over the parts of the string between matches. This
+can throw the same exceptions as <code>search()</code>.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>bool</code> <strong><code>operator==</code></strong><code>(const Regex&amp; lhs, const Regex&amp; rhs) noexcept</code></li>
-<li><code>bool</code> <strong><code>operator!=</code></strong><code>(const Regex&amp; lhs, const Regex&amp; rhs) noexcept</code></li>
-<li><code>bool</code> <strong><code>operator&lt;</code></strong><code>(const Regex&amp; lhs, const Regex&amp; rhs) noexcept</code></li>
-<li><code>bool</code> <strong><code>operator&gt;</code></strong><code>(const Regex&amp; lhs, const Regex&amp; rhs) noexcept</code></li>
-<li><code>bool</code> <strong><code>operator&lt;=</code></strong><code>(const Regex&amp; lhs, const Regex&amp; rhs) noexcept</code></li>
-<li><code>bool</code> <strong><code>operator&gt;=</code></strong><code>(const Regex&amp; lhs, const Regex&amp; rhs) noexcept</code></li>
+<li><code>static Version Regex::</code><strong><code>compile_version</code></strong><code>() noexcept</code> <em>- PCRE2 version used when this library was compiled</em></li>
+<li><code>static Version Regex::</code><strong><code>runtime_version</code></strong><code>() noexcept</code> <em>- Current PCRE2 version available at runtime</em></li>
+<li><code>static Version Regex::</code><strong><code>unicode_version</code></strong><code>() noexcept</code> <em>- Latest Unicode version supported by PCRE2</em></li>
 </ul>
-<p>Comparison operators. The order is approximately based on the pattern text,
-but should be treated as an arbitrary order; the flags are also taken into
-account. If two regexes are semantically the same (i.e. always match or fail
-to match the same text) despite differing slightly in spelling, it is
-unspecified whether or not they will compare equal.</p>
+<p>Version number queries. Because the PCRE2 library is built separately, the
+Unicode version reported here will not necessarily be the same as the version
+supported by the rest of my library.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>namespace</code> <strong><code>Literals</code></strong><ul>
-<li><code>Regex</code> <strong><code>operator"" _re</code></strong><code>(const char* ptr, size_t len)</code></li>
-<li><code>Regex</code> <strong><code>operator"" _re_b</code></strong><code>(const char* ptr, size_t len)</code> <em>- Byte mode</em></li>
-<li><code>Regex</code> <strong><code>operator"" _re_i</code></strong><code>(const char* ptr, size_t len)</code> <em>- Case insensitive</em></li>
+<li><code>static std::string Regex::</code><strong><code>escape</code></strong><code>(std::string_view str)</code></li>
+</ul>
+<p>Inserts escape characters (backslashes) where necessary to return a pattern
+that will match the argument string literally.</p>
+</div>
+<h3 id="exceptions">Exceptions</h3>
+<div class="defns">
+<ul>
+<li><code>class Regex::</code><strong><code>error</code></strong><code>: public std::runtime_error</code><ul>
+<li><code>explicit error::</code><strong><code>error</code></strong><code>(int code)</code></li>
+<li><code>int error::</code><strong><code>code</code></strong><code>() const noexcept</code></li>
+<li><code>static std::string error::</code><strong><code>translate</code></strong><code>(int code)</code></li>
 </ul>
 </li>
 </ul>
-<p>Regex literals.</p>
+<p>This is thrown from a regex constructor or matching function when the
+underlying PCRE2 call reports an error. The <code>translate()</code> function converts a
+PCRE2 error code to a string.</p>
 </div>
-<h2 id="regex-match-class">Regex match class</h2>
+<h3 id="regex-match-class">Regex match class</h3>
 <div class="defns">
 <ul>
-<li><code>class</code> <strong><code>Match</code></strong></li>
+<li><code>class Regex::</code><strong><code>match</code></strong></li>
 </ul>
-<p>This class is returned by regex matching functions, reporting the result of
-the matching attempt.</p>
+<p>The regex matching functions return a <code>Regex::match</code> object to report the
+result of a matching attempt.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>Match::</code><strong><code>Match</code></strong><code>()</code></li>
-<li><code>Match::</code><strong><code>Match</code></strong><code>(const Match&amp; m)</code></li>
-<li><code>Match::</code><strong><code>Match</code></strong><code>(Match&amp;&amp; m) noexcept</code></li>
-<li><code>Match::</code><strong><code>~Match</code></strong><code>() noexcept</code></li>
-<li><code>Match&amp; Match::</code><strong><code>operator=</code></strong><code>(const Match&amp; m)</code></li>
-<li><code>Match&amp; Match::</code><strong><code>operator=</code></strong><code>(Match&amp;&amp; m) noexcept</code></li>
+<li><code>match::</code><strong><code>match</code></strong><code>() noexcept</code></li>
+<li><code>match::</code><strong><code>match</code></strong><code>(const match&amp; m) noexcept</code></li>
+<li><code>match::</code><strong><code>match</code></strong><code>(match&amp;&amp; m) noexcept</code></li>
+<li><code>match::</code><strong><code>~match</code></strong><code>() noexcept</code></li>
+<li><code>match&amp; match::</code><strong><code>operator=</code></strong><code>(const match&amp; m) noexcept</code></li>
+<li><code>match&amp; match::</code><strong><code>operator=</code></strong><code>(match&amp;&amp; m) noexcept</code></li>
 </ul>
-<p>Life cycle functions. Normally a match object will be returned by a regex
-matching function rather than directly constructed by the user.</p>
+<p>Life cycle operations. The default constructor returns the equivalent of a
+failed match. Normally a match object will not be constructed explicitly by
+users (apart from default construction), but returned from matching functions
+in the <code>Regex</code> class.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>bool Match::</code><strong><code>empty</code></strong><code>() const noexcept</code></li>
+<li><code>bool match::</code><strong><code>matched</code></strong><code>(size_t i = 0) const noexcept</code></li>
+<li><code>bool match::</code><strong><code>full</code></strong><code>() const noexcept</code></li>
+<li><code>bool match::</code><strong><code>partial</code></strong><code>() const noexcept</code></li>
+<li><code>explicit match::</code><strong><code>operator bool</code></strong><code>() const noexcept</code></li>
 </ul>
-<p>True if the match failed or matched an empty string.</p>
+<p>These report whether the match was successful. If a non-zero index is
+supplied, the result indicates whether a specific capture group was matched.
+The <code>full()</code> and <code>partial()</code> functions can be used to distinguish between full
+and partial matches; <code>matched()</code> is equivalent to <code>full() || partial()</code>. If
+neither of the partial matching flags was used, <code>partial()</code> is always false
+and <code>matched()</code> is equivalent to <code>full()</code>.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>Ustring Match::</code><strong><code>first</code></strong><code>() const</code></li>
-<li><code>Ustring Match::</code><strong><code>last</code></strong><code>() const</code></li>
+<li><code>const char* match::</code><strong><code>begin</code></strong><code>(size_t i = 0) const noexcept</code></li>
+<li><code>const char* match::</code><strong><code>end</code></strong><code>(size_t i = 0) const noexcept</code></li>
+<li><code>size_t match::</code><strong><code>offset</code></strong><code>(size_t i = 0) const noexcept</code></li>
+<li><code>size_t match::</code><strong><code>endpos</code></strong><code>(size_t i = 0) const noexcept</code></li>
+<li><code>size_t match::</code><strong><code>count</code></strong><code>(size_t i = 0) const noexcept</code></li>
 </ul>
-<p>These return the first and last non-empty capture groups (not counting the
-complete match), or empty strings if there are no such groups.</p>
+<p>These report the position of the match, or of a numbered capture group, in the
+subject string. The <code>offset()</code> and <code>endpos()</code> functions return the start and
+end positions; <code>count()</code> returns the length of the match (offsets are measured
+in code units, not characters, from the start of the subject string, not the
+position from which matching was started). If the match failed, or if a
+specific capture group was not matched, <code>begin()</code> and <code>end()</code> return null
+pointers, <code>offset()</code> and <code>endpos()</code> return <code>npos</code>, and <code>count()</code> returns zero.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>bool Match::</code><strong><code>full_or_partial</code></strong><code>() const noexcept</code></li>
-<li><code>bool Match::</code><strong><code>partial</code></strong><code>() const noexcept</code></li>
+<li><code>std::string_view match::</code><strong><code>str</code></strong><code>(size_t i = 0) const noexcept</code></li>
+<li><code>std::string_view match::</code><strong><code>operator[]</code></strong><code>(size_t i) const noexcept</code></li>
+<li><code>match::</code><strong><code>operator std::string_view</code></strong><code>() const noexcept</code></li>
 </ul>
-<p>The <code>partial()</code> function is true if a partial match was detected, while
-<code>full_or_partial()</code> is true if either a full or partial match was detected.
-These are only meaningful if one of the <code>Regex::partialhard</code> or
-<code>Regex::partialsoft</code> options was selected when the original regex was
-compiled; otherwise, <code>partial()</code> is always false and <code>full_or_partial()</code> is
-equivalent to <code>matched()</code>.</p>
+<p>These return the matching substring, for the complete match or a specific
+capture group. All of these will return an empty string view if the match
+failed, or the capture group was not matched (note that an empty string can
+also be the legitimate result of a successful match).</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>size_t Match::</code><strong><code>groups</code></strong><code>() const noexcept</code></li>
+<li><code>bool match::</code><strong><code>matched</code></strong><code>(std::string_view name) const</code></li>
+<li><code>const char* match::</code><strong><code>begin</code></strong><code>(std::string_view name) const</code></li>
+<li><code>const char* match::</code><strong><code>end</code></strong><code>(std::string_view name) const</code></li>
+<li><code>size_t match::</code><strong><code>offset</code></strong><code>(std::string_view name) const</code></li>
+<li><code>size_t match::</code><strong><code>endpos</code></strong><code>(std::string_view name) const</code></li>
+<li><code>size_t match::</code><strong><code>count</code></strong><code>(std::string_view name) const</code></li>
+<li><code>std::string_view match::</code><strong><code>str</code></strong><code>(std::string_view name) const</code></li>
+<li><code>std::string_view match::</code><strong><code>operator[]</code></strong><code>(std::string_view name) const</code></li>
 </ul>
-<p>The number of groups in the match (the number of captures, plus one for the
-complete match).</p>
+<p>These return the same result as the functions that take a numeric index
+argument, except that the capture group is identified by name instead of
+number. If the named group does not exist in the pattern, the result is the
+same as if the match failed.</p>
 </div>
+<h3 id="regex-transform-class">Regex transform class</h3>
 <div class="defns">
 <ul>
-<li><code>bool Match::</code><strong><code>matched</code></strong><code>(size_t i = 0) const noexcept</code></li>
-<li><code>explicit Match::</code><strong><code>operator bool</code></strong><code>() const noexcept</code></li>
-<li><code>bool Match::</code><strong><code>operator!</code></strong><code>() const noexcept</code></li>
+<li><code>class Regex::</code><strong><code>transform</code></strong></li>
 </ul>
-<p>The <code>matched()</code> function indicates whether a capture group, identified by
-number, was matched; by default, it indicates whether the match as a whole was
-successful. The boolean conversion is equivalent to <code>matched(0)</code>.</p>
+<p>The <code>Regex::transform</code> class contains both a regex and a format string. It
+provides operations equivalent to the <code>Regex::replace()</code> function, but may be
+more efficient if the same formatting operation is going to be applied many
+times.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>size_t Match::</code><strong><code>offset</code></strong><code>(size_t i = 0) const noexcept</code></li>
-<li><code>size_t Match::</code><strong><code>endpos</code></strong><code>(size_t i = 0) const noexcept</code></li>
-<li><code>size_t Match::</code><strong><code>count</code></strong><code>(size_t i = 0) const noexcept</code></li>
-</ul>
-<p>These return the starting position, end position, and size of the match, or of
-a specific capture group. These are measured in code units (not characters)
-from the start of the subject string. If the match was unsuccessful, or if the
-index refers to a group that does not exist in the regex or was not included
-in the match, the two offsets will both be <code>npos</code> and the size will be zero.</p>
-</div>
-<div class="defns">
-<ul>
-<li><code>Ustring::const_iterator Match::</code><strong><code>s_begin</code></strong><code>(size_t i = 0) const noexcept</code></li>
-<li><code>Ustring::const_iterator Match::</code><strong><code>s_end</code></strong><code>(size_t i = 0) const noexcept</code></li>
-<li><code>Irange&lt;Ustring::const_iterator&gt; Match::</code><strong><code>s_range</code></strong><code>(size_t i = 0) const noexcept</code></li>
-<li><code>Utf8Iterator Match::</code><strong><code>u_begin</code></strong><code>(size_t i = 0) const noexcept</code></li>
-<li><code>Utf8Iterator Match::</code><strong><code>u_end</code></strong><code>(size_t i = 0) const noexcept</code></li>
-<li><code>Irange&lt;Utf8Iterator&gt; Match::</code><strong><code>u_range</code></strong><code>(size_t i = 0) const noexcept</code></li>
-</ul>
-<p>These return iterators (string or UTF) over the characters within a match. The
-default versions return iterators bracketing the complete match; if the index
-argument is not zero, the iterators mark the corresponding numbered capture
-group. If the index corresponds to a group that was not matched, or if the
-match itself was unsuccessful, <code>begin()</code> and <code>end()</code> will return the same
-iterator (its value is otherwise unspecified).</p>
-<p><strong>Caution:</strong> If the match was returned by a byte-mode regex, be careful to
-always use the string iterators and not the UTF iterators, which are not
-meaningful when the string is not being interpreted as UTF-8. Behaviour is
-undefined in this situation.</p>
-</div>
-<div class="defns">
-<ul>
-<li><code>Ustring Match::</code><strong><code>str</code></strong><code>(size_t i = 0) const</code></li>
-<li><code>Ustring Match::</code><strong><code>named</code></strong><code>(const Ustring&amp; name) const</code></li>
-<li><code>Ustring Match::</code><strong><code>operator[]</code></strong><code>(size_t i) const</code></li>
-<li><code>Match::</code><strong><code>operator Ustring</code></strong><code>() const</code></li>
-</ul>
-<p>The <code>str()</code> and <code>named()</code> functions return a copy of the substring matched by
-a numbered or named group, or an empty string if the group does not exist or
-was not matched (note that an empty string can also be the result of a
-legitimate match). The index operator is equivalent to <code>str(i)</code>; the string
-conversion operator is equivalent to <code>str(0)</code>, which returns the complete
-match.</p>
-</div>
-<div class="defns">
-<ul>
-<li><code>void Match::</code><strong><code>swap</code></strong><code>(Match&amp; m) noexcept</code></li>
-<li><code>void</code> <strong><code>swap</code></strong><code>(Match&amp; lhs, Match&amp; rhs) noexcept</code></li>
-</ul>
-<p>Swap two match objects.</p>
-</div>
-<h2 id="regex-formatting-class">Regex formatting class</h2>
-<div class="defns">
-<ul>
-<li><code>class</code> <strong><code>RegexFormat</code></strong></li>
-</ul>
-<p>The regex format class contains both a regex and a format string. It provides
-operations equivalent to the <code>Regex::format()</code> function, but compiling the
-format string only once by constructing a regex format object will be more
-efficient if the same formatting operation is going to be applied many times.</p>
-</div>
-<div class="defns">
-<ul>
-<li><code>RegexFormat::</code><strong><code>RegexFormat</code></strong><code>()</code></li>
-<li><code>RegexFormat::</code><strong><code>RegexFormat</code></strong><code>(const Regex&amp; pattern, const Ustring&amp; format)</code></li>
-<li><code>RegexFormat::</code><strong><code>RegexFormat</code></strong><code>(const Ustring&amp; pattern, const Ustring&amp; format, uint32_t flags = 0)</code></li>
-<li><code>RegexFormat::</code><strong><code>RegexFormat</code></strong><code>(const RegexFormat&amp; f)</code></li>
-<li><code>RegexFormat::</code><strong><code>RegexFormat</code></strong><code>(RegexFormat&amp;&amp; f) noexcept</code></li>
-<li><code>RegexFormat::</code><strong><code>~RegexFormat</code></strong><code>() noexcept</code></li>
-<li><code>RegexFormat&amp; RegexFormat::</code><strong><code>operator=</code></strong><code>(const RegexFormat&amp; f)</code></li>
-<li><code>RegexFormat&amp; RegexFormat::</code><strong><code>operator=</code></strong><code>(RegexFormat&amp;&amp; f) noexcept</code></li>
+<li><code>transform::</code><strong><code>transform</code></strong><code>() noexcept</code></li>
+<li><code>transform::</code><strong><code>transform</code></strong><code>(const Regex&amp; pattern, std::string_view fmt, flag_type flags = 0)</code></li>
+<li><code>transform::</code><strong><code>transform</code></strong><code>(std::string_view pattern, std::string_view fmt, flag_type flags = 0)</code></li>
+<li><code>transform::</code><strong><code>transform</code></strong><code>(const transform&amp; t)</code></li>
+<li><code>transform::</code><strong><code>transform</code></strong><code>(transform&amp;&amp; t) noexcept</code></li>
+<li><code>transform::</code><strong><code>~transform</code></strong><code>() noexcept</code></li>
+<li><code>transform&amp; transform::</code><strong><code>operator=</code></strong><code>(const transform&amp; t)</code></li>
+<li><code>transform&amp; transform::</code><strong><code>operator=</code></strong><code>(transform&amp;&amp; t) noexcept</code></li>
 </ul>
 <p>Life cycle functions. The object is constructed from a regex (supplied either
-as a precompiled regex or a pattern and flag set) and a format string. The
-third constructor can throw the same exceptions as the corresponding regex
-constructor.</p>
+as a precompiled regex or a pattern string), a format string, and optionally a
+flag bitmask. In the second constructor, only matching and replacement flags
+can be supplied; the third constructor can also take regex compilation flags,
+and can throw the same exceptions as the corresponding regex constructor.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>Ustring RegexFormat::</code><strong><code>format</code></strong><code>(const Ustring&amp; text, size_t n = npos) const</code></li>
-<li><code>Ustring RegexFormat::</code><strong><code>extract</code></strong><code>(const Ustring&amp; text, size_t n = npos) const</code></li>
-<li><code>Ustring RegexFormat::</code><strong><code>operator()</code></strong><code>(const Ustring&amp; text, size_t n = npos) const</code></li>
+<li><code>std::string transform::</code><strong><code>pattern</code></strong><code>() const</code></li>
+<li><code>std::string transform::</code><strong><code>format</code></strong><code>() const</code></li>
+<li><code>Regex::flag_type transform::</code><strong><code>flags</code></strong><code>() const noexcept</code></li>
 </ul>
-<p>The <code>format()</code> function (and the equivalent function call operator) uses the
-formatting string to transform the text, replacing the first <code>n</code> matching
-substrings (all of them by default) with the corresponding reformatted text,
-and returning the resulting string. The <code>extract()</code> function copies only the
-first <code>n</code> matches, discarding the unmatched text between them.
-<code>RegexFormat(regex,fmt).format(text)</code> is equivalent to
-<code>regex.format(fmt,text)</code>, and similarly for <code>extract()</code>.</p>
+<p>These return the construction parameters.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>Regex RegexFormat::</code><strong><code>regex</code></strong><code>() const</code></li>
-<li><code>Ustring RegexFormat::</code><strong><code>format</code></strong><code>() const</code></li>
-<li><code>Ustring RegexFormat::</code><strong><code>pattern</code></strong><code>() const</code></li>
-<li><code>uint32_t RegexFormat::</code><strong><code>flags</code></strong><code>() const noexcept</code></li>
+<li><code>std::string transform::</code><strong><code>replace</code></strong><code>(std::string_view str, size_t pos = 0) const</code></li>
+<li><code>std::string transform::</code><strong><code>operator()</code></strong><code>(std::string_view str, size_t pos = 0) const</code></li>
 </ul>
-<p>These functions query the construction parameters. The <code>pattern()</code> and
-<code>flags()</code> functions are equivalent to <code>regex().pattern()</code> and
-<code>regex().flags()</code>.</p>
-</div>
-<div class="defns">
-<ul>
-<li><code>void RegexFormat::</code><strong><code>swap</code></strong><code>(RegexFormat&amp; r) noexcept</code></li>
-<li><code>void</code> <strong><code>swap</code></strong><code>(RegexFormat&amp; lhs, RegexFormat&amp; rhs) noexcept</code></li>
-</ul>
-<p>Swap two objects.</p>
-</div>
-<h2 id="regex-iterator-classes">Regex iterator classes</h2>
-<div class="defns">
-<ul>
-<li><code>class</code> <strong><code>MatchIterator</code></strong><ul>
-<li><code>using MatchIterator::</code><strong><code>difference_type</code></strong> <code>= ptrdiff_t</code></li>
-<li><code>using MatchIterator::</code><strong><code>iterator_category</code></strong> <code>= std::forward_iterator_tag</code></li>
-<li><code>using MatchIterator::</code><strong><code>pointer</code></strong> <code>= const Match*</code></li>
-<li><code>using MatchIterator::</code><strong><code>reference</code></strong> <code>= const Match&amp;</code></li>
-<li><code>using MatchIterator::</code><strong><code>value_type</code></strong> <code>= Match</code></li>
-<li><code>MatchIterator::</code><strong><code>MatchIterator</code></strong><code>()</code></li>
-<li><code>MatchIterator::</code><strong><code>MatchIterator</code></strong><code>(const Regex&amp; re, const Ustring&amp; text)</code></li>
-<li><em>[standard iterator operations]</em></li>
-</ul>
-</li>
-<li><code>using</code> <strong><code>MatchRange</code></strong> <code>= Irange&lt;MatchIterator&gt;</code></li>
-</ul>
-<p>An iterator over the (non-overlapping) matches found within a subject string
-for a given regex. These are normally returned by <code>Regex::grep()</code> rather than
-constructed directly by the user.</p>
-</div>
-<div class="defns">
-<ul>
-<li><code>class</code> <strong><code>SplitIterator</code></strong><ul>
-<li><code>using SplitIterator::</code><strong><code>difference_type</code></strong> <code>= ptrdiff_t</code></li>
-<li><code>using SplitIterator::</code><strong><code>iterator_category</code></strong> <code>= std::forward_iterator_tag</code></li>
-<li><code>using SplitIterator::</code><strong><code>pointer</code></strong> <code>= const Ustring*</code></li>
-<li><code>using SplitIterator::</code><strong><code>reference</code></strong> <code>= const Ustring&amp;</code></li>
-<li><code>using SplitIterator::</code><strong><code>value_type</code></strong> <code>= Ustring</code></li>
-<li><code>SplitIterator::</code><strong><code>SplitIterator</code></strong><code>()</code></li>
-<li><code>SplitIterator::</code><strong><code>SplitIterator</code></strong><code>(const Regex&amp; re, const Ustring&amp; text)</code></li>
-<li><em>[standard iterator operations]</em></li>
-</ul>
-</li>
-<li><code>using</code> <strong><code>SplitRange</code></strong> <code>= Irange&lt;SplitIterator&gt;</code></li>
-</ul>
-<p>An iterator over the substrings between matches for a given regex. These are
-normally returned by <code>Regex::split()</code> rather than constructed directly by the
-user.</p></body>
+<p>The replacement functions, which perform the equivalent of <code>Regex::replace()</code>.</p></body>
 </html>
