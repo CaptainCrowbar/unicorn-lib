@@ -1019,6 +1019,13 @@ void test_unicorn_utility_string_functions() {
     TEST(! ascii_ispunct_w('\x7f'));
     TEST(! ascii_ispunct_w('\x80'));
 
+    TEST(is_ascii('\0'));
+    TEST(is_ascii('\x1f'));
+    TEST(is_ascii(' '));
+    TEST(is_ascii('\x7f'));
+    TEST(! is_ascii('\x80'));
+    TEST(! is_ascii('\xff'));
+
     TEST_EQUAL(ascii_tolower('A'), 'a');
     TEST_EQUAL(ascii_tolower('a'), 'a');
     TEST_EQUAL(ascii_tolower('\0'), '\0');

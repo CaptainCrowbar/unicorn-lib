@@ -813,6 +813,7 @@ namespace RS {
     constexpr bool ascii_ispunct_w(char c) noexcept { return ascii_ispunct(c) && c != '_'; }
     constexpr char ascii_tolower(char c) noexcept { return ascii_isupper(c) ? char(c + 32) : c; }
     constexpr char ascii_toupper(char c) noexcept { return ascii_islower(c) ? char(c - 32) : c; }
+    constexpr bool is_ascii(char c) noexcept { return uint8_t(c) <= 127; }
 
     inline std::string ascii_lowercase(std::string_view s) {
         Ustring r(s);

@@ -30,10 +30,8 @@ These are in <code>namespace RS</code> (except for the metaprogramming facilitie
 <li><a href="#mixin-types">Mixin types</a></li>
 <li><a href="#range-types">Range types</a></li>
 <li><a href="#scope-guards">Scope guards</a></li>
-<li><a href="#string-functions">String functions</a><ul>
+<li><a href="#string-functions">String functions</a></li>
 <li><a href="#version-number">Version number</a></li>
-</ul>
-</li>
 </ul>
 </li>
 </ul>
@@ -601,6 +599,7 @@ scope guard object will do nothing on destruction.</p>
 <li><code>constexpr bool</code> <strong><code>ascii_isspace</code></strong><code>(char c) noexcept</code></li>
 <li><code>constexpr bool</code> <strong><code>ascii_isupper</code></strong><code>(char c) noexcept</code></li>
 <li><code>constexpr bool</code> <strong><code>ascii_isxdigit</code></strong><code>(char c) noexcept</code></li>
+<li><code>constexpr bool</code> <strong><code>is_ascii</code></strong><code>(char c) noexcept</code></li>
 </ul>
 <p>These are simple ASCII-only versions of the standard character type functions.
 All of them will always return false for bytes outside the ASCII range
@@ -766,7 +765,7 @@ various types:</p>
 character pointers, and anything with an implicit conversion to <code>std::string</code>
 or <code>std::string_view</code>.</p>
 </div>
-<h3 id="version-number">Version number</h3>
+<h2 id="version-number">Version number</h2>
 <div class="defns">
 <ul>
 <li><code>class</code> <strong><code>Version</code></strong><ul>

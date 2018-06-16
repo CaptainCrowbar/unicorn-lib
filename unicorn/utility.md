@@ -394,6 +394,7 @@ Simple wrapper functions to create a mutex lock.
 * `constexpr bool` **`ascii_isspace`**`(char c) noexcept`
 * `constexpr bool` **`ascii_isupper`**`(char c) noexcept`
 * `constexpr bool` **`ascii_isxdigit`**`(char c) noexcept`
+* `constexpr bool` **`is_ascii`**`(char c) noexcept`
 
 These are simple ASCII-only versions of the standard character type functions.
 All of them will always return false for bytes outside the ASCII range
@@ -531,7 +532,7 @@ various types:
 character pointers, and anything with an implicit conversion to `std::string`
 or `std::string_view`.
 
-### Version number ###
+## Version number ##
 
 * `class` **`Version`**
     * `using Version::`**`value_type`** `= unsigned`
