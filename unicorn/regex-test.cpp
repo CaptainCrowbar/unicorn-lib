@@ -3,6 +3,7 @@
 #include "unicorn/utf.hpp"
 #include <iostream>
 #include <string>
+#include <string_view>
 #include <tuple>
 
 using namespace RS;

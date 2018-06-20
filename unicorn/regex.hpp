@@ -3,7 +3,6 @@
 #include "unicorn/character.hpp"
 #include "unicorn/utf.hpp"
 #include "unicorn/utility.hpp"
-#include <iterator>
 #include <memory>
 #include <ostream>
 #include <stdexcept>
@@ -55,10 +54,10 @@ namespace RS::Unicorn {
 
         Regex() = default;
         explicit Regex(std::string_view pattern, flag_type flags = 0);
-        std::string pattern() const;
-        flag_type flags() const noexcept;
-        bool empty() const noexcept;
-        bool is_null() const noexcept { return ! impl; }
+        std::string pattern() const { return re_pattern; }
+        flag_type flags() const noexcept { return re_flags; }
+        bool empty() const noexcept { return re_pattern.empty(); }
+        bool is_null() const noexcept { return ! pc_code; }
         size_t groups() const noexcept;
         size_t named(std::string_view name) const;
         match search(std::string_view str, size_t pos = 0, flag_type flags = 0) const;
@@ -81,9 +80,10 @@ namespace RS::Unicorn {
 
     private:
 
-        struct impl_type;
-
-        std::shared_ptr<impl_type> impl;
+        std::string re_pattern;
+        flag_type re_flags = 0;
+        std::shared_ptr<void> pc_context; // pcre2_compile_context
+        std::shared_ptr<void> pc_code; // pcre2_code
 
         void utf_only() const;
 
@@ -126,11 +126,17 @@ namespace RS::Unicorn {
         friend class Regex;
         friend class Regex::match_iterator;
         friend class Regex::split_iterator;
-        struct impl_type;
-        std::shared_ptr<impl_type> impl;
+        std::shared_ptr<void> match_data; // pcre2_match_data
+        std::string_view subject_view;
+        const Regex* regex_ptr = nullptr;
+        size_t offset_count = 0;
+        size_t* offset_vector = nullptr;
+        flag_type match_flags = 0;
+        uint32_t match_options = 0;
+        bool partial_match = false;
         match(const Regex& re, std::string_view str, flag_type flags);
         size_t index_by_name(std::string_view name) const;
-        bool index_check(size_t i) const noexcept;
+        void next() { next(endpos()); }
         void next(size_t pos);
     };
 
@@ -139,7 +145,7 @@ namespace RS::Unicorn {
     public:
         match_iterator() = default;
         const match& operator*() const noexcept { return current; }
-        match_iterator& operator++() { current.next(current.endpos()); return *this; }
+        match_iterator& operator++() { current.next(); return *this; }
         bool operator==(const match_iterator& rhs) const noexcept { return current.offset() == rhs.current.offset(); }
     private:
         friend class Regex;

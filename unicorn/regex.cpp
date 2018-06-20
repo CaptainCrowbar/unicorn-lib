@@ -1,6 +1,5 @@
 #include "unicorn/regex.hpp"
 #include <algorithm>
-#include <cstdlib>
 #include <new>
 
 #ifdef PCRE2_CODE_UNIT_WIDTH
@@ -82,40 +81,27 @@ namespace RS::Unicorn {
 
     // Class Regex
 
-    struct Regex::impl_type {
-        std::string pattern;
-        flag_type flags = 0;
-        pcre2_compile_context* context = nullptr;
-        pcre2_code* code = nullptr;
-        impl_type() = default;
-        ~impl_type() noexcept {
-            pcre2_code_free(code);
-            pcre2_compile_context_free(context);
-        }
-        RS_NO_COPY_MOVE(impl_type);
-    };
-
     Regex::Regex(std::string_view pattern, flag_type flags) {
         if (flags & ~ all_flags)
             throw error(PCRE2_ERROR_BADOPTION);
-        impl = std::make_shared<impl_type>();
-        impl->pattern = pattern;
-        impl->flags = flags;
+        re_pattern = pattern;
+        re_flags = flags;
         uint32_t compile_options = translate_compile_flags(flags);
         if (pattern.find("(*COMMIT)") != npos || pattern.find("(*MARK)") != npos)
             compile_options |= PCRE2_NO_DOTSTAR_ANCHOR | PCRE2_NO_START_OPTIMIZE;
-        impl->context = pcre2_compile_context_create(nullptr);
-        if (! impl->context)
+        auto context_ptr = pcre2_compile_context_create(nullptr);
+        if (! context_ptr)
             throw std::bad_alloc();
-        pcre2_set_bsr(impl->context, flags & byte ? PCRE2_BSR_ANYCRLF : PCRE2_BSR_UNICODE);
-        pcre2_set_newline(impl->context, flags & crlf ? PCRE2_NEWLINE_CRLF : PCRE2_NEWLINE_LF);
+        pc_context.reset(context_ptr, pcre2_compile_context_free);
+        pcre2_set_bsr(context_ptr, flags & byte ? PCRE2_BSR_ANYCRLF : PCRE2_BSR_UNICODE);
+        pcre2_set_newline(context_ptr, flags & crlf ? PCRE2_NEWLINE_CRLF : PCRE2_NEWLINE_LF);
         #if RS_PCRE_VERSION >= 1030
             uint32_t extra = 0;
             if (flags & Regex::line)
                 extra |= PCRE2_EXTRA_MATCH_LINE;
             if (flags & Regex::word)
                 extra |= PCRE2_EXTRA_MATCH_WORD;
-            pcre2_set_compile_extra_options(impl->context, extra);
+            pcre2_set_compile_extra_options(context_ptr, extra);
         #else
             std::string new_pattern;
             if (flags & Regex::line)
@@ -125,44 +111,35 @@ namespace RS::Unicorn {
         #endif
         int error_code = 0;
         size_t error_pos = 0;
-        impl->code = pcre2_compile(byte_ptr(pattern), pattern.size(), compile_options, &error_code, &error_pos, impl->context);
-        if (! impl->code)
+        auto code_ptr = pcre2_compile(byte_ptr(pattern), pattern.size(), compile_options, &error_code, &error_pos, context_ptr);
+        if (! code_ptr)
             handle_error(error_code);
+        pc_code.reset(code_ptr, pcre2_code_free);
         if (flags & optimize) {
             uint32_t jit_options = PCRE2_JIT_COMPLETE;
             if (flags & partial_hard)
                 jit_options |= PCRE2_PARTIAL_HARD;
             else if (flags & partial_soft)
                 jit_options |= PCRE2_PARTIAL_SOFT;
-            pcre2_jit_compile(impl->code, jit_options);
+            pcre2_jit_compile(code_ptr, jit_options);
         }
     }
 
-    std::string Regex::pattern() const {
-        return impl ? impl->pattern : std::string();
-    }
-
-    Regex::flag_type Regex::flags() const noexcept {
-        return impl ? impl->flags : 0;
-    }
-
-    bool Regex::empty() const noexcept {
-        return ! impl || impl->pattern.empty();
-    }
-
     size_t Regex::groups() const noexcept {
-        if (! impl)
+        if (is_null())
             return 0;
         uint32_t captures = 0;
-        pcre2_pattern_info(impl->code, PCRE2_INFO_CAPTURECOUNT, &captures);
+        auto code_ptr = static_cast<pcre2_code*>(pc_code.get());
+        pcre2_pattern_info(code_ptr, PCRE2_INFO_CAPTURECOUNT, &captures);
         return captures + 1;
     }
 
     size_t Regex::named(std::string_view name) const {
-        if (! impl)
+        if (is_null())
             return npos;
+        auto code_ptr = static_cast<pcre2_code*>(pc_code.get());
         std::string name_str(name);
-        int rc = pcre2_substring_number_from_name(impl->code, byte_ptr(name_str));
+        int rc = pcre2_substring_number_from_name(code_ptr, byte_ptr(name_str));
         return rc == PCRE2_ERROR_NOSUBSTRING || rc == PCRE2_ERROR_NOUNIQUESUBSTRING ? npos : size_t(rc);
     }
 
@@ -215,18 +192,19 @@ namespace RS::Unicorn {
 
     std::string Regex::replace(std::string_view str, std::string_view fmt, size_t pos, flag_type flags) const {
         static constexpr uint32_t default_options = PCRE2_SUBSTITUTE_EXTENDED | PCRE2_SUBSTITUTE_OVERFLOW_LENGTH | PCRE2_SUBSTITUTE_UNKNOWN_UNSET | PCRE2_SUBSTITUTE_UNSET_EMPTY;
-        if (! impl)
+        if (is_null())
             return std::string(str);
         if (flags & ~ runtime_mask)
             throw error(PCRE2_ERROR_BADOPTION);
-        flags |= impl->flags;
+        flags |= re_flags;
         uint32_t sub_options = default_options | translate_match_flags(flags);
         if (flags & global)
             sub_options |= PCRE2_SUBSTITUTE_GLOBAL;
+        auto code_ptr = static_cast<pcre2_code*>(pc_code.get());
         std::string result(str.size() + fmt.size() + 100, '\0');
         for (;;) {
             size_t result_size = result.size();
-            int rc = pcre2_substitute(impl->code, byte_ptr(str), str.size(), pos, sub_options, nullptr, nullptr, byte_ptr(fmt), fmt.size(), byte_ptr(result), &result_size);
+            int rc = pcre2_substitute(code_ptr, byte_ptr(str), str.size(), pos, sub_options, nullptr, nullptr, byte_ptr(fmt), fmt.size(), byte_ptr(result), &result_size);
             if (rc < 0 && rc != PCRE2_ERROR_NOMATCH && rc != PCRE2_ERROR_NOMEMORY && rc != PCRE2_ERROR_PARTIAL)
                 handle_error(rc);
             result.resize(result_size);
@@ -297,120 +275,106 @@ namespace RS::Unicorn {
 
     // Class Regex::match
 
-    struct Regex::match::impl_type {
-        pcre2_match_data* data = nullptr;
-        flag_type flags = 0;
-        uint32_t options = 0;
-        const Regex* regex = nullptr;
-        std::string_view subject;
-        size_t ocount = 0;
-        size_t* ovector = nullptr;
-        bool partial = false;
-        impl_type() = default;
-        ~impl_type() noexcept { pcre2_match_data_free(data); }
-        RS_NO_COPY_MOVE(impl_type);
-    };
-
     Regex::match::operator bool() const noexcept {
-        return bool(impl);
+        return bool(match_data);
     }
 
     bool Regex::match::full() const noexcept {
-        return impl && ! impl->partial;
+        return match_data && ! partial_match;
     }
 
     bool Regex::match::partial() const noexcept {
-        return impl && impl->partial;
+        return match_data && partial_match;
     }
 
     bool Regex::match::matched(size_t i) const noexcept {
-        return i == 0 ? bool(impl) : offset(i) != npos;
+        return i == 0 ? bool(match_data) : offset(i) != npos;
     }
 
     const char* Regex::match::begin(size_t i) const noexcept {
         size_t ofs = offset(i);
-        return ofs == npos ? nullptr : impl->subject.data() + ofs;
+        return ofs == npos ? nullptr : subject_view.data() + ofs;
     }
 
     const char* Regex::match::end(size_t i) const noexcept {
         size_t ofs = endpos(i);
-        return ofs == npos ? nullptr : impl->subject.data() + ofs;
+        return ofs == npos ? nullptr : subject_view.data() + ofs;
     }
 
     size_t Regex::match::offset(size_t i) const noexcept {
-        if (! index_check(i))
+        if (i >= offset_count)
             return npos;
-        size_t ofs = impl->ovector[2 * i];
+        size_t ofs = offset_vector[2 * i];
         return ofs == PCRE2_UNSET ? npos : ofs;
     }
 
     size_t Regex::match::endpos(size_t i) const noexcept {
-        if (! index_check(i))
+        if (i >= offset_count)
             return npos;
-        size_t ofs = impl->ovector[2 * i + 1];
+        size_t ofs = offset_vector[2 * i + 1];
         return ofs == PCRE2_UNSET ? npos : ofs;
     }
 
     size_t Regex::match::count(size_t i) const noexcept {
-        if (! index_check(i))
+        if (i >= offset_count)
             return 0;
-        size_t start = impl->ovector[2 * i], stop = impl->ovector[2 * i + 1];
+        size_t start = offset_vector[2 * i], stop = offset_vector[2 * i + 1];
         return start == PCRE2_UNSET || stop < start ? 0 : stop - start;
     }
 
     std::string_view Regex::match::str(size_t i) const noexcept {
-        if (! index_check(i))
+        if (i >= offset_count)
             return {};
-        size_t start = impl->ovector[2 * i], stop = impl->ovector[2 * i + 1];
+        size_t start = offset_vector[2 * i], stop = offset_vector[2 * i + 1];
         if (start == PCRE2_UNSET)
             return {};
         else if (start <= stop)
-            return std::string_view(impl->subject.data() + start, stop - start);
+            return std::string_view(subject_view.data() + start, stop - start);
         else
-            return std::string_view(impl->subject.data() + start, 0);
+            return std::string_view(subject_view.data() + start, 0);
     }
 
     Regex::match::match(const Regex& re, std::string_view str, flag_type flags) {
         if (flags & ~ runtime_mask)
             throw error(PCRE2_ERROR_BADOPTION);
-        if (! re.impl || ! str.data())
+        if (re.is_null() || ! str.data())
             return;
-        impl = std::make_shared<impl_type>();
-        impl->flags = flags | re.flags();
-        impl->options = translate_match_flags(impl->flags);
-        impl->regex = &re;
-        impl->subject = str;
-        impl->data = pcre2_match_data_create_from_pattern(impl->regex->impl->code, nullptr);
-        if (! impl->data)
-            throw std::bad_alloc();
+        subject_view = str;
+        regex_ptr = &re;
+        match_flags = flags | re.flags();
+        match_options = translate_match_flags(match_flags);
     }
 
     size_t Regex::match::index_by_name(std::string_view name) const {
-        return impl ? impl->regex->named(name) : npos;
-    }
-
-    bool Regex::match::index_check(size_t i) const noexcept {
-        return impl && i < impl->ocount;
+        return regex_ptr ? regex_ptr->named(name) : npos;
     }
 
     void Regex::match::next(size_t pos) {
-        if (! impl)
+        if (! regex_ptr)
             return;
-        auto guard = scope_exit([&] { impl.reset(); });
-        if (pos > impl->subject.size())
+        auto guard = scope_exit([&] { *this = {}; });
+        if (pos > subject_view.size())
             return;
-        int rc = pcre2_match(impl->regex->impl->code, byte_ptr(impl->subject), impl->subject.size(), pos, impl->options, impl->data, nullptr);
+        auto code_ptr = static_cast<pcre2_code*>(regex_ptr->pc_code.get());
+        if (match_data.use_count() != 1) {
+            auto new_data = pcre2_match_data_create_from_pattern(code_ptr, nullptr);
+            if (! new_data)
+                throw std::bad_alloc();
+            match_data.reset(new_data, pcre2_match_data_free);
+        }
+        auto match_ptr = static_cast<pcre2_match_data*>(match_data.get());
+        int rc = pcre2_match(code_ptr, byte_ptr(subject_view), subject_view.size(), pos, match_options, match_ptr, nullptr);
         if (rc == PCRE2_ERROR_NOMATCH)
             return;
         else if (rc < 0 && rc != PCRE2_ERROR_PARTIAL)
             handle_error(rc);
-        impl->ovector = pcre2_get_ovector_pointer(impl->data);
+        offset_vector = pcre2_get_ovector_pointer(match_ptr);
         #if RS_PCRE_VERSION < 1030
-            if ((impl->flags & Regex::full) && impl->ovector[1] < impl->subject.size())
+            if ((match_flags & Regex::full) && offset_vector[1] < subject_view.size())
                 return;
         #endif
-        impl->ocount = pcre2_get_ovector_count(impl->data);
-        impl->partial = rc == PCRE2_ERROR_PARTIAL;
+        offset_count = pcre2_get_ovector_count(match_ptr);
+        partial_match = rc == PCRE2_ERROR_PARTIAL;
         guard.release();
     }
 
@@ -419,7 +383,7 @@ namespace RS::Unicorn {
     Regex::split_iterator& Regex::split_iterator::operator++() {
         if (after) {
             auto start = after.end();
-            after.next(after.endpos());
+            after.next();
             if (after)
                 span = {start, size_t(after.begin() - start)};
             else
