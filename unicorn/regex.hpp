@@ -80,12 +80,10 @@ namespace RS::Unicorn {
 
     private:
 
-        std::string re_pattern;
-        flag_type re_flags = 0;
         std::shared_ptr<void> pc_context; // pcre2_compile_context
         std::shared_ptr<void> pc_code; // pcre2_code
-
-        void utf_only() const;
+        std::string re_pattern;
+        flag_type re_flags = 0;
 
     };
 

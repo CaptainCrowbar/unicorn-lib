@@ -150,7 +150,8 @@ namespace RS::Unicorn {
     }
 
     Regex::match Regex::search(const Utf8Iterator& start, flag_type flags) const {
-        utf_only();
+        if (re_flags & byte)
+            throw error(PCRE2_ERROR_BADOPTION);
         return search(start.source(), start.offset(), flags);
     }
 
@@ -175,7 +176,8 @@ namespace RS::Unicorn {
     }
 
     Regex::match_range Regex::grep(const Utf8Iterator& start, flag_type flags) const {
-        utf_only();
+        if (re_flags & byte)
+            throw error(PCRE2_ERROR_BADOPTION);
         return {{*this, start.source(), start.offset(), flags}, {}};
     }
 
@@ -255,11 +257,6 @@ namespace RS::Unicorn {
             }
         }
         return esc;
-    }
-
-    void Regex::utf_only() const {
-        if (flags() & byte)
-            throw error(PCRE2_ERROR_BADOPTION);
     }
 
     // Class Regex::error
