@@ -5,10 +5,11 @@
 #include "unicorn/string.hpp"
 #include <algorithm>
 #include <cerrno>
+#include <cstdio>
+#include <iterator>
 #include <mutex>
 #include <stdexcept>
 #include <system_error>
-#include <utility>
 
 using namespace RS::Unicorn::Literals;
 using namespace std::literals;

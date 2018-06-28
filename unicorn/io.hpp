@@ -4,7 +4,6 @@
 #include "unicorn/path.hpp"
 #include "unicorn/utf.hpp"
 #include "unicorn/utility.hpp"
-#include <cstdio>
 #include <memory>
 #include <string>
 
