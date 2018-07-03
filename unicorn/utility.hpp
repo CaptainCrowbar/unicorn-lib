@@ -465,13 +465,11 @@ namespace RS {
 
         template <typename T>
         constexpr int ibits(T t) noexcept {
-            static_assert(std::is_integral<T>::value);
             return __builtin_popcountll(uint64_t(t));
         }
 
         template <typename T>
         constexpr int ilog2p1(T t) noexcept {
-            static_assert(std::is_integral<T>::value);
             return t ? 64 - __builtin_clzll(uint64_t(t)) : 0;
         }
 
@@ -497,19 +495,16 @@ namespace RS {
 
     template <typename T>
     constexpr T ifloor2(T t) noexcept {
-        static_assert(std::is_integral<T>::value);
         return t ? T(1) << (ilog2p1(t) - 1) : 0;
     }
 
     template <typename T>
     constexpr T iceil2(T t) noexcept {
-        static_assert(std::is_integral<T>::value);
         return t > 1 ? T(1) << (ilog2p1(t - 1) - 1) << 1 : t;
     }
 
     template <typename T>
     constexpr bool ispow2(T t) noexcept {
-        static_assert(std::is_integral<T>::value);
         return ibits(t) == 1;
     }
 
@@ -521,7 +516,6 @@ namespace RS {
 
         template <typename T>
         constexpr T rotl_helper(T t, int n) noexcept {
-            static_assert(std::is_integral<T>::value);
             int tbits = 8 * sizeof(T);
             int nbits = n % tbits;
             return nbits ? T(t << nbits) | T(t >> (tbits - nbits)) : t;
@@ -529,7 +523,6 @@ namespace RS {
 
         template <typename T>
         constexpr T rotr_helper(T t, int n) noexcept {
-            static_assert(std::is_integral<T>::value);
             int tbits = 8 * sizeof(T);
             int nbits = n % tbits;
             return nbits ? T(t >> nbits) | T(t << (tbits - nbits)) : t;
