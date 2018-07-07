@@ -92,7 +92,7 @@ ifeq ($(cross_target),msvc)
 endif
 
 ifeq ($(cross_target),cygwin)
-	cc_defines += -DFMT_HEADER_ONLY=1 -D_REENTRANT=1 -D_XOPEN_SOURCE=700
+	cc_defines += -D_REENTRANT=1 -D_XOPEN_SOURCE=700
 	cxx_specific_flags += -std=gnu++1z
 	ld_specific_flags += -Wl,--enable-auto-import
 endif
@@ -438,13 +438,8 @@ endif
 
 # System specific link libraries
 
-ifeq ($(cross_target),msvc)
-	LDLIBS += fmt.lib
-else
+ifneq ($(cross_target),msvc)
 	LDLIBS += -lpthread -lz
-	ifneq ($(cross_target),cygwin)
-		LDLIBS += -lfmt
-	endif
 	ifneq ($(cross_target),linux)
 		LDLIBS += -liconv
 	endif
