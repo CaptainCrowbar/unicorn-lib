@@ -1,6 +1,7 @@
 #pragma once
 
 #include "unicorn/character.hpp"
+#include "unicorn/regex.hpp"
 #include "unicorn/utf.hpp"
 #include "unicorn/utility.hpp"
 #include <memory>

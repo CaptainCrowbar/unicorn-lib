@@ -1,5 +1,4 @@
 #include "unicorn/format.hpp"
-#include "unicorn/regex.hpp"
 #include <cmath>
 #include <cstdio>
 

@@ -1,7 +1,6 @@
 #include "unicorn/mbcs.hpp"
 #include "unicorn/character.hpp"
 #include "unicorn/iana-character-sets.hpp"
-#include "unicorn/regex.hpp"
 #include "unicorn/string.hpp"
 #include <algorithm>
 #include <cerrno>
