@@ -3,76 +3,6 @@
 
 namespace RS::Unicorn {
 
-    int str_compare_3way(const Ustring& lhs, const Ustring& rhs) {
-        size_t size1 = lhs.size(), size2 = rhs.size();
-        size_t common = std::min(lhs.size(), rhs.size());
-        int rc = memcmp(lhs.data(), rhs.data(), common);
-        if (rc != 0)
-            return rc > 0 ? 1 : -1;
-        else
-            return size1 < size2 ? -1 : size1 == size2 ? 0 : 1;
-    }
-
-    bool str_icase_compare(const Ustring& lhs, const Ustring& rhs) noexcept {
-        if (lhs.empty() || rhs.empty())
-            return ! rhs.empty();
-        auto u1 = utf_range(lhs), u2 = utf_range(rhs);
-        auto i1 = u1.begin(), i2 = u2.begin();
-        char32_t buf1[max_case_decomposition], buf2[max_case_decomposition];
-        size_t p1 = 0, p2 = 0;
-        size_t n1 = char_to_full_casefold(*i1, buf1);
-        size_t n2 = char_to_full_casefold(*i2, buf2);
-        for (;;) {
-            if (p1 == n1) {
-                p1 = 0;
-                if (++i1 != u1.end())
-                    n1 = char_to_full_casefold(*i1, buf1);
-            }
-            if (p2 == n2) {
-                p2 = 0;
-                if (++i2 != u2.end())
-                    n2 = char_to_full_casefold(*i2, buf2);
-            }
-            if ((p1 == 0 && i1 == u1.end()) || (p2 == 0 && i2 == u2.end()))
-                return i2 != u2.end();
-            if (buf1[p1] != buf2[p2])
-                return buf1[p1] < buf2[p2];
-            ++p1;
-            ++p2;
-        }
-    }
-
-    bool str_icase_equal(const Ustring& lhs, const Ustring& rhs) noexcept {
-        if (lhs.empty() && rhs.empty())
-            return true;
-        if (lhs.size() != rhs.size())
-            return false;
-        auto u1 = utf_range(lhs), u2 = utf_range(rhs);
-        auto i1 = u1.begin(), i2 = u2.begin();
-        char32_t buf1[max_case_decomposition], buf2[max_case_decomposition];
-        size_t p1 = 0, p2 = 0;
-        size_t n1 = char_to_full_casefold(*i1, buf1);
-        size_t n2 = char_to_full_casefold(*i2, buf2);
-        for (;;) {
-            if (p1 == n1) {
-                p1 = 0;
-                if (++i1 != u1.end())
-                    n1 = char_to_full_casefold(*i1, buf1);
-            }
-            if (p2 == n2) {
-                p2 = 0;
-                if (++i2 != u2.end())
-                    n2 = char_to_full_casefold(*i2, buf2);
-            }
-            if ((p1 == 0 && i1 == u1.end()) || (p2 == 0 && i2 == u2.end()))
-                return i1 == u1.end() && i2 == u2.end();
-            if (buf1[p1] != buf2[p2])
-                return false;
-            ++p1;
-            ++p2;
-        }
-    }
-
     namespace {
 
         bool char_is_ascii_digit(char32_t c) noexcept {
@@ -113,9 +43,9 @@ namespace RS::Unicorn {
                     else if (cooked.size() > rhs.cooked.size())
                         return 1;
                     else
-                        return str_compare_3way(cooked, rhs.cooked);
+                        return StringCompare<Strcmp::triple>()(cooked, rhs.cooked);
                 } else {
-                    return str_compare_3way(cooked, rhs.cooked);
+                    return StringCompare<Strcmp::triple>()(cooked, rhs.cooked);
                 }
                 return 0;
             }
@@ -150,20 +80,56 @@ namespace RS::Unicorn {
 
     }
 
-    bool str_natural_compare(const Ustring& lhs, const Ustring& rhs) noexcept {
-        auto b1 = utf_begin(lhs), e1 = utf_end(lhs), b2 = utf_begin(rhs), e2 = utf_end(rhs);
-        NaturalSegmentIterator s1(b1, e1), s1_end(e1, e1), s2(b2, e2), s2_end(e2, e2);
-        for (; s1 != s1_end && s2 != s2_end; ++s1, ++s2) {
-            int c = s1->compare(*s2);
-            if (c != 0)
-                return c == -1;
+    namespace UnicornDetail {
+
+        int do_compare_basic(const Ustring& lhs, const Ustring& rhs) {
+            size_t n = std::min(lhs.size(), rhs.size());
+            for (size_t i = 0; i < n; ++i)
+                if (lhs[i] != rhs[i])
+                    return uint8_t(lhs[i]) < uint8_t(rhs[i]) ? -1 : 1;
+            return lhs.size() < rhs.size() ? -1 : lhs.size() == rhs.size() ? 0 : 1;
         }
-        if (s1 != s1_end)
-            return false;
-        else if (s2 != s2_end)
-            return true;
-        else
-            return lhs < rhs;
+
+        int do_compare_icase(const Ustring& lhs, const Ustring& rhs) {
+            if (lhs.empty() || rhs.empty())
+                return ! rhs.empty() ? -1 : ! lhs.empty() ? 1 : 0;
+            auto u1 = utf_range(lhs), u2 = utf_range(rhs);
+            auto i1 = u1.begin(), i2 = u2.begin();
+            char32_t buf1[max_case_decomposition], buf2[max_case_decomposition];
+            size_t p1 = 0, p2 = 0;
+            size_t n1 = char_to_full_casefold(*i1, buf1);
+            size_t n2 = char_to_full_casefold(*i2, buf2);
+            for (;;) {
+                if (p1 == n1) {
+                    p1 = 0;
+                    if (++i1 != u1.end())
+                        n1 = char_to_full_casefold(*i1, buf1);
+                }
+                if (p2 == n2) {
+                    p2 = 0;
+                    if (++i2 != u2.end())
+                        n2 = char_to_full_casefold(*i2, buf2);
+                }
+                if ((p1 == 0 && i1 == u1.end()) || (p2 == 0 && i2 == u2.end()))
+                    return i2 != u2.end() ? -1 : i1 != u1.end() ? 1 : 0;
+                if (buf1[p1] != buf2[p2])
+                    return buf1[p1] < buf2[p2] ? -1 : buf1[p1] == buf2[p2] ? 0 : 1;
+                ++p1;
+                ++p2;
+            }
+        }
+
+        int do_compare_natural(const Ustring& lhs, const Ustring& rhs) {
+            auto b1 = utf_begin(lhs), e1 = utf_end(lhs), b2 = utf_begin(rhs), e2 = utf_end(rhs);
+            NaturalSegmentIterator s1(b1, e1), s1_end(e1, e1), s2(b2, e2), s2_end(e2, e2);
+            for (; s1 != s1_end && s2 != s2_end; ++s1, ++s2) {
+                int c = s1->compare(*s2);
+                if (c != 0)
+                    return c;
+            }
+            return s2 != s2_end ? -1 : s1 != s1_end ? 1 : 0;
+        }
+
     }
 
 }

@@ -97,10 +97,9 @@ extern void test_unicorn_string_algorithm_line_column();
 extern void test_unicorn_string_algorithm_search();
 extern void test_unicorn_string_algorithm_skipws();
 extern void test_unicorn_string_case_conversions();
-extern void test_unicorn_string_compare_3_way();
-extern void test_unicorn_string_compare_case_insensitive();
+extern void test_unicorn_string_compare_basic();
+extern void test_unicorn_string_compare_icase();
 extern void test_unicorn_string_compare_natural();
-extern void test_unicorn_string_compare_utf_compare();
 extern void test_unicorn_string_conversion_decimal_integers();
 extern void test_unicorn_string_conversion_hexadecimal_integers();
 extern void test_unicorn_string_conversion_floating_point();
@@ -245,10 +244,9 @@ int main() {
         { "unicorn/string-algorithm/search", test_unicorn_string_algorithm_search },
         { "unicorn/string-algorithm/skipws", test_unicorn_string_algorithm_skipws },
         { "unicorn/string-case/conversions", test_unicorn_string_case_conversions },
-        { "unicorn/string-compare/3-way", test_unicorn_string_compare_3_way },
-        { "unicorn/string-compare/case-insensitive", test_unicorn_string_compare_case_insensitive },
+        { "unicorn/string-compare/basic", test_unicorn_string_compare_basic },
+        { "unicorn/string-compare/icase", test_unicorn_string_compare_icase },
         { "unicorn/string-compare/natural", test_unicorn_string_compare_natural },
-        { "unicorn/string-compare/utf-compare", test_unicorn_string_compare_utf_compare },
         { "unicorn/string-conversion/decimal-integers", test_unicorn_string_conversion_decimal_integers },
         { "unicorn/string-conversion/hexadecimal-integers", test_unicorn_string_conversion_hexadecimal_integers },
         { "unicorn/string-conversion/floating-point", test_unicorn_string_conversion_floating_point },

@@ -5,114 +5,224 @@ using namespace RS;
 using namespace RS::Unicorn;
 using namespace std::literals;
 
-void test_unicorn_string_compare_3_way() {
+void test_unicorn_string_compare_basic() {
 
-    int rc = 0;
+    StringCompare<Strcmp::equal> cmp_e;
+    StringCompare<Strcmp::less> cmp_l;
+    StringCompare<Strcmp::triple> cmp_t;
 
-    TRY(rc = str_compare_3way(""s, ""s));                TEST_EQUAL(rc, 0);
-    TRY(rc = str_compare_3way("Hello"s, ""s));           TEST_EQUAL(rc, 1);
-    TRY(rc = str_compare_3way(""s, "Hello"s));           TEST_EQUAL(rc, -1);
-    TRY(rc = str_compare_3way("Hello"s, "Hello"s));      TEST_EQUAL(rc, 0);
-    TRY(rc = str_compare_3way("Hello"s, "Hellfire"s));   TEST_EQUAL(rc, 1);
-    TRY(rc = str_compare_3way("Hellfire"s, "Hello"s));   TEST_EQUAL(rc, -1);
-    TRY(rc = str_compare_3way(u8"αβγδε"s, u8"αβγδε"s));  TEST_EQUAL(rc, 0);
-    TRY(rc = str_compare_3way(u8"αβδε"s, u8"αβγδ"s));    TEST_EQUAL(rc, 1);
-    TRY(rc = str_compare_3way(u8"αβγδ"s, u8"αβδε"s));    TEST_EQUAL(rc, -1);
+    TEST(cmp_e(""s, ""s));
+    TEST(! cmp_e("Hello"s, ""s));
+    TEST(! cmp_e(""s, "Hello"s));
+    TEST(cmp_e("Hello"s, "Hello"s));
+    TEST(! cmp_e("Hello"s, "Hellfire"s));
+    TEST(! cmp_e("Hellfire"s, "Hello"s));
+    TEST(cmp_e(u8"αβγδε"s, u8"αβγδε"s));
+    TEST(! cmp_e(u8"αβδε"s, u8"αβγδ"s));
+    TEST(! cmp_e(u8"αβγδ"s, u8"αβδε"s));
+
+    TEST(! cmp_l(""s, ""s));
+    TEST(! cmp_l("Hello"s, ""s));
+    TEST(cmp_l(""s, "Hello"s));
+    TEST(! cmp_l("Hello"s, "Hello"s));
+    TEST(! cmp_l("Hello"s, "Hellfire"s));
+    TEST(cmp_l("Hellfire"s, "Hello"s));
+    TEST(! cmp_l(u8"αβγδε"s, u8"αβγδε"s));
+    TEST(! cmp_l(u8"αβδε"s, u8"αβγδ"s));
+    TEST(cmp_l(u8"αβγδ"s, u8"αβδε"s));
+
+    TEST_EQUAL(cmp_t(""s, ""s), 0);
+    TEST_EQUAL(cmp_t("Hello"s, ""s), 1);
+    TEST_EQUAL(cmp_t(""s, "Hello"s), -1);
+    TEST_EQUAL(cmp_t("Hello"s, "Hello"s), 0);
+    TEST_EQUAL(cmp_t("Hello"s, "Hellfire"s), 1);
+    TEST_EQUAL(cmp_t("Hellfire"s, "Hello"s), -1);
+    TEST_EQUAL(cmp_t(u8"αβγδε"s, u8"αβγδε"s), 0);
+    TEST_EQUAL(cmp_t(u8"αβδε"s, u8"αβγδ"s), 1);
+    TEST_EQUAL(cmp_t(u8"αβγδ"s, u8"αβδε"s), -1);
 
 }
 
-void test_unicorn_string_compare_case_insensitive() {
+void test_unicorn_string_compare_icase() {
 
-    TEST(! str_icase_compare(u8""s, u8""s));
-    TEST(! str_icase_compare(u8"hello"s, u8"hello"s));
-    TEST(! str_icase_compare(u8"Hello"s, u8"hello"s));
-    TEST(! str_icase_compare(u8"hello"s, u8"Hello"s));
-    TEST(! str_icase_compare(u8"HELLO"s, u8"hello"s));
-    TEST(! str_icase_compare(u8"hello"s, u8"HELLO"s));
-    TEST(str_icase_compare(u8""s, u8"hello"s));
-    TEST(! str_icase_compare(u8"hello"s, u8""s));
-    TEST(str_icase_compare(u8"hello"s, u8"WORLD"s));
-    TEST(str_icase_compare(u8"HELLO"s, u8"world"s));
-    TEST(! str_icase_compare(u8"world"s, u8"HELLO"s));
-    TEST(! str_icase_compare(u8"WORLD"s, u8"hello"s));
-    TEST(str_icase_compare(u8"hello"s, u8"HELLO WORLD"s));
-    TEST(str_icase_compare(u8"HELLO"s, u8"hello world"s));
-    TEST(! str_icase_compare(u8"hello world"s, u8"HELLO"s));
-    TEST(! str_icase_compare(u8"HELLO WORLD"s, u8"hello"s));
-    TEST(str_icase_compare(u8"hello world"s, u8"HELLO!WORLD"s));
-    TEST(str_icase_compare(u8"HELLO WORLD"s, u8"hello!world"s));
+    StringCompare<Strcmp::equal | Strcmp::icase> cmp_ei;
+    StringCompare<Strcmp::less | Strcmp::icase> cmp_li;
+    StringCompare<Strcmp::triple | Strcmp::icase> cmp_ti;
+    StringCompare<Strcmp::equal | Strcmp::icase | Strcmp::fallback> cmp_eif;
+    StringCompare<Strcmp::less | Strcmp::icase | Strcmp::fallback> cmp_lif;
+    StringCompare<Strcmp::triple | Strcmp::icase | Strcmp::fallback> cmp_tif;
 
-    TEST(str_icase_equal(u8""s, u8""s));
-    TEST(str_icase_equal(u8"hello"s, u8"hello"s));
-    TEST(str_icase_equal(u8"Hello"s, u8"hello"s));
-    TEST(str_icase_equal(u8"hello"s, u8"Hello"s));
-    TEST(str_icase_equal(u8"HELLO"s, u8"hello"s));
-    TEST(str_icase_equal(u8"hello"s, u8"HELLO"s));
-    TEST(! str_icase_equal(u8""s, u8"hello"s));
-    TEST(! str_icase_equal(u8"hello"s, u8""s));
-    TEST(! str_icase_equal(u8"hello"s, u8"WORLD"s));
-    TEST(! str_icase_equal(u8"HELLO"s, u8"world"s));
-    TEST(! str_icase_equal(u8"world"s, u8"HELLO"s));
-    TEST(! str_icase_equal(u8"WORLD"s, u8"hello"s));
-    TEST(! str_icase_equal(u8"hello"s, u8"HELLO WORLD"s));
-    TEST(! str_icase_equal(u8"HELLO"s, u8"hello world"s));
-    TEST(! str_icase_equal(u8"hello world"s, u8"HELLO"s));
-    TEST(! str_icase_equal(u8"HELLO WORLD"s, u8"hello"s));
-    TEST(! str_icase_equal(u8"hello world"s, u8"HELLO!WORLD"s));
-    TEST(! str_icase_equal(u8"HELLO WORLD"s, u8"hello!world"s));
+    TEST(cmp_ei(u8""s, u8""s));
+    TEST(cmp_ei(u8"hello"s, u8"hello"s));
+    TEST(cmp_ei(u8"Hello"s, u8"hello"s));
+    TEST(cmp_ei(u8"hello"s, u8"Hello"s));
+    TEST(cmp_ei(u8"HELLO"s, u8"hello"s));
+    TEST(cmp_ei(u8"hello"s, u8"HELLO"s));
+    TEST(! cmp_ei(u8""s, u8"hello"s));
+    TEST(! cmp_ei(u8"hello"s, u8""s));
+    TEST(! cmp_ei(u8"hello"s, u8"WORLD"s));
+    TEST(! cmp_ei(u8"HELLO"s, u8"world"s));
+    TEST(! cmp_ei(u8"world"s, u8"HELLO"s));
+    TEST(! cmp_ei(u8"WORLD"s, u8"hello"s));
+    TEST(! cmp_ei(u8"hello"s, u8"HELLO WORLD"s));
+    TEST(! cmp_ei(u8"HELLO"s, u8"hello world"s));
+    TEST(! cmp_ei(u8"hello world"s, u8"HELLO"s));
+    TEST(! cmp_ei(u8"HELLO WORLD"s, u8"hello"s));
+    TEST(! cmp_ei(u8"hello world"s, u8"HELLO!WORLD"s));
+    TEST(! cmp_ei(u8"HELLO WORLD"s, u8"hello!world"s));
+
+    TEST(! cmp_li(u8""s, u8""s));
+    TEST(! cmp_li(u8"hello"s, u8"hello"s));
+    TEST(! cmp_li(u8"Hello"s, u8"hello"s));
+    TEST(! cmp_li(u8"hello"s, u8"Hello"s));
+    TEST(! cmp_li(u8"HELLO"s, u8"hello"s));
+    TEST(! cmp_li(u8"hello"s, u8"HELLO"s));
+    TEST(cmp_li(u8""s, u8"hello"s));
+    TEST(! cmp_li(u8"hello"s, u8""s));
+    TEST(cmp_li(u8"hello"s, u8"WORLD"s));
+    TEST(cmp_li(u8"HELLO"s, u8"world"s));
+    TEST(! cmp_li(u8"world"s, u8"HELLO"s));
+    TEST(! cmp_li(u8"WORLD"s, u8"hello"s));
+    TEST(cmp_li(u8"hello"s, u8"HELLO WORLD"s));
+    TEST(cmp_li(u8"HELLO"s, u8"hello world"s));
+    TEST(! cmp_li(u8"hello world"s, u8"HELLO"s));
+    TEST(! cmp_li(u8"HELLO WORLD"s, u8"hello"s));
+    TEST(cmp_li(u8"hello world"s, u8"HELLO!WORLD"s));
+    TEST(cmp_li(u8"HELLO WORLD"s, u8"hello!world"s));
+
+    TEST_EQUAL(cmp_ti(u8""s, u8""s), 0);
+    TEST_EQUAL(cmp_ti(u8"hello"s, u8"hello"s), 0);
+    TEST_EQUAL(cmp_ti(u8"Hello"s, u8"hello"s), 0);
+    TEST_EQUAL(cmp_ti(u8"hello"s, u8"Hello"s), 0);
+    TEST_EQUAL(cmp_ti(u8"HELLO"s, u8"hello"s), 0);
+    TEST_EQUAL(cmp_ti(u8"hello"s, u8"HELLO"s), 0);
+    TEST_EQUAL(cmp_ti(u8""s, u8"hello"s), -1);
+    TEST_EQUAL(cmp_ti(u8"hello"s, u8""s), 1);
+    TEST_EQUAL(cmp_ti(u8"hello"s, u8"WORLD"s), -1);
+    TEST_EQUAL(cmp_ti(u8"HELLO"s, u8"world"s), -1);
+    TEST_EQUAL(cmp_ti(u8"world"s, u8"HELLO"s), 1);
+    TEST_EQUAL(cmp_ti(u8"WORLD"s, u8"hello"s), 1);
+    TEST_EQUAL(cmp_ti(u8"hello"s, u8"HELLO WORLD"s), -1);
+    TEST_EQUAL(cmp_ti(u8"HELLO"s, u8"hello world"s), -1);
+    TEST_EQUAL(cmp_ti(u8"hello world"s, u8"HELLO"s), 1);
+    TEST_EQUAL(cmp_ti(u8"HELLO WORLD"s, u8"hello"s), 1);
+    TEST_EQUAL(cmp_ti(u8"hello world"s, u8"HELLO!WORLD"s), -1);
+    TEST_EQUAL(cmp_ti(u8"HELLO WORLD"s, u8"hello!world"s), -1);
+
+    TEST(cmp_eif(u8""s, u8""s));
+    TEST(cmp_eif(u8"hello"s, u8"hello"s));
+    TEST(! cmp_eif(u8"Hello"s, u8"hello"s));
+    TEST(! cmp_eif(u8"hello"s, u8"Hello"s));
+    TEST(! cmp_eif(u8"HELLO"s, u8"hello"s));
+    TEST(! cmp_eif(u8"hello"s, u8"HELLO"s));
+    TEST(! cmp_eif(u8""s, u8"hello"s));
+    TEST(! cmp_eif(u8"hello"s, u8""s));
+    TEST(! cmp_eif(u8"hello"s, u8"WORLD"s));
+    TEST(! cmp_eif(u8"HELLO"s, u8"world"s));
+    TEST(! cmp_eif(u8"world"s, u8"HELLO"s));
+    TEST(! cmp_eif(u8"WORLD"s, u8"hello"s));
+    TEST(! cmp_eif(u8"hello"s, u8"HELLO WORLD"s));
+    TEST(! cmp_eif(u8"HELLO"s, u8"hello world"s));
+    TEST(! cmp_eif(u8"hello world"s, u8"HELLO"s));
+    TEST(! cmp_eif(u8"HELLO WORLD"s, u8"hello"s));
+    TEST(! cmp_eif(u8"hello world"s, u8"HELLO!WORLD"s));
+    TEST(! cmp_eif(u8"HELLO WORLD"s, u8"hello!world"s));
+
+    TEST(! cmp_lif(u8""s, u8""s));
+    TEST(! cmp_lif(u8"hello"s, u8"hello"s));
+    TEST(cmp_lif(u8"Hello"s, u8"hello"s));
+    TEST(! cmp_lif(u8"hello"s, u8"Hello"s));
+    TEST(cmp_lif(u8"HELLO"s, u8"hello"s));
+    TEST(! cmp_lif(u8"hello"s, u8"HELLO"s));
+    TEST(cmp_lif(u8""s, u8"hello"s));
+    TEST(! cmp_lif(u8"hello"s, u8""s));
+    TEST(cmp_lif(u8"hello"s, u8"WORLD"s));
+    TEST(cmp_lif(u8"HELLO"s, u8"world"s));
+    TEST(! cmp_lif(u8"world"s, u8"HELLO"s));
+    TEST(! cmp_lif(u8"WORLD"s, u8"hello"s));
+    TEST(cmp_lif(u8"hello"s, u8"HELLO WORLD"s));
+    TEST(cmp_lif(u8"HELLO"s, u8"hello world"s));
+    TEST(! cmp_lif(u8"hello world"s, u8"HELLO"s));
+    TEST(! cmp_lif(u8"HELLO WORLD"s, u8"hello"s));
+    TEST(cmp_lif(u8"hello world"s, u8"HELLO!WORLD"s));
+    TEST(cmp_lif(u8"HELLO WORLD"s, u8"hello!world"s));
+
+    TEST_EQUAL(cmp_tif(u8""s, u8""s), 0);
+    TEST_EQUAL(cmp_tif(u8"hello"s, u8"hello"s), 0);
+    TEST_EQUAL(cmp_tif(u8"Hello"s, u8"hello"s), -1);
+    TEST_EQUAL(cmp_tif(u8"hello"s, u8"Hello"s), 1);
+    TEST_EQUAL(cmp_tif(u8"HELLO"s, u8"hello"s), -1);
+    TEST_EQUAL(cmp_tif(u8"hello"s, u8"HELLO"s), 1);
+    TEST_EQUAL(cmp_tif(u8""s, u8"hello"s), -1);
+    TEST_EQUAL(cmp_tif(u8"hello"s, u8""s), 1);
+    TEST_EQUAL(cmp_tif(u8"hello"s, u8"WORLD"s), -1);
+    TEST_EQUAL(cmp_tif(u8"HELLO"s, u8"world"s), -1);
+    TEST_EQUAL(cmp_tif(u8"world"s, u8"HELLO"s), 1);
+    TEST_EQUAL(cmp_tif(u8"WORLD"s, u8"hello"s), 1);
+    TEST_EQUAL(cmp_tif(u8"hello"s, u8"HELLO WORLD"s), -1);
+    TEST_EQUAL(cmp_tif(u8"HELLO"s, u8"hello world"s), -1);
+    TEST_EQUAL(cmp_tif(u8"hello world"s, u8"HELLO"s), 1);
+    TEST_EQUAL(cmp_tif(u8"HELLO WORLD"s, u8"hello"s), 1);
+    TEST_EQUAL(cmp_tif(u8"hello world"s, u8"HELLO!WORLD"s), -1);
+    TEST_EQUAL(cmp_tif(u8"HELLO WORLD"s, u8"hello!world"s), -1);
 
 }
 
 void test_unicorn_string_compare_natural() {
 
-    Ustring s0 = "";
-    Ustring s1 = "abc 123";
-    Ustring s2 = "abc 45";
-    Ustring s3 = "ABC 67";
-    Ustring s4 = "abc 000123";
-    Ustring s5 = "abc 123 string_compare";
-    Ustring s6 = "abc 123 456";
-    Ustring s7 = "+abc 123";
+    StringCompare<Strcmp::equal | Strcmp::natural> cmp_en;
+    StringCompare<Strcmp::less | Strcmp::natural> cmp_ln;
+    StringCompare<Strcmp::triple | Strcmp::natural> cmp_tn;
 
-    TEST(! str_natural_compare(s0, s0));
-    TEST(! str_natural_compare(s1, s1));
-    TEST(str_natural_compare(s0, s1));
-    TEST(! str_natural_compare(s1, s0));
-    TEST(! str_natural_compare(s1, s2));
-    TEST(str_natural_compare(s2, s1));
-    TEST(str_natural_compare(s2, s3));
-    TEST(! str_natural_compare(s3, s2));
-    TEST(str_natural_compare(s2, s4));
-    TEST(! str_natural_compare(s4, s2));
-    TEST(str_natural_compare(s1, s5));
-    TEST(! str_natural_compare(s5, s1));
-    TEST(str_natural_compare(s1, s6));
-    TEST(! str_natural_compare(s6, s1));
-    TEST(! str_natural_compare(s1, s7));
-    TEST(str_natural_compare(s7, s1));
+    TEST(cmp_en(""s, ""s));
+    TEST(cmp_en("abc 123", "abc 123"));
+    TEST(! cmp_en(""s, "abc 123"));
+    TEST(! cmp_en("abc 123", ""s));
+    TEST(! cmp_en("abc 123", "abc 45"));
+    TEST(! cmp_en("abc 45", "abc 123"));
+    TEST(! cmp_en("abc 45", "ABC 67"));
+    TEST(! cmp_en("ABC 67", "abc 45"));
+    TEST(! cmp_en("abc 45", "abc 000123"));
+    TEST(! cmp_en("abc 000123", "abc 45"));
+    TEST(! cmp_en("abc 123", "abc 123 something"));
+    TEST(! cmp_en("abc 123 something", "abc 123"));
+    TEST(! cmp_en("abc 123", "abc 123 456"));
+    TEST(! cmp_en("abc 123 456", "abc 123"));
+    TEST(! cmp_en("abc 123", "+abc 123"));
+    TEST(! cmp_en("+abc 123", "abc 123"));
 
-}
+    TEST(! cmp_ln(""s, ""s));
+    TEST(! cmp_ln("abc 123", "abc 123"));
+    TEST(cmp_ln(""s, "abc 123"));
+    TEST(! cmp_ln("abc 123", ""s));
+    TEST(! cmp_ln("abc 123", "abc 45"));
+    TEST(cmp_ln("abc 45", "abc 123"));
+    TEST(cmp_ln("abc 45", "ABC 67"));
+    TEST(! cmp_ln("ABC 67", "abc 45"));
+    TEST(cmp_ln("abc 45", "abc 000123"));
+    TEST(! cmp_ln("abc 000123", "abc 45"));
+    TEST(cmp_ln("abc 123", "abc 123 something"));
+    TEST(! cmp_ln("abc 123 something", "abc 123"));
+    TEST(cmp_ln("abc 123", "abc 123 456"));
+    TEST(! cmp_ln("abc 123 456", "abc 123"));
+    TEST(! cmp_ln("abc 123", "+abc 123"));
+    TEST(cmp_ln("+abc 123", "abc 123"));
 
-void test_unicorn_string_compare_utf_compare() {
-
-    Ustring a8 = u8"\uff00\U00010000";
-    Ustring b8 = u8"\U00010000\uff00";
-    std::u16string a16 = u"\uff00\U00010000";
-    std::u16string b16 = u"\U00010000\uff00";
-    std::u32string a32 = U"\uff00\U00010000";
-    std::u32string b32 = U"\U00010000\uff00";
-
-    TEST(! utf_compare(a8, a8));
-    TEST(utf_compare(a8, b8));
-    TEST(! utf_compare(b8, a8));
-    TEST(! utf_compare(b8, b8));
-    TEST(! utf_compare(a16, a16));
-    TEST(utf_compare(a16, b16));
-    TEST(! utf_compare(b16, a16));
-    TEST(! utf_compare(b16, b16));
-    TEST(! utf_compare(a32, a32));
-    TEST(utf_compare(a32, b32));
-    TEST(! utf_compare(b32, a32));
-    TEST(! utf_compare(b32, b32));
+    TEST_EQUAL(cmp_tn(""s, ""s), 0);
+    TEST_EQUAL(cmp_tn("abc 123", "abc 123"), 0);
+    TEST_EQUAL(cmp_tn(""s, "abc 123"), -1);
+    TEST_EQUAL(cmp_tn("abc 123", ""s), 1);
+    TEST_EQUAL(cmp_tn("abc 123", "abc 45"), 1);
+    TEST_EQUAL(cmp_tn("abc 45", "abc 123"), -1);
+    TEST_EQUAL(cmp_tn("abc 45", "ABC 67"), -1);
+    TEST_EQUAL(cmp_tn("ABC 67", "abc 45"), 1);
+    TEST_EQUAL(cmp_tn("abc 45", "abc 000123"), -1);
+    TEST_EQUAL(cmp_tn("abc 000123", "abc 45"), 1);
+    TEST_EQUAL(cmp_tn("abc 123", "abc 123 something"), -1);
+    TEST_EQUAL(cmp_tn("abc 123 something", "abc 123"), 1);
+    TEST_EQUAL(cmp_tn("abc 123", "abc 123 456"), -1);
+    TEST_EQUAL(cmp_tn("abc 123 456", "abc 123"), 1);
+    TEST_EQUAL(cmp_tn("abc 123", "+abc 123"), 1);
+    TEST_EQUAL(cmp_tn("+abc 123", "abc 123"), -1);
 
 }

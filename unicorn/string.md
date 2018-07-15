@@ -155,40 +155,45 @@ These return true if the string starts or ends with the specified substring.
 
 ## String comparison ##
 
-* `int` **`str_compare_3way`**`(const Ustring& lhs, const Ustring& rhs)`
+* `struct` **`Strcmp`
+    * `static constexpr uint32_t Strcmp::`**`equal`**
+    * `static constexpr uint32_t Strcmp::`**`less`**
+    * `static constexpr uint32_t Strcmp::`**`triple`**
+    * `static constexpr uint32_t Strcmp::`**`fallback`**
+    * `static constexpr uint32_t Strcmp::`**`icase`**
+    * `static constexpr uint32_t Strcmp::`**`natural`**
+* `template <uint32_t Flags> struct` **`StringCompare`**
+    * `using StringCompare::`**`result_type`** `= [see below]`
+    * `result_type StringCompare::`**`operator()`**`(const Ustring& lhs, const Ustring& rhs) const`
 
-This performs a simple lexicographical comparison on the two strings,
-returning 1, 0, or -1 to indicate that the first string is greater than, equal
-to, or less than the second one, respectively.
+This combines several options for comparing strings into a single template.
+Exactly one of the first three flags must be supplied, to indicate whether
+equality comparison, less-than comparison, or three-way comparison is
+required. The result type is `bool` for equality or less-than comparison,
+`int` for three-way comparison, which always returns -1, 0, or 1.
 
-* `bool` **`str_icase_equal`**`(const Ustring& lhs, const Ustring& rhs) noexcept`
-* `bool` **`str_icase_compare`**`(const Ustring& lhs, const Ustring& rhs) noexcept`
+If the `icase` flag is used, comparison is case insensitive. This is
+equivalent to calling `str_casefold()` on the strings before comparing them;
+using `StringCompare<icase>` is usually more efficient for a small number of
+comparisons, while calling `str_casefold()` and saving the case folded form of
+the string will be more efficient if the same strings are going to be compared
+frequently.
 
-Function objects that perform case insensitive string comparison, with
-equality or less-than semantics. These are equivalent to calling
-`str_casefold()` on the argument strings before comparison; using these
-functions is usually more efficient for a small number of comparisons, while
-calling `str_casefold()` and saving the case folded form of the string will be
-more efficient if the same string is going to be compared frequently.
+If the `fallback` flag is combined with `icase`, a case sensitive comparison
+will be done if no differences are found in the case insensitive comparison;
+by default, in the absence of `fallback`, strings that differ only in case
+will be treated as equal. The `fallback` flag may not be used without `icase`.
 
-* `bool` **`str_natural_compare`**`(const Ustring& lhs, const Ustring& rhs) noexcept`
-
-This attempts to perform a "natural" (human friendly) comparison between two
-strings. It treats numbers (currently only ASCII digits are recognised) as
-discrete string elements to be sorted numerically (e.g. `"abc99"` will sort
-before `"abc100"`; leading zeros are not significant), and ignores case and
-punctuation (significant characters are defined as general categories `L`
-[letters], `M` [marks], `N` [numbers], and `S` [symbols]). If two strings are
-equal according to these criteria, but are not exactly byte for byte
-identical, a simple lexicographical comparison by code point is used as a tie
-breaker.
-
-* `template <typename C> bool` **`utf_compare`**`(const basic_string<C>& lhs, const basic_string<C>& rhs) noexcept`
-
-Lexicographical comparison of strings by code point, in any UTF
-representation. For UTF-8 and UTF-32 this just performs a simple comparison by
-code unit; for UTF-16 this would not be equivalent to code point ordering, and
-a slightly more complicated algorithm is needed to produce the same result.
+If the `natural` flag is used, this attempts to perform a "natural" (human
+friendly) comparison between two strings. It treats numbers (currently only
+ASCII digits are recognised) as discrete string elements to be sorted
+numerically (e.g. `"abc99"` will sort before `"abc100"`; leading zeros are not
+significant), and ignores case and punctuation (significant characters are
+defined as general categories `L` [letters], `M` [marks], `N` [numbers], and
+`S` [symbols]). If two strings are equal according to these criteria, but are
+not exactly byte for byte identical, a fallback to a simple case sensitive
+lexicographical comparison is used. The `natural` and `icase` flags may not be
+combined.
 
 ## Other string algorithms ##
 

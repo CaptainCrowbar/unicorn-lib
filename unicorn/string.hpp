@@ -284,18 +284,48 @@ namespace RS::Unicorn {
     // String comparison
     // Defined in string-compare.cpp
 
-    int str_compare_3way(const Ustring& lhs, const Ustring& rhs);
-    bool str_icase_compare(const Ustring& lhs, const Ustring& rhs) noexcept;
-    bool str_icase_equal(const Ustring& lhs, const Ustring& rhs) noexcept;
-    bool str_natural_compare(const Ustring& lhs, const Ustring& rhs) noexcept;
+    namespace UnicornDetail {
 
-    template <typename C>
-    bool utf_compare(const std::basic_string<C>& lhs, const std::basic_string<C>& rhs) noexcept {
-        if (sizeof(C) == 2)
-            return std::lexicographical_compare(utf_begin(lhs), utf_end(lhs), utf_begin(rhs), utf_end(rhs));
-        else
-            return lhs < rhs;
+        int do_compare_basic(const Ustring& lhs, const Ustring& rhs);
+        int do_compare_icase(const Ustring& lhs, const Ustring& rhs);
+        int do_compare_natural(const Ustring& lhs, const Ustring& rhs);
+
     }
+
+    struct Strcmp {
+        static constexpr auto equal     = uint32_t(1) << 0;
+        static constexpr auto less      = uint32_t(1) << 1;
+        static constexpr auto triple    = uint32_t(1) << 2;
+        static constexpr auto fallback  = uint32_t(1) << 3;
+        static constexpr auto icase     = uint32_t(1) << 4;
+        static constexpr auto natural   = uint32_t(1) << 5;
+    };
+
+    template <uint32_t Flags>
+    struct StringCompare {
+        static constexpr auto result_flags = Flags & (Strcmp::equal | Strcmp::less | Strcmp::triple);
+        static constexpr auto method_flags = Flags & (Strcmp::fallback | Strcmp::icase | Strcmp::natural);
+        static_assert(ibits(result_flags) == 1, "Invalid string comparison flags");
+        static_assert(method_flags == 0 || method_flags == Strcmp::icase || method_flags == (Strcmp::icase | Strcmp::fallback) || method_flags == Strcmp::natural,
+            "Invalid string comparison flags");
+        using result_type = std::conditional_t<(Flags & Strcmp::triple) != 0, int, bool>;
+        result_type operator()(const Ustring& lhs, const Ustring& rhs) const {
+            using namespace UnicornDetail;
+            int c = 0;
+            if (method_flags & Strcmp::natural)
+                c = do_compare_natural(lhs, rhs);
+            if (c == 0 && (method_flags & Strcmp::icase))
+                c = do_compare_icase(lhs, rhs);
+            if (c == 0 && (method_flags == 0 || method_flags & Strcmp::fallback))
+                c = do_compare_basic(lhs, rhs);
+            if (result_flags & Strcmp::equal)
+                return result_type(c == 0);
+            else if (result_flags & Strcmp::less)
+                return result_type(c == -1);
+            else
+                return result_type(c);
+        }
+    };
 
     // Other string algorithms
     // Defined in string-algorithm.cpp
