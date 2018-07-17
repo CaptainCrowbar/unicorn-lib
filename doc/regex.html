@@ -17,7 +17,7 @@
 <li><a href="#unicorn-library-regular-expressions">Unicorn Library: Regular Expressions</a><ul>
 <li><a href="#contents">Contents</a></li>
 <li><a href="#introduction">Introduction</a><ul>
-<li><a href="#rsregex-vs-stdregex">RS::Regex vs std::regex</a></li>
+<li><a href="#unicornregex-vs-stdregex">Unicorn::Regex vs std::regex</a></li>
 </ul>
 </li>
 <li><a href="#regex-class">Regex class</a><ul>
@@ -49,7 +49,7 @@ digit) always matches a single byte even if the value is greater than <code>\x7f
 (in a UTF-8 regex this would match a multibyte encoded character); the
 <code>\x{hex}</code> escape code can still be used, but it will be treated as a syntax
 error if the value is greater than <code>\x{ff}</code>.</p>
-<h3 id="rsregex-vs-stdregex"><code>RS::Regex</code> vs <code>std::regex</code></h3>
+<h3 id="unicornregex-vs-stdregex"><code>Unicorn::Regex</code> vs <code>std::regex</code></h3>
 <p>It would have been convenient to use standard C++11 regular expressions here,
 in the same way as the standard string classes have been used instead of
 creating a new custom string class. Unfortunately, this turns out to be

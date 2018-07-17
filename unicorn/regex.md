@@ -28,7 +28,7 @@ digit) always matches a single byte even if the value is greater than `\x7f`
 `\x{hex}` escape code can still be used, but it will be treated as a syntax
 error if the value is greater than `\x{ff}`.
 
-### `RS::Regex` vs `std::regex` ###
+### `Unicorn::Regex` vs `std::regex` ###
 
 It would have been convenient to use standard C++11 regular expressions here,
 in the same way as the standard string classes have been used instead of
