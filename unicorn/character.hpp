@@ -154,9 +154,9 @@ namespace RS::Unicorn {
     inline bool char_is_symbol(char32_t c) noexcept { return char_primary_category(c) == 'S'; }
     inline bool char_is_separator(char32_t c) noexcept { return char_primary_category(c) == 'Z'; }
 
-    std::function<bool(char32_t)> gc_predicate(GC cat);
-    std::function<bool(char32_t)> gc_predicate(const Ustring& cat);
-    std::function<bool(char32_t)> gc_predicate(const char* cat);
+    std::function<bool(char32_t)> gc_predicate(GC cat, bool sense = true);
+    std::function<bool(char32_t)> gc_predicate(const Ustring& cat, bool sense = true);
+    std::function<bool(char32_t)> gc_predicate(const char* cat, bool sense = true);
 
     inline Ustring decode_gc(GC cat) { return {char((uint16_t(cat) >> 8) & 0xff), char(uint16_t(cat) & 0xff)}; }
     constexpr GC encode_gc(char c1, char c2) noexcept { return GC(unicornDetail::encode_gc(c1, c2)); }

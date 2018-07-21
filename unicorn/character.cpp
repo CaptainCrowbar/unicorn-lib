@@ -72,13 +72,13 @@ namespace RS::Unicorn {
 
         using CategoryTable = std::vector<std::pair<GC, GC>>;
 
-        std::function<bool(char32_t)> make_category_function(const CategoryTable& table) {
+        std::function<bool(char32_t)> make_category_function(const CategoryTable& table, bool sense) {
             return [=] (char32_t c) {
                 auto cat = char_general_category(c);
                 for (auto& pair: table)
                     if (cat >= pair.first && cat <= pair.second)
-                        return true;
-                return false;
+                        return sense;
+                return ! sense;
             };
         }
 
@@ -175,20 +175,20 @@ namespace RS::Unicorn {
         }
     }
 
-    std::function<bool(char32_t)> gc_predicate(GC cat) {
+    std::function<bool(char32_t)> gc_predicate(GC cat, bool sense) {
         CategoryTable table;
         table.push_back({cat, cat});
-        return make_category_function(table);
+        return make_category_function(table, sense);
     }
 
-    std::function<bool(char32_t)> gc_predicate(const Ustring& cat) {
+    std::function<bool(char32_t)> gc_predicate(const Ustring& cat, bool sense) {
         auto table = make_category_table(cat.data(), cat.size());
-        return make_category_function(table);
+        return make_category_function(table, sense);
     }
 
-    std::function<bool(char32_t)> gc_predicate(const char* cat) {
+    std::function<bool(char32_t)> gc_predicate(const char* cat, bool sense) {
         auto table = make_category_table(cat, strlen(cat));
-        return make_category_function(table);
+        return make_category_function(table, sense);
     }
 
     // Boolean properties

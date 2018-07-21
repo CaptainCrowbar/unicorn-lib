@@ -265,17 +265,19 @@ mark.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>function&lt;bool(char32_t)&gt;</code> <strong><code>gc_predicate</code></strong><code>(GC cat)</code></li>
-<li><code>function&lt;bool(char32_t)&gt;</code> <strong><code>gc_predicate</code></strong><code>(const Ustring&amp; cat)</code></li>
-<li><code>function&lt;bool(char32_t)&gt;</code> <strong><code>gc_predicate</code></strong><code>(const char* cat)</code></li>
+<li><code>function&lt;bool(char32_t)&gt;</code> <strong><code>gc_predicate</code></strong><code>(GC cat, bool sense = true)</code></li>
+<li><code>function&lt;bool(char32_t)&gt;</code> <strong><code>gc_predicate</code></strong><code>(const Ustring&amp; cat, bool sense = true)</code></li>
+<li><code>function&lt;bool(char32_t)&gt;</code> <strong><code>gc_predicate</code></strong><code>(const char* cat, bool sense = true)</code></li>
 </ul>
 <p>These return function objects that can be used to test a character for
-membership in one or more categories. The versions that take a string can
-check for multiple categories; for example, <code>gc_predicate("L,Nd,Pcd")</code> gives
-you a function that will check whether a character is a letter, digit,
-connector punctuation, or dash punctuation. Following the convention suggested
-by the Unicode standard, the special category <code>"LC"</code> or <code>"L&amp;"</code> tests for a
-cased letter, i.e. equivalent to <code>"Lltu"</code>.</p>
+membership in one or more categories. If the <code>sense</code> flag is false, the
+predicate will instead return true for characters not in the selected
+categories. The versions that take a string can check for multiple categories;
+for example, <code>gc_predicate("L,Nd,Pcd")</code> gives you a function that will check
+whether a character is a letter, digit, connector punctuation, or dash
+punctuation. Following the convention suggested by the Unicode standard, the
+special category <code>"LC"</code> or <code>"L&amp;"</code> tests for a cased letter, i.e. equivalent to
+<code>"Lltu"</code>.</p>
 </div>
 <div class="defns">
 <ul>

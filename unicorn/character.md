@@ -196,17 +196,19 @@ These perform the same checks as the similarly named functions above, except
 that the underscore character is counted as a letter instead of a punctuation
 mark.
 
-* `function<bool(char32_t)>` **`gc_predicate`**`(GC cat)`
-* `function<bool(char32_t)>` **`gc_predicate`**`(const Ustring& cat)`
-* `function<bool(char32_t)>` **`gc_predicate`**`(const char* cat)`
+* `function<bool(char32_t)>` **`gc_predicate`**`(GC cat, bool sense = true)`
+* `function<bool(char32_t)>` **`gc_predicate`**`(const Ustring& cat, bool sense = true)`
+* `function<bool(char32_t)>` **`gc_predicate`**`(const char* cat, bool sense = true)`
 
 These return function objects that can be used to test a character for
-membership in one or more categories. The versions that take a string can
-check for multiple categories; for example, `gc_predicate("L,Nd,Pcd")` gives
-you a function that will check whether a character is a letter, digit,
-connector punctuation, or dash punctuation. Following the convention suggested
-by the Unicode standard, the special category `"LC"` or `"L&"` tests for a
-cased letter, i.e. equivalent to `"Lltu"`.
+membership in one or more categories. If the `sense` flag is false, the
+predicate will instead return true for characters not in the selected
+categories. The versions that take a string can check for multiple categories;
+for example, `gc_predicate("L,Nd,Pcd")` gives you a function that will check
+whether a character is a letter, digit, connector punctuation, or dash
+punctuation. Following the convention suggested by the Unicode standard, the
+special category `"LC"` or `"L&"` tests for a cased letter, i.e. equivalent to
+`"Lltu"`.
 
 * `Ustring` **`decode_gc`**`(GC cat)`
 * `constexpr GC` **`encode_gc`**`(char c1, char c2) noexcept`
