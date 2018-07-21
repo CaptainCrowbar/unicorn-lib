@@ -1297,25 +1297,26 @@ void test_unicorn_utility_string_functions() {
     TEST_THROW(si_to_float(""), std::invalid_argument);
     TEST_THROW(si_to_float("k9"), std::invalid_argument);
 
-    std::atomic<int> ai(42);
+    s = "Hello";
 
+    TEST_EQUAL(to_str(true), "true");
+    TEST_EQUAL(to_str(false), "false");
     TEST_EQUAL(to_str(0), "0");
     TEST_EQUAL(to_str(42), "42");
     TEST_EQUAL(to_str(-42), "-42");
     TEST_EQUAL(to_str(123.456), "123.456");
-    TEST_EQUAL(to_str(true), "true");
-    TEST_EQUAL(to_str(false), "false");
-    TEST_EQUAL(to_str(std::make_pair(10,20)), "{10,20}");
-    TEST_EQUAL(to_str(std::make_pair("hello"s,"world"s)), "{hello,world}");
-    TEST_EQUAL(to_str(ai), "42");
-
-    s = "Hello";
-
     TEST_EQUAL(to_str(s), "Hello");
     TEST_EQUAL(to_str(s.data()), "Hello");
     TEST_EQUAL(to_str(""s), "");
     TEST_EQUAL(to_str("Hello"s), "Hello");
     TEST_EQUAL(to_str('X'), "X");
+
+    std::atomic<int> ai(42);                                      TEST_EQUAL(to_str(ai), "42");
+    std::pair<int, std::string> is = {42, "Hello"};               TEST_EQUAL(to_str(is), "(42,Hello)");
+    std::tuple<> t0 = {};                                         TEST_EQUAL(to_str(t0), "()");
+    std::tuple<int> t1 = {42};                                    TEST_EQUAL(to_str(t1), "(42)");
+    std::tuple<int, std::string> t2 = {42, "Hello"};              TEST_EQUAL(to_str(t2), "(42,Hello)");
+    std::tuple<int, std::string, bool> t3 = {42, "Hello", true};  TEST_EQUAL(to_str(t3), "(42,Hello,true)");
 
 }
 

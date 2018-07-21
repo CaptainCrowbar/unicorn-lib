@@ -59,6 +59,7 @@
 #include <string>
 #include <string_view>
 #include <system_error>
+#include <tuple>
 #include <type_traits>
 #include <utility>
 #include <vector>
@@ -1153,8 +1154,44 @@ namespace RS {
         template <typename T> struct ObjectToString<T, 'S'> { Ustring operator()(T t) const { return static_cast<std::string>(*&t); } };
         template <typename T> struct ObjectToString<T, 'R'>: RangeToString<T> {};
         template <typename T> struct ObjectToString<std::atomic<T>, 'X'> { Ustring operator()(const std::atomic<T>& t) const { return ObjectToString<T>()(t); } };
-        template <typename T1, typename T2> struct ObjectToString<std::pair<T1, T2>, 'X'>
-            { Ustring operator()(const std::pair<T1, T2>& t) const { return '{' + ObjectToString<T1>()(t.first) + ',' + ObjectToString<T2>()(t.second) + '}'; } };
+
+        template <size_t Index, size_t Count, typename... TS>
+        struct TupleToString {
+            void operator()(Ustring& s, const std::tuple<TS...>& t) const {
+                s += to_str(std::get<Index>(t));
+                s += ',';
+                TupleToString<Index + 1, Count, TS...>()(s, t);
+            }
+        };
+
+        template <size_t Count, typename... TS>
+        struct TupleToString<Count, Count, TS...> {
+            void operator()(Ustring&, const std::tuple<TS...>&) const {}
+        };
+
+        template <typename... TS>
+        struct ObjectToString<std::tuple<TS...>, 'X'> {
+            Ustring operator()(const std::tuple<TS...>& t) const {
+                Ustring s = "(";
+                TupleToString<0, std::tuple_size<std::tuple<TS...>>::value, TS...>()(s, t);
+                s.back() = ')';
+                return s;
+            }
+        };
+
+        template <>
+        struct ObjectToString<std::tuple<>, 'X'> {
+            Ustring operator()(const std::tuple<>&) const {
+                return "()";
+            }
+        };
+
+        template <typename T1, typename T2>
+        struct ObjectToString<std::pair<T1, T2>, 'X'> {
+            Ustring operator()(const std::pair<T1, T2>& t) const {
+                return '(' + ObjectToString<T1>()(t.first) + ',' + ObjectToString<T2>()(t.second) + ')';
+            }
+        };
 
     }
 

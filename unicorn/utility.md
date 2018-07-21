@@ -521,11 +521,12 @@ for the return type.
 Formats an object as a string. This uses the following rules for formatting
 various types:
 
-* Strings and string-like types - The string content is simply copied verbatim; a null character pointer is treated as an empty string.
-* Ranges (other than strings) - Serialized in the same format as `format_list()` above (or `format_map()` if the value type is a pair).
+* `bool` - Written as `"true"` or `"false"`.
 * Integer types (other than `char`) - Formatted using `dec()`.
 * Floating point types - Formatted using `fp_format()`.
-* `bool` - Written as `"true"` or `"false"`.
+* Strings and string-like types - The string content is simply copied verbatim; a null character pointer is treated as an empty string.
+* Ranges (other than strings) - Serialized in the same format as `format_list()` above, or `format_map()` if the value type is a pair.
+* Pairs and tuples - Formatted as a comma delimited list, enclosed in parentheses.
 * Otherwise - Call the type's output operator, or fail to compile if it does not have one.
 
 "String-like types" are defined as `std::string`, `std::string_view`, `char`,
