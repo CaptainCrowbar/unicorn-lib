@@ -338,14 +338,12 @@ supply the standard member types:
 
 A wrapper for a pair of iterators, usable as a range in standard algorithms.
 
-* `template <typename T, size_t N> constexpr size_t` **`array_count`**`(T[N]) noexcept`
 * `template <typename InputRange> size_t` **`range_count`**`(const InputRange& r)`
 * `template <typename InputRange> bool` **`range_empty`**`(const InputRange& r)`
 
 Return the length of a range. The `range_count()` function is just shorthand
 for `std::distance(begin(r),end(r))`, and `range_empty()` has the obvious
-meaning. The `array_count()` version returns the same value, but only works on
-C-style arrays and is `constexpr`.
+meaning.
 
 ## Scope guards ##
 

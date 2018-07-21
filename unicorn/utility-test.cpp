@@ -623,11 +623,6 @@ void test_unicorn_utility_metaprogramming() {
 
 void test_unicorn_utility_range_types() {
 
-    char array[] {'H','e','l','l','o'};
-
-    TEST_EQUAL(array_count(""), 1);
-    TEST_EQUAL(array_count("Hello"), 6);
-    TEST_EQUAL(array_count(array), 5);
     TEST_EQUAL(range_count(""s), 0);
     TEST_EQUAL(range_count("Hello"s), 5);
     TEST_EQUAL(range_count(""), 1);

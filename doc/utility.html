@@ -539,14 +539,12 @@ supply the standard member types:</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename T, size_t N&gt; constexpr size_t</code> <strong><code>array_count</code></strong><code>(T[N]) noexcept</code></li>
 <li><code>template &lt;typename InputRange&gt; size_t</code> <strong><code>range_count</code></strong><code>(const InputRange&amp; r)</code></li>
 <li><code>template &lt;typename InputRange&gt; bool</code> <strong><code>range_empty</code></strong><code>(const InputRange&amp; r)</code></li>
 </ul>
 <p>Return the length of a range. The <code>range_count()</code> function is just shorthand
 for <code>std::distance(begin(r),end(r))</code>, and <code>range_empty()</code> has the obvious
-meaning. The <code>array_count()</code> version returns the same value, but only works on
-C-style arrays and is <code>constexpr</code>.</p>
+meaning.</p>
 </div>
 <h2 id="scope-guards">Scope guards</h2>
 <div class="defns">

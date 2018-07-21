@@ -739,8 +739,6 @@ namespace RS {
 
     }
 
-    template <typename T> constexpr size_t array_count(T&&) noexcept { return RS_Detail::ArrayCount<std::remove_reference_t<T>>::value; }
-
     template <typename InputRange>
     size_t range_count(const InputRange& r) {
         using std::begin;
