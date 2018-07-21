@@ -181,19 +181,17 @@ namespace RS::Unicorn {
         return {{*this, start.source(), start.offset(), flags}, {}};
     }
 
-    std::tuple<std::string_view, std::string_view, std::string_view> Regex::partition(std::string_view str, size_t pos, flag_type flags) const {
+    Regex::partition_type Regex::partition(std::string_view str, size_t pos, flag_type flags) const {
         match m = search(str, pos, flags);
-        if (m) {
-            size_t start = m.offset(), stop = m.endpos();
-            return {{str.data(), start}, m, {str.data() + stop, str.size() - stop}};
-        } else {
-            std::string_view at_end(str.data() + str.size(), 0);
-            return {str, at_end, at_end};
-        }
+        if (m)
+            return {{str.data(), m.offset()}, m, {str.data() + m.endpos(), str.size() - m.endpos()}};
+        else
+            return {str, {str.data() + str.size(), 0}, {str.data() + str.size(), 0}};
     }
 
     std::string Regex::replace(std::string_view str, std::string_view fmt, size_t pos, flag_type flags) const {
-        static constexpr uint32_t default_options = PCRE2_SUBSTITUTE_EXTENDED | PCRE2_SUBSTITUTE_OVERFLOW_LENGTH | PCRE2_SUBSTITUTE_UNKNOWN_UNSET | PCRE2_SUBSTITUTE_UNSET_EMPTY;
+        static constexpr uint32_t default_options =
+            PCRE2_SUBSTITUTE_EXTENDED | PCRE2_SUBSTITUTE_OVERFLOW_LENGTH | PCRE2_SUBSTITUTE_UNKNOWN_UNSET | PCRE2_SUBSTITUTE_UNSET_EMPTY;
         if (is_null())
             return std::string(str);
         if (flags & ~ runtime_mask)
@@ -206,7 +204,8 @@ namespace RS::Unicorn {
         std::string result(str.size() + fmt.size() + 100, '\0');
         for (;;) {
             size_t result_size = result.size();
-            int rc = pcre2_substitute(code_ptr, byte_ptr(str), str.size(), pos, sub_options, nullptr, nullptr, byte_ptr(fmt), fmt.size(), byte_ptr(result), &result_size);
+            int rc = pcre2_substitute(code_ptr, byte_ptr(str), str.size(), pos, sub_options, nullptr, nullptr,
+                byte_ptr(fmt), fmt.size(), byte_ptr(result), &result_size);
             if (rc < 0 && rc != PCRE2_ERROR_NOMATCH && rc != PCRE2_ERROR_NOMEMORY && rc != PCRE2_ERROR_PARTIAL)
                 handle_error(rc);
             result.resize(result_size);

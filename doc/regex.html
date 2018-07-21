@@ -276,6 +276,17 @@ a given regex, returned by <code>Regex::grep()</code>.</p>
 <p>An iterator over the substrings between matches for a given regex, returned by
 <code>Regex::split()</code>.</p>
 </div>
+<div class="defns">
+<ul>
+<li><code>struct Regex::</code><strong><code>partition_type</code></strong><ul>
+<li><code>std::string_view partition_type::</code><strong><code>left</code></strong></li>
+<li><code>std::string_view partition_type::</code><strong><code>mid</code></strong></li>
+<li><code>std::string_view partition_type::</code><strong><code>right</code></strong></li>
+</ul>
+</li>
+</ul>
+<p>The result type returned from <code>Regex::partition()</code>.</p>
+</div>
 <h3 id="member-functions">Member functions</h3>
 <div class="defns">
 <ul>
@@ -364,7 +375,7 @@ starting at a given byte offset. It can throw the same exceptions as
 </div>
 <div class="defns">
 <ul>
-<li><code>std::tuple&lt;std::string_view, std::string_view, std::string_view&gt; Regex::</code><strong><code>partition</code></strong><code>(std::string_view str, size_t pos = 0, flag_type flags = 0) const</code></li>
+<li><code>Regex::partition_type Regex::</code><strong><code>partition</code></strong><code>(std::string_view str, size_t pos = 0, flag_type flags = 0) const</code></li>
 </ul>
 <p>Finds the first match in the string, and returns three string views covering
 the part of the subject string before the match (including anything before the

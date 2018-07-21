@@ -172,6 +172,13 @@ a given regex, returned by `Regex::grep()`.
 An iterator over the substrings between matches for a given regex, returned by
 `Regex::split()`.
 
+* `struct Regex::`**`partition_type`**
+    * `std::string_view partition_type::`**`left`**
+    * `std::string_view partition_type::`**`mid`**
+    * `std::string_view partition_type::`**`right`**
+
+The result type returned from `Regex::partition()`.
+
 ### Member functions ###
 
 * `Regex::`**`Regex`**`()`
@@ -243,7 +250,7 @@ Returns a pair of iterators over all matches in the subject string, optionally
 starting at a given byte offset. It can throw the same exceptions as
 `search()`.
 
-* `std::tuple<std::string_view, std::string_view, std::string_view> Regex::`**`partition`**`(std::string_view str, size_t pos = 0, flag_type flags = 0) const`
+* `Regex::partition_type Regex::`**`partition`**`(std::string_view str, size_t pos = 0, flag_type flags = 0) const`
 
 Finds the first match in the string, and returns three string views covering
 the part of the subject string before the match (including anything before the

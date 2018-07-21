@@ -439,8 +439,8 @@ void test_unicorn_regex_grep() {
     Regex::split_iterator si;
     Regex::match_range mr;
     Regex::split_range sr;
+    Regex::partition_type p;
     std::string s = "Hello world. Goodbye.";
-    std::string_view a, b, c;
     size_t n = 0;
 
     TRY(r = Regex("\\d+"));
@@ -488,16 +488,16 @@ void test_unicorn_regex_grep() {
     TEST(si == sr.end());
 
     TRY(r = Regex("@+"));
-    TRY(std::tie(a, b, c) = r.partition(s));
-    TEST_EQUAL(a, s);
-    TEST_EQUAL(b, "");
-    TEST_EQUAL(c, "");
+    TRY(p = r.partition(s));
+    TEST_EQUAL(p.left, s);
+    TEST_EQUAL(p.mid, "");
+    TEST_EQUAL(p.right, "");
 
     TRY(r = Regex("[[:punct:]]+\\s*"));
-    TRY(std::tie(a, b, c) = r.partition(s));
-    TEST_EQUAL(a, "Hello world");
-    TEST_EQUAL(b, ". ");
-    TEST_EQUAL(c, "Goodbye.");
+    TRY(p = r.partition(s));
+    TEST_EQUAL(p.left, "Hello world");
+    TEST_EQUAL(p.mid, ". ");
+    TEST_EQUAL(p.right, "Goodbye.");
 
 }
 

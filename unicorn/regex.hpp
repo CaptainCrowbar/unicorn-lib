@@ -27,6 +27,12 @@ namespace RS::Unicorn {
         using match_range = Irange<match_iterator>;
         using split_range = Irange<split_iterator>;
 
+        struct partition_type {
+            std::string_view left;
+            std::string_view mid;
+            std::string_view right;
+        };
+
         static constexpr auto ascii              = flag_type(1) << 0;   // [C--] ASCII character properties           ~PCRE2_UCP
         static constexpr auto byte               = flag_type(1) << 1;   // [C--] Match byte strings instead of UTF-8  ~(PCRE2_UCP|PCRE2_UTF)
         static constexpr auto crlf               = flag_type(1) << 2;   // [C--] Lines end with CRLF                  PCRE2_NEWLINE_CRLF
@@ -68,7 +74,7 @@ namespace RS::Unicorn {
         size_t count(const Utf8Iterator& start, flag_type flags = 0) const;
         match_range grep(std::string_view str, size_t pos = 0, flag_type flags = 0) const;
         match_range grep(const Utf8Iterator& start, flag_type flags = 0) const;
-        std::tuple<std::string_view, std::string_view, std::string_view> partition(std::string_view str, size_t pos = 0, flag_type flags = 0) const;
+        partition_type partition(std::string_view str, size_t pos = 0, flag_type flags = 0) const;
         std::string replace(std::string_view str, std::string_view fmt, size_t pos = 0, flag_type flags = 0) const;
         split_range split(std::string_view str, size_t pos = 0, flag_type flags = 0) const;
         static Version compile_version() noexcept;
