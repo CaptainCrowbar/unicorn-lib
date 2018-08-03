@@ -1142,6 +1142,7 @@ namespace RS {
                 std::is_integral<T>::value ? 'I' :
                 std::is_floating_point<T>::value ? 'F' :
                 std::is_convertible<T, std::string>::value ? 'S' :
+                std::is_base_of<std::exception, T>::value ? 'E' :
                 Meta::is_range<T> ? 'R' : 'X';
         };
 
@@ -1165,7 +1166,8 @@ namespace RS {
         template <> struct ObjectToString<std::nullptr_t> { Ustring operator()(std::nullptr_t) const { return "null"; } };
         template <typename T> struct ObjectToString<T, 'I'> { Ustring operator()(T t) const { return dec(t); } };
         template <typename T> struct ObjectToString<T, 'F'> { Ustring operator()(T t) const { return fp_format(t); } };
-        template <typename T> struct ObjectToString<T, 'S'> { Ustring operator()(T t) const { return static_cast<std::string>(*&t); } };
+        template <typename T> struct ObjectToString<T, 'S'> { Ustring operator()(T t) const { return static_cast<Ustring>(*&t); } };
+        template <typename T> struct ObjectToString<T, 'E'> { Ustring operator()(T t) const { return t.what(); } };
         template <typename T> struct ObjectToString<T, 'R'>: RangeToString<T> {};
         template <typename T> struct ObjectToString<std::atomic<T>, 'X'> { Ustring operator()(const std::atomic<T>& t) const { return ObjectToString<T>()(t); } };
 

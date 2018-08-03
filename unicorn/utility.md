@@ -523,6 +523,7 @@ various types:
 * Integer types (other than `char`) - Formatted using `dec()`.
 * Floating point types - Formatted using `fp_format()`.
 * Strings and string-like types - The string content is simply copied verbatim; a null character pointer is treated as an empty string.
+* Exceptions derived from `std::exception` - Calls the exception's `what()` method.
 * Ranges (other than strings) - Serialized in the same format as `format_list()` above, or `format_map()` if the value type is a pair.
 * Pairs and tuples - Formatted as a comma delimited list, enclosed in parentheses.
 * Otherwise - Call the type's output operator, or fail to compile if it does not have one.

@@ -756,6 +756,7 @@ various types:</p>
 <li>Integer types (other than <code>char</code>) - Formatted using <code>dec()</code>.</li>
 <li>Floating point types - Formatted using <code>fp_format()</code>.</li>
 <li>Strings and string-like types - The string content is simply copied verbatim; a null character pointer is treated as an empty string.</li>
+<li>Exceptions derived from <code>std::exception</code> - Calls the exception's <code>what()</code> method.</li>
 <li>Ranges (other than strings) - Serialized in the same format as <code>format_list()</code> above, or <code>format_map()</code> if the value type is a pair.</li>
 <li>Pairs and tuples - Formatted as a comma delimited list, enclosed in parentheses.</li>
 <li>Otherwise - Call the type's output operator, or fail to compile if it does not have one.</li>

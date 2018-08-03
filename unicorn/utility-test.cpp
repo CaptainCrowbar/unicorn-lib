@@ -1312,6 +1312,8 @@ void test_unicorn_utility_string_functions() {
     std::tuple<int> t1 = {42};                                    TEST_EQUAL(to_str(t1), "(42)");
     std::tuple<int, std::string> t2 = {42, "Hello"};              TEST_EQUAL(to_str(t2), "(42,Hello)");
     std::tuple<int, std::string, bool> t3 = {42, "Hello", true};  TEST_EQUAL(to_str(t3), "(42,Hello,true)");
+    std::runtime_error ex1("Runtime error");                      TEST_EQUAL(to_str(ex1), "Runtime error");
+    std::invalid_argument ex2("Invalid argument");                TEST_EQUAL(to_str(ex2), "Invalid argument");
 
 }
 
