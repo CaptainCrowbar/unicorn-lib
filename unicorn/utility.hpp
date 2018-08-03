@@ -74,53 +74,69 @@
 
 // Preprocessor macros
 
-#ifdef __GNUC__
-    #define RS_ATTR_UNUSED __attribute__((__unused__))
-#else
-    #define RS_ATTR_UNUSED
+#ifndef RS_ATTR_UNUSED
+    #ifdef __GNUC__
+        #define RS_ATTR_UNUSED __attribute__((__unused__))
+    #else
+        #define RS_ATTR_UNUSED
+    #endif
 #endif
 
-#define RS_ENUM_IMPLEMENTATION(EnumType, IntType, class_tag, name_prefix, first_value, first_name, ...) \
-    enum class_tag EnumType: IntType { RS_enum_begin = first_value, first_name = first_value, __VA_ARGS__, RS_enum_end }; \
-    constexpr RS_ATTR_UNUSED bool enum_is_valid(EnumType t) noexcept { return t >= EnumType::RS_enum_begin && t < EnumType::RS_enum_end; } \
-    inline RS_ATTR_UNUSED bool str_to_enum(std::string_view s, EnumType& t) noexcept { return ::RS::RS_Detail::enum_from_str(s, t, #EnumType "::", #first_name "," #__VA_ARGS__); } \
-    inline RS_ATTR_UNUSED std::string to_str(EnumType t) { return ::RS::RS_Detail::enum_to_str(t, name_prefix, #first_name "," #__VA_ARGS__); } \
-    inline RS_ATTR_UNUSED std::ostream& operator<<(std::ostream& out, EnumType t) { return out << to_str(t); }
+#ifndef RS_ENUM
+    #define RS_ENUM_IMPLEMENTATION(EnumType, IntType, class_tag, name_prefix, first_value, first_name, ...) \
+        enum class_tag EnumType: IntType { RS_enum_begin = first_value, first_name = first_value, __VA_ARGS__, RS_enum_end }; \
+        constexpr RS_ATTR_UNUSED bool enum_is_valid(EnumType t) noexcept { return t >= EnumType::RS_enum_begin && t < EnumType::RS_enum_end; } \
+        inline RS_ATTR_UNUSED bool str_to_enum(std::string_view s, EnumType& t) noexcept \
+            { return ::RS::RS_Detail::enum_from_str(s, t, #EnumType "::", #first_name "," #__VA_ARGS__); } \
+        inline RS_ATTR_UNUSED std::string to_str(EnumType t) { return ::RS::RS_Detail::enum_to_str(t, name_prefix, #first_name "," #__VA_ARGS__); } \
+        inline RS_ATTR_UNUSED std::ostream& operator<<(std::ostream& out, EnumType t) { return out << to_str(t); }
+    #define RS_ENUM(EnumType, IntType, first_value, first_name, ...) \
+        RS_ENUM_IMPLEMENTATION(EnumType, IntType,, "", first_value, first_name, __VA_ARGS__)
+    #define RS_ENUM_CLASS(EnumType, IntType, first_value, first_name, ...) \
+        RS_ENUM_IMPLEMENTATION(EnumType, IntType, class, #EnumType "::", first_value, first_name, __VA_ARGS__)
+#endif
 
-#define RS_ENUM(EnumType, IntType, first_value, first_name, ...) \
-    RS_ENUM_IMPLEMENTATION(EnumType, IntType,, "", first_value, first_name, __VA_ARGS__)
-#define RS_ENUM_CLASS(EnumType, IntType, first_value, first_name, ...) \
-    RS_ENUM_IMPLEMENTATION(EnumType, IntType, class, #EnumType "::", first_value, first_name, __VA_ARGS__)
+#ifndef RS_LDLIB
+    #define RS_LDLIB(libs)
+#endif
 
-#define RS_LDLIB(libs)
+#ifndef RS_MOVE_ONLY
+    #define RS_MOVE_ONLY(T) \
+        T(const T&) = delete; \
+        T(T&&) = default; \
+        T& operator=(const T&) = delete; \
+        T& operator=(T&&) = default;
+#endif
 
-#define RS_MOVE_ONLY(T) \
-    T(const T&) = delete; \
-    T(T&&) = default; \
-    T& operator=(const T&) = delete; \
-    T& operator=(T&&) = default;
-#define RS_NO_COPY_MOVE(T) \
-    T(const T&) = delete; \
-    T(T&&) = delete; \
-    T& operator=(const T&) = delete; \
-    T& operator=(T&&) = delete;
-#define RS_NO_INSTANCE(T) \
-    T() = delete; \
-    T(const T&) = delete; \
-    T(T&&) = delete; \
-    ~T() = delete; \
-    T& operator=(const T&) = delete; \
-    T& operator=(T&&) = delete;
+#ifndef RS_NO_COPY_MOVE
+    #define RS_NO_COPY_MOVE(T) \
+        T(const T&) = delete; \
+        T(T&&) = delete; \
+        T& operator=(const T&) = delete; \
+        T& operator=(T&&) = delete;
+#endif
+
+#ifndef RS_NO_INSTANCE
+    #define RS_NO_INSTANCE(T) \
+        T() = delete; \
+        T(const T&) = delete; \
+        T(T&&) = delete; \
+        ~T() = delete; \
+        T& operator=(const T&) = delete; \
+        T& operator=(T&&) = delete;
+#endif
 
 // Must be used in the global namespace
-#define RS_DEFINE_STD_HASH(T) \
-    namespace std { \
-        template <> struct hash<T> { \
-            using argument_type = T; \
-            using result_type = size_t; \
-            size_t operator()(const T& t) const noexcept { return t.hash(); } \
-        }; \
-    }
+#ifndef RS_DEFINE_STD_HASH
+    #define RS_DEFINE_STD_HASH(T) \
+        namespace std { \
+            template <> struct hash<T> { \
+                using argument_type = T; \
+                using result_type = size_t; \
+                size_t operator()(const T& t) const noexcept { return t.hash(); } \
+            }; \
+        }
+#endif
 
 namespace RS {
 
