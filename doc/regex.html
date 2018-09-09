@@ -485,6 +485,15 @@ pointers, <code>offset()</code> and <code>endpos()</code> return <code>npos</cod
 </div>
 <div class="defns">
 <ul>
+<li><code>size_t match::</code><strong><code>first</code></strong><code>() const noexcept</code></li>
+<li><code>size_t match::</code><strong><code>last</code></strong><code>() const noexcept</code></li>
+</ul>
+<p>These return the indices of the first and last non-empty capture group (not
+counting the complete match), or <code>npos</code> if the match failed or there are no
+non-empty captures.</p>
+</div>
+<div class="defns">
+<ul>
 <li><code>std::string_view match::</code><strong><code>str</code></strong><code>(size_t i = 0) const noexcept</code></li>
 <li><code>std::string_view match::</code><strong><code>operator[]</code></strong><code>(size_t i) const noexcept</code></li>
 <li><code>match::</code><strong><code>operator std::string_view</code></strong><code>() const noexcept</code></li>

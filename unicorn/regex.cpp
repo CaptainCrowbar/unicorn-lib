@@ -330,6 +330,26 @@ namespace RS::Unicorn {
             return std::string_view(subject_view.data() + start, 0);
     }
 
+    size_t Regex::match::first() const noexcept {
+        for (size_t i = 1; i < offset_count; ++i) {
+            size_t start = offset_vector[2 * i], stop = offset_vector[2 * i + 1];
+            if (start != PCRE2_UNSET && start < stop)
+                return i;
+        }
+        return npos;
+    }
+
+    size_t Regex::match::last() const noexcept {
+        if (offset_count > 1) {
+            for (size_t i = offset_count - 1; i > 0; --i) {
+                size_t start = offset_vector[2 * i], stop = offset_vector[2 * i + 1];
+                if (start != PCRE2_UNSET && start < stop)
+                    return i;
+            }
+        }
+        return npos;
+    }
+
     Regex::match::match(const Regex& re, std::string_view str, flag_type flags) {
         if (flags & ~ runtime_mask)
             throw error(PCRE2_ERROR_BADOPTION);

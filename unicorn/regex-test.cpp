@@ -151,6 +151,42 @@ void test_unicorn_regex_basic_matching() {
     TEST(m);
     TEST_EQUAL(m.str(), "xyz");
 
+    TRY(r = Regex("([0-9]+)|([A-Z]+)|([a-z]+)"));
+    s = "...123...456...";
+    TRY(m = r(s));
+    TEST(m);
+    TEST_EQUAL(m.str(), "123");
+    TEST_EQUAL(m.str(1), "123");
+    TEST_EQUAL(m.str(2), "");
+    TEST_EQUAL(m.str(3), "");
+    TEST_EQUAL(m.first(), 1);
+    TEST_EQUAL(m.last(), 1);
+    s = "...abc...def...";
+    TRY(m = r(s));
+    TEST(m);
+    TEST_EQUAL(m.str(), "abc");
+    TEST_EQUAL(m.str(1), "");
+    TEST_EQUAL(m.str(2), "");
+    TEST_EQUAL(m.str(3), "abc");
+    TEST_EQUAL(m.first(), 3);
+    TEST_EQUAL(m.last(), 3);
+
+    TRY(r = Regex("([0-9]*)([A-Z]*)([a-z]*)", Regex::not_empty));
+    s = "...123ABC...";
+    TRY(m = r(s));
+    TEST(m);
+    TEST_EQUAL(m.str(), "123ABC");
+    TEST_EQUAL(m.str(1), "123");
+    TEST_EQUAL(m.str(2), "ABC");
+    TEST_EQUAL(m.str(3), "");
+    TEST_EQUAL(m.first(), 1);
+    TEST_EQUAL(m.last(), 2);
+    s = "!@#$%^&*()";
+    TRY(m = r(s));
+    TEST(! m);
+    TEST_EQUAL(m.first(), npos);
+    TEST_EQUAL(m.last(), npos);
+
     TEST_THROW(r = Regex("[z-a]"), Regex::error);
 
 }

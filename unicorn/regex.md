@@ -340,6 +340,13 @@ position from which matching was started). If the match failed, or if a
 specific capture group was not matched, `begin()` and `end()` return null
 pointers, `offset()` and `endpos()` return `npos`, and `count()` returns zero.
 
+* `size_t match::`**`first`**`() const noexcept`
+* `size_t match::`**`last`**`() const noexcept`
+
+These return the indices of the first and last non-empty capture group (not
+counting the complete match), or `npos` if the match failed or there are no
+non-empty captures.
+
 * `std::string_view match::`**`str`**`(size_t i = 0) const noexcept`
 * `std::string_view match::`**`operator[]`**`(size_t i) const noexcept`
 * `match::`**`operator std::string_view`**`() const noexcept`
