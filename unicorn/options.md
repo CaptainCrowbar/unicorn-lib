@@ -96,7 +96,7 @@ optional keyword arguments, as listed below.
 
 Keyword                    | Type       | Description
 -------                    | ----       | -----------
-`Options::`**`abbrev`**    | `Ustring`  | A single letter abbreviation for the option (e.g. `"-x"`; the hyphen is optional).
+`Options::`**`abbrev`**    | `Ustring`  | A single letter abbreviation for the option (e.g. `"-x"`; the hyphen is optional in `add()`).
 `Options::`**`anon`**      | `bool`     | Anonymous arguments (not claimed by any other option) will be assigned to this option.
 `Options::`**`boolean`**   | `bool`     | This option is a boolean switch and does not take arguments.
 `Options::`**`defvalue`**  | `Ustring`  | Use this default value if the option is not supplied by the user.
@@ -115,9 +115,10 @@ is `true`; the `"--no-whatever"` form can be used to switch it off.
 Adding an option will throw `spec_error` if any of the following is true:
 
 * The option name has less than two characters (not counting any leading hyphens).
+* The name or abbreviation contains any whitespace characters.
 * The name or abbreviation has already been used by an earlier entry.
 * The info string is empty (this also applies to the second version of `add()`).
-* An abbreviation is supplied that is longer than one character (not counting a leading hyphen), or is not alphanumeric.
+* The abbreviation is longer than one character (not counting a leading hyphen).
 * An option starting with `"--no-"` is not boolean or has an abbreviation.
 * The `boolean` tag is combined with `anon`, `defvalue`, `multi`, `pattern`, or `require`.
 * The `require` tag is combined with `boolean`, `defvalue`, or `group`.

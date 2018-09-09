@@ -180,7 +180,7 @@ namespace RS::Unicorn {
     void Options::add_option(option_type opt) {
         str_trim_in(opt.opt_name, "-"s + ascii_whitespace);
         Ustring tag = opt.opt_name;
-        if (str_length(opt.opt_name) < 2)
+        if (str_length(opt.opt_name) < 2 || std::any_of(utf_begin(opt.opt_name), utf_end(opt.opt_name), char_is_white_space))
             throw spec_error(tag);
         bool neg = opt.opt_name.substr(0, 3) == "no-";
         str_trim_in(opt.opt_info);
@@ -188,7 +188,7 @@ namespace RS::Unicorn {
             throw spec_error(tag);
         str_trim_in(opt.opt_abbrev, "-");
         if (str_length(opt.opt_abbrev) > 1
-                || (! opt.opt_abbrev.empty() && ! char_is_alphanumeric(*utf_begin(opt.opt_abbrev)))
+                || std::any_of(utf_begin(opt.opt_abbrev), utf_end(opt.opt_abbrev), char_is_white_space)
                 || (opt.is_boolean && (opt.is_anon || opt.is_multi || opt.is_required || ! opt.opt_pattern.empty()))
                 || ((opt.is_boolean || opt.is_required) && ! opt.opt_defvalue.empty())
                 || (neg && (! opt.is_boolean || ! opt.opt_abbrev.empty()))
