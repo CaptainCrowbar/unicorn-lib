@@ -25,6 +25,7 @@ These are in <code>namespace RS</code> (except for the metaprogramming facilitie
 <li><a href="#algorithms">Algorithms</a></li>
 <li><a href="#arithmetic-functions">Arithmetic functions</a></li>
 <li><a href="#date-and-time-functions">Date and time functions</a></li>
+<li><a href="#error-handling">Error handling</a></li>
 <li><a href="#keyword-arguments">Keyword arguments</a></li>
 <li><a href="#metaprogramming">Metaprogramming</a></li>
 <li><a href="#mixin-types">Mixin types</a></li>
@@ -329,6 +330,15 @@ number of seconds.</p>
 <p>Converts a broken down date into a time point. Behaviour if any of the date
 arguments are invalid follows the same rules as <code>mktime()</code>. This will throw
 <code>std::invalid_argument</code> if an invalid flag is passed.</p>
+</div>
+<h2 id="error-handling">Error handling</h2>
+<div class="defns">
+<ul>
+<li><code>void</code> <strong><code>runtime_assert</code></strong><code>(bool condition, std::string_view message) noexcept</code></li>
+</ul>
+<p>A portable, non-blockable version of <code>assert()</code>. If the condition is false,
+this will print the message to standard error (followed by a line break), and
+then call <code>abort()</code>.</p>
 </div>
 <h2 id="keyword-arguments">Keyword arguments</h2>
 <div class="defns">

@@ -196,6 +196,14 @@ Converts a broken down date into a time point. Behaviour if any of the date
 arguments are invalid follows the same rules as `mktime()`. This will throw
 `std::invalid_argument` if an invalid flag is passed.
 
+## Error handling ##
+
+* `void` **`runtime_assert`**`(bool condition, std::string_view message) noexcept`
+
+A portable, non-blockable version of `assert()`. If the condition is false,
+this will print the message to standard error (followed by a line break), and
+then call `abort()`.
+
 ## Keyword arguments ##
 
 * `template <typename T, int ID = 0> struct` **`Kwarg`**

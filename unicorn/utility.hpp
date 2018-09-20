@@ -42,6 +42,7 @@
 #include <chrono>
 #include <cmath>
 #include <cstddef>
+#include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
@@ -240,6 +241,16 @@ namespace RS {
         constexpr bool big_endian_target = true;
         constexpr bool little_endian_target = false;
     #endif
+
+    // Error handling
+
+    inline void runtime_assert(bool condition, std::string_view message) noexcept {
+        if (! condition) {
+            std::fwrite(message.data(), 1, message.size(), stderr);
+            std::fputc('\n', stderr);
+            std::abort();
+        }
+    }
 
     // Metaprogramming
 
