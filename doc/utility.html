@@ -767,13 +767,14 @@ various types:</p>
 <li>Floating point types - Formatted using <code>fp_format()</code>.</li>
 <li>Strings and string-like types - The string content is simply copied verbatim; a null character pointer is treated as an empty string.</li>
 <li>Exceptions derived from <code>std::exception</code> - Calls the exception's <code>what()</code> method.</li>
-<li>Ranges (other than strings) - Serialized in the same format as <code>format_list()</code> above, or <code>format_map()</code> if the value type is a pair.</li>
+<li>Arrays and vectors of bytes (<code>unsigned char</code>) - Formatted in hexadecimal.</li>
+<li>Ranges (other than strings and byte arrays) - Serialized in the same format as <code>format_list()</code> above, or <code>format_map()</code> if the value type is a pair.</li>
 <li>Pairs and tuples - Formatted as a comma delimited list, enclosed in parentheses.</li>
 <li>Otherwise - Call the type's output operator, or fail to compile if it does not have one.</li>
 </ul>
-<p>"String-like types" are defined as <code>std::string</code>, <code>std::string_view</code>, <code>char</code>,
-character pointers, and anything with an implicit conversion to <code>std::string</code>
-or <code>std::string_view</code>.</p>
+<p>"String-like types" are defined as <code>std::string</code>, <code>std::string_view</code>, plain
+<code>char</code>, character pointers, and anything with an implicit conversion to
+<code>std::string</code> or <code>std::string_view</code>.</p>
 </div>
 <h2 id="version-number">Version number</h2>
 <div class="defns">

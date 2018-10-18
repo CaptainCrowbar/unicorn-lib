@@ -1,6 +1,7 @@
 #include "unicorn/utility.hpp"
 #include "unicorn/unit-test.hpp"
 #include <algorithm>
+#include <array>
 #include <atomic>
 #include <chrono>
 #include <cstddef>
@@ -1314,6 +1315,8 @@ void test_unicorn_utility_string_functions() {
     std::tuple<int, std::string, bool> t3 = {42, "Hello", true};  TEST_EQUAL(to_str(t3), "(42,Hello,true)");
     std::runtime_error ex1("Runtime error");                      TEST_EQUAL(to_str(ex1), "Runtime error");
     std::invalid_argument ex2("Invalid argument");                TEST_EQUAL(to_str(ex2), "Invalid argument");
+    std::array<uint8_t, 5> ua = {{10,20,30,40,50}};               TEST_EQUAL(to_str(ua), "0a141e2832");
+    std::vector<uint8_t> uv = {{60,70,80,90,100}};                TEST_EQUAL(to_str(uv), "3c46505a64");
 
 }
 

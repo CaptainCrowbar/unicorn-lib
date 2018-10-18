@@ -38,6 +38,7 @@
 // Includes go here so anything that needs the macros above will see them
 
 #include <algorithm>
+#include <array>
 #include <atomic>
 #include <chrono>
 #include <cmath>
@@ -1218,6 +1219,31 @@ namespace RS {
         struct ObjectToString<std::pair<T1, T2>, 'X'> {
             Ustring operator()(const std::pair<T1, T2>& t) const {
                 return '(' + ObjectToString<T1>()(t.first) + ',' + ObjectToString<T2>()(t.second) + ')';
+            }
+        };
+
+        inline Ustring bytes_to_hex(const unsigned char* ptr, size_t len) {
+            static constexpr const char* digits = "0123456789abcdef";
+            Ustring s;
+            s.reserve(2 * len);
+            for (size_t i = 0; i < len; ++i) {
+                s += digits[ptr[i] >> 4];
+                s += digits[ptr[i] & 15];
+            }
+            return s;
+        }
+
+        template <size_t N>
+        struct ObjectToString<std::array<unsigned char, N>, 'R'> {
+            Ustring operator()(const std::array<unsigned char, N>& t) const {
+                return bytes_to_hex(t.data(), t.size());
+            }
+        };
+
+        template <>
+        struct ObjectToString<std::vector<unsigned char>, 'R'> {
+            Ustring operator()(const std::vector<unsigned char>& t) const {
+                return bytes_to_hex(t.data(), t.size());
             }
         };
 

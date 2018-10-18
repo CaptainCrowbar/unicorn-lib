@@ -532,13 +532,14 @@ various types:
 * Floating point types - Formatted using `fp_format()`.
 * Strings and string-like types - The string content is simply copied verbatim; a null character pointer is treated as an empty string.
 * Exceptions derived from `std::exception` - Calls the exception's `what()` method.
-* Ranges (other than strings) - Serialized in the same format as `format_list()` above, or `format_map()` if the value type is a pair.
+* Arrays and vectors of bytes (`unsigned char`) - Formatted in hexadecimal.
+* Ranges (other than strings and byte arrays) - Serialized in the same format as `format_list()` above, or `format_map()` if the value type is a pair.
 * Pairs and tuples - Formatted as a comma delimited list, enclosed in parentheses.
 * Otherwise - Call the type's output operator, or fail to compile if it does not have one.
 
-"String-like types" are defined as `std::string`, `std::string_view`, `char`,
-character pointers, and anything with an implicit conversion to `std::string`
-or `std::string_view`.
+"String-like types" are defined as `std::string`, `std::string_view`, plain
+`char`, character pointers, and anything with an implicit conversion to
+`std::string` or `std::string_view`.
 
 ## Version number ##
 
