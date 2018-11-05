@@ -144,8 +144,8 @@ endif
 all_headers := $(shell find $(project_name) -name *.hpp)
 library_headers := $(filter-out $(project_name)/library.hpp Makefile,$(shell grep -EL '// NOT INSTALLED' $(all_headers) Makefile)) # Dummy entry to avoid empty list
 all_sources := $(shell find $(project_name) -name *.c -or -name *.cpp -or -name *.m -or -name *.mm)
-app_sources := $(shell echo "$(all_sources)" | tr ' ' '\n' | grep app-)
-test_sources := $(shell echo "$(all_sources)" | tr ' ' '\n' | grep '[-]test')
+app_sources := $(shell echo "$(all_sources)" | tr ' ' '\n' | grep -E '(^|/)app-')
+test_sources := $(shell echo "$(all_sources)" | tr ' ' '\n' | grep -E '[-]test\.')
 library_sources := $(filter-out $(app_sources) $(test_sources),$(all_sources))
 
 ifneq ($(test_sources),)
