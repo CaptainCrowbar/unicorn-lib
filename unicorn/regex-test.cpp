@@ -535,7 +535,7 @@ void test_unicorn_regex_grep() {
 
 }
 
-void test_unicorn_regex_substitute() {
+void test_unicorn_regex_replace() {
 
     Regex r;
     std::string s1, s2;
@@ -543,23 +543,31 @@ void test_unicorn_regex_substitute() {
     TRY(r = Regex("[a-z]"));
     s1 = "";
 
-    TRY(s2 = r.replace(s1, ""));                    TEST_EQUAL(s2, "");
-    TRY(s2 = r.replace(s1, "", 0, Regex::global));  TEST_EQUAL(s2, "");
+    s2 = "";  TRY(s2 = r.replace(s1, ""));                    TEST_EQUAL(s2, "");
+    s2 = s1;  TRY(r.replace_in(s2, ""));                      TEST_EQUAL(s2, "");
+    s2 = "";  TRY(s2 = r.replace(s1, "", 0, Regex::global));  TEST_EQUAL(s2, "");
+    s2 = s1;  TRY(r.replace_in(s2, "", 0, Regex::global));    TEST_EQUAL(s2, "");
 
     s1 = "Hello world. Goodbye.";
 
-    TRY(s2 = r.replace(s1, "*"));                    TEST_EQUAL(s2, "H*llo world. Goodbye.");
-    TRY(s2 = r.replace(s1, "*", 0, Regex::global));  TEST_EQUAL(s2, "H**** *****. G******.");
+    s2 = "";  TRY(s2 = r.replace(s1, "*"));                    TEST_EQUAL(s2, "H*llo world. Goodbye.");
+    s2 = s1;  TRY(r.replace_in(s2, "*"));                      TEST_EQUAL(s2, "H*llo world. Goodbye.");
+    s2 = "";  TRY(s2 = r.replace(s1, "*", 0, Regex::global));  TEST_EQUAL(s2, "H**** *****. G******.");
+    s2 = s1;  TRY(r.replace_in(s2, "*", 0, Regex::global));    TEST_EQUAL(s2, "H**** *****. G******.");
 
     TRY(r = Regex("[a-z]+"));
 
-    TRY(s2 = r.replace(s1, "*"));                    TEST_EQUAL(s2, "H* world. Goodbye.");
-    TRY(s2 = r.replace(s1, "*", 0, Regex::global));  TEST_EQUAL(s2, "H* *. G*.");
+    s2 = "";  TRY(s2 = r.replace(s1, "*"));                    TEST_EQUAL(s2, "H* world. Goodbye.");
+    s2 = s1;  TRY(r.replace_in(s2, "*"));                      TEST_EQUAL(s2, "H* world. Goodbye.");
+    s2 = "";  TRY(s2 = r.replace(s1, "*", 0, Regex::global));  TEST_EQUAL(s2, "H* *. G*.");
+    s2 = s1;  TRY(r.replace_in(s2, "*", 0, Regex::global));    TEST_EQUAL(s2, "H* *. G*.");
 
     TRY(r = Regex("[a-z]+", Regex::icase));
 
-    TRY(s2 = r.replace(s1, "*"));                    TEST_EQUAL(s2, "* world. Goodbye.");
-    TRY(s2 = r.replace(s1, "*", 0, Regex::global));  TEST_EQUAL(s2, "* *. *.");
+    s2 = "";  TRY(s2 = r.replace(s1, "*"));                    TEST_EQUAL(s2, "* world. Goodbye.");
+    s2 = s1;  TRY(r.replace_in(s2, "*"));                      TEST_EQUAL(s2, "* world. Goodbye.");
+    s2 = "";  TRY(s2 = r.replace(s1, "*", 0, Regex::global));  TEST_EQUAL(s2, "* *. *.");
+    s2 = s1;  TRY(r.replace_in(s2, "*", 0, Regex::global));    TEST_EQUAL(s2, "* *. *.");
 
     TRY(r = Regex("([a-z]+)(\\d+)?", Regex::icase));
     s1 = "abc123 def456 ghi789 XYZ";
@@ -588,18 +596,24 @@ void test_unicorn_regex_transform() {
     Regex::transform rt;
     std::string s1, s2;
 
-    s1 = "";             TRY(s2 = rt(s1));  TEST_EQUAL(s2, s1);
-    s1 = "Hello world";  TRY(s2 = rt(s1));  TEST_EQUAL(s2, s1);
+    s1 = "";             s2 = "";  TRY(s2 = rt(s1));        TEST_EQUAL(s2, "");
+    s1 = "";             s2 = s1;  TRY(rt.replace_in(s2));  TEST_EQUAL(s2, "");
+    s1 = "Hello world";  s2 = "";  TRY(s2 = rt(s1));        TEST_EQUAL(s2, s1);
+    s1 = "Hello world";  s2 = s1;  TRY(rt.replace_in(s2));  TEST_EQUAL(s2, s1);
 
     TRY(rt = Regex::transform("[a-z]+", "(\\U$0)"));
 
-    s1 = "";             TRY(s2 = rt(s1));  TEST_EQUAL(s2, "");
-    s1 = "Hello world";  TRY(s2 = rt(s1));  TEST_EQUAL(s2, "H(ELLO) world");
+    s1 = "";             s2 = "";  TRY(s2 = rt(s1));        TEST_EQUAL(s2, "");
+    s1 = "";             s2 = s1;  TRY(rt.replace_in(s2));  TEST_EQUAL(s2, "");
+    s1 = "Hello world";  s2 = "";  TRY(s2 = rt(s1));        TEST_EQUAL(s2, "H(ELLO) world");
+    s1 = "Hello world";  s2 = s1;  TRY(rt.replace_in(s2));  TEST_EQUAL(s2, "H(ELLO) world");
 
     TRY(rt = Regex::transform("[a-z]+", "(\\U$0)", Regex::global | Regex::icase));
 
-    s1 = "";             TRY(s2 = rt(s1));  TEST_EQUAL(s2, "");
-    s1 = "Hello world";  TRY(s2 = rt(s1));  TEST_EQUAL(s2, "(HELLO) (WORLD)");
+    s1 = "";             s2 = "";  TRY(s2 = rt(s1));        TEST_EQUAL(s2, "");
+    s1 = "";             s2 = s1;  TRY(rt.replace_in(s2));  TEST_EQUAL(s2, "");
+    s1 = "Hello world";  s2 = "";  TRY(s2 = rt(s1));        TEST_EQUAL(s2, "(HELLO) (WORLD)");
+    s1 = "Hello world";  s2 = s1;  TRY(rt.replace_in(s2));  TEST_EQUAL(s2, "(HELLO) (WORLD)");
 
 }
 

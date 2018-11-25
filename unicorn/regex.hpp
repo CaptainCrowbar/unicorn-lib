@@ -75,6 +75,7 @@ namespace RS::Unicorn {
         match_range grep(const Utf8Iterator& start, flag_type flags = 0) const;
         partition_type partition(std::string_view str, size_t pos = 0, flag_type flags = 0) const;
         std::string replace(std::string_view str, std::string_view fmt, size_t pos = 0, flag_type flags = 0) const;
+        void replace_in(std::string& str, std::string_view fmt, size_t pos = 0, flag_type flags = 0) const;
         split_range split(std::string_view str, size_t pos = 0, flag_type flags = 0) const;
         static Version compile_version() noexcept;
         static Version runtime_version() noexcept;
@@ -89,6 +90,8 @@ namespace RS::Unicorn {
         std::shared_ptr<void> pc_code; // pcre2_code
         std::string re_pattern;
         flag_type re_flags = 0;
+
+        void do_replace(std::string_view src, std::string& dst, std::string_view fmt, size_t pos, flag_type flags) const;
 
     };
 
@@ -182,6 +185,7 @@ namespace RS::Unicorn {
         std::string format() const { return sub_format; }
         flag_type flags() const noexcept { return re.flags() | sub_flags; }
         std::string replace(std::string_view str, size_t pos = 0) const;
+        void replace_in(std::string& str, size_t pos = 0) const;
         std::string operator()(std::string_view str, size_t pos = 0) const { return replace(str, pos); }
     private:
         Regex re;

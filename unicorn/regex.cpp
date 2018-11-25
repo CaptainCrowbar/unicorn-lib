@@ -1,6 +1,7 @@
 #include "unicorn/regex.hpp"
 #include <algorithm>
 #include <new>
+#include <utility>
 
 #ifdef PCRE2_CODE_UNIT_WIDTH
     #undef PCRE2_CODE_UNIT_WIDTH
@@ -189,29 +190,42 @@ namespace RS::Unicorn {
             return {str, {str.data() + str.size(), 0}, {str.data() + str.size(), 0}};
     }
 
-    std::string Regex::replace(std::string_view str, std::string_view fmt, size_t pos, flag_type flags) const {
+    void Regex::do_replace(std::string_view src, std::string& dst, std::string_view fmt, size_t pos, flag_type flags) const {
         static constexpr uint32_t default_options =
             PCRE2_SUBSTITUTE_EXTENDED | PCRE2_SUBSTITUTE_OVERFLOW_LENGTH | PCRE2_SUBSTITUTE_UNKNOWN_UNSET | PCRE2_SUBSTITUTE_UNSET_EMPTY;
-        if (is_null())
-            return std::string(str);
+        if (is_null()) {
+            dst = src;
+            return;
+        }
         if (flags & ~ runtime_mask)
             throw error(PCRE2_ERROR_BADOPTION);
         flags |= re_flags;
-        uint32_t sub_options = default_options | translate_match_flags(flags);
+        uint32_t replace_options = default_options | translate_match_flags(flags);
         if (flags & global)
-            sub_options |= PCRE2_SUBSTITUTE_GLOBAL;
+            replace_options |= PCRE2_SUBSTITUTE_GLOBAL;
         auto code_ptr = static_cast<pcre2_code*>(pc_code.get());
-        std::string result(str.size() + fmt.size() + 100, '\0');
-        for (;;) {
-            size_t result_size = result.size();
-            int rc = pcre2_substitute(code_ptr, byte_ptr(str), str.size(), pos, sub_options, nullptr, nullptr,
-                byte_ptr(fmt), fmt.size(), byte_ptr(result), &result_size);
+        dst.assign(src.size() + fmt.size() + 100, '\0');
+        int rc = -1;
+        while (rc < 0) {
+            size_t dst_size = dst.size();
+            rc = pcre2_substitute(code_ptr, byte_ptr(src), src.size(), pos, replace_options, nullptr, nullptr,
+                byte_ptr(fmt), fmt.size(), byte_ptr(dst), &dst_size);
             if (rc < 0 && rc != PCRE2_ERROR_NOMATCH && rc != PCRE2_ERROR_NOMEMORY && rc != PCRE2_ERROR_PARTIAL)
                 handle_error(rc);
-            result.resize(result_size);
-            if (rc >= 0)
-                return result;
+            dst.resize(dst_size);
         }
+    }
+
+    std::string Regex::replace(std::string_view str, std::string_view fmt, size_t pos, flag_type flags) const {
+        std::string dst;
+        do_replace(str, dst, fmt, pos, flags);
+        return dst;
+    }
+
+    void Regex::replace_in(std::string& str, std::string_view fmt, size_t pos, flag_type flags) const {
+        std::string dst;
+        do_replace(str, dst, fmt, pos, flags);
+        str = std::move(dst);
     }
 
     Regex::split_range Regex::split(std::string_view str, size_t pos, flag_type flags) const {
@@ -427,6 +441,10 @@ namespace RS::Unicorn {
 
     std::string Regex::transform::replace(std::string_view str, size_t pos) const {
         return re.replace(str, sub_format, pos, sub_flags);
+    }
+
+    void Regex::transform::replace_in(std::string& str, size_t pos) const {
+        re.replace_in(str, sub_format, pos, sub_flags);
     }
 
 }

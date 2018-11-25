@@ -260,11 +260,13 @@ and the other two will be empty (but will point to the end of the string
 instead of being null). This can throw the same exceptions as `search()`.
 
 * `std::string Regex::`**`replace`**`(std::string_view str, std::string_view fmt, size_t pos = 0, flag_type flags = 0) const`
+* `void Regex::`**`replace_in`**`(std::string& str, std::string_view fmt, size_t pos = 0, flag_type flags = 0) const`
 
-Replaces the first match (if any) with the given format string, following
-PCRE2's full set of replacement rules. If the `global` flag is used, this will
-replace all matches instead of only the first. This can throw the same
-exceptions as `search()`.
+Replace the first match (if any) with the given format string, following
+PCRE2's full set of replacement rules. The `replace()` function returns the
+modified string, while `replace_in()` modifies the string in place. If the
+`global` flag is used, this will replace all matches instead of only the
+first. This can throw the same exceptions as `search()`.
 
 * `Regex::split_range Regex::`**`split`**`(std::string_view str, size_t pos = 0, flag_type flags = 0) const`
 
@@ -375,9 +377,9 @@ same as if the match failed.
 * `class Regex::`**`transform`**
 
 The `Regex::transform` class contains both a regex and a format string. It
-provides operations equivalent to the `Regex::replace()` function, but may be
-more efficient if the same formatting operation is going to be applied many
-times.
+provides operations equivalent to the `Regex::replace[_in]()` functions, but
+may be more efficient if the same formatting operation is going to be applied
+many times.
 
 * `transform::`**`transform`**`() noexcept`
 * `transform::`**`transform`**`(const Regex& pattern, std::string_view fmt, flag_type flags = 0)`
@@ -401,6 +403,9 @@ and can throw the same exceptions as the corresponding regex constructor.
 These return the construction parameters.
 
 * `std::string transform::`**`replace`**`(std::string_view str, size_t pos = 0) const`
+* `void transform::`**`replace_in`**`(std::string& str, size_t pos = 0) const`
 * `std::string transform::`**`operator()`**`(std::string_view str, size_t pos = 0) const`
 
-The replacement functions, which perform the equivalent of `Regex::replace()`.
+The replacement functions, which perform the equivalent of
+`Regex::replace[_in]()`. The function call operator is equivalent to
+`replace()`.

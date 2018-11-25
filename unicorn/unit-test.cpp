@@ -81,7 +81,7 @@ extern void test_unicorn_regex_basic_matching();
 extern void test_unicorn_regex_compile_flags();
 extern void test_unicorn_regex_runtime_flags();
 extern void test_unicorn_regex_grep();
-extern void test_unicorn_regex_substitute();
+extern void test_unicorn_regex_replace();
 extern void test_unicorn_regex_transform();
 extern void test_unicorn_regex_escape();
 extern void test_unicorn_segment_graphemes();
@@ -228,7 +228,7 @@ int main() {
         { "unicorn/regex/compile-flags", test_unicorn_regex_compile_flags },
         { "unicorn/regex/runtime-flags", test_unicorn_regex_runtime_flags },
         { "unicorn/regex/grep", test_unicorn_regex_grep },
-        { "unicorn/regex/substitute", test_unicorn_regex_substitute },
+        { "unicorn/regex/replace", test_unicorn_regex_replace },
         { "unicorn/regex/transform", test_unicorn_regex_transform },
         { "unicorn/regex/escape", test_unicorn_regex_escape },
         { "unicorn/segment/graphemes", test_unicorn_segment_graphemes },

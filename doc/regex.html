@@ -387,11 +387,13 @@ instead of being null). This can throw the same exceptions as <code>search()</co
 <div class="defns">
 <ul>
 <li><code>std::string Regex::</code><strong><code>replace</code></strong><code>(std::string_view str, std::string_view fmt, size_t pos = 0, flag_type flags = 0) const</code></li>
+<li><code>void Regex::</code><strong><code>replace_in</code></strong><code>(std::string&amp; str, std::string_view fmt, size_t pos = 0, flag_type flags = 0) const</code></li>
 </ul>
-<p>Replaces the first match (if any) with the given format string, following
-PCRE2's full set of replacement rules. If the <code>global</code> flag is used, this will
-replace all matches instead of only the first. This can throw the same
-exceptions as <code>search()</code>.</p>
+<p>Replace the first match (if any) with the given format string, following
+PCRE2's full set of replacement rules. The <code>replace()</code> function returns the
+modified string, while <code>replace_in()</code> modifies the string in place. If the
+<code>global</code> flag is used, this will replace all matches instead of only the
+first. This can throw the same exceptions as <code>search()</code>.</p>
 </div>
 <div class="defns">
 <ul>
@@ -525,9 +527,9 @@ same as if the match failed.</p>
 <li><code>class Regex::</code><strong><code>transform</code></strong></li>
 </ul>
 <p>The <code>Regex::transform</code> class contains both a regex and a format string. It
-provides operations equivalent to the <code>Regex::replace()</code> function, but may be
-more efficient if the same formatting operation is going to be applied many
-times.</p>
+provides operations equivalent to the <code>Regex::replace[_in]()</code> functions, but
+may be more efficient if the same formatting operation is going to be applied
+many times.</p>
 </div>
 <div class="defns">
 <ul>
@@ -557,7 +559,10 @@ and can throw the same exceptions as the corresponding regex constructor.</p>
 <div class="defns">
 <ul>
 <li><code>std::string transform::</code><strong><code>replace</code></strong><code>(std::string_view str, size_t pos = 0) const</code></li>
+<li><code>void transform::</code><strong><code>replace_in</code></strong><code>(std::string&amp; str, size_t pos = 0) const</code></li>
 <li><code>std::string transform::</code><strong><code>operator()</code></strong><code>(std::string_view str, size_t pos = 0) const</code></li>
 </ul>
-<p>The replacement functions, which perform the equivalent of <code>Regex::replace()</code>.</p></body>
+<p>The replacement functions, which perform the equivalent of
+<code>Regex::replace[_in]()</code>. The function call operator is equivalent to
+<code>replace()</code>.</p></body>
 </html>
