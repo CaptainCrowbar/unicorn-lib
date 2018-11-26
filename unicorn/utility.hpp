@@ -66,14 +66,6 @@
 #include <utility>
 #include <vector>
 
-// Microsoft brain damage
-
-#ifdef _MSC_VER
-    #pragma warning(disable: 4250) // class inherits member by dominance
-    #pragma warning(disable: 4310) // cast truncates constant value
-    #pragma warning(disable: 4459) // declaration of identifier hides global declaration
-#endif
-
 // Preprocessor macros
 
 #ifndef RS_ATTR_UNUSED
