@@ -909,14 +909,16 @@ namespace RS {
     size_t cstr_size(const C* ptr) {
         if (! ptr)
             return 0;
-        if constexpr (sizeof(C) == 1)
+        if constexpr (sizeof(C) == 1) {
             return std::strlen(reinterpret_cast<const char*>(ptr));
-        if constexpr (sizeof(C) == sizeof(wchar_t))
+        } else if constexpr (sizeof(C) == sizeof(wchar_t)) {
             return std::wcslen(reinterpret_cast<const wchar_t*>(ptr));
-        size_t n = 0;
-        while (ptr[n] != C(0))
-            ++n;
-        return n;
+        } else {
+            size_t n = 0;
+            while (ptr[n] != C(0))
+                ++n;
+            return n;
+        }
     }
 
     namespace {
