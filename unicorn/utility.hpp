@@ -69,7 +69,6 @@
 // Microsoft brain damage
 
 #ifdef _MSC_VER
-    #pragma warning(disable: 4127) // conditional expression is constant
     #pragma warning(disable: 4250) // class inherits member by dominance
     #pragma warning(disable: 4310) // cast truncates constant value
     #pragma warning(disable: 4459) // declaration of identifier hides global declaration
@@ -790,7 +789,7 @@ namespace RS {
         BasicScopeGuard(F&& f) try:
             func(std::forward<F>(f)), inflight(std::uncaught_exceptions()) {}
             catch (...) {
-                if (Mode != 's')
+                if constexpr (Mode != 's')
                     try { f(); } catch (...) {}
                 throw;
             }
@@ -918,9 +917,9 @@ namespace RS {
     size_t cstr_size(const C* ptr) {
         if (! ptr)
             return 0;
-        if (sizeof(C) == 1)
+        if constexpr (sizeof(C) == 1)
             return std::strlen(reinterpret_cast<const char*>(ptr));
-        if (sizeof(C) == sizeof(wchar_t))
+        if constexpr (sizeof(C) == sizeof(wchar_t))
             return std::wcslen(reinterpret_cast<const wchar_t*>(ptr));
         size_t n = 0;
         while (ptr[n] != C(0))

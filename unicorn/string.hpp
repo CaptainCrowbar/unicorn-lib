@@ -312,15 +312,17 @@ namespace RS::Unicorn {
         result_type operator()(const Ustring& lhs, const Ustring& rhs) const {
             using namespace UnicornDetail;
             int c = 0;
-            if (method_flags & Strcmp::natural)
+            if constexpr ((method_flags & Strcmp::natural) != 0)
                 c = do_compare_natural(lhs, rhs);
-            if (c == 0 && (method_flags & Strcmp::icase))
-                c = do_compare_icase(lhs, rhs);
-            if (c == 0 && (method_flags == 0 || method_flags & Strcmp::fallback))
-                c = do_compare_basic(lhs, rhs);
-            if (result_flags & Strcmp::equal)
+            if constexpr ((method_flags & Strcmp::icase) != 0)
+                if (c == 0)
+                    c = do_compare_icase(lhs, rhs);
+            if constexpr (method_flags == 0 || (method_flags & Strcmp::fallback) != 0)
+                if (c == 0)
+                    c = do_compare_basic(lhs, rhs);
+            if constexpr ((result_flags & Strcmp::equal) != 0)
                 return result_type(c == 0);
-            else if (result_flags & Strcmp::less)
+            else if constexpr ((result_flags & Strcmp::less) != 0)
                 return result_type(c == -1);
             else
                 return result_type(c);

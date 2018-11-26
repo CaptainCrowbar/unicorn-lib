@@ -217,7 +217,7 @@ void test_unicorn_utf_basic_utilities() {
     w = 0;       TEST(is_single_unit(w));    TEST(! is_start_unit(w));  TEST(! is_nonstart_unit(w));  TEST(! is_invalid_unit(w));
     w = 0xd7ff;  TEST(is_single_unit(w));    TEST(! is_start_unit(w));  TEST(! is_nonstart_unit(w));  TEST(! is_invalid_unit(w));
 
-    if (sizeof(wchar_t) == 2) {
+    if constexpr (sizeof(wchar_t) == 2) {
 
         w = 0xd800;  TEST(! is_single_unit(w));  TEST(is_start_unit(w));    TEST(! is_nonstart_unit(w));  TEST(! is_invalid_unit(w));
         w = 0xdbff;  TEST(! is_single_unit(w));  TEST(is_start_unit(w));    TEST(! is_nonstart_unit(w));  TEST(! is_invalid_unit(w));

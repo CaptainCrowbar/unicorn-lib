@@ -170,9 +170,9 @@ namespace RS::Unicorn {
     size_t code_units(char32_t c) {
         if (! char_is_unicode(c))
             return 0;
-        else if (sizeof(C) == 1)
+        else if constexpr (sizeof(C) == 1)
             return c <= 0x7f ? 1 : c <= 0x7ff ? 2 : c <= 0xffff ? 3 : 4;
-        else if (sizeof(C) == 2)
+        else if constexpr (sizeof(C) == 2)
             return c <= 0xffff ? 1 : 2;
         else
             return 1;
@@ -180,7 +180,7 @@ namespace RS::Unicorn {
 
     template <typename C>
     bool is_single_unit(C c) {
-        if (sizeof(C) == 1)
+        if constexpr (sizeof(C) == 1)
             return uint8_t(c) <= 0x7f;
         else
             return char_is_unicode(c);
@@ -409,10 +409,12 @@ namespace RS::Unicorn {
                     return;
                 if (ibits(flags & Utf::mask) == 0)
                     flags |= Utf::ignore;
-                if (sizeof(C1) == sizeof(C2) && (flags & Utf::ignore)) {
-                    dst.resize(dst.size() + n);
-                    memcpy(&dst[0] + dst.size() - n, src, n * sizeof(C1));
-                    return;
+                if constexpr (sizeof(C1) == sizeof(C2)) {
+                    if (flags & Utf::ignore) {
+                        dst.resize(dst.size() + n);
+                        memcpy(&dst[0] + dst.size() - n, src, n * sizeof(C1));
+                        return;
+                    }
                 }
                 size_t pos = 0;
                 char32_t u = 0;
@@ -438,10 +440,12 @@ namespace RS::Unicorn {
                     return;
                 if (ibits(flags & Utf::mask) == 0)
                     flags |= Utf::ignore;
-                if (sizeof(C1) == 4 && (flags & Utf::ignore)) {
-                    dst.resize(dst.size() + n);
-                    memcpy(&dst[0] + dst.size() - n, src, 4 * n);
-                    return;
+                if constexpr (sizeof(C1) == 4) {
+                    if (flags & Utf::ignore) {
+                        dst.resize(dst.size() + n);
+                        memcpy(&dst[0] + dst.size() - n, src, 4 * n);
+                        return;
+                    }
                 }
                 size_t pos = 0;
                 char32_t u = 0;
@@ -472,10 +476,12 @@ namespace RS::Unicorn {
                     return;
                 if (ibits(flags & Utf::mask) == 0)
                     flags |= Utf::ignore;
-                if (sizeof(C2) == 4 && (flags & Utf::ignore)) {
-                    dst.resize(dst.size() + n);
-                    memcpy(&dst[0] + dst.size() - n, src, 4 * n);
-                    return;
+                if constexpr (sizeof(C2) == 4) {
+                    if (flags & Utf::ignore) {
+                        dst.resize(dst.size() + n);
+                        memcpy(&dst[0] + dst.size() - n, src, 4 * n);
+                        return;
+                    }
                 }
                 char32_t u = 0;
                 C2 buf[UtfEncoding<C2>::max_units];
