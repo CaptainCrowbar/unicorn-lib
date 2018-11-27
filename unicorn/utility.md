@@ -480,13 +480,16 @@ default formats are based on JSON syntax:
 * `format_map(r) = format_map(r, "{", ":", ",", "}")`
 
 * `template <typename T> Ustring` **`fp_format`**`(T t, char mode = 'g', int prec = 6)`
+* `template <typename T> Ustring` **`opt_fp_format`**`(T t, char mode = 'g', int prec = 6)`
 
-Simple floating point formatting, by calling `snprintf()`. `T` must be an
-arithmetic type; it will be converted to `double` internally. The additional
-format `'Z/z'` is the same as `'G/g'` except that trailing zeros are not
-stripped. This will throw `std::invalid_argument` if the mode is not one of
-`[EFGZefgz]`; it may throw `std::system_error` under implementation defined
-circumstances.
+The `fp_format()` function performs simple floating point formatting, by
+calling `snprintf()`. `T` must be an arithmetic type; it will be converted to
+`long double` internally. The additional format `'Z/z'` is the same as `'G/g'`
+except that trailing zeros are not stripped. The `opt_fp_format()` function
+calls `fp_format()` for floating point types; otherwise it calls `to_str(t)`
+and ignores the other two arguments. These will throw `std::invalid_argument`
+if the mode is not one of `[EFGZefgz]` (and is not ignored); they may throw
+`std::system_error` under implementation defined circumstances.
 
 * `template <typename S> [string view]` **`make_view`**`(const S& s, size_t pos = 0, size_t len = npos) noexcept`
 

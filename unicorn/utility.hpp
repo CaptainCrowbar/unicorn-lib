@@ -809,6 +809,8 @@ namespace RS {
 
     // String functions
 
+    template <typename T> Ustring to_str(const T& t);
+
     constexpr bool ascii_iscntrl(char c) noexcept { return uint8_t(c) <= 31 || c == 127; }
     constexpr bool ascii_isdigit(char c) noexcept { return c >= '0' && c <= '9'; }
     constexpr bool ascii_isgraph(char c) noexcept { return c >= '!' && c <= '~'; }
@@ -960,25 +962,25 @@ namespace RS {
     template <typename T>
     Ustring fp_format(T t, char mode = 'g', int prec = 6) {
         using namespace std::literals;
-        static const Ustring modes = "EFGZefgz";
+        static const Ustring modes = "EeFfGgZz";
         if (modes.find(mode) == npos)
             throw std::invalid_argument("Invalid floating point mode: " + quote(Ustring(1, mode)));
         if (t == 0) {
             switch (mode) {
-                case 'E': case 'e':  return prec < 1 ? "0"s + mode + '0' : "0."s + Ustring(prec, '0') + mode + "0";
-                case 'F': case 'f':  return prec < 1 ? "0"s : "0."s + Ustring(prec, '0');
+                case 'E': case 'e':  return prec < 1 ? "0"s + mode + '0' : "0." + Ustring(prec, '0') + mode + "0";
+                case 'F': case 'f':  return prec < 1 ? "0"s : "0." + Ustring(prec, '0');
                 case 'G': case 'g':  return "0";
-                case 'Z': case 'z':  return prec < 2 ? "0"s : "0."s + Ustring(prec - 1, '0');
+                case 'Z': case 'z':  return prec < 2 ? "0"s : "0." + Ustring(prec - 1, '0');
                 default:             break;
             }
         }
         Ustring buf(20, '\0'), fmt;
         switch (mode) {
-            case 'Z':  fmt = "%#.*G"; break;
-            case 'z':  fmt = "%#.*g"; break;
-            default:   fmt = "%.*_"; fmt[3] = mode; break;
+            case 'Z':  fmt = "%#.*LG"; break;
+            case 'z':  fmt = "%#.*Lg"; break;
+            default:   fmt = "%.*L"s + mode; break;
         }
-        auto x = double(t);
+        auto x = static_cast<long double>(t);
         int rc = 0;
         for (;;) {
             rc = snprintf(&buf[0], buf.size(), fmt.data(), prec, x);
@@ -1009,6 +1011,18 @@ namespace RS {
             }
         }
         return buf;
+    }
+
+    template <typename T>
+    Ustring opt_fp_format(T t, char mode = 'g', int prec = 6) {
+        if constexpr (std::is_floating_point_v<T>) {
+            return fp_format(t, mode, prec);
+        } else {
+            (void)mode;
+            (void)prec;
+            using RS::to_str;
+            return to_str(t);
+        }
     }
 
     template <typename S>
@@ -1096,8 +1110,6 @@ namespace RS {
         }
         return x;
     }
-
-    template <typename T> Ustring to_str(const T& t);
 
     namespace RS_Detail {
 

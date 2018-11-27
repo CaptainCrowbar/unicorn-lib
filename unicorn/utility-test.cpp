@@ -1164,6 +1164,13 @@ void test_unicorn_utility_string_functions() {
     TEST_EQUAL(fp_format(12.3, 'z', 3), "12.3");
     TEST_EQUAL(fp_format(123, 'z', 3), "123");
 
+    TEST_EQUAL(opt_fp_format(0), "0");
+    TEST_EQUAL(opt_fp_format(42), "42");
+    TEST_EQUAL(opt_fp_format(42, 'f', 4), "42");
+    TEST_EQUAL(opt_fp_format(42.0), "42");
+    TEST_EQUAL(opt_fp_format(42.0, 'f', 4), "42.0000");
+    TEST_EQUAL(opt_fp_format("Hello"), "Hello");
+
     std::vector<int> iv;
     Strings sv;
     std::map<int, std::string> ism;

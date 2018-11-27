@@ -705,13 +705,16 @@ default formats are based on JSON syntax:</p>
 <div class="defns">
 <ul>
 <li><code>template &lt;typename T&gt; Ustring</code> <strong><code>fp_format</code></strong><code>(T t, char mode = 'g', int prec = 6)</code></li>
+<li><code>template &lt;typename T&gt; Ustring</code> <strong><code>opt_fp_format</code></strong><code>(T t, char mode = 'g', int prec = 6)</code></li>
 </ul>
-<p>Simple floating point formatting, by calling <code>snprintf()</code>. <code>T</code> must be an
-arithmetic type; it will be converted to <code>double</code> internally. The additional
-format <code>'Z/z'</code> is the same as <code>'G/g'</code> except that trailing zeros are not
-stripped. This will throw <code>std::invalid_argument</code> if the mode is not one of
-<code>[EFGZefgz]</code>; it may throw <code>std::system_error</code> under implementation defined
-circumstances.</p>
+<p>The <code>fp_format()</code> function performs simple floating point formatting, by
+calling <code>snprintf()</code>. <code>T</code> must be an arithmetic type; it will be converted to
+<code>long double</code> internally. The additional format <code>'Z/z'</code> is the same as <code>'G/g'</code>
+except that trailing zeros are not stripped. The <code>opt_fp_format()</code> function
+calls <code>fp_format()</code> for floating point types; otherwise it calls <code>to_str(t)</code>
+and ignores the other two arguments. These will throw <code>std::invalid_argument</code>
+if the mode is not one of <code>[EFGZefgz]</code> (and is not ignored); they may throw
+<code>std::system_error</code> under implementation defined circumstances.</p>
 </div>
 <div class="defns">
 <ul>
