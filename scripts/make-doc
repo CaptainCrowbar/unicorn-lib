@@ -70,6 +70,7 @@ html = (
     ])
     .replace('<p>[[+DIV]]</p>', '<div class="defns">')
     .replace('<p>[[-DIV]]</p>', '</div>')
+    .replace('[unicorn]', '<span class="unicorn">[unicorn]</span>')
 )
 
 # Add a document header and trailer

@@ -156,3 +156,8 @@ div.defns {
     padding-left:   1em;
     padding-right:  1em;
 }
+
+span.unicorn {
+    color:        #408;
+    font-weight:  bold;
+}
