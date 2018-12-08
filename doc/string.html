@@ -800,9 +800,9 @@ rest of the string unchanged.</p>
 <p>These replace some characters in the string with percent encoding. These are
 similar to the correspondingly named JavaScript functions, except that they
 follow the slightly more stringent rules from <a href="https://www.ietf.org/rfc/rfc3986.txt">RFC
-3986</a>. Characters outside the printable
-ASCII range will always be encoded; ASCII alphanumeric characters will never
-be encoded. ASCII punctuation is selectively encoded:</p>
+3986</a>. Characters outside the graphic
+ASCII range (<code>0x21-0x7e</code>) will always be encoded; ASCII alphanumeric
+characters will never be encoded. ASCII punctuation is selectively encoded:</p>
 <table>
 <thead>
 <tr>

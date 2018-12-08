@@ -643,9 +643,9 @@ Flags recognised by `str_escape()` and related functions.
 These replace some characters in the string with percent encoding. These are
 similar to the correspondingly named JavaScript functions, except that they
 follow the slightly more stringent rules from [RFC
-3986](https://www.ietf.org/rfc/rfc3986.txt). Characters outside the printable
-ASCII range will always be encoded; ASCII alphanumeric characters will never
-be encoded. ASCII punctuation is selectively encoded:
+3986](https://www.ietf.org/rfc/rfc3986.txt). Characters outside the graphic
+ASCII range (`0x21-0x7e`) will always be encoded; ASCII alphanumeric
+characters will never be encoded. ASCII punctuation is selectively encoded:
 
 | Characters            | Behaviour
 | ----------            | ---------
