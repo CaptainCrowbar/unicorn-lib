@@ -155,7 +155,7 @@ These return true if the string starts or ends with the specified substring.
 
 ## String comparison ##
 
-* `struct` **`Strcmp`
+* `struct` **`Strcmp`**
     * `static constexpr uint32_t Strcmp::`**`equal`**
     * `static constexpr uint32_t Strcmp::`**`less`**
     * `static constexpr uint32_t Strcmp::`**`triple`**
