@@ -458,7 +458,9 @@ exist, or if the destination already exists and `overwrite` was not set.
 
 Delete a file. This will do nothing if the file already does not exist. If the
 `recurse` flag is set, this will delete directories recursively (like `rm
--rf`).
+-rf`). This will fail if the path refers to a non-empty directory and the
+`recurse` flag is not used, if the caller does not have permission to remove
+the file, or in some circumstances, if the file is in use by another process.
 
 * `void Path::`**`set_access_time`**`(flag_type flags = 0) const`
 * `void Path::`**`set_access_time`**`(system_clock::time_point t, flag_type flags = 0) const`
