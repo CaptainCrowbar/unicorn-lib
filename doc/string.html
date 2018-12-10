@@ -221,20 +221,18 @@ using <code>StringCompare&lt;icase&gt;</code> is usually more efficient for a sm
 comparisons, while calling <code>str_casefold()</code> and saving the case folded form of
 the string will be more efficient if the same strings are going to be compared
 frequently.</p>
-<p>If the <code>fallback</code> flag is combined with <code>icase</code>, a case sensitive comparison
-will be done if no differences are found in the case insensitive comparison;
-by default, in the absence of <code>fallback</code>, strings that differ only in case
-will be treated as equal. The <code>fallback</code> flag may not be used without <code>icase</code>.</p>
 <p>If the <code>natural</code> flag is used, this attempts to perform a "natural" (human
 friendly) comparison between two strings. It treats numbers (currently only
 ASCII digits are recognised) as discrete string elements to be sorted
 numerically (e.g. <code>"abc99"</code> will sort before <code>"abc100"</code>; leading zeros are not
-significant), and ignores case and punctuation (significant characters are
-defined as general categories <code>L</code> [letters], <code>M</code> [marks], <code>N</code> [numbers], and
-<code>S</code> [symbols]). If two strings are equal according to these criteria, but are
-not exactly byte for byte identical, a fallback to a simple case sensitive
-lexicographical comparison is used. The <code>natural</code> and <code>icase</code> flags may not be
-combined.</p>
+significant), and ignores punctuation (significant characters are defined as
+general categories <code>L</code> [letters], <code>M</code> [marks], <code>N</code> [numbers], and <code>S</code>
+[symbols]). Natural comparison is always case insensitive; the presence or
+absence of the <code>icase</code> flag has no effect.</p>
+<p>If the <code>fallback</code> flag is combined with <code>icase</code> or <code>natural</code>, a full case and
+punctuation sensitive comparison will be done if no differences are found in
+the case insensitive comparison. The <code>fallback</code> flag has no effect if used
+without <code>icase</code> or <code>natural</code>.</p>
 </div>
 <h2 id="other-string-algorithms">Other string algorithms</h2>
 <div class="defns">

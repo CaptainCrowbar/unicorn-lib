@@ -303,26 +303,28 @@ namespace RS::Unicorn {
 
     template <uint32_t Flags>
     struct StringCompare {
-        static constexpr auto result_flags = Flags & (Strcmp::equal | Strcmp::less | Strcmp::triple);
-        static constexpr auto method_flags = Flags & (Strcmp::fallback | Strcmp::icase | Strcmp::natural);
-        static_assert(ibits(result_flags) == 1, "Invalid string comparison flags");
-        static_assert(method_flags == 0 || method_flags == Strcmp::icase || method_flags == (Strcmp::icase | Strcmp::fallback) || method_flags == Strcmp::natural,
-            "Invalid string comparison flags");
-        using result_type = std::conditional_t<(Flags & Strcmp::triple) != 0, int, bool>;
+        static constexpr bool equal = (Flags & Strcmp::equal) != 0;
+        static constexpr bool less = (Flags & Strcmp::less) != 0;
+        static constexpr bool triple = (Flags & Strcmp::triple) != 0;
+        static constexpr bool fallback = (Flags & Strcmp::fallback) != 0;
+        static constexpr bool icase = (Flags & Strcmp::icase) != 0;
+        static constexpr bool natural = (Flags & Strcmp::natural) != 0;
+        static_assert(int(equal) + int(less) + int(triple) == 1, "Invalid string comparison flags");
+        using result_type = std::conditional_t<triple, int, bool>;
         result_type operator()(const Ustring& lhs, const Ustring& rhs) const {
             using namespace UnicornDetail;
             int c = 0;
-            if constexpr ((method_flags & Strcmp::natural) != 0)
+            if constexpr (natural)
                 c = do_compare_natural(lhs, rhs);
-            if constexpr ((method_flags & Strcmp::icase) != 0)
+            if constexpr (icase)
                 if (c == 0)
                     c = do_compare_icase(lhs, rhs);
-            if constexpr (method_flags == 0 || (method_flags & Strcmp::fallback) != 0)
+            if constexpr (fallback || (! icase && ! natural))
                 if (c == 0)
                     c = do_compare_basic(lhs, rhs);
-            if constexpr ((result_flags & Strcmp::equal) != 0)
+            if constexpr (equal)
                 return result_type(c == 0);
-            else if constexpr ((result_flags & Strcmp::less) != 0)
+            else if constexpr (less)
                 return result_type(c == -1);
             else
                 return result_type(c);
