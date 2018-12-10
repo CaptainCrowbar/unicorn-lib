@@ -67,6 +67,7 @@ extern void test_unicorn_path_name_properties();
 extern void test_unicorn_path_name_breakdown();
 extern void test_unicorn_path_name_combination();
 extern void test_unicorn_path_name_manipulation();
+extern void test_unicorn_path_name_comparison();
 extern void test_unicorn_path_resolution();
 extern void test_unicorn_path_directory_iterators();
 extern void test_unicorn_path_file_system_queries();
@@ -214,6 +215,7 @@ int main() {
         { "unicorn/path/name-breakdown", test_unicorn_path_name_breakdown },
         { "unicorn/path/name-combination", test_unicorn_path_name_combination },
         { "unicorn/path/name-manipulation", test_unicorn_path_name_manipulation },
+        { "unicorn/path/name-comparison", test_unicorn_path_name_comparison },
         { "unicorn/path/resolution", test_unicorn_path_resolution },
         { "unicorn/path/directory-iterators", test_unicorn_path_directory_iterators },
         { "unicorn/path/file-system-queries", test_unicorn_path_file_system_queries },

@@ -74,6 +74,32 @@ namespace RS::Unicorn {
         static constexpr auto std_default  = flag_type(1) << 12;  // Use stdin/out if file is "" or "-"
         static constexpr auto unicode      = flag_type(1) << 13;  // Skip files with non-Unicode names
 
+        // Comparison objects
+
+        enum class cmp {
+            cased,
+            icase,
+            native = native_case ? cased : icase,
+        };
+
+        class equal {
+        public:
+            equal() = default;
+            explicit equal(cmp mode) noexcept: cmode(mode) {}
+            bool operator()(const Path& lhs, const Path& rhs) const;
+        private:
+            cmp cmode = cmp::native;
+        };
+
+        class less {
+        public:
+            less() = default;
+            explicit less(cmp mode) noexcept: cmode(mode) {}
+            bool operator()(const Path& lhs, const Path& rhs) const;
+        private:
+            cmp cmode = cmp::native;
+        };
+
         // Life cycle functions
 
         Path() = default;

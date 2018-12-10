@@ -102,6 +102,32 @@ of <code>"/foo/bar/hello.txt"</code>, or <code>"C:\foo\bar\hello.txt"</code>, is
 </div>
 <div class="defns">
 <ul>
+<li><code>enum class Path::</code><strong><code>cmp</code></strong><ul>
+<li><code>Path::cmp::</code><strong><code>cased</code></strong></li>
+<li><code>Path::cmp::</code><strong><code>icase</code></strong></li>
+<li><code>Path::cmp::</code><strong><code>native</code></strong></li>
+</ul>
+</li>
+<li><code>class Path::</code><strong><code>equal</code></strong><ul>
+<li><code>Path::equal::</code><strong><code>equal</code></strong><code>() noexcept</code></li>
+<li><code>explicit Path::equal::</code><strong><code>equal</code></strong><code>(Path::cmp mode) noexcept</code></li>
+<li><code>bool Path::equal::</code><strong><code>operator()</code></strong><code>(const Path&amp; lhs, const Path&amp; rhs) const</code></li>
+</ul>
+</li>
+<li><code>class Path::</code><strong><code>less</code></strong><ul>
+<li><code>Path::less::</code><strong><code>less</code></strong><code>() noexcept</code></li>
+<li><code>explicit Path::less::</code><strong><code>less</code></strong><code>(Path::cmp mode) noexcept</code></li>
+<li><code>bool Path::less::</code><strong><code>operator()</code></strong><code>(const Path&amp; lhs, const Path&amp; rhs) const</code></li>
+</ul>
+</li>
+</ul>
+<p>Comparison objects. These can perform case sensitive or insensitive
+comparisons, defaulting to the native mode for the operating system. Case
+insensitive comparison of non-Unicode filenames may be unpredictable on some
+systems.</p>
+</div>
+<div class="defns">
+<ul>
 <li><code>class Path::</code><strong><code>deep_search_iterator</code></strong><ul>
 <li><em>Const input iterator</em></li>
 <li><em>Value type is</em> <code>Path</code></li>

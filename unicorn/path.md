@@ -76,6 +76,24 @@ of `"/foo/bar/hello.txt"`, or `"C:\foo\bar\hello.txt"`, is `"hello.txt"`).
 
 Type aliases.
 
+* `enum class Path::`**`cmp`**
+    * `Path::cmp::`**`cased`**
+    * `Path::cmp::`**`icase`**
+    * `Path::cmp::`**`native`**
+* `class Path::`**`equal`**
+    * `Path::equal::`**`equal`**`() noexcept`
+    * `explicit Path::equal::`**`equal`**`(Path::cmp mode) noexcept`
+    * `bool Path::equal::`**`operator()`**`(const Path& lhs, const Path& rhs) const`
+* `class Path::`**`less`**
+    * `Path::less::`**`less`**`() noexcept`
+    * `explicit Path::less::`**`less`**`(Path::cmp mode) noexcept`
+    * `bool Path::less::`**`operator()`**`(const Path& lhs, const Path& rhs) const`
+
+Comparison objects. These can perform case sensitive or insensitive
+comparisons, defaulting to the native mode for the operating system. Case
+insensitive comparison of non-Unicode filenames may be unpredictable on some
+systems.
+
 * `class Path::`**`deep_search_iterator`**
     * _Const input iterator_
     * _Value type is_ `Path`

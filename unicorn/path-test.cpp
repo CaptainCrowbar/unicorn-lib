@@ -631,6 +631,58 @@ void test_unicorn_path_name_manipulation() {
 
 }
 
+void test_unicorn_path_name_comparison() {
+
+    Path file1, file2, file3;
+
+    TRY(file1 = "foo/bar/hello.txt");
+    TRY(file2 = "foo/bar/Hello.txt");
+    TRY(file3 = "foo/bar/goodbye.txt");
+
+    TEST(! Path::equal(Path::cmp::cased)(file1, file2));
+    TEST(! Path::equal(Path::cmp::cased)(file1, file3));
+    TEST(! Path::less(Path::cmp::cased)(file1, file2));
+    TEST(Path::less(Path::cmp::cased)(file2, file1));
+    TEST(! Path::less(Path::cmp::cased)(file1, file3));
+    TEST(Path::less(Path::cmp::cased)(file3, file1));
+    TEST(Path::less(Path::cmp::cased)(file2, file3));
+    TEST(! Path::less(Path::cmp::cased)(file3, file2));
+
+    TEST(Path::equal(Path::cmp::icase)(file1, file2));
+    TEST(! Path::equal(Path::cmp::icase)(file1, file3));
+    TEST(! Path::less(Path::cmp::icase)(file1, file2));
+    TEST(! Path::less(Path::cmp::icase)(file2, file1));
+    TEST(! Path::less(Path::cmp::icase)(file1, file3));
+    TEST(Path::less(Path::cmp::icase)(file3, file1));
+    TEST(! Path::less(Path::cmp::icase)(file2, file3));
+    TEST(Path::less(Path::cmp::icase)(file3, file2));
+
+    #if defined(__APPLE__) || defined(__CYGWIN__) || defined(_WIN32)
+
+        TEST(Path::equal()(file1, file2));
+        TEST(! Path::equal()(file1, file3));
+        TEST(! Path::less()(file1, file2));
+        TEST(! Path::less()(file2, file1));
+        TEST(! Path::less()(file1, file3));
+        TEST(Path::less()(file3, file1));
+        TEST(! Path::less()(file2, file3));
+        TEST(Path::less()(file3, file2));
+
+    #else
+
+        TEST(! Path::equal()(file1, file2));
+        TEST(! Path::equal()(file1, file3));
+        TEST(! Path::less()(file1, file2));
+        TEST(Path::less()(file2, file1));
+        TEST(! Path::less()(file1, file3));
+        TEST(Path::less()(file3, file1));
+        TEST(Path::less()(file2, file3));
+        TEST(! Path::less()(file3, file2));
+
+    #endif
+
+}
+
 void test_unicorn_path_resolution() {
 
     Path cwd, f1, f2;

@@ -1063,6 +1063,22 @@ namespace RS::Unicorn {
 
     #endif
 
+    // Comparison objects
+
+    bool Path::equal::operator()(const Path& lhs, const Path& rhs) const {
+        if (cmode == cmp::icase)
+            return StringCompare<Strcmp::equal | Strcmp::icase>()(lhs.name(), rhs.name());
+        else
+            return lhs == rhs;
+    }
+
+    bool Path::less::operator()(const Path& lhs, const Path& rhs) const {
+        if (cmode == cmp::icase)
+            return StringCompare<Strcmp::less | Strcmp::icase>()(lhs.name(), rhs.name());
+        else
+            return lhs < rhs;
+    }
+
     // Directory iterator
 
     struct Path::directory_iterator::impl_type {
