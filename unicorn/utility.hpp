@@ -188,11 +188,25 @@ namespace RS {
     template <typename EnumType>
     std::vector<EnumType> enum_values() {
         static const std::vector<EnumType> enum_vec = [] {
-            using U = std::underlying_type_t<EnumType>;
-            U base = U(EnumType::RS_enum_begin), size = U(EnumType::RS_enum_end) - base;
+            using int_type = std::underlying_type_t<EnumType>;
+            int_type base = int_type(EnumType::RS_enum_begin), size = int_type(EnumType::RS_enum_end) - base;
             std::vector<EnumType> vec(size, {});
-            for (U i = 0; i < size; ++i)
+            for (int_type i = 0; i < size; ++i)
                 vec[i] = EnumType(base + i);
+            return vec;
+        }();
+        return enum_vec;
+    }
+
+    template <typename EnumType>
+    std::vector<EnumType> enum_nonzero_values() {
+        static const std::vector<EnumType> enum_vec = [] {
+            using int_type = std::underlying_type_t<EnumType>;
+            int_type base = int_type(EnumType::RS_enum_begin), size = int_type(EnumType::RS_enum_end) - base;
+            std::vector<EnumType> vec;
+            for (int_type i = 0; i < size; ++i)
+                if (base + i != 0)
+                    vec.push_back(EnumType(base + i));
             return vec;
         }();
         return enum_vec;
