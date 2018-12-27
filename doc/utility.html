@@ -92,6 +92,13 @@ byte order.</p>
 </div>
 <div class="defns">
 <ul>
+<li><code>template &lt;typename T&gt; constexpr bool</code> <strong><code>dependent_false</code></strong> <code>= false</code></li>
+</ul>
+<p>Conventional workaround for an always-false <code>static_assert()</code> in the final
+<code>else</code> clause of an <code>if constexpr</code> statement.</p>
+</div>
+<div class="defns">
+<ul>
 <li><code>constexpr size_t</code> <strong><code>npos</code></strong> <code>= std::string::npos</code></li>
 </ul>
 <p>Defined for convenience. Following the conventions established by the standard

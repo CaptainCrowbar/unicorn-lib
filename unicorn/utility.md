@@ -56,6 +56,11 @@ ASCII whitespace characters.
 One of these will be true and the other false, reflecting the target system's
 byte order.
 
+* `template <typename T> constexpr bool` **`dependent_false`** ` = false`
+
+Conventional workaround for an always-false `static_assert()` in the final
+`else` clause of an `if constexpr` statement.
+
 * `constexpr size_t` **`npos`** `= std::string::npos`
 
 Defined for convenience. Following the conventions established by the standard

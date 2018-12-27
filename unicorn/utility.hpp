@@ -248,6 +248,8 @@ namespace RS {
         constexpr bool little_endian_target = false;
     #endif
 
+    template <typename T> constexpr bool dependent_false = false;
+
     // Error handling
 
     inline void runtime_assert(bool condition, std::string_view message) noexcept {
