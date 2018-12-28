@@ -286,7 +286,7 @@ check: all
 	@rm -rf __test_* *.stackdump
 	$(test_target)
 
-check-%:
+check-%: all
 	@rm -rf __test_* *.stackdump
 	UNIT='$*' $(test_target)
 
