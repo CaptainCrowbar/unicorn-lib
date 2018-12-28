@@ -209,7 +209,7 @@ endif
 
 .DELETE_ON_ERROR:
 
-.PHONY: all static app run tests check install symlinks uninstall doc unlink undoc clean clean-all dep
+.PHONY: all static app run tests check check-% install symlinks uninstall doc unlink undoc clean clean-all dep
 .PHONY: help help-prefix help-app help-test help-install help-suffix print-%
 
 all: static app tests doc
@@ -286,15 +286,22 @@ check: all
 	@rm -rf __test_* *.stackdump
 	$(test_target)
 
+check-%:
+	@rm -rf __test_* *.stackdump
+	UNIT='$*' $(test_target)
+
 help-test: help-app
 	@echo "    tests      = Build the unit tests"
 	@echo "    check      = Build everything and run the unit tests"
+	@echo "    check-*    = Build everything and run specific unit tests"
 
 else
 
 tests:
 
 check:
+
+check-%:
 
 help-test: help-app
 
