@@ -360,37 +360,48 @@ meaning.
 
 ## Scope guards ##
 
-* `class` **`[scope guard]`**
-    * `[scope guard]::`**`[scope guard]`**`(F&& f)`
-    * `[scope guard]::`**`[scope guard]`**`([scope guard]&&) noexcept`
-    * `[scope guard]::`**`~[scope guard]`**`() noexcept`
-    * `void [scope guard]::`**`release`**`() noexcept`
-* `template <typename F> inline [scope guard]` **`scope_exit`**`(F&& f)`
-* `template <typename F> inline [scope guard]` **`scope_fail`**`(F&& f)`
-* `template <typename F> inline [scope guard]` **`scope_success`**`(F&& f)`
+* `template <typename T> std::unique_lock<T>` **`make_lock`**`(T& t)`
+* `template <typename T> std::shared_lock<T>` **`make_shared_lock`**`(T& t)`
 
-The anonymous scope guard class stores a function object, to be called when
-the guard is destroyed. The three functions create scope guards with different
-execution conditions.
+Simple wrapper functions to create a mutex lock.
 
-The `scope_exit()` guard calls the function unconditionally; `scope_success()`
-calls it only on normal exit (not when unwinding due to an exception);
-`scope_fail()` calls it only when an exception causes stack unwinding (not on
-normal exit). If the creation function throws an exception (this is only
-possible if the function object's copy or move constructor or assignment
-operator throws), `scope_exit()` and `scope_fail()` will call the function
-before propagating the exception, while `scope_success()` will not. Any
+* `enum class` **`Scope`**
+    * `Scope::`**`exit`**
+    * `Scope::`**`fail`**
+    * `Scope::`**`success`**
+* `template <typename F, Scope S> class` **`BasicScopeGuard`**
+    * `BasicScopeGuard::`**`BasicScopeGuard`**`() noexcept`
+    * `BasicScopeGuard::`**`BasicScopeGuard`**`(F&& f)`
+    * `BasicScopeGuard::`**`BasicScopeGuard`**`(BasicScopeGuard&& sg) noexcept`
+    * `BasicScopeGuard::`**`~BasicScopeGuard`**`() noexcept`
+    * `BasicScopeGuard& BasicScopeGuard::`**`operator=`**`(F&& f)`
+    * `BasicScopeGuard& BasicScopeGuard::`**`operator=`**`(BasicScopeGuard&& sg) noexcept`
+    * `void BasicScopeGuard::`**`release`**`() noexcept`
+* `using` **`ScopeExit`** `= BasicScopeGuard<std::function<void()>, Scope::exit>`
+* `using` **`ScopeFail`** `= BasicScopeGuard<std::function<void()>, Scope::fail>`
+* `using` **`ScopeSuccess`** `= BasicScopeGuard<std::function<void()>, Scope::success>`
+* `template <typename F> BasicScopeGuard<F, Scope::exit>` **`scope_exit`**`(F&& f)`
+* `template <typename F> BasicScopeGuard<F, Scope::fail>` **`scope_fail`**`(F&& f)`
+* `template <typename F> BasicScopeGuard<F, Scope::success>` **`scope_success`**`(F&& f)`
+
+The scope guard class stores a function object, to be called when the guard is
+destroyed. The three functions create scope guards with different execution
+conditions. The three named specializations are conveniences for when a scope
+guard needs to be stored as a movable object.
+
+A **scope exit** guard calls the function unconditionally; **scope success**
+calls it only on normal exit, but not when unwinding due to an exception;
+**scope fail** calls it only when an exception causes stack unwinding, but not
+on normal exit. If the constructor or creation function throws an exception
+(this is only possible if the function object's move constructor or assignment
+operator throws), **scope exit** and **scope fail** will call the function
+before propagating the exception, while **scope success** will not. Any
 exceptions thrown by the function call in the scope guard's destructor are
 silently ignored (normally the function should be written so as not to throw
 anything).
 
 The `release()` function discards the saved function; after it is called, the
 scope guard object will do nothing on destruction.
-
-* `template <typename T> std::unique_lock<T>` **`make_lock`**`(T& t)`
-* `template <typename T> std::shared_lock<T>` **`make_shared_lock`**`(T& t)`
-
-Simple wrapper functions to create a mutex lock.
 
 ## String functions ##
 

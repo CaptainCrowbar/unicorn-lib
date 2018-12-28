@@ -566,39 +566,52 @@ meaning.</p>
 <h2 id="scope-guards">Scope guards</h2>
 <div class="defns">
 <ul>
-<li><code>class</code> <strong><code>[scope guard]</code></strong><ul>
-<li><code>[scope guard]::</code><strong><code>[scope guard]</code></strong><code>(F&amp;&amp; f)</code></li>
-<li><code>[scope guard]::</code><strong><code>[scope guard]</code></strong><code>([scope guard]&amp;&amp;) noexcept</code></li>
-<li><code>[scope guard]::</code><strong><code>~[scope guard]</code></strong><code>() noexcept</code></li>
-<li><code>void [scope guard]::</code><strong><code>release</code></strong><code>() noexcept</code></li>
+<li><code>template &lt;typename T&gt; std::unique_lock&lt;T&gt;</code> <strong><code>make_lock</code></strong><code>(T&amp; t)</code></li>
+<li><code>template &lt;typename T&gt; std::shared_lock&lt;T&gt;</code> <strong><code>make_shared_lock</code></strong><code>(T&amp; t)</code></li>
+</ul>
+<p>Simple wrapper functions to create a mutex lock.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>enum class</code> <strong><code>Scope</code></strong><ul>
+<li><code>Scope::</code><strong><code>exit</code></strong></li>
+<li><code>Scope::</code><strong><code>fail</code></strong></li>
+<li><code>Scope::</code><strong><code>success</code></strong></li>
 </ul>
 </li>
-<li><code>template &lt;typename F&gt; inline [scope guard]</code> <strong><code>scope_exit</code></strong><code>(F&amp;&amp; f)</code></li>
-<li><code>template &lt;typename F&gt; inline [scope guard]</code> <strong><code>scope_fail</code></strong><code>(F&amp;&amp; f)</code></li>
-<li><code>template &lt;typename F&gt; inline [scope guard]</code> <strong><code>scope_success</code></strong><code>(F&amp;&amp; f)</code></li>
+<li><code>template &lt;typename F, Scope S&gt; class</code> <strong><code>BasicScopeGuard</code></strong><ul>
+<li><code>BasicScopeGuard::</code><strong><code>BasicScopeGuard</code></strong><code>() noexcept</code></li>
+<li><code>BasicScopeGuard::</code><strong><code>BasicScopeGuard</code></strong><code>(F&amp;&amp; f)</code></li>
+<li><code>BasicScopeGuard::</code><strong><code>BasicScopeGuard</code></strong><code>(BasicScopeGuard&amp;&amp; sg) noexcept</code></li>
+<li><code>BasicScopeGuard::</code><strong><code>~BasicScopeGuard</code></strong><code>() noexcept</code></li>
+<li><code>BasicScopeGuard&amp; BasicScopeGuard::</code><strong><code>operator=</code></strong><code>(F&amp;&amp; f)</code></li>
+<li><code>BasicScopeGuard&amp; BasicScopeGuard::</code><strong><code>operator=</code></strong><code>(BasicScopeGuard&amp;&amp; sg) noexcept</code></li>
+<li><code>void BasicScopeGuard::</code><strong><code>release</code></strong><code>() noexcept</code></li>
 </ul>
-<p>The anonymous scope guard class stores a function object, to be called when
-the guard is destroyed. The three functions create scope guards with different
-execution conditions.</p>
-<p>The <code>scope_exit()</code> guard calls the function unconditionally; <code>scope_success()</code>
-calls it only on normal exit (not when unwinding due to an exception);
-<code>scope_fail()</code> calls it only when an exception causes stack unwinding (not on
-normal exit). If the creation function throws an exception (this is only
-possible if the function object's copy or move constructor or assignment
-operator throws), <code>scope_exit()</code> and <code>scope_fail()</code> will call the function
-before propagating the exception, while <code>scope_success()</code> will not. Any
+</li>
+<li><code>using</code> <strong><code>ScopeExit</code></strong> <code>= BasicScopeGuard&lt;std::function&lt;void()&gt;, Scope::exit&gt;</code></li>
+<li><code>using</code> <strong><code>ScopeFail</code></strong> <code>= BasicScopeGuard&lt;std::function&lt;void()&gt;, Scope::fail&gt;</code></li>
+<li><code>using</code> <strong><code>ScopeSuccess</code></strong> <code>= BasicScopeGuard&lt;std::function&lt;void()&gt;, Scope::success&gt;</code></li>
+<li><code>template &lt;typename F&gt; BasicScopeGuard&lt;F, Scope::exit&gt;</code> <strong><code>scope_exit</code></strong><code>(F&amp;&amp; f)</code></li>
+<li><code>template &lt;typename F&gt; BasicScopeGuard&lt;F, Scope::fail&gt;</code> <strong><code>scope_fail</code></strong><code>(F&amp;&amp; f)</code></li>
+<li><code>template &lt;typename F&gt; BasicScopeGuard&lt;F, Scope::success&gt;</code> <strong><code>scope_success</code></strong><code>(F&amp;&amp; f)</code></li>
+</ul>
+<p>The scope guard class stores a function object, to be called when the guard is
+destroyed. The three functions create scope guards with different execution
+conditions. The three named specializations are conveniences for when a scope
+guard needs to be stored as a movable object.</p>
+<p>A <strong>scope exit</strong> guard calls the function unconditionally; <strong>scope success</strong>
+calls it only on normal exit, but not when unwinding due to an exception;
+<strong>scope fail</strong> calls it only when an exception causes stack unwinding, but not
+on normal exit. If the constructor or creation function throws an exception
+(this is only possible if the function object's move constructor or assignment
+operator throws), <strong>scope exit</strong> and <strong>scope fail</strong> will call the function
+before propagating the exception, while <strong>scope success</strong> will not. Any
 exceptions thrown by the function call in the scope guard's destructor are
 silently ignored (normally the function should be written so as not to throw
 anything).</p>
 <p>The <code>release()</code> function discards the saved function; after it is called, the
 scope guard object will do nothing on destruction.</p>
-</div>
-<div class="defns">
-<ul>
-<li><code>template &lt;typename T&gt; std::unique_lock&lt;T&gt;</code> <strong><code>make_lock</code></strong><code>(T&amp; t)</code></li>
-<li><code>template &lt;typename T&gt; std::shared_lock&lt;T&gt;</code> <strong><code>make_shared_lock</code></strong><code>(T&amp; t)</code></li>
-</ul>
-<p>Simple wrapper functions to create a mutex lock.</p>
 </div>
 <h2 id="string-functions">String functions</h2>
 <div class="defns">

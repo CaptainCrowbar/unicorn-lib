@@ -645,7 +645,8 @@ void test_unicorn_utility_scope_guards() {
     int n = 0;
     {
         n = 1;
-        auto x = scope_exit([&] { n = 2; });
+        ScopeExit guard;
+        TRY(guard = [&] { n = 2; });
         TEST_EQUAL(n, 1);
     }
     TEST_EQUAL(n, 2);
@@ -653,7 +654,8 @@ void test_unicorn_utility_scope_guards() {
     n = 0;
     try {
         n = 1;
-        auto x = scope_exit([&] { n = 2; });
+        ScopeExit guard;
+        TRY(guard = [&] { n = 2; });
         TEST_EQUAL(n, 1);
         throw std::runtime_error("fail");
     }
@@ -663,7 +665,8 @@ void test_unicorn_utility_scope_guards() {
     n = 0;
     {
         n = 1;
-        auto x = scope_success([&] { n = 2; });
+        ScopeSuccess guard;
+        TRY(guard = [&] { n = 2; });
         TEST_EQUAL(n, 1);
     }
     TEST_EQUAL(n, 2);
@@ -671,7 +674,8 @@ void test_unicorn_utility_scope_guards() {
     n = 0;
     try {
         n = 1;
-        auto x = scope_success([&] { n = 2; });
+        ScopeSuccess guard;
+        TRY(guard = [&] { n = 2; });
         TEST_EQUAL(n, 1);
         throw std::runtime_error("fail");
     }
@@ -681,7 +685,8 @@ void test_unicorn_utility_scope_guards() {
     n = 0;
     {
         n = 1;
-        auto x = scope_fail([&] { n = 2; });
+        ScopeFail guard;
+        TRY(guard = [&] { n = 2; });
         TEST_EQUAL(n, 1);
     }
     TEST_EQUAL(n, 1);
@@ -689,7 +694,62 @@ void test_unicorn_utility_scope_guards() {
     n = 0;
     try {
         n = 1;
-        auto x = scope_fail([&] { n = 2; });
+        ScopeFail guard;
+        TRY(guard = [&] { n = 2; });
+        TEST_EQUAL(n, 1);
+        throw std::runtime_error("fail");
+    }
+    catch (...) {}
+    TEST_EQUAL(n, 2);
+
+    n = 0;
+    {
+        n = 1;
+        auto guard = scope_exit([&] { n = 2; });
+        TEST_EQUAL(n, 1);
+    }
+    TEST_EQUAL(n, 2);
+
+    n = 0;
+    try {
+        n = 1;
+        auto guard = scope_exit([&] { n = 2; });
+        TEST_EQUAL(n, 1);
+        throw std::runtime_error("fail");
+    }
+    catch (...) {}
+    TEST_EQUAL(n, 2);
+
+    n = 0;
+    {
+        n = 1;
+        auto guard = scope_success([&] { n = 2; });
+        TEST_EQUAL(n, 1);
+    }
+    TEST_EQUAL(n, 2);
+
+    n = 0;
+    try {
+        n = 1;
+        auto guard = scope_success([&] { n = 2; });
+        TEST_EQUAL(n, 1);
+        throw std::runtime_error("fail");
+    }
+    catch (...) {}
+    TEST_EQUAL(n, 1);
+
+    n = 0;
+    {
+        n = 1;
+        auto guard = scope_fail([&] { n = 2; });
+        TEST_EQUAL(n, 1);
+    }
+    TEST_EQUAL(n, 1);
+
+    n = 0;
+    try {
+        n = 1;
+        auto guard = scope_fail([&] { n = 2; });
         TEST_EQUAL(n, 1);
         throw std::runtime_error("fail");
     }
