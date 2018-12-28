@@ -650,7 +650,6 @@ void test_unicorn_utility_scope_guards() {
         TEST_EQUAL(n, 1);
     }
     TEST_EQUAL(n, 2);
-
     n = 0;
     try {
         n = 1;
@@ -661,6 +660,28 @@ void test_unicorn_utility_scope_guards() {
     }
     catch (...) {}
     TEST_EQUAL(n, 2);
+    n = 0;
+    {
+        n = 1;
+        ScopeExit guard;
+        TRY(guard = [&] { n = 2; });
+        TEST_EQUAL(n, 1);
+        TRY(guard = [&] { n = 3; });
+        TEST_EQUAL(n, 2);
+    }
+    TEST_EQUAL(n, 3);
+    n = 0;
+    {
+        n = 1;
+        ScopeExit guard1, guard2;
+        TRY(guard1 = [&] { n = 2; });
+        TEST_EQUAL(n, 1);
+        TRY(guard2 = [&] { n = 3; });
+        TEST_EQUAL(n, 1);
+        TRY(guard2 = std::move(guard1));
+        TEST_EQUAL(n, 3);
+    }
+    TEST_EQUAL(n, 2);
 
     n = 0;
     {
@@ -670,7 +691,6 @@ void test_unicorn_utility_scope_guards() {
         TEST_EQUAL(n, 1);
     }
     TEST_EQUAL(n, 2);
-
     n = 0;
     try {
         n = 1;
@@ -690,7 +710,6 @@ void test_unicorn_utility_scope_guards() {
         TEST_EQUAL(n, 1);
     }
     TEST_EQUAL(n, 1);
-
     n = 0;
     try {
         n = 1;
@@ -709,7 +728,6 @@ void test_unicorn_utility_scope_guards() {
         TEST_EQUAL(n, 1);
     }
     TEST_EQUAL(n, 2);
-
     n = 0;
     try {
         n = 1;
@@ -727,7 +745,6 @@ void test_unicorn_utility_scope_guards() {
         TEST_EQUAL(n, 1);
     }
     TEST_EQUAL(n, 2);
-
     n = 0;
     try {
         n = 1;
@@ -745,7 +762,6 @@ void test_unicorn_utility_scope_guards() {
         TEST_EQUAL(n, 1);
     }
     TEST_EQUAL(n, 1);
-
     n = 0;
     try {
         n = 1;
