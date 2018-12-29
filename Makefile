@@ -43,8 +43,8 @@ cc_specific_flags :=
 cxx_specific_flags :=
 objc_specific_flags :=
 cc_defines := -DNDEBUG=1
-nontest_flags := -O2
-test_flags := -O1
+opt_release := -O2
+opt_test := -O1
 cc_output := -o #
 include_path := -I.
 AR := ar
@@ -72,8 +72,8 @@ ifeq ($(cross_target),msvc)
 	cc_specific_flags :=
 	cxx_specific_flags := /permissive- /std:c++latest
 	cc_defines := /D_CRT_SECURE_NO_WARNINGS=1 /DNDEBUG=1 /DNOMINMAX=1 /DUNICODE=1 /D_UNICODE=1 /DWINVER=0x601 /D_WIN32_WINNT=0x601
-	nontest_flags := /O2
-	test_flags :=
+	opt_release := /O2
+	opt_test := /Od
 	cc_output := /Fo
 	include_path := /I. /I$(windows_prefix)/include /I$(vcpkg_prefix)/include
 	AR := lib
@@ -119,24 +119,18 @@ endif
 CC := $(CXX)
 OBJC := $(CXX)
 OBJCXX := $(CXX)
-CFLAGS := $(common_flags) $(diagnostic_flags) $(include_path) $(cc_specific_flags) $(cc_defines) $(nontest_flags)
-CXXFLAGS := $(common_flags) $(diagnostic_flags) $(include_path) $(cxx_specific_flags) $(cc_defines) $(nontest_flags)
-OBJCFLAGS := $(common_flags) $(diagnostic_flags) $(include_path) $(objc_specific_flags) $(cc_defines) $(nontest_flags)
-OBJCXXFLAGS := $(common_flags) $(diagnostic_flags) $(include_path) $(objc_specific_flags) $(cxx_specific_flags) $(cc_defines) $(nontest_flags)
-test_cflags := $(common_flags) $(diagnostic_flags) $(include_path) $(cc_specific_flags) $(cc_defines) $(test_flags)
-test_cxxflags := $(common_flags) $(diagnostic_flags) $(include_path) $(cxx_specific_flags) $(cc_defines) $(test_flags)
-test_objcflags := $(common_flags) $(diagnostic_flags) $(include_path) $(objc_specific_flags) $(cc_defines) $(test_flags)
-test_objcxxflags := $(common_flags) $(diagnostic_flags) $(include_path) $(objc_specific_flags) $(cxx_specific_flags) $(cc_defines) $(test_flags)
+CFLAGS += $(common_flags) $(diagnostic_flags) $(include_path) $(cc_specific_flags) $(cc_defines)
+CXXFLAGS += $(common_flags) $(diagnostic_flags) $(include_path) $(cxx_specific_flags) $(cc_defines)
+OBJCFLAGS += $(common_flags) $(diagnostic_flags) $(include_path) $(objc_specific_flags) $(cc_defines)
+OBJCXXFLAGS += $(common_flags) $(diagnostic_flags) $(include_path) $(objc_specific_flags) $(cxx_specific_flags) $(cc_defines)
 
 ifeq ($(cross_target),msvc)
 	ARFLAGS := $(ar_specific_flags) $(library_path)
-	LDFLAGS := $(ld_specific_flags) $(library_path)
-	test_ldflags := $(ld_specific_flags) $(library_path)
+	LDFLAGS += $(ld_specific_flags) $(library_path)
 else
 	ARFLAGS := $(ar_specific_flags)
 	LD := $(CXX)
-	LDFLAGS := $(common_flags) $(diagnostic_flags) $(cc_defines) $(nontest_flags) $(ld_specific_flags) $(library_path)
-	test_ldflags := $(common_flags) $(diagnostic_flags) $(cc_defines) $(test_flags) $(ld_specific_flags) $(library_path)
+	LDFLAGS += $(common_flags) $(diagnostic_flags) $(cc_defines) $(ld_specific_flags) $(library_path)
 endif
 
 # File names
@@ -456,35 +450,35 @@ endif
 
 $(BUILD)/%-test.o: $(project_name)/%-test.c
 	@mkdir -p $(dir $@)
-	$(CC) $(test_cflags) -c $< $(cc_output)$@
+	$(CC) $(CFLAGS) $(opt_test) -c $< $(cc_output)$@
 
 $(BUILD)/%-test.o: $(project_name)/%-test.cpp
 	@mkdir -p $(dir $@)
-	$(CXX) $(test_cxxflags) -c $< $(cc_output)$@
+	$(CXX) $(CXXFLAGS) $(opt_test) -c $< $(cc_output)$@
 
 $(BUILD)/%-test.o: $(project_name)/%-test.m
 	@mkdir -p $(dir $@)
-	$(OBJC) $(test_objcflags) -c $< $(cc_output)$@
+	$(OBJC) $(OBJCFLAGS) $(opt_test) -c $< $(cc_output)$@
 
 $(BUILD)/%-test.o: $(project_name)/%-test.mm
 	@mkdir -p $(dir $@)
-	$(OBJCXX) $(test_objcxxflags) -c $< $(cc_output)$@
+	$(OBJCXX) $(OBJCXXFLAGS) $(opt_test) -c $< $(cc_output)$@
 
 $(BUILD)/%.o: $(project_name)/%.c
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -c $< $(cc_output)$@
+	$(CC) $(CFLAGS) $(opt_release) -c $< $(cc_output)$@
 
 $(BUILD)/%.o: $(project_name)/%.cpp
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) -c $< $(cc_output)$@
+	$(CXX) $(CXXFLAGS) $(opt_release) -c $< $(cc_output)$@
 
 $(BUILD)/%.o: $(project_name)/%.m
 	@mkdir -p $(dir $@)
-	$(OBJC) $(OBJCFLAGS) -c $< $(cc_output)$@
+	$(OBJC) $(OBJCFLAGS) $(opt_release) -c $< $(cc_output)$@
 
 $(BUILD)/%.o: $(project_name)/%.mm
 	@mkdir -p $(dir $@)
-	$(OBJCXX) $(OBJCXXFLAGS) -c $< $(cc_output)$@
+	$(OBJCXX) $(OBJCXXFLAGS) $(opt_release) -c $< $(cc_output)$@
 
 ifneq ($(resource_object),)
 $(resource_object): $(resource_files)
@@ -502,12 +496,12 @@ $(static_library): $(library_objects)
 $(app_target): $(app_objects) $(static_target)
 	@mkdir -p $(dir $@)
 	@rm -f $@
-	$(LD) $(LDFLAGS) $^ $(LDLIBS) $(ld_output)$@
+	$(LD) $(LDFLAGS) $(opt_release) $^ $(LDLIBS) $(ld_output)$@
 
 $(test_target): $(test_objects) $(static_target)
 	@mkdir -p $(dir $@)
 	@rm -f $@
-	$(LD) $(test_ldflags) $^ $(LDLIBS) $(ld_output)$@
+	$(LD) $(LDFLAGS) $(opt_test) $^ $(LDLIBS) $(ld_output)$@
 
 # Other build rules
 
