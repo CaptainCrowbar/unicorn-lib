@@ -496,6 +496,14 @@ non-empty captures.</p>
 </div>
 <div class="defns">
 <ul>
+<li><code>std::string_view match::</code><strong><code>mark</code></strong><code>() const noexcept</code></li>
+</ul>
+<p>Returns the name of the most recent named <code>(*COMMIT)</code>, <code>(*MARK)</code>, <code>(*PRUNE)</code>,
+or <code>(*THEN)</code> tag in the pattern, or an empty string if no suitable tag was
+found.</p>
+</div>
+<div class="defns">
+<ul>
 <li><code>std::string_view match::</code><strong><code>str</code></strong><code>(size_t i = 0) const noexcept</code></li>
 <li><code>std::string_view match::</code><strong><code>operator[]</code></strong><code>(size_t i) const noexcept</code></li>
 <li><code>match::</code><strong><code>operator std::string_view</code></strong><code>() const noexcept</code></li>

@@ -18,7 +18,7 @@ void test_unicorn_regex_version() {
 
 }
 
-void test_unicorn_regex_basic_matching() {
+void test_unicorn_regex_match() {
 
     Regex r;
     Regex::match m;
@@ -186,6 +186,24 @@ void test_unicorn_regex_basic_matching() {
     TEST(! m);
     TEST_EQUAL(m.first(), npos);
     TEST_EQUAL(m.last(), npos);
+
+    TRY(r = Regex("^(a|b)c"));
+    s = "bc";
+    TRY(m = r(s));
+    TEST(m);
+    TEST_EQUAL(m.str(), "bc");
+    TEST_EQUAL(m.mark(), "");
+    TRY(r = Regex("^(*MARK:A)((*MARK:B)a|b)c"));
+    s = "bc";
+    TRY(m = r(s));
+    TEST(m);
+    TEST_EQUAL(m.str(), "bc");
+    TEST_EQUAL(m.mark(), "A");
+    s = "bx";
+    TRY(m = r(s));
+    TEST(! m);
+    TEST_EQUAL(m.str(), "");
+    TEST_EQUAL(m.mark(), "B");
 
     TEST_THROW(r = Regex("[z-a]"), Regex::error);
 

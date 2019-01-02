@@ -78,7 +78,7 @@ extern void test_unicorn_path_io();
 extern void test_unicorn_path_links();
 extern void test_unicorn_path_metadata();
 extern void test_unicorn_regex_version();
-extern void test_unicorn_regex_basic_matching();
+extern void test_unicorn_regex_match();
 extern void test_unicorn_regex_compile_flags();
 extern void test_unicorn_regex_runtime_flags();
 extern void test_unicorn_regex_grep();
@@ -226,7 +226,7 @@ int main() {
         { "unicorn/path/links", test_unicorn_path_links },
         { "unicorn/path/metadata", test_unicorn_path_metadata },
         { "unicorn/regex/version", test_unicorn_regex_version },
-        { "unicorn/regex/basic-matching", test_unicorn_regex_basic_matching },
+        { "unicorn/regex/match", test_unicorn_regex_match },
         { "unicorn/regex/compile-flags", test_unicorn_regex_compile_flags },
         { "unicorn/regex/runtime-flags", test_unicorn_regex_runtime_flags },
         { "unicorn/regex/grep", test_unicorn_regex_grep },

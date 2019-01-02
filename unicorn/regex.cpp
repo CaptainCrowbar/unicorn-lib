@@ -88,7 +88,7 @@ namespace RS::Unicorn {
         re_pattern = pattern;
         re_flags = flags;
         uint32_t compile_options = translate_compile_flags(flags);
-        if (pattern.find("(*COMMIT)") != npos || pattern.find("(*MARK)") != npos)
+        if (pattern.find("(*") != npos)
             compile_options |= PCRE2_NO_DOTSTAR_ANCHOR | PCRE2_NO_START_OPTIMIZE;
         auto context_ptr = pcre2_compile_context_create(nullptr);
         if (! context_ptr)
@@ -286,19 +286,26 @@ namespace RS::Unicorn {
     // Class Regex::match
 
     Regex::match::operator bool() const noexcept {
-        return bool(match_data);
+        return match_result >= 0 || match_result == PCRE2_ERROR_PARTIAL;
     }
 
     bool Regex::match::full() const noexcept {
-        return match_data && ! partial_match;
+        return match_result >= 0;
     }
 
     bool Regex::match::partial() const noexcept {
-        return match_data && partial_match;
+        return match_result == PCRE2_ERROR_PARTIAL;
     }
 
     bool Regex::match::matched(size_t i) const noexcept {
-        return i == 0 ? bool(match_data) : offset(i) != npos;
+        if (match_result < 0 && match_result != PCRE2_ERROR_PARTIAL)
+            return false;
+        else if (i == 0)
+            return true;
+        else if (i < offset_count)
+            return offset_vector[2 * i] != PCRE2_UNSET;
+        else
+            return false;
     }
 
     const char* Regex::match::begin(size_t i) const noexcept {
@@ -364,6 +371,18 @@ namespace RS::Unicorn {
         return npos;
     }
 
+    std::string_view Regex::match::mark() const noexcept {
+        if (! match_data)
+            return {};
+        auto match_ptr = static_cast<pcre2_match_data*>(match_data.get());
+        auto ptr = pcre2_get_mark(match_ptr);
+        if (! ptr)
+            return {};
+        auto mark_ptr = reinterpret_cast<const char*>(ptr);
+        size_t count = ptr[-1];
+        return {mark_ptr, count};
+    }
+
     Regex::match::match(const Regex& re, std::string_view str, flag_type flags) {
         if (flags & ~ runtime_mask)
             throw error(PCRE2_ERROR_BADOPTION);
@@ -382,7 +401,8 @@ namespace RS::Unicorn {
     void Regex::match::next(size_t pos) {
         if (! regex_ptr)
             return;
-        auto guard = scope_exit([&] { *this = {}; });
+        // TODO
+        // auto guard = scope_exit([&] { *this = {}; });
         if (pos > subject_view.size())
             return;
         auto code_ptr = static_cast<pcre2_code*>(regex_ptr->pc_code.get());
@@ -392,20 +412,22 @@ namespace RS::Unicorn {
                 throw std::bad_alloc();
             match_data.reset(new_data, pcre2_match_data_free);
         }
+        match_result = PCRE2_ERROR_NOMATCH;
+        offset_count = 0;
+        offset_vector = nullptr;
         auto match_ptr = static_cast<pcre2_match_data*>(match_data.get());
-        int rc = pcre2_match(code_ptr, byte_ptr(subject_view), subject_view.size(), pos, match_options, match_ptr, nullptr);
-        if (rc == PCRE2_ERROR_NOMATCH)
+        match_result = pcre2_match(code_ptr, byte_ptr(subject_view), subject_view.size(), pos, match_options, match_ptr, nullptr);
+        if (match_result == PCRE2_ERROR_NOMATCH)
             return;
-        else if (rc < 0 && rc != PCRE2_ERROR_PARTIAL)
-            handle_error(rc);
+        else if (match_result < 0 && match_result != PCRE2_ERROR_PARTIAL)
+            handle_error(match_result);
         offset_vector = pcre2_get_ovector_pointer(match_ptr);
         #if RS_PCRE_VERSION < 1030
             if ((match_flags & Regex::full) && offset_vector[1] < subject_view.size())
                 return;
         #endif
         offset_count = pcre2_get_ovector_count(match_ptr);
-        partial_match = rc == PCRE2_ERROR_PARTIAL;
-        guard.release();
+        // guard.release();
     }
 
     // Class Regex::split_iterator

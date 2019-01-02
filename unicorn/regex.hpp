@@ -121,6 +121,7 @@ namespace RS::Unicorn {
         std::string_view operator[](size_t i) const noexcept { return str(i); }
         size_t first() const noexcept;
         size_t last() const noexcept;
+        std::string_view mark() const noexcept;
         operator std::string_view() const noexcept { return str(); }
         bool matched(std::string_view name) const { return matched(index_by_name(name)); }
         const char* begin(std::string_view name) const { return begin(index_by_name(name)); }
@@ -137,11 +138,11 @@ namespace RS::Unicorn {
         std::shared_ptr<void> match_data; // pcre2_match_data
         std::string_view subject_view;
         const Regex* regex_ptr = nullptr;
-        size_t offset_count = 0;
-        size_t* offset_vector = nullptr;
         flag_type match_flags = 0;
         uint32_t match_options = 0;
-        bool partial_match = false;
+        int match_result = -1; // PCRE2_ERROR_NOMATCH
+        size_t offset_count = 0;
+        size_t* offset_vector = nullptr;
         match(const Regex& re, std::string_view str, flag_type flags);
         size_t index_by_name(std::string_view name) const;
         void next() { next(endpos()); }

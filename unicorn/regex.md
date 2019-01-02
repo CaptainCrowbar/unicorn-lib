@@ -349,6 +349,12 @@ These return the indices of the first and last non-empty capture group (not
 counting the complete match), or `npos` if the match failed or there are no
 non-empty captures.
 
+* `std::string_view match::`**`mark`**`() const noexcept`
+
+Returns the name of the most recent named `(*COMMIT)`, `(*MARK)`, `(*PRUNE)`,
+or `(*THEN)` tag in the pattern, or an empty string if no suitable tag was
+found.
+
 * `std::string_view match::`**`str`**`(size_t i = 0) const noexcept`
 * `std::string_view match::`**`operator[]`**`(size_t i) const noexcept`
 * `match::`**`operator std::string_view`**`() const noexcept`
