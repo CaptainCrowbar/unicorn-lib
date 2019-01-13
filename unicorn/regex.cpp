@@ -401,8 +401,6 @@ namespace RS::Unicorn {
     void Regex::match::next(size_t pos) {
         if (! regex_ptr)
             return;
-        // TODO
-        // auto guard = scope_exit([&] { *this = {}; });
         if (pos > subject_view.size())
             return;
         auto code_ptr = static_cast<pcre2_code*>(regex_ptr->pc_code.get());
@@ -423,11 +421,12 @@ namespace RS::Unicorn {
             handle_error(match_result);
         offset_vector = pcre2_get_ovector_pointer(match_ptr);
         #if RS_PCRE_VERSION < 1030
-            if ((match_flags & Regex::full) && offset_vector[1] < subject_view.size())
+            if ((match_flags & Regex::full) && offset_vector[1] < subject_view.size()) {
+                match_result = PCRE2_ERROR_NOMATCH;
                 return;
+            }
         #endif
         offset_count = pcre2_get_ovector_count(match_ptr);
-        // guard.release();
     }
 
     // Class Regex::split_iterator
