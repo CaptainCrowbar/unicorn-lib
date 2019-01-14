@@ -288,8 +288,8 @@ characters skipped.
 These append one or more characters to a Unicode string, performing any
 necessary encoding conversions.
 
-* `Ustring>` **`str_char`**`(char32_t c)`
-* `Ustring>` **`str_chars`**`(size_t n, char32_t c)`
+* `Ustring` **`str_char`**`(char32_t c)`
+* `Ustring` **`str_chars`**`(size_t n, char32_t c)`
 
 Return a string containing `n` copies of the character.
 
