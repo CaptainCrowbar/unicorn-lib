@@ -290,7 +290,7 @@ namespace RS::Unicorn {
         if (! sptr)
             return *this;
         auto i = *this;
-        i.ofs = size_t(clamp(ptrdiff_t(ofs) + n, 0, sptr->size()));
+        i.ofs = std::clamp(size_t(ptrdiff_t(ofs) + n), size_t(0), sptr->size());
         i.units = 0;
         ++i;
         return i;

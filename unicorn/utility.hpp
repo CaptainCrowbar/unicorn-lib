@@ -492,12 +492,6 @@ namespace RS {
     template <typename T> constexpr auto as_signed(T t) noexcept { return static_cast<std::make_signed_t<T>>(t); }
     template <typename T> constexpr auto as_unsigned(T t) noexcept { return static_cast<std::make_unsigned_t<T>>(t); }
 
-    template <typename T, typename T2, typename T3>
-    constexpr T clamp(const T& x, const T2& min, const T3& max) noexcept {
-        static_assert(std::is_convertible<T2, T>::value && std::is_convertible<T3, T>::value);
-        return x < T(min) ? T(min) : T(max) < x ? T(max) : x;
-    }
-
     #ifdef __GNUC__
 
         template <typename T>

@@ -269,21 +269,6 @@ void test_unicorn_utility_arithmetic_functions() {
     TEST_EQUAL(as_unsigned(s64), 18'446'744'073'709'551'574ull);
     TEST_EQUAL(as_unsigned(u64), 42);
 
-    TEST_EQUAL(clamp(1, 2, 4), 2);
-    TEST_EQUAL(clamp(2, 2, 4), 2);
-    TEST_EQUAL(clamp(3, 2, 4), 3);
-    TEST_EQUAL(clamp(4, 2, 4), 4);
-    TEST_EQUAL(clamp(5, 2, 4), 4);
-    TEST_EQUAL(clamp(1.0, 2, 4), 2);
-    TEST_EQUAL(clamp(1.5, 2, 4), 2);
-    TEST_EQUAL(clamp(2.0, 2, 4), 2);
-    TEST_EQUAL(clamp(2.5, 2, 4), 2.5);
-    TEST_EQUAL(clamp(3.0, 2, 4), 3);
-    TEST_EQUAL(clamp(3.5, 2, 4), 3.5);
-    TEST_EQUAL(clamp(4.0, 2, 4), 4);
-    TEST_EQUAL(clamp(4.5, 2, 4), 4);
-    TEST_EQUAL(clamp(5.0, 2, 4), 4);
-
     TEST_EQUAL(ibits(0), 0);
     TEST_EQUAL(ibits(1), 1);
     TEST_EQUAL(ibits(2), 1);

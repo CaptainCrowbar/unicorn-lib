@@ -99,11 +99,6 @@ For the bit manipulation functions (`ibits()`, `ifloor2()`, `iceil2()`,
 `ilog2p1()`, `ispow2()`, `rotl()`, and `rotr()`), behaviour is undefined if
 `T` is not an integer, or if `T` is signed and the argument is negative.
 
-* `template <typename T, typename T2, typename T3> constexpr T` **`clamp`**`(const T& x, const T2& min, const T3& max) noexcept`
-
-Clamps a value to a fixed range. This returns `min` if `t<min`, `max` if
-`t>max`, otherwise `t`. `T2` and `T3` must be implicitly convertible t `T`.
-
 * `template <typename T> constexpr std::make_signed_t<T>` **`as_signed`**`(T t) noexcept`
 * `template <typename T> constexpr std::make_unsigned_t<T>` **`as_unsigned`**`(T t) noexcept`
 

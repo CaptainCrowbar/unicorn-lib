@@ -142,13 +142,6 @@ zero if they are equal, and +1 if the first range is greater.</p>
 <code>T</code> is not an integer, or if <code>T</code> is signed and the argument is negative.</p>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename T, typename T2, typename T3&gt; constexpr T</code> <strong><code>clamp</code></strong><code>(const T&amp; x, const T2&amp; min, const T3&amp; max) noexcept</code></li>
-</ul>
-<p>Clamps a value to a fixed range. This returns <code>min</code> if <code>t&lt;min</code>, <code>max</code> if
-<code>t&gt;max</code>, otherwise <code>t</code>. <code>T2</code> and <code>T3</code> must be implicitly convertible t <code>T</code>.</p>
-</div>
-<div class="defns">
-<ul>
 <li><code>template &lt;typename T&gt; constexpr std::make_signed_t&lt;T&gt;</code> <strong><code>as_signed</code></strong><code>(T t) noexcept</code></li>
 <li><code>template &lt;typename T&gt; constexpr std::make_unsigned_t&lt;T&gt;</code> <strong><code>as_unsigned</code></strong><code>(T t) noexcept</code></li>
 </ul>
