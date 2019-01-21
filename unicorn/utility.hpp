@@ -66,6 +66,12 @@
 #include <utility>
 #include <vector>
 
+// Compiler brain damage
+
+#ifdef _MSC_VER
+    #pragma warning(disable: 4459) // Declaration hides global declaration
+#endif
+
 // Preprocessor macros
 
 #ifndef RS_ATTR_UNUSED
