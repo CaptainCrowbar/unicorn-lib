@@ -341,6 +341,7 @@ supply the standard member types:
     * `constexpr Iterator Irange::`**`end`**`() const { return second; }`
     * `constexpr bool Irange::`**`empty`**`() const { return first == second; }`
     * `constexpr size_t Irange::`**`size`**`() const { return std::distance(first, second); }`
+    * `template <typename I2> operator Irange<I2>() const noexcept { return {first, second}; }`
 * `template <typename Iterator> constexpr Irange<Iterator>` **`irange`**`(const Iterator& i, const Iterator& j)`
 * `template <typename Iterator> constexpr Irange<Iterator>` **`irange`**`(const pair<Iterator, Iterator>& p)`
 

@@ -623,6 +623,19 @@ void test_unicorn_utility_range_types() {
     TEST(range_empty(""s));
     TEST(! range_empty("Hello"s));
 
+    Irange<Ustring::iterator> r;
+    Irange<Ustring::const_iterator> cr;
+    Ustring s = "Hello", t;
+
+    TRY((r = {s.begin(), s.end()}));
+    TEST_EQUAL(r.size(), 5);
+    TRY(std::copy(r.begin(), r.end(), overwrite(t)));
+    TEST_EQUAL(t, "Hello");
+    TRY(cr = r);
+    TEST_EQUAL(cr.size(), 5);
+    TRY(std::copy(cr.begin(), cr.end(), overwrite(t)));
+    TEST_EQUAL(t, "Hello");
+
 }
 
 void test_unicorn_utility_scope_guards() {

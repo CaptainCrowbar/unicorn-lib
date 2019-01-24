@@ -540,6 +540,7 @@ supply the standard member types:</p>
 <li><code>constexpr Iterator Irange::</code><strong><code>end</code></strong><code>() const { return second; }</code></li>
 <li><code>constexpr bool Irange::</code><strong><code>empty</code></strong><code>() const { return first == second; }</code></li>
 <li><code>constexpr size_t Irange::</code><strong><code>size</code></strong><code>() const { return std::distance(first, second); }</code></li>
+<li><code>template &lt;typename I2&gt; operator Irange&lt;I2&gt;() const noexcept { return {first, second}; }</code></li>
 </ul>
 </li>
 <li><code>template &lt;typename Iterator&gt; constexpr Irange&lt;Iterator&gt;</code> <strong><code>irange</code></strong><code>(const Iterator&amp; i, const Iterator&amp; j)</code></li>

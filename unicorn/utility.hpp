@@ -759,10 +759,11 @@ namespace RS {
         using iterator = Iterator;
         using value_type = typename std::iterator_traits<Iterator>::value_type;
         Iterator first, second;
-        constexpr Iterator begin() const { return first; }
-        constexpr Iterator end() const { return second; }
-        constexpr bool empty() const { return first == second; }
-        constexpr size_t size() const { return std::distance(first, second); }
+        constexpr Iterator begin() const noexcept { return first; }
+        constexpr Iterator end() const noexcept { return second; }
+        constexpr bool empty() const noexcept { return first == second; }
+        constexpr size_t size() const noexcept { return std::distance(first, second); }
+        template <typename I2> operator Irange<I2>() const noexcept { return {first, second}; }
     };
 
     template <typename Iterator> constexpr Irange<Iterator> irange(const Iterator& i, const Iterator& j) { return {i, j}; }
