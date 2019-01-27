@@ -555,10 +555,8 @@ not already there.
 * `template <typename... Args> void` **`str_wrap_in`**`(Ustring& str, Args... args)`
 
 Wrap the text in a string to a given width. Wrapping is done separately for
-each paragraph; paragraphs are delimited by two or more line breaks (as usual,
-`CR+LF` is counted as a single line break), or a single paragraph separator
-character (`U+2029`). Words are simply delimited by whitespace, which may not
-be appropriate for all languages; no attempt is made at anything more
+each paragraph. Words are simply delimited by whitespace, which may not be
+appropriate for all languages; no attempt is made at anything more
 sophisticated such as hyphenation or locale-specific word breaking rules.
 
 The following keyword arguments are recognised:
@@ -566,24 +564,27 @@ The following keyword arguments are recognised:
 Keyword                 | Type        | Description                                | Default
 -------                 | ----        | -----------                                | -------
 `Wrap::`**`enforce`**   | `bool`      | Enforce right margin strictly              | `false`
+`Wrap::`**`lines`**     | `bool`      | Treat every line as a paragraph            | `false`
 `Wrap::`**`preserve`**  | `bool`      | Preserve layout on already indented lines  | `false`
-`Wrap::`**`flags`**     | `uint32_t`  | Flags for string length                    | `Length::characters`
+`Wrap::`**`flags`**     | `uint32_t`  | Flags for string length                    | `Length::graphemes`
 `Wrap::`**`margin`**    | `size_t`    | Margin for first line                      | 0
 `Wrap::`**`margin2`**   | `size_t`    | Margin for subsequent lines                | same as `margin`
 `Wrap::`**`width`**     | `size_t`    | Wrap width                                 | see below
 `Wrap::`**`newline`**   | `Ustring`   | Line break                                 | `"\n"`
 
-By default, the width is set to two characters less than the current terminal
-width, obtained from the `COLUMNS` environment variable; the terminal width is
-assumed to be 80 characters if `COLUMNS` is undefined or invalid. The `margin`
-and `margin2` arguments determine the number of spaces used to indent the
-first and subsequent lines, respectively, of a paragraph (the width includes
-the indentation); if `margin2` is not supplied, it defaults to the same value
-as `margin`. The function will throw `std::length_error` if either margin is
-greater than or equal to the width.
+Paragraphs are normally delimited by two or more line breaks; if the `lines`
+flag is set, every line break is interpreted as a paragraph break. As usual,
+`CR+LF` is counted as a single line break.
 
 Width is measured using the usual rules for string length, controlled by the
-`flags` argument.
+`flags` argument. By default, the width is set to two characters less than the
+current terminal width, obtained from the `COLUMNS` environment variable; the
+terminal width is assumed to be 80 characters if `COLUMNS` is undefined or
+invalid. The `margin` and `margin2` arguments determine the number of spaces
+used to indent the first and subsequent lines, respectively, of a paragraph
+(the width includes the indentation); if `margin2` is not supplied, it
+defaults to the same value as `margin`. The function will throw
+`std::length_error` if either margin is greater than or equal to the width.
 
 The `newline` value is used for all line breaks on output; any line breaking
 already present in the input text is discarded. Paragraph breaks are replaced

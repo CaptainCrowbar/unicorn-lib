@@ -759,7 +759,8 @@ namespace RS::Unicorn {
 
     namespace UnicornDetail {
 
-        void str_wrap_helper(const Ustring& src, Ustring& dst, bool enforce, bool preserve, uint32_t flags, size_t margin, size_t margin2, size_t width, const Ustring& newline) {
+        void str_wrap_helper(const Ustring& src, Ustring& dst, bool enforce, bool lines, bool preserve,
+                uint32_t flags, size_t margin, size_t margin2, size_t width, const Ustring& newline) {
             if (width == npos) {
                 auto columns = decnum(cstr(getenv("COLUMNS")));
                 if (columns < 3)
@@ -774,12 +775,13 @@ namespace RS::Unicorn {
             auto range = utf_range(src);
             auto i = range.begin(), e = range.end();
             size_t linewidth = 0, words = 0, linebreaks = 0, spaces = margin, tailspaces = 0;
+            size_t pbreak = lines ? 1 : 2;
             while (i != e) {
                 auto j = std::find_if_not(i, e, char_is_white_space);
                 if (j == e)
                     break;
                 check_whitespace(i, j, linebreaks, tailspaces);
-                if (! dst.empty() && linebreaks >= 2) {
+                if (! dst.empty() && linebreaks >= pbreak) {
                     if (words > 0) {
                         dst += newline;
                         words = linewidth = 0;

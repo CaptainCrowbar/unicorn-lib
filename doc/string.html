@@ -651,10 +651,8 @@ not already there.</p>
 <li><code>template &lt;typename... Args&gt; void</code> <strong><code>str_wrap_in</code></strong><code>(Ustring&amp; str, Args... args)</code></li>
 </ul>
 <p>Wrap the text in a string to a given width. Wrapping is done separately for
-each paragraph; paragraphs are delimited by two or more line breaks (as usual,
-<code>CR+LF</code> is counted as a single line break), or a single paragraph separator
-character (<code>U+2029</code>). Words are simply delimited by whitespace, which may not
-be appropriate for all languages; no attempt is made at anything more
+each paragraph. Words are simply delimited by whitespace, which may not be
+appropriate for all languages; no attempt is made at anything more
 sophisticated such as hyphenation or locale-specific word breaking rules.</p>
 <p>The following keyword arguments are recognised:</p>
 <table>
@@ -674,6 +672,12 @@ sophisticated such as hyphenation or locale-specific word breaking rules.</p>
 <td><code>false</code></td>
 </tr>
 <tr>
+<td><code>Wrap::</code><strong><code>lines</code></strong></td>
+<td><code>bool</code></td>
+<td>Treat every line as a paragraph</td>
+<td><code>false</code></td>
+</tr>
+<tr>
 <td><code>Wrap::</code><strong><code>preserve</code></strong></td>
 <td><code>bool</code></td>
 <td>Preserve layout on already indented lines</td>
@@ -683,7 +687,7 @@ sophisticated such as hyphenation or locale-specific word breaking rules.</p>
 <td><code>Wrap::</code><strong><code>flags</code></strong></td>
 <td><code>uint32_t</code></td>
 <td>Flags for string length</td>
-<td><code>Length::characters</code></td>
+<td><code>Length::graphemes</code></td>
 </tr>
 <tr>
 <td><code>Wrap::</code><strong><code>margin</code></strong></td>
@@ -711,16 +715,18 @@ sophisticated such as hyphenation or locale-specific word breaking rules.</p>
 </tr>
 </tbody>
 </table>
-<p>By default, the width is set to two characters less than the current terminal
-width, obtained from the <code>COLUMNS</code> environment variable; the terminal width is
-assumed to be 80 characters if <code>COLUMNS</code> is undefined or invalid. The <code>margin</code>
-and <code>margin2</code> arguments determine the number of spaces used to indent the
-first and subsequent lines, respectively, of a paragraph (the width includes
-the indentation); if <code>margin2</code> is not supplied, it defaults to the same value
-as <code>margin</code>. The function will throw <code>std::length_error</code> if either margin is
-greater than or equal to the width.</p>
+<p>Paragraphs are normally delimited by two or more line breaks; if the <code>lines</code>
+flag is set, every line break is interpreted as a paragraph break. As usual,
+<code>CR+LF</code> is counted as a single line break.</p>
 <p>Width is measured using the usual rules for string length, controlled by the
-<code>flags</code> argument.</p>
+<code>flags</code> argument. By default, the width is set to two characters less than the
+current terminal width, obtained from the <code>COLUMNS</code> environment variable; the
+terminal width is assumed to be 80 characters if <code>COLUMNS</code> is undefined or
+invalid. The <code>margin</code> and <code>margin2</code> arguments determine the number of spaces
+used to indent the first and subsequent lines, respectively, of a paragraph
+(the width includes the indentation); if <code>margin2</code> is not supplied, it
+defaults to the same value as <code>margin</code>. The function will throw
+<code>std::length_error</code> if either margin is greater than or equal to the width.</p>
 <p>The <code>newline</code> value is used for all line breaks on output; any line breaking
 already present in the input text is discarded. Paragraph breaks are replaced
 with two line breaks, regardless of their original spelling; a single line

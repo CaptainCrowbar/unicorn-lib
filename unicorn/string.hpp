@@ -505,7 +505,8 @@ namespace RS::Unicorn {
     struct Wrap {
 
         static constexpr Kwarg<bool, 1> enforce = {};    // Enforce right margin strictly (default false)
-        static constexpr Kwarg<bool, 2> preserve = {};   // Preserve layout on already indented lines (default false)
+        static constexpr Kwarg<bool, 2> lines = {};      // Treat every line as a paragraph (default false)
+        static constexpr Kwarg<bool, 3> preserve = {};   // Preserve layout on already indented lines (default false)
         static constexpr Kwarg<uint32_t> flags = {};     // Flags for string length (default 0)
         static constexpr Kwarg<size_t, 1> margin = {};   // Margin for first line (default 0)
         static constexpr Kwarg<size_t, 2> margin2 = {};  // Margin for subsequent lines (default same as margin)
@@ -516,13 +517,15 @@ namespace RS::Unicorn {
 
     namespace UnicornDetail {
 
-        void str_wrap_helper(const Ustring& src, Ustring& dst, bool enforce, bool preserve, uint32_t flags, size_t margin, size_t margin2, size_t width, const Ustring& newline);
+        void str_wrap_helper(const Ustring& src, Ustring& dst, bool enforce, bool lines, bool preserve,
+            uint32_t flags, size_t margin, size_t margin2, size_t width, const Ustring& newline);
 
     }
 
     template <typename... Args> Ustring str_wrap(const Ustring& str, Args... args) {
         using namespace std::literals;
         bool enforce = kwget(Wrap::enforce, false, args...);
+        bool lines = kwget(Wrap::lines, false, args...);
         bool preserve = kwget(Wrap::preserve, false, args...);
         uint32_t flags = kwget(Wrap::flags, uint32_t(0), args...);
         size_t margin = kwget(Wrap::margin, size_t(0), args...);
@@ -530,7 +533,7 @@ namespace RS::Unicorn {
         size_t width = kwget(Wrap::width, npos, args...);
         Ustring newline = kwget(Wrap::newline, "\n"s, args...);
         Ustring result;
-        UnicornDetail::str_wrap_helper(str, result, enforce, preserve, flags, margin, margin2, width, newline);
+        UnicornDetail::str_wrap_helper(str, result, enforce, lines, preserve, flags, margin, margin2, width, newline);
         return result;
     }
 
