@@ -512,7 +512,7 @@ namespace RS::Unicorn {
         static constexpr Kwarg<size_t, 2> margin2 = {};  // Margin for subsequent lines (default same as margin)
         static constexpr Kwarg<size_t, 3> width = {};    // Wrap width (default COLUMNS-2)
         static constexpr Kwarg<Ustring> newline = {};    // Line break (default "\n")
-        Wrap() = default;
+        Wrap() { init(); }
         template <typename... Args> Wrap(Args... args);
         Ustring wrap(const Ustring& src) const { Ustring dst; do_wrap(src, dst); return dst; }
         void wrap_in(Ustring& src) const { Ustring dst; do_wrap(src, dst); src = std::move(dst); }
@@ -526,7 +526,10 @@ namespace RS::Unicorn {
         size_t margin2_ = npos;
         size_t width_ = npos;
         Ustring newline_ = "\n";
+        size_t pbreak_ = 2;
+        size_t spacing_ = 1;
         void do_wrap(const Ustring& src, Ustring& dst) const;
+        void init();
     };
 
         template <typename... Args>
@@ -540,6 +543,7 @@ namespace RS::Unicorn {
             margin2_ = kwget(margin2, npos, args...);
             width_ = kwget(width, npos, args...);
             newline_ = kwget(newline, "\n"s, args...);
+            init();
         }
 
     template <typename... Args> Ustring str_wrap(const Ustring& str, Args... args) {

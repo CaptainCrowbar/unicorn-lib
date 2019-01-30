@@ -757,30 +757,31 @@ namespace RS::Unicorn {
         str_unify_lines_in(str, "\n");
     }
 
-    void Wrap::do_wrap(const Ustring& src, Ustring& dst) const {
-        using namespace UnicornDetail;
-        size_t width = width_, margin2 = margin2_;
-        if (width == npos) {
+    void Wrap::init() {
+        if (width_ == npos) {
             auto columns = decnum(cstr(getenv("COLUMNS")));
             if (columns < 3)
                 columns = 80;
-            width = size_t(columns) - 2;
+            width_ = size_t(columns) - 2;
         }
-        if (margin2 == npos)
-            margin2 = margin_;
-        if (margin_ >= width || margin2 >= width)
+        if (margin2_ == npos)
+            margin2_ = margin_;
+        if (margin_ >= width_ || margin2_ >= width_)
             throw std::length_error("Word wrap width and margins are inconsistent");
-        size_t spacing = flags_ & Length::wide ? 2 : 1;
-        auto range = utf_range(src);
-        auto i = range.begin(), e = range.end();
+        pbreak_ = lines_ ? 1 : 2;
+        spacing_ = flags_ & Length::wide ? 2 : 1;
+    }
+
+    void Wrap::do_wrap(const Ustring& src, Ustring& dst) const {
+        using namespace UnicornDetail;
+        auto i = utf_begin(src), end = utf_end(src);
         size_t linewidth = 0, words = 0, linebreaks = 0, spaces = margin_, tailspaces = 0;
-        size_t pbreak = lines_ ? 1 : 2;
-        while (i != e) {
-            auto j = std::find_if_not(i, e, char_is_white_space);
-            if (j == e)
+        while (i != end) {
+            auto j = std::find_if_not(i, end, char_is_white_space);
+            if (j == end)
                 break;
             check_whitespace(i, j, linebreaks, tailspaces);
-            if (! dst.empty() && linebreaks >= pbreak) {
+            if (! dst.empty() && linebreaks >= pbreak_) {
                 if (words > 0) {
                     dst += newline_;
                     words = linewidth = 0;
@@ -793,109 +794,37 @@ namespace RS::Unicorn {
                 if (words > 0)
                     dst += newline_;
                 dst.append(tailspaces, ' ');
-                j = std::find_if(i, e, char_is_line_break);
+                j = std::find_if(i, end, char_is_line_break);
                 dst += str_unify_lines(u_str(i, j), newline_);
                 words = linewidth = 0;
             } else {
-                j = std::find_if(i, e, char_is_white_space);
+                j = std::find_if(i, end, char_is_white_space);
                 auto word = u_str(i, j);
                 auto wordlen = str_length(word, flags_ & all_length_flags);
                 if (words > 0) {
-                    if (linewidth + wordlen + spacing > size_t(width)) {
+                    if (linewidth + wordlen + spacing_ > size_t(width_)) {
                         dst += newline_;
                         words = linewidth = 0;
                     } else {
                         dst += ' ';
-                        linewidth += spacing;
+                        linewidth += spacing_;
                     }
                 }
                 if (words == 0) {
                     dst.append(spaces, ' ');
-                    linewidth = spaces * spacing;
-                    spaces = margin2;
+                    linewidth = spaces * spacing_;
+                    spaces = margin2_;
                 }
                 dst += word;
                 ++words;
                 linewidth += wordlen;
-                if (enforce_ && linewidth > size_t(width))
+                if (enforce_ && linewidth > size_t(width_))
                     throw std::length_error("Word is too long for wrapping width");
             }
             i = j;
         }
         if (words > 0)
             dst += newline_;
-    }
-
-    namespace UnicornDetail {
-
-        void str_wrap_helper(const Ustring& src, Ustring& dst, bool enforce, bool lines, bool preserve,
-                uint32_t flags, size_t margin, size_t margin2, size_t width, const Ustring& newline) {
-            if (width == npos) {
-                auto columns = decnum(cstr(getenv("COLUMNS")));
-                if (columns < 3)
-                    columns = 80;
-                width = size_t(columns) - 2;
-            }
-            if (margin2 == npos)
-                margin2 = margin;
-            if (margin >= width || margin2 >= width)
-                throw std::length_error("Word wrap width and margins are inconsistent");
-            size_t spacing = flags & Length::wide ? 2 : 1;
-            auto range = utf_range(src);
-            auto i = range.begin(), e = range.end();
-            size_t linewidth = 0, words = 0, linebreaks = 0, spaces = margin, tailspaces = 0;
-            size_t pbreak = lines ? 1 : 2;
-            while (i != e) {
-                auto j = std::find_if_not(i, e, char_is_white_space);
-                if (j == e)
-                    break;
-                check_whitespace(i, j, linebreaks, tailspaces);
-                if (! dst.empty() && linebreaks >= pbreak) {
-                    if (words > 0) {
-                        dst += newline;
-                        words = linewidth = 0;
-                    }
-                    dst += newline;
-                    spaces = margin;
-                }
-                i = j;
-                if (preserve && linebreaks >= 1 && tailspaces >= 1) {
-                    if (words > 0)
-                        dst += newline;
-                    dst.append(tailspaces, ' ');
-                    j = std::find_if(i, e, char_is_line_break);
-                    dst += str_unify_lines(u_str(i, j), newline);
-                    words = linewidth = 0;
-                } else {
-                    j = std::find_if(i, e, char_is_white_space);
-                    auto word = u_str(i, j);
-                    auto wordlen = str_length(word, flags & all_length_flags);
-                    if (words > 0) {
-                        if (linewidth + wordlen + spacing > size_t(width)) {
-                            dst += newline;
-                            words = linewidth = 0;
-                        } else {
-                            dst += ' ';
-                            linewidth += spacing;
-                        }
-                    }
-                    if (words == 0) {
-                        dst.append(spaces, ' ');
-                        linewidth = spaces * spacing;
-                        spaces = margin2;
-                    }
-                    dst += word;
-                    ++words;
-                    linewidth += wordlen;
-                    if (enforce && linewidth > size_t(width))
-                        throw std::length_error("Word is too long for wrapping width");
-                }
-                i = j;
-            }
-            if (words > 0)
-                dst += newline;
-        }
-
     }
 
 }
