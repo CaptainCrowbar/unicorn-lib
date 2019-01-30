@@ -551,13 +551,22 @@ Unicode line or paragraph breaking character is recognised and replaced; the
 string was completely empty, a line break will be added at the end if it was
 not already there.
 
+* `class` **`Wrap`**
+    * _Keyword arguments (see below)_
+    * `Wrap::`**`Wrap`**`()`
+    * `template <typename... Args> Wrap::`**`Wrap`**`(Args... args)`
+    * `Ustring Wrap::`**`wrap`**`(const Ustring& src) const`
+    * `void Wrap::`**`wrap_in`**`(Ustring& src) const`
+    * `Ustring Wrap::`**`operator()`**`(const Ustring& src) const`
 * `template <typename... Args> Ustring` **`str_wrap`**`(const Ustring& str, Args... args)`
 * `template <typename... Args> void` **`str_wrap_in`**`(Ustring& str, Args... args)`
 
-Wrap the text in a string to a given width. Wrapping is done separately for
-each paragraph. Words are simply delimited by whitespace, which may not be
-appropriate for all languages; no attempt is made at anything more
-sophisticated such as hyphenation or locale-specific word breaking rules.
+The `Wrap` class, and the two `str_wrap*()` functions, wrap the text in a
+string to a given width. The class stores a set of wrapping parameters,
+supplied as keyword arguments to the constructor; the two free functions may
+be more convenient when only a single call is needed and the parameters do not
+need to be saved. The function call operator is equivalent to the `wrap()`
+method.
 
 The following keyword arguments are recognised:
 
@@ -571,6 +580,11 @@ Keyword                 | Type        | Description                             
 `Wrap::`**`margin2`**   | `size_t`    | Margin for subsequent lines                | same as `margin`
 `Wrap::`**`width`**     | `size_t`    | Wrap width                                 | see below
 `Wrap::`**`newline`**   | `Ustring`   | Line break                                 | `"\n"`
+
+Wrapping is done separately for each paragraph. Words are simply delimited by
+whitespace, which may not be appropriate for all languages; no attempt is made
+at anything more sophisticated such as hyphenation or locale-specific word
+breaking rules.
 
 Paragraphs are normally delimited by two or more line breaks; if the `lines`
 flag is set, every line break is interpreted as a paragraph break. As usual,

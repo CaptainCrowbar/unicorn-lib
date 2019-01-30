@@ -647,13 +647,24 @@ not already there.</p>
 </div>
 <div class="defns">
 <ul>
+<li><code>class</code> <strong><code>Wrap</code></strong><ul>
+<li><em>Keyword arguments (see below)</em></li>
+<li><code>Wrap::</code><strong><code>Wrap</code></strong><code>()</code></li>
+<li><code>template &lt;typename... Args&gt; Wrap::</code><strong><code>Wrap</code></strong><code>(Args... args)</code></li>
+<li><code>Ustring Wrap::</code><strong><code>wrap</code></strong><code>(const Ustring&amp; src) const</code></li>
+<li><code>void Wrap::</code><strong><code>wrap_in</code></strong><code>(Ustring&amp; src) const</code></li>
+<li><code>Ustring Wrap::</code><strong><code>operator()</code></strong><code>(const Ustring&amp; src) const</code></li>
+</ul>
+</li>
 <li><code>template &lt;typename... Args&gt; Ustring</code> <strong><code>str_wrap</code></strong><code>(const Ustring&amp; str, Args... args)</code></li>
 <li><code>template &lt;typename... Args&gt; void</code> <strong><code>str_wrap_in</code></strong><code>(Ustring&amp; str, Args... args)</code></li>
 </ul>
-<p>Wrap the text in a string to a given width. Wrapping is done separately for
-each paragraph. Words are simply delimited by whitespace, which may not be
-appropriate for all languages; no attempt is made at anything more
-sophisticated such as hyphenation or locale-specific word breaking rules.</p>
+<p>The <code>Wrap</code> class, and the two <code>str_wrap*()</code> functions, wrap the text in a
+string to a given width. The class stores a set of wrapping parameters,
+supplied as keyword arguments to the constructor; the two free functions may
+be more convenient when only a single call is needed and the parameters do not
+need to be saved. The function call operator is equivalent to the <code>wrap()</code>
+method.</p>
 <p>The following keyword arguments are recognised:</p>
 <table>
 <thead>
@@ -715,6 +726,10 @@ sophisticated such as hyphenation or locale-specific word breaking rules.</p>
 </tr>
 </tbody>
 </table>
+<p>Wrapping is done separately for each paragraph. Words are simply delimited by
+whitespace, which may not be appropriate for all languages; no attempt is made
+at anything more sophisticated such as hyphenation or locale-specific word
+breaking rules.</p>
 <p>Paragraphs are normally delimited by two or more line breaks; if the <code>lines</code>
 flag is set, every line break is interpreted as a paragraph break. As usual,
 <code>CR+LF</code> is counted as a single line break.</p>
