@@ -345,11 +345,10 @@ recognized on Cygwin); on Windows, this checks for a drive letter (e.g.
 <p>Returns a relative path locating the current path relative to the given base
 path. The current and base paths must be either both absolute or both
 relative; if they are relative, they are assumed to be relative to the same
-origin.
-On Windows, if the two paths are absolute and have different drive prefixes,
-the original absolute path will be returned unchanged.
-This will throw <code>std::invalid_argument</code> if the current path and base
-path are not both absolute or both relative.</p>
+origin. On Windows, if the two paths are absolute and have different drive
+prefixes, the original absolute path will be returned unchanged. This will
+throw <code>std::invalid_argument</code> if the current path and base path are not both
+absolute or both relative.</p>
 </div>
 <div class="defns">
 <ul>
