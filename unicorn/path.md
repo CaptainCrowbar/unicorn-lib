@@ -271,11 +271,10 @@ Hash function. This simply returns the standard hash of the internal string.
 Returns a relative path locating the current path relative to the given base
 path. The current and base paths must be either both absolute or both
 relative; if they are relative, they are assumed to be relative to the same
-origin.
-On Windows, if the two paths are absolute and have different drive prefixes,
-the original absolute path will be returned unchanged.
-This will throw `std::invalid_argument` if the current path and base
-path are not both absolute or both relative.
+origin. On Windows, if the two paths are absolute and have different drive
+prefixes, the original absolute path will be returned unchanged. This will
+throw `std::invalid_argument` if the current path and base path are not both
+absolute or both relative.
 
 * `std::pair<Ustring, Ustring> Path::`**`split_leaf`**`() const`
 * `std::pair<string_type, string_type> Path::`**`split_os_leaf`**`() const`
