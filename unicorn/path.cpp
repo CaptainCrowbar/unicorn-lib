@@ -4,11 +4,16 @@
 #include <cerrno>
 #include <cstring>
 #include <ios>
+#include <regex>
 #include <stdexcept>
 #include <system_error>
 
 #ifdef __APPLE__
     #include <Availability.h>
+#endif
+
+#ifdef __CYGWIN__
+    #include <sys/cygwin.h>
 #endif
 
 #ifdef _XOPEN_SOURCE
@@ -22,7 +27,6 @@
     #define CX(c) c
     #define FX(f) f
 #else
-    #include <regex>
     #include <windows.h>
     #define CX(c) L##c
     #define FX(f) _w##f
@@ -179,6 +183,24 @@ namespace RS::Unicorn {
     }
 
     // Path name functions
+
+    Path::string_type Path::native_name() const {
+        #ifdef __CYGWIN__
+            auto rc = cygwin_conv_path(CCP_POSIX_TO_WIN_W | CCP_RELATIVE, file.c_name(), nullptr, 0);
+            auto err = errno;
+            if (rc == -1)
+                throw std::system_error(err, std::system_category(), "cygwin_conv_path()");
+            std::wstring buf(rc / 2, L'\0');
+            rc = cygwin_conv_path(CCP_POSIX_TO_WIN_W | CCP_RELATIVE, file.c_name(), buf.data(), 2 * buf.size());
+            err = errno;
+            if (rc == -1)
+                throw std::system_error(err, std::system_category(), "cygwin_conv_path()");
+            null_term(buf);
+            return buf;
+        #else
+            return filename;
+        #endif
+    }
 
     Ustring Path::as_url(flag_type flags) const {
         if (! is_absolute())

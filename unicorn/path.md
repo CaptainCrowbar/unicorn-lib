@@ -201,7 +201,13 @@ step.
 * `string_view_type Path::`**`os_view`**`() const noexcept`
 * `const character_type* Path::`**`c_name`**`() const noexcept`
 
-These return the full path in its native form, with no conversion.
+These return the full path in its native OS form, with no conversion.
+
+* `string_type Path::`**`native_name`**`() const`
+
+On Cygwin, this returns the underlying NTFS file name, and may throw
+`system_error` if there is a problem retrieving this. On any other host, this
+is a synonym for `os_name()`.
 
 * `Ustring Path::`**`as_url`**`(flag_type flags = Utf::replace) const`
 

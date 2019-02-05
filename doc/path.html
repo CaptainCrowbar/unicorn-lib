@@ -253,7 +253,15 @@ step.</p>
 <li><code>string_view_type Path::</code><strong><code>os_view</code></strong><code>() const noexcept</code></li>
 <li><code>const character_type* Path::</code><strong><code>c_name</code></strong><code>() const noexcept</code></li>
 </ul>
-<p>These return the full path in its native form, with no conversion.</p>
+<p>These return the full path in its native OS form, with no conversion.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>string_type Path::</code><strong><code>native_name</code></strong><code>() const</code></li>
+</ul>
+<p>On Cygwin, this returns the underlying NTFS file name, and may throw
+<code>system_error</code> if there is a problem retrieving this. On any other host, this
+is a synonym for <code>os_name()</code>.</p>
 </div>
 <div class="defns">
 <ul>

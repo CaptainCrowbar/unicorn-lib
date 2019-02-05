@@ -110,6 +110,20 @@ void test_unicorn_path_unicode_names() {
 
     #endif
 
+    #ifdef __CYGWIN__
+
+        std::wstring wfile;
+
+        TRY(file = "hello/world");
+        TRY(wfile = file.native_name());
+        TEST_EQUAL(wfile, L"hello\\world");
+
+        TRY(file = u8"αβγδε");
+        TRY(wfile = file.native_name());
+        TEST_EQUAL(wfile, L"αβγδε");
+
+    #endif
+
 }
 
 void test_unicorn_path_name_normalization() {

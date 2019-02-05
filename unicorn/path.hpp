@@ -111,6 +111,7 @@ namespace RS::Unicorn {
 
         Ustring name(flag_type flags = Utf::replace) const { return to_utf8(filename, flags); }
         string_type os_name() const { return filename; }
+        string_type native_name() const;
         string_view_type os_view() const noexcept { return filename; }
         const character_type* c_name() const noexcept { return filename.data(); }
         Ustring as_url(flag_type flags = Utf::replace) const;
