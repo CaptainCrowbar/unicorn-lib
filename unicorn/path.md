@@ -70,6 +70,7 @@ of `"/foo/bar/hello.txt"`, or `"C:\foo\bar\hello.txt"`, is `"hello.txt"`).
 
 * `using Path::`**`character_type`** `= [char on Unix, wchar_t on Windows]`
 * `using Path::`**`flag_type`** `= [unsigned integer type]`
+* `using Path::`**`host_string_type`** `= [std::wstring on Cygwin, otherwise the same as string_type]`
 * `using Path::`**`id_type`** `= std::pair<uint64_t, uint64_t>`
 * `using Path::`**`string_type`** `= [std::string on Unix, std::wstring on Windows]`
 * `using Path::`**`string_view_type`** `= [std::string_view on Unix, std::wstring_view on Windows]`
@@ -203,11 +204,11 @@ step.
 
 These return the full path in its native OS form, with no conversion.
 
-* `string_type Path::`**`native_name`**`() const`
+* `host_string_type Path::`**`native_name`**`() const`
 
-On Cygwin, this returns the underlying NTFS file name, and may throw
-`system_error` if there is a problem retrieving this. On any other host, this
-is a synonym for `os_name()`.
+On Cygwin, this returns the underlying NTFS file name as a `std::wstring`, and
+may throw `system_error` if there is a problem retrieving this. On any other
+host, this is a synonym for `os_name()`.
 
 * `Ustring Path::`**`as_url`**`(flag_type flags = Utf::replace) const`
 

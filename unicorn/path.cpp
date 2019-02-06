@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cerrno>
 #include <cstring>
+#include <cwchar>
 #include <ios>
 #include <regex>
 #include <stdexcept>
@@ -184,18 +185,19 @@ namespace RS::Unicorn {
 
     // Path name functions
 
-    Path::string_type Path::native_name() const {
+    Path::host_string_type Path::native_name() const {
         #ifdef __CYGWIN__
-            auto rc = cygwin_conv_path(CCP_POSIX_TO_WIN_W | CCP_RELATIVE, file.c_name(), nullptr, 0);
+            auto rc = cygwin_conv_path(CCP_POSIX_TO_WIN_W | CCP_RELATIVE, c_name(), nullptr, 0);
             auto err = errno;
             if (rc == -1)
                 throw std::system_error(err, std::system_category(), "cygwin_conv_path()");
-            std::wstring buf(rc / 2, L'\0');
-            rc = cygwin_conv_path(CCP_POSIX_TO_WIN_W | CCP_RELATIVE, file.c_name(), buf.data(), 2 * buf.size());
+            std::wstring buf(rc / 2 + 1, L'\0');
+            rc = cygwin_conv_path(CCP_POSIX_TO_WIN_W | CCP_RELATIVE, c_name(), buf.data(), 2 * buf.size());
             err = errno;
             if (rc == -1)
                 throw std::system_error(err, std::system_category(), "cygwin_conv_path()");
-            null_term(buf);
+            size_t len = std::wcslen(buf.data());
+            buf.resize(len);
             return buf;
         #else
             return filename;

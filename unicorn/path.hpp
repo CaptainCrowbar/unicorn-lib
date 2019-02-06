@@ -38,6 +38,12 @@ namespace RS::Unicorn {
         using string_type = std::basic_string<character_type>;
         using string_view_type = std::basic_string_view<character_type>;
 
+        #ifdef __CYGWIN__
+            using host_string_type = std::wstring;
+        #else
+            using host_string_type = string_type;
+        #endif
+
         enum class form {
             empty,
             absolute,
@@ -111,7 +117,7 @@ namespace RS::Unicorn {
 
         Ustring name(flag_type flags = Utf::replace) const { return to_utf8(filename, flags); }
         string_type os_name() const { return filename; }
-        string_type native_name() const;
+        host_string_type native_name() const;
         string_view_type os_view() const noexcept { return filename; }
         const character_type* c_name() const noexcept { return filename.data(); }
         Ustring as_url(flag_type flags = Utf::replace) const;

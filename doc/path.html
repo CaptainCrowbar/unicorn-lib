@@ -94,6 +94,7 @@ of <code>"/foo/bar/hello.txt"</code>, or <code>"C:\foo\bar\hello.txt"</code>, is
 <ul>
 <li><code>using Path::</code><strong><code>character_type</code></strong> <code>= [char on Unix, wchar_t on Windows]</code></li>
 <li><code>using Path::</code><strong><code>flag_type</code></strong> <code>= [unsigned integer type]</code></li>
+<li><code>using Path::</code><strong><code>host_string_type</code></strong> <code>= [std::wstring on Cygwin, otherwise the same as string_type]</code></li>
 <li><code>using Path::</code><strong><code>id_type</code></strong> <code>= std::pair&lt;uint64_t, uint64_t&gt;</code></li>
 <li><code>using Path::</code><strong><code>string_type</code></strong> <code>= [std::string on Unix, std::wstring on Windows]</code></li>
 <li><code>using Path::</code><strong><code>string_view_type</code></strong> <code>= [std::string_view on Unix, std::wstring_view on Windows]</code></li>
@@ -257,11 +258,11 @@ step.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>string_type Path::</code><strong><code>native_name</code></strong><code>() const</code></li>
+<li><code>host_string_type Path::</code><strong><code>native_name</code></strong><code>() const</code></li>
 </ul>
-<p>On Cygwin, this returns the underlying NTFS file name, and may throw
-<code>system_error</code> if there is a problem retrieving this. On any other host, this
-is a synonym for <code>os_name()</code>.</p>
+<p>On Cygwin, this returns the underlying NTFS file name as a <code>std::wstring</code>, and
+may throw <code>system_error</code> if there is a problem retrieving this. On any other
+host, this is a synonym for <code>os_name()</code>.</p>
 </div>
 <div class="defns">
 <ul>
