@@ -445,16 +445,26 @@ namespace RS {
 
     // Algorithms
 
+    namespace RS_Detail {
+
+        template <typename CT, typename VT> using HasPushBackArchetype = decltype(std::declval<CT>().push_back(std::declval<VT>()));
+
+    }
+
     template <typename Container, typename T>
     void append_to(Container& con, const T& t) {
-        con.insert(con.end(), t);
+        static constexpr bool has_push_back = Meta::is_detected<RS_Detail::HasPushBackArchetype, Container, T>;
+        if constexpr (has_push_back)
+            con.push_back(t);
+        else
+            con.insert(con.end(), t);
     }
 
     template <typename Container>
     class AppendIterator:
     public OutputIterator<AppendIterator<Container>> {
     public:
-        using value_type = typename Container::value_type;
+        using value_type = Meta::RangeValue<Container>;
         AppendIterator() = default;
         explicit AppendIterator(Container& c): con(&c) {}
         AppendIterator& operator=(const value_type& v) { append_to(*con, v); return *this; }

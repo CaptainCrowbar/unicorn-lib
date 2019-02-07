@@ -83,9 +83,9 @@ can be used to copy any range into a container (e.g. `range >> append(con)`).
 * `template <typename Container, typename T> void` **`append_to`**`(Container& con, const T& t)`
 
 Appends an item to a container; used by `append()` and `overwrite()`. The
-generic version calls `con.insert(con.end(), t)`; overloads (found by argument
-dependent lookup) can be used for container-like types that do not have a
-suitable `insert()` method.
+generic version calls `con.push_back(t)` or `con.insert(con.end(), t)`;
+overloads (found by argument dependent lookup) can be used for other
+container-like types.
 
 * `template <typename Range1, typename Range2> int` **`compare_3way`**`(const Range1& r1, const Range2& r2)`
 * `template <typename Range1, typename Range2, typename Compare> int` **`compare_3way`**`(const Range1& r1, const Range2& r2, Compare cmp)`

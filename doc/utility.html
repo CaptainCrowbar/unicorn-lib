@@ -124,9 +124,9 @@ can be used to copy any range into a container (e.g. <code>range &gt;&gt; append
 <li><code>template &lt;typename Container, typename T&gt; void</code> <strong><code>append_to</code></strong><code>(Container&amp; con, const T&amp; t)</code></li>
 </ul>
 <p>Appends an item to a container; used by <code>append()</code> and <code>overwrite()</code>. The
-generic version calls <code>con.insert(con.end(), t)</code>; overloads (found by argument
-dependent lookup) can be used for container-like types that do not have a
-suitable <code>insert()</code> method.</p>
+generic version calls <code>con.push_back(t)</code> or <code>con.insert(con.end(), t)</code>;
+overloads (found by argument dependent lookup) can be used for other
+container-like types.</p>
 </div>
 <div class="defns">
 <ul>
