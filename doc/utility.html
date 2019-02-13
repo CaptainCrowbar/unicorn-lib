@@ -800,6 +800,7 @@ that matches the type:</p>
 that matches the type:</p>
 <ul>
 <li>If <code>T</code> is <code>bool</code>, return <code>"true"</code> or <code>"false"</code></li>
+<li>If <code>T</code> is <code>char</code>, return a one-character string</li>
 <li>If <code>T</code> is <code>std::string</code> or <code>std::string_view</code>, simply copy the string</li>
 <li>If <code>T</code> is <code>[const] char*</code>, copy the string, or return an empty string if the pointer is null</li>
 <li>If <code>T</code> is <code>std::array&lt;uint8_t,N&gt;</code> or <code>std::vector&lt;uint8_t&gt;</code>, format each byte in hexadecimal</li>

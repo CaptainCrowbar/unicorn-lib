@@ -1576,6 +1576,7 @@ namespace {
 void test_unicorn_utility_conversion_to_string() {
 
     bool b = true;
+    char c = 'c';
     int i = 42;
     float f = -1.25;
     std::string s = "Hello string";
@@ -1612,6 +1613,7 @@ void test_unicorn_utility_conversion_to_string() {
     std::string out;
 
     TRY(out = to_str(b));    TEST_EQUAL(out, "true");
+    TRY(out = to_str(c));    TEST_EQUAL(out, "c");
     TRY(out = to_str(i));    TEST_EQUAL(out, "42");
     TRY(out = to_str(f));    TEST_EQUAL(out, "-1.25");
     TRY(out = to_str(s));    TEST_EQUAL(out, "Hello string");

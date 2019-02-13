@@ -1325,6 +1325,8 @@ namespace RS {
         using namespace std::literals;
         if constexpr (std::is_same_v<T, bool>) {
             return t ? "true"s : "false"s;
+        } else if constexpr (std::is_same_v<T, char>) {
+            return std::string(1, t);
         } else if constexpr (std::is_same_v<T, std::string>) {
             return t;
         } else if constexpr (std::is_same_v<T, std::string_view>) {

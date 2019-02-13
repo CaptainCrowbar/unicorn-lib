@@ -564,6 +564,7 @@ The `to_str()` functions follow these rules, using the first conversion rule
 that matches the type:
 
 * If `T` is `bool`, return `"true"` or `"false"`
+* If `T` is `char`, return a one-character string
 * If `T` is `std::string` or `std::string_view`, simply copy the string
 * If `T` is `[const] char*`, copy the string, or return an empty string if the pointer is null
 * If `T` is `std::array<uint8_t,N>` or `std::vector<uint8_t>`, format each byte in hexadecimal
