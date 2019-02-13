@@ -12,6 +12,9 @@ extern void test_unicorn_utility_metaprogramming();
 extern void test_unicorn_utility_range_types();
 extern void test_unicorn_utility_scope_guards();
 extern void test_unicorn_utility_string_functions();
+extern void test_unicorn_utility_type_names();
+extern void test_unicorn_utility_conversion_from_string();
+extern void test_unicorn_utility_conversion_to_string();
 extern void test_unicorn_utility_version_number();
 extern void test_unicorn_character_version_information();
 extern void test_unicorn_character_basic_functions();
@@ -160,6 +163,9 @@ int main() {
         { "unicorn/utility/range-types", test_unicorn_utility_range_types },
         { "unicorn/utility/scope-guards", test_unicorn_utility_scope_guards },
         { "unicorn/utility/string-functions", test_unicorn_utility_string_functions },
+        { "unicorn/utility/type-names", test_unicorn_utility_type_names },
+        { "unicorn/utility/conversion-from-string", test_unicorn_utility_conversion_from_string },
+        { "unicorn/utility/conversion-to-string", test_unicorn_utility_conversion_to_string },
         { "unicorn/utility/version-number", test_unicorn_utility_version_number },
         { "unicorn/character/version-information", test_unicorn_character_version_information },
         { "unicorn/character/basic-functions", test_unicorn_character_basic_functions },

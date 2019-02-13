@@ -537,24 +537,61 @@ tag is ignored. These will throw `std::invalid_argument` if the string does
 not start with a valid number, or `std::range_error` if the result is too big
 for the return type.
 
+* `template <typename T> bool` **`from_str`**`(std::string_view view, T& t) noexcept`
+* `template <typename T> T` **`from_str`**`(std::string_view view)`
 * `template <typename T> std::string` **`to_str`**`(const T& t)`
 
-Formats an object as a string. This uses the following rules for formatting
-various types:
+Generic utility functions for converting arbitrary types to or from a string.
+The conversion rules are described below; `to_str()` and the first version of
+`from_str()` can also be overloaded for new types.
 
-* `bool` - Written as `"true"` or `"false"`.
-* Integer types (other than `char`) - Formatted using `dec()`.
-* Floating point types - Formatted using `fp_format()`.
-* Strings and string-like types - The string content is simply copied verbatim; a null character pointer is treated as an empty string.
-* Exceptions derived from `std::exception` - Calls the exception's `what()` method.
-* Arrays and vectors of bytes (`unsigned char`) - Formatted in hexadecimal.
-* Ranges (other than strings and byte arrays) - Serialized in the same format as `format_list()` above, or `format_map()` if the value type is a pair.
-* Pairs and tuples - Formatted as a comma delimited list, enclosed in parentheses.
-* Otherwise - Call the type's output operator, or fail to compile if it does not have one.
+The first version of `from_str()` writes the converted object into its second
+argument and returns true on success; otherwise, it returns false and leaves
+the referenced object unchanged. The second version calls the first version,
+throwing `invalid_argument` on failure, and returning the converted object on
+success; for this version, `T` must be default constructible.
 
-"String-like types" are defined as `std::string`, `std::string_view`, plain
-`char`, character pointers, and anything with an implicit conversion to
-`std::string` or `std::string_view`.
+The `from_str()` functions follow these rules, using the first conversion rule
+that matches the type:
+
+* `static_cast` from `std::string_view` to `T`
+* `static_cast` from `std::string` to `T`
+* `static_cast` from `const char*` to `T`
+* Read a `T` from a `std::istringstream` using `operator>>`
+* Otherwise fail
+
+The `to_str()` functions follow these rules, using the first conversion rule
+that matches the type:
+
+* If `T` is `bool`, return `"true"` or `"false"`
+* If `T` is `std::string` or `std::string_view`, simply copy the string
+* If `T` is `[const] char*`, copy the string, or return an empty string if the pointer is null
+* If `T` is `std::array<uint8_t,N>` or `std::vector<uint8_t>`, format each byte in hexadecimal
+* If `T` is an integer type, call `std::to_string(t)`
+* If `T` is a floating point type, call `fp_format(t)`
+* Call `t.str()`, `to_string(t)`, or `std::to_string(t)`
+* `static_cast` from `T` to `std::string`, `std::string_view`, or `const char*`
+* If `T` is derived from `std::exception`, call `t.what()`
+* If `T` is a `std::optional`, `std::shared_ptr`, or `std::unique_ptr`, return `to_str(*t)` or `"null"`
+* If `T` is a `std::pair` or `std::tuple`, call `to_str()` on each element and return `"(e1,e2,...)"`
+* If `T` is a range whose elements are pairs, call `to_str()` on each member of each pair and return `"{k1:v1,k2:v2,...}"`
+* If `T` is a range whose elements are not pairs, call `to_str()` on each element and return `"[e1,e2,...]"`
+* Write a `T` into a `std::ostringstream` using `operator<<`
+* If all else fails, just return the demangled type name
+
+## Type names ##
+
+* `std::string` **`demangle`**`(const std::string& name)`
+* `std::string` **`type_name`**`(const std::type_info& t)`
+* `std::string` **`type_name`**`(const std::type_index& t)`
+* `template <typename T> std::string` **`type_name`**`()`
+* `template <typename T> std::string` **`type_name`**`(const T& t)`
+
+`[unicorn]` Demangle a type name. The original mangled name can be supplied as
+an explicit string, as a `std::type_info` or `std:type_index` object, as a
+type argument to a template function (e.g. `type_name<int>()`), or as an
+object whose type is to be named (e.g. `type_name(42)`). The last version will
+report the dynamic type of the referenced object.
 
 ## Version number ##
 

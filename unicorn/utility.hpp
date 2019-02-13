@@ -51,9 +51,12 @@
 #include <exception>
 #include <functional>
 #include <iostream>
+#include <istream>
 #include <iterator>
 #include <limits>
 #include <mutex>
+#include <new>
+#include <optional>
 #include <ostream>
 #include <shared_mutex>
 #include <sstream>
@@ -62,11 +65,15 @@
 #include <string_view>
 #include <system_error>
 #include <tuple>
+#include <typeindex>
+#include <typeinfo>
 #include <type_traits>
 #include <utility>
 #include <vector>
 
-// Compiler brain damage
+#ifdef __GNUC__
+    #include <cxxabi.h>
+#endif
 
 #ifdef _MSC_VER
     #pragma warning(disable: 4459) // Declaration hides global declaration
@@ -139,6 +146,50 @@
 #endif
 
 namespace RS {
+
+    // Basic types
+
+    #ifdef _XOPEN_SOURCE
+        using NativeCharacter = char;
+    #else
+        #define RS_NATIVE_WCHAR 1
+        using NativeCharacter = wchar_t;
+    #endif
+
+    #if WCHAR_MAX < 0x7fffffff
+        #define RS_WCHAR_UTF16 1
+        using WcharEquivalent = char16_t;
+    #else
+        #define RS_WCHAR_UTF32 1
+        using WcharEquivalent = char32_t;
+    #endif
+
+    using Ustring = std::string;
+    using Uview = std::string_view;
+    using Strings = std::vector<std::string>;
+    using NativeString = std::basic_string<NativeCharacter>;
+    using WstringEquivalent = std::basic_string<WcharEquivalent>;
+
+    // Constants
+
+    constexpr const char* ascii_whitespace = "\t\n\v\f\r ";
+    constexpr size_t npos = size_t(-1);
+
+    #if defined(_WIN32) || (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
+        constexpr bool big_endian_target = false;
+        constexpr bool little_endian_target = true;
+    #else
+        constexpr bool big_endian_target = true;
+        constexpr bool little_endian_target = false;
+    #endif
+
+    template <typename T> constexpr bool dependent_false = false;
+
+    // Forward declarations
+
+    template <typename T> bool from_str(std::string_view view, T& t) noexcept;
+    template <typename T> T from_str(std::string_view view);
+    template <typename T> std::string to_str(const T& t);
 
     // Enumeration macro implementation
 
@@ -217,44 +268,6 @@ namespace RS {
         }();
         return enum_vec;
     }
-
-    // Basic types
-
-    #ifdef _XOPEN_SOURCE
-        using NativeCharacter = char;
-    #else
-        #define RS_NATIVE_WCHAR 1
-        using NativeCharacter = wchar_t;
-    #endif
-
-    #if WCHAR_MAX < 0x7fffffff
-        #define RS_WCHAR_UTF16 1
-        using WcharEquivalent = char16_t;
-    #else
-        #define RS_WCHAR_UTF32 1
-        using WcharEquivalent = char32_t;
-    #endif
-
-    using Ustring = std::string;
-    using Uview = std::string_view;
-    using Strings = std::vector<std::string>;
-    using NativeString = std::basic_string<NativeCharacter>;
-    using WstringEquivalent = std::basic_string<WcharEquivalent>;
-
-    // Constants
-
-    constexpr const char* ascii_whitespace = "\t\n\v\f\r ";
-    constexpr size_t npos = size_t(-1);
-
-    #if defined(_WIN32) || (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
-        constexpr bool big_endian_target = false;
-        constexpr bool little_endian_target = true;
-    #else
-        constexpr bool big_endian_target = true;
-        constexpr bool little_endian_target = false;
-    #endif
-
-    template <typename T> constexpr bool dependent_false = false;
 
     // Error handling
 
@@ -858,8 +871,6 @@ namespace RS {
 
     // String functions
 
-    template <typename T> Ustring to_str(const T& t);
-
     constexpr bool ascii_iscntrl(char c) noexcept { return uint8_t(c) <= 31 || c == 127; }
     constexpr bool ascii_isdigit(char c) noexcept { return c >= '0' && c <= '9'; }
     constexpr bool ascii_isgraph(char c) noexcept { return c >= '!' && c <= '~'; }
@@ -1160,151 +1171,6 @@ namespace RS {
         return x;
     }
 
-    namespace RS_Detail {
-
-        template <typename R, typename T = Meta::RangeValue<R>>
-        struct RangeToString {
-            Ustring operator()(const R& r) const {
-                Ustring s = "[";
-                for (auto&& t: r) {
-                    s += to_str(t);
-                    s += ',';
-                }
-                if (s.size() > 1)
-                    s.pop_back();
-                s += ']';
-                return s;
-            }
-        };
-
-        template <typename R, typename K, typename T>
-        struct RangeToString<R, std::pair<K, T>> {
-            Ustring operator()(const R& r) const {
-                Ustring s = "{";
-                for (auto&& kv: r) {
-                    s += to_str(kv.first);
-                    s += ':';
-                    s += to_str(kv.second);
-                    s += ',';
-                }
-                if (s.size() > 1)
-                    s.pop_back();
-                s += '}';
-                return s;
-            }
-        };
-
-        template <typename R>
-        struct RangeToString<R, char> {
-            Ustring operator()(const R& r) const {
-                using std::begin;
-                using std::end;
-                return Ustring(begin(r), end(r));
-            }
-        };
-
-        template <typename T>
-        struct ObjectToStringCategory {
-            static constexpr char value =
-                std::is_integral<T>::value ? 'I' :
-                std::is_floating_point<T>::value ? 'F' :
-                std::is_convertible<T, std::string>::value ? 'S' :
-                std::is_base_of<std::exception, T>::value ? 'E' :
-                Meta::is_range<T> ? 'R' : 'X';
-        };
-
-        template <typename T, char C = ObjectToStringCategory<T>::value>
-        struct ObjectToString {
-            Ustring operator()(const T& t) const {
-                std::ostringstream out;
-                out << t;
-                return out.str();
-            }
-        };
-
-        template <> struct ObjectToString<Ustring> { Ustring operator()(const Ustring& t) const { return t; } };
-        template <> struct ObjectToString<Uview> { Ustring operator()(Uview t) const { return Ustring(t); } };
-        template <> struct ObjectToString<char*> { Ustring operator()(char* t) const { return t ? Ustring(t) : Ustring(); } };
-        template <> struct ObjectToString<const char*> { Ustring operator()(const char* t) const { return t ? Ustring(t) : Ustring(); } };
-        template <size_t N> struct ObjectToString<char[N], 'S'> { Ustring operator()(const char* t) const { return Ustring(t, N - 1); } };
-        template <size_t N> struct ObjectToString<const char[N], 'S'> { Ustring operator()(const char* t) const { return Ustring(t, N - 1); } };
-        template <> struct ObjectToString<char> { Ustring operator()(char t) const { return {t}; } };
-        template <> struct ObjectToString<bool> { Ustring operator()(bool t) const { return t ? "true" : "false"; } };
-        template <> struct ObjectToString<std::nullptr_t> { Ustring operator()(std::nullptr_t) const { return "null"; } };
-        template <typename T> struct ObjectToString<T, 'I'> { Ustring operator()(T t) const { return dec(t); } };
-        template <typename T> struct ObjectToString<T, 'F'> { Ustring operator()(T t) const { return fp_format(t); } };
-        template <typename T> struct ObjectToString<T, 'S'> { Ustring operator()(T t) const { return static_cast<Ustring>(*&t); } };
-        template <typename T> struct ObjectToString<T, 'E'> { Ustring operator()(T t) const { return t.what(); } };
-        template <typename T> struct ObjectToString<T, 'R'>: RangeToString<T> {};
-        template <typename T> struct ObjectToString<std::atomic<T>, 'X'> { Ustring operator()(const std::atomic<T>& t) const { return ObjectToString<T>()(t); } };
-
-        template <size_t Index, size_t Count, typename... TS>
-        struct TupleToString {
-            void operator()(Ustring& s, const std::tuple<TS...>& t) const {
-                s += to_str(std::get<Index>(t));
-                s += ',';
-                TupleToString<Index + 1, Count, TS...>()(s, t);
-            }
-        };
-
-        template <size_t Count, typename... TS>
-        struct TupleToString<Count, Count, TS...> {
-            void operator()(Ustring&, const std::tuple<TS...>&) const {}
-        };
-
-        template <typename... TS>
-        struct ObjectToString<std::tuple<TS...>, 'X'> {
-            Ustring operator()(const std::tuple<TS...>& t) const {
-                Ustring s = "(";
-                TupleToString<0, std::tuple_size<std::tuple<TS...>>::value, TS...>()(s, t);
-                s.back() = ')';
-                return s;
-            }
-        };
-
-        template <>
-        struct ObjectToString<std::tuple<>, 'X'> {
-            Ustring operator()(const std::tuple<>&) const {
-                return "()";
-            }
-        };
-
-        template <typename T1, typename T2>
-        struct ObjectToString<std::pair<T1, T2>, 'X'> {
-            Ustring operator()(const std::pair<T1, T2>& t) const {
-                return '(' + ObjectToString<T1>()(t.first) + ',' + ObjectToString<T2>()(t.second) + ')';
-            }
-        };
-
-        inline Ustring bytes_to_hex(const unsigned char* ptr, size_t len) {
-            static constexpr const char* digits = "0123456789abcdef";
-            Ustring s;
-            s.reserve(2 * len);
-            for (size_t i = 0; i < len; ++i) {
-                s += digits[ptr[i] >> 4];
-                s += digits[ptr[i] & 15];
-            }
-            return s;
-        }
-
-        template <size_t N>
-        struct ObjectToString<std::array<unsigned char, N>, 'R'> {
-            Ustring operator()(const std::array<unsigned char, N>& t) const {
-                return bytes_to_hex(t.data(), t.size());
-            }
-        };
-
-        template <>
-        struct ObjectToString<std::vector<unsigned char>, 'R'> {
-            Ustring operator()(const std::vector<unsigned char>& t) const {
-                return bytes_to_hex(t.data(), t.size());
-            }
-        };
-
-    }
-
-    template <typename T> inline Ustring to_str(const T& t) { return RS_Detail::ObjectToString<T>()(t); }
-
     template <typename Range>
     Ustring format_list(const Range& r, std::string_view prefix, std::string_view delimiter, std::string_view suffix) {
         Ustring s(prefix);
@@ -1343,6 +1209,207 @@ namespace RS {
     template <typename Range>
     Ustring format_map(const Range& r) {
         return format_map(r, "{", ":", ",", "}");
+    }
+
+    // Type names
+
+    inline std::string demangle(const std::string& name) {
+        #ifdef __GNUC__
+            auto mangled = name;
+            std::shared_ptr<char> demangled;
+            int status = 0;
+            for (;;) {
+                if (mangled.empty())
+                    return name;
+                demangled.reset(abi::__cxa_demangle(mangled.data(), nullptr, nullptr, &status), free);
+                if (status == -1)
+                    throw std::bad_alloc();
+                if (status == 0 && demangled)
+                    return demangled.get();
+                if (mangled[0] != '_')
+                    return name;
+                mangled.erase(0, 1);
+            }
+        #else
+            return name;
+        #endif
+    }
+
+    inline std::string type_name(const std::type_info& t) { return demangle(t.name()); }
+    inline std::string type_name(const std::type_index& t) { return demangle(t.name()); }
+    template <typename T> std::string type_name() { return type_name(typeid(T)); }
+    template <typename T> std::string type_name(const T& t) { return type_name(typeid(t)); }
+
+    // String conversions
+
+    namespace RS_Detail {
+
+        template <typename T> using InputOperatorArchetype = decltype(std::declval<std::istream&>() >> std::declval<T&>());
+        template <typename T> using OutputOperatorArchetype = decltype(std::declval<std::ostream&>() << std::declval<T>());
+        template <typename T> using StrMethodArchetype = decltype(std::declval<T>().str());
+        template <typename T> using AdlToStringArchetype = decltype(to_string(std::declval<T>()));
+        template <typename T> using StdToStringArchetype = decltype(std::to_string(std::declval<T>()));
+
+        template <typename T> struct IsByteArray: public std::false_type {};
+        template <typename A> struct IsByteArray<std::vector<unsigned char, A>>: public std::true_type {};
+        template <size_t N> struct IsByteArray<std::array<unsigned char, N>>: public std::true_type {};
+
+        template <typename T> struct IsOptional: public std::false_type {};
+        template <typename T> struct IsOptional<std::optional<T>>: public std::true_type {};
+
+        template <typename T> struct IsSharedPtr: public std::false_type {};
+        template <typename T> struct IsSharedPtr<std::shared_ptr<T>>: public std::true_type {};
+
+        template <typename T> struct IsUniquePtr: public std::false_type {};
+        template <typename T, typename D> struct IsUniquePtr<std::unique_ptr<T, D>>: public std::true_type {};
+
+        template <typename T> struct IsPair: public std::false_type {};
+        template <typename T1, typename T2> struct IsPair<std::pair<T1, T2>>: public std::true_type {};
+
+        template <typename T> struct IsTuple: public std::false_type {};
+        template <typename... TS> struct IsTuple<std::tuple<TS...>>: public std::true_type {};
+
+        template <size_t I, typename... TS>
+        void append_tuple(const std::tuple<TS...>& t, std::string& s) {
+            if constexpr (I < sizeof...(TS)) {
+                s += to_str(std::get<I>(t));
+                if constexpr (I + 1 < sizeof...(TS)) {
+                    s += ',';
+                    append_tuple<I + 1>(t, s);
+                }
+            }
+        }
+
+    }
+
+    template <typename T>
+    bool from_str(std::string_view view, T& t) noexcept {
+        using namespace RS_Detail;
+        try {
+            if constexpr (std::is_constructible_v<T, std::string_view>) {
+                t = static_cast<T>(view);
+                return true;
+            } else if constexpr (std::is_constructible_v<T, std::string>) {
+                std::string str(view);
+                t = static_cast<T>(str);
+                return true;
+            } else if constexpr (std::is_constructible_v<T, const char*>) {
+                std::string str(view);
+                t = static_cast<T>(str.data());
+                return true;
+            } else if constexpr (Meta::is_detected<InputOperatorArchetype, T>) {
+                std::string str(view);
+                std::istringstream in(str);
+                in >> t;
+                return bool(in);
+            } else {
+                return false;
+            }
+        }
+        catch (...) {
+            return false;
+        }
+    }
+
+    template <typename T>
+    T from_str(std::string_view view) {
+        T t;
+        if (! from_str(view, t))
+            throw std::invalid_argument("Invalid conversion: " + quote(view) + " => " + type_name<T>());
+        return t;
+    }
+
+    template <typename T>
+    std::string to_str(const T& t) {
+        using namespace RS_Detail;
+        using namespace std::literals;
+        if constexpr (std::is_same_v<T, bool>) {
+            return t ? "true"s : "false"s;
+        } else if constexpr (std::is_same_v<T, std::string>) {
+            return t;
+        } else if constexpr (std::is_same_v<T, std::string_view>) {
+            return std::string(t);
+        } else if constexpr (std::is_same_v<T, char*> || std::is_same_v<T, const char*>) {
+            return cstr(t);
+        } else if constexpr (IsByteArray<T>::value) {
+            static constexpr const char* digits = "0123456789abcdef";
+            size_t n = t.size();
+            std::string s;
+            s.reserve(2 * n);
+            for (size_t i = 0; i < n; ++i) {
+                s += digits[t[i] >> 4];
+                s += digits[t[i] & 15];
+                s += ' ';
+            }
+            if (! s.empty())
+                s.pop_back();
+            return s;
+        } else if constexpr (std::is_integral_v<T>) {
+            return std::to_string(t);
+        } else if constexpr (std::is_floating_point_v<T>) {
+            return fp_format(t);
+        } else if constexpr (Meta::is_detected_convertible<std::string, StrMethodArchetype, T>) {
+            return t.str();
+        } else if constexpr (Meta::is_detected_convertible<std::string, AdlToStringArchetype, T>) {
+            return to_string(t);
+        } else if constexpr (Meta::is_detected_convertible<std::string, StdToStringArchetype, T>) {
+            return std::to_string(t);
+        } else if constexpr (std::is_constructible_v<std::string, T>) {
+            return static_cast<std::string>(t);
+        } else if constexpr (std::is_constructible_v<std::string_view, T>) {
+            return std::string(static_cast<std::string_view>(t));
+        } else if constexpr (std::is_constructible_v<const char*, T>) {
+            return cstr(static_cast<const char*>(t));
+        } else if constexpr (std::is_base_of_v<std::exception, T>) {
+            return t.what();
+        } else if constexpr (IsOptional<T>::value || IsSharedPtr<T>::value || IsUniquePtr<T>::value) {
+            if (t)
+                return to_str(*t);
+            else
+                return "null"s;
+        } else if constexpr (IsPair<T>::value) {
+            std::string s = "(";
+            s += to_str(t.first);
+            s += ',';
+            s += to_str(t.second);
+            s += ')';
+            return s;
+        } else if constexpr (IsTuple<T>::value) {
+            std::string s = "(";
+            append_tuple<0>(t, s);
+            s += ')';
+            return s;
+        } else if constexpr (Meta::is_range<T>) {
+            if constexpr (IsPair<Meta::RangeValue<T>>::value) {
+                std::string s = "{";
+                for (auto& [k,v]: t) {
+                    s += to_str(k);
+                    s += ':';
+                    s += to_str(v);
+                    s += ',';
+                }
+                if (s.size() > 1)
+                    s.pop_back();
+                s += '}';
+                return s;
+            } else {
+                std::string s = "[";
+                for (auto& x: t) {
+                    s += to_str(x);
+                    s += ',';
+                }
+                if (s.size() > 1)
+                    s.pop_back();
+                s += ']';
+                return s;
+            }
+        } else if constexpr (Meta::is_detected<OutputOperatorArchetype, T>) {
+            std::ostringstream out;
+            out << t;
+            return out.str();
+        } else {
+            return type_name(t);
+        }
     }
 
     // Version numbers

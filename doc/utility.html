@@ -32,6 +32,7 @@ These are in <code>namespace RS</code> (except for the metaprogramming facilitie
 <li><a href="#range-types">Range types</a></li>
 <li><a href="#scope-guards">Scope guards</a></li>
 <li><a href="#string-functions">String functions</a></li>
+<li><a href="#type-names">Type names</a></li>
 <li><a href="#version-number">Version number</a></li>
 </ul>
 </li>
@@ -774,24 +775,61 @@ for the return type.</p>
 </div>
 <div class="defns">
 <ul>
+<li><code>template &lt;typename T&gt; bool</code> <strong><code>from_str</code></strong><code>(std::string_view view, T&amp; t) noexcept</code></li>
+<li><code>template &lt;typename T&gt; T</code> <strong><code>from_str</code></strong><code>(std::string_view view)</code></li>
 <li><code>template &lt;typename T&gt; std::string</code> <strong><code>to_str</code></strong><code>(const T&amp; t)</code></li>
 </ul>
-<p>Formats an object as a string. This uses the following rules for formatting
-various types:</p>
+<p>Generic utility functions for converting arbitrary types to or from a string.
+The conversion rules are described below; <code>to_str()</code> and the first version of
+<code>from_str()</code> can also be overloaded for new types.</p>
+<p>The first version of <code>from_str()</code> writes the converted object into its second
+argument and returns true on success; otherwise, it returns false and leaves
+the referenced object unchanged. The second version calls the first version,
+throwing <code>invalid_argument</code> on failure, and returning the converted object on
+success; for this version, <code>T</code> must be default constructible.</p>
+<p>The <code>from_str()</code> functions follow these rules, using the first conversion rule
+that matches the type:</p>
 <ul>
-<li><code>bool</code> - Written as <code>"true"</code> or <code>"false"</code>.</li>
-<li>Integer types (other than <code>char</code>) - Formatted using <code>dec()</code>.</li>
-<li>Floating point types - Formatted using <code>fp_format()</code>.</li>
-<li>Strings and string-like types - The string content is simply copied verbatim; a null character pointer is treated as an empty string.</li>
-<li>Exceptions derived from <code>std::exception</code> - Calls the exception's <code>what()</code> method.</li>
-<li>Arrays and vectors of bytes (<code>unsigned char</code>) - Formatted in hexadecimal.</li>
-<li>Ranges (other than strings and byte arrays) - Serialized in the same format as <code>format_list()</code> above, or <code>format_map()</code> if the value type is a pair.</li>
-<li>Pairs and tuples - Formatted as a comma delimited list, enclosed in parentheses.</li>
-<li>Otherwise - Call the type's output operator, or fail to compile if it does not have one.</li>
+<li><code>static_cast</code> from <code>std::string_view</code> to <code>T</code></li>
+<li><code>static_cast</code> from <code>std::string</code> to <code>T</code></li>
+<li><code>static_cast</code> from <code>const char*</code> to <code>T</code></li>
+<li>Read a <code>T</code> from a <code>std::istringstream</code> using <code>operator&gt;&gt;</code></li>
+<li>Otherwise fail</li>
 </ul>
-<p>"String-like types" are defined as <code>std::string</code>, <code>std::string_view</code>, plain
-<code>char</code>, character pointers, and anything with an implicit conversion to
-<code>std::string</code> or <code>std::string_view</code>.</p>
+<p>The <code>to_str()</code> functions follow these rules, using the first conversion rule
+that matches the type:</p>
+<ul>
+<li>If <code>T</code> is <code>bool</code>, return <code>"true"</code> or <code>"false"</code></li>
+<li>If <code>T</code> is <code>std::string</code> or <code>std::string_view</code>, simply copy the string</li>
+<li>If <code>T</code> is <code>[const] char*</code>, copy the string, or return an empty string if the pointer is null</li>
+<li>If <code>T</code> is <code>std::array&lt;uint8_t,N&gt;</code> or <code>std::vector&lt;uint8_t&gt;</code>, format each byte in hexadecimal</li>
+<li>If <code>T</code> is an integer type, call <code>std::to_string(t)</code></li>
+<li>If <code>T</code> is a floating point type, call <code>fp_format(t)</code></li>
+<li>Call <code>t.str()</code>, <code>to_string(t)</code>, or <code>std::to_string(t)</code></li>
+<li><code>static_cast</code> from <code>T</code> to <code>std::string</code>, <code>std::string_view</code>, or <code>const char*</code></li>
+<li>If <code>T</code> is derived from <code>std::exception</code>, call <code>t.what()</code></li>
+<li>If <code>T</code> is a <code>std::optional</code>, <code>std::shared_ptr</code>, or <code>std::unique_ptr</code>, return <code>to_str(*t)</code> or <code>"null"</code></li>
+<li>If <code>T</code> is a <code>std::pair</code> or <code>std::tuple</code>, call <code>to_str()</code> on each element and return <code>"(e1,e2,...)"</code></li>
+<li>If <code>T</code> is a range whose elements are pairs, call <code>to_str()</code> on each member of each pair and return <code>"{k1:v1,k2:v2,...}"</code></li>
+<li>If <code>T</code> is a range whose elements are not pairs, call <code>to_str()</code> on each element and return <code>"[e1,e2,...]"</code></li>
+<li>Write a <code>T</code> into a <code>std::ostringstream</code> using <code>operator&lt;&lt;</code></li>
+<li>If all else fails, just return the demangled type name</li>
+</ul>
+</div>
+<h2 id="type-names">Type names</h2>
+<div class="defns">
+<ul>
+<li><code>std::string</code> <strong><code>demangle</code></strong><code>(const std::string&amp; name)</code></li>
+<li><code>std::string</code> <strong><code>type_name</code></strong><code>(const std::type_info&amp; t)</code></li>
+<li><code>std::string</code> <strong><code>type_name</code></strong><code>(const std::type_index&amp; t)</code></li>
+<li><code>template &lt;typename T&gt; std::string</code> <strong><code>type_name</code></strong><code>()</code></li>
+<li><code>template &lt;typename T&gt; std::string</code> <strong><code>type_name</code></strong><code>(const T&amp; t)</code></li>
+</ul>
+<p><code><span class="unicorn">[unicorn]</span></code> Demangle a type name. The original mangled name can be supplied as
+an explicit string, as a <code>std::type_info</code> or <code>std:type_index</code> object, as a
+type argument to a template function (e.g. <code>type_name&lt;int&gt;()</code>), or as an
+object whose type is to be named (e.g. <code>type_name(42)</code>). The last version will
+report the dynamic type of the referenced object.</p>
 </div>
 <h2 id="version-number">Version number</h2>
 <div class="defns">
