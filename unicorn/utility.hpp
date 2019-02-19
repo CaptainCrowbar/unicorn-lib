@@ -815,56 +815,69 @@ namespace RS {
 
     // Scope guards
 
-    enum class Scope { exit, fail, success };
+    enum class ScopeState {
+        exit,    // Invoke callback unconditionally in destructor
+        fail,    // Invoke callback when scope unwinding due to exception, but not on normal exit
+        success  // Invoke callback on normal exit, but not when scope unwinding due to exception
+    };
 
-    template <typename F, Scope S>
+    template <typename F, ScopeState S>
     class BasicScopeGuard {
     public:
         BasicScopeGuard() = default;
         BasicScopeGuard(F&& f) try:
-            func(std::forward<F>(f)), inflight(std::uncaught_exceptions()) {}
+            callback_(std::forward<F>(f)),
+            inflight_(std::uncaught_exceptions()) {}
             catch (...) {
-                if constexpr (S != Scope::success)
+                if constexpr (S != ScopeState::success)
                     try { f(); } catch (...) {}
                 throw;
             }
         BasicScopeGuard(const BasicScopeGuard&) = delete;
-        BasicScopeGuard(BasicScopeGuard&& sg) noexcept:
-            func(std::move(sg.func)), inflight(std::exchange(sg.inflight, -1)) {}
+        BasicScopeGuard(BasicScopeGuard&& g) noexcept:
+            callback_(std::move(g.callback_)),
+            inflight_(std::exchange(g.inflight_, -1)) {}
         ~BasicScopeGuard() noexcept { close(); }
         BasicScopeGuard& operator=(const BasicScopeGuard&) = delete;
         BasicScopeGuard& operator=(F&& f) {
             close();
-            func = std::forward<F>(f);
-            inflight = std::uncaught_exceptions();
+            callback_ = std::forward<F>(f);
+            inflight_ = std::uncaught_exceptions();
             return *this;
         }
-        BasicScopeGuard& operator=(BasicScopeGuard&& sg) noexcept {
-            if (&sg != this) {
+        BasicScopeGuard& operator=(BasicScopeGuard&& g) noexcept {
+            if (&g != this) {
                 close();
-                func = std::move(sg.func);
-                inflight = std::exchange(sg.inflight, -1);
+                callback_ = std::move(g.callback_);
+                inflight_ = std::exchange(g.inflight_, -1);
             }
             return *this;
         }
-        void release() noexcept { inflight = -1; }
+        void release() noexcept { inflight_ = -1; }
     private:
-        F func;
-        int inflight = -1;
+        F callback_;
+        int inflight_ = -1;
         void close() noexcept {
-            if (inflight >= 0 && (S == Scope::exit || (S == Scope::fail) == (std::uncaught_exceptions() > inflight)))
-                try { func(); } catch (...) {}
-            inflight = -1;
+            if (inflight_ >= 0) {
+                bool call = true;
+                if constexpr (S == ScopeState::fail)
+                    call = std::uncaught_exceptions() > inflight_;
+                else if constexpr (S == ScopeState::success)
+                    call = std::uncaught_exceptions() <= inflight_;
+                if (call)
+                    try { callback_(); } catch (...) {}
+                inflight_ = -1;
+            }
         }
     };
 
-    using ScopeExit = BasicScopeGuard<std::function<void()>, Scope::exit>;
-    using ScopeFail = BasicScopeGuard<std::function<void()>, Scope::fail>;
-    using ScopeSuccess = BasicScopeGuard<std::function<void()>, Scope::success>;
+    using ScopeExit = BasicScopeGuard<std::function<void()>, ScopeState::exit>;
+    using ScopeFail = BasicScopeGuard<std::function<void()>, ScopeState::fail>;
+    using ScopeSuccess = BasicScopeGuard<std::function<void()>, ScopeState::success>;
 
-    template <typename F> inline BasicScopeGuard<F, Scope::exit> scope_exit(F&& f) { return BasicScopeGuard<F, Scope::exit>(std::forward<F>(f)); }
-    template <typename F> inline BasicScopeGuard<F, Scope::fail> scope_fail(F&& f) { return BasicScopeGuard<F, Scope::fail>(std::forward<F>(f)); }
-    template <typename F> inline BasicScopeGuard<F, Scope::success> scope_success(F&& f) { return BasicScopeGuard<F, Scope::success>(std::forward<F>(f)); }
+    template <typename F> inline auto scope_exit(F&& f) { return BasicScopeGuard<F, ScopeState::exit>(std::forward<F>(f)); }
+    template <typename F> inline auto scope_fail(F&& f) { return BasicScopeGuard<F, ScopeState::fail>(std::forward<F>(f)); }
+    template <typename F> inline auto scope_success(F&& f) { return BasicScopeGuard<F, ScopeState::success>(std::forward<F>(f)); }
 
     template <typename T> inline auto make_lock(T& t) { return std::unique_lock<T>(t); }
     template <typename T> inline auto make_shared_lock(T& t) { return std::shared_lock<T>(t); }

@@ -568,13 +568,13 @@ meaning.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>enum class</code> <strong><code>Scope</code></strong><ul>
-<li><code>Scope::</code><strong><code>exit</code></strong></li>
-<li><code>Scope::</code><strong><code>fail</code></strong></li>
-<li><code>Scope::</code><strong><code>success</code></strong></li>
+<li><code>enum class</code> <strong><code>ScopeState</code></strong><ul>
+<li><code>ScopeState::</code><strong><code>exit</code></strong></li>
+<li><code>ScopeState::</code><strong><code>fail</code></strong></li>
+<li><code>ScopeState::</code><strong><code>success</code></strong></li>
 </ul>
 </li>
-<li><code>template &lt;typename F, Scope S&gt; class</code> <strong><code>BasicScopeGuard</code></strong><ul>
+<li><code>template &lt;typename F, ScopeState S&gt; class</code> <strong><code>BasicScopeGuard</code></strong><ul>
 <li><code>BasicScopeGuard::</code><strong><code>BasicScopeGuard</code></strong><code>() noexcept</code></li>
 <li><code>BasicScopeGuard::</code><strong><code>BasicScopeGuard</code></strong><code>(F&amp;&amp; f)</code></li>
 <li><code>BasicScopeGuard::</code><strong><code>BasicScopeGuard</code></strong><code>(BasicScopeGuard&amp;&amp; sg) noexcept</code></li>
@@ -584,12 +584,12 @@ meaning.</p>
 <li><code>void BasicScopeGuard::</code><strong><code>release</code></strong><code>() noexcept</code></li>
 </ul>
 </li>
-<li><code>using</code> <strong><code>ScopeExit</code></strong> <code>= BasicScopeGuard&lt;std::function&lt;void()&gt;, Scope::exit&gt;</code></li>
-<li><code>using</code> <strong><code>ScopeFail</code></strong> <code>= BasicScopeGuard&lt;std::function&lt;void()&gt;, Scope::fail&gt;</code></li>
-<li><code>using</code> <strong><code>ScopeSuccess</code></strong> <code>= BasicScopeGuard&lt;std::function&lt;void()&gt;, Scope::success&gt;</code></li>
-<li><code>template &lt;typename F&gt; BasicScopeGuard&lt;F, Scope::exit&gt;</code> <strong><code>scope_exit</code></strong><code>(F&amp;&amp; f)</code></li>
-<li><code>template &lt;typename F&gt; BasicScopeGuard&lt;F, Scope::fail&gt;</code> <strong><code>scope_fail</code></strong><code>(F&amp;&amp; f)</code></li>
-<li><code>template &lt;typename F&gt; BasicScopeGuard&lt;F, Scope::success&gt;</code> <strong><code>scope_success</code></strong><code>(F&amp;&amp; f)</code></li>
+<li><code>using</code> <strong><code>ScopeExit</code></strong> <code>= BasicScopeGuard&lt;std::function&lt;void()&gt;, ScopeState::exit&gt;</code></li>
+<li><code>using</code> <strong><code>ScopeFail</code></strong> <code>= BasicScopeGuard&lt;std::function&lt;void()&gt;, ScopeState::fail&gt;</code></li>
+<li><code>using</code> <strong><code>ScopeSuccess</code></strong> <code>= BasicScopeGuard&lt;std::function&lt;void()&gt;, ScopeState::success&gt;</code></li>
+<li><code>template &lt;typename F&gt; BasicScopeGuard&lt;F, ScopeState::exit&gt;</code> <strong><code>scope_exit</code></strong><code>(F&amp;&amp; f)</code></li>
+<li><code>template &lt;typename F&gt; BasicScopeGuard&lt;F, ScopeState::fail&gt;</code> <strong><code>scope_fail</code></strong><code>(F&amp;&amp; f)</code></li>
+<li><code>template &lt;typename F&gt; BasicScopeGuard&lt;F, ScopeState::success&gt;</code> <strong><code>scope_success</code></strong><code>(F&amp;&amp; f)</code></li>
 </ul>
 <p>The scope guard class stores a function object, to be called when the guard is
 destroyed. The three functions create scope guards with different execution

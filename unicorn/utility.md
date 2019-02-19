@@ -361,11 +361,11 @@ meaning.
 
 Simple wrapper functions to create a mutex lock.
 
-* `enum class` **`Scope`**
-    * `Scope::`**`exit`**
-    * `Scope::`**`fail`**
-    * `Scope::`**`success`**
-* `template <typename F, Scope S> class` **`BasicScopeGuard`**
+* `enum class` **`ScopeState`**
+    * `ScopeState::`**`exit`**
+    * `ScopeState::`**`fail`**
+    * `ScopeState::`**`success`**
+* `template <typename F, ScopeState S> class` **`BasicScopeGuard`**
     * `BasicScopeGuard::`**`BasicScopeGuard`**`() noexcept`
     * `BasicScopeGuard::`**`BasicScopeGuard`**`(F&& f)`
     * `BasicScopeGuard::`**`BasicScopeGuard`**`(BasicScopeGuard&& sg) noexcept`
@@ -373,12 +373,12 @@ Simple wrapper functions to create a mutex lock.
     * `BasicScopeGuard& BasicScopeGuard::`**`operator=`**`(F&& f)`
     * `BasicScopeGuard& BasicScopeGuard::`**`operator=`**`(BasicScopeGuard&& sg) noexcept`
     * `void BasicScopeGuard::`**`release`**`() noexcept`
-* `using` **`ScopeExit`** `= BasicScopeGuard<std::function<void()>, Scope::exit>`
-* `using` **`ScopeFail`** `= BasicScopeGuard<std::function<void()>, Scope::fail>`
-* `using` **`ScopeSuccess`** `= BasicScopeGuard<std::function<void()>, Scope::success>`
-* `template <typename F> BasicScopeGuard<F, Scope::exit>` **`scope_exit`**`(F&& f)`
-* `template <typename F> BasicScopeGuard<F, Scope::fail>` **`scope_fail`**`(F&& f)`
-* `template <typename F> BasicScopeGuard<F, Scope::success>` **`scope_success`**`(F&& f)`
+* `using` **`ScopeExit`** `= BasicScopeGuard<std::function<void()>, ScopeState::exit>`
+* `using` **`ScopeFail`** `= BasicScopeGuard<std::function<void()>, ScopeState::fail>`
+* `using` **`ScopeSuccess`** `= BasicScopeGuard<std::function<void()>, ScopeState::success>`
+* `template <typename F> BasicScopeGuard<F, ScopeState::exit>` **`scope_exit`**`(F&& f)`
+* `template <typename F> BasicScopeGuard<F, ScopeState::fail>` **`scope_fail`**`(F&& f)`
+* `template <typename F> BasicScopeGuard<F, ScopeState::success>` **`scope_success`**`(F&& f)`
 
 The scope guard class stores a function object, to be called when the guard is
 destroyed. The three functions create scope guards with different execution
