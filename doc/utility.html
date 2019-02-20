@@ -439,15 +439,17 @@ Window app_window(Window::title="Hello World", Window::width=1000, Window::heigh
 <div class="defns">
 <ul>
 <li><code>namespace RS::Meta</code><ul>
-<li><code>template &lt;typename Iterator&gt; struct</code> <strong><code>IteratorValue</code></strong></li>
-<li><code>template &lt;typename Range&gt; struct</code> <strong><code>RangeIterator</code></strong></li>
-<li><code>template &lt;typename Range&gt; struct</code> <strong><code>RangeValue</code></strong></li>
+<li><code>template &lt;typename Iterator&gt; using</code> <strong><code>IteratorValue</code></strong></li>
+<li><code>template &lt;typename Range&gt; using</code> <strong><code>RangeIterator</code></strong></li>
+<li><code>template &lt;typename Range&gt; using</code> <strong><code>RangeValue</code></strong></li>
 </ul>
 </li>
 </ul>
-<p>These return the types associated with an iterator or range. They are
-extracted by checking the return type of <code>begin()</code>, and do not require a
-specialization of <code>iterator_traits</code> to exist.</p>
+<p>These return the types associated with an iterator or range. The iterator
+types are are extracted by checking the return type of <code>begin()</code>, and do not
+require a specialization of <code>iterator_traits</code> to exist. The <code>RangeValue</code> type
+will return <code>Range::value_type</code> if it exists and is not <code>void</code>; otherwise it
+will obtain the type from a dereferenced iterator.</p>
 </div>
 <h2 id="mixin-types">Mixin types</h2>
 <div class="defns">
@@ -533,8 +535,6 @@ supply the standard member types:</p>
 <div class="defns">
 <ul>
 <li><code>template &lt;typename Iterator&gt; struct</code> <strong><code>Irange</code></strong><ul>
-<li><code>using Irange::</code><strong><code>iterator</code></strong> <code>= Iterator</code></li>
-<li><code>using Irange::</code><strong><code>value_type</code></strong> <code>= [Iterator's value type]</code></li>
 <li><code>Iterator Irange::</code><strong><code>first</code></strong></li>
 <li><code>Iterator Irange::</code><strong><code>second</code></strong></li>
 <li><code>constexpr Iterator Irange::</code><strong><code>begin</code></strong><code>() const { return first; }</code></li>

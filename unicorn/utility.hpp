@@ -367,11 +367,15 @@ namespace RS {
             template <typename T, bool Adl> struct RangeIteratorType<T, true, Adl> { using type = decltype(std::begin(std::declval<T&>())); };
             template <typename T> struct RangeIteratorType<T, false, true> { using type = decltype(begin(std::declval<T&>())); };
 
+            template <typename T> using HasValueTypeArchetype = typename T::value_type;
+            template <typename T, bool Val = IsDetected<HasValueTypeArchetype, T>::value> struct RangeValueType { using type = typename T::value_type; };
+            template <typename T> struct RangeValueType<T, false> { using type = typename IteratorValueType<typename RangeIteratorType<T>::type>::type; };
+
         }
 
         template <typename T> using IteratorValue = typename MetaDetail::IteratorValueType<T>::type;
         template <typename T> using RangeIterator = typename MetaDetail::RangeIteratorType<T>::type;
-        template <typename T> using RangeValue = IteratorValue<RangeIterator<T>>;
+        template <typename T> using RangeValue = typename MetaDetail::RangeValueType<T>::type;
 
     }
 
@@ -779,8 +783,6 @@ namespace RS {
 
     template <typename Iterator>
     struct Irange {
-        using iterator = Iterator;
-        using value_type = typename std::iterator_traits<Iterator>::value_type;
         Iterator first, second;
         constexpr Iterator begin() const noexcept { return first; }
         constexpr Iterator end() const noexcept { return second; }

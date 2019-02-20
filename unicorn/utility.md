@@ -282,13 +282,15 @@ Reflection primitives, based on Walter E. Brown's
 Iterator and range type detectors.
 
 * `namespace RS::Meta`
-    * `template <typename Iterator> struct` **`IteratorValue`**
-    * `template <typename Range> struct` **`RangeIterator`**
-    * `template <typename Range> struct` **`RangeValue`**
+    * `template <typename Iterator> using` **`IteratorValue`**
+    * `template <typename Range> using` **`RangeIterator`**
+    * `template <typename Range> using` **`RangeValue`**
 
-These return the types associated with an iterator or range. They are
-extracted by checking the return type of `begin()`, and do not require a
-specialization of `iterator_traits` to exist.
+These return the types associated with an iterator or range. The iterator
+types are are extracted by checking the return type of `begin()`, and do not
+require a specialization of `iterator_traits` to exist. The `RangeValue` type
+will return `Range::value_type` if it exists and is not `void`; otherwise it
+will obtain the type from a dereferenced iterator.
 
 ## Mixin types ##
 
@@ -333,8 +335,6 @@ supply the standard member types:
 ## Range types ##
 
 * `template <typename Iterator> struct` **`Irange`**
-    * `using Irange::`**`iterator`** `= Iterator`
-    * `using Irange::`**`value_type`** `= [Iterator's value type]`
     * `Iterator Irange::`**`first`**
     * `Iterator Irange::`**`second`**
     * `constexpr Iterator Irange::`**`begin`**`() const { return first; }`
