@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 tests="$(ls */*-test.cpp 2>/dev/null | grep -Ev '/unit-test\.cpp$')"
 

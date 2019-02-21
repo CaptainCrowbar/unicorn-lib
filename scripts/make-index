@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 if ! [ "$(ls */*.md 2>/dev/null)" ]; then exit; fi
 
