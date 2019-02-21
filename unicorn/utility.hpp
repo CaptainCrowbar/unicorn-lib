@@ -91,11 +91,29 @@
 
 #ifndef RS_ENUM
     #define RS_ENUM_IMPLEMENTATION(EnumType, IntType, class_tag, name_prefix, first_value, first_name, ...) \
-        enum class_tag EnumType: IntType { RS_enum_begin = first_value, first_name = first_value, __VA_ARGS__, RS_enum_end }; \
-        constexpr RS_ATTR_UNUSED bool enum_is_valid(EnumType t) noexcept { return t >= EnumType::RS_enum_begin && t < EnumType::RS_enum_end; } \
-        inline RS_ATTR_UNUSED bool str_to_enum(std::string_view s, EnumType& t) noexcept \
-            { return ::RS::RS_Detail::enum_from_str(s, t, #EnumType "::", #first_name "," #__VA_ARGS__); } \
-        inline RS_ATTR_UNUSED std::string to_str(EnumType t) { return ::RS::RS_Detail::enum_to_str(t, name_prefix, #first_name "," #__VA_ARGS__); } \
+        enum class_tag EnumType: IntType { \
+            RS_##EnumType##_begin_ = first_value, \
+            first_name = first_value, \
+            __VA_ARGS__, \
+            RS_##EnumType##_end_ \
+        }; \
+        constexpr RS_ATTR_UNUSED bool enum_is_valid(EnumType t) noexcept { \
+            return t >= EnumType::RS_##EnumType##_begin_ && t < EnumType::RS_##EnumType##_end_; \
+        } \
+        inline RS_ATTR_UNUSED std::vector<EnumType> make_enum_values(EnumType) { \
+            static constexpr size_t n = size_t(IntType(EnumType::RS_##EnumType##_end_) - IntType(first_value)); \
+            std::vector<EnumType> v; \
+            v.reserve(n); \
+            for (IntType i = first_value; i < IntType(EnumType::RS_##EnumType##_end_); ++i) \
+                v.push_back(EnumType(i)); \
+            return v; \
+        } \
+        inline RS_ATTR_UNUSED bool str_to_enum(std::string_view s, EnumType& t) noexcept { \
+            return ::RS::RS_Detail::enum_from_str(s, t, EnumType::RS_##EnumType##_begin_, #EnumType "::", #first_name "," #__VA_ARGS__); \
+        } \
+        inline RS_ATTR_UNUSED std::string to_str(EnumType t) { \
+            return ::RS::RS_Detail::enum_to_str(t, EnumType::RS_##EnumType##_begin_, EnumType::RS_##EnumType##_end_, name_prefix, #first_name "," #__VA_ARGS__); \
+        } \
         inline RS_ATTR_UNUSED std::ostream& operator<<(std::ostream& out, EnumType t) { return out << to_str(t); }
     #define RS_ENUM(EnumType, IntType, first_value, first_name, ...) \
         RS_ENUM_IMPLEMENTATION(EnumType, IntType,, "", first_value, first_name, __VA_ARGS__)
@@ -216,7 +234,7 @@ namespace RS {
         }
 
         template <typename EnumType>
-        bool enum_from_str(std::string_view s, EnumType& t, const char* prefix, const char* names) {
+        bool enum_from_str(std::string_view s, EnumType& t, EnumType begin, const char* prefix, const char* names) {
             using U = std::underlying_type_t<EnumType>;
             size_t psize = std::strlen(prefix);
             if (psize < s.size() && std::memcmp(s.data(), prefix, psize) == 0)
@@ -224,7 +242,7 @@ namespace RS {
             auto& names_vec = enum_str_list<EnumType>(names);
             for (auto& name: names_vec) {
                 if (s == name) {
-                    t = EnumType(U(EnumType::RS_enum_begin) + U(&name - names_vec.data()));
+                    t = EnumType(U(begin) + U(&name - names_vec.data()));
                     return true;
                 }
             }
@@ -232,10 +250,10 @@ namespace RS {
         }
 
         template <typename EnumType>
-        std::string enum_to_str(EnumType t, const char* prefix, const char* names) {
+        std::string enum_to_str(EnumType t, EnumType begin, EnumType end, const char* prefix, const char* names) {
             using U = std::underlying_type_t<EnumType>;
-            if (t >= EnumType::RS_enum_begin && t < EnumType::RS_enum_end)
-                return prefix + enum_str_list<EnumType>(names)[U(t) - U(EnumType::RS_enum_begin)];
+            if (t >= begin && t < end)
+                return prefix + enum_str_list<EnumType>(names)[U(t) - U(begin)];
             else
                 return std::to_string(U(t));
         }
@@ -244,28 +262,7 @@ namespace RS {
 
     template <typename EnumType>
     std::vector<EnumType> enum_values() {
-        static const std::vector<EnumType> enum_vec = [] {
-            using int_type = std::underlying_type_t<EnumType>;
-            int_type base = int_type(EnumType::RS_enum_begin), size = int_type(EnumType::RS_enum_end) - base;
-            std::vector<EnumType> vec(size, {});
-            for (int_type i = 0; i < size; ++i)
-                vec[i] = EnumType(base + i);
-            return vec;
-        }();
-        return enum_vec;
-    }
-
-    template <typename EnumType>
-    std::vector<EnumType> enum_nonzero_values() {
-        static const std::vector<EnumType> enum_vec = [] {
-            using int_type = std::underlying_type_t<EnumType>;
-            int_type base = int_type(EnumType::RS_enum_begin), size = int_type(EnumType::RS_enum_end) - base;
-            std::vector<EnumType> vec;
-            for (int_type i = 0; i < size; ++i)
-                if (base + i != 0)
-                    vec.push_back(EnumType(base + i));
-            return vec;
-        }();
+        static const auto enum_vec = make_enum_values(EnumType());
         return enum_vec;
     }
 

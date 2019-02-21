@@ -30,7 +30,9 @@ using namespace std::literals;
 namespace {
 
     RS_ENUM(FooEnum, int16_t, 0, alpha, bravo, charlie);
-    RS_ENUM_CLASS(BarEnum, int32_t, 1, alpha, bravo, charlie);
+    RS_ENUM(BarEnum, int16_t, 0, delta, echo, foxtrot);
+    RS_ENUM_CLASS(ZapEnum, int32_t, 1, golf, hotel, india);
+    RS_ENUM_CLASS(ThogEnum, int32_t, 1, golf, hotel, india);
 
     Ustring make_str(std::nullptr_t) { return "null"; }
 
@@ -79,15 +81,15 @@ namespace {
 void test_unicorn_utility_preprocessor_macros() {
 
     FooEnum f = {};
-    BarEnum b = {};
+    ZapEnum z = {};
     std::vector<FooEnum> vf;
-    std::vector<BarEnum> vb;
+    std::vector<ZapEnum> vz;
 
     TEST_TYPE(std::underlying_type_t<FooEnum>, int16_t);
-    TEST_TYPE(std::underlying_type_t<BarEnum>, int32_t);
+    TEST_TYPE(std::underlying_type_t<ZapEnum>, int32_t);
 
     TEST_EQUAL(sizeof(FooEnum), 2);
-    TEST_EQUAL(sizeof(BarEnum), 4);
+    TEST_EQUAL(sizeof(ZapEnum), 4);
 
     TEST_EQUAL(int(alpha), 0);
     TEST_EQUAL(int(bravo), 1);
@@ -110,52 +112,45 @@ void test_unicorn_utility_preprocessor_macros() {
     TRY(vf = enum_values<FooEnum>());
     TEST_EQUAL(vf.size(), 3);
     TEST_EQUAL(make_str(vf), "[alpha,bravo,charlie]");
-    TRY(vf = enum_nonzero_values<FooEnum>());
-    TEST_EQUAL(vf.size(), 2);
-    TEST_EQUAL(make_str(vf), "[bravo,charlie]");
 
-    TEST_EQUAL(int(BarEnum::alpha), 1);
-    TEST_EQUAL(int(BarEnum::bravo), 2);
-    TEST_EQUAL(int(BarEnum::charlie), 3);
+    TEST_EQUAL(int(ZapEnum::golf), 1);
+    TEST_EQUAL(int(ZapEnum::hotel), 2);
+    TEST_EQUAL(int(ZapEnum::india), 3);
 
-    TEST_EQUAL(make_str(BarEnum::alpha), "BarEnum::alpha");
-    TEST_EQUAL(make_str(BarEnum::bravo), "BarEnum::bravo");
-    TEST_EQUAL(make_str(BarEnum::charlie), "BarEnum::charlie");
-    TEST_EQUAL(make_str(BarEnum(0)), "0");
-    TEST_EQUAL(make_str(BarEnum(4)), "4");
-    TEST_EQUAL(make_str(BarEnum(99)), "99");
+    TEST_EQUAL(make_str(ZapEnum::golf), "ZapEnum::golf");
+    TEST_EQUAL(make_str(ZapEnum::hotel), "ZapEnum::hotel");
+    TEST_EQUAL(make_str(ZapEnum::india), "ZapEnum::india");
+    TEST_EQUAL(make_str(ZapEnum(0)), "0");
+    TEST_EQUAL(make_str(ZapEnum(4)), "4");
+    TEST_EQUAL(make_str(ZapEnum(99)), "99");
 
-    TEST(! enum_is_valid(BarEnum(0)));
-    TEST(enum_is_valid(BarEnum(1)));
-    TEST(enum_is_valid(BarEnum(2)));
-    TEST(enum_is_valid(BarEnum(3)));
-    TEST(! enum_is_valid(BarEnum(4)));
+    TEST(! enum_is_valid(ZapEnum(0)));
+    TEST(enum_is_valid(ZapEnum(1)));
+    TEST(enum_is_valid(ZapEnum(2)));
+    TEST(enum_is_valid(ZapEnum(3)));
+    TEST(! enum_is_valid(ZapEnum(4)));
 
-    TRY(vb = enum_values<BarEnum>());
-    TEST_EQUAL(vb.size(), 3);
-    TEST_EQUAL(make_str(vb), "[BarEnum::alpha,BarEnum::bravo,BarEnum::charlie]");
+    TRY(vz = enum_values<ZapEnum>());
+    TEST_EQUAL(vz.size(), 3);
+    TEST_EQUAL(make_str(vz), "[ZapEnum::golf,ZapEnum::hotel,ZapEnum::india]");
 
-    TRY(vb = enum_nonzero_values<BarEnum>());
-    TEST_EQUAL(vb.size(), 3);
-    TEST_EQUAL(make_str(vb), "[BarEnum::alpha,BarEnum::bravo,BarEnum::charlie]");
-
-    TEST(str_to_enum("alpha", f));    TEST_EQUAL(f, alpha);
-    TEST(str_to_enum("bravo", f));    TEST_EQUAL(f, bravo);
-    TEST(str_to_enum("charlie", f));  TEST_EQUAL(f, charlie);
-    TEST(! str_to_enum("delta", f));
+    TEST(str_to_enum("alpha", f));             TEST_EQUAL(f, alpha);
+    TEST(str_to_enum("bravo", f));             TEST_EQUAL(f, bravo);
+    TEST(str_to_enum("charlie", f));           TEST_EQUAL(f, charlie);
+    TEST(! str_to_enum("zulu", f));
     TEST(str_to_enum("FooEnum::alpha", f));    TEST_EQUAL(f, alpha);
     TEST(str_to_enum("FooEnum::bravo", f));    TEST_EQUAL(f, bravo);
     TEST(str_to_enum("FooEnum::charlie", f));  TEST_EQUAL(f, charlie);
-    TEST(! str_to_enum("FooEnum::delta", f));
+    TEST(! str_to_enum("FooEnum::zulu", f));
 
-    TEST(str_to_enum("alpha", b));    TEST_EQUAL(b, BarEnum::alpha);
-    TEST(str_to_enum("bravo", b));    TEST_EQUAL(b, BarEnum::bravo);
-    TEST(str_to_enum("charlie", b));  TEST_EQUAL(b, BarEnum::charlie);
-    TEST(! str_to_enum("delta", b));
-    TEST(str_to_enum("BarEnum::alpha", b));    TEST_EQUAL(b, BarEnum::alpha);
-    TEST(str_to_enum("BarEnum::bravo", b));    TEST_EQUAL(b, BarEnum::bravo);
-    TEST(str_to_enum("BarEnum::charlie", b));  TEST_EQUAL(b, BarEnum::charlie);
-    TEST(! str_to_enum("BarEnum::delta", b));
+    TEST(str_to_enum("golf", z));             TEST_EQUAL(z, ZapEnum::golf);
+    TEST(str_to_enum("hotel", z));            TEST_EQUAL(z, ZapEnum::hotel);
+    TEST(str_to_enum("india", z));            TEST_EQUAL(z, ZapEnum::india);
+    TEST(! str_to_enum("zulu", z));
+    TEST(str_to_enum("ZapEnum::golf", z));    TEST_EQUAL(z, ZapEnum::golf);
+    TEST(str_to_enum("ZapEnum::hotel", z));   TEST_EQUAL(z, ZapEnum::hotel);
+    TEST(str_to_enum("ZapEnum::india", z));   TEST_EQUAL(z, ZapEnum::india);
+    TEST(! str_to_enum("ZapEnum::zulu", z));
 
 }
 
