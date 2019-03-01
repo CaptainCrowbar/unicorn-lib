@@ -72,11 +72,12 @@ namespace RS::Unicorn {
         static constexpr uint32_t quoted = 4;                // Allow arguments to be quoted
         static constexpr Kwarg<bool, 'a'> anon = {};         // Assign anonymous arguments to this option
         static constexpr Kwarg<bool, 'b'> boolean = {};      // Boolean option
-        static constexpr Kwarg<bool, 'i'> integer = {};      // Argument must be an integer
-        static constexpr Kwarg<bool, 'u'> uinteger = {};     // Argument must be an unsigned integer
         static constexpr Kwarg<bool, 'f'> floating = {};     // Argument must be a floating point number
+        static constexpr Kwarg<bool, 'i'> integer = {};      // Argument must be an integer
         static constexpr Kwarg<bool, 'm'> multi = {};        // Option may have multiple arguments
+        static constexpr Kwarg<bool, 'p'> file = {};         // Argument is expected to be a file path
         static constexpr Kwarg<bool, 'r'> required = {};     // Option is required
+        static constexpr Kwarg<bool, 'u'> uinteger = {};     // Argument must be an unsigned integer
         static constexpr Kwarg<Ustring, 'a'> abbrev = {};    // Single letter abbreviation
         static constexpr Kwarg<Ustring, 'd'> defvalue = {};  // Default value if not supplied
         static constexpr Kwarg<Ustring, 'g'> group = {};     // Mutual exclusion group name
@@ -102,21 +103,22 @@ namespace RS::Unicorn {
             template <typename... Args> option_type(const Ustring& name, const Ustring& info, Args... args);
             option_type(const Ustring& info);
             option_type(const char* info): option_type(cstr(info)) {}
-            Strings values;
-            Ustring opt_name;
-            Ustring opt_info;
             Ustring opt_abbrev;
             Ustring opt_defvalue;
             Ustring opt_group;
+            Ustring opt_info;
+            Ustring opt_name;
             Regex opt_pattern;
-            bool is_found = false;
+            Strings values;
             bool is_anon = false;
             bool is_boolean = false;
-            bool is_integer = false;
-            bool is_uinteger = false;
+            bool is_file = false;
             bool is_floating = false;
+            bool is_found = false;
+            bool is_integer = false;
             bool is_multi = false;
             bool is_required = false;
+            bool is_uinteger = false;
         };
         using option_list = std::vector<option_type>;
         Ustring app_info;
@@ -196,11 +198,12 @@ namespace RS::Unicorn {
         opt_info = info;
         is_anon = kwget(anon, false, args...);
         is_boolean = kwget(boolean, false, args...);
-        is_integer = kwget(integer, false, args...);
-        is_uinteger = kwget(uinteger, false, args...);
+        is_file = kwget(file, false, args...);
         is_floating = kwget(floating, false, args...);
+        is_integer = kwget(integer, false, args...);
         is_multi = kwget(multi, false, args...);
         is_required = kwget(required, false, args...);
+        is_uinteger = kwget(uinteger, false, args...);
         opt_abbrev = kwget(abbrev, Ustring(), args...);
         opt_defvalue = kwget(defvalue, Ustring(), args...);
         opt_group = kwget(group, Ustring(), args...);

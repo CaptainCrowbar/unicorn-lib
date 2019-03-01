@@ -109,8 +109,14 @@ namespace RS::Unicorn {
                     prefix += "]";
                 if (! opt.is_boolean) {
                     prefix += " <";
-                    if (opt.is_integer || opt.is_uinteger || opt.is_floating)
-                        prefix += "num";
+                    if (opt.is_file)
+                        prefix += "file";
+                    else if (opt.is_floating)
+                        prefix += "float";
+                    else if (opt.is_integer)
+                        prefix += "int";
+                    else if (opt.is_uinteger)
+                        prefix += "uint";
                     else
                         prefix += "arg";
                     prefix += ">";
@@ -193,14 +199,14 @@ namespace RS::Unicorn {
                 || ((opt.is_boolean || opt.is_required) && ! opt.opt_defvalue.empty())
                 || (neg && (! opt.is_boolean || ! opt.opt_abbrev.empty()))
                 || (opt.is_required && ! opt.opt_group.empty())
-                || (int(opt.is_integer) + int(opt.is_uinteger) + int(opt.is_floating) + int(! opt.opt_pattern.empty()) > 1))
+                || (int(opt.is_file) + int(opt.is_floating) + int(opt.is_integer) + int(opt.is_uinteger) + int(! opt.opt_pattern.empty()) > 1))
             throw spec_error(tag);
-        if (opt.is_integer)
+        if (opt.is_floating)
+            opt.opt_pattern = match_float;
+        else if (opt.is_integer)
             opt.opt_pattern = match_integer;
         else if (opt.is_uinteger)
             opt.opt_pattern = match_unsigned;
-        else if (opt.is_floating)
-            opt.opt_pattern = match_float;
         if (! opt.opt_defvalue.empty() && ! opt.opt_pattern.empty() && ! opt.opt_pattern(opt.opt_defvalue))
             throw spec_error(tag);
         if (neg) {

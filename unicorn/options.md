@@ -100,6 +100,7 @@ Keyword                    | Type       | Description
 `Options::`**`anon`**      | `bool`     | Anonymous arguments (not claimed by any other option) will be assigned to this option.
 `Options::`**`boolean`**   | `bool`     | This option is a boolean switch and does not take arguments.
 `Options::`**`defvalue`**  | `Ustring`  | Use this default value if the option is not supplied by the user.
+`Options::`**`file`**      | `bool`     | The argument value is expected to be a file path (this is just for documentation and does no checking).
 `Options::`**`floating`**  | `bool`     | The argument value must be a floating point number (an integer is accepted).
 `Options::`**`group`**     | `Ustring`  | Assign the option to a mutual exclusion group; at most one option from a group is allowed.
 `Options::`**`integer`**   | `bool`     | The argument value must be an integer.
@@ -122,7 +123,7 @@ Adding an option will throw `spec_error` if any of the following is true:
 * An option starting with `"--no-"` is not boolean or has an abbreviation.
 * The `boolean` tag is combined with `anon`, `defvalue`, `multi`, `pattern`, or `require`.
 * The `require` tag is combined with `boolean`, `defvalue`, or `group`.
-* More than one of `floating`, `integer`, `pattern`, and `uinteger` is supplied.
+* More than one of `integer`, `uinteger`, `floating`, `file`, or `pattern` is supplied.
 * The `defvalue` and `pattern` tags are both present, but the default value does not match the pattern.
 
 The second version of `add()` adds some information text to the option list.
