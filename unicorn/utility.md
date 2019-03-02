@@ -13,6 +13,93 @@ These are in `namespace RS` (except for the metaprogramming facilities in
 
 [TOC]
 
+## Preprocessor macros ##
+
+* `#define` **`RS_BITMASK_OPERATORS`**`(EnumType)`
+
+Defines bit manipulation and related operators for an `enum class` (unary `!`,
+`~`; binary `&`, `&=`, `|`, `|=`, `^`, `^=`). The type can be defined the
+conventional way or through the `RS_ENUM_CLASS()` macro.
+
+* `#define` **`RS_ENUM`**`(EnumType, IntType, first_value, first_name, ...)`
+* `#define` **`RS_ENUM_CLASS`**`(EnumType, IntType, first_value, first_name, ...)`
+
+These define an enumeration, given the name of the enumeration type, the
+underlying integer type, the integer value of the first entry, and a list of
+value names. They will also define the following functions:
+
+* `constexpr bool` **`enum_is_valid`**`(EnumType t) noexcept`
+* `std::vector<EnumType>` **`enum_values<EnumType>`**`()`
+* `bool` **`str_to_enum`**`(std::string_view s, EnumType& t) noexcept`
+* `std::string` **`to_str`**`(EnumType t)`
+* `std::ostream&` **`operator<<`**`(std::ostream& out, EnumType t)`
+
+The `enum_is_valid()` function reports whether or not the argument is a named
+value of the enumeration. The `enum_values<T>()` function returns a vector The
+`str_to_enum()` function converts the name of an enumeration value (case
+sensitive; possibly qualified with the class name) to the corresponding value;
+if the string does not match any value, it leaves the reference argument
+unchanged and returns false. The `to_str()` function and the output operator
+print the name of an enumeration constant (qualified with the class name if
+this is an `enum class`), or the integer value if the argument is not a named
+value.
+
+Example:
+
+    RS_ENUM(Foo, 1, alpha, bravo, charlie)
+    RS_ENUM_CLASS(Bar, 1, delta, echo, foxtrot)
+
+Equivalent code:
+
+    enum Foo { alpha = 1, bravo, charlie };
+    constexpr bool enum_is_valid(Foo t) noexcept { ... }
+    std::string to_str(Foo t) { ... }
+    std::ostream& operator<<(std::ostream& out, Foo t) { ... }
+
+    enum class Bar { delta = 1, echo, foxtrot };
+    constexpr bool enum_is_valid(Bar t) noexcept { ... }
+    std::string to_str(Bar t) { ... }
+    std::ostream& operator<<(std::ostream& out, Bar t) { ... }
+
+The macros can be used in any namespace, and the functions that take an enum
+value as an argument will be in that namespace, but `enum_values()` is a
+single function template in `namespace RS`.
+
+* `#define` **`RS_MOVE_ONLY`**`(T)`
+    * `T(const T&) = delete;`
+    * `T(T&&) = default;`
+    * `T& operator=(const T&) = delete;`
+    * `T& operator=(T&&) = default;`
+* `#define` **`RS_NO_COPY_MOVE`**`(T)`
+    * `T(const T&) = delete;`
+    * `T(T&&) = delete;`
+    * `T& operator=(const T&) = delete;`
+    * `T& operator=(T&&) = delete;`
+* `#define` **`RS_NO_INSTANCE`**`(T)`
+    * `T() = delete;`
+    * `T(const T&) = delete;`
+    * `T(T&&) = delete;`
+    * `~T() = delete;`
+    * `T& operator=(const T&) = delete;`
+    * `T& operator=(T&&) = delete;`
+
+Convenience macros for defaulted or deleted life cycle operations.
+
+* `#define` **`RS_NATIVE_WCHAR`** `1` _- defined if the system API uses wide characters_
+* `#define` **`RS_WCHAR_UTF16`** `1` _- defined if wchar_t and wstring are UTF-16_
+* `#define` **`RS_WCHAR_UTF32`** `1` _- defined if wchar_t and wstring are UTF-32_
+
+These are defined to reflect the encoding represented by `wchar_t` and
+`std::wstring`. Systems where wide strings are neither UTF-16 nor UTF-32 are
+not supported.
+
+* `#define` **`RS_OVERLOAD`**`(f) [] (auto&&... args) { return f(std::forward<decltype(args)>(args)...); }`
+
+Creates a function object wrapping a set of overloaded functions, that can be
+passed to a context expecting a function (such as an STL algorithm) without
+having to explicitly resolve the overload at the call site. (From an idea by
+Arthur O'Dwyer on the C++ standard proposals mailing list, 14 Sep 2015.)
+
 ## Basic types ##
 
 * `using` **`Ustring`** `= std::string`
@@ -28,15 +115,12 @@ bytes rather than encoded text.
 
 Commonly used type defined for convenience.
 
-* `#define` **`RS_NATIVE_WCHAR`** `1` _- defined if the system API uses wide characters_
 * `using` **`NativeCharacter`** `= [char on Unix, wchar_t on Windows]`
 * `using` **`NativeString`** `= [std::string on Unix, std::wstring on Windows]`
 
 These are defined to reflect the character types used in the operating
 system's native API.
 
-* `#define` **`RS_WCHAR_UTF16`** `1` _- defined if wchar_t and wstring are UTF-16_
-* `#define` **`RS_WCHAR_UTF32`** `1` _- defined if wchar_t and wstring are UTF-32_
 * `using` **`WcharEquivalent`** `= [char16_t or char32_t]`
 * `using` **`WstringEquivalent`** `= [std::u16string or std::u32string]`
 
@@ -588,11 +672,11 @@ that matches the type:
 * `template <typename T> std::string` **`type_name`**`()`
 * `template <typename T> std::string` **`type_name`**`(const T& t)`
 
-`[unicorn]` Demangle a type name. The original mangled name can be supplied as
-an explicit string, as a `std::type_info` or `std:type_index` object, as a
-type argument to a template function (e.g. `type_name<int>()`), or as an
-object whose type is to be named (e.g. `type_name(42)`). The last version will
-report the dynamic type of the referenced object.
+Demangle a type name. The original mangled name can be supplied as an explicit
+string, as a `std::type_info` or `std:type_index` object, as a type argument
+to a template function (e.g. `type_name<int>()`), or as an object whose type
+is to be named (e.g. `type_name(42)`). The last version will report the
+dynamic type of the referenced object.
 
 ## Version number ##
 

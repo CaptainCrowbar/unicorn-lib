@@ -20,6 +20,7 @@ These are in <code>namespace RS</code> (except for the metaprogramming facilitie
 <ul>
 <li><a href="#unicorn-library-utilities">Unicorn Library: Utilities</a><ul>
 <li><a href="#contents">Contents</a></li>
+<li><a href="#preprocessor-macros">Preprocessor macros</a></li>
 <li><a href="#basic-types">Basic types</a></li>
 <li><a href="#constants">Constants</a></li>
 <li><a href="#algorithms">Algorithms</a></li>
@@ -37,6 +38,105 @@ These are in <code>namespace RS</code> (except for the metaprogramming facilitie
 </ul>
 </li>
 </ul>
+</div>
+<h2 id="preprocessor-macros">Preprocessor macros</h2>
+<div class="defns">
+<ul>
+<li><code>#define</code> <strong><code>RS_BITMASK_OPERATORS</code></strong><code>(EnumType)</code></li>
+</ul>
+<p>Defines bit manipulation and related operators for an <code>enum class</code> (unary <code>!</code>,
+<code>~</code>; binary <code>&amp;</code>, <code>&amp;=</code>, <code>|</code>, <code>|=</code>, <code>^</code>, <code>^=</code>). The type can be defined the
+conventional way or through the <code>RS_ENUM_CLASS()</code> macro.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>#define</code> <strong><code>RS_ENUM</code></strong><code>(EnumType, IntType, first_value, first_name, ...)</code></li>
+<li><code>#define</code> <strong><code>RS_ENUM_CLASS</code></strong><code>(EnumType, IntType, first_value, first_name, ...)</code></li>
+</ul>
+<p>These define an enumeration, given the name of the enumeration type, the
+underlying integer type, the integer value of the first entry, and a list of
+value names. They will also define the following functions:</p>
+<ul>
+<li><code>constexpr bool</code> <strong><code>enum_is_valid</code></strong><code>(EnumType t) noexcept</code></li>
+<li><code>std::vector&lt;EnumType&gt;</code> <strong><code>enum_values&lt;EnumType&gt;</code></strong><code>()</code></li>
+<li><code>bool</code> <strong><code>str_to_enum</code></strong><code>(std::string_view s, EnumType&amp; t) noexcept</code></li>
+<li><code>std::string</code> <strong><code>to_str</code></strong><code>(EnumType t)</code></li>
+<li><code>std::ostream&amp;</code> <strong><code>operator&lt;&lt;</code></strong><code>(std::ostream&amp; out, EnumType t)</code></li>
+</ul>
+<p>The <code>enum_is_valid()</code> function reports whether or not the argument is a named
+value of the enumeration. The <code>enum_values&lt;T&gt;()</code> function returns a vector The
+<code>str_to_enum()</code> function converts the name of an enumeration value (case
+sensitive; possibly qualified with the class name) to the corresponding value;
+if the string does not match any value, it leaves the reference argument
+unchanged and returns false. The <code>to_str()</code> function and the output operator
+print the name of an enumeration constant (qualified with the class name if
+this is an <code>enum class</code>), or the integer value if the argument is not a named
+value.</p>
+<p>Example:</p>
+<pre><code>RS_ENUM(Foo, 1, alpha, bravo, charlie)
+RS_ENUM_CLASS(Bar, 1, delta, echo, foxtrot)
+</code></pre>
+<p>Equivalent code:</p>
+<pre><code>enum Foo { alpha = 1, bravo, charlie };
+constexpr bool enum_is_valid(Foo t) noexcept { ... }
+std::string to_str(Foo t) { ... }
+std::ostream&amp; operator&lt;&lt;(std::ostream&amp; out, Foo t) { ... }
+
+enum class Bar { delta = 1, echo, foxtrot };
+constexpr bool enum_is_valid(Bar t) noexcept { ... }
+std::string to_str(Bar t) { ... }
+std::ostream&amp; operator&lt;&lt;(std::ostream&amp; out, Bar t) { ... }
+</code></pre>
+<p>The macros can be used in any namespace, and the functions that take an enum
+value as an argument will be in that namespace, but <code>enum_values()</code> is a
+single function template in <code>namespace RS</code>.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>#define</code> <strong><code>RS_MOVE_ONLY</code></strong><code>(T)</code><ul>
+<li><code>T(const T&amp;) = delete;</code></li>
+<li><code>T(T&amp;&amp;) = default;</code></li>
+<li><code>T&amp; operator=(const T&amp;) = delete;</code></li>
+<li><code>T&amp; operator=(T&amp;&amp;) = default;</code></li>
+</ul>
+</li>
+<li><code>#define</code> <strong><code>RS_NO_COPY_MOVE</code></strong><code>(T)</code><ul>
+<li><code>T(const T&amp;) = delete;</code></li>
+<li><code>T(T&amp;&amp;) = delete;</code></li>
+<li><code>T&amp; operator=(const T&amp;) = delete;</code></li>
+<li><code>T&amp; operator=(T&amp;&amp;) = delete;</code></li>
+</ul>
+</li>
+<li><code>#define</code> <strong><code>RS_NO_INSTANCE</code></strong><code>(T)</code><ul>
+<li><code>T() = delete;</code></li>
+<li><code>T(const T&amp;) = delete;</code></li>
+<li><code>T(T&amp;&amp;) = delete;</code></li>
+<li><code>~T() = delete;</code></li>
+<li><code>T&amp; operator=(const T&amp;) = delete;</code></li>
+<li><code>T&amp; operator=(T&amp;&amp;) = delete;</code></li>
+</ul>
+</li>
+</ul>
+<p>Convenience macros for defaulted or deleted life cycle operations.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>#define</code> <strong><code>RS_NATIVE_WCHAR</code></strong> <code>1</code> <em>- defined if the system API uses wide characters</em></li>
+<li><code>#define</code> <strong><code>RS_WCHAR_UTF16</code></strong> <code>1</code> <em>- defined if wchar_t and wstring are UTF-16</em></li>
+<li><code>#define</code> <strong><code>RS_WCHAR_UTF32</code></strong> <code>1</code> <em>- defined if wchar_t and wstring are UTF-32</em></li>
+</ul>
+<p>These are defined to reflect the encoding represented by <code>wchar_t</code> and
+<code>std::wstring</code>. Systems where wide strings are neither UTF-16 nor UTF-32 are
+not supported.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>#define</code> <strong><code>RS_OVERLOAD</code></strong><code>(f) [] (auto&amp;&amp;... args) { return f(std::forward&lt;decltype(args)&gt;(args)...); }</code></li>
+</ul>
+<p>Creates a function object wrapping a set of overloaded functions, that can be
+passed to a context expecting a function (such as an STL algorithm) without
+having to explicitly resolve the overload at the call site. (From an idea by
+Arthur O'Dwyer on the C++ standard proposals mailing list, 14 Sep 2015.)</p>
 </div>
 <h2 id="basic-types">Basic types</h2>
 <div class="defns">
@@ -58,7 +158,6 @@ bytes rather than encoded text.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>#define</code> <strong><code>RS_NATIVE_WCHAR</code></strong> <code>1</code> <em>- defined if the system API uses wide characters</em></li>
 <li><code>using</code> <strong><code>NativeCharacter</code></strong> <code>= [char on Unix, wchar_t on Windows]</code></li>
 <li><code>using</code> <strong><code>NativeString</code></strong> <code>= [std::string on Unix, std::wstring on Windows]</code></li>
 </ul>
@@ -67,8 +166,6 @@ system's native API.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>#define</code> <strong><code>RS_WCHAR_UTF16</code></strong> <code>1</code> <em>- defined if wchar_t and wstring are UTF-16</em></li>
-<li><code>#define</code> <strong><code>RS_WCHAR_UTF32</code></strong> <code>1</code> <em>- defined if wchar_t and wstring are UTF-32</em></li>
 <li><code>using</code> <strong><code>WcharEquivalent</code></strong> <code>= [char16_t or char32_t]</code></li>
 <li><code>using</code> <strong><code>WstringEquivalent</code></strong> <code>= [std::u16string or std::u32string]</code></li>
 </ul>
@@ -826,11 +923,11 @@ that matches the type:</p>
 <li><code>template &lt;typename T&gt; std::string</code> <strong><code>type_name</code></strong><code>()</code></li>
 <li><code>template &lt;typename T&gt; std::string</code> <strong><code>type_name</code></strong><code>(const T&amp; t)</code></li>
 </ul>
-<p><code><span class="unicorn">[unicorn]</span></code> Demangle a type name. The original mangled name can be supplied as
-an explicit string, as a <code>std::type_info</code> or <code>std:type_index</code> object, as a
-type argument to a template function (e.g. <code>type_name&lt;int&gt;()</code>), or as an
-object whose type is to be named (e.g. <code>type_name(42)</code>). The last version will
-report the dynamic type of the referenced object.</p>
+<p>Demangle a type name. The original mangled name can be supplied as an explicit
+string, as a <code>std::type_info</code> or <code>std:type_index</code> object, as a type argument
+to a template function (e.g. <code>type_name&lt;int&gt;()</code>), or as an object whose type
+is to be named (e.g. <code>type_name(42)</code>). The last version will report the
+dynamic type of the referenced object.</p>
 </div>
 <h2 id="version-number">Version number</h2>
 <div class="defns">

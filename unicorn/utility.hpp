@@ -89,6 +89,16 @@
     #endif
 #endif
 
+#define RS_BITMASK_OPERATORS(EC) \
+    inline constexpr bool operator!(EC x) noexcept { return std::underlying_type_t<EC>(x) == 0; } \
+    inline constexpr EC operator~(EC x) noexcept { return EC(~ std::underlying_type_t<EC>(x)); } \
+    inline constexpr EC operator&(EC lhs, EC rhs) noexcept { return EC(std::underlying_type_t<EC>(lhs) & std::underlying_type_t<EC>(rhs)); } \
+    inline constexpr EC operator|(EC lhs, EC rhs) noexcept { return EC(std::underlying_type_t<EC>(lhs) | std::underlying_type_t<EC>(rhs)); } \
+    inline constexpr EC operator^(EC lhs, EC rhs) noexcept { return EC(std::underlying_type_t<EC>(lhs) ^ std::underlying_type_t<EC>(rhs)); } \
+    inline constexpr EC& operator&=(EC& lhs, EC rhs) noexcept { return lhs = lhs & rhs; } \
+    inline constexpr EC& operator|=(EC& lhs, EC rhs) noexcept { return lhs = lhs | rhs; } \
+    inline constexpr EC& operator^=(EC& lhs, EC rhs) noexcept { return lhs = lhs ^ rhs; }
+
 #ifndef RS_ENUM
     #define RS_ENUM_IMPLEMENTATION(EnumType, IntType, class_tag, name_prefix, first_value, first_name, ...) \
         enum class_tag EnumType: IntType { \
@@ -121,10 +131,6 @@
         RS_ENUM_IMPLEMENTATION(EnumType, IntType, class, #EnumType "::", first_value, first_name, __VA_ARGS__)
 #endif
 
-#ifndef RS_LDLIB
-    #define RS_LDLIB(libs)
-#endif
-
 #ifndef RS_MOVE_ONLY
     #define RS_MOVE_ONLY(T) \
         T(const T&) = delete; \
@@ -151,7 +157,10 @@
         T& operator=(T&&) = delete;
 #endif
 
+#define RS_OVERLOAD(f) [] (auto&&... args) { return f(std::forward<decltype(args)>(args)...); }
+
 // Must be used in the global namespace
+
 #ifndef RS_DEFINE_STD_HASH
     #define RS_DEFINE_STD_HASH(T) \
         namespace std { \
@@ -162,6 +171,30 @@
             }; \
         }
 #endif
+
+// Link control
+
+#define RS_LDLIB(libs)
+
+// This instructs the makefile to link with one or more static libraries.
+// Specify library names without the -l prefix (e.g. RS_LDLIB(foo) will link
+// with -lfoo). If link order is important for a particular set of libraries,
+// supply them in a space delimited list in a single RS_LDLIB() line.
+
+// Libraries that are needed only on specific targets can be prefixed with one
+// of the target identifiers listed below, e.g. RS_LDLIB(apple:foo) will link
+// with -lfoo for Apple targets only. Only one target can be specified per
+// invocation; if the same libraries are needed on multiple targets, but not
+// on all targets, you will need a separate RS_LDLIB() line for each target.
+
+// * apple:
+// * cygwin:
+// * linux:
+// * msvc:
+
+// RS_LDLIB() lines are picked up at the "make dep" stage; if you change a
+// link library, the change will not be detected until dependencies are
+// regenerated.
 
 namespace RS {
 
