@@ -20,7 +20,7 @@ namespace RS::Unicorn {
         struct enum_wrapper {
             std::set<Ustring> values;
             enum_wrapper() = default;
-            template <typename T> enum_wrapper(T) { for (T t: enum_values<T>()) values.insert(unqualify(to_str(t))); }
+            template <typename T> enum_wrapper(T);
             bool check(const Ustring& str) const { return values.count(str) != 0; }
         };
     public:
@@ -179,6 +179,15 @@ namespace RS::Unicorn {
             return t;
         } else {
             return static_cast<T>(str);
+        }
+    }
+
+    template <typename T>
+    Options::enum_wrapper::enum_wrapper(T) {
+        for (T t: enum_values<T>()) {
+            Ustring s = unqualify(to_str(t));
+            std::replace(s.begin(), s.end(), '_', '-');
+            values.insert(s);
         }
     }
 

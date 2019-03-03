@@ -132,7 +132,9 @@ The value attached to the `Options::enumtype` keyword must be a value of an
 enumeration type (plain or strong) that was defined using one of the
 `RS_ENUM()` or `RS_ENUM_CLASS()` macros. The actual value supplied here is not
 significant; it only serves to identify the enumeration type. Normally you
-would supply a default value, e.g. `Options::enumtype=MyEnum()`.
+would supply a default value, e.g. `Options::enumtype=MyEnum()`. Underscores
+in enumeration value names are converted to hyphens in the strings expected as
+arguments.
 
 The second version of `add()` adds some information text to the option list.
 This will be reproduced verbatim at the corresponding point among the options

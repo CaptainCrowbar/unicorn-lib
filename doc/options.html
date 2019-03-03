@@ -207,7 +207,9 @@ is <code>true</code>; the <code>"--no-whatever"</code> form can be used to switc
 enumeration type (plain or strong) that was defined using one of the
 <code>RS_ENUM()</code> or <code>RS_ENUM_CLASS()</code> macros. The actual value supplied here is not
 significant; it only serves to identify the enumeration type. Normally you
-would supply a default value, e.g. <code>Options::enumtype=MyEnum()</code>.</p>
+would supply a default value, e.g. <code>Options::enumtype=MyEnum()</code>. Underscores
+in enumeration value names are converted to hyphens in the strings expected as
+arguments.</p>
 <p>The second version of <code>add()</code> adds some information text to the option list.
 This will be reproduced verbatim at the corresponding point among the options
 listed in the help text.</p>
