@@ -557,6 +557,10 @@ string of `n` null characters, instead of undefined behaviour.
 Returns the length of a null-terminated string (a generalized version of
 `strlen()`). This will return zero if the pointer is null.
 
+* `Ustring` **`dent`**`(size_t depth)`
+
+Returns a string containing `4*depth` spaces, for indentation.
+
 * `template <typename Range> Ustring` **`format_list`**`(const Range& r)`
 * `template <typename Range> Ustring` **`format_list`**`(const Range& r, std::string_view prefix, std::string_view delimiter, std::string_view suffix)`
 * `template <typename Range> Ustring` **`format_map`**`(const Range& r)`
@@ -620,6 +624,13 @@ between the number and the tag, and any additional text after the number or
 tag is ignored. These will throw `std::invalid_argument` if the string does
 not start with a valid number, or `std::range_error` if the result is too big
 for the return type.
+
+* `Ustring` **`unqualify`**`(Uview str, Uview delims = ".:")`
+
+Strips off any prefix ending in one of the delimiter characters (e.g.
+`unqualify("foo::bar::zap()")` returns `"zap()"`). This will return the
+original string unchanged if the delimiter string is empty or none of its
+characters are found.
 
 * `template <typename T> bool` **`from_str`**`(std::string_view view, T& t) noexcept`
 * `template <typename T> T` **`from_str`**`(std::string_view view)`

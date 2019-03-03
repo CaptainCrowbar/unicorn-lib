@@ -471,6 +471,7 @@ namespace RS::Unicorn {
     Strings str_splitv(const Ustring& src);
     Strings str_splitv_at(const Ustring& src, const Ustring& delim);
     Strings str_splitv_by(const Ustring& src, const Ustring& delim);
+    Strings str_splitv_lines(const Ustring& src);
     Ustring str_squeeze(const Ustring& str);
     Ustring str_squeeze(const Ustring& str, const Ustring& chars);
     Ustring str_squeeze_trim(const Ustring& str);

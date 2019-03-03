@@ -1389,6 +1389,15 @@ void test_unicorn_utility_string_functions() {
     TEST_THROW(si_to_float(""), std::invalid_argument);
     TEST_THROW(si_to_float("k9"), std::invalid_argument);
 
+    TEST_EQUAL(unqualify(""), "");
+    TEST_EQUAL(unqualify("alpha"), "alpha");
+    TEST_EQUAL(unqualify("alpha.bravo"), "bravo");
+    TEST_EQUAL(unqualify("alpha.bravo.charlie"), "charlie");
+    TEST_EQUAL(unqualify("alpha::bravo"), "bravo");
+    TEST_EQUAL(unqualify("alpha::bravo::charlie"), "charlie");
+    TEST_EQUAL(unqualify("alpha-bravo"), "alpha-bravo");
+    TEST_EQUAL(unqualify("alpha-bravo-charlie"), "alpha-bravo-charlie");
+
 }
 
 void test_unicorn_utility_type_names() {

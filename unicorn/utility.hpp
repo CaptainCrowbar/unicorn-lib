@@ -1028,6 +1028,8 @@ namespace RS {
         }
     }
 
+    inline Ustring dent(size_t depth) { return Ustring(4 * depth, ' '); }
+
     namespace {
 
         inline std::string quote_string(std::string_view str, bool escape_8bit) {
@@ -1214,6 +1216,16 @@ namespace RS {
             }
         }
         return x;
+    }
+
+    inline Ustring unqualify(Uview str, Uview delims = ".:") {
+        if (delims.empty())
+            return Ustring(str);
+        size_t pos = str.find_last_of(delims);
+        if (pos == npos)
+            return Ustring(str);
+        else
+            return Ustring(str.substr(pos + 1, npos));
     }
 
     template <typename Range>

@@ -145,6 +145,8 @@ namespace RS::Unicorn {
                     suffix += extra + ")";
                 }
             }
+            if (! opt.opt_enum.values.empty())
+                suffix += "\n(" + str_join(opt.opt_enum.values, ", ") + ")";
             prefixes.push_back(prefix);
             suffixes.push_back(suffix);
             lengths.push_back(length);
@@ -165,7 +167,10 @@ namespace RS::Unicorn {
                     opthdr = true;
                 }
                 Ustring prefix = str_pad_right(prefixes[i], maxlen, U' ', length_flags);
-                text += "    $1  = $2\n"_fmt(prefix, suffixes[i]);
+                auto lines = str_splitv_lines(suffixes[i]);
+                text += "    " + prefix + "  = " + lines[0] + "\n";
+                for (size_t j = 1; j < lines.size(); ++j)
+                    text += Ustring(maxlen + 8, ' ') + lines[j] + "\n";
             }
             was_info = is_info;
         }
@@ -193,13 +198,21 @@ namespace RS::Unicorn {
         if (opt.opt_info.empty())
             throw spec_error(tag);
         str_trim_in(opt.opt_abbrev, "-");
-        if (str_length(opt.opt_abbrev) > 1
-                || std::any_of(utf_begin(opt.opt_abbrev), utf_end(opt.opt_abbrev), char_is_white_space)
-                || (opt.is_boolean && (opt.is_anon || opt.is_multi || opt.is_required || ! opt.opt_pattern.empty()))
-                || ((opt.is_boolean || opt.is_required) && ! opt.opt_defvalue.empty())
-                || (neg && (! opt.is_boolean || ! opt.opt_abbrev.empty()))
-                || (opt.is_required && ! opt.opt_group.empty())
-                || (int(opt.is_file) + int(opt.is_floating) + int(opt.is_integer) + int(opt.is_uinteger) + int(! opt.opt_pattern.empty()) > 1))
+        if (str_length(opt.opt_abbrev) > 1)
+            throw spec_error(tag);
+        if (std::any_of(utf_begin(opt.opt_abbrev), utf_end(opt.opt_abbrev), char_is_white_space))
+            throw spec_error(tag);
+        if (opt.is_boolean && (opt.is_anon || opt.is_multi || opt.is_required
+                || ! opt.opt_enum.values.empty() || ! opt.opt_pattern.empty()))
+            throw spec_error(tag);
+        if ((opt.is_boolean || opt.is_required) && ! opt.opt_defvalue.empty())
+            throw spec_error(tag);
+        if (neg && (! opt.is_boolean || ! opt.opt_abbrev.empty()))
+            throw spec_error(tag);
+        if (opt.is_required && ! opt.opt_group.empty())
+            throw spec_error(tag);
+        if (int(opt.is_file) + int(opt.is_floating) + int(opt.is_integer) + int(opt.is_uinteger)
+                + int(! opt.opt_enum.values.empty()) + int(! opt.opt_pattern.empty()) > 1)
             throw spec_error(tag);
         if (opt.is_floating)
             opt.opt_pattern = match_float;
@@ -208,6 +221,8 @@ namespace RS::Unicorn {
         else if (opt.is_uinteger)
             opt.opt_pattern = match_unsigned;
         if (! opt.opt_defvalue.empty() && ! opt.opt_pattern.empty() && ! opt.opt_pattern(opt.opt_defvalue))
+            throw spec_error(tag);
+        if (! opt.opt_defvalue.empty() && ! opt.opt_enum.values.empty() && ! opt.opt_enum.check(opt.opt_defvalue))
             throw spec_error(tag);
         if (neg) {
             opt.opt_name.erase(0, 3);
@@ -400,8 +415,12 @@ namespace RS::Unicorn {
     }
 
     void Options::add_arg_to_opt(const Ustring& arg, option_type& opt) {
-        if (! opt.opt_pattern.empty() && (opt.is_required || ! arg.empty()) && ! opt.opt_pattern(arg))
-            throw command_error("Invalid argument to option", "--" + opt.opt_name, arg);
+        if ((opt.is_required || ! arg.empty())) {
+            if (! opt.opt_pattern.empty() && ! opt.opt_pattern(arg))
+                throw command_error("Invalid argument to option", "--" + opt.opt_name, arg);
+            if (! opt.opt_enum.values.empty() && ! opt.opt_enum.check(arg))
+                throw command_error("Invalid argument to option", "--" + opt.opt_name, arg);
+        }
         opt.values.push_back(arg);
     }
 

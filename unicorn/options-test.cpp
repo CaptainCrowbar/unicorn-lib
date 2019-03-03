@@ -12,6 +12,9 @@ namespace {
     Options opt1;
     std::ostringstream nowhere;
 
+    RS_ENUM(Foo, int, 0, alpha, bravo, charlie);
+    RS_ENUM_CLASS(Bar, int, 0, xray, yankee, zulu);
+
 }
 
 void test_unicorn_options_basic() {
@@ -437,12 +440,55 @@ void test_unicorn_options_patterns() {
 
 }
 
+void test_unicorn_options_enumeration() {
+
+    Options opt2, opt3;
+    Ustring cmdline;
+
+    TRY(opt2 = Options("Hello world"));
+    TRY(opt2.add("alpha", "Alpha option", Options::abbrev="a", Options::defvalue="ABC"));
+    TRY(opt2.add("number", "Number option", Options::abbrev="n", Options::defvalue="123"));
+    TRY(opt2.add("foo", "Foo option", Options::abbrev="f", Options::enumtype=Foo()));
+    TRY(opt2.add("bar", "Bar option", Options::abbrev="b", Options::enumtype=Bar(), Options::defvalue="zulu"));
+
+    TEST_THROW(opt2.add("foobar", "Foobar option", Options::enumtype=Foo(), Options::defvalue="zulu"), Options::spec_error);
+
+    TRY(opt3 = opt2);
+    cmdline = "app --help";
+    std::ostringstream out;
+    TEST(opt3.parse(cmdline, out));
+    TEST_EQUAL(out.str(),
+        "\n"
+        "Hello world\n"
+        "\n"
+        "Options:\n"
+        "\n"
+        "    --alpha, -a <arg>   = Alpha option (default \"ABC\")\n"
+        "    --number, -n <arg>  = Number option (default 123)\n"
+        "    --foo, -f <arg>     = Foo option\n"
+        "                          (alpha, bravo, charlie)\n"
+        "    --bar, -b <arg>     = Bar option (default \"zulu\")\n"
+        "                          (xray, yankee, zulu)\n"
+        "    --help, -h          = Show usage information\n"
+        "    --version, -v       = Show version information\n"
+        "\n"
+    );
+
+    TRY(opt3 = opt2);
+    cmdline = "app";
+    TEST(! opt3.parse(cmdline, nowhere));
+    TEST_EQUAL(opt3.get<Foo>("foo"), alpha);
+    TEST_EQUAL(opt3.get<Bar>("bar"), Bar::zulu);
+
+}
+
 void test_unicorn_options_help() {
 
     Options opt2("Blank");
     Ustring cmdline;
 
     {
+
         TRY(opt2 = opt1);
         cmdline = "app --help";
         std::ostringstream out;
@@ -465,9 +511,11 @@ void test_unicorn_options_help() {
             "    --version, -v         = Show version information\n"
             "\n"
         );
+
     }
 
     {
+
         TRY(opt2 = opt1);
         TRY(opt2.add(Options::autohelp));
         cmdline = "app";
@@ -491,6 +539,7 @@ void test_unicorn_options_help() {
             "    --version, -v         = Show version information\n"
             "\n"
         );
+
     }
 
 }

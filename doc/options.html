@@ -140,6 +140,11 @@ optional keyword arguments, as listed below.</p>
 <td>Use this default value if the option is not supplied by the user.</td>
 </tr>
 <tr>
+<td><code>Options::</code><strong><code>enumtype</code></strong></td>
+<td><em>(see below)</em></td>
+<td>The argument value must be the unqualified name of an enumeration value.</td>
+</tr>
+<tr>
 <td><code>Options::</code><strong><code>file</code></strong></td>
 <td><code>bool</code></td>
 <td>The argument value is expected to be a file path (this is just for documentation and does no checking).</td>
@@ -192,11 +197,17 @@ is <code>true</code>; the <code>"--no-whatever"</code> form can be used to switc
 <li>The info string is empty (this also applies to the second version of <code>add()</code>).</li>
 <li>The abbreviation is longer than one character (not counting a leading hyphen).</li>
 <li>An option starting with <code>"--no-"</code> is not boolean or has an abbreviation.</li>
-<li>The <code>boolean</code> tag is combined with <code>anon</code>, <code>defvalue</code>, <code>multi</code>, <code>pattern</code>, or <code>require</code>.</li>
+<li>The <code>boolean</code> tag is combined with <code>anon</code>, <code>defvalue</code>, <code>enumtype</code>, <code>multi</code>, <code>pattern</code>, or <code>require</code>.</li>
 <li>The <code>require</code> tag is combined with <code>boolean</code>, <code>defvalue</code>, or <code>group</code>.</li>
-<li>More than one of <code>integer</code>, <code>uinteger</code>, <code>floating</code>, <code>file</code>, or <code>pattern</code> is supplied.</li>
+<li>More than one of <code>integer</code>, <code>uinteger</code>, <code>floating</code>, <code>enumtype</code>, <code>file</code>, or <code>pattern</code> is supplied.</li>
+<li>The <code>defvalue</code> and <code>enumtype</code> tags are both present, but the default value is not one of the enumeration values.</li>
 <li>The <code>defvalue</code> and <code>pattern</code> tags are both present, but the default value does not match the pattern.</li>
 </ul>
+<p>The value attached to the <code>Options::enumtype</code> keyword must be a value of an
+enumeration type (plain or strong) that was defined using one of the
+<code>RS_ENUM()</code> or <code>RS_ENUM_CLASS()</code> macros. The actual value supplied here is not
+significant; it only serves to identify the enumeration type. Normally you
+would supply a default value, e.g. <code>Options::enumtype=MyEnum()</code>.</p>
 <p>The second version of <code>add()</code> adds some information text to the option list.
 This will be reproduced verbatim at the corresponding point among the options
 listed in the help text.</p>

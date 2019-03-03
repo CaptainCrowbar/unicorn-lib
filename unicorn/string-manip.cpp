@@ -578,6 +578,12 @@ namespace RS::Unicorn {
         return v;
     }
 
+    Strings str_splitv_lines(const Ustring& src) {
+        Strings v;
+        str_split_lines(src, append(v));
+        return v;
+    }
+
     Ustring str_squeeze(const Ustring& str) {
         Ustring dst;
         squeeze_helper(str, dst, false);

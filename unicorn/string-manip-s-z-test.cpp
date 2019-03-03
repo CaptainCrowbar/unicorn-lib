@@ -64,6 +64,14 @@ void test_unicorn_string_manip_split() {
     TRY(str_split_lines("\r\n\r\n"s, overwrite(v)));      TEST_EQUAL(v.size(), 2);  TEST_EQUAL(str_join(v, "/"), "/");
     TRY(str_split_lines("\r\n\r\n\r\n"s, overwrite(v)));  TEST_EQUAL(v.size(), 3);  TEST_EQUAL(str_join(v, "/"), "//");
 
+    TRY(v = str_splitv_lines(""s));              TEST_EQUAL(v.size(), 0);  TEST_EQUAL(str_join(v, "/"), "");
+    TRY(v = str_splitv_lines("\n"s));            TEST_EQUAL(v.size(), 1);  TEST_EQUAL(str_join(v, "/"), "");
+    TRY(v = str_splitv_lines("\n\n"s));          TEST_EQUAL(v.size(), 2);  TEST_EQUAL(str_join(v, "/"), "/");
+    TRY(v = str_splitv_lines("\n\n\n"s));        TEST_EQUAL(v.size(), 3);  TEST_EQUAL(str_join(v, "/"), "//");
+    TRY(v = str_splitv_lines("\r\n"s));          TEST_EQUAL(v.size(), 1);  TEST_EQUAL(str_join(v, "/"), "");
+    TRY(v = str_splitv_lines("\r\n\r\n"s));      TEST_EQUAL(v.size(), 2);  TEST_EQUAL(str_join(v, "/"), "/");
+    TRY(v = str_splitv_lines("\r\n\r\n\r\n"s));  TEST_EQUAL(v.size(), 3);  TEST_EQUAL(str_join(v, "/"), "//");
+
     Ustring text =
         u8"Line one\n"
         u8"Line two\r"

@@ -794,6 +794,12 @@ string of <code>n</code> null characters, instead of undefined behaviour.</p>
 </div>
 <div class="defns">
 <ul>
+<li><code>Ustring</code> <strong><code>dent</code></strong><code>(size_t depth)</code></li>
+</ul>
+<p>Returns a string containing <code>4*depth</code> spaces, for indentation.</p>
+</div>
+<div class="defns">
+<ul>
 <li><code>template &lt;typename Range&gt; Ustring</code> <strong><code>format_list</code></strong><code>(const Range&amp; r)</code></li>
 <li><code>template &lt;typename Range&gt; Ustring</code> <strong><code>format_list</code></strong><code>(const Range&amp; r, std::string_view prefix, std::string_view delimiter, std::string_view suffix)</code></li>
 <li><code>template &lt;typename Range&gt; Ustring</code> <strong><code>format_map</code></strong><code>(const Range&amp; r)</code></li>
@@ -869,6 +875,15 @@ between the number and the tag, and any additional text after the number or
 tag is ignored. These will throw <code>std::invalid_argument</code> if the string does
 not start with a valid number, or <code>std::range_error</code> if the result is too big
 for the return type.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>Ustring</code> <strong><code>unqualify</code></strong><code>(Uview str, Uview delims = ".:")</code></li>
+</ul>
+<p>Strips off any prefix ending in one of the delimiter characters (e.g.
+<code>unqualify("foo::bar::zap()")</code> returns <code>"zap()"</code>). This will return the
+original string unchanged if the delimiter string is empty or none of its
+characters are found.</p>
 </div>
 <div class="defns">
 <ul>

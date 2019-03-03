@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <iostream>
 #include <ostream>
+#include <set>
 #include <stdexcept>
 #include <string>
 #include <type_traits>
@@ -14,48 +15,14 @@
 
 namespace RS::Unicorn {
 
-    namespace UnicornDetail {
-
-        template <typename T, bool I = std::is_integral<T>::value, bool F = std::is_floating_point<T>::value>
-        struct ArgConv;
-
-        template <typename T>
-        struct ArgConv<T, false, false> {
-            T operator()(const Ustring& s) const {
-                return s.empty() ? T() : static_cast<T>(s);
-            }
-        };
-
-        template <typename T>
-        struct ArgConv<T, true, false> {
-            T operator()(const Ustring& s) const {
-                if (s.empty())
-                    return T(0);
-                else if (s.size() >= 3 && s[0] == '0' && (s[1] == 'X' || s[1] == 'x'))
-                    return hex_to_int<T>(utf_iterator(s, 2));
-                else
-                    return T(si_to_int(s));
-            }
-        };
-
-        template <typename T>
-        struct ArgConv<T, false, true> {
-            T operator()(const Ustring& s) const {
-                return s.empty() ? T(0) : T(si_to_float(s));
-            }
-        };
-
-        template <typename C>
-        struct ArgConv<std::basic_string<C>, false, false> {
-            std::basic_string<C> operator()(const Ustring& s) const {
-                return recode<C>(s);
-            }
-        };
-
-    }
-
-
     class Options {
+    private:
+        struct enum_wrapper {
+            std::set<Ustring> values;
+            enum_wrapper() = default;
+            template <typename T> enum_wrapper(T) { for (T t: enum_values<T>()) values.insert(unqualify(to_str(t))); }
+            bool check(const Ustring& str) const { return values.count(str) != 0; }
+        };
     public:
         class command_error: public std::runtime_error {
         public:
@@ -82,6 +49,7 @@ namespace RS::Unicorn {
         static constexpr Kwarg<Ustring, 'd'> defvalue = {};  // Default value if not supplied
         static constexpr Kwarg<Ustring, 'g'> group = {};     // Mutual exclusion group name
         static constexpr Kwarg<Ustring, 'p'> pattern = {};   // Argument must match this regular expression
+        static constexpr Kwarg<enum_wrapper> enumtype = {};  // Argument must be one of the enumeration values
         Options() = default;
         explicit Options(const Ustring& info): app_info(str_trim(info)) {}
         template <typename... Args> Options& add(const Ustring& name, const Ustring& info, Args... args);
@@ -93,7 +61,7 @@ namespace RS::Unicorn {
         template <typename C> bool parse(const std::vector<std::basic_string<C>>& args, std::ostream& out = std::cout, uint32_t flags = 0);
         template <typename C> bool parse(const std::basic_string<C>& args, std::ostream& out = std::cout, uint32_t flags = 0);
         template <typename C> bool parse(int argc, C** argv, std::ostream& out = std::cout, uint32_t flags = 0);
-        template <typename T> T get(const Ustring& name) const { return UnicornDetail::ArgConv<T>()(str_join(find_values(name), " ")); }
+        template <typename T> T get(const Ustring& name) const { return get_converted<T>(str_join(find_values(name), " ")); }
         template <typename T> std::vector<T> get_list(const Ustring& name) const;
         bool has(const Ustring& name) const;
     private:
@@ -108,10 +76,12 @@ namespace RS::Unicorn {
             Ustring opt_group;
             Ustring opt_info;
             Ustring opt_name;
+            enum_wrapper opt_enum;
             Regex opt_pattern;
             Strings values;
             bool is_anon = false;
             bool is_boolean = false;
+            bool is_enumtype = false;
             bool is_file = false;
             bool is_floating = false;
             bool is_found = false;
@@ -140,6 +110,7 @@ namespace RS::Unicorn {
         template <typename C> static Ustring arg_convert(const std::basic_string<C>& str, uint32_t /*flags*/) { return to_utf8(str); }
         static Ustring arg_convert(const std::string& str, uint32_t flags);
         static void add_arg_to_opt(const Ustring& arg, option_type& opt);
+        template <typename T> static T get_converted(const Ustring& str);
         static void unquote(const Ustring& src, Strings& dst);
     };
 
@@ -153,7 +124,7 @@ namespace RS::Unicorn {
     std::vector<T> Options::get_list(const Ustring& name) const {
         Strings svec = find_values(name);
         std::vector<T> tvec;
-        std::transform(svec.begin(), svec.end(), append(tvec), UnicornDetail::ArgConv<T>());
+        std::transform(svec.begin(), svec.end(), append(tvec), get_converted<T>);
         return tvec;
     }
 
@@ -191,6 +162,26 @@ namespace RS::Unicorn {
             return parse(args, out, flags);
     }
 
+    template <typename T>
+    T Options::get_converted(const Ustring& str) {
+        if (str.empty())
+            return T();
+        if constexpr (std::is_integral_v<T>) {
+            if (str.size() >= 3 && str[0] == '0' && (str[1] == 'X' || str[1] == 'x'))
+                return hex_to_int<T>(utf_iterator(str, 2));
+            else
+                return static_cast<T>(si_to_int(str));
+        } else if constexpr (std::is_floating_point_v<T>) {
+            return static_cast<T>(si_to_float(str));
+        } else if constexpr (std::is_enum_v<T>) {
+            T t = T();
+            str_to_enum(str, t); // already checked
+            return t;
+        } else {
+            return static_cast<T>(str);
+        }
+    }
+
     template <typename... Args>
     Options::option_type::option_type(const Ustring& name, const Ustring& info, Args... args) {
         Ustring patstr;
@@ -207,6 +198,7 @@ namespace RS::Unicorn {
         opt_abbrev = kwget(abbrev, Ustring(), args...);
         opt_defvalue = kwget(defvalue, Ustring(), args...);
         opt_group = kwget(group, Ustring(), args...);
+        opt_enum = kwget(enumtype, enum_wrapper(), args...);
         patstr = kwget(pattern, Ustring(), args...);
         if (! patstr.empty())
             opt_pattern = Regex(patstr, Regex::full);

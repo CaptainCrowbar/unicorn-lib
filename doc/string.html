@@ -544,10 +544,11 @@ source string is not), a single string will be written.</p>
 <div class="defns">
 <ul>
 <li><code>template &lt;typename OutIter&gt; void</code> <strong><code>str_split_lines</code></strong><code>(const Ustring&amp; src, OutIter dst)</code></li>
+<li><code>Strings</code> <strong><code>str_splitv_lines</code></strong><code>(const Ustring&amp; src)</code></li>
 </ul>
-<p>Splits a string at each line break, copying lines into the output iterator.
-Any character that passes <code>char_is_line_break()</code> is counted as a line break.
-The line break characters are not included in the output strings. The <code>CR+LF</code>
+<p>Split a string at each line break, copying lines into the output iterator. Any
+character that passes <code>char_is_line_break()</code> is counted as a line break. The
+line break characters are not included in the output strings. The <code>CR+LF</code>
 combination is counted as a single line break; any other sequence of multiple
 line breaks will generate empty lines in the output. An empty line will not be
 generated at the end if the last character in the input was a line break.</p>
