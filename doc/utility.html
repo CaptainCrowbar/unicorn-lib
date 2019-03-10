@@ -64,14 +64,14 @@ value names. They will also define the following functions:</p>
 <li><code>std::ostream&amp;</code> <strong><code>operator&lt;&lt;</code></strong><code>(std::ostream&amp; out, EnumType t)</code></li>
 </ul>
 <p>The <code>enum_is_valid()</code> function reports whether or not the argument is a named
-value of the enumeration. The <code>enum_values&lt;T&gt;()</code> function returns a vector The
-<code>str_to_enum()</code> function converts the name of an enumeration value (case
-sensitive; possibly qualified with the class name) to the corresponding value;
-if the string does not match any value, it leaves the reference argument
-unchanged and returns false. The <code>to_str()</code> function and the output operator
-print the name of an enumeration constant (qualified with the class name if
-this is an <code>enum class</code>), or the integer value if the argument is not a named
-value.</p>
+value of the enumeration. The <code>enum_values&lt;T&gt;()</code> function returns a vector
+containing all of the enumeration values. The <code>str_to_enum()</code> function
+converts the name of an enumeration value (case sensitive; possibly qualified
+with the class name) to the corresponding value; if the string does not match
+any value, it leaves the reference argument unchanged and returns false. The
+<code>to_str()</code> function and the output operator print the name of an enumeration
+constant (qualified with the class name if this is an <code>enum class</code>), or the
+integer value if the argument is not a named value.</p>
 <p>Example:</p>
 <pre><code>RS_ENUM(Foo, 1, alpha, bravo, charlie)
 RS_ENUM_CLASS(Bar, 1, delta, echo, foxtrot)
