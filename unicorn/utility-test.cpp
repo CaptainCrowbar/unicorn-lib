@@ -76,6 +76,14 @@ namespace {
         virtual int get() const { return 2; }
     };
 
+    enum class Mask { z = 0, a = 1, b = 2 };
+    RS_BITMASK_OPERATORS(Mask);
+
+    struct Wrap {
+        enum class mask { z = 0, a = 1, b = 2 };
+    };
+    RS_BITMASK_OPERATORS(Wrap::mask);
+
 }
 
 void test_unicorn_utility_preprocessor_macros() {
@@ -151,6 +159,22 @@ void test_unicorn_utility_preprocessor_macros() {
     TEST(str_to_enum("ZapEnum::hotel", z));   TEST_EQUAL(z, ZapEnum::hotel);
     TEST(str_to_enum("ZapEnum::india", z));   TEST_EQUAL(z, ZapEnum::india);
     TEST(! str_to_enum("ZapEnum::zulu", z));
+
+    Mask m1, m2, m3;
+
+    m1 = Mask::a;  TEST_EQUAL(int(m1), 1);
+    m2 = Mask::b;  TEST_EQUAL(int(m2), 2);
+    m3 = m1 & m2;  TEST_EQUAL(int(m3), 0);
+    m3 = m1 | m2;  TEST_EQUAL(int(m3), 3);
+    m3 = m1 ^ m2;  TEST_EQUAL(int(m3), 3);
+
+    Wrap::mask w1, w2, w3;
+
+    w1 = Wrap::mask::a;  TEST_EQUAL(int(w1), 1);
+    w2 = Wrap::mask::b;  TEST_EQUAL(int(w2), 2);
+    w3 = w1 & w2;        TEST_EQUAL(int(w3), 0);
+    w3 = w1 | w2;        TEST_EQUAL(int(w3), 3);
+    w3 = w1 ^ w2;        TEST_EQUAL(int(w3), 3);
 
 }
 

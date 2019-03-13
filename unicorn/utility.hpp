@@ -89,15 +89,15 @@
     #endif
 #endif
 
-#define RS_BITMASK_OPERATORS(EC) \
-    inline constexpr bool operator!(EC x) noexcept { return std::underlying_type_t<EC>(x) == 0; } \
-    inline constexpr EC operator~(EC x) noexcept { return EC(~ std::underlying_type_t<EC>(x)); } \
-    inline constexpr EC operator&(EC lhs, EC rhs) noexcept { return EC(std::underlying_type_t<EC>(lhs) & std::underlying_type_t<EC>(rhs)); } \
-    inline constexpr EC operator|(EC lhs, EC rhs) noexcept { return EC(std::underlying_type_t<EC>(lhs) | std::underlying_type_t<EC>(rhs)); } \
-    inline constexpr EC operator^(EC lhs, EC rhs) noexcept { return EC(std::underlying_type_t<EC>(lhs) ^ std::underlying_type_t<EC>(rhs)); } \
-    inline constexpr EC& operator&=(EC& lhs, EC rhs) noexcept { return lhs = lhs & rhs; } \
-    inline constexpr EC& operator|=(EC& lhs, EC rhs) noexcept { return lhs = lhs | rhs; } \
-    inline constexpr EC& operator^=(EC& lhs, EC rhs) noexcept { return lhs = lhs ^ rhs; }
+#define RS_BITMASK_OPERATORS(E) \
+    constexpr RS_ATTR_UNUSED bool operator!(E x) noexcept { return std::underlying_type_t<E>(x) == 0; } \
+    constexpr RS_ATTR_UNUSED E operator~(E x) noexcept { return E(~ std::underlying_type_t<E>(x)); } \
+    constexpr RS_ATTR_UNUSED E operator&(E lhs, E rhs) noexcept { using U = std::underlying_type_t<E>; return E(U(lhs) & U(rhs)); } \
+    constexpr RS_ATTR_UNUSED E operator|(E lhs, E rhs) noexcept { using U = std::underlying_type_t<E>; return E(U(lhs) | U(rhs)); } \
+    constexpr RS_ATTR_UNUSED E operator^(E lhs, E rhs) noexcept { using U = std::underlying_type_t<E>; return E(U(lhs) ^ U(rhs)); } \
+    constexpr RS_ATTR_UNUSED E& operator&=(E& lhs, E rhs) noexcept { return lhs = lhs & rhs; } \
+    constexpr RS_ATTR_UNUSED E& operator|=(E& lhs, E rhs) noexcept { return lhs = lhs | rhs; } \
+    constexpr RS_ATTR_UNUSED E& operator^=(E& lhs, E rhs) noexcept { return lhs = lhs ^ rhs; }
 
 #ifndef RS_ENUM
     #define RS_ENUM_IMPLEMENTATION(EnumType, IntType, class_tag, name_prefix, first_value, first_name, ...) \
