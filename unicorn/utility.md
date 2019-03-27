@@ -128,6 +128,11 @@ These are defined to reflect the encoding represented by `wchar_t` and
 `std::wstring`. Systems where wide strings are neither UTF-16 nor UTF-32 are
 not supported.
 
+* `template <auto> class` **`DummyTemplate`**
+* `using` **`DummyType`** `= DummyTemplate<nullptr>`
+
+Incomplete dummy types used in metaprogramming.
+
 ## Constants ##
 
 * `constexpr const char*` **`ascii_whitespace`** `= "\t\n\v\f\r "`
@@ -339,36 +344,35 @@ Example:
 
 ## Metaprogramming ##
 
-* `namespace RS::Meta`
-    * `template <template <typename...> typename Archetype, typename... Args> struct` **`IsDetected`**
-    * `template <template <typename...> typename Archetype, typename... Args> constexpr bool` **`is_detected`**
-        * _True if the archetype is a valid expression for the supplied argument types_
-    * `template <typename Default, template <typename...> typename Archetype, typename... Args> struct` **`DetectedOr`**
-        * _Returns the type defined by the archetype if it is valid, otherwise the default type_
-    * `template <typename Result, template <typename...> typename Archetype, typename... Args> struct` **`IsDetectedExact`**
-    * `template <typename Result, template <typename...> typename Archetype, typename... Args> constexpr bool` **`is_detected_exact`**
-        * _True if the archetype is valid and returns a specific type_
-    * `template <typename Result, template <typename...> typename Archetype, typename... Args> struct` **`IsDetectedConvertible`**
-    * `template <typename Result, template <typename...> typename Archetype, typename... Args> constexpr bool` **`is_detected_convertible`**
-        * _True if the archetype is valid and returns a type convertible to the specified type_
+Everything in this section is under `namespace RS::Meta`.
+
+* `template <template <typename...> typename Archetype, typename... Args> struct` **`IsDetected`**
+* `template <template <typename...> typename Archetype, typename... Args> constexpr bool` **`is_detected`**
+    * _True if the archetype is a valid expression for the supplied argument types_
+* `template <typename Default, template <typename...> typename Archetype, typename... Args> struct` **`DetectedOr`**
+    * _Returns the type defined by the archetype if it is valid, otherwise the default type_
+* `template <typename Result, template <typename...> typename Archetype, typename... Args> struct` **`IsDetectedExact`**
+* `template <typename Result, template <typename...> typename Archetype, typename... Args> constexpr bool` **`is_detected_exact`**
+    * _True if the archetype is valid and returns a specific type_
+* `template <typename Result, template <typename...> typename Archetype, typename... Args> struct` **`IsDetectedConvertible`**
+* `template <typename Result, template <typename...> typename Archetype, typename... Args> constexpr bool` **`is_detected_convertible`**
+    * _True if the archetype is valid and returns a type convertible to the specified type_
 
 Reflection primitives, based on Walter E. Brown's
 [N4502 Proposing Standard Library Support for the C++ Detection Idiom V2](http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4502.pdf).
 
-* `namespace RS::Meta`
-    * `template <typename T> struct` **`IsIterator`**
-    * `template <typename T> constexpr bool` **`is_iterator`** `= IsIterator<T>::value`
-        * _True if the type is an iterator (detected by checking `iterator_traits`)_
-    * `template <typename T> struct` **`IsRange`**
-    * `template <typename T> constexpr bool` **`is_range`** `= IsRange<T>::value`
-        * _True if the type is a range (detected by checking for `begin()` and `end()`)_
+* `template <typename T> struct` **`IsIterator`**
+* `template <typename T> constexpr bool` **`is_iterator`** `= IsIterator<T>::value`
+    * _True if the type is an iterator (detected by checking `iterator_traits`)_
+* `template <typename T> struct` **`IsRange`**
+* `template <typename T> constexpr bool` **`is_range`** `= IsRange<T>::value`
+    * _True if the type is a range (detected by checking for `begin()` and `end()`)_
 
 Iterator and range type detectors.
 
-* `namespace RS::Meta`
-    * `template <typename Iterator> using` **`IteratorValue`**
-    * `template <typename Range> using` **`RangeIterator`**
-    * `template <typename Range> using` **`RangeValue`**
+* `template <typename Iterator> using` **`IteratorValue`**
+* `template <typename Range> using` **`RangeIterator`**
+* `template <typename Range> using` **`RangeValue`**
 
 These return the types associated with an iterator or range. The iterator
 types are are extracted by checking the return type of `begin()`, and do not

@@ -220,6 +220,8 @@ namespace RS {
     using Strings = std::vector<std::string>;
     using NativeString = std::basic_string<NativeCharacter>;
     using WstringEquivalent = std::basic_string<WcharEquivalent>;
+    template <auto> class DummyTemplate;
+    using DummyType = DummyTemplate<nullptr>;
 
     // Constants
 
@@ -316,43 +318,29 @@ namespace RS {
         // Walter E. Brown, N4502 Proposing Standard Library Support for the C++ Detection Idiom V2 (2015)
         // http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4502.pdf
 
-        namespace MetaDetail {
+        template <typename...> using VoidType = void;
 
-            template <typename...> using VoidType = void;
-
-            struct Nonesuch {
-                Nonesuch() = delete;
-                ~Nonesuch() = delete;
-                Nonesuch(const Nonesuch&) = delete;
-                Nonesuch(Nonesuch&&) = delete;
-                void operator=(const Nonesuch&) = delete;
-                void operator=(Nonesuch&&) = delete;
-            };
-
-            template <typename Default, typename, template <typename...> typename Archetype, typename... Args>
-            struct Detector {
-                using value_t = std::false_type;
-                using type = Default;
-            };
-
-            template <typename Default, template <typename...> typename Archetype, typename... Args>
-            struct Detector<Default, VoidType<Archetype<Args...>>, Archetype, Args...> {
-                using value_t = std::true_type;
-                using type = Archetype<Args...>;
-            };
-
-        }
+        template <typename Default, typename, template <typename...> typename Archetype, typename... Args>
+        struct Detector {
+            using value_t = std::false_type;
+            using type = Default;
+        };
+        template <typename Default, template <typename...> typename Archetype, typename... Args>
+        struct Detector<Default, VoidType<Archetype<Args...>>, Archetype, Args...> {
+            using value_t = std::true_type;
+            using type = Archetype<Args...>;
+        };
 
         template <template <typename...> typename Archetype, typename... Args>
-            using IsDetected = typename MetaDetail::Detector<MetaDetail::Nonesuch, void, Archetype, Args...>::value_t;
+            using IsDetected = typename Detector<DummyType, void, Archetype, Args...>::value_t;
         template <template <typename...> typename Archetype, typename... Args>
             constexpr bool is_detected = IsDetected<Archetype, Args...>::value;
         template <template <typename...> typename Archetype, typename... Args>
-            using DetectedType = typename MetaDetail::Detector<MetaDetail::Nonesuch, void, Archetype, Args...>::type;
+            using DetectedType = typename Detector<DummyType, void, Archetype, Args...>::type;
 
         // Return nested type if detected, otherwise default
         template <typename Default, template <typename...> typename Archetype, typename... Args>
-            using DetectedOr = typename MetaDetail::Detector<Default, void, Archetype, Args...>::type;
+            using DetectedOr = typename Detector<Default, void, Archetype, Args...>::type;
 
         // Detect only if it yields a specific return type
         template <typename Result, template <typename...> typename Archetype, typename... Args>

@@ -173,6 +173,13 @@ system's native API.</p>
 <code>std::wstring</code>. Systems where wide strings are neither UTF-16 nor UTF-32 are
 not supported.</p>
 </div>
+<div class="defns">
+<ul>
+<li><code>template &lt;auto&gt; class</code> <strong><code>DummyTemplate</code></strong></li>
+<li><code>using</code> <strong><code>DummyType</code></strong> <code>= DummyTemplate&lt;nullptr&gt;</code></li>
+</ul>
+<p>Incomplete dummy types used in metaprogramming.</p>
+</div>
 <h2 id="constants">Constants</h2>
 <div class="defns">
 <ul>
@@ -487,9 +494,9 @@ Window app_window(Window::title="Hello World", Window::width=1000, Window::heigh
 </code></pre>
 </div>
 <h2 id="metaprogramming">Metaprogramming</h2>
+<p>Everything in this section is under <code>namespace RS::Meta</code>.</p>
 <div class="defns">
 <ul>
-<li><code>namespace RS::Meta</code><ul>
 <li><code>template &lt;template &lt;typename...&gt; typename Archetype, typename... Args&gt; struct</code> <strong><code>IsDetected</code></strong></li>
 <li><code>template &lt;template &lt;typename...&gt; typename Archetype, typename... Args&gt; constexpr bool</code> <strong><code>is_detected</code></strong><ul>
 <li><em>True if the archetype is a valid expression for the supplied argument types</em></li>
@@ -510,14 +517,11 @@ Window app_window(Window::title="Hello World", Window::width=1000, Window::heigh
 </ul>
 </li>
 </ul>
-</li>
-</ul>
 <p>Reflection primitives, based on Walter E. Brown's
 <a href="http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2015/n4502.pdf">N4502 Proposing Standard Library Support for the C++ Detection Idiom V2</a>.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>namespace RS::Meta</code><ul>
 <li><code>template &lt;typename T&gt; struct</code> <strong><code>IsIterator</code></strong></li>
 <li><code>template &lt;typename T&gt; constexpr bool</code> <strong><code>is_iterator</code></strong> <code>= IsIterator&lt;T&gt;::value</code><ul>
 <li><em>True if the type is an iterator (detected by checking <code>iterator_traits</code>)</em></li>
@@ -529,18 +533,13 @@ Window app_window(Window::title="Hello World", Window::width=1000, Window::heigh
 </ul>
 </li>
 </ul>
-</li>
-</ul>
 <p>Iterator and range type detectors.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>namespace RS::Meta</code><ul>
 <li><code>template &lt;typename Iterator&gt; using</code> <strong><code>IteratorValue</code></strong></li>
 <li><code>template &lt;typename Range&gt; using</code> <strong><code>RangeIterator</code></strong></li>
 <li><code>template &lt;typename Range&gt; using</code> <strong><code>RangeValue</code></strong></li>
-</ul>
-</li>
 </ul>
 <p>These return the types associated with an iterator or range. The iterator
 types are are extracted by checking the return type of <code>begin()</code>, and do not
