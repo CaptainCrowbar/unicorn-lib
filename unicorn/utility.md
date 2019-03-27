@@ -128,10 +128,13 @@ These are defined to reflect the encoding represented by `wchar_t` and
 `std::wstring`. Systems where wide strings are neither UTF-16 nor UTF-32 are
 not supported.
 
-* `template <auto> class` **`DummyTemplate`**
-* `using` **`DummyType`** `= DummyTemplate<nullptr>`
+* `template <auto> class` **`IncompleteTemplate`**
+* `class` **`IncompleteType`**
+* `template <auto> class` **`CompleteTemplate`**
+* `class` **`CompleteType`**
 
-Incomplete dummy types used in metaprogramming.
+Dummy types used in metaprogramming. The `Complete` types are complete but
+cannot be instantiated.
 
 ## Constants ##
 

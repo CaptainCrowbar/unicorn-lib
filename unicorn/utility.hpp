@@ -148,13 +148,22 @@
 #endif
 
 #ifndef RS_NO_INSTANCE
-    #define RS_NO_INSTANCE(T) \
-        T() = delete; \
-        T(const T&) = delete; \
-        T(T&&) = delete; \
-        ~T() = delete; \
-        T& operator=(const T&) = delete; \
-        T& operator=(T&&) = delete;
+    #if defined(__GNUC__) && __GNUC__ < 9
+        #define RS_NO_INSTANCE(T) \
+            T() = delete; \
+            T(const T&) = delete; \
+            T(T&&) = delete; \
+            T& operator=(const T&) = delete; \
+            T& operator=(T&&) = delete;
+    #else
+        #define RS_NO_INSTANCE(T) \
+            T() = delete; \
+            T(const T&) = delete; \
+            T(T&&) = delete; \
+            ~T() = delete; \
+            T& operator=(const T&) = delete; \
+            T& operator=(T&&) = delete;
+    #endif
 #endif
 
 #define RS_OVERLOAD(f) [] (auto&&... args) { return f(std::forward<decltype(args)>(args)...); }
@@ -220,8 +229,11 @@ namespace RS {
     using Strings = std::vector<std::string>;
     using NativeString = std::basic_string<NativeCharacter>;
     using WstringEquivalent = std::basic_string<WcharEquivalent>;
-    template <auto> class DummyTemplate;
-    using DummyType = DummyTemplate<nullptr>;
+
+    template <auto> class IncompleteTemplate;
+    class IncompleteType;
+    template <auto> class CompleteTemplate { RS_NO_INSTANCE(CompleteTemplate); };
+    class CompleteType { RS_NO_INSTANCE(CompleteType); };
 
     // Constants
 
@@ -332,11 +344,11 @@ namespace RS {
         };
 
         template <template <typename...> typename Archetype, typename... Args>
-            using IsDetected = typename Detector<DummyType, void, Archetype, Args...>::value_t;
+            using IsDetected = typename Detector<CompleteType, void, Archetype, Args...>::value_t;
         template <template <typename...> typename Archetype, typename... Args>
             constexpr bool is_detected = IsDetected<Archetype, Args...>::value;
         template <template <typename...> typename Archetype, typename... Args>
-            using DetectedType = typename Detector<DummyType, void, Archetype, Args...>::type;
+            using DetectedType = typename Detector<CompleteType, void, Archetype, Args...>::type;
 
         // Return nested type if detected, otherwise default
         template <typename Default, template <typename...> typename Archetype, typename... Args>

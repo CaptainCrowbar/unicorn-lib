@@ -175,10 +175,13 @@ not supported.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;auto&gt; class</code> <strong><code>DummyTemplate</code></strong></li>
-<li><code>using</code> <strong><code>DummyType</code></strong> <code>= DummyTemplate&lt;nullptr&gt;</code></li>
+<li><code>template &lt;auto&gt; class</code> <strong><code>IncompleteTemplate</code></strong></li>
+<li><code>class</code> <strong><code>IncompleteType</code></strong></li>
+<li><code>template &lt;auto&gt; class</code> <strong><code>CompleteTemplate</code></strong></li>
+<li><code>class</code> <strong><code>CompleteType</code></strong></li>
 </ul>
-<p>Incomplete dummy types used in metaprogramming.</p>
+<p>Dummy types used in metaprogramming. The <code>Complete</code> types are complete but
+cannot be instantiated.</p>
 </div>
 <h2 id="constants">Constants</h2>
 <div class="defns">
