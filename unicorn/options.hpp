@@ -94,6 +94,7 @@ namespace RS::Unicorn {
         Ustring app_info;
         int help_flag = -1;
         option_list opts;
+        int tail_opts = 0;
         void add_option(option_type opt);
         size_t find_index(Ustring name, bool require = false) const;
         Strings find_values(const Ustring& name) const;

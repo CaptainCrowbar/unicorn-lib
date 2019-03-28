@@ -211,7 +211,7 @@ namespace RS::Unicorn {
             throw spec_error(tag);
         if (opt.is_required && ! opt.opt_group.empty())
             throw spec_error(tag);
-        if (int(opt.is_file) + int(opt.is_floating) + int(opt.is_integer) + int(opt.is_uinteger)
+        if (int(opt.is_boolean) + int(opt.is_file) + int(opt.is_floating) + int(opt.is_integer) + int(opt.is_uinteger)
                 + int(! opt.opt_enum.values.empty()) + int(! opt.opt_pattern.empty()) > 1)
             throw spec_error(tag);
         if (opt.is_floating)
@@ -223,6 +223,8 @@ namespace RS::Unicorn {
         if (! opt.opt_defvalue.empty() && ! opt.opt_pattern.empty() && ! opt.opt_pattern(opt.opt_defvalue))
             throw spec_error(tag);
         if (! opt.opt_defvalue.empty() && ! opt.opt_enum.values.empty() && ! opt.opt_enum.check(opt.opt_defvalue))
+            throw spec_error(tag);
+        if (opt.is_anon && opt.is_multi && ++tail_opts > 1)
             throw spec_error(tag);
         if (neg) {
             opt.opt_name.erase(0, 3);

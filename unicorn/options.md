@@ -96,18 +96,22 @@ optional keyword arguments, as listed below.
 
 Keyword                    | Type           | Description
 -------                    | ----           | -----------
+&nbsp;                     | &nbsp;         | **Option naming**
 `Options::`**`abbrev`**    | `Ustring`      | A single letter abbreviation for the option (e.g. `"-x"`; the hyphen is optional in `add()`).
+&nbsp;                     | &nbsp;         | **Option inclusion and exclusion**
+`Options::`**`group`**     | `Ustring`      | Assign the option to a mutual exclusion group (multiple options from the same group are not allowed).
+`Options::`**`required`**  | `bool`         | This option is mandatory.
+&nbsp;                     | &nbsp;         | **Matching arguments with options**
 `Options::`**`anon`**      | `bool`         | Anonymous arguments (not claimed by any other option) will be assigned to this option.
 `Options::`**`boolean`**   | `bool`         | This option is a boolean switch and does not take arguments.
 `Options::`**`defvalue`**  | `Ustring`      | Use this default value if the option is not supplied by the user.
+`Options::`**`multi`**     | `bool`         | This option may be followed by multiple arguments.
+&nbsp;                     | &nbsp;         | **Argument format restriction**
 `Options::`**`enumtype`**  | _(see below)_  | The argument value must be the unqualified name of an enumeration value.
 `Options::`**`file`**      | `bool`         | The argument value is expected to be a file path (this is just for documentation and does no checking).
 `Options::`**`floating`**  | `bool`         | The argument value must be a floating point number (an integer is accepted).
-`Options::`**`group`**     | `Ustring`      | Assign the option to a mutual exclusion group; at most one option from a group is allowed.
 `Options::`**`integer`**   | `bool`         | The argument value must be an integer.
-`Options::`**`multi`**     | `bool`         | This option may be followed by multiple arguments.
 `Options::`**`pattern`**   | `Ustring`      | The argument value must match this regular expression.
-`Options::`**`required`**  | `bool`         | This option is mandatory.
 `Options::`**`uinteger`**  | `bool`         | The argument value must be an unsigned integer.
 
 Boolean options can be supplied in negated form, by giving a name starting
@@ -124,9 +128,10 @@ Adding an option will throw `spec_error` if any of the following is true:
 * An option starting with `"--no-"` is not boolean or has an abbreviation.
 * The `boolean` tag is combined with `anon`, `defvalue`, `enumtype`, `multi`, `pattern`, or `require`.
 * The `require` tag is combined with `boolean`, `defvalue`, or `group`.
-* More than one of `integer`, `uinteger`, `floating`, `enumtype`, `file`, or `pattern` is supplied.
+* More than one of `boolean`, `enumtype`, `file`, `integer`, `floating`, `pattern`, or `uinteger` is supplied.
 * The `defvalue` and `enumtype` tags are both present, but the default value is not one of the enumeration values.
 * The `defvalue` and `pattern` tags are both present, but the default value does not match the pattern.
+* There is more than one option with both `anon` and `multi` flags (the first one will get all leftover arguments).
 
 The value attached to the `Options::enumtype` keyword must be a value of an
 enumeration type (plain or strong) that was defined using one of the
@@ -210,7 +215,7 @@ true:
 * A required option is missing.
 * There are unattached arguments left over after all options have been satisfied.
 
-Behaviour is unspecified if `parse()` is called more than once on the same
+Behaviour is undefined if `parse()` is called more than once on the same
 `Options` object.
 
 * `template <typename T> T Options::`**`get`**`(const Ustring& name) const`

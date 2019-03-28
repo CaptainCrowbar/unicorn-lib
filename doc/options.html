@@ -120,9 +120,34 @@ optional keyword arguments, as listed below.</p>
 </thead>
 <tbody>
 <tr>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td><strong>Option naming</strong></td>
+</tr>
+<tr>
 <td><code>Options::</code><strong><code>abbrev</code></strong></td>
 <td><code>Ustring</code></td>
 <td>A single letter abbreviation for the option (e.g. <code>"-x"</code>; the hyphen is optional in <code>add()</code>).</td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td><strong>Option inclusion and exclusion</strong></td>
+</tr>
+<tr>
+<td><code>Options::</code><strong><code>group</code></strong></td>
+<td><code>Ustring</code></td>
+<td>Assign the option to a mutual exclusion group (multiple options from the same group are not allowed).</td>
+</tr>
+<tr>
+<td><code>Options::</code><strong><code>required</code></strong></td>
+<td><code>bool</code></td>
+<td>This option is mandatory.</td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td><strong>Matching arguments with options</strong></td>
 </tr>
 <tr>
 <td><code>Options::</code><strong><code>anon</code></strong></td>
@@ -140,6 +165,16 @@ optional keyword arguments, as listed below.</p>
 <td>Use this default value if the option is not supplied by the user.</td>
 </tr>
 <tr>
+<td><code>Options::</code><strong><code>multi</code></strong></td>
+<td><code>bool</code></td>
+<td>This option may be followed by multiple arguments.</td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td><strong>Argument format restriction</strong></td>
+</tr>
+<tr>
 <td><code>Options::</code><strong><code>enumtype</code></strong></td>
 <td><em>(see below)</em></td>
 <td>The argument value must be the unqualified name of an enumeration value.</td>
@@ -155,29 +190,14 @@ optional keyword arguments, as listed below.</p>
 <td>The argument value must be a floating point number (an integer is accepted).</td>
 </tr>
 <tr>
-<td><code>Options::</code><strong><code>group</code></strong></td>
-<td><code>Ustring</code></td>
-<td>Assign the option to a mutual exclusion group; at most one option from a group is allowed.</td>
-</tr>
-<tr>
 <td><code>Options::</code><strong><code>integer</code></strong></td>
 <td><code>bool</code></td>
 <td>The argument value must be an integer.</td>
 </tr>
 <tr>
-<td><code>Options::</code><strong><code>multi</code></strong></td>
-<td><code>bool</code></td>
-<td>This option may be followed by multiple arguments.</td>
-</tr>
-<tr>
 <td><code>Options::</code><strong><code>pattern</code></strong></td>
 <td><code>Ustring</code></td>
 <td>The argument value must match this regular expression.</td>
-</tr>
-<tr>
-<td><code>Options::</code><strong><code>required</code></strong></td>
-<td><code>bool</code></td>
-<td>This option is mandatory.</td>
 </tr>
 <tr>
 <td><code>Options::</code><strong><code>uinteger</code></strong></td>
@@ -199,9 +219,10 @@ is <code>true</code>; the <code>"--no-whatever"</code> form can be used to switc
 <li>An option starting with <code>"--no-"</code> is not boolean or has an abbreviation.</li>
 <li>The <code>boolean</code> tag is combined with <code>anon</code>, <code>defvalue</code>, <code>enumtype</code>, <code>multi</code>, <code>pattern</code>, or <code>require</code>.</li>
 <li>The <code>require</code> tag is combined with <code>boolean</code>, <code>defvalue</code>, or <code>group</code>.</li>
-<li>More than one of <code>integer</code>, <code>uinteger</code>, <code>floating</code>, <code>enumtype</code>, <code>file</code>, or <code>pattern</code> is supplied.</li>
+<li>More than one of <code>boolean</code>, <code>enumtype</code>, <code>file</code>, <code>integer</code>, <code>floating</code>, <code>pattern</code>, or <code>uinteger</code> is supplied.</li>
 <li>The <code>defvalue</code> and <code>enumtype</code> tags are both present, but the default value is not one of the enumeration values.</li>
 <li>The <code>defvalue</code> and <code>pattern</code> tags are both present, but the default value does not match the pattern.</li>
+<li>There is more than one option with both <code>anon</code> and <code>multi</code> flags (the first one will get all leftover arguments).</li>
 </ul>
 <p>The value attached to the <code>Options::enumtype</code> keyword must be a value of an
 enumeration type (plain or strong) that was defined using one of the
@@ -299,7 +320,7 @@ true:</p>
 <li>A required option is missing.</li>
 <li>There are unattached arguments left over after all options have been satisfied.</li>
 </ul>
-<p>Behaviour is unspecified if <code>parse()</code> is called more than once on the same
+<p>Behaviour is undefined if <code>parse()</code> is called more than once on the same
 <code>Options</code> object.</p>
 </div>
 <div class="defns">
