@@ -460,12 +460,12 @@ namespace RS::Unicorn {
     Regex::transform::transform(std::string_view pattern, std::string_view fmt, flag_type flags):
     re(pattern, flags), sub_format(fmt), sub_flags(flags & runtime_mask) {}
 
-    std::string Regex::transform::replace(std::string_view str, size_t pos) const {
-        return re.replace(str, sub_format, pos, sub_flags);
+    std::string Regex::transform::replace(std::string_view str, size_t pos, flag_type flags) const {
+        return re.replace(str, sub_format, pos, flags | sub_flags);
     }
 
-    void Regex::transform::replace_in(std::string& str, size_t pos) const {
-        re.replace_in(str, sub_format, pos, sub_flags);
+    void Regex::transform::replace_in(std::string& str, size_t pos, flag_type flags) const {
+        re.replace_in(str, sub_format, pos, flags | sub_flags);
     }
 
 }

@@ -185,9 +185,9 @@ namespace RS::Unicorn {
         std::string pattern() const { return re.pattern(); }
         std::string format() const { return sub_format; }
         flag_type flags() const noexcept { return re.flags() | sub_flags; }
-        std::string replace(std::string_view str, size_t pos = 0) const;
-        void replace_in(std::string& str, size_t pos = 0) const;
-        std::string operator()(std::string_view str, size_t pos = 0) const { return replace(str, pos); }
+        std::string replace(std::string_view str, size_t pos = 0, flag_type flags = 0) const;
+        void replace_in(std::string& str, size_t pos = 0, flag_type flags = 0) const;
+        std::string operator()(std::string_view str, size_t pos = 0, flag_type flags = 0) const { return replace(str, pos, flags); }
     private:
         Regex re;
         std::string sub_format;

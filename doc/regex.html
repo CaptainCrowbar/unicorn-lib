@@ -566,9 +566,9 @@ and can throw the same exceptions as the corresponding regex constructor.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>std::string transform::</code><strong><code>replace</code></strong><code>(std::string_view str, size_t pos = 0) const</code></li>
-<li><code>void transform::</code><strong><code>replace_in</code></strong><code>(std::string&amp; str, size_t pos = 0) const</code></li>
-<li><code>std::string transform::</code><strong><code>operator()</code></strong><code>(std::string_view str, size_t pos = 0) const</code></li>
+<li><code>std::string transform::</code><strong><code>replace</code></strong><code>(std::string_view str, size_t pos = 0, flag_type flags = 0) const</code></li>
+<li><code>void transform::</code><strong><code>replace_in</code></strong><code>(std::string&amp; str, size_t pos = 0, flag_type flags = 0) const</code></li>
+<li><code>std::string transform::</code><strong><code>operator()</code></strong><code>(std::string_view str, size_t pos = 0, flag_type flags = 0) const</code></li>
 </ul>
 <p>The replacement functions, which perform the equivalent of
 <code>Regex::replace[_in]()</code>. The function call operator is equivalent to

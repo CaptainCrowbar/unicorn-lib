@@ -408,9 +408,9 @@ and can throw the same exceptions as the corresponding regex constructor.
 
 These return the construction parameters.
 
-* `std::string transform::`**`replace`**`(std::string_view str, size_t pos = 0) const`
-* `void transform::`**`replace_in`**`(std::string& str, size_t pos = 0) const`
-* `std::string transform::`**`operator()`**`(std::string_view str, size_t pos = 0) const`
+* `std::string transform::`**`replace`**`(std::string_view str, size_t pos = 0, flag_type flags = 0) const`
+* `void transform::`**`replace_in`**`(std::string& str, size_t pos = 0, flag_type flags = 0) const`
+* `std::string transform::`**`operator()`**`(std::string_view str, size_t pos = 0, flag_type flags = 0) const`
 
 The replacement functions, which perform the equivalent of
 `Regex::replace[_in]()`. The function call operator is equivalent to
