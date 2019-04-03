@@ -861,8 +861,10 @@ namespace RS {
             callback_(std::forward<F>(f)),
             inflight_(std::uncaught_exceptions()) {}
             catch (...) {
-                if constexpr (S != ScopeState::success)
-                    try { f(); } catch (...) {}
+                if constexpr (S != ScopeState::success) {
+                    try { f(); }
+                    catch (...) {}
+                }
                 throw;
             }
         BasicScopeGuard(const BasicScopeGuard&) = delete;
