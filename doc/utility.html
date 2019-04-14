@@ -892,10 +892,20 @@ characters are found.</p>
 <li><code>template &lt;typename T&gt; bool</code> <strong><code>from_str</code></strong><code>(std::string_view view, T&amp; t) noexcept</code></li>
 <li><code>template &lt;typename T&gt; T</code> <strong><code>from_str</code></strong><code>(std::string_view view)</code></li>
 <li><code>template &lt;typename T&gt; std::string</code> <strong><code>to_str</code></strong><code>(const T&amp; t)</code></li>
+<li><code>template &lt;typename T&gt; struct</code> <strong><code>FromStr</code></strong><ul>
+<li><code>T FromStr::</code><strong><code>operator()</code></strong><code>(std::string_view s) const</code></li>
+</ul>
+</li>
+<li><code>struct</code> <strong><code>ToStr</code></strong><ul>
+<li><code>template &lt;typename T&gt; std::string ToStr::</code><strong><code>operator()</code></strong><code>(const T&amp; t) const</code></li>
+</ul>
+</li>
 </ul>
 <p>Generic utility functions for converting arbitrary types to or from a string.
 The conversion rules are described below; <code>to_str()</code> and the first version of
-<code>from_str()</code> can also be overloaded for new types.</p>
+<code>from_str()</code> can also be overloaded for new types. The <code>FromStr</code> and <code>ToStr</code>
+function objects call the corresponding functions and do not need to be
+separately overloaded.</p>
 <p>The first version of <code>from_str()</code> writes the converted object into its second
 argument and returns true on success; otherwise, it returns false and leaves
 the referenced object unchanged. The second version calls the first version,

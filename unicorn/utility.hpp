@@ -1473,6 +1473,15 @@ namespace RS {
         }
     }
 
+    template <typename T>
+    struct FromStr {
+        T operator()(std::string_view s) const { using RS::from_str; return from_str<T>(s); }
+    };
+
+    struct ToStr {
+        template <typename T> std::string operator()(const T& t) const { using RS::to_str; return to_str(t); }
+    };
+
     // Version numbers
 
     class Version:

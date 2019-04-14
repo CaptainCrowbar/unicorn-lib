@@ -1537,6 +1537,12 @@ void test_unicorn_utility_conversion_from_string() {
     TEST(from_str(good, fi));  TEST_EQUAL(fv.num, 42);
     TEST(from_str(good, fx));  TEST_EQUAL(fx.num, 42);
 
+    TRY(fv = FromStr<FromView>()(good));      TEST_EQUAL(fv.num, 42);
+    TRY(fs = FromStr<FromString>()(good));    TEST_EQUAL(fv.num, 42);
+    TRY(fc = FromStr<FromChars>()(good));     TEST_EQUAL(fv.num, 42);
+    TRY(fi = FromStr<FromIstream>()(good));   TEST_EQUAL(fv.num, 42);
+    TRY(fx = FromStr<FromOverload>()(good));  TEST_EQUAL(fx.num, 42);
+
     TEST(! from_str(bad, fv));  TEST_EQUAL(fv.num, 42);
     TEST(! from_str(bad, fs));  TEST_EQUAL(fv.num, 42);
     TEST(! from_str(bad, fc));  TEST_EQUAL(fv.num, 42);
@@ -1639,6 +1645,7 @@ void test_unicorn_utility_conversion_to_string() {
     };
     NoConversion nc;
     std::string out;
+    ToStr convert;
 
     TRY(out = to_str(b));    TEST_EQUAL(out, "true");
     TRY(out = to_str(c));    TEST_EQUAL(out, "c");
@@ -1669,6 +1676,36 @@ void test_unicorn_utility_conversion_to_string() {
     TRY(out = to_str(v));    TEST_EQUAL(out, "[2,3,5,7,11,13,17,19]");
     TRY(out = to_str(m));    TEST_EQUAL(out, "{1:alpha,2:bravo,3:charlie,4:delta,5:echo}");
     TRY(out = to_str(nc));   TEST_MATCH(out, "::NoConversion$");
+
+    TRY(out = convert(b));    TEST_EQUAL(out, "true");
+    TRY(out = convert(c));    TEST_EQUAL(out, "c");
+    TRY(out = convert(i));    TEST_EQUAL(out, "42");
+    TRY(out = convert(f));    TEST_EQUAL(out, "-1.25");
+    TRY(out = convert(s));    TEST_EQUAL(out, "Hello string");
+    TRY(out = convert(sv));   TEST_EQUAL(out, "Hello view");
+    TRY(out = convert(cp));   TEST_EQUAL(out, "Hello chars");
+    TRY(out = convert(ca));   TEST_EQUAL(out, "Hello array");
+    TRY(out = convert(ts));   TEST_EQUAL(out, "TS-101");
+    TRY(out = convert(tv));   TEST_EQUAL(out, "TV-102");
+    TRY(out = convert(tc));   TEST_EQUAL(out, "TC-103");
+    TRY(out = convert(to));   TEST_EQUAL(out, "TO-104");
+    TRY(out = convert(tx));   TEST_EQUAL(out, "TX-105");
+    TRY(out = convert(hs));   TEST_EQUAL(out, "HS-106");
+    TRY(out = convert(ht));   TEST_EQUAL(out, "HT-107");
+    TRY(out = convert(ex));   TEST_EQUAL(out, "Runtime error");
+    TRY(out = convert(ba));   TEST_EQUAL(out, "12 34 56 78");
+    TRY(out = convert(bv));   TEST_EQUAL(out, "9a bc de f0");
+    TRY(out = convert(o1));   TEST_EQUAL(out, "null");
+    TRY(out = convert(o2));   TEST_EQUAL(out, "42");
+    TRY(out = convert(sp1));  TEST_EQUAL(out, "null");
+    TRY(out = convert(sp2));  TEST_EQUAL(out, "42");
+    TRY(out = convert(up1));  TEST_EQUAL(out, "null");
+    TRY(out = convert(up2));  TEST_EQUAL(out, "42");
+    TRY(out = convert(p));    TEST_EQUAL(out, "(Answer,42)");
+    TRY(out = convert(t));    TEST_EQUAL(out, "(42,hello,true)");
+    TRY(out = convert(v));    TEST_EQUAL(out, "[2,3,5,7,11,13,17,19]");
+    TRY(out = convert(m));    TEST_EQUAL(out, "{1:alpha,2:bravo,3:charlie,4:delta,5:echo}");
+    TRY(out = convert(nc));   TEST_MATCH(out, "::NoConversion$");
 
 }
 

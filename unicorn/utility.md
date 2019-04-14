@@ -642,10 +642,16 @@ characters are found.
 * `template <typename T> bool` **`from_str`**`(std::string_view view, T& t) noexcept`
 * `template <typename T> T` **`from_str`**`(std::string_view view)`
 * `template <typename T> std::string` **`to_str`**`(const T& t)`
+* `template <typename T> struct` **`FromStr`**
+    * `T FromStr::`**`operator()`**`(std::string_view s) const`
+* `struct` **`ToStr`**
+    * `template <typename T> std::string ToStr::`**`operator()`**`(const T& t) const`
 
 Generic utility functions for converting arbitrary types to or from a string.
 The conversion rules are described below; `to_str()` and the first version of
-`from_str()` can also be overloaded for new types.
+`from_str()` can also be overloaded for new types. The `FromStr` and `ToStr`
+function objects call the corresponding functions and do not need to be
+separately overloaded.
 
 The first version of `from_str()` writes the converted object into its second
 argument and returns true on success; otherwise, it returns false and leaves
