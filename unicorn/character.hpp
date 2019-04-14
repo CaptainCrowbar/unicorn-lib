@@ -11,7 +11,7 @@
 #include <utility>
 #include <vector>
 
-RS_LDLIB(unicorn z);
+RS_LDLIB(unicorn pcre2-8 z);
 
 namespace RS::Unicorn {
 

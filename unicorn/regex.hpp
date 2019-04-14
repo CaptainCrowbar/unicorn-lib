@@ -9,8 +9,6 @@
 #include <string>
 #include <string_view>
 
-RS_LDLIB(pcre2-8);
-
 namespace RS::Unicorn {
 
     class Regex {

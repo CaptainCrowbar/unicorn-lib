@@ -50,7 +50,7 @@ $(BUILD)/utf-test.o: unicorn/utf-test.cpp unicorn/character.hpp unicorn/property
 $(BUILD)/utf.o: unicorn/utf.cpp unicorn/character.hpp unicorn/property-values.hpp unicorn/utf.hpp unicorn/utility.hpp
 $(BUILD)/utility-test.o: unicorn/utility-test.cpp unicorn/unit-test.hpp unicorn/utility.hpp
 ifeq ($(LIBTAG),msvc)
-    LDLIBS += zlib.lib pcre2-8.lib
+    LDLIBS += pcre2-8.lib zlib.lib
 else
-    LDLIBS += -lz -lpcre2-8
+    LDLIBS += -lpcre2-8 -lz
 endif
