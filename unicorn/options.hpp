@@ -38,7 +38,7 @@ namespace RS::Unicorn {
             explicit spec_error(const Ustring& details, const Ustring& option = {});
         };
 
-        enum special_options { help, autohelp };
+        enum class help { unset, std, automatic };
 
         static constexpr uint32_t locale = 1;                // Argument list is in local encoding
         static constexpr uint32_t noprefix = 2;              // First argument is not the command name
@@ -63,8 +63,8 @@ namespace RS::Unicorn {
 
         template <typename... Args> Options& add(const Ustring& name, const Ustring& info, Args... args);
         Options& add(const Ustring& info);
-        Options& add(special_options flag);
-        Ustring help_text() const;
+        Options& add(help h);
+        Ustring help_text();
         Ustring version_text() const { return app_info; }
         template <typename C> bool parse(const std::vector<std::basic_string<C>>& args, std::ostream& out = std::cout, uint32_t flags = 0);
         template <typename C> bool parse(const std::basic_string<C>& args, std::ostream& out = std::cout, uint32_t flags = 0);
@@ -75,7 +75,7 @@ namespace RS::Unicorn {
 
     private:
 
-        enum class help_mode { none, version, usage };
+        enum class parse_result { ok, help, version };
 
         struct option_type {
             option_type() = default;
@@ -106,16 +106,16 @@ namespace RS::Unicorn {
         using option_list = std::vector<option_type>;
 
         Ustring app_info;
-        int help_flag = -1;
+        help help_flag = help::unset;
         option_list opts;
         int tail_opts = 0;
-        mutable bool checked = false;
+        bool checked = false;
 
         void add_option(option_type opt);
-        void final_check() const;
+        void final_check();
         size_t find_index(Ustring name, bool require = false) const;
         Strings find_values(const Ustring& name) const;
-        help_mode parse_args(Strings args, uint32_t flags);
+        parse_result parse_args(Strings args, uint32_t flags);
         void clean_up_arguments(Strings& args, uint32_t flags);
         Strings parse_forced_anonymous(Strings& args);
         void parse_attached_arguments(Strings& args);
@@ -124,7 +124,7 @@ namespace RS::Unicorn {
         void parse_remaining_anonymous(Strings& args, const Strings& anon_args);
         void check_conditions();
         void supply_defaults();
-        void send_help(std::ostream& out, help_mode mode) const;
+        void send_help(std::ostream& out, parse_result mode);
 
         template <typename C> static Ustring arg_convert(const std::basic_string<C>& str, uint32_t /*flags*/) { return to_utf8(str); }
         static Ustring arg_convert(const std::string& str, uint32_t flags);
@@ -155,7 +155,7 @@ namespace RS::Unicorn {
             [=] (const std::basic_string<C>& s) { return arg_convert(s, flags); });
         auto help_wanted = parse_args(u8vec, flags);
         send_help(out, help_wanted);
-        return help_wanted != help_mode::none;
+        return help_wanted != parse_result::ok;
     }
 
     template <typename C>
@@ -170,7 +170,7 @@ namespace RS::Unicorn {
         }
         auto help_wanted = parse_args(vec, flags);
         send_help(out, help_wanted);
-        return help_wanted != help_mode::none;
+        return help_wanted != parse_result::ok;
     }
 
     template <typename C>

@@ -75,6 +75,16 @@ report an invalid combination of properties.</p>
 </div>
 <div class="defns">
 <ul>
+<li><code>enum class Options::</code><strong><code>help</code></strong><ul>
+<li><code>help::</code><strong><code>automatic</code></strong></li>
+<li><code>help::</code><strong><code>std</code></strong></li>
+</ul>
+</li>
+</ul>
+<p>Options passed to <code>add()</code> to control the placement of help request options.</p>
+</div>
+<div class="defns">
+<ul>
 <li><code>explicit Options::</code><strong><code>Options</code></strong><code>(const Ustring&amp; info)</code></li>
 </ul>
 <p>Constructor to initialize an option specification. The <code>info</code> argument is a
@@ -98,7 +108,7 @@ used and is supplied only to enable move initialization in some cases.)</p>
 <ul>
 <li><code>template &lt;typename... Args&gt; Options&amp; Options::</code><strong><code>add</code></strong><code>(const Ustring&amp; name, const Ustring&amp; info, const Args&amp;... args)</code></li>
 <li><code>Options&amp; Options::</code><strong><code>add</code></strong><code>(const Ustring&amp; info)</code></li>
-<li><code>Options&amp; Options::</code><strong><code>add</code></strong><code>([private type] flag)</code></li>
+<li><code>Options&amp; Options::</code><strong><code>add</code></strong><code>(help h)</code></li>
 </ul>
 <p>A program will normally construct an <code>Options</code> object and use multiple calls
 to <code>add()</code> to construct the option specification before calling <code>parse()</code> to
@@ -244,23 +254,16 @@ listed in the help text.</p>
 <p>The third version of <code>add()</code> can be used to explicitly add the help and
 version options. Use this if you want to place them somewhere other than at
 the end of the list of options in the help message, or if you want to set the
-automatic help flag. The argument can be one of:</p>
-<!-- TEXT -->
-
-<ul>
-<li><code>Options::help</code></li>
-<li><code>Options::autohelp</code></li>
-</ul>
-<p>Either of these will add the <code>"--help"</code> and <code>"--version"</code> options, with the
-abbreviations <code>"-h"</code> and <code>"-v"</code> if these have not already been assigned to
-other options. They will be automatically added at the end of the option list
-if you do not add them this way. If the <code>autohelp</code> flag is used, calling the
-program with no arguments will be interpreted as a request for help (i.e. an
-empty argument list is equivalent to <code>"--help"</code>).</p>
+automatic help flag. Either value will add the <code>"--help"</code> and <code>"--version"</code>
+options, with the abbreviations <code>"-h"</code> and <code>"-v"</code> if these have not already
+been assigned to other options. They will be automatically added at the end of
+the option list if you do not add them this way. If the <code>automatic</code> flag is
+used, calling the program with no arguments will be interpreted as a request
+for help (i.e. an empty argument list is equivalent to <code>"--help"</code>).</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>Ustring Options::</code><strong><code>help_text</code></strong><code>() const</code></li>
+<li><code>Ustring Options::</code><strong><code>help_text</code></strong><code>()</code></li>
 <li><code>Ustring Options::</code><strong><code>version_text</code></strong><code>() const</code></li>
 </ul>
 <p>These are the same texts that will be presented to the user by the <code>"--help"</code>

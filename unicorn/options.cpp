@@ -69,14 +69,12 @@ namespace RS::Unicorn {
         return *this;
     }
 
-    Options& Options::add(special_options flag) {
+    Options& Options::add(help h) {
         if (checked)
             throw spec_error("Option list is already complete");
-        if (flag != help && flag != autohelp)
-            throw spec_error("Unknown flag");
-        if (help_flag != -1)
+        if (help_flag != help::unset)
             throw spec_error("Multiple help options");
-        help_flag = flag == autohelp;
+        help_flag = h;
         option_type opt;
         opt.is_boolean = true;
         opt.name = "help";
@@ -94,7 +92,7 @@ namespace RS::Unicorn {
         return *this;
     }
 
-    Ustring Options::help_text() const {
+    Ustring Options::help_text() {
         static constexpr auto length_flags = Length::graphemes | Length::narrow;
         final_check();
         Ustring text = "\n" + app_info + "\n";
@@ -243,7 +241,7 @@ namespace RS::Unicorn {
         opts.push_back(opt);
     }
 
-    void Options::final_check() const {
+    void Options::final_check() {
         for (auto& opt: opts) {
             if (! opt.implies.empty()) {
                 size_t i = find_index(opt.implies);
@@ -253,6 +251,8 @@ namespace RS::Unicorn {
                     throw spec_error("Inconsistent linked options: --$1 cannot imply --$2"_fmt(opt.name, opt.implies));
             }
         }
+        if (help_flag == help::unset)
+            add(Options::help::std);
         checked = true;
     }
 
@@ -277,25 +277,23 @@ namespace RS::Unicorn {
         return i != npos ? opts[i].values : Strings();
     }
 
-    Options::help_mode Options::parse_args(Strings args, uint32_t flags) {
-        if (help_flag == -1)
-            add(Options::help);
+    Options::parse_result Options::parse_args(Strings args, uint32_t flags) {
         final_check();
         clean_up_arguments(args, flags);
-        if (help_flag && args.empty())
-            return help_mode::usage;
+        if (args.empty() && help_flag == help::automatic)
+            return parse_result::help;
         auto is_anon = parse_forced_anonymous(args);
         parse_attached_arguments(args);
         expand_abbreviations(args);
         extract_named_options(args);
         parse_remaining_anonymous(args, is_anon);
         if (has("help"))
-            return help_mode::usage;
+            return parse_result::help;
         if (has("version"))
-            return help_mode::version;
+            return parse_result::version;
         check_conditions();
         supply_defaults();
-        return help_mode::none;
+        return parse_result::ok;
     }
 
     void Options::clean_up_arguments(Strings& args, uint32_t flags) {
@@ -429,12 +427,12 @@ namespace RS::Unicorn {
                 add_arg_to_opt(opt.defvalue, opt);
     }
 
-    void Options::send_help(std::ostream& out, help_mode mode) const {
+    void Options::send_help(std::ostream& out, parse_result mode) {
         Ustring message;
         switch (mode) {
-            case help_mode::version:  message = app_info + '\n'; break;
-            case help_mode::usage:    message = help_text(); break;
-            default:                  break;
+            case parse_result::help:     message = help_text(); break;
+            case parse_result::version:  message = app_info + '\n'; break;
+            default:                     break;
         }
         if (! message.empty())
             out << message;

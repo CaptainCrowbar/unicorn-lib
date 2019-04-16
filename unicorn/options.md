@@ -61,6 +61,12 @@ option specification.
 Thrown by `Options::add()` during the creation of an option specification, to
 report an invalid combination of properties.
 
+* `enum class Options::`**`help`**
+    * `help::`**`automatic`**
+    * `help::`**`std`**
+
+Options passed to `add()` to control the placement of help request options.
+
 * `explicit Options::`**`Options`**`(const Ustring& info)`
 
 Constructor to initialize an option specification. The `info` argument is a
@@ -80,7 +86,7 @@ used and is supplied only to enable move initialization in some cases.)
 
 * `template <typename... Args> Options& Options::`**`add`**`(const Ustring& name, const Ustring& info, const Args&... args)`
 * `Options& Options::`**`add`**`(const Ustring& info)`
-* `Options& Options::`**`add`**`([private type] flag)`
+* `Options& Options::`**`add`**`(help h)`
 
 A program will normally construct an `Options` object and use multiple calls
 to `add()` to construct the option specification before calling `parse()` to
@@ -151,20 +157,14 @@ listed in the help text.
 The third version of `add()` can be used to explicitly add the help and
 version options. Use this if you want to place them somewhere other than at
 the end of the list of options in the help message, or if you want to set the
-automatic help flag. The argument can be one of:
+automatic help flag. Either value will add the `"--help"` and `"--version"`
+options, with the abbreviations `"-h"` and `"-v"` if these have not already
+been assigned to other options. They will be automatically added at the end of
+the option list if you do not add them this way. If the `automatic` flag is
+used, calling the program with no arguments will be interpreted as a request
+for help (i.e. an empty argument list is equivalent to `"--help"`).
 
-<!-- TEXT -->
-* `Options::help`
-* `Options::autohelp`
-
-Either of these will add the `"--help"` and `"--version"` options, with the
-abbreviations `"-h"` and `"-v"` if these have not already been assigned to
-other options. They will be automatically added at the end of the option list
-if you do not add them this way. If the `autohelp` flag is used, calling the
-program with no arguments will be interpreted as a request for help (i.e. an
-empty argument list is equivalent to `"--help"`).
-
-* `Ustring Options::`**`help_text`**`() const`
+* `Ustring Options::`**`help_text`**`()`
 * `Ustring Options::`**`version_text`**`() const`
 
 These are the same texts that will be presented to the user by the `"--help"`

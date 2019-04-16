@@ -577,7 +577,7 @@ void test_unicorn_options_help() {
     {
 
         TRY(opt2 = opt1);
-        TRY(opt2.add(Options::autohelp));
+        TRY(opt2.add(Options::help::automatic));
         cmdline = "app";
         std::ostringstream out;
         TEST(opt2.parse(cmdline, out));
@@ -622,6 +622,8 @@ void test_unicorn_options_insertions() {
         "Options:\n"
         "\n"
         "    --alpha <arg>  = Alpha option\n"
+        "    --help, -h     = Show usage information\n"
+        "    --version, -v  = Show version information\n"
         "\n"
     );
 
@@ -638,6 +640,9 @@ void test_unicorn_options_insertions() {
         "    --alpha <arg>  = Alpha option\n"
         "\n"
         "Outro.\n"
+        "\n"
+        "    --help, -h     = Show usage information\n"
+        "    --version, -v  = Show version information\n"
         "\n"
     );
 
@@ -674,6 +679,9 @@ void test_unicorn_options_insertions() {
         "    --delta <arg>    = Delta option\n"
         "\n"
         "Outro.\n"
+        "\n"
+        "    --help, -h       = Show usage information\n"
+        "    --version, -v    = Show version information\n"
         "\n"
     );
 
