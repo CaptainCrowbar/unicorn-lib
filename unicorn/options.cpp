@@ -36,18 +36,18 @@ namespace RS::Unicorn {
             if (! arg.empty() || ! arg2.empty())
                 msg += ": ";
             if (! arg.empty())
-                msg += "$1q"_fmt(arg);
+                msg += str_quote(arg);
             if (! arg.empty() && ! arg2.empty())
                 msg += ", ";
             if (! arg2.empty())
-                msg += "$1q"_fmt(arg2);
+                msg += str_quote(arg2);
             return msg;
         }
 
         Ustring make_spec_error(const Ustring& details, const Ustring& option) {
             Ustring msg = details;
             if (! option.empty())
-                msg += ": $1q"_fmt("--" + option);
+                msg += ": --" + option;
             return msg;
         }
 
@@ -116,30 +116,29 @@ namespace RS::Unicorn {
                     prefix += "]";
                 if (! opt.is_boolean) {
                     prefix += " <";
-                    if (opt.is_file)
-                        prefix += "file";
-                    else if (opt.is_floating)
-                        prefix += "float";
-                    else if (opt.is_integer)
-                        prefix += "int";
-                    else if (opt.is_uinteger)
-                        prefix += "uint";
-                    else
-                        prefix += "arg";
+                    if (opt.is_file)           prefix += "file";
+                    else if (opt.is_floating)  prefix += "float";
+                    else if (opt.is_integer)   prefix += "int";
+                    else if (opt.is_uinteger)  prefix += "uint";
+                    else                       prefix += "arg";
                     prefix += ">";
                     if (opt.is_multi)
                         prefix += " ...";
                 }
                 length = str_length(prefix, length_flags);
                 Strings extras;
-                if (opt.is_required) {
-                    extras.push_back("required");
-                } else if (! opt.defvalue.empty() && ! opt.is_boolean && opt.info.find("default") == npos) {
+                if (! opt.defvalue.empty() && ! opt.is_boolean && opt.info.find("default") == npos) {
+                    Ustring defstr = "default ";
                     if (match_integer(opt.defvalue) || match_float(opt.defvalue))
-                        extras.push_back("default " + opt.defvalue);
+                        defstr += opt.defvalue;
                     else
-                        extras.push_back("default $1q"_fmt(opt.defvalue));
+                        defstr += str_quote(opt.defvalue);
+                    extras.push_back(defstr);
                 }
+                if (! opt.implies.empty())
+                    extras.push_back("implies --" + opt.implies);
+                if (opt.is_required)
+                    extras.push_back("required");
                 suffix = opt.info;
                 if (! extras.empty()) {
                     if (suffix.back() == ')') {
@@ -344,7 +343,7 @@ namespace RS::Unicorn {
                 for (auto u = std::next(utf_begin(arg)), uend = utf_end(arg); u != uend; ++u, ++j) {
                     size_t o = find_index(arg.substr(u.offset(), u.count()));
                     if (o == npos)
-                        throw command_error("Unknown option", arg);
+                        throw command_error("Unknown option: -" + arg);
                     args.insert(args.begin() + i + j, "--" + opts[o].name);
                 }
                 i += j;
@@ -363,14 +362,14 @@ namespace RS::Unicorn {
             }
             size_t o = find_index(args[a]);
             if (o == npos)
-                throw command_error("Unknown option", args[a]);
+                throw command_error("Unknown option: --" + args[a]);
             auto& opt(opts[o]);
             if (opt.is_found && ! opt.is_multi)
-                throw command_error("Duplicate option", args[a]);
+                throw command_error("Duplicate option: --" + args[a]);
             if (! opt.group.empty())
                 for (auto& opt2: opts)
                     if (&opt2 != &opt && opt2.group == opt.group && opt2.is_found)
-                        throw command_error("Incompatible options", "--" + opt2.name, args[a]);
+                        throw command_error("Incompatible options: --$1, --$2"_fmt(opt2.name, opt.name));
             opt.is_found = true;
             if (opt.is_boolean) {
                 if (args[a].substr(0, 5) == "--no-")
@@ -405,7 +404,7 @@ namespace RS::Unicorn {
             args.erase(args.begin(), args.begin() + n);
         }
         if (! args.empty())
-            throw command_error("Unexpected argument", args[0]);
+            throw command_error("Unexpected argument: " + str_quote(args[0]));
     }
 
     void Options::check_conditions() {
@@ -414,12 +413,12 @@ namespace RS::Unicorn {
                 if (! opt.implies.empty()) {
                     size_t i = find_index(opt.implies);
                     if (opts[i].is_found && ! get_converted<bool>(str_join(opts[i].values, " ")))
-                        throw command_error("Inconsistent options", "--" + opt.name, "--" + opts[i].name);
+                        throw command_error("Inconsistent options: --$1, --$2"_fmt(opt.name, opts[i].name));
                     opts[i].values.push_back("1");
                 }
             } else {
                 if (opt.is_required)
-                    throw command_error("Required option is missing", "--" + opt.name);
+                    throw command_error("Required option is missing: --" + opt.name);
             }
         }
     }
@@ -452,9 +451,9 @@ namespace RS::Unicorn {
     void Options::add_arg_to_opt(const Ustring& arg, option_type& opt) {
         if ((opt.is_required || ! arg.empty())) {
             if (! opt.pattern.empty() && ! opt.pattern(arg))
-                throw command_error("Invalid argument to option", "--" + opt.name, arg);
+                throw command_error("Invalid argument to --$1: $2q"_fmt(opt.name, arg));
             if (! opt.enums.values.empty() && ! opt.enums.check(arg))
-                throw command_error("Invalid argument to option", "--" + opt.name, arg);
+                throw command_error("Invalid argument to --$1: $2q"_fmt(opt.name, arg));
         }
         opt.values.push_back(arg);
     }
