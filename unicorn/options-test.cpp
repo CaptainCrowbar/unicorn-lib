@@ -334,7 +334,7 @@ void test_unicorn_options_patterns() {
     Options opt2("App");
     TRY(opt2.add("alpha", "Alpha", Options::abbrev="a", Options::anon, Options::defvalue="Hello", Options::multi, Options::pattern="[[:alpha:]]+"));
     TRY(opt2.add("number", "Number", Options::abbrev="n", Options::defvalue="42", Options::multi, Options::pattern="\\d+"));
-    TEST_THROW_MATCH(opt2.add("word", "Word", Options::defvalue="*", Options::pattern="\\w+"), Options::spec_error, ": \"word\"$");
+    TEST_THROW_MATCH(opt2.add("word", "Word", Options::defvalue="*", Options::pattern="\\w+"), Options::spec_error, ": \"--word\"$");
 
     Options opt3("Blank");
     Ustring cmdline;
@@ -479,6 +479,45 @@ void test_unicorn_options_enumeration() {
     TEST(! opt3.parse(cmdline, nowhere));
     TEST_EQUAL(opt3.get<Foo>("foo"), alpha);
     TEST_EQUAL(opt3.get<Bar>("bar"), Bar::zulu);
+
+}
+
+void test_unicorn_options_implication() {
+
+    Options opt2, opt3;
+    Ustring cmdline;
+
+    TRY(opt2 = Options("Hello world"));
+    TRY(opt2.add("alpha", "Alpha option", Options::abbrev="a", Options::implies="foo"));
+    TRY(opt2.add("number", "Number option", Options::abbrev="n", Options::implies="bar"));
+    TRY(opt2.add("foo", "Foo option", Options::boolean));
+    TRY(opt2.add("bar", "Bar option", Options::boolean));
+
+    {
+        TRY(opt3 = opt2);
+        cmdline = "app";
+        TEST(! opt3.parse(cmdline, nowhere));
+        TEST_EQUAL(opt3.get<Ustring>("alpha"), "");
+        TEST_EQUAL(opt3.get<int>("number"), 0);
+        TEST_EQUAL(opt3.get<bool>("foo"), false);
+        TEST_EQUAL(opt3.get<bool>("bar"), false);
+    }
+
+    {
+        TRY(opt3 = opt2);
+        cmdline = "app -a hello -n 42";
+        TEST(! opt3.parse(cmdline, nowhere));
+        TEST_EQUAL(opt3.get<Ustring>("alpha"), "hello");
+        TEST_EQUAL(opt3.get<int>("number"), 42);
+        TEST_EQUAL(opt3.get<bool>("foo"), true);
+        TEST_EQUAL(opt3.get<bool>("bar"), true);
+    }
+
+    {
+        TRY(opt3 = opt2);
+        cmdline = "app -a hello -n 42 --no-foo";
+        TEST_THROW(opt3.parse(cmdline, nowhere), Options::command_error);
+    }
 
 }
 

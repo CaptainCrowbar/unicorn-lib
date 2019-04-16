@@ -132,47 +132,12 @@ optional keyword arguments, as listed below.</p>
 <tr>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
-<td><strong>Option inclusion and exclusion</strong></td>
-</tr>
-<tr>
-<td><code>Options::</code><strong><code>group</code></strong></td>
-<td><code>Ustring</code></td>
-<td>Assign the option to a mutual exclusion group (multiple options from the same group are not allowed).</td>
-</tr>
-<tr>
-<td><code>Options::</code><strong><code>required</code></strong></td>
-<td><code>bool</code></td>
-<td>This option is mandatory.</td>
-</tr>
-<tr>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td><strong>Matching arguments with options</strong></td>
-</tr>
-<tr>
-<td><code>Options::</code><strong><code>anon</code></strong></td>
-<td><code>bool</code></td>
-<td>Anonymous arguments (not claimed by any other option) will be assigned to this option.</td>
+<td><strong>Argument types</strong></td>
 </tr>
 <tr>
 <td><code>Options::</code><strong><code>boolean</code></strong></td>
 <td><code>bool</code></td>
 <td>This option is a boolean switch and does not take arguments.</td>
-</tr>
-<tr>
-<td><code>Options::</code><strong><code>defvalue</code></strong></td>
-<td><code>Ustring</code></td>
-<td>Use this default value if the option is not supplied by the user.</td>
-</tr>
-<tr>
-<td><code>Options::</code><strong><code>multi</code></strong></td>
-<td><code>bool</code></td>
-<td>This option may be followed by multiple arguments.</td>
-</tr>
-<tr>
-<td>&nbsp;</td>
-<td>&nbsp;</td>
-<td><strong>Argument format restriction</strong></td>
 </tr>
 <tr>
 <td><code>Options::</code><strong><code>enumtype</code></strong></td>
@@ -204,6 +169,46 @@ optional keyword arguments, as listed below.</p>
 <td><code>bool</code></td>
 <td>The argument value must be an unsigned integer.</td>
 </tr>
+<tr>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td><strong>Linked options</strong></td>
+</tr>
+<tr>
+<td><code>Options::</code><strong><code>group</code></strong></td>
+<td><code>Ustring</code></td>
+<td>Assign the option to a mutual exclusion group (multiple options from the same group are not allowed).</td>
+</tr>
+<tr>
+<td><code>Options::</code><strong><code>implies</code></strong></td>
+<td><code>Ustring</code></td>
+<td>This option's presence implies another option.</td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td><strong>Other tags</strong></td>
+</tr>
+<tr>
+<td><code>Options::</code><strong><code>anon</code></strong></td>
+<td><code>bool</code></td>
+<td>Anonymous arguments (not claimed by any other option) will be assigned to this option.</td>
+</tr>
+<tr>
+<td><code>Options::</code><strong><code>defvalue</code></strong></td>
+<td><code>Ustring</code></td>
+<td>Use this default value if the option is not supplied by the user.</td>
+</tr>
+<tr>
+<td><code>Options::</code><strong><code>multi</code></strong></td>
+<td><code>bool</code></td>
+<td>This option may be followed by multiple arguments.</td>
+</tr>
+<tr>
+<td><code>Options::</code><strong><code>required</code></strong></td>
+<td><code>bool</code></td>
+<td>This option is mandatory.</td>
+</tr>
 </tbody>
 </table>
 <p>Boolean options can be supplied in negated form, by giving a name starting
@@ -211,6 +216,7 @@ with <code>"--no-"</code> (or <code>"no-"</code>). This creates a boolean option
 is <code>true</code>; the <code>"--no-whatever"</code> form can be used to switch it off.</p>
 <p>Adding an option will throw <code>spec_error</code> if any of the following is true:</p>
 <ul>
+<li>A function that assumes the option list is complete (<code>parse()</code> or <code>help_text()</code>) has already been called.</li>
 <li>The option name has less than two characters (not counting any leading hyphens).</li>
 <li>The name or abbreviation contains any whitespace characters.</li>
 <li>The name or abbreviation has already been used by an earlier entry.</li>
@@ -222,6 +228,7 @@ is <code>true</code>; the <code>"--no-whatever"</code> form can be used to switc
 <li>More than one of <code>boolean</code>, <code>enumtype</code>, <code>file</code>, <code>integer</code>, <code>floating</code>, <code>pattern</code>, or <code>uinteger</code> is supplied.</li>
 <li>The <code>defvalue</code> and <code>enumtype</code> tags are both present, but the default value is not one of the enumeration values.</li>
 <li>The <code>defvalue</code> and <code>pattern</code> tags are both present, but the default value does not match the pattern.</li>
+<li>The target of an <code>implies</code> tag does not exist, is the same as the current option, is not boolean, or is true by default.</li>
 <li>There is more than one option with both <code>anon</code> and <code>multi</code> flags (the first one will get all leftover arguments).</li>
 </ul>
 <p>The value attached to the <code>Options::enumtype</code> keyword must be a value of an
@@ -318,6 +325,7 @@ true:</p>
 <li>Multiple options from the same mutual exclusion group are supplied.</li>
 <li>The argument supplied for an option does not match the pattern given in the spec.</li>
 <li>A required option is missing.</li>
+<li>An implied boolean option is explicitly negated.</li>
 <li>There are unattached arguments left over after all options have been satisfied.</li>
 </ul>
 <p>Behaviour is undefined if <code>parse()</code> is called more than once on the same

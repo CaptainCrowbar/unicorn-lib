@@ -98,21 +98,22 @@ Keyword                    | Type           | Description
 -------                    | ----           | -----------
 &nbsp;                     | &nbsp;         | **Option naming**
 `Options::`**`abbrev`**    | `Ustring`      | A single letter abbreviation for the option (e.g. `"-x"`; the hyphen is optional in `add()`).
-&nbsp;                     | &nbsp;         | **Option inclusion and exclusion**
-`Options::`**`group`**     | `Ustring`      | Assign the option to a mutual exclusion group (multiple options from the same group are not allowed).
-`Options::`**`required`**  | `bool`         | This option is mandatory.
-&nbsp;                     | &nbsp;         | **Matching arguments with options**
-`Options::`**`anon`**      | `bool`         | Anonymous arguments (not claimed by any other option) will be assigned to this option.
+&nbsp;                     | &nbsp;         | **Argument types**
 `Options::`**`boolean`**   | `bool`         | This option is a boolean switch and does not take arguments.
-`Options::`**`defvalue`**  | `Ustring`      | Use this default value if the option is not supplied by the user.
-`Options::`**`multi`**     | `bool`         | This option may be followed by multiple arguments.
-&nbsp;                     | &nbsp;         | **Argument format restriction**
 `Options::`**`enumtype`**  | _(see below)_  | The argument value must be the unqualified name of an enumeration value.
 `Options::`**`file`**      | `bool`         | The argument value is expected to be a file path (this is just for documentation and does no checking).
 `Options::`**`floating`**  | `bool`         | The argument value must be a floating point number (an integer is accepted).
 `Options::`**`integer`**   | `bool`         | The argument value must be an integer.
 `Options::`**`pattern`**   | `Ustring`      | The argument value must match this regular expression.
 `Options::`**`uinteger`**  | `bool`         | The argument value must be an unsigned integer.
+&nbsp;                     | &nbsp;         | **Linked options**
+`Options::`**`group`**     | `Ustring`      | Assign the option to a mutual exclusion group (multiple options from the same group are not allowed).
+`Options::`**`implies`**   | `Ustring`      | This option's presence implies another option.
+&nbsp;                     | &nbsp;         | **Other tags**
+`Options::`**`anon`**      | `bool`         | Anonymous arguments (not claimed by any other option) will be assigned to this option.
+`Options::`**`defvalue`**  | `Ustring`      | Use this default value if the option is not supplied by the user.
+`Options::`**`multi`**     | `bool`         | This option may be followed by multiple arguments.
+`Options::`**`required`**  | `bool`         | This option is mandatory.
 
 Boolean options can be supplied in negated form, by giving a name starting
 with `"--no-"` (or `"no-"`). This creates a boolean option whose default value
@@ -120,6 +121,7 @@ is `true`; the `"--no-whatever"` form can be used to switch it off.
 
 Adding an option will throw `spec_error` if any of the following is true:
 
+* A function that assumes the option list is complete (`parse()` or `help_text()`) has already been called.
 * The option name has less than two characters (not counting any leading hyphens).
 * The name or abbreviation contains any whitespace characters.
 * The name or abbreviation has already been used by an earlier entry.
@@ -131,6 +133,7 @@ Adding an option will throw `spec_error` if any of the following is true:
 * More than one of `boolean`, `enumtype`, `file`, `integer`, `floating`, `pattern`, or `uinteger` is supplied.
 * The `defvalue` and `enumtype` tags are both present, but the default value is not one of the enumeration values.
 * The `defvalue` and `pattern` tags are both present, but the default value does not match the pattern.
+* The target of an `implies` tag does not exist, is the same as the current option, is not boolean, or is true by default.
 * There is more than one option with both `anon` and `multi` flags (the first one will get all leftover arguments).
 
 The value attached to the `Options::enumtype` keyword must be a value of an
@@ -213,6 +216,7 @@ true:
 * Multiple options from the same mutual exclusion group are supplied.
 * The argument supplied for an option does not match the pattern given in the spec.
 * A required option is missing.
+* An implied boolean option is explicitly negated.
 * There are unattached arguments left over after all options have been satisfied.
 
 Behaviour is undefined if `parse()` is called more than once on the same

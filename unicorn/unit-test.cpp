@@ -62,6 +62,7 @@ extern void test_unicorn_options_anonymous();
 extern void test_unicorn_options_group();
 extern void test_unicorn_options_patterns();
 extern void test_unicorn_options_enumeration();
+extern void test_unicorn_options_implication();
 extern void test_unicorn_options_help();
 extern void test_unicorn_options_insertions();
 extern void test_unicorn_path_legal_names();
@@ -214,6 +215,7 @@ int main() {
         { "unicorn/options/group", test_unicorn_options_group },
         { "unicorn/options/patterns", test_unicorn_options_patterns },
         { "unicorn/options/enumeration", test_unicorn_options_enumeration },
+        { "unicorn/options/implication", test_unicorn_options_implication },
         { "unicorn/options/help", test_unicorn_options_help },
         { "unicorn/options/insertions", test_unicorn_options_insertions },
         { "unicorn/path/legal-names", test_unicorn_path_legal_names },
