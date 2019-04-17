@@ -50,7 +50,8 @@ namespace RS::Unicorn {
         static constexpr Kwarg<bool, 5> integer = {};        // Argument must be an integer
         static constexpr Kwarg<bool, 6> multi = {};          // Option may have multiple arguments
         static constexpr Kwarg<bool, 7> required = {};       // Option is required
-        static constexpr Kwarg<bool, 8> uinteger = {};       // Argument must be an unsigned integer
+        static constexpr Kwarg<bool, 8> si = {};             // Numeric arguments can use SI abbreviations
+        static constexpr Kwarg<bool, 9> uinteger = {};       // Argument must be an unsigned integer
         static constexpr Kwarg<Ustring, 1> abbrev = {};      // Single letter abbreviation
         static constexpr Kwarg<Ustring, 2> defvalue = {};    // Default value if not supplied
         static constexpr Kwarg<Ustring, 3> group = {};       // Mutual exclusion group name
@@ -69,7 +70,7 @@ namespace RS::Unicorn {
         template <typename C> bool parse(const std::vector<std::basic_string<C>>& args, std::ostream& out = std::cout, uint32_t flags = 0);
         template <typename C> bool parse(const std::basic_string<C>& args, std::ostream& out = std::cout, uint32_t flags = 0);
         template <typename C> bool parse(int argc, C** argv, std::ostream& out = std::cout, uint32_t flags = 0);
-        template <typename T> T get(const Ustring& name) const { return get_converted<T>(str_join(find_values(name), " ")); }
+        template <typename T> T get(const Ustring& name) const;
         template <typename T> std::vector<T> get_list(const Ustring& name) const;
         bool has(const Ustring& name) const;
 
@@ -100,6 +101,7 @@ namespace RS::Unicorn {
             bool is_integer = false;
             bool is_multi = false;
             bool is_required = false;
+            bool is_si = false;
             bool is_uinteger = false;
         };
 
@@ -114,7 +116,6 @@ namespace RS::Unicorn {
         void add_option(option_type opt);
         void final_check();
         size_t find_index(Ustring name, bool require = false) const;
-        Strings find_values(const Ustring& name) const;
         parse_result parse_args(Strings args, uint32_t flags);
         void clean_up_arguments(Strings& args, uint32_t flags);
         Strings parse_forced_anonymous(Strings& args);
@@ -129,7 +130,7 @@ namespace RS::Unicorn {
         template <typename C> static Ustring arg_convert(const std::basic_string<C>& str, uint32_t /*flags*/) { return to_utf8(str); }
         static Ustring arg_convert(const std::string& str, uint32_t flags);
         static void add_arg_to_opt(const Ustring& arg, option_type& opt);
-        template <typename T> static T get_converted(const Ustring& str);
+        template <typename T> static T get_converted(const Ustring& str, bool with_si);
         static void unquote(const Ustring& src, Strings& dst);
 
     };
@@ -141,10 +142,17 @@ namespace RS::Unicorn {
     }
 
     template <typename T>
+    T Options::get(const Ustring& name) const {
+        size_t i = find_index(name, true);
+        return get_converted<T>(str_join(opts[i].values, " "), opts[i].is_si);
+    }
+
+    template <typename T>
     std::vector<T> Options::get_list(const Ustring& name) const {
-        Strings svec = find_values(name);
+        size_t i = find_index(name, true);
         std::vector<T> tvec;
-        std::transform(svec.begin(), svec.end(), append(tvec), get_converted<T>);
+        for (auto& s: opts[i].values)
+            tvec.push_back(get_converted<T>(s, opts[i].is_si));
         return tvec;
     }
 
@@ -183,16 +191,23 @@ namespace RS::Unicorn {
     }
 
     template <typename T>
-    T Options::get_converted(const Ustring& str) {
+    T Options::get_converted(const Ustring& str, bool with_si) {
+        // TODO
+        (void)with_si;
         if (str.empty())
             return T();
         if constexpr (std::is_integral_v<T>) {
             if (str.size() >= 3 && str[0] == '0' && (str[1] == 'X' || str[1] == 'x'))
                 return hex_to_int<T>(utf_iterator(str, 2));
-            else
+            else if (with_si)
                 return static_cast<T>(si_to_int(str));
+            else
+                return str_to_int<T>(str);
         } else if constexpr (std::is_floating_point_v<T>) {
-            return static_cast<T>(si_to_float(str));
+            if (with_si)
+                return static_cast<T>(si_to_float(str));
+            else
+                return str_to_float<T>(str);
         } else if constexpr (std::is_enum_v<T>) {
             T t = T();
             str_to_enum(str, t);
@@ -223,6 +238,7 @@ namespace RS::Unicorn {
         is_integer = kwget(Options::integer, false, args...);
         is_multi = kwget(Options::multi, false, args...);
         is_required = kwget(Options::required, false, args...);
+        is_si = kwget(Options::si, false, args...);
         is_uinteger = kwget(Options::uinteger, false, args...);
         abbrev = kwget(Options::abbrev, Ustring(), args...);
         defvalue = kwget(Options::defvalue, Ustring(), args...);

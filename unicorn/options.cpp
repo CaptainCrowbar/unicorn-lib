@@ -10,9 +10,17 @@ namespace RS::Unicorn {
 
     namespace {
 
-        const Regex match_float("[+-]?(\\d+(\\.\\d*)?|\\.\\d+)(e[+-]?\\d+)?( ?[kmgtpezy]\\w*)?", Regex::full | Regex::icase);
-        const Regex match_integer("0x[[:xdigit:]]+|[+-]?\\d+((\\.\\d+)? ?[kmgtpezy]\\w*)?", Regex::full | Regex::icase);
-        const Regex match_unsigned("0x[[:xdigit:]]+|\\d+((\\.\\d+)? ?[kmgtpezy]\\w*)?", Regex::full | Regex::icase);
+        const Ustring integer_pattern = "0[Xx][[:xdigit:]]+|[+-]?\\d+";
+        const Ustring unsigned_pattern = "0[Xx][[:xdigit:]]+|\\d+";
+        const Ustring float_pattern = "[+-]?(\\d+(\\.\\d*)?|\\.\\d+)([Ee][+-]?\\d+)?";
+        const Ustring integer_si_unit = "( ?[KkMGTPEZY]\\w*)?";
+        const Ustring float_si_unit = "( ?[KkMGTPEZYmunpfazy]\\w*)?";
+        const Regex match_integer(integer_pattern, Regex::full | Regex::optimize);
+        const Regex match_integer_si(integer_pattern + integer_si_unit, Regex::full | Regex::optimize);
+        const Regex match_unsigned(unsigned_pattern, Regex::full | Regex::optimize);
+        const Regex match_unsigned_si(unsigned_pattern + integer_si_unit, Regex::full | Regex::optimize);
+        const Regex match_float(float_pattern, Regex::full | Regex::optimize);
+        const Regex match_float_si(float_pattern + float_si_unit, Regex::full | Regex::optimize);
 
         enum ArgType {
             is_argument = 'a',
@@ -218,11 +226,11 @@ namespace RS::Unicorn {
                 + int(! opt.enums.values.empty()) + int(! opt.pattern.empty()) > 1)
             throw spec_error("Incompatible option flags", tag);
         if (opt.is_floating)
-            opt.pattern = match_float;
+            opt.pattern = opt.is_si ? match_float_si : match_float;
         else if (opt.is_integer)
-            opt.pattern = match_integer;
+            opt.pattern = opt.is_si ? match_integer_si : match_integer;
         else if (opt.is_uinteger)
-            opt.pattern = match_unsigned;
+            opt.pattern = opt.is_si ? match_unsigned_si : match_unsigned;
         if (! opt.defvalue.empty() && ! opt.pattern.empty() && ! opt.pattern(opt.defvalue))
             throw spec_error("Default value does not match pattern", tag);
         if (! opt.defvalue.empty() && ! opt.enums.values.empty() && ! opt.enums.check(opt.defvalue))
@@ -260,21 +268,16 @@ namespace RS::Unicorn {
         str_trim_in(name, "-");
         if (name.substr(0, 3) == "no-")
             name.erase(0, 3);
-        if (name.empty())
-            return npos;
-        auto i = std::find_if(opts.begin(), opts.end(),
-            [=] (const auto& o) { return o.name == name || o.abbrev == name; });
-        if (i != opts.end())
-            return i - opts.begin();
-        else if (require)
+        if (! name.empty()) {
+            auto i = std::find_if(opts.begin(), opts.end(),
+                [=] (const auto& o) { return o.name == name || o.abbrev == name; });
+            if (i != opts.end())
+                return i - opts.begin();
+        }
+        if (require)
             throw spec_error("No such option", name);
         else
             return npos;
-    }
-
-    Strings Options::find_values(const Ustring& name) const {
-        size_t i = find_index(name, true);
-        return i != npos ? opts[i].values : Strings();
     }
 
     Options::parse_result Options::parse_args(Strings args, uint32_t flags) {
@@ -410,7 +413,7 @@ namespace RS::Unicorn {
             if (opt.is_found) {
                 if (! opt.implies.empty()) {
                     size_t i = find_index(opt.implies);
-                    if (opts[i].is_found && ! get_converted<bool>(str_join(opts[i].values, " ")))
+                    if (opts[i].is_found && ! get_converted<bool>(str_join(opts[i].values, " "), false))
                         throw command_error("Inconsistent options: --$1, --$2"_fmt(opt.name, opts[i].name));
                     opts[i].values.push_back("1");
                 }

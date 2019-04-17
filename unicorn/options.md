@@ -111,6 +111,7 @@ Keyword                    | Type           | Description
 `Options::`**`floating`**  | `bool`         | The argument value must be a floating point number (an integer is accepted).
 `Options::`**`integer`**   | `bool`         | The argument value must be an integer.
 `Options::`**`pattern`**   | `Ustring`      | The argument value must match this regular expression.
+`Options::`**`si`**        | `bool`         | Numeric arguments can use SI abbreviations
 `Options::`**`uinteger`**  | `bool`         | The argument value must be an unsigned integer.
 &nbsp;                     | &nbsp;         | **Linked options**
 `Options::`**`group`**     | `Ustring`      | Assign the option to a mutual exclusion group (multiple options from the same group are not allowed).
@@ -136,7 +137,7 @@ Adding an option will throw `spec_error` if any of the following is true:
 * An option starting with `"--no-"` is not boolean or has an abbreviation.
 * The `boolean` tag is combined with `anon`, `defvalue`, `enumtype`, `multi`, `pattern`, or `require`.
 * The `require` tag is combined with `boolean`, `defvalue`, or `group`.
-* More than one of `boolean`, `enumtype`, `file`, `integer`, `floating`, `pattern`, or `uinteger` is supplied.
+* More than one of the argument type options (other than `si`) is supplied.
 * The `defvalue` and `enumtype` tags are both present, but the default value is not one of the enumeration values.
 * The `defvalue` and `pattern` tags are both present, but the default value does not match the pattern.
 * The target of an `implies` tag does not exist, is the same as the current option, is not boolean, or is true by default.

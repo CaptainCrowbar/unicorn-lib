@@ -396,21 +396,6 @@ void test_unicorn_options_patterns() {
     TEST_EQUAL(opt3.get<int>("int"), 66);
 
     TRY(opt3 = opt2);
-    cmdline = "app --int 24k";
-    TEST(! opt3.parse(cmdline, nowhere));
-    TEST_EQUAL(opt3.get<int>("int"), 24000);
-
-    TRY(opt3 = opt2);
-    cmdline = "app --int 25MB";
-    TEST(! opt3.parse(cmdline, nowhere));
-    TEST_EQUAL(opt3.get<int>("int"), 25000000);
-
-    TRY(opt3 = opt2);
-    cmdline = "app --float 2.5MB";
-    TEST(! opt3.parse(cmdline, nowhere));
-    TEST_EQUAL(opt3.get<float>("float"), 2500000);
-
-    TRY(opt3 = opt2);
     cmdline = "app --int 1234.5";
     TEST_THROW_MATCH(opt3.parse(cmdline), Options::command_error, " --int: \"1234.5\"$");
 
@@ -437,6 +422,24 @@ void test_unicorn_options_patterns() {
     TEST(! opt3.parse(cmdline, nowhere));
     TEST_EQUAL(opt3.get<int>("int"), 42);
     TEST_EQUAL(opt3.get<Ustring>("str"), "hello");
+
+}
+
+void test_unicorn_options_si_units() {
+
+    Options opt2;
+    Ustring cmdline;
+
+    TRY(opt2 = Options("Hello world"));
+    TRY(opt2.add("int", "Integer option", Options::integer, Options::si));
+    TRY(opt2.add("uint", "Unsigned integer option", Options::uinteger, Options::si));
+    TRY(opt2.add("float", "Floating point option", Options::floating, Options::si));
+
+    cmdline = "app --int 24k --uint 25MB --float 2.5MB";
+    TEST(! opt2.parse(cmdline, nowhere));
+    TEST_EQUAL(opt2.get<int>("int"), 24000);
+    TEST_EQUAL(opt2.get<int>("uint"), 25000000);
+    TEST_EQUAL(opt2.get<float>("float"), 2500000);
 
 }
 

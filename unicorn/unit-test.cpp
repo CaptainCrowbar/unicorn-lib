@@ -61,6 +61,7 @@ extern void test_unicorn_options_required();
 extern void test_unicorn_options_anonymous();
 extern void test_unicorn_options_group();
 extern void test_unicorn_options_patterns();
+extern void test_unicorn_options_si_units();
 extern void test_unicorn_options_enumeration();
 extern void test_unicorn_options_implication();
 extern void test_unicorn_options_help();
@@ -214,6 +215,7 @@ int main() {
         { "unicorn/options/anonymous", test_unicorn_options_anonymous },
         { "unicorn/options/group", test_unicorn_options_group },
         { "unicorn/options/patterns", test_unicorn_options_patterns },
+        { "unicorn/options/si-units", test_unicorn_options_si_units },
         { "unicorn/options/enumeration", test_unicorn_options_enumeration },
         { "unicorn/options/implication", test_unicorn_options_implication },
         { "unicorn/options/help", test_unicorn_options_help },
