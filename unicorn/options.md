@@ -138,10 +138,11 @@ Adding an option will throw `spec_error` if any of the following is true:
 * The `boolean` tag is combined with `anon`, `defvalue`, `enumtype`, `multi`, `pattern`, or `require`.
 * The `require` tag is combined with `boolean`, `defvalue`, or `group`.
 * More than one of the argument type options (other than `si`) is supplied.
+* The `si` tag is combined with `boolean`, `enumtype`, or `file`.
 * The `defvalue` and `enumtype` tags are both present, but the default value is not one of the enumeration values.
 * The `defvalue` and `pattern` tags are both present, but the default value does not match the pattern.
 * The target of an `implies` tag does not exist, is the same as the current option, is not boolean, or is true by default.
-* There is more than one option with both `anon` and `multi` flags (the first one will get all leftover arguments).
+* The target of an `implies` tag does not exist, is the same as the current t one will get all leftover arguments).
 
 The value attached to the `Options::enumtype` keyword must be a value of an
 enumeration type (plain or strong) that was defined using one of the

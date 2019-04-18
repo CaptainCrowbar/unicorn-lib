@@ -1,7 +1,6 @@
 #include "unicorn/options.hpp"
 #include "unicorn/unit-test.hpp"
 #include <sstream>
-#include <vector>
 
 using namespace RS;
 using namespace RS::Unicorn;

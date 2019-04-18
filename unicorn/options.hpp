@@ -28,14 +28,16 @@ namespace RS::Unicorn {
 
     public:
 
-        class command_error: public std::runtime_error {
+        class command_error:
+        public std::runtime_error {
         public:
-            explicit command_error(const Ustring& details, const Ustring& arg = {}, const Ustring& arg2 = {});
+            explicit command_error(const Ustring& details): std::runtime_error(details) {}
         };
 
-        class spec_error: public std::runtime_error {
+        class spec_error:
+        public std::runtime_error {
         public:
-            explicit spec_error(const Ustring& details, const Ustring& option = {});
+            explicit spec_error(const Ustring& details): std::runtime_error(details) {}
         };
 
         enum class help { unset, std, automatic };
@@ -114,6 +116,7 @@ namespace RS::Unicorn {
         bool checked = false;
 
         void add_option(option_type opt);
+        bool confirm(Ustring name) const;
         void final_check();
         size_t find_index(Ustring name, bool require = false) const;
         parse_result parse_args(Strings args, uint32_t flags);
@@ -192,29 +195,22 @@ namespace RS::Unicorn {
 
     template <typename T>
     T Options::get_converted(const Ustring& str, bool with_si) {
-        // TODO
-        (void)with_si;
         if (str.empty())
             return T();
         if constexpr (std::is_integral_v<T>) {
-            if (str.size() >= 3 && str[0] == '0' && (str[1] == 'X' || str[1] == 'x'))
+            if (str_starts_with(str, "0x") || str_starts_with(str, "0X"))
                 return hex_to_int<T>(utf_iterator(str, 2));
             else if (with_si)
                 return static_cast<T>(si_to_int(str));
-            else
-                return str_to_int<T>(str);
         } else if constexpr (std::is_floating_point_v<T>) {
             if (with_si)
                 return static_cast<T>(si_to_float(str));
-            else
-                return str_to_float<T>(str);
         } else if constexpr (std::is_enum_v<T>) {
             T t = T();
             str_to_enum(str, t);
             return t;
-        } else {
-            return static_cast<T>(str);
         }
+        return from_str<T>(str);
     }
 
     template <typename T>

@@ -241,10 +241,11 @@ is <code>true</code>; the <code>"--no-whatever"</code> form can be used to switc
 <li>The <code>boolean</code> tag is combined with <code>anon</code>, <code>defvalue</code>, <code>enumtype</code>, <code>multi</code>, <code>pattern</code>, or <code>require</code>.</li>
 <li>The <code>require</code> tag is combined with <code>boolean</code>, <code>defvalue</code>, or <code>group</code>.</li>
 <li>More than one of the argument type options (other than <code>si</code>) is supplied.</li>
+<li>The <code>si</code> tag is combined with <code>boolean</code>, <code>enumtype</code>, or <code>file</code>.</li>
 <li>The <code>defvalue</code> and <code>enumtype</code> tags are both present, but the default value is not one of the enumeration values.</li>
 <li>The <code>defvalue</code> and <code>pattern</code> tags are both present, but the default value does not match the pattern.</li>
 <li>The target of an <code>implies</code> tag does not exist, is the same as the current option, is not boolean, or is true by default.</li>
-<li>There is more than one option with both <code>anon</code> and <code>multi</code> flags (the first one will get all leftover arguments).</li>
+<li>The target of an <code>implies</code> tag does not exist, is the same as the current t one will get all leftover arguments).</li>
 </ul>
 <p>The value attached to the <code>Options::enumtype</code> keyword must be a value of an
 enumeration type (plain or strong) that was defined using one of the
