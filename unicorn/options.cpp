@@ -72,6 +72,8 @@ namespace RS::Unicorn {
             throw spec_error("Option list is already complete");
         if (app_info.empty())
             app_info = str_trim(info);
+        else if (opts.empty())
+            app_info += "\n\n" + str_trim(info);
         else
             opts.push_back(option_type(info));
         return *this;
@@ -165,7 +167,8 @@ namespace RS::Unicorn {
         size_t maxlen = 0;
         if (! opts.empty())
             maxlen = *std::max_element(lengths.begin(), lengths.end());
-        bool opthdr = false, was_info = true;
+        bool opt_hdr = str_ends_with(app_info, ":");
+        bool was_info = true;
         for (size_t i = 0; i < opts.size(); ++i) {
             bool is_info = opts[i].name.empty();
             if (is_info || was_info)
@@ -173,9 +176,9 @@ namespace RS::Unicorn {
             if (is_info) {
                 text += opts[i].info + "\n";
             } else {
-                if (! opthdr) {
+                if (! opt_hdr) {
                     text += "Options:\n\n";
-                    opthdr = true;
+                    opt_hdr = true;
                 }
                 Ustring prefix = str_pad_right(prefixes[i], maxlen, U' ', length_flags);
                 auto lines = str_splitv_lines(suffixes[i]);
@@ -185,7 +188,7 @@ namespace RS::Unicorn {
             }
             was_info = is_info;
         }
-        if (! opthdr) {
+        if (! opt_hdr) {
             if (was_info)
                 text += "\n";
             text += "Options:\n\n    None\n";
