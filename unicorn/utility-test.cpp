@@ -1555,6 +1555,23 @@ void test_unicorn_utility_conversion_from_string() {
     TEST_THROW(from_str<FromIstream>(bad), std::invalid_argument);
     TEST_THROW(from_str<FromOverload>(bad), std::invalid_argument);
 
+    TEST_EQUAL(from_str<Ustring>(""), "");
+    TEST_EQUAL(from_str<Ustring>("hello"), "hello");
+    TEST_EQUAL(from_str<int>(""), 0);
+    TEST_EQUAL(from_str<int>("0"), 0);
+    TEST_EQUAL(from_str<int>("42"), 42);
+    TEST_THROW(from_str<int>("hello"), std::invalid_argument);
+    TEST_EQUAL(from_str<double>(""), 0);
+    TEST_EQUAL(from_str<double>("0"), 0);
+    TEST_EQUAL(from_str<double>("1234.5"), 1234.5);
+    TEST_THROW(from_str<double>("hello"), std::invalid_argument);
+    TEST(! from_str<bool>(""));
+    TEST(! from_str<bool>("0"));
+    TEST(from_str<bool>("1"));
+    TEST(! from_str<bool>("false"));
+    TEST(from_str<bool>("true"));
+    TEST_THROW(from_str<bool>("hello"), std::invalid_argument);
+
 }
 
 namespace {

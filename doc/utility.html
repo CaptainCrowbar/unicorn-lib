@@ -910,13 +910,14 @@ separately overloaded.</p>
 argument and returns true on success; otherwise, it returns false and leaves
 the referenced object unchanged. The second version calls the first version,
 throwing <code>invalid_argument</code> on failure, and returning the converted object on
-success; for this version, <code>T</code> must be default constructible.</p>
+success. <code>T</code> must be default constructible.</p>
 <p>The <code>from_str()</code> functions follow these rules, using the first conversion rule
 that matches the type:</p>
 <ul>
-<li><code>static_cast</code> from <code>std::string_view</code> to <code>T</code></li>
-<li><code>static_cast</code> from <code>std::string</code> to <code>T</code></li>
-<li><code>static_cast</code> from <code>const char*</code> to <code>T</code></li>
+<li>An empty string yields a default constructed <code>T</code></li>
+<li>If <code>T</code> is <code>bool</code>, check for the strings <code>"true"</code> or <code>"false"</code>, otherwise treat as numeric</li>
+<li>If <code>T</code> is a primitive integer or floating point type, call the appropriate <code>strto*()</code> function</li>
+<li>Try a <code>static_cast</code> from <code>std::string_view</code>, <code>std::string</code>, or <code>const char*</code> to <code>T</code></li>
 <li>Read a <code>T</code> from a <code>std::istringstream</code> using <code>operator&gt;&gt;</code></li>
 <li>Otherwise fail</li>
 </ul>

@@ -1345,7 +1345,58 @@ namespace RS {
     bool from_str(std::string_view view, T& t) noexcept {
         using namespace RS_Detail;
         try {
-            if constexpr (std::is_constructible_v<T, std::string_view>) {
+            if (view.empty()) {
+                t = T();
+                return true;
+            }
+            if constexpr (std::is_same_v<T, bool>) {
+                if (view == "true") {
+                    t = true;
+                    return true;
+                } else if (view == "false") {
+                    t = false;
+                    return true;
+                } else {
+                    intmax_t x = 0;
+                    if (! from_str(view, x))
+                        return false;
+                    t = bool(x);
+                    return true;
+                }
+            } else if constexpr (std::is_arithmetic_v<T>) {
+                std::string str(view);
+                auto begin = str.data(), end = begin + str.size();
+                int base = 10;
+                (void)base;
+                if constexpr (std::is_integral_v<T>)
+                    if (str.size() >= 2 && str[0] == '0' && (str[1] == 'x' || str[1] == 'X'))
+                        base = 16;
+                char* stop = nullptr;
+                T rc = T();
+                errno = 0;
+                if constexpr (std::is_floating_point_v<T>) {
+                    if constexpr (sizeof(T) <= sizeof(float))
+                        rc = T(std::strtof(begin, &stop));
+                    else if constexpr (sizeof(T) <= sizeof(double))
+                        rc = T(std::strtod(begin, &stop));
+                    else
+                        rc = T(std::strtold(begin, &stop));
+                } else if constexpr (std::is_signed_v<T>) {
+                    if constexpr (sizeof(T) <= sizeof(long))
+                        rc = T(std::strtol(begin, &stop, base));
+                    else
+                        rc = T(std::strtoll(begin, &stop, base));
+                } else {
+                    if constexpr (sizeof(T) <= sizeof(long))
+                        rc = T(std::strtoul(begin, &stop, base));
+                    else
+                        rc = T(std::strtoull(begin, &stop, base));
+                }
+                if (errno != 0 || stop != end)
+                    return false;
+                t = rc;
+                return true;
+            } else if constexpr (std::is_constructible_v<T, std::string_view>) {
                 t = static_cast<T>(view);
                 return true;
             } else if constexpr (std::is_constructible_v<T, std::string>) {
@@ -1359,8 +1410,12 @@ namespace RS {
             } else if constexpr (Meta::is_detected<InputOperatorArchetype, T>) {
                 std::string str(view);
                 std::istringstream in(str);
-                in >> t;
-                return bool(in);
+                T temp;
+                in >> temp;
+                if (! in)
+                    return false;
+                t = std::move(temp);
+                return true;
             } else {
                 return false;
             }

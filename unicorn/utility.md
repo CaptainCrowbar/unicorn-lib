@@ -657,14 +657,15 @@ The first version of `from_str()` writes the converted object into its second
 argument and returns true on success; otherwise, it returns false and leaves
 the referenced object unchanged. The second version calls the first version,
 throwing `invalid_argument` on failure, and returning the converted object on
-success; for this version, `T` must be default constructible.
+success. `T` must be default constructible.
 
 The `from_str()` functions follow these rules, using the first conversion rule
 that matches the type:
 
-* `static_cast` from `std::string_view` to `T`
-* `static_cast` from `std::string` to `T`
-* `static_cast` from `const char*` to `T`
+* An empty string yields a default constructed `T`
+* If `T` is `bool`, check for the strings `"true"` or `"false"`, otherwise treat as numeric
+* If `T` is a primitive integer or floating point type, call the appropriate `strto*()` function
+* Try a `static_cast` from `std::string_view`, `std::string`, or `const char*` to `T`
 * Read a `T` from a `std::istringstream` using `operator>>`
 * Otherwise fail
 
