@@ -63,14 +63,14 @@ namespace RS::Unicorn {
         opt.is_boolean = true;
         opt.name = "help";
         opt.info = "Show usage information";
-        if (find_index("h") == npos)
+        if (! find_if_exists("h"))
             opt.abbrev = "h";
         opts.push_back(opt);
         opt = {};
         opt.is_boolean = true;
         opt.name = "version";
         opt.info = "Show version information";
-        if (find_index("v") == npos)
+        if (! find_if_exists("v"))
             opt.abbrev = "v";
         opts.push_back(opt);
         return *this;
@@ -121,6 +121,8 @@ namespace RS::Unicorn {
                     extras.push_back("implies --" + opt.implies);
                 if (opt.is_required)
                     extras.push_back("required");
+                if (! opt.prereq.empty())
+                    extras.push_back("requires --" + opt.prereq);
                 suffix = opt.info;
                 if (! extras.empty()) {
                     if (suffix.back() == ')') {
@@ -172,24 +174,26 @@ namespace RS::Unicorn {
     }
 
     bool Options::has(const Ustring& name) const {
-        size_t i = find_index(name, true);
-        return i != npos && opts[i].is_found;
+        return opts[find_user_option(name)].is_found;
     }
 
     void Options::add_option(option_type opt) {
-        str_trim_in(opt.name, "-"s + ascii_whitespace);
+        static const Ustring trim_chars = "-"s + ascii_whitespace;
+        str_trim_in(opt.name, trim_chars);
+        str_trim_in(opt.info);
+        str_trim_in(opt.abbrev, trim_chars);
+        str_trim_in(opt.implies, trim_chars);
+        str_trim_in(opt.prereq, trim_chars);
         Ustring tag = opt.name;
         if (str_length(opt.name) < 2 || std::any_of(utf_begin(opt.name), utf_end(opt.name), char_is_white_space))
             throw spec_error("Invalid option name: --" + tag);
         bool neg = opt.name.substr(0, 3) == "no-";
-        str_trim_in(opt.info);
         if (opt.info.empty())
             throw spec_error("No help message: --" + tag);
-        str_trim_in(opt.abbrev, "-");
         if (str_length(opt.abbrev) > 1)
-            throw spec_error("Invalid abbreviation: --" + tag);
+            throw spec_error("Invalid abbreviation: -" + opt.abbrev);
         if (std::any_of(utf_begin(opt.abbrev), utf_end(opt.abbrev), char_is_white_space))
-            throw spec_error("Invalid abbreviation: --" + tag);
+            throw spec_error("Invalid abbreviation: -" + opt.abbrev);
         if (opt.is_boolean && (opt.is_anon || opt.is_multi || opt.is_required
                 || ! opt.enums.values.empty() || ! opt.pattern.empty()))
             throw spec_error("Incompatible option flags: --" + tag);
@@ -197,7 +201,7 @@ namespace RS::Unicorn {
             throw spec_error("Default value is not allowed here: --" + tag);
         if (neg && (! opt.is_boolean || ! opt.abbrev.empty()))
             throw spec_error("Incompatible option flags: --" + tag);
-        if (opt.is_required && ! opt.group.empty())
+        if (opt.is_required && (! opt.group.empty() || ! opt.prereq.empty()))
             throw spec_error("Incompatible option flags: --" + tag);
         if (int(opt.is_boolean) + int(opt.is_file) + int(opt.is_floating) + int(opt.is_integer) + int(opt.is_uinteger)
                 + int(! opt.enums.values.empty()) + int(! opt.pattern.empty()) > 1)
@@ -216,59 +220,79 @@ namespace RS::Unicorn {
             throw spec_error("Default is not an enumeration value: --" + tag);
         if (opt.is_anon && opt.is_multi && ++tail_opts > 1)
             throw spec_error("More than one option is claiming trailing arguments: --" + tag);
-        str_trim_in(opt.implies, "-"s + ascii_whitespace);
         if (opt.implies == opt.name)
             throw spec_error("Option implies itself: --" + tag);
+        if (opt.prereq == opt.name)
+            throw spec_error("Option requires itself: --" + tag);
         if (neg) {
             opt.name.erase(0, 3);
             opt.defvalue = "1";
         }
-        if (find_index(opt.name) != npos || find_index(opt.abbrev) != npos)
-            throw spec_error("Duplicate option spec: --" + tag);
+        for (auto& other: opts)
+            if (opt.name == other.name || (! opt.abbrev.empty() && opt.abbrev == other.abbrev))
+                if (opt.prereq.empty() || other.prereq.empty() || opt.prereq == other.prereq)
+                    throw spec_error("Duplicate option: --" + tag);
         opts.push_back(opt);
-    }
-
-    bool Options::confirm(Ustring name) const {
-        size_t i = find_index(name);
-        if (i == npos || ! opts[i].is_found)
-            return false;
-        else if (! opts[i].is_boolean)
-            return true;
-        else if (opts[i].values.size() != 1)
-            return false;
-        else
-            return from_str<bool>(opts[i].values[0]);
     }
 
     void Options::final_check() {
         for (auto& opt: opts) {
             if (! opt.implies.empty()) {
-                size_t i = find_index(opt.implies);
+                size_t i = find_first_index(opt.implies);
                 if (i == npos)
                     throw spec_error("--$1 implies nonexistent option --$2"_fmt(opt.name, opt.implies));
                 if (! opts[i].is_boolean || opts[i].defvalue == "1")
                     throw spec_error("Inconsistent linked options: --$1 cannot imply --$2"_fmt(opt.name, opt.implies));
             }
+            if (! opt.prereq.empty() && ! find_if_exists(opt.prereq))
+                throw spec_error("Prerequisite of --$1 does not exist: --$2"_fmt(opt.name, opt.prereq));
         }
         if (help_flag == help::unset)
             add(Options::help::std);
         checked = true;
     }
 
-    size_t Options::find_index(Ustring name, bool require) const {
-        str_trim_in(name, "-");
-        if (name.substr(0, 3) == "no-")
-            name.erase(0, 3);
-        if (! name.empty()) {
-            auto i = std::find_if(opts.begin(), opts.end(),
-                [=] (const auto& o) { return o.name == name || o.abbrev == name; });
-            if (i != opts.end())
-                return i - opts.begin();
-        }
-        if (require)
-            throw spec_error("No such option: --" + name);
-        else
+    size_t Options::find_first_index(const Ustring& name) const {
+        auto key = str_trim(name, "-");
+        str_drop_prefix_in(key, "no-");
+        if (key.empty())
             return npos;
+        auto i = std::find_if(opts.begin(), opts.end(),
+            [=] (const auto& o) { return o.name == key || o.abbrev == key; });
+        if (i == opts.end())
+            return npos;
+        else
+            return i - opts.begin();
+    }
+
+    bool Options::find_if_exists(const Ustring& name) const {
+        return find_first_index(name) != npos;
+    }
+
+    size_t Options::find_user_option(const Ustring& name) const {
+        auto key = str_trim(name, "-");
+        str_drop_prefix_in(key, "no-");
+        auto begin = opts.begin(), end = opts.end(), i = begin;
+        Strings prereqs;
+        for (;;) {
+            i = std::find_if(i, end, [=] (const auto& o) { return o.name == key || o.abbrev == key; });
+            if (i == end) {
+                break;
+            }
+            auto& pre = i->prereq;
+            if (pre.empty() || has(pre))
+                return i - begin;
+            prereqs.push_back(pre);
+            ++i;
+        }
+        if (str_length(key) == 1)
+            key.insert(0, 1, '-');
+        else
+            key.insert(0, 2, '-');
+        if (prereqs.empty())
+            throw spec_error("Unknown option: " + key);
+        else
+            throw command_error("Option $1 requires --$2"_fmt(key, str_join(prereqs, ", --")));
     }
 
     Options::parse_result Options::parse_args(Strings args, uint32_t flags) {
@@ -281,9 +305,9 @@ namespace RS::Unicorn {
         expand_abbreviations(args);
         extract_named_options(args);
         parse_remaining_anonymous(args, is_anon);
-        if (confirm("help"))
+        if (get<bool>("help"))
             return parse_result::help;
-        if (confirm("version"))
+        if (get<bool>("version"))
             return parse_result::version;
         check_conditions();
         supply_defaults();
@@ -333,10 +357,9 @@ namespace RS::Unicorn {
                 args.erase(args.begin() + i);
                 size_t j = 0;
                 for (auto u = std::next(utf_begin(arg)), uend = utf_end(arg); u != uend; ++u, ++j) {
-                    size_t o = find_index(arg.substr(u.offset(), u.count()));
-                    if (o == npos)
-                        throw command_error("Unknown option: -" + arg);
-                    args.insert(args.begin() + i + j, "--" + opts[o].name);
+                    auto key = arg.substr(u.offset(), u.count());
+                    auto& opt = opts[find_user_option(key)];
+                    args.insert(args.begin() + i + j, "--" + opt.name);
                 }
                 i += j;
             } else {
@@ -352,10 +375,7 @@ namespace RS::Unicorn {
                 ++a;
                 continue;
             }
-            size_t o = find_index(args[a]);
-            if (o == npos)
-                throw command_error("Unknown option: --" + args[a]);
-            auto& opt(opts[o]);
+            auto& opt = opts[find_user_option(args[a])];
             if (opt.is_found && ! opt.is_multi)
                 throw command_error("Duplicate option: --" + args[a]);
             if (! opt.group.empty())
@@ -403,10 +423,10 @@ namespace RS::Unicorn {
         for (auto& opt: opts) {
             if (opt.is_found) {
                 if (! opt.implies.empty()) {
-                    size_t i = find_index(opt.implies);
-                    if (opts[i].is_found && ! confirm(opt.implies))
+                    auto& target = opts[find_user_option(opt.implies)];
+                    if (target.is_found && ! from_str<bool>(target.values[0]))
                         throw command_error("Inconsistent options: --$1, --no-$2"_fmt(opt.name, opt.implies));
-                    opts[i].values.push_back("1");
+                    target.values.push_back("1");
                 }
             } else {
                 if (opt.is_required)

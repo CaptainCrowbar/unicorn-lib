@@ -544,6 +544,80 @@ void test_unicorn_options_implication() {
 
 }
 
+void test_unicorn_options_prerequisites() {
+
+    Options opt2, opt3;
+    Ustring cmdline;
+
+    TRY(opt2 = Options("Hello world"));
+    TRY(opt2.add("numeric", "Numeric option", Options::abbrev="N", Options::boolean));
+    TRY(opt2.add("string", "String option", Options::abbrev="S", Options::boolean));
+    TRY(opt2.add("int", "Integer option", Options::abbrev="i", Options::integer, Options::prereq="numeric"));
+    TRY(opt2.add("float", "Floating point option", Options::abbrev="f", Options::floating, Options::prereq="numeric"));
+    TRY(opt2.add("name", "Name option", Options::abbrev="n", Options::prereq="string"));
+    TRY(opt2.add("file", "File option", Options::abbrev="f", Options::file, Options::prereq="string"));
+
+    {
+        TRY(opt3 = opt2);
+        cmdline = "app --help";
+        std::ostringstream out;
+        TEST(opt3.parse(cmdline, out));
+        TEST_EQUAL(out.str(),
+            "\n"
+            "Hello world\n"
+            "\n"
+            "Options:\n"
+            "\n"
+            "    --numeric, -N        = Numeric option\n"
+            "    --string, -S         = String option\n"
+            "    --int, -i <int>      = Integer option (requires --numeric)\n"
+            "    --float, -f <float>  = Floating point option (requires --numeric)\n"
+            "    --name, -n <arg>     = Name option (requires --string)\n"
+            "    --file, -f <file>    = File option (requires --string)\n"
+            "    --help, -h           = Show usage information\n"
+            "    --version, -v        = Show version information\n"
+            "\n"
+        );
+    }
+
+    {
+        TRY(opt3 = opt2);
+        cmdline = "app";
+        TEST(! opt3.parse(cmdline, nowhere));
+        TEST(! opt3.get<bool>("numeric"));
+        TEST(! opt3.get<bool>("string"));
+        TEST_EQUAL(opt3.get<int>("int"), 0);
+        TEST_EQUAL(opt3.get<float>("float"), 0);
+        TEST_EQUAL(opt3.get<Ustring>("name"), "");
+        TEST_EQUAL(opt3.get<Ustring>("file"), "");
+    }
+
+    // {
+    //     TRY(opt3 = opt2);
+    //     cmdline = "app -Ni 42 -f 1234.5";
+    //     TEST(! opt3.parse(cmdline, nowhere));
+    //     TEST(opt3.get<bool>("numeric"));
+    //     TEST(! opt3.get<bool>("string"));
+    //     TEST_EQUAL(opt3.get<int>("int"), 42);
+    //     TEST_EQUAL(opt3.get<float>("float"), 1234.5);
+    //     TEST_EQUAL(opt3.get<Ustring>("name"), "");
+    //     TEST_EQUAL(opt3.get<Ustring>("file"), "");
+    // }
+
+    // {
+    //     TRY(opt3 = opt2);
+    //     cmdline = "app -Sn hello -f goodbye";
+    //     TEST(! opt3.parse(cmdline, nowhere));
+    //     TEST(! opt3.get<bool>("numeric"));
+    //     TEST(opt3.get<bool>("string"));
+    //     TEST_EQUAL(opt3.get<int>("int"), 0);
+    //     TEST_EQUAL(opt3.get<float>("float"), 0);
+    //     TEST_EQUAL(opt3.get<Ustring>("name"), "hello");
+    //     TEST_EQUAL(opt3.get<Ustring>("file"), "goodbye");
+    // }
+
+}
+
 void test_unicorn_options_help() {
 
     Options opt2("Blank");

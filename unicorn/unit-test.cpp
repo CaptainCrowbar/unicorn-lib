@@ -64,6 +64,7 @@ extern void test_unicorn_options_patterns();
 extern void test_unicorn_options_si_units();
 extern void test_unicorn_options_enumeration();
 extern void test_unicorn_options_implication();
+extern void test_unicorn_options_prerequisites();
 extern void test_unicorn_options_help();
 extern void test_unicorn_options_insertions();
 extern void test_unicorn_path_legal_names();
@@ -218,6 +219,7 @@ int main() {
         { "unicorn/options/si-units", test_unicorn_options_si_units },
         { "unicorn/options/enumeration", test_unicorn_options_enumeration },
         { "unicorn/options/implication", test_unicorn_options_implication },
+        { "unicorn/options/prerequisites", test_unicorn_options_prerequisites },
         { "unicorn/options/help", test_unicorn_options_help },
         { "unicorn/options/insertions", test_unicorn_options_insertions },
         { "unicorn/path/legal-names", test_unicorn_path_legal_names },

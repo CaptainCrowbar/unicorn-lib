@@ -59,6 +59,7 @@ namespace RS::Unicorn {
         static constexpr Kwarg<Ustring, 3> group = {};       // Mutual exclusion group name
         static constexpr Kwarg<Ustring, 4> implies = {};     // Argument implies another argument
         static constexpr Kwarg<Ustring, 5> pattern = {};     // Argument must match this regular expression
+        static constexpr Kwarg<Ustring, 6> prereq = {};      // Option requires this prerequisite
         static constexpr Kwarg<enum_wrapper> enumtype = {};  // Argument must be one of the enumeration values
 
         Options() = default;
@@ -91,6 +92,7 @@ namespace RS::Unicorn {
             Ustring implies;
             Ustring info;
             Ustring name;
+            Ustring prereq;
             enum_wrapper enums;
             Regex pattern;
             Strings values;
@@ -116,9 +118,10 @@ namespace RS::Unicorn {
         bool checked = false;
 
         void add_option(option_type opt);
-        bool confirm(Ustring name) const;
         void final_check();
-        size_t find_index(Ustring name, bool require = false) const;
+        size_t find_first_index(const Ustring& name) const;
+        bool find_if_exists(const Ustring& name) const;
+        size_t find_user_option(const Ustring& name) const;
         parse_result parse_args(Strings args, uint32_t flags);
         void clean_up_arguments(Strings& args, uint32_t flags);
         Strings parse_forced_anonymous(Strings& args);
@@ -133,7 +136,7 @@ namespace RS::Unicorn {
         template <typename C> static Ustring arg_convert(const std::basic_string<C>& str, uint32_t /*flags*/) { return to_utf8(str); }
         static Ustring arg_convert(const std::string& str, uint32_t flags);
         static void add_arg_to_opt(const Ustring& arg, option_type& opt);
-        template <typename T> static T get_converted(const Ustring& str, bool with_si);
+        template <typename T> static T get_converted(const Ustring& str, bool with_si = false);
         static void unquote(const Ustring& src, Strings& dst);
 
     };
@@ -146,17 +149,27 @@ namespace RS::Unicorn {
 
     template <typename T>
     T Options::get(const Ustring& name) const {
-        size_t i = find_index(name, true);
-        return get_converted<T>(str_join(opts[i].values, " "), opts[i].is_si);
+        try {
+            auto& opt = opts[find_user_option(name)];
+            return get_converted<T>(str_join(opt.values, " "), opt.is_si);
+        }
+        catch (const command_error&) {
+            return get_converted<T>(Ustring());
+        }
     }
 
     template <typename T>
     std::vector<T> Options::get_list(const Ustring& name) const {
-        size_t i = find_index(name, true);
-        std::vector<T> tvec;
-        for (auto& s: opts[i].values)
-            tvec.push_back(get_converted<T>(s, opts[i].is_si));
-        return tvec;
+        try {
+            auto& opt = opts[find_user_option(name)];
+            std::vector<T> vec;
+            for (auto& str: opt.values)
+                vec.push_back(get_converted<T>(str, opt.is_si));
+            return vec;
+        }
+        catch (const command_error&) {
+            return {};
+        }
     }
 
     template <typename C>
@@ -242,6 +255,7 @@ namespace RS::Unicorn {
         implies = kwget(Options::implies, Ustring(), args...);
         enums = kwget(Options::enumtype, enum_wrapper(), args...);
         patstr = kwget(Options::pattern, Ustring(), args...);
+        prereq = kwget(Options::prereq, Ustring(), args...);
         if (! patstr.empty())
             pattern = Regex(patstr, Regex::full);
     }
