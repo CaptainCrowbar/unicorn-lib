@@ -147,7 +147,7 @@ optional keyword arguments, as listed below.</p>
 <tr>
 <td><code>Options::</code><strong><code>group</code></strong></td>
 <td><code>Ustring</code></td>
-<td>Assign the option to a mutual exclusion group (multiple options from the same group are not allowed).</td>
+<td>Assign the option to a mutual exclusion group; multiple options from the same group are not allowed.</td>
 </tr>
 <tr>
 <td><code>Options::</code><strong><code>implies</code></strong></td>
@@ -239,7 +239,7 @@ is <code>true</code>; the <code>"--no-whatever"</code> form can be used to switc
 <li>A function that assumes the option list is complete (<code>parse()</code> or <code>help_text()</code>) has already been called.</li>
 <li>The option name has less than two characters (not counting any leading hyphens).</li>
 <li>The name or abbreviation contains any whitespace characters.</li>
-<li>The name or abbreviation has already been used by an earlier entry.</li>
+<li>The name or abbreviation has already been used by an earlier entry, unless it had a different prerequisite.</li>
 <li>The info string is empty (this also applies to the second version of <code>add()</code>).</li>
 <li>The abbreviation is longer than one character (not counting a leading hyphen).</li>
 <li>An option starting with <code>"--no-"</code> is not boolean or has an abbreviation.</li>
@@ -251,7 +251,7 @@ is <code>true</code>; the <code>"--no-whatever"</code> form can be used to switc
 <li>The <code>defvalue</code> and <code>pattern</code> tags are both present, but the default value does not match the pattern.</li>
 <li>The target of an <code>implies</code> or <code>prereq</code> tag does not exist or is the same as the current option.</li>
 <li>The target of an <code>implies</code> tag is not boolean or is true by default.</li>
-<li>There is more than one option with both <code>anon</code> and <code>multi</code> flags (the first one will get all leftover arguments).</li>
+<li>There is more than one option with both <code>anon</code> and <code>multi</code> flags (only one of these can receive leftover arguments).</li>
 </ul>
 <p>The value attached to the <code>Options::enumtype</code> keyword must be a value of an
 enumeration type (plain or strong) that was defined using one of the
@@ -285,9 +285,9 @@ was supplied to the <code>Options</code> constructor.</p>
 </div>
 <div class="defns">
 <ul>
-<li><code>template &lt;typename C&gt; bool Options::</code><strong><code>parse</code></strong><code>(const vector&lt;basic_string&lt;C&gt;&gt;&amp; args, std::ostream&amp; out = cout, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; bool Options::</code><strong><code>parse</code></strong><code>(const basic_string&lt;C&gt;&amp; args, std::ostream&amp; out = cout, uint32_t flags = 0)</code></li>
-<li><code>template &lt;typename C&gt; bool Options::</code><strong><code>parse</code></strong><code>(int argc, C** argv, std::ostream&amp; out = cout, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; bool Options::</code><strong><code>parse</code></strong><code>(const std::vector&lt;std::basic_string&lt;C&gt;&gt;&amp; args, std::ostream&amp; out = std::cout, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; bool Options::</code><strong><code>parse</code></strong><code>(const std::basic_string&lt;C&gt;&amp; args, std::ostream&amp; out = std::cout, uint32_t flags = 0)</code></li>
+<li><code>template &lt;typename C&gt; bool Options::</code><strong><code>parse</code></strong><code>(int argc, C** argv, std::ostream&amp; out = std::cout, uint32_t flags = 0)</code></li>
 </ul>
 <p>After the option specification has been constructed, call one of the <code>parse()</code>
 functions to parse the actual command line arguments. The arguments can be
@@ -301,6 +301,11 @@ override this.</p>
 vs <code>"--no-magic"</code>). Integer options will accept hexadecimal options prefixed
 with <code>"0x"</code>; integer or float options will accept values tagged with SI prefix
 abbreviations (e.g. <code>"50k"</code> or <code>"2.5M"</code>).</p>
+<p>If a given option added to the specification more than once with different
+prerequisites, which part of the spec that option matches will be determined
+by which prerequisite is present. If there is more than one matching
+prerequisite, the first one found will be used. Prerequisites in this
+situation should normally be part of a mutual exclusion group.</p>
 <p>If help or version information is requested, it will be written to the given
 output stream (standard output by default). The <code>parse()</code> function will return
 true if all requested processing has already been handled (i.e. if help or
@@ -337,10 +342,11 @@ true:</p>
 <ul>
 <li>A full or abbreviated option is supplied that is not in the spec.</li>
 <li>The same option appears more than once, but does not have the <code>multi</code> flag.</li>
-<li>Multiple options from the same mutual exclusion group are supplied.</li>
+<li>More than one option from the same mutual exclusion group is supplied.</li>
 <li>The argument supplied for an option does not match the pattern given in the spec.</li>
+<li>An boolean option is implied by another option but is also explicitly negated.</li>
+<li>An option that has a prerequisite is present, but its prerequisite is missing.</li>
 <li>A required option is missing.</li>
-<li>An implied boolean option is explicitly negated.</li>
 <li>There are unattached arguments left over after all options have been satisfied.</li>
 </ul>
 <p>Behaviour is undefined if <code>parse()</code> is called more than once on the same
@@ -349,7 +355,7 @@ true:</p>
 <div class="defns">
 <ul>
 <li><code>template &lt;typename T&gt; T Options::</code><strong><code>get</code></strong><code>(const Ustring&amp; name) const</code></li>
-<li><code>template &lt;typename T&gt; vector&lt;T&gt; Options::</code><strong><code>get_list</code></strong><code>(const Ustring&amp; name) const</code></li>
+<li><code>template &lt;typename T&gt; std::vector&lt;T&gt; Options::</code><strong><code>get_list</code></strong><code>(const Ustring&amp; name) const</code></li>
 <li><code>bool Options::</code><strong><code>has</code></strong><code>(const Ustring&amp; name) const</code></li>
 </ul>
 <p>These return information about the options and arguments found in the command

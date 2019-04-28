@@ -22,21 +22,18 @@ namespace RS::Unicorn {
         const Regex match_float(float_pattern, Regex::full | Regex::optimize);
         const Regex match_float_si(float_pattern + float_si_unit, Regex::full | Regex::optimize);
 
-        enum ArgType {
-            is_argument = 'a',
-            is_long_option = 'l',
-            is_short_option = 's',
-        };
+        enum class ArgType { argument, long_option, short_option, multiple_short_options };
 
         ArgType arg_type(const Ustring& arg) {
-            if (arg.size() < 2 || arg[0] != '-' || ascii_isdigit(arg[1]))
-                return is_argument;
-            else if (arg[1] != '-' && arg[1] != '=')
-                return is_short_option;
-            else if (arg.size() >= 3 && arg[1] == '-' && arg[2] != '-' && arg[2] != '=')
-                return is_long_option;
+            size_t length = str_length(arg);
+            if (length < 2 || arg[0] != '-' || ascii_isdigit(arg[1]))
+                return ArgType::argument;
+            else if (length == 2 && arg[1] != '-')
+                return ArgType::short_option;
+            else if (arg[1] == '-')
+                return ArgType::long_option;
             else
-                throw Options::command_error("Argument not recognised: $1q"_fmt(arg));
+                return ArgType::multiple_short_options;
         }
 
     }
@@ -78,7 +75,7 @@ namespace RS::Unicorn {
 
     Ustring Options::help_text() {
         static constexpr auto length_flags = Length::graphemes | Length::narrow;
-        final_check();
+        setup_finalize();
         Ustring text = "\n" + app_info + "\n";
         Strings prefixes, suffixes;
         std::vector<size_t> lengths;
@@ -174,10 +171,10 @@ namespace RS::Unicorn {
     }
 
     bool Options::has(const Ustring& name) const {
-        return opts[find_user_option(name)].is_found;
+        return ! name.empty() && opts[find_user_option(name)].is_found;
     }
 
-    void Options::add_option(option_type opt) {
+    void Options::setup_add_option(option_type opt) {
         static const Ustring trim_chars = "-"s + ascii_whitespace;
         str_trim_in(opt.name, trim_chars);
         str_trim_in(opt.info);
@@ -235,7 +232,7 @@ namespace RS::Unicorn {
         opts.push_back(opt);
     }
 
-    void Options::final_check() {
+    void Options::setup_finalize() {
         for (auto& opt: opts) {
             if (! opt.implies.empty()) {
                 size_t i = find_first_index(opt.implies);
@@ -276,9 +273,8 @@ namespace RS::Unicorn {
         Strings prereqs;
         for (;;) {
             i = std::find_if(i, end, [=] (const auto& o) { return o.name == key || o.abbrev == key; });
-            if (i == end) {
+            if (i == end)
                 break;
-            }
             auto& pre = i->prereq;
             if (pre.empty() || has(pre))
                 return i - begin;
@@ -295,26 +291,31 @@ namespace RS::Unicorn {
             throw command_error("Option $1 requires --$2"_fmt(key, str_join(prereqs, ", --")));
     }
 
-    Options::parse_result Options::parse_args(Strings args, uint32_t flags) {
-        final_check();
-        clean_up_arguments(args, flags);
-        if (args.empty() && help_flag == help::automatic)
-            return parse_result::help;
-        auto is_anon = parse_forced_anonymous(args);
+    bool Options::parse_main(Strings args, std::ostream& out, uint32_t flags) {
+        setup_finalize();
+        parse_initial_cleanup(args, flags);
+        if (args.empty() && help_flag == help::automatic) {
+            out << help_text();
+            return true;
+        }
+        auto anon_args = parse_explicit_anonymous(args);
         parse_attached_arguments(args);
-        expand_abbreviations(args);
-        extract_named_options(args);
-        parse_remaining_anonymous(args, is_anon);
-        if (get<bool>("help"))
-            return parse_result::help;
-        if (get<bool>("version"))
-            return parse_result::version;
-        check_conditions();
-        supply_defaults();
-        return parse_result::ok;
+        parse_named_options(args);
+        parse_remaining_anonymous(args, anon_args);
+        if (get<bool>("help")) {
+            out << help_text();
+            return true;
+        } else if (get<bool>("version")) {
+            out << app_info << '\n';
+            return true;
+        } else {
+            parse_check_conditions();
+            parse_supply_defaults();
+            return false;
+        }
     }
 
-    void Options::clean_up_arguments(Strings& args, uint32_t flags) {
+    void Options::parse_initial_cleanup(Strings& args, uint32_t flags) {
         if (! (flags & noprefix) && ! args.empty())
             args.erase(args.begin());
         if (flags & quoted)
@@ -323,7 +324,7 @@ namespace RS::Unicorn {
                     arg = arg.substr(1, arg.size() - 1);
     }
 
-    Strings Options::parse_forced_anonymous(Strings& args) {
+    Strings Options::parse_explicit_anonymous(Strings& args) {
         Strings anon_args;
         auto i = std::find(args.begin(), args.end(), "--");
         if (i != args.end()) {
@@ -336,7 +337,7 @@ namespace RS::Unicorn {
     void Options::parse_attached_arguments(Strings& args) {
         size_t i = 0;
         while (i < args.size()) {
-            if (arg_type(args[i]) != is_argument) {
+            if (arg_type(args[i]) != ArgType::argument) {
                 Ustring key, value;
                 bool paired = str_partition_at(args[i], key, value, "=");
                 if (paired) {
@@ -349,55 +350,45 @@ namespace RS::Unicorn {
         }
     }
 
-    void Options::expand_abbreviations(Strings& args) {
+    void Options::parse_named_options(Strings& args) {
         size_t i = 0;
         while (i < args.size()) {
-            if (arg_type(args[i]) == is_short_option) {
+            auto type = arg_type(args[i]);
+            if (type == ArgType::multiple_short_options) {
                 auto arg = args[i];
                 args.erase(args.begin() + i);
                 size_t j = 0;
-                for (auto u = std::next(utf_begin(arg)), uend = utf_end(arg); u != uend; ++u, ++j) {
-                    auto key = arg.substr(u.offset(), u.count());
-                    auto& opt = opts[find_user_option(key)];
-                    args.insert(args.begin() + i + j, "--" + opt.name);
-                }
-                i += j;
-            } else {
-                ++i;
-            }
-        }
-    }
-
-    void Options::extract_named_options(Strings& args) {
-        size_t a = 0;
-        while (a < args.size()) {
-            if (arg_type(args[a]) != is_long_option) {
-                ++a;
+                for (auto u = std::next(utf_begin(arg)), uend = utf_end(arg); u != uend; ++u, ++j)
+                    args.insert(args.begin() + i + j, "-" + u.str());
                 continue;
             }
-            auto& opt = opts[find_user_option(args[a])];
+            if (type == ArgType::argument) {
+                ++i;
+                continue;
+            }
+            auto& opt = opts[find_user_option(args[i])];
             if (opt.is_found && ! opt.is_multi)
-                throw command_error("Duplicate option: --" + args[a]);
+                throw command_error("Duplicate option: --" + args[i]);
             if (! opt.group.empty())
                 for (auto& opt2: opts)
                     if (&opt2 != &opt && opt2.group == opt.group && opt2.is_found)
                         throw command_error("Incompatible options: --$1, --$2"_fmt(opt2.name, opt.name));
             opt.is_found = true;
             if (opt.is_boolean) {
-                if (args[a].substr(0, 5) == "--no-")
-                    add_arg_to_opt("0", opt);
+                if (args[i].substr(0, 5) == "--no-")
+                    opt.add_arg("0");
                 else
-                    add_arg_to_opt("1", opt);
-                args.erase(args.begin() + a);
+                    opt.add_arg("1");
+                args.erase(args.begin() + i);
             } else {
                 size_t n = 1, max_n = 1;
                 if (opt.is_multi)
-                    max_n = args.size() - a;
+                    max_n = args.size() - i;
                 else
-                    max_n = std::min(size_t(2), args.size() - a);
-                for (; n < max_n && arg_type(args[a + n]) == is_argument; ++n)
-                    add_arg_to_opt(args[a + n], opt);
-                args.erase(args.begin() + a, args.begin() + a + n);
+                    max_n = std::min(size_t(2), args.size() - i);
+                for (; n < max_n && arg_type(args[i + n]) == ArgType::argument; ++n)
+                    opt.add_arg(args[i + n]);
+                args.erase(args.begin() + i, args.begin() + i + n);
             }
         }
     }
@@ -412,14 +403,14 @@ namespace RS::Unicorn {
             opt.is_found = true;
             size_t n = opt.is_multi ? args.size() : 1;
             for (size_t i = 0; i < n; ++i)
-                add_arg_to_opt(args[i], opt);
+                opt.add_arg(args[i]);
             args.erase(args.begin(), args.begin() + n);
         }
         if (! args.empty())
             throw command_error("Unexpected argument: " + str_quote(args[0]));
     }
 
-    void Options::check_conditions() {
+    void Options::parse_check_conditions() {
         for (auto& opt: opts) {
             if (opt.is_found) {
                 if (! opt.implies.empty()) {
@@ -435,21 +426,10 @@ namespace RS::Unicorn {
         }
     }
 
-    void Options::supply_defaults() {
+    void Options::parse_supply_defaults() {
         for (auto& opt: opts)
             if (opt.values.empty() && ! opt.defvalue.empty())
-                add_arg_to_opt(opt.defvalue, opt);
-    }
-
-    void Options::send_help(std::ostream& out, parse_result mode) {
-        Ustring message;
-        switch (mode) {
-            case parse_result::help:     message = help_text(); break;
-            case parse_result::version:  message = app_info + '\n'; break;
-            default:                     break;
-        }
-        if (! message.empty())
-            out << message;
+                opt.add_arg(opt.defvalue);
     }
 
     Ustring Options::arg_convert(const std::string& str, uint32_t flags) {
@@ -458,16 +438,6 @@ namespace RS::Unicorn {
         Ustring utf8;
         import_string(str, utf8, local_encoding());
         return utf8;
-    }
-
-    void Options::add_arg_to_opt(const Ustring& arg, option_type& opt) {
-        if ((opt.is_required || ! arg.empty())) {
-            if (! opt.pattern.empty() && ! opt.pattern(arg))
-                throw command_error("Invalid argument to --$1: $2q"_fmt(opt.name, arg));
-            if (! opt.enums.values.empty() && ! opt.enums.check(arg))
-                throw command_error("Invalid argument to --$1: $2q"_fmt(opt.name, arg));
-        }
-        opt.values.push_back(arg);
     }
 
     void Options::unquote(const Ustring& src, Strings& dst) {
@@ -498,6 +468,22 @@ namespace RS::Unicorn {
             }
             i = j;
         }
+    }
+
+    Options::option_type::option_type(const Ustring& inf) {
+        info = str_trim_right(inf);
+        if (info.empty())
+            throw spec_error("Empty information string");
+    }
+
+    void Options::option_type::add_arg(const Ustring& arg) {
+        if ((is_required || ! arg.empty())) {
+            if (! pattern.empty() && ! pattern(arg))
+                throw command_error("Invalid argument to --$1: $2q"_fmt(name, arg));
+            if (! enums.values.empty() && ! enums.check(arg))
+                throw command_error("Invalid argument to --$1: $2q"_fmt(name, arg));
+        }
+        values.push_back(arg);
     }
 
 }

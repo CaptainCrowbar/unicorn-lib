@@ -79,13 +79,7 @@ namespace RS::Unicorn {
 
     private:
 
-        enum class parse_result { ok, help, version };
-
         struct option_type {
-            option_type() = default;
-            template <typename... Args> option_type(const Ustring& nm, const Ustring& inf, Args... args);
-            option_type(const Ustring& inf);
-            option_type(const char* inf): option_type(cstr(inf)) {}
             Ustring abbrev;
             Ustring defvalue;
             Ustring group;
@@ -107,6 +101,11 @@ namespace RS::Unicorn {
             bool is_required = false;
             bool is_si = false;
             bool is_uinteger = false;
+            option_type() = default;
+            template <typename... Args> option_type(const Ustring& nm, const Ustring& inf, Args... args);
+            option_type(const Ustring& inf);
+            option_type(const char* inf): option_type(cstr(inf)) {}
+            void add_arg(const Ustring& arg);
         };
 
         using option_list = std::vector<option_type>;
@@ -117,25 +116,22 @@ namespace RS::Unicorn {
         int tail_opts = 0;
         bool checked = false;
 
-        void add_option(option_type opt);
-        void final_check();
+        void setup_add_option(option_type opt);
+        void setup_finalize();
         size_t find_first_index(const Ustring& name) const;
         bool find_if_exists(const Ustring& name) const;
         size_t find_user_option(const Ustring& name) const;
-        parse_result parse_args(Strings args, uint32_t flags);
-        void clean_up_arguments(Strings& args, uint32_t flags);
-        Strings parse_forced_anonymous(Strings& args);
+        bool parse_main(Strings args, std::ostream& out, uint32_t flags);
+        void parse_initial_cleanup(Strings& args, uint32_t flags);
+        Strings parse_explicit_anonymous(Strings& args);
         void parse_attached_arguments(Strings& args);
-        void expand_abbreviations(Strings& args);
-        void extract_named_options(Strings& args);
+        void parse_named_options(Strings& args);
         void parse_remaining_anonymous(Strings& args, const Strings& anon_args);
-        void check_conditions();
-        void supply_defaults();
-        void send_help(std::ostream& out, parse_result mode);
+        void parse_check_conditions();
+        void parse_supply_defaults();
 
         template <typename C> static Ustring arg_convert(const std::basic_string<C>& str, uint32_t /*flags*/) { return to_utf8(str); }
         static Ustring arg_convert(const std::string& str, uint32_t flags);
-        static void add_arg_to_opt(const Ustring& arg, option_type& opt);
         template <typename T> static T get_converted(const Ustring& str, bool with_si = false);
         static void unquote(const Ustring& src, Strings& dst);
 
@@ -143,7 +139,7 @@ namespace RS::Unicorn {
 
     template <typename... Args>
     Options& Options::add(const Ustring& name, const Ustring& info, Args... args) {
-        add_option(option_type(name, info, args...));
+        setup_add_option(option_type(name, info, args...));
         return *this;
     }
 
@@ -175,11 +171,8 @@ namespace RS::Unicorn {
     template <typename C>
     bool Options::parse(const std::vector<std::basic_string<C>>& args, std::ostream& out, uint32_t flags) {
         Strings u8vec;
-        std::transform(args.begin(), args.end(), append(u8vec),
-            [=] (const std::basic_string<C>& s) { return arg_convert(s, flags); });
-        auto help_wanted = parse_args(u8vec, flags);
-        send_help(out, help_wanted);
-        return help_wanted != parse_result::ok;
+        std::transform(args.begin(), args.end(), append(u8vec), [=] (auto& s) { return arg_convert(s, flags); });
+        return parse_main(u8vec, out, flags);
     }
 
     template <typename C>
@@ -192,9 +185,7 @@ namespace RS::Unicorn {
         } else {
             str_split(u8args, append(vec));
         }
-        auto help_wanted = parse_args(vec, flags);
-        send_help(out, help_wanted);
-        return help_wanted != parse_result::ok;
+        return parse_main(vec, out, flags);
     }
 
     template <typename C>
@@ -258,12 +249,6 @@ namespace RS::Unicorn {
         prereq = kwget(Options::prereq, Ustring(), args...);
         if (! patstr.empty())
             pattern = Regex(patstr, Regex::full);
-    }
-
-    inline Options::option_type::option_type(const Ustring& inf) {
-        info = str_trim_right(inf);
-        if (info.empty())
-            throw spec_error("Empty information string");
     }
 
 }

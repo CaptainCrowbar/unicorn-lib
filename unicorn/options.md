@@ -105,7 +105,7 @@ Keyword                    | Type           | Description
 &nbsp;                     | &nbsp;         | **Option names**
 `Options::`**`abbrev`**    | `Ustring`      | A single letter abbreviation for the option (e.g. `"-x"`; the hyphen is optional in `add()`).
 &nbsp;                     | &nbsp;         | **Relationships between options**
-`Options::`**`group`**     | `Ustring`      | Assign the option to a mutual exclusion group (multiple options from the same group are not allowed).
+`Options::`**`group`**     | `Ustring`      | Assign the option to a mutual exclusion group; multiple options from the same group are not allowed.
 `Options::`**`implies`**   | `Ustring`      | This option's presence implies another option.
 `Options::`**`prereq`**    | `Ustring`      | This option requires another option to already be selected.
 &nbsp;                     | &nbsp;         | **Argument types**
@@ -132,7 +132,7 @@ Adding an option will throw `spec_error` if any of the following is true:
 * A function that assumes the option list is complete (`parse()` or `help_text()`) has already been called.
 * The option name has less than two characters (not counting any leading hyphens).
 * The name or abbreviation contains any whitespace characters.
-* The name or abbreviation has already been used by an earlier entry.
+* The name or abbreviation has already been used by an earlier entry, unless it had a different prerequisite.
 * The info string is empty (this also applies to the second version of `add()`).
 * The abbreviation is longer than one character (not counting a leading hyphen).
 * An option starting with `"--no-"` is not boolean or has an abbreviation.
@@ -144,7 +144,7 @@ Adding an option will throw `spec_error` if any of the following is true:
 * The `defvalue` and `pattern` tags are both present, but the default value does not match the pattern.
 * The target of an `implies` or `prereq` tag does not exist or is the same as the current option.
 * The target of an `implies` tag is not boolean or is true by default.
-* There is more than one option with both `anon` and `multi` flags (the first one will get all leftover arguments).
+* There is more than one option with both `anon` and `multi` flags (only one of these can receive leftover arguments).
 
 The value attached to the `Options::enumtype` keyword must be a value of an
 enumeration type (plain or strong) that was defined using one of the
@@ -176,9 +176,9 @@ and `"--version"` options. The help text is constructed automatically by the
 `Options` object; the version text is simply the original `info` string that
 was supplied to the `Options` constructor.
 
-* `template <typename C> bool Options::`**`parse`**`(const vector<basic_string<C>>& args, std::ostream& out = cout, uint32_t flags = 0)`
-* `template <typename C> bool Options::`**`parse`**`(const basic_string<C>& args, std::ostream& out = cout, uint32_t flags = 0)`
-* `template <typename C> bool Options::`**`parse`**`(int argc, C** argv, std::ostream& out = cout, uint32_t flags = 0)`
+* `template <typename C> bool Options::`**`parse`**`(const std::vector<std::basic_string<C>>& args, std::ostream& out = std::cout, uint32_t flags = 0)`
+* `template <typename C> bool Options::`**`parse`**`(const std::basic_string<C>& args, std::ostream& out = std::cout, uint32_t flags = 0)`
+* `template <typename C> bool Options::`**`parse`**`(int argc, C** argv, std::ostream& out = std::cout, uint32_t flags = 0)`
 
 After the option specification has been constructed, call one of the `parse()`
 functions to parse the actual command line arguments. The arguments can be
@@ -193,6 +193,12 @@ Boolean options will be recognised in normal or negated form (e.g. `"--magic"`
 vs `"--no-magic"`). Integer options will accept hexadecimal options prefixed
 with `"0x"`; integer or float options will accept values tagged with SI prefix
 abbreviations (e.g. `"50k"` or `"2.5M"`).
+
+If a given option added to the specification more than once with different
+prerequisites, which part of the spec that option matches will be determined
+by which prerequisite is present. If there is more than one matching
+prerequisite, the first one found will be used. Prerequisites in this
+situation should normally be part of a mutual exclusion group.
 
 If help or version information is requested, it will be written to the given
 output stream (standard output by default). The `parse()` function will return
@@ -217,17 +223,18 @@ true:
 
 * A full or abbreviated option is supplied that is not in the spec.
 * The same option appears more than once, but does not have the `multi` flag.
-* Multiple options from the same mutual exclusion group are supplied.
+* More than one option from the same mutual exclusion group is supplied.
 * The argument supplied for an option does not match the pattern given in the spec.
+* An boolean option is implied by another option but is also explicitly negated.
+* An option that has a prerequisite is present, but its prerequisite is missing.
 * A required option is missing.
-* An implied boolean option is explicitly negated.
 * There are unattached arguments left over after all options have been satisfied.
 
 Behaviour is undefined if `parse()` is called more than once on the same
 `Options` object.
 
 * `template <typename T> T Options::`**`get`**`(const Ustring& name) const`
-* `template <typename T> vector<T> Options::`**`get_list`**`(const Ustring& name) const`
+* `template <typename T> std::vector<T> Options::`**`get_list`**`(const Ustring& name) const`
 * `bool Options::`**`has`**`(const Ustring& name) const`
 
 These return information about the options and arguments found in the command

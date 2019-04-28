@@ -161,11 +161,26 @@ void test_unicorn_options_boolean() {
     TEST_EQUAL(opt2.get<Ustring>("bar"), "0");
 
     TRY(opt2 = opt1);
+    TRY(opt2.add("--zap", "Yet another option", Options::boolean, Options::abbrev="z"));
     cmdline = "app -f";
     TEST(! opt2.parse(cmdline, nowhere));
     TEST(opt2.has("foo"));
     TEST(opt2.get<bool>("foo"));
     TEST_EQUAL(opt2.get<Ustring>("foo"), "1");
+    TEST(! opt2.has("zap"));
+    TEST(! opt2.get<bool>("zap"));
+    TEST_EQUAL(opt2.get<Ustring>("zap"), "");
+
+    TRY(opt2 = opt1);
+    TRY(opt2.add("--zap", "Yet another option", Options::boolean, Options::abbrev="z"));
+    cmdline = "app -zf";
+    TEST(! opt2.parse(cmdline, nowhere));
+    TEST(opt2.has("foo"));
+    TEST(opt2.get<bool>("foo"));
+    TEST_EQUAL(opt2.get<Ustring>("foo"), "1");
+    TEST(opt2.has("zap"));
+    TEST(opt2.get<bool>("zap"));
+    TEST_EQUAL(opt2.get<Ustring>("zap"), "1");
 
 }
 
@@ -592,29 +607,29 @@ void test_unicorn_options_prerequisites() {
         TEST_EQUAL(opt3.get<Ustring>("file"), "");
     }
 
-    // {
-    //     TRY(opt3 = opt2);
-    //     cmdline = "app -Ni 42 -f 1234.5";
-    //     TEST(! opt3.parse(cmdline, nowhere));
-    //     TEST(opt3.get<bool>("numeric"));
-    //     TEST(! opt3.get<bool>("string"));
-    //     TEST_EQUAL(opt3.get<int>("int"), 42);
-    //     TEST_EQUAL(opt3.get<float>("float"), 1234.5);
-    //     TEST_EQUAL(opt3.get<Ustring>("name"), "");
-    //     TEST_EQUAL(opt3.get<Ustring>("file"), "");
-    // }
+    {
+        TRY(opt3 = opt2);
+        cmdline = "app -Ni 42 -f 1234.5";
+        TEST(! opt3.parse(cmdline, nowhere));
+        TEST(opt3.get<bool>("numeric"));
+        TEST(! opt3.get<bool>("string"));
+        TEST_EQUAL(opt3.get<int>("int"), 42);
+        TEST_EQUAL(opt3.get<float>("float"), 1234.5);
+        TEST_EQUAL(opt3.get<Ustring>("name"), "");
+        TEST_EQUAL(opt3.get<Ustring>("file"), "");
+    }
 
-    // {
-    //     TRY(opt3 = opt2);
-    //     cmdline = "app -Sn hello -f goodbye";
-    //     TEST(! opt3.parse(cmdline, nowhere));
-    //     TEST(! opt3.get<bool>("numeric"));
-    //     TEST(opt3.get<bool>("string"));
-    //     TEST_EQUAL(opt3.get<int>("int"), 0);
-    //     TEST_EQUAL(opt3.get<float>("float"), 0);
-    //     TEST_EQUAL(opt3.get<Ustring>("name"), "hello");
-    //     TEST_EQUAL(opt3.get<Ustring>("file"), "goodbye");
-    // }
+    {
+        TRY(opt3 = opt2);
+        cmdline = "app -Sn hello -f goodbye";
+        TEST(! opt3.parse(cmdline, nowhere));
+        TEST(! opt3.get<bool>("numeric"));
+        TEST(opt3.get<bool>("string"));
+        TEST_EQUAL(opt3.get<int>("int"), 0);
+        TEST_EQUAL(opt3.get<float>("float"), 0);
+        TEST_EQUAL(opt3.get<Ustring>("name"), "hello");
+        TEST_EQUAL(opt3.get<Ustring>("file"), "goodbye");
+    }
 
 }
 
