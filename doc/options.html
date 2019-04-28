@@ -197,7 +197,7 @@ optional keyword arguments, as listed below.</p>
 <tr>
 <td><code>Options::</code><strong><code>si</code></strong></td>
 <td><code>bool</code></td>
-<td>Numeric arguments can use SI abbreviations</td>
+<td>Numeric arguments can use SI abbreviations.</td>
 </tr>
 <tr>
 <td><code>Options::</code><strong><code>uinteger</code></strong></td>
@@ -299,8 +299,9 @@ command name (which will be discarded); use the <code>noprefix</code> flag to
 override this.</p>
 <p>Boolean options will be recognised in normal or negated form (e.g. <code>"--magic"</code>
 vs <code>"--no-magic"</code>). Integer options will accept hexadecimal options prefixed
-with <code>"0x"</code>; integer or float options will accept values tagged with SI prefix
-abbreviations (e.g. <code>"50k"</code> or <code>"2.5M"</code>).</p>
+with <code>"0x"</code>. Integer or floating point options that were specified with the
+<code>si</code> flag will accept values tagged with SI prefix abbreviations (e.g. <code>"50k"</code>
+or <code>"2.5M"</code>).</p>
 <p>If a given option added to the specification more than once with different
 prerequisites, which part of the spec that option matches will be determined
 by which prerequisite is present. If there is more than one matching

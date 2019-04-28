@@ -115,7 +115,7 @@ Keyword                    | Type           | Description
 `Options::`**`floating`**  | `bool`         | The argument value must be a floating point number (an integer is accepted).
 `Options::`**`integer`**   | `bool`         | The argument value must be an integer.
 `Options::`**`pattern`**   | `Ustring`      | The argument value must match this regular expression.
-`Options::`**`si`**        | `bool`         | Numeric arguments can use SI abbreviations
+`Options::`**`si`**        | `bool`         | Numeric arguments can use SI abbreviations.
 `Options::`**`uinteger`**  | `bool`         | The argument value must be an unsigned integer.
 &nbsp;                     | &nbsp;         | **Other tags**
 `Options::`**`anon`**      | `bool`         | Anonymous arguments (not claimed by any other option) will be assigned to this option.
@@ -191,8 +191,9 @@ override this.
 
 Boolean options will be recognised in normal or negated form (e.g. `"--magic"`
 vs `"--no-magic"`). Integer options will accept hexadecimal options prefixed
-with `"0x"`; integer or float options will accept values tagged with SI prefix
-abbreviations (e.g. `"50k"` or `"2.5M"`).
+with `"0x"`. Integer or floating point options that were specified with the
+`si` flag will accept values tagged with SI prefix abbreviations (e.g. `"50k"`
+or `"2.5M"`).
 
 If a given option added to the specification more than once with different
 prerequisites, which part of the spec that option matches will be determined
