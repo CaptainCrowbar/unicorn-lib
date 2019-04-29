@@ -42,9 +42,11 @@ namespace RS::Unicorn {
 
         enum class help { unset, std, automatic };
 
-        static constexpr uint32_t locale = 1;                // Argument list is in local encoding
-        static constexpr uint32_t noprefix = 2;              // First argument is not the command name
-        static constexpr uint32_t quoted = 4;                // Allow arguments to be quoted
+        static constexpr uint32_t colour = 1;                // Always colourize help text
+        static constexpr uint32_t nocolour = 2;              // Do not colourize help text
+        static constexpr uint32_t locale = 4;                // Argument list is in local encoding
+        static constexpr uint32_t noprefix = 8;              // First argument is not the command name
+        static constexpr uint32_t quoted = 16;               // Allow arguments to be quoted
         static constexpr Kwarg<bool, 1> anon = {};           // Assign anonymous arguments to this option
         static constexpr Kwarg<bool, 2> boolean = {};        // Boolean option
         static constexpr Kwarg<bool, 3> file = {};           // Argument is expected to be a file path
@@ -68,7 +70,7 @@ namespace RS::Unicorn {
         template <typename... Args> Options& add(const Ustring& name, const Ustring& info, Args... args);
         Options& add(const Ustring& info);
         Options& add(help h);
-        Ustring help_text();
+        Ustring help_text(uint32_t flags = 0);
         Ustring version_text() const { return app_info; }
         template <typename C> bool parse(const std::vector<std::basic_string<C>>& args, std::ostream& out = std::cout, uint32_t flags = 0);
         template <typename C> bool parse(const std::basic_string<C>& args, std::ostream& out = std::cout, uint32_t flags = 0);
@@ -120,7 +122,7 @@ namespace RS::Unicorn {
         void setup_finalize();
         size_t find_first_index(const Ustring& name) const;
         bool find_if_exists(const Ustring& name) const;
-        size_t find_user_option(const Ustring& name) const;
+        size_t find_runtime_option(const Ustring& name) const;
         bool parse_main(Strings args, std::ostream& out, uint32_t flags);
         void parse_initial_cleanup(Strings& args, uint32_t flags);
         Strings parse_explicit_anonymous(Strings& args);
@@ -146,7 +148,7 @@ namespace RS::Unicorn {
     template <typename T>
     T Options::get(const Ustring& name) const {
         try {
-            auto& opt = opts[find_user_option(name)];
+            auto& opt = opts[find_runtime_option(name)];
             return get_converted<T>(str_join(opt.values, " "), opt.is_si);
         }
         catch (const command_error&) {
@@ -157,7 +159,7 @@ namespace RS::Unicorn {
     template <typename T>
     std::vector<T> Options::get_list(const Ustring& name) const {
         try {
-            auto& opt = opts[find_user_option(name)];
+            auto& opt = opts[find_runtime_option(name)];
             std::vector<T> vec;
             for (auto& str: opt.values)
                 vec.push_back(get_converted<T>(str, opt.is_si));

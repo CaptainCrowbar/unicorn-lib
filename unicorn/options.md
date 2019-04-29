@@ -168,13 +168,18 @@ the option list if you do not add them this way. If the `automatic` flag is
 used, calling the program with no arguments will be interpreted as a request
 for help (i.e. an empty argument list is equivalent to `"--help"`).
 
-* `Ustring Options::`**`help_text`**`()`
+* `Ustring Options::`**`help_text`**`(uint32_t flags = 0)`
 * `Ustring Options::`**`version_text`**`() const`
 
 These are the same texts that will be presented to the user by the `"--help"`
 and `"--version"` options. The help text is constructed automatically by the
 `Options` object; the version text is simply the original `info` string that
 was supplied to the `Options` constructor.
+
+The only flag that has any effect on `help_text()` is `Options::colour`, which
+causes the text to be colourized using terminal control sequences. By default
+the text is not colourized (note that this is different to the behaviour of
+`parse()` with respect to the colour flags).
 
 * `template <typename C> bool Options::`**`parse`**`(const std::vector<std::basic_string<C>>& args, std::ostream& out = std::cout, uint32_t flags = 0)`
 * `template <typename C> bool Options::`**`parse`**`(const std::basic_string<C>& args, std::ostream& out = std::cout, uint32_t flags = 0)`
@@ -211,9 +216,17 @@ The `flags` argument can be any combination of these:
 
 Flag                       | Description
 ----                       | -----------
+`Options::`**`colour`**    | Always colourize the help text
+`Options::`**`nocolour`**  | Do not colourize the help text
 `Options::`**`locale`**    | The argument list is in the local encoding
 `Options::`**`noprefix`**  | The first argument is not the command name
 `Options::`**`quoted`**    | Allow arguments to be quoted
+
+If the output stream is standard output, and no redirection is detected (using
+`isatty()`), any help text generated will be colourized using terminal control
+sequences. The `colour` and `nocolour` flags override this rule, forcing the
+help text to always or never be colourized (if both are present, the effect is
+the same as if neither was present).
 
 The `locale` flag is only relevant to 8 bit strings, which are assumed to be
 UTF-8 by default; the flag is ignored if the `C` type is not `char`, since 16
@@ -224,11 +237,11 @@ true:
 
 * A full or abbreviated option is supplied that is not in the spec.
 * The same option appears more than once, but does not have the `multi` flag.
-* More than one option from the same mutual exclusion group is supplied.
-* The argument supplied for an option does not match the pattern given in the spec.
-* An boolean option is implied by another option but is also explicitly negated.
-* An option that has a prerequisite is present, but its prerequisite is missing.
 * A required option is missing.
+* More than one option from the same mutual exclusion group is supplied.
+* A boolean option is implied by another option but is also explicitly negated.
+* An option that has a prerequisite is present, but its prerequisite is missing.
+* The argument supplied for an option does not match the pattern or data type given in the spec.
 * There are unattached arguments left over after all options have been satisfied.
 
 Behaviour is undefined if `parse()` is called more than once on the same

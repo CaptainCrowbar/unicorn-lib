@@ -275,13 +275,17 @@ for help (i.e. an empty argument list is equivalent to <code>"--help"</code>).</
 </div>
 <div class="defns">
 <ul>
-<li><code>Ustring Options::</code><strong><code>help_text</code></strong><code>()</code></li>
+<li><code>Ustring Options::</code><strong><code>help_text</code></strong><code>(uint32_t flags = 0)</code></li>
 <li><code>Ustring Options::</code><strong><code>version_text</code></strong><code>() const</code></li>
 </ul>
 <p>These are the same texts that will be presented to the user by the <code>"--help"</code>
 and <code>"--version"</code> options. The help text is constructed automatically by the
 <code>Options</code> object; the version text is simply the original <code>info</code> string that
 was supplied to the <code>Options</code> constructor.</p>
+<p>The only flag that has any effect on <code>help_text()</code> is <code>Options::colour</code>, which
+causes the text to be colourized using terminal control sequences. By default
+the text is not colourized (note that this is different to the behaviour of
+<code>parse()</code> with respect to the colour flags).</p>
 </div>
 <div class="defns">
 <ul>
@@ -322,6 +326,14 @@ the return value from <code>parse()</code> and end the program if it is true.</p
 </thead>
 <tbody>
 <tr>
+<td><code>Options::</code><strong><code>colour</code></strong></td>
+<td>Always colourize the help text</td>
+</tr>
+<tr>
+<td><code>Options::</code><strong><code>nocolour</code></strong></td>
+<td>Do not colourize the help text</td>
+</tr>
+<tr>
 <td><code>Options::</code><strong><code>locale</code></strong></td>
 <td>The argument list is in the local encoding</td>
 </tr>
@@ -335,6 +347,11 @@ the return value from <code>parse()</code> and end the program if it is true.</p
 </tr>
 </tbody>
 </table>
+<p>If the output stream is standard output, and no redirection is detected (using
+<code>isatty()</code>), any help text generated will be colourized using terminal control
+sequences. The <code>colour</code> and <code>nocolour</code> flags override this rule, forcing the
+help text to always or never be colourized (if both are present, the effect is
+the same as if neither was present).</p>
 <p>The <code>locale</code> flag is only relevant to 8 bit strings, which are assumed to be
 UTF-8 by default; the flag is ignored if the <code>C</code> type is not <code>char</code>, since 16
 or 32 bit strings are always assumed to be UTF-16/32.</p>
@@ -343,11 +360,11 @@ true:</p>
 <ul>
 <li>A full or abbreviated option is supplied that is not in the spec.</li>
 <li>The same option appears more than once, but does not have the <code>multi</code> flag.</li>
-<li>More than one option from the same mutual exclusion group is supplied.</li>
-<li>The argument supplied for an option does not match the pattern given in the spec.</li>
-<li>An boolean option is implied by another option but is also explicitly negated.</li>
-<li>An option that has a prerequisite is present, but its prerequisite is missing.</li>
 <li>A required option is missing.</li>
+<li>More than one option from the same mutual exclusion group is supplied.</li>
+<li>A boolean option is implied by another option but is also explicitly negated.</li>
+<li>An option that has a prerequisite is present, but its prerequisite is missing.</li>
+<li>The argument supplied for an option does not match the pattern or data type given in the spec.</li>
 <li>There are unattached arguments left over after all options have been satisfied.</li>
 </ul>
 <p>Behaviour is undefined if <code>parse()</code> is called more than once on the same

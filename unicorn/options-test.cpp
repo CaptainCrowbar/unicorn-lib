@@ -53,6 +53,13 @@ void test_unicorn_options_basic() {
         );
     }
 
+    {
+        // TEST
+        TRY(opt2 = opt1);
+        cmdline = "app --help";
+        TEST(opt2.parse(cmdline, std::cout));
+    }
+
     TRY(opt2 = opt1);
     cmdline = "app";
     TEST(! opt2.parse(cmdline, nowhere));

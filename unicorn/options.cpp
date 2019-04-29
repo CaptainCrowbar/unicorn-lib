@@ -3,6 +3,13 @@
 #include "unicorn/mbcs.hpp"
 #include <iterator>
 
+#ifdef _XOPEN_SOURCE
+    #include <unistd.h>
+#else
+    #include <io.h>
+    #define isatty _isatty
+#endif
+
 using namespace RS::Unicorn::Literals;
 using namespace std::literals;
 
@@ -10,17 +17,22 @@ namespace RS::Unicorn {
 
     namespace {
 
-        const Ustring integer_pattern = "0[Xx][[:xdigit:]]+|[+-]?\\d+";
-        const Ustring unsigned_pattern = "0[Xx][[:xdigit:]]+|\\d+";
-        const Ustring float_pattern = "[+-]?(\\d+(\\.\\d*)?|\\.\\d+)([Ee][+-]?\\d+)?";
-        const Ustring integer_si_unit = "( ?[KkMGTPEZY]\\w*)?";
-        const Ustring float_si_unit = "( ?[KkMGTPEZYmunpfazy]\\w*)?";
+        const Ustring integer_pattern   = "0[Xx][[:xdigit:]]+|[+-]?\\d+";
+        const Ustring unsigned_pattern  = "0[Xx][[:xdigit:]]+|\\d+";
+        const Ustring float_pattern     = "[+-]?(\\d+(\\.\\d*)?|\\.\\d+)([Ee][+-]?\\d+)?";
+        const Ustring integer_si_unit   = "( ?[KkMGTPEZY]\\w*)?";
+        const Ustring float_si_unit     = "( ?[KkMGTPEZYmunpfazy]\\w*)?";
+
         const Regex match_integer(integer_pattern, Regex::full | Regex::optimize);
         const Regex match_integer_si(integer_pattern + integer_si_unit, Regex::full | Regex::optimize);
         const Regex match_unsigned(unsigned_pattern, Regex::full | Regex::optimize);
         const Regex match_unsigned_si(unsigned_pattern + integer_si_unit, Regex::full | Regex::optimize);
         const Regex match_float(float_pattern, Regex::full | Regex::optimize);
         const Regex match_float_si(float_pattern + float_si_unit, Regex::full | Regex::optimize);
+
+        const Ustring xt_reset   = "\x1b[0m";
+        const Ustring xt_bold    = "\x1b[1m";
+        const Ustring xt_unbold  = "\x1b[22m";
 
         enum class ArgType { argument, long_option, short_option, multiple_short_options };
 
@@ -34,6 +46,11 @@ namespace RS::Unicorn {
                 return ArgType::long_option;
             else
                 return ArgType::multiple_short_options;
+        }
+
+        Ustring xt_colour(int r, int g, int b) {
+            int n = 36 * r + 6 * g + b + 16;
+            return "\x1b[38;5;" + std::to_string(n) + "m";
         }
 
     }
@@ -73,10 +90,24 @@ namespace RS::Unicorn {
         return *this;
     }
 
-    Ustring Options::help_text() {
+    Ustring Options::help_text(uint32_t flags) {
         static constexpr auto length_flags = Length::graphemes | Length::narrow;
         setup_finalize();
-        Ustring text = "\n" + app_info + "\n";
+        Ustring bold, unbold, reset, head, body, optc, argc, desc;
+        if (flags & colour) {
+            bold = xt_bold;
+            unbold = xt_unbold;
+            reset = xt_reset;
+            head = xt_colour(5,5,1);
+            body = xt_colour(5,5,3);
+            optc = xt_colour(1,5,1);
+            argc = xt_colour(3,5,4);
+            desc = xt_colour(2,4,5);
+        }
+        Ustring text = "\n" + head + bold + app_info + reset + "\n";
+        auto para = text.find("\n\n");
+        if (para != npos)
+            text.insert(para + 2, reset + body);
         Strings prefixes, suffixes;
         std::vector<size_t> lengths;
         for (auto& opt: opts) {
@@ -147,31 +178,36 @@ namespace RS::Unicorn {
             if (is_info || was_info)
                 text += "\n";
             if (is_info) {
-                text += opts[i].info + "\n";
+                text += body + opts[i].info + reset + "\n";
             } else {
                 if (! opt_hdr) {
-                    text += "Options:\n\n";
+                    text += body + "Options:" + reset + "\n\n";
                     opt_hdr = true;
                 }
                 Ustring prefix = str_pad_right(prefixes[i], maxlen, U' ', length_flags);
+                size_t lt = prefix.find('<');
+                if (lt == npos)
+                    prefix += unbold;
+                else
+                    prefix.insert(lt, unbold + argc);
                 auto lines = str_splitv_lines(suffixes[i]);
-                text += "    " + prefix + "  = " + lines[0] + "\n";
+                text += "    " + optc + bold + prefix + desc + "  = " + lines[0] + reset + "\n";
                 for (size_t j = 1; j < lines.size(); ++j)
-                    text += Ustring(maxlen + 8, ' ') + lines[j] + "\n";
+                    text += Ustring(maxlen + 8, ' ') + desc + lines[j] + reset + "\n";
             }
             was_info = is_info;
         }
         if (! opt_hdr) {
             if (was_info)
                 text += "\n";
-            text += "Options:\n\n    None\n";
+            text += body + "Options:\n\n    None" + reset + "\n";
         }
         text += "\n";
         return text;
     }
 
     bool Options::has(const Ustring& name) const {
-        return ! name.empty() && opts[find_user_option(name)].is_found;
+        return ! name.empty() && opts[find_runtime_option(name)].is_found;
     }
 
     void Options::setup_add_option(option_type opt) {
@@ -266,7 +302,7 @@ namespace RS::Unicorn {
         return find_first_index(name) != npos;
     }
 
-    size_t Options::find_user_option(const Ustring& name) const {
+    size_t Options::find_runtime_option(const Ustring& name) const {
         auto key = str_trim(name, "-");
         str_drop_prefix_in(key, "no-");
         auto begin = opts.begin(), end = opts.end(), i = begin;
@@ -292,10 +328,13 @@ namespace RS::Unicorn {
     }
 
     bool Options::parse_main(Strings args, std::ostream& out, uint32_t flags) {
+        uint32_t cflags = flags & (colour | nocolour), hflags = 0;
+        if (cflags == colour || (cflags != nocolour && &out == &std::cout && isatty(1) != 0))
+            hflags = colour;
         setup_finalize();
         parse_initial_cleanup(args, flags);
         if (args.empty() && help_flag == help::automatic) {
-            out << help_text();
+            out << help_text(hflags);
             return true;
         }
         auto anon_args = parse_explicit_anonymous(args);
@@ -303,7 +342,7 @@ namespace RS::Unicorn {
         parse_named_options(args);
         parse_remaining_anonymous(args, anon_args);
         if (get<bool>("help")) {
-            out << help_text();
+            out << help_text(hflags);
             return true;
         } else if (get<bool>("version")) {
             out << app_info << '\n';
@@ -366,7 +405,7 @@ namespace RS::Unicorn {
                 ++i;
                 continue;
             }
-            auto& opt = opts[find_user_option(args[i])];
+            auto& opt = opts[find_runtime_option(args[i])];
             if (opt.is_found && ! opt.is_multi)
                 throw command_error("Duplicate option: --" + args[i]);
             if (! opt.group.empty())
@@ -414,7 +453,7 @@ namespace RS::Unicorn {
         for (auto& opt: opts) {
             if (opt.is_found) {
                 if (! opt.implies.empty()) {
-                    auto& target = opts[find_user_option(opt.implies)];
+                    auto& target = opts[find_runtime_option(opt.implies)];
                     if (target.is_found && ! from_str<bool>(target.values[0]))
                         throw command_error("Inconsistent options: --$1, --no-$2"_fmt(opt.name, opt.implies));
                     target.values.push_back("1");
