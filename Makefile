@@ -93,7 +93,7 @@ endif
 
 ifeq ($(cross_target),cygwin)
 	cc_defines += -D_REENTRANT=1 -D_XOPEN_SOURCE=700
-	cxx_specific_flags += -std=gnu++1z
+	cxx_specific_flags += -std=gnu++2a
 	ld_specific_flags += -Wl,--enable-auto-import
 endif
 
@@ -101,13 +101,13 @@ ifeq ($(cross_target),darwin)
 	LIBTAG := apple
 	CXX := clang++
 	cc_defines += -D_DARWIN_C_SOURCE=1 -D_REENTRANT=1 -D_XOPEN_SOURCE=700
-	cxx_specific_flags += -std=c++1z -stdlib=libc++
+	cxx_specific_flags += -std=c++2a -stdlib=libc++
 	ld_specific_flags += -framework Cocoa
 endif
 
 ifeq ($(cross_target),linux)
 	cc_defines += -D_REENTRANT=1 -D_XOPEN_SOURCE=700
-	cxx_specific_flags += -std=gnu++1z
+	cxx_specific_flags += -std=gnu++2a
 endif
 
 ifneq ($(shell grep -Fo sdl $(dependency_file)),)
