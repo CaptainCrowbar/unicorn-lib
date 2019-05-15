@@ -17,30 +17,30 @@ namespace RS::Unicorn {
 
         // Common reader and writer flags
 
-        static constexpr auto bom        = uint32_t(1) << 3;   // Strip or insert a BOM
-        static constexpr auto crlf       = uint32_t(1) << 4;   // Convert all line breaks to CR+LF
-        static constexpr auto lf         = uint32_t(1) << 5;   // Convert all line breaks to LF
+        static constexpr uint32_t bom        = setbit<3>;   // Strip or insert a BOM
+        static constexpr uint32_t crlf       = setbit<4>;   // Convert all line breaks to CR+LF
+        static constexpr uint32_t lf         = setbit<5>;   // Convert all line breaks to LF
 
         // Reader flags
 
-        static constexpr auto notempty   = uint32_t(1) << 6;   // Skip empty lines
-        static constexpr auto pretend    = uint32_t(1) << 7;   // Treat nonexistent file as empty
-        static constexpr auto standin    = uint32_t(1) << 8;   // Default to stdin
-        static constexpr auto striplf    = uint32_t(1) << 9;   // Strip line breaks
-        static constexpr auto striptws   = uint32_t(1) << 10;  // Strip trailing whitespace
-        static constexpr auto stripws    = uint32_t(1) << 11;  // Strip whitespace
+        static constexpr uint32_t notempty   = setbit<6>;   // Skip empty lines
+        static constexpr uint32_t pretend    = setbit<7>;   // Treat nonexistent file as empty
+        static constexpr uint32_t standin    = setbit<8>;   // Default to stdin
+        static constexpr uint32_t striplf    = setbit<9>;   // Strip line breaks
+        static constexpr uint32_t striptws   = setbit<10>;  // Strip trailing whitespace
+        static constexpr uint32_t stripws    = setbit<11>;  // Strip whitespace
 
         // Writer flags
 
-        static constexpr auto append     = uint32_t(1) << 12;  // Append to file
-        static constexpr auto autoline   = uint32_t(1) << 13;  // Write LF if not already there
-        static constexpr auto linebuf    = uint32_t(1) << 14;  // Line buffered output
-        static constexpr auto mutex      = uint32_t(1) << 15;  // Hold per-file mutex while writing
-        static constexpr auto protect    = uint32_t(1) << 16;  // Fail if the file already exists
-        static constexpr auto standerr   = uint32_t(1) << 17;  // Default to stderr
-        static constexpr auto standout   = uint32_t(1) << 18;  // Default to stdout
-        static constexpr auto unbuf      = uint32_t(1) << 19;  // Unbuffered output
-        static constexpr auto writeline  = uint32_t(1) << 20;  // Write LF after every write
+        static constexpr uint32_t append     = setbit<12>;  // Append to file
+        static constexpr uint32_t autoline   = setbit<13>;  // Write LF if not already there
+        static constexpr uint32_t linebuf    = setbit<14>;  // Line buffered output
+        static constexpr uint32_t mutex      = setbit<15>;  // Hold per-file mutex while writing
+        static constexpr uint32_t protect    = setbit<16>;  // Fail if the file already exists
+        static constexpr uint32_t standerr   = setbit<17>;  // Default to stderr
+        static constexpr uint32_t standout   = setbit<18>;  // Default to stdout
+        static constexpr uint32_t unbuf      = setbit<19>;  // Unbuffered output
+        static constexpr uint32_t writeline  = setbit<20>;  // Write LF after every write
 
     };
 

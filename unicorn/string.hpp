@@ -293,12 +293,12 @@ namespace RS::Unicorn {
     }
 
     struct Strcmp {
-        static constexpr auto equal     = uint32_t(1) << 0;
-        static constexpr auto less      = uint32_t(1) << 1;
-        static constexpr auto triple    = uint32_t(1) << 2;
-        static constexpr auto fallback  = uint32_t(1) << 3;
-        static constexpr auto icase     = uint32_t(1) << 4;
-        static constexpr auto natural   = uint32_t(1) << 5;
+        static constexpr uint32_t equal     = setbit<0>;
+        static constexpr uint32_t less      = setbit<1>;
+        static constexpr uint32_t triple    = setbit<2>;
+        static constexpr uint32_t fallback  = setbit<3>;
+        static constexpr uint32_t icase     = setbit<4>;
+        static constexpr uint32_t natural   = setbit<5>;
     };
 
     template <uint32_t Flags>
@@ -850,12 +850,10 @@ namespace RS::Unicorn {
     // Defined in string-escape.cpp
 
     struct Escape {
-
-        static constexpr uint32_t ascii   = 1ul << 0;  // Escape all non-ASCII characters
-        static constexpr uint32_t nostdc  = 1ul << 1;  // Do not use standard C symbols such as `\n`
-        static constexpr uint32_t pcre    = 1ul << 2;  // Use `\x{...}` instead of `\u` and `\U` (implies `nonascii`)
-        static constexpr uint32_t punct   = 1ul << 3;  // Escape ASCII punctuation
-
+        static constexpr uint32_t ascii   = setbit<0>;  // Escape all non-ASCII characters
+        static constexpr uint32_t nostdc  = setbit<1>;  // Do not use standard C symbols such as `\n`
+        static constexpr uint32_t pcre    = setbit<2>;  // Use `\x{...}` instead of `\u` and `\U` (implies `nonascii`)
+        static constexpr uint32_t punct   = setbit<3>;  // Escape ASCII punctuation
     };
 
     Ustring str_encode_uri(const Ustring& str);

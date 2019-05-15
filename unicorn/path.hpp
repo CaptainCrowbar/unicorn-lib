@@ -68,17 +68,17 @@ namespace RS::Unicorn {
             static constexpr bool native_case = true;
         #endif
 
-        static constexpr auto append       = flag_type(1) << 3;   // Append if file exists
-        static constexpr auto bottom_up    = flag_type(1) << 4;   // Bottom up order
-        static constexpr auto legal_name   = flag_type(1) << 5;   // Throw on illegal file name
-        static constexpr auto may_copy     = flag_type(1) << 6;   // Copy if operation not allowed
-        static constexpr auto may_fail     = flag_type(1) << 7;   // Empty string if read fails
-        static constexpr auto no_follow    = flag_type(1) << 8;   // Don't follow symlinks
-        static constexpr auto no_hidden    = flag_type(1) << 9;   // Skip hidden files
-        static constexpr auto overwrite    = flag_type(1) << 10;  // Delete existing file if necessary
-        static constexpr auto recurse      = flag_type(1) << 11;  // Recursive directory operations
-        static constexpr auto std_default  = flag_type(1) << 12;  // Use stdin/out if file is "" or "-"
-        static constexpr auto unicode      = flag_type(1) << 13;  // Skip files with non-Unicode names
+        static constexpr flag_type append       = setbit<3>;   // Append if file exists
+        static constexpr flag_type bottom_up    = setbit<4>;   // Bottom up order
+        static constexpr flag_type legal_name   = setbit<5>;   // Throw on illegal file name
+        static constexpr flag_type may_copy     = setbit<6>;   // Copy if operation not allowed
+        static constexpr flag_type may_fail     = setbit<7>;   // Empty string if read fails
+        static constexpr flag_type no_follow    = setbit<8>;   // Don't follow symlinks
+        static constexpr flag_type no_hidden    = setbit<9>;   // Skip hidden files
+        static constexpr flag_type overwrite    = setbit<10>;  // Delete existing file if necessary
+        static constexpr flag_type recurse      = setbit<11>;  // Recursive directory operations
+        static constexpr flag_type std_default  = setbit<12>;  // Use stdin/out if file is "" or "-"
+        static constexpr flag_type unicode      = setbit<13>;  // Skip files with non-Unicode names
 
         // Comparison objects
 

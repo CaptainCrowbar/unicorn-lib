@@ -25,9 +25,9 @@ namespace RS::Unicorn {
 
     public:
 
-        static constexpr uint64_t left      = 1ull << 52;           // (<) Left align                  all  --    --   --     --    --      --
-        static constexpr uint64_t centre    = 1ull << 53;           // (=) Centre align                all  --    --   --     --    --      --
-        static constexpr uint64_t right     = 1ull << 54;           // (>) Right align                 all  --    --   --     --    --      --
+        static constexpr uint64_t left      = setbit<52>;           // (<) Left align                  all  --    --   --     --    --      --
+        static constexpr uint64_t centre    = setbit<53>;           // (=) Centre align                all  --    --   --     --    --      --
+        static constexpr uint64_t right     = setbit<54>;           // (>) Right align                 all  --    --   --     --    --      --
         static constexpr uint64_t upper     = letter_to_mask('U');  // Convert to upper case           all  --    --   --     --    --      --
         static constexpr uint64_t lower     = letter_to_mask('L');  // Convert to lower case           all  --    --   --     --    --      --
         static constexpr uint64_t title     = letter_to_mask('T');  // Convert to title case           all  --    --   --     --    --      --

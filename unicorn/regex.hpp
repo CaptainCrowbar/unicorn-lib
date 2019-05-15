@@ -30,30 +30,30 @@ namespace RS::Unicorn {
             std::string_view right;
         };
 
-        static constexpr auto ascii              = flag_type(1) << 0;   // [C--] ASCII character properties           ~PCRE2_UCP
-        static constexpr auto byte               = flag_type(1) << 1;   // [C--] Match byte strings instead of UTF-8  ~(PCRE2_UCP|PCRE2_UTF)
-        static constexpr auto crlf               = flag_type(1) << 2;   // [C--] Lines end with CRLF                  PCRE2_NEWLINE_CRLF
-        static constexpr auto dollar_end         = flag_type(1) << 3;   // [C--] $ does not match line breaks at end  PCRE2_DOLLAR_ENDONLY
-        static constexpr auto dot_all            = flag_type(1) << 4;   // [C--] . matches line breaks                PCRE2_DOTALL
-        static constexpr auto extended           = flag_type(1) << 5;   // [C--] Ignore whitespace and # comments     PCRE2_EXTENDED
-        static constexpr auto first_line         = flag_type(1) << 6;   // [C--] Match must start in first line       PCRE2_FIRSTLINE
-        static constexpr auto icase              = flag_type(1) << 7;   // [C--] Case insensitive match               PCRE2_CASELESS
-        static constexpr auto line               = flag_type(1) << 8;   // [C--] Match whole line                     PCRE2_EXTRA_MATCH_LINE
-        static constexpr auto multiline          = flag_type(1) << 9;   // [C--] ^/$ match beginning/end of line      PCRE2_MULTILINE
-        static constexpr auto no_capture         = flag_type(1) << 10;  // [C--] No automatic capture                 PCRE2_NO_AUTO_CAPTURE
-        static constexpr auto optimize           = flag_type(1) << 11;  // [C--] Optimize using JIT compiler          --
-        static constexpr auto word               = flag_type(1) << 12;  // [C--] Match whole word                     PCRE2_EXTRA_MATCH_WORD
-        static constexpr auto compile_sentinel_  = word;                //                                            --
-        static constexpr auto anchor             = flag_type(1) << 13;  // [CMR] Anchor match at start                PCRE2_ANCHORED
-        static constexpr auto full               = flag_type(1) << 14;  // [CMR] Match complete string                PCRE2_ANCHORED|PCRE2_ENDANCHORED
-        static constexpr auto global             = flag_type(1) << 15;  // [--R] Replace all matches                  --
-        static constexpr auto no_utf_check       = flag_type(1) << 16;  // [CMR] Assume valid UTF-8                   PCRE2_NO_UTF_CHECK
-        static constexpr auto not_empty          = flag_type(1) << 17;  // [-MR] Do not match empty string            PCRE2_NOTEMPTY
-        static constexpr auto not_empty_start    = flag_type(1) << 18;  // [-MR] Do not match empty string at start   PCRE2_NOTEMPTY_ATSTART
-        static constexpr auto not_line           = flag_type(1) << 19;  // [-MR] Do not match ^/$ at start/end        PCRE2_NOTBOL|PCRE2_NOTEOL
-        static constexpr auto partial_hard       = flag_type(1) << 20;  // [CMR] Hard partial match (partial>full)    PCRE2_PARTIAL_HARD
-        static constexpr auto partial_soft       = flag_type(1) << 21;  // [CMR] Soft partial match (full>partial)    PCRE2_PARTIAL_SOFT
-        static constexpr auto runtime_sentinel_  = partial_soft;        //                                            --
+        static constexpr flag_type ascii              = setbit<0>;     // [C--] ASCII character properties           ~PCRE2_UCP
+        static constexpr flag_type byte               = setbit<1>;     // [C--] Match byte strings instead of UTF-8  ~(PCRE2_UCP|PCRE2_UTF)
+        static constexpr flag_type crlf               = setbit<2>;     // [C--] Lines end with CRLF                  PCRE2_NEWLINE_CRLF
+        static constexpr flag_type dollar_end         = setbit<3>;     // [C--] $ does not match line breaks at end  PCRE2_DOLLAR_ENDONLY
+        static constexpr flag_type dot_all            = setbit<4>;     // [C--] . matches line breaks                PCRE2_DOTALL
+        static constexpr flag_type extended           = setbit<5>;     // [C--] Ignore whitespace and # comments     PCRE2_EXTENDED
+        static constexpr flag_type first_line         = setbit<6>;     // [C--] Match must start in first line       PCRE2_FIRSTLINE
+        static constexpr flag_type icase              = setbit<7>;     // [C--] Case insensitive match               PCRE2_CASELESS
+        static constexpr flag_type line               = setbit<8>;     // [C--] Match whole line                     PCRE2_EXTRA_MATCH_LINE
+        static constexpr flag_type multiline          = setbit<9>;     // [C--] ^/$ match beginning/end of line      PCRE2_MULTILINE
+        static constexpr flag_type no_capture         = setbit<10>;    // [C--] No automatic capture                 PCRE2_NO_AUTO_CAPTURE
+        static constexpr flag_type optimize           = setbit<11>;    // [C--] Optimize using JIT compiler          --
+        static constexpr flag_type word               = setbit<12>;    // [C--] Match whole word                     PCRE2_EXTRA_MATCH_WORD
+        static constexpr flag_type compile_sentinel_  = word;
+        static constexpr flag_type anchor             = setbit<13>;    // [CMR] Anchor match at start                PCRE2_ANCHORED
+        static constexpr flag_type full               = setbit<14>;    // [CMR] Match complete string                PCRE2_ANCHORED|PCRE2_ENDANCHORED
+        static constexpr flag_type global             = setbit<15>;    // [--R] Replace all matches                  --
+        static constexpr flag_type no_utf_check       = setbit<16>;    // [CMR] Assume valid UTF-8                   PCRE2_NO_UTF_CHECK
+        static constexpr flag_type not_empty          = setbit<17>;    // [-MR] Do not match empty string            PCRE2_NOTEMPTY
+        static constexpr flag_type not_empty_start    = setbit<18>;    // [-MR] Do not match empty string at start   PCRE2_NOTEMPTY_ATSTART
+        static constexpr flag_type not_line           = setbit<19>;    // [-MR] Do not match ^/$ at start/end        PCRE2_NOTBOL|PCRE2_NOTEOL
+        static constexpr flag_type partial_hard       = setbit<20>;    // [CMR] Hard partial match (partial>full)    PCRE2_PARTIAL_HARD
+        static constexpr flag_type partial_soft       = setbit<21>;    // [CMR] Soft partial match (full>partial)    PCRE2_PARTIAL_SOFT
+        static constexpr flag_type runtime_sentinel_  = partial_soft;
 
         Regex() = default;
         explicit Regex(std::string_view pattern, flag_type flags = 0);

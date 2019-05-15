@@ -16,13 +16,13 @@ namespace RS::Unicorn {
 
     struct Segment {
 
-        static constexpr uint32_t unicode    = 1ul << 0;  // [word] Report all UAX29 words (default); [para] Divide into paragraphs using only PS
-        static constexpr uint32_t graphic    = 1ul << 1;  // [word] Report only words with graphic characters
-        static constexpr uint32_t alpha      = 1ul << 2;  // [word] Report only words with alphanumeric characters
-        static constexpr uint32_t keep       = 1ul << 3;  // [line/para] Include line/para terminators in results (default)
-        static constexpr uint32_t strip      = 1ul << 4;  // [line/para] Do not include line/para terminators
-        static constexpr uint32_t multiline  = 1ul << 5;  // [para] Divide into paragraphs using multiple breaks (default)
-        static constexpr uint32_t line       = 1ul << 6;  // [para] Divide into paragraphs using any line break
+        static constexpr uint32_t unicode    = setbit<0>;  // [word] Report all UAX29 words (default); [para] Divide into paragraphs using only PS
+        static constexpr uint32_t graphic    = setbit<1>;  // [word] Report only words with graphic characters
+        static constexpr uint32_t alpha      = setbit<2>;  // [word] Report only words with alphanumeric characters
+        static constexpr uint32_t keep       = setbit<3>;  // [line/para] Include line/para terminators in results (default)
+        static constexpr uint32_t strip      = setbit<4>;  // [line/para] Do not include line/para terminators
+        static constexpr uint32_t multiline  = setbit<5>;  // [para] Divide into paragraphs using multiple breaks (default)
+        static constexpr uint32_t line       = setbit<6>;  // [para] Divide into paragraphs using any line break
 
     };
 

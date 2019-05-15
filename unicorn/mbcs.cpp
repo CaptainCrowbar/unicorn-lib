@@ -61,7 +61,7 @@ namespace RS::Unicorn {
 
         #endif
 
-        static constexpr uint32_t no_recurse = uint32_t(1) << 31;
+        static constexpr uint32_t no_recurse = setbit<31>;
         static constexpr auto wchar_tag = sizeof(wchar_t) == 2 ? utf16_tag : utf32_tag;
 
         Ustring smash_name(const Ustring& name, bool stripz) {
