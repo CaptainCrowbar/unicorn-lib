@@ -73,8 +73,8 @@ namespace RS::Unicorn {
     void FileReader::init(const Path& file, uint32_t flags, const Ustring& enc, const Ustring& eol) {
         static constexpr NC dash[] = {NC('-'), NC(0)};
         static constexpr NC rb[] = {NC('r'), NC('b'), NC(0)};
-        if (ibits(flags & (Utf::replace | Utf::throws)) > 1
-                || ibits(flags & (IO::crlf | IO::lf | IO::striplf | IO::striptws | IO::stripws)) > 1)
+        if (popcount(flags & (Utf::replace | Utf::throws)) > 1
+                || popcount(flags & (IO::crlf | IO::lf | IO::striplf | IO::striptws | IO::stripws)) > 1)
             throw std::invalid_argument("Inconsistent file I/O flags");
         impl = std::make_shared<impl_type>();
         impl->file = file;
@@ -183,12 +183,12 @@ namespace RS::Unicorn {
         static constexpr NC wb[] = {NC('w'), NC('b'), NC(0)};
         static std::mutex stdout_mutex;
         static std::mutex stderr_mutex;
-        if (ibits(flags & (Utf::replace | Utf::throws)) > 1
-                || ibits(flags & (IO::append | IO::protect)) > 1
-                || ibits(flags & (IO::autoline | IO::writeline)) > 1
-                || ibits(flags & (IO::crlf | IO::lf)) > 1
-                || ibits(flags & (IO::linebuf | IO::unbuf)) > 1
-                || ibits(flags & (IO::standerr | IO::standout)) > 1)
+        if (popcount(flags & (Utf::replace | Utf::throws)) > 1
+                || popcount(flags & (IO::append | IO::protect)) > 1
+                || popcount(flags & (IO::autoline | IO::writeline)) > 1
+                || popcount(flags & (IO::crlf | IO::lf)) > 1
+                || popcount(flags & (IO::linebuf | IO::unbuf)) > 1
+                || popcount(flags & (IO::standerr | IO::standout)) > 1)
             throw std::invalid_argument("Inconsistent file I/O flags");
         impl = std::make_shared<impl_type>();
         impl->file = file;

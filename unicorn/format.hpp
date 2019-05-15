@@ -122,7 +122,7 @@ namespace RS::Unicorn {
             static constexpr auto sign_flags = Format::sign | Format::signz;
             if ((flags & float_flags) && ! (flags & int_flags))
                 return format_float(t, flags, prec);
-            if (ibits(flags & int_flags) > 1 || ibits(flags & sign_flags) > 1)
+            if (popcount(flags & int_flags) > 1 || popcount(flags & sign_flags) > 1)
                 throw std::invalid_argument("Inconsistent integer formatting flags");
             char sign = 0;
             if (t > static_cast<T>(0)) {

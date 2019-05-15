@@ -253,8 +253,8 @@ container-like types.</p>
 zero if they are equal, and +1 if the first range is greater.</p>
 </div>
 <h2 id="arithmetic-functions">Arithmetic functions</h2>
-<p>For the bit manipulation functions (<code>ibits()</code>, <code>ifloor2()</code>, <code>iceil2()</code>,
-<code>ilog2p1()</code>, <code>ispow2()</code>, <code>rotl()</code>, and <code>rotr()</code>), behaviour is undefined if
+<p>For the bit manipulation functions (<code>ifloor2()</code>, <code>iceil2()</code>, <code>ilog2p1()</code>,
+<code>ispow2()</code>, <code>popcount()</code> <code>rotl()</code>, and <code>rotr()</code>), behaviour is undefined if
 <code>T</code> is not an integer, or if <code>T</code> is signed and the argument is negative.</p>
 <div class="defns">
 <ul>
@@ -265,12 +265,6 @@ zero if they are equal, and +1 if the first range is greater.</p>
 same size (the argument is returned unchanged if <code>T</code> already had the desired
 signedness). Behaviour is undefined if <code>T</code> is not an integer or enumeration
 type.</p>
-</div>
-<div class="defns">
-<ul>
-<li><code>template &lt;typename T&gt; constexpr int</code> <strong><code>ibits</code></strong><code>(T t) noexcept</code></li>
-</ul>
-<p>Returns the number of 1 bits in the argument.</p>
 </div>
 <div class="defns">
 <ul>
@@ -300,6 +294,12 @@ or zero if <code>t</code> is zero.</p>
 </ul>
 <p>Converts a letter to a mask with bit 0-51 set (corresponding to <code>[A-Za-z]</code>).
 Returns zero if the argument is not an ASCII letter.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>template &lt;typename T&gt; constexpr int</code> <strong><code>popcount</code></strong><code>(T t) noexcept</code></li>
+</ul>
+<p>Returns the number of 1 bits in the argument.</p>
 </div>
 <div class="defns">
 <ul>

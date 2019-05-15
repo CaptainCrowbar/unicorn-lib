@@ -570,7 +570,7 @@ namespace RS {
     #ifdef __GNUC__
 
         template <typename T>
-        constexpr int ibits(T t) noexcept {
+        constexpr int popcount(T t) noexcept {
             return __builtin_popcountll(uint64_t(t));
         }
 
@@ -582,7 +582,7 @@ namespace RS {
     #else
 
         template <typename T>
-        constexpr int ibits(T t) noexcept {
+        constexpr int popcount(T t) noexcept {
             static constexpr int8_t bits16[16] = {0,1,1,2,1,2,2,3,1,2,2,3,2,3,3,4};
             int n = 0;
             for (; t; t >>= 4) { n += bits16[t & 0xf]; }
@@ -611,7 +611,7 @@ namespace RS {
 
     template <typename T>
     constexpr bool ispow2(T t) noexcept {
-        return ibits(t) == 1;
+        return popcount(t) == 1;
     }
 
     constexpr uint64_t letter_to_mask(char c) noexcept {
@@ -705,7 +705,7 @@ namespace RS {
     inline Ustring format_date(std::chrono::system_clock::time_point tp, Uview format, uint32_t flags = utc_zone) {
         using namespace std::chrono;
         uint32_t zone = flags & (utc_zone | local_zone);
-        if (ibits(zone) > 1 || flags - zone)
+        if (popcount(zone) > 1 || flags - zone)
             throw std::invalid_argument("Invalid date flags: 0x" + hex(flags, 1));
         if (format.empty())
             return {};
@@ -726,7 +726,7 @@ namespace RS {
     inline Ustring format_date(std::chrono::system_clock::time_point tp, int prec = 0, uint32_t flags = utc_zone) {
         using namespace std::literals;
         uint32_t zone = flags & (utc_zone | local_zone);
-        if (ibits(zone) > 1 || flags - zone)
+        if (popcount(zone) > 1 || flags - zone)
             throw std::invalid_argument("Invalid date flags: 0x" + hex(flags, 1));
         Ustring result = format_date(tp, "%Y-%m-%d %H:%M:%S"s, zone);
         if (prec > 0) {
@@ -777,7 +777,7 @@ namespace RS {
     inline std::chrono::system_clock::time_point make_date(int year, int month, int day, int hour = 0, int min = 0, double sec = 0, uint32_t flags = utc_zone) {
         using namespace std::chrono;
         uint32_t zone = flags & (utc_zone | local_zone);
-        if (ibits(zone) > 1 || flags - zone)
+        if (popcount(zone) > 1 || flags - zone)
             throw std::invalid_argument("Invalid date flags: 0x" + hex(flags, 1));
         double isec = 0, fsec = modf(sec, &isec);
         if (fsec < 0) {

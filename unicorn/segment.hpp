@@ -120,7 +120,7 @@ namespace RS::Unicorn {
 
     template <typename C> Irange<WordIterator<C>>
     word_range(const UtfIterator<C>& i, const UtfIterator<C>& j, uint32_t flags = 0) {
-        if (ibits(flags & (Segment::unicode | Segment::graphic | Segment::alpha)) > 1)
+        if (popcount(flags & (Segment::unicode | Segment::graphic | Segment::alpha)) > 1)
             throw std::invalid_argument("Inconsistent word breaking flags");
         return {{i, j, flags}, {j, j, flags}};
     }
@@ -271,7 +271,7 @@ namespace RS::Unicorn {
     template <typename C>
     Irange<BlockSegmentIterator<C>> line_range(const UtfIterator<C>& i, const UtfIterator<C>& j, uint32_t flags = 0) {
         using namespace UnicornDetail;
-        if (ibits(flags & (Segment::keep | Segment::strip)) > 1)
+        if (popcount(flags & (Segment::keep | Segment::strip)) > 1)
             throw std::invalid_argument("Inconsistent line breaking flags");
         return {{i, j, flags, find_end_of_line}, {j, j, flags, find_end_of_line}};
     }
@@ -293,8 +293,8 @@ namespace RS::Unicorn {
     template <typename C>
     Irange<BlockSegmentIterator<C>> paragraph_range(const UtfIterator<C>& i, const UtfIterator<C>& j, uint32_t flags = 0) {
         using namespace UnicornDetail;
-        if (ibits(flags & (Segment::keep | Segment::strip)) > 1
-                || ibits(flags & (Segment::multiline | Segment::line | Segment::unicode)) > 1)
+        if (popcount(flags & (Segment::keep | Segment::strip)) > 1
+                || popcount(flags & (Segment::multiline | Segment::line | Segment::unicode)) > 1)
             throw std::invalid_argument("Inconsistent paragraph breaking flags");
         FindBlockFunction<C> f;
         if (flags & Segment::unicode)

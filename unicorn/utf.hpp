@@ -218,9 +218,9 @@ namespace RS::Unicorn {
         using code_unit = C;
         using string_type = std::basic_string<C>;
         UtfIterator() noexcept { static const string_type dummy; sptr = &dummy; }
-        explicit UtfIterator(const string_type& src): sptr(&src) { if (ibits(fset & Utf::mask) == 0) fset |= Utf::ignore; ++*this; }
+        explicit UtfIterator(const string_type& src): sptr(&src) { if (popcount(fset & Utf::mask) == 0) fset |= Utf::ignore; ++*this; }
         UtfIterator(const string_type& src, size_t offset, uint32_t flags = 0):
-            sptr(&src), ofs(std::min(offset, src.size())), fset(flags) { if (ibits(fset & Utf::mask) == 0) fset |= Utf::ignore; ++*this; }
+            sptr(&src), ofs(std::min(offset, src.size())), fset(flags) { if (popcount(fset & Utf::mask) == 0) fset |= Utf::ignore; ++*this; }
         const char32_t& operator*() const noexcept { return u; }
         UtfIterator& operator++();
         UtfIterator& operator--();
@@ -352,8 +352,8 @@ namespace RS::Unicorn {
         using code_unit = C;
         using string_type = std::basic_string<C>;
         UtfWriter() noexcept {}
-        explicit UtfWriter(string_type& dst) noexcept: sptr(&dst) { if (ibits(fset & Utf::mask) == 0) fset |= Utf::ignore; }
-        UtfWriter(string_type& dst, uint32_t flags) noexcept: sptr(&dst), fset(flags) { if (ibits(fset & Utf::mask) == 0) fset |= Utf::ignore; }
+        explicit UtfWriter(string_type& dst) noexcept: sptr(&dst) { if (popcount(fset & Utf::mask) == 0) fset |= Utf::ignore; }
+        UtfWriter(string_type& dst, uint32_t flags) noexcept: sptr(&dst), fset(flags) { if (popcount(fset & Utf::mask) == 0) fset |= Utf::ignore; }
         UtfWriter& operator=(char32_t u);
         bool valid() const noexcept { return ok; }
     private:
@@ -407,7 +407,7 @@ namespace RS::Unicorn {
             void operator()(const C1* src, size_t n, std::basic_string<C2>& dst, uint32_t flags) const {
                 if (! src)
                     return;
-                if (ibits(flags & Utf::mask) == 0)
+                if (popcount(flags & Utf::mask) == 0)
                     flags |= Utf::ignore;
                 if constexpr (sizeof(C1) == sizeof(C2)) {
                     if (flags & Utf::ignore) {
@@ -438,7 +438,7 @@ namespace RS::Unicorn {
             void operator()(const C1* src, size_t n, std::u32string& dst, uint32_t flags) const {
                 if (! src)
                     return;
-                if (ibits(flags & Utf::mask) == 0)
+                if (popcount(flags & Utf::mask) == 0)
                     flags |= Utf::ignore;
                 if constexpr (sizeof(C1) == 4) {
                     if (flags & Utf::ignore) {
@@ -474,7 +474,7 @@ namespace RS::Unicorn {
             void operator()(const char32_t* src, size_t n, std::basic_string<C2>& dst, uint32_t flags) const {
                 if (! src)
                     return;
-                if (ibits(flags & Utf::mask) == 0)
+                if (popcount(flags & Utf::mask) == 0)
                     flags |= Utf::ignore;
                 if constexpr (sizeof(C2) == 4) {
                     if (flags & Utf::ignore) {
@@ -505,7 +505,7 @@ namespace RS::Unicorn {
             void operator()(const C* src, size_t n, std::basic_string<C>& dst, uint32_t flags) const {
                 if (! src)
                     return;
-                if (ibits(flags & Utf::mask) == 0)
+                if (popcount(flags & Utf::mask) == 0)
                     flags |= Utf::ignore;
                 size_t pos = 0;
                 char32_t u = 0;
@@ -534,7 +534,7 @@ namespace RS::Unicorn {
             void operator()(const char32_t* src, size_t n, std::u32string& dst, uint32_t flags) const {
                 if (! src)
                     return;
-                if (ibits(flags & Utf::mask) == 0)
+                if (popcount(flags & Utf::mask) == 0)
                     flags |= Utf::ignore;
                 if (flags & Utf::ignore) {
                     dst.append(src, n);

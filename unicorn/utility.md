@@ -193,8 +193,8 @@ zero if they are equal, and +1 if the first range is greater.
 
 ## Arithmetic functions ##
 
-For the bit manipulation functions (`ibits()`, `ifloor2()`, `iceil2()`,
-`ilog2p1()`, `ispow2()`, `rotl()`, and `rotr()`), behaviour is undefined if
+For the bit manipulation functions (`ifloor2()`, `iceil2()`, `ilog2p1()`,
+`ispow2()`, `popcount()` `rotl()`, and `rotr()`), behaviour is undefined if
 `T` is not an integer, or if `T` is signed and the argument is negative.
 
 * `template <typename T> constexpr std::make_signed_t<T>` **`as_signed`**`(T t) noexcept`
@@ -204,10 +204,6 @@ These return their argument converted to a signed or unsigned value of the
 same size (the argument is returned unchanged if `T` already had the desired
 signedness). Behaviour is undefined if `T` is not an integer or enumeration
 type.
-
-* `template <typename T> constexpr int` **`ibits`**`(T t) noexcept`
-
-Returns the number of 1 bits in the argument.
 
 * `template <typename T> constexpr T` **`ifloor2`**`(T t) noexcept`
 * `template <typename T> constexpr T` **`iceil2`**`(T t) noexcept`
@@ -229,6 +225,10 @@ True if the argument is an exact power of 2.
 
 Converts a letter to a mask with bit 0-51 set (corresponding to `[A-Za-z]`).
 Returns zero if the argument is not an ASCII letter.
+
+* `template <typename T> constexpr int` **`popcount`**`(T t) noexcept`
+
+Returns the number of 1 bits in the argument.
 
 * `template <typename T> constexpr T` **`rotl`**`(T t, int n) noexcept`
 * `template <typename T> constexpr T` **`rotr`**`(T t, int n) noexcept`

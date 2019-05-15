@@ -196,7 +196,7 @@ namespace RS::Unicorn {
             using std::fabs;
             static constexpr auto format_flags = Format::digits | Format::exp | Format::fixed | Format::general;
             static constexpr auto sign_flags = Format::sign | Format::signz;
-            if (ibits(flags & format_flags) > 1 || ibits(flags & sign_flags) > 1)
+            if (popcount(flags & format_flags) > 1 || popcount(flags & sign_flags) > 1)
                 throw std::invalid_argument("Inconsistent formatting flags");
             if (prec < 0)
                 prec = 6;
@@ -220,9 +220,9 @@ namespace RS::Unicorn {
         // Alignment and padding
 
         Ustring format_align(Ustring src, uint64_t flags, size_t width, char32_t pad) {
-            if (ibits(flags & (Format::left | Format::centre | Format::right)) > 1)
+            if (popcount(flags & (Format::left | Format::centre | Format::right)) > 1)
                 throw std::invalid_argument("Inconsistent formatting alignment flags");
-            if (ibits(flags & (Format::lower | Format::title | Format::upper)) > 1)
+            if (popcount(flags & (Format::lower | Format::title | Format::upper)) > 1)
                 throw std::invalid_argument("Inconsistent formatting case conversion flags");
             if (flags & Format::lower)
                 str_lowercase_in(src);
@@ -253,7 +253,7 @@ namespace RS::Unicorn {
 
     Ustring format_type(bool t, uint64_t flags, int /*prec*/) {
         static constexpr auto format_flags = Format::binary | Format::tf | Format::yesno;
-        if (ibits(flags & format_flags) > 1)
+        if (popcount(flags & format_flags) > 1)
             throw std::invalid_argument("Inconsistent formatting flags");
         if (flags & Format::binary)
             return t ? "1" : "0";
@@ -266,7 +266,7 @@ namespace RS::Unicorn {
     Ustring format_type(const Ustring& t, uint64_t flags, int prec) {
         using namespace UnicornDetail;
         static constexpr auto format_flags = Format::ascii | Format::ascquote | Format::escape | Format::decimal | Format::hex | Format::hex8 | Format::hex16 | Format::quote;
-        if (ibits(flags & format_flags) > 1)
+        if (popcount(flags & format_flags) > 1)
             throw std::invalid_argument("Inconsistent formatting flags");
         if (flags & Format::quote)
             return string_escape(t, Format::quote);
@@ -290,7 +290,7 @@ namespace RS::Unicorn {
 
     Ustring format_type(system_clock::time_point t, uint64_t flags, int prec) {
         static constexpr auto format_flags = Format::iso | Format::common;
-        if (ibits(flags & format_flags) > 1)
+        if (popcount(flags & format_flags) > 1)
             throw std::invalid_argument("Inconsistent formatting flags");
         auto zone = flags & Format::local ? local_zone : utc_zone;
         if (flags & Format::common)

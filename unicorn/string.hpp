@@ -106,10 +106,10 @@ namespace RS::Unicorn {
         }
 
         inline void check_length_flags(uint32_t& flags) {
-            if (ibits(flags & (Length::characters | Length::graphemes)) > 1
-                    || ibits(flags & (Length::characters | east_asian_flags)) > 1)
+            if (popcount(flags & (Length::characters | Length::graphemes)) > 1
+                    || popcount(flags & (Length::characters | east_asian_flags)) > 1)
                 throw std::invalid_argument("Inconsistent string length flags");
-            if (ibits(flags & all_length_flags) == 0)
+            if (popcount(flags & all_length_flags) == 0)
                 flags |= Length::graphemes;
         }
 
