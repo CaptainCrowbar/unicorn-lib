@@ -188,6 +188,19 @@ void test_unicorn_utility_constants() {
     TEST_EQUAL(bool(u8_2[0]), little_endian_target);
     TEST_EQUAL(bool(u8_2[1]), big_endian_target);
 
+    static constexpr auto b0 = setbit<0>;    TEST_TYPE_OF(b0, uint8_t);    TEST_EQUAL(b0, 1);
+    static constexpr auto b1 = setbit<1>;    TEST_TYPE_OF(b1, uint8_t);    TEST_EQUAL(b1, 2);
+    static constexpr auto b7 = setbit<7>;    TEST_TYPE_OF(b7, uint8_t);    TEST_EQUAL(b7, 0x80);
+    static constexpr auto b8 = setbit<8>;    TEST_TYPE_OF(b8, uint16_t);   TEST_EQUAL(b8, 0x100);
+    static constexpr auto b9 = setbit<9>;    TEST_TYPE_OF(b9, uint16_t);   TEST_EQUAL(b9, 0x200);
+    static constexpr auto b15 = setbit<15>;  TEST_TYPE_OF(b15, uint16_t);  TEST_EQUAL(b15, 0x8000);
+    static constexpr auto b16 = setbit<16>;  TEST_TYPE_OF(b16, uint32_t);  TEST_EQUAL(b16, 0x1'0000ul);
+    static constexpr auto b17 = setbit<17>;  TEST_TYPE_OF(b17, uint32_t);  TEST_EQUAL(b17, 0x2'0000ul);
+    static constexpr auto b31 = setbit<31>;  TEST_TYPE_OF(b31, uint32_t);  TEST_EQUAL(b31, 0x8000'0000ul);
+    static constexpr auto b32 = setbit<32>;  TEST_TYPE_OF(b32, uint64_t);  TEST_EQUAL(b32, 0x1'0000'0000ull);
+    static constexpr auto b33 = setbit<33>;  TEST_TYPE_OF(b33, uint64_t);  TEST_EQUAL(b33, 0x2'0000'0000ull);
+    static constexpr auto b63 = setbit<63>;  TEST_TYPE_OF(b63, uint64_t);  TEST_EQUAL(b63, 0x8000'0000'0000'0000ull);
+
 }
 
 void test_unicorn_utility_algorithms() {

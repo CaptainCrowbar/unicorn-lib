@@ -250,6 +250,18 @@ namespace RS {
 
     template <typename T> constexpr bool dependent_false = false;
 
+    namespace RS_Detail {
+
+        template <int N> using SetBitType =
+            std::conditional_t<(N < 8), uint8_t,
+            std::conditional_t<(N < 16), uint16_t,
+            std::conditional_t<(N < 32), uint32_t,
+            std::conditional_t<(N < 64), uint64_t, void>>>>;
+
+    }
+
+    template <int N> constexpr RS_Detail::SetBitType<N> setbit = RS_Detail::SetBitType<N>(1) << N;
+
     // Forward declarations
 
     template <typename T> bool from_str(std::string_view view, T& t) noexcept;

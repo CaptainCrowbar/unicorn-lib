@@ -159,6 +159,12 @@ Defined for convenience. Following the conventions established by the standard
 library, this value is often used as a function argument to mean "as large as
 possible" or "no limit", or as a return value to mean "not found".
 
+* `template <int N> constexpr [unsigned integer]` **`setbit`** `= 1 << N`
+
+An integer constant with bit `N` set. The return type is the smallest unsigned
+integer (not counting `bool`) that will hold the value. Behaviour is undefined
+if `N<0` or `N>63`.
+
 ## Algorithms ##
 
 * `template <typename Container> [output iterator]` **`append`**`(Container& con)`

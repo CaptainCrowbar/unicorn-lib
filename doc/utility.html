@@ -213,6 +213,14 @@ byte order.</p>
 library, this value is often used as a function argument to mean "as large as
 possible" or "no limit", or as a return value to mean "not found".</p>
 </div>
+<div class="defns">
+<ul>
+<li><code>template &lt;int N&gt; constexpr [unsigned integer]</code> <strong><code>setbit</code></strong> <code>= 1 &lt;&lt; N</code></li>
+</ul>
+<p>An integer constant with bit <code>N</code> set. The return type is the smallest unsigned
+integer (not counting <code>bool</code>) that will hold the value. Behaviour is undefined
+if <code>N&lt;0</code> or <code>N&gt;63</code>.</p>
+</div>
 <h2 id="algorithms">Algorithms</h2>
 <div class="defns">
 <ul>
