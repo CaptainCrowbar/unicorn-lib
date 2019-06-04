@@ -69,26 +69,26 @@ void test_unicorn_path_unicode_names() {
 
     Path file;
 
-    TRY(file = u8"αβγδε.txt");  TEST_EQUAL(file.name(), u8"αβγδε.txt");
-    TRY(file = u"αβγδε.txt");   TEST_EQUAL(file.name(), u8"αβγδε.txt");
-    TRY(file = U"αβγδε.txt");   TEST_EQUAL(file.name(), u8"αβγδε.txt");
-    TRY(file = L"αβγδε.txt");   TEST_EQUAL(file.name(), u8"αβγδε.txt");
+    TRY(file = "αβγδε.txt");   TEST_EQUAL(file.name(), "αβγδε.txt");
+    TRY(file = u"αβγδε.txt");  TEST_EQUAL(file.name(), "αβγδε.txt");
+    TRY(file = U"αβγδε.txt");  TEST_EQUAL(file.name(), "αβγδε.txt");
+    TRY(file = L"αβγδε.txt");  TEST_EQUAL(file.name(), "αβγδε.txt");
 
     #ifdef _XOPEN_SOURCE
 
         TRY(file = "/foo/bar\x80\xff");
         TEST_EQUAL(file.os_name(), "/foo/bar\x80\xff");
-        TEST_EQUAL(file.name(), u8"/foo/bar\ufffd\ufffd");
+        TEST_EQUAL(file.name(), "/foo/bar\ufffd\ufffd");
         TEST_EQUAL(file.name(Utf::ignore), "/foo/bar\x80\xff");
-        TEST_EQUAL(file.name(Utf::replace), u8"/foo/bar\ufffd\ufffd");
+        TEST_EQUAL(file.name(Utf::replace), "/foo/bar\ufffd\ufffd");
         TEST_THROW(file.name(Utf::throws), EncodingError);
         TEST_EQUAL(file.as_url(Utf::ignore), "file:///foo/bar\x80\xff");
-        TEST_EQUAL(file.as_url(Utf::replace), u8"file:///foo/bar\ufffd\ufffd");
+        TEST_EQUAL(file.as_url(Utf::replace), "file:///foo/bar\ufffd\ufffd");
         TEST_THROW(file.as_url(Utf::throws), EncodingError);
         TRY(file = Path("/foo/bar\x80\xff", Utf::ignore));
         TEST_EQUAL(file.os_name(), "/foo/bar\x80\xff");
         TRY(file = Path("/foo/bar\x80\xff", Utf::replace));
-        TEST_EQUAL(file.os_name(), u8"/foo/bar\ufffd\ufffd");
+        TEST_EQUAL(file.os_name(), "/foo/bar\ufffd\ufffd");
         TEST_THROW(file = Path("/foo/bar\x80\xff", Utf::throws), EncodingError);
 
     #else
@@ -97,10 +97,10 @@ void test_unicorn_path_unicode_names() {
 
         TRY(file = L"C:/foo/bar" + crap);
         TEST_EQUAL(file.os_name(), L"C:\\foo\\bar" + crap);
-        TEST_EQUAL(file.name(), u8"C:\\foo\\bar\ufffd\ufffd");
-        TEST_EQUAL(file.name(Utf::replace), u8"C:\\foo\\bar\ufffd\ufffd");
+        TEST_EQUAL(file.name(), "C:\\foo\\bar\ufffd\ufffd");
+        TEST_EQUAL(file.name(Utf::replace), "C:\\foo\\bar\ufffd\ufffd");
         TEST_THROW(file.name(Utf::throws), EncodingError);
-        TEST_EQUAL(file.as_url(Utf::replace), u8"file:///C:/foo/bar\ufffd\ufffd");
+        TEST_EQUAL(file.as_url(Utf::replace), "file:///C:/foo/bar\ufffd\ufffd");
         TEST_THROW(file.as_url(Utf::throws), EncodingError);
         TRY(file = Path(L"C:/foo/bar" + crap, Utf::ignore));
         TEST_EQUAL(file.os_name(), L"C:\\foo\\bar" + crap);
@@ -118,7 +118,7 @@ void test_unicorn_path_unicode_names() {
         TRY(wfile = file.native_name());
         TEST_EQUAL(wfile, L"hello\\world");
 
-        TRY(file = u8"αβγδε");
+        TRY(file = "αβγδε");
         TRY(wfile = file.native_name());
         TEST_EQUAL(wfile, L"αβγδε");
 

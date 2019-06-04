@@ -114,17 +114,17 @@ void test_unicorn_string_property_first_and_last() {
 
 void test_unicorn_string_property_east_asian() {
 
-    TEST(! str_is_east_asian(u8"ÀÀÀ"s));                  // neutral
-    TEST(! str_is_east_asian(u8"ààà"s));                  // ambiguous
-    TEST(str_is_east_asian(u8"\u3000\u3000\u3000"s));     // fullwidth
-    TEST(str_is_east_asian(u8"\u20a9\u20a9\u20a9"s));     // halfwidth
-    TEST(! str_is_east_asian(u8"AAA"s));                  // narrow
-    TEST(str_is_east_asian(u8"\u3001\u3001\u3001"s));     // wide
-    TEST(! str_is_east_asian(u8"àààÀÀÀ"s));               // ambiguous + neutral
-    TEST(str_is_east_asian(u8"ààà\u3000\u3000\u3000"s));  // ambiguous + fullwidth
-    TEST(str_is_east_asian(u8"ààà\u20a9\u20a9\u20a9"s));  // ambiguous + halfwidth
-    TEST(! str_is_east_asian(u8"àààAAA"s));               // ambiguous + narrow
-    TEST(str_is_east_asian(u8"ààà\u3001\u3001\u3001"s));  // ambiguous + wide
+    TEST(! str_is_east_asian("ÀÀÀ"s));                  // neutral
+    TEST(! str_is_east_asian("ààà"s));                  // ambiguous
+    TEST(str_is_east_asian("\u3000\u3000\u3000"s));     // fullwidth
+    TEST(str_is_east_asian("\u20a9\u20a9\u20a9"s));     // halfwidth
+    TEST(! str_is_east_asian("AAA"s));                  // narrow
+    TEST(str_is_east_asian("\u3001\u3001\u3001"s));     // wide
+    TEST(! str_is_east_asian("àààÀÀÀ"s));               // ambiguous + neutral
+    TEST(str_is_east_asian("ààà\u3000\u3000\u3000"s));  // ambiguous + fullwidth
+    TEST(str_is_east_asian("ààà\u20a9\u20a9\u20a9"s));  // ambiguous + halfwidth
+    TEST(! str_is_east_asian("àààAAA"s));               // ambiguous + narrow
+    TEST(str_is_east_asian("ààà\u3001\u3001\u3001"s));  // ambiguous + wide
 
 }
 

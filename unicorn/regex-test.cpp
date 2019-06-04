@@ -116,26 +116,26 @@ void test_unicorn_regex_match() {
     TEST(! m);
 
     TRY(r = Regex("[[:alpha:]]+"));
-    s = u8"αβγδε";
+    s = "αβγδε";
     TRY(m = r(s));
     TEST(m);
-    TEST_EQUAL(m.str(), u8"αβγδε");
+    TEST_EQUAL(m.str(), "αβγδε");
     TEST_THROW(m = r(s, 1), Regex::error);
     TRY(m = r(s, 2));
     TEST(m);
-    TEST_EQUAL(m.str(), u8"βγδε");
+    TEST_EQUAL(m.str(), "βγδε");
     TEST_THROW(m = r(s, 3), Regex::error);
     TRY(m = r(s, 4));
     TEST(m);
-    TEST_EQUAL(m.str(), u8"γδε");
+    TEST_EQUAL(m.str(), "γδε");
     TEST_THROW(m = r(s, 5), Regex::error);
     TRY(m = r(s, 6));
     TEST(m);
-    TEST_EQUAL(m.str(), u8"δε");
+    TEST_EQUAL(m.str(), "δε");
     TEST_THROW(m = r(s, 7), Regex::error);
     TRY(m = r(s, 8));
     TEST(m);
-    TEST_EQUAL(m.str(), u8"ε");
+    TEST_EQUAL(m.str(), "ε");
     TEST_THROW(m = r(s, 9), Regex::error);
     TRY(m = r(s, 10));
     TEST(! m);
@@ -227,20 +227,20 @@ void test_unicorn_regex_compile_flags() {
 
     // ascii = ASCII character properties
     TRY(r = Regex("[[:alpha:]]+"));
-    s = u8"(αβγδε)";
+    s = "(αβγδε)";
     TRY(m = r(s));
     TEST(m);
-    TEST_EQUAL(m.str(), u8"αβγδε");
+    TEST_EQUAL(m.str(), "αβγδε");
     TRY(r = Regex("[[:alpha:]]+", Regex::ascii));
     TRY(m = r(s));
     TEST(! m);
 
     // byte = Match byte strings instead of UTF-8
     TRY(r = Regex("\\(.....\\)"));
-    s = u8"(αβγδε)";
+    s = "(αβγδε)";
     TRY(m = r(s));
     TEST(m);
-    TEST_EQUAL(m.str(), u8"(αβγδε)");
+    TEST_EQUAL(m.str(), "(αβγδε)");
     TRY(r = Regex("\\(.....\\)", Regex::byte));
     TRY(m = r(s));
     TEST(! m);

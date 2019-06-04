@@ -73,41 +73,41 @@ void test_unicorn_string_manip_split() {
     TRY(v = str_splitv_lines("\r\n\r\n\r\n"s));  TEST_EQUAL(v.size(), 3);  TEST_EQUAL(str_join(v, "/"), "//");
 
     Ustring text =
-        u8"Line one\n"
-        u8"Line two\r"
-        u8"Line three\r\n"
-        u8"Line four\f"
-        u8"Line five\u0085"
-        u8"Line six\u2028"
-        u8"Line seven\u2029";
+        "Line one\n"
+        "Line two\r"
+        "Line three\r\n"
+        "Line four\f"
+        "Line five\u0085"
+        "Line six\u2028"
+        "Line seven\u2029";
     TRY(str_split_lines(text, overwrite(v)));
     TEST_EQUAL(v.size(), 7);
     TEST_EQUAL(str_join(v, "/"),
-        u8"Line one/"
-        u8"Line two/"
-        u8"Line three/"
-        u8"Line four/"
-        u8"Line five/"
-        u8"Line six/"
-        u8"Line seven");
+        "Line one/"
+        "Line two/"
+        "Line three/"
+        "Line four/"
+        "Line five/"
+        "Line six/"
+        "Line seven");
     text =
-        u8"Line one\n\n"
-        u8"Line two\r\r"
-        u8"Line three\r\n\r\n"
-        u8"Line four\f\f"
-        u8"Line five\u0085\u0085"
-        u8"Line six\u2028\u2028"
-        u8"Line seven\u2029\u2029";
+        "Line one\n\n"
+        "Line two\r\r"
+        "Line three\r\n\r\n"
+        "Line four\f\f"
+        "Line five\u0085\u0085"
+        "Line six\u2028\u2028"
+        "Line seven\u2029\u2029";
     TRY(str_split_lines(text, overwrite(v)));
     TEST_EQUAL(v.size(), 14);
     TEST_EQUAL(str_join(v, "/"),
-        u8"Line one//"
-        u8"Line two//"
-        u8"Line three//"
-        u8"Line four//"
-        u8"Line five//"
-        u8"Line six//"
-        u8"Line seven/");
+        "Line one//"
+        "Line two//"
+        "Line three//"
+        "Line four//"
+        "Line five//"
+        "Line six//"
+        "Line seven/");
 
 }
 
@@ -115,53 +115,53 @@ void test_unicorn_string_manip_squeeze() {
 
     Ustring s;
 
-    TEST_EQUAL(str_squeeze(u8""s), u8""s);
-    TEST_EQUAL(str_squeeze(u8"\t\t\t"s), u8" "s);
-    TEST_EQUAL(str_squeeze(u8"Hello world"s), u8"Hello world"s);
-    TEST_EQUAL(str_squeeze(u8"\t\t\tHello\t\t\tworld\t\t\t"s), u8" Hello world "s);
-    TEST_EQUAL(str_squeeze(u8"€uro ∈lement"s), u8"€uro ∈lement"s);
-    TEST_EQUAL(str_squeeze(u8"\u2028\u2028€uro\u2028\u2028∈lement\u2028\u2028"s), u8" €uro ∈lement "s);
-    TEST_EQUAL(str_squeeze(u8""s, u8"+-*/"s), u8""s);
-    TEST_EQUAL(str_squeeze(u8"/*-+"s, u8"+-*/"s), u8"+"s);
-    TEST_EQUAL(str_squeeze(u8"Hello world"s, u8"+-*/"s), u8"Hello world"s);
-    TEST_EQUAL(str_squeeze(u8"/*-+Hello/*-+world/*-+"s, u8"+-*/"s), u8"+Hello+world+"s);
-    TEST_EQUAL(str_squeeze(u8"∇∃∀€uro∇∃∀∈lement∇∃∀"s, u8"∀∃∇"s), u8"∀€uro∀∈lement∀"s);
+    TEST_EQUAL(str_squeeze(""s), ""s);
+    TEST_EQUAL(str_squeeze("\t\t\t"s), " "s);
+    TEST_EQUAL(str_squeeze("Hello world"s), "Hello world"s);
+    TEST_EQUAL(str_squeeze("\t\t\tHello\t\t\tworld\t\t\t"s), " Hello world "s);
+    TEST_EQUAL(str_squeeze("€uro ∈lement"s), "€uro ∈lement"s);
+    TEST_EQUAL(str_squeeze("\u2028\u2028€uro\u2028\u2028∈lement\u2028\u2028"s), " €uro ∈lement "s);
+    TEST_EQUAL(str_squeeze(""s, "+-*/"s), ""s);
+    TEST_EQUAL(str_squeeze("/*-+"s, "+-*/"s), "+"s);
+    TEST_EQUAL(str_squeeze("Hello world"s, "+-*/"s), "Hello world"s);
+    TEST_EQUAL(str_squeeze("/*-+Hello/*-+world/*-+"s, "+-*/"s), "+Hello+world+"s);
+    TEST_EQUAL(str_squeeze("∇∃∀€uro∇∃∀∈lement∇∃∀"s, "∀∃∇"s), "∀€uro∀∈lement∀"s);
 
-    TEST_EQUAL(str_squeeze_trim(u8""s), u8""s);
-    TEST_EQUAL(str_squeeze_trim(u8"\t\t\t"s), u8""s);
-    TEST_EQUAL(str_squeeze_trim(u8"Hello world"s), u8"Hello world"s);
-    TEST_EQUAL(str_squeeze_trim(u8"\t\t\tHello\t\t\tworld\t\t\t"s), u8"Hello world"s);
-    TEST_EQUAL(str_squeeze_trim(u8"€uro ∈lement"s), u8"€uro ∈lement"s);
-    TEST_EQUAL(str_squeeze_trim(u8"\u2028\u2028€uro\u2028\u2028∈lement\u2028\u2028"s), u8"€uro ∈lement"s);
-    TEST_EQUAL(str_squeeze_trim(u8""s, u8"+-*/"s), u8""s);
-    TEST_EQUAL(str_squeeze_trim(u8"/*-+"s, u8"+-*/"s), u8""s);
-    TEST_EQUAL(str_squeeze_trim(u8"Hello world"s, u8"+-*/"s), u8"Hello world"s);
-    TEST_EQUAL(str_squeeze_trim(u8"/*-+Hello/*-+world/*-+"s, u8"+-*/"s), u8"Hello+world"s);
-    TEST_EQUAL(str_squeeze_trim(u8"∇∃∀€uro∇∃∀∈lement∇∃∀"s, u8"∀∃∇"s), u8"€uro∀∈lement"s);
+    TEST_EQUAL(str_squeeze_trim(""s), ""s);
+    TEST_EQUAL(str_squeeze_trim("\t\t\t"s), ""s);
+    TEST_EQUAL(str_squeeze_trim("Hello world"s), "Hello world"s);
+    TEST_EQUAL(str_squeeze_trim("\t\t\tHello\t\t\tworld\t\t\t"s), "Hello world"s);
+    TEST_EQUAL(str_squeeze_trim("€uro ∈lement"s), "€uro ∈lement"s);
+    TEST_EQUAL(str_squeeze_trim("\u2028\u2028€uro\u2028\u2028∈lement\u2028\u2028"s), "€uro ∈lement"s);
+    TEST_EQUAL(str_squeeze_trim(""s, "+-*/"s), ""s);
+    TEST_EQUAL(str_squeeze_trim("/*-+"s, "+-*/"s), ""s);
+    TEST_EQUAL(str_squeeze_trim("Hello world"s, "+-*/"s), "Hello world"s);
+    TEST_EQUAL(str_squeeze_trim("/*-+Hello/*-+world/*-+"s, "+-*/"s), "Hello+world"s);
+    TEST_EQUAL(str_squeeze_trim("∇∃∀€uro∇∃∀∈lement∇∃∀"s, "∀∃∇"s), "€uro∀∈lement"s);
 
-    s = u8""s;                                                 TRY(str_squeeze_in(s));             TEST_EQUAL(s, u8""s);
-    s = u8"\t\t\t"s;                                           TRY(str_squeeze_in(s));             TEST_EQUAL(s, u8" "s);
-    s = u8"Hello world"s;                                      TRY(str_squeeze_in(s));             TEST_EQUAL(s, u8"Hello world"s);
-    s = u8"\t\t\tHello\t\t\tworld\t\t\t"s;                     TRY(str_squeeze_in(s));             TEST_EQUAL(s, u8" Hello world "s);
-    s = u8"€uro ∈lement"s;                                     TRY(str_squeeze_in(s));             TEST_EQUAL(s, u8"€uro ∈lement"s);
-    s = u8"\u2028\u2028€uro\u2028\u2028∈lement\u2028\u2028"s;  TRY(str_squeeze_in(s));             TEST_EQUAL(s, u8" €uro ∈lement "s);
-    s = u8""s;                                                 TRY(str_squeeze_in(s, u8"+-*/"s));  TEST_EQUAL(s, u8""s);
-    s = u8"/*-+"s;                                             TRY(str_squeeze_in(s, u8"+-*/"s));  TEST_EQUAL(s, u8"+"s);
-    s = u8"Hello world"s;                                      TRY(str_squeeze_in(s, u8"+-*/"s));  TEST_EQUAL(s, u8"Hello world"s);
-    s = u8"/*-+Hello/*-+world/*-+"s;                           TRY(str_squeeze_in(s, u8"+-*/"s));  TEST_EQUAL(s, u8"+Hello+world+"s);
-    s = u8"∇∃∀€uro∇∃∀∈lement∇∃∀"s;                             TRY(str_squeeze_in(s, u8"∀∃∇"s));   TEST_EQUAL(s, u8"∀€uro∀∈lement∀"s);
+    s = ""s;                                                 TRY(str_squeeze_in(s));           TEST_EQUAL(s, ""s);
+    s = "\t\t\t"s;                                           TRY(str_squeeze_in(s));           TEST_EQUAL(s, " "s);
+    s = "Hello world"s;                                      TRY(str_squeeze_in(s));           TEST_EQUAL(s, "Hello world"s);
+    s = "\t\t\tHello\t\t\tworld\t\t\t"s;                     TRY(str_squeeze_in(s));           TEST_EQUAL(s, " Hello world "s);
+    s = "€uro ∈lement"s;                                     TRY(str_squeeze_in(s));           TEST_EQUAL(s, "€uro ∈lement"s);
+    s = "\u2028\u2028€uro\u2028\u2028∈lement\u2028\u2028"s;  TRY(str_squeeze_in(s));           TEST_EQUAL(s, " €uro ∈lement "s);
+    s = ""s;                                                 TRY(str_squeeze_in(s, "+-*/"s));  TEST_EQUAL(s, ""s);
+    s = "/*-+"s;                                             TRY(str_squeeze_in(s, "+-*/"s));  TEST_EQUAL(s, "+"s);
+    s = "Hello world"s;                                      TRY(str_squeeze_in(s, "+-*/"s));  TEST_EQUAL(s, "Hello world"s);
+    s = "/*-+Hello/*-+world/*-+"s;                           TRY(str_squeeze_in(s, "+-*/"s));  TEST_EQUAL(s, "+Hello+world+"s);
+    s = "∇∃∀€uro∇∃∀∈lement∇∃∀"s;                             TRY(str_squeeze_in(s, "∀∃∇"s));   TEST_EQUAL(s, "∀€uro∀∈lement∀"s);
 
-    s = u8""s;                                                 TRY(str_squeeze_trim_in(s));             TEST_EQUAL(s, u8""s);
-    s = u8"\t\t\t"s;                                           TRY(str_squeeze_trim_in(s));             TEST_EQUAL(s, u8""s);
-    s = u8"Hello world"s;                                      TRY(str_squeeze_trim_in(s));             TEST_EQUAL(s, u8"Hello world"s);
-    s = u8"\t\t\tHello\t\t\tworld\t\t\t"s;                     TRY(str_squeeze_trim_in(s));             TEST_EQUAL(s, u8"Hello world"s);
-    s = u8"€uro ∈lement"s;                                     TRY(str_squeeze_trim_in(s));             TEST_EQUAL(s, u8"€uro ∈lement"s);
-    s = u8"\u2028\u2028€uro\u2028\u2028∈lement\u2028\u2028"s;  TRY(str_squeeze_trim_in(s));             TEST_EQUAL(s, u8"€uro ∈lement"s);
-    s = u8""s;                                                 TRY(str_squeeze_trim_in(s, u8"+-*/"s));  TEST_EQUAL(s, u8""s);
-    s = u8"/*-+"s;                                             TRY(str_squeeze_trim_in(s, u8"+-*/"s));  TEST_EQUAL(s, u8""s);
-    s = u8"Hello world"s;                                      TRY(str_squeeze_trim_in(s, u8"+-*/"s));  TEST_EQUAL(s, u8"Hello world"s);
-    s = u8"/*-+Hello/*-+world/*-+"s;                           TRY(str_squeeze_trim_in(s, u8"+-*/"s));  TEST_EQUAL(s, u8"Hello+world"s);
-    s = u8"∇∃∀€uro∇∃∀∈lement∇∃∀"s;                             TRY(str_squeeze_trim_in(s, u8"∀∃∇"s));   TEST_EQUAL(s, u8"€uro∀∈lement"s);
+    s = ""s;                                                 TRY(str_squeeze_trim_in(s));           TEST_EQUAL(s, ""s);
+    s = "\t\t\t"s;                                           TRY(str_squeeze_trim_in(s));           TEST_EQUAL(s, ""s);
+    s = "Hello world"s;                                      TRY(str_squeeze_trim_in(s));           TEST_EQUAL(s, "Hello world"s);
+    s = "\t\t\tHello\t\t\tworld\t\t\t"s;                     TRY(str_squeeze_trim_in(s));           TEST_EQUAL(s, "Hello world"s);
+    s = "€uro ∈lement"s;                                     TRY(str_squeeze_trim_in(s));           TEST_EQUAL(s, "€uro ∈lement"s);
+    s = "\u2028\u2028€uro\u2028\u2028∈lement\u2028\u2028"s;  TRY(str_squeeze_trim_in(s));           TEST_EQUAL(s, "€uro ∈lement"s);
+    s = ""s;                                                 TRY(str_squeeze_trim_in(s, "+-*/"s));  TEST_EQUAL(s, ""s);
+    s = "/*-+"s;                                             TRY(str_squeeze_trim_in(s, "+-*/"s));  TEST_EQUAL(s, ""s);
+    s = "Hello world"s;                                      TRY(str_squeeze_trim_in(s, "+-*/"s));  TEST_EQUAL(s, "Hello world"s);
+    s = "/*-+Hello/*-+world/*-+"s;                           TRY(str_squeeze_trim_in(s, "+-*/"s));  TEST_EQUAL(s, "Hello+world"s);
+    s = "∇∃∀€uro∇∃∀∈lement∇∃∀"s;                             TRY(str_squeeze_trim_in(s, "∀∃∇"s));   TEST_EQUAL(s, "€uro∀∈lement"s);
 
 }
 
@@ -240,22 +240,22 @@ void test_unicorn_string_manip_substring() {
     TEST_EQUAL(utf_substring(example, 5, 0), "");
     TEST_EQUAL(utf_substring(example, 5, 1), "");
 
-    TEST_EQUAL(utf_substring(u8"áéíóú"s, 1, 0, Length::graphemes), u8"");
-    TEST_EQUAL(utf_substring(u8"áéíóú"s, 1, 1, Length::graphemes), u8"é");
-    TEST_EQUAL(utf_substring(u8"áéíóú"s, 1, 2, Length::graphemes), u8"éí");
-    TEST_EQUAL(utf_substring(u8"áéíóú"s, 1, 3, Length::graphemes), u8"éíó");
-    TEST_EQUAL(utf_substring(u8"áéíóú"s, 1, 4, Length::graphemes), u8"éíóú");
-    TEST_EQUAL(utf_substring(u8"áéíóú"s, 1, 5, Length::graphemes), u8"éíóú");
-    TEST_EQUAL(utf_substring(u8"áéíóú"s, 1, npos, Length::graphemes), u8"éíóú");
-    TEST_EQUAL(utf_substring(u8"áéíóú"s, 5, npos, Length::graphemes), u8"");
-    TEST_EQUAL(utf_substring(u8"a\u0301e\u0301i\u0301o\u0301u\u0301"s, 1, 0, Length::graphemes), u8"");
-    TEST_EQUAL(utf_substring(u8"a\u0301e\u0301i\u0301o\u0301u\u0301"s, 1, 1, Length::graphemes), u8"e\u0301");
-    TEST_EQUAL(utf_substring(u8"a\u0301e\u0301i\u0301o\u0301u\u0301"s, 1, 2, Length::graphemes), u8"e\u0301i\u0301");
-    TEST_EQUAL(utf_substring(u8"a\u0301e\u0301i\u0301o\u0301u\u0301"s, 1, 3, Length::graphemes), u8"e\u0301i\u0301o\u0301");
-    TEST_EQUAL(utf_substring(u8"a\u0301e\u0301i\u0301o\u0301u\u0301"s, 1, 4, Length::graphemes), u8"e\u0301i\u0301o\u0301u\u0301");
-    TEST_EQUAL(utf_substring(u8"a\u0301e\u0301i\u0301o\u0301u\u0301"s, 1, 5, Length::graphemes), u8"e\u0301i\u0301o\u0301u\u0301");
-    TEST_EQUAL(utf_substring(u8"a\u0301e\u0301i\u0301o\u0301u\u0301"s, 1, npos, Length::graphemes), u8"e\u0301i\u0301o\u0301u\u0301");
-    TEST_EQUAL(utf_substring(u8"a\u0301e\u0301i\u0301o\u0301u\u0301"s, 5, npos, Length::graphemes), u8"");
+    TEST_EQUAL(utf_substring("áéíóú"s, 1, 0, Length::graphemes), "");
+    TEST_EQUAL(utf_substring("áéíóú"s, 1, 1, Length::graphemes), "é");
+    TEST_EQUAL(utf_substring("áéíóú"s, 1, 2, Length::graphemes), "éí");
+    TEST_EQUAL(utf_substring("áéíóú"s, 1, 3, Length::graphemes), "éíó");
+    TEST_EQUAL(utf_substring("áéíóú"s, 1, 4, Length::graphemes), "éíóú");
+    TEST_EQUAL(utf_substring("áéíóú"s, 1, 5, Length::graphemes), "éíóú");
+    TEST_EQUAL(utf_substring("áéíóú"s, 1, npos, Length::graphemes), "éíóú");
+    TEST_EQUAL(utf_substring("áéíóú"s, 5, npos, Length::graphemes), "");
+    TEST_EQUAL(utf_substring("a\u0301e\u0301i\u0301o\u0301u\u0301"s, 1, 0, Length::graphemes), "");
+    TEST_EQUAL(utf_substring("a\u0301e\u0301i\u0301o\u0301u\u0301"s, 1, 1, Length::graphemes), "e\u0301");
+    TEST_EQUAL(utf_substring("a\u0301e\u0301i\u0301o\u0301u\u0301"s, 1, 2, Length::graphemes), "e\u0301i\u0301");
+    TEST_EQUAL(utf_substring("a\u0301e\u0301i\u0301o\u0301u\u0301"s, 1, 3, Length::graphemes), "e\u0301i\u0301o\u0301");
+    TEST_EQUAL(utf_substring("a\u0301e\u0301i\u0301o\u0301u\u0301"s, 1, 4, Length::graphemes), "e\u0301i\u0301o\u0301u\u0301");
+    TEST_EQUAL(utf_substring("a\u0301e\u0301i\u0301o\u0301u\u0301"s, 1, 5, Length::graphemes), "e\u0301i\u0301o\u0301u\u0301");
+    TEST_EQUAL(utf_substring("a\u0301e\u0301i\u0301o\u0301u\u0301"s, 1, npos, Length::graphemes), "e\u0301i\u0301o\u0301u\u0301");
+    TEST_EQUAL(utf_substring("a\u0301e\u0301i\u0301o\u0301u\u0301"s, 5, npos, Length::graphemes), "");
 
 }
 
@@ -273,15 +273,15 @@ void test_unicorn_string_manip_translate() {
     TEST_EQUAL(str_translate("€uro ∈lement"s, "€∈", "*"), "*uro *lement");
     TEST_EQUAL(str_translate("€uro ∈lement"s, "e", "∇√"), "€uro ∈l∇m∇nt");
 
-    s = u8"";              TRY(str_translate_in(s, u8"", u8""));            TEST_EQUAL(s, u8"");
-    s = u8"Hello world";   TRY(str_translate_in(s, u8"", u8""));            TEST_EQUAL(s, u8"Hello world");
-    s = u8"Hello world";   TRY(str_translate_in(s, u8"", u8"abcde"));       TEST_EQUAL(s, u8"Hello world");
-    s = u8"Hello world";   TRY(str_translate_in(s, u8"abcde", u8""));       TEST_EQUAL(s, u8"Hello world");
-    s = u8"Hello world";   TRY(str_translate_in(s, u8"abcde", u8"12345"));  TEST_EQUAL(s, u8"H5llo worl4");
-    s = u8"Hello world";   TRY(str_translate_in(s, u8"abcde", u8"*"));      TEST_EQUAL(s, u8"H*llo worl*");
-    s = u8"€uro ∈lement";  TRY(str_translate_in(s, u8"€∈", u8"∇√"));        TEST_EQUAL(s, u8"∇uro √lement");
-    s = u8"€uro ∈lement";  TRY(str_translate_in(s, u8"€∈", u8"*"));         TEST_EQUAL(s, u8"*uro *lement");
-    s = u8"€uro ∈lement";  TRY(str_translate_in(s, u8"e", u8"∇√"));         TEST_EQUAL(s, u8"€uro ∈l∇m∇nt");
+    s = "";              TRY(str_translate_in(s, "", ""));            TEST_EQUAL(s, "");
+    s = "Hello world";   TRY(str_translate_in(s, "", ""));            TEST_EQUAL(s, "Hello world");
+    s = "Hello world";   TRY(str_translate_in(s, "", "abcde"));       TEST_EQUAL(s, "Hello world");
+    s = "Hello world";   TRY(str_translate_in(s, "abcde", ""));       TEST_EQUAL(s, "Hello world");
+    s = "Hello world";   TRY(str_translate_in(s, "abcde", "12345"));  TEST_EQUAL(s, "H5llo worl4");
+    s = "Hello world";   TRY(str_translate_in(s, "abcde", "*"));      TEST_EQUAL(s, "H*llo worl*");
+    s = "€uro ∈lement";  TRY(str_translate_in(s, "€∈", "∇√"));        TEST_EQUAL(s, "∇uro √lement");
+    s = "€uro ∈lement";  TRY(str_translate_in(s, "€∈", "*"));         TEST_EQUAL(s, "*uro *lement");
+    s = "€uro ∈lement";  TRY(str_translate_in(s, "e", "∇√"));         TEST_EQUAL(s, "€uro ∈l∇m∇nt");
 
 }
 
@@ -289,77 +289,77 @@ void test_unicorn_string_manip_trim() {
 
     Ustring s;
 
-    TEST_EQUAL(str_trim(u8""s), u8"");
-    TEST_EQUAL(str_trim(u8"Hello"s), u8"Hello");
-    TEST_EQUAL(str_trim(u8"Hello world"s), u8"Hello world");
-    TEST_EQUAL(str_trim(u8""s, u8""), u8"");
-    TEST_EQUAL(str_trim(u8"Hello"s, u8""), u8"Hello");
-    TEST_EQUAL(str_trim(u8"<<<>>>"s, u8"<>"), u8"");
-    TEST_EQUAL(str_trim(u8"<<<Hello>>>"s, u8"<>"), u8"Hello");
-    TEST_EQUAL(str_trim(u8"<<<Hello>>> <<<world>>>"s, u8"<>"), u8"Hello>>> <<<world");
-    TEST_EQUAL(str_trim(u8"≤≤≤≥≥≥"s, u8"≤≥"), u8"");
-    TEST_EQUAL(str_trim(u8"≤≤≤€uro≥≥≥"s, u8"≤≥"), u8"€uro");
-    TEST_EQUAL(str_trim(u8"≤≤≤€uro≥≥≥ ≤≤≤∈lement≥≥≥"s, u8"≤≥"), u8"€uro≥≥≥ ≤≤≤∈lement");
+    TEST_EQUAL(str_trim(""s), "");
+    TEST_EQUAL(str_trim("Hello"s), "Hello");
+    TEST_EQUAL(str_trim("Hello world"s), "Hello world");
+    TEST_EQUAL(str_trim(""s, ""), "");
+    TEST_EQUAL(str_trim("Hello"s, ""), "Hello");
+    TEST_EQUAL(str_trim("<<<>>>"s, "<>"), "");
+    TEST_EQUAL(str_trim("<<<Hello>>>"s, "<>"), "Hello");
+    TEST_EQUAL(str_trim("<<<Hello>>> <<<world>>>"s, "<>"), "Hello>>> <<<world");
+    TEST_EQUAL(str_trim("≤≤≤≥≥≥"s, "≤≥"), "");
+    TEST_EQUAL(str_trim("≤≤≤€uro≥≥≥"s, "≤≥"), "€uro");
+    TEST_EQUAL(str_trim("≤≤≤€uro≥≥≥ ≤≤≤∈lement≥≥≥"s, "≤≥"), "€uro≥≥≥ ≤≤≤∈lement");
 
-    s = u8"";                          TRY(str_trim_in(s));          TEST_EQUAL(s, u8"");
-    s = u8"Hello";                     TRY(str_trim_in(s));          TEST_EQUAL(s, u8"Hello");
-    s = u8"Hello world";               TRY(str_trim_in(s));          TEST_EQUAL(s, u8"Hello world");
-    s = u8"";                          TRY(str_trim_in(s, u8""));    TEST_EQUAL(s, u8"");
-    s = u8"Hello";                     TRY(str_trim_in(s, u8""));    TEST_EQUAL(s, u8"Hello");
-    s = u8"<<<>>>";                    TRY(str_trim_in(s, u8"<>"));  TEST_EQUAL(s, u8"");
-    s = u8"<<<Hello>>>";               TRY(str_trim_in(s, u8"<>"));  TEST_EQUAL(s, u8"Hello");
-    s = u8"<<<Hello>>> <<<world>>>";   TRY(str_trim_in(s, u8"<>"));  TEST_EQUAL(s, u8"Hello>>> <<<world");
-    s = u8"≤≤≤≥≥≥";                    TRY(str_trim_in(s, u8"≤≥"));  TEST_EQUAL(s, u8"");
-    s = u8"≤≤≤€uro≥≥≥";                TRY(str_trim_in(s, u8"≤≥"));  TEST_EQUAL(s, u8"€uro");
-    s = u8"≤≤≤€uro≥≥≥ ≤≤≤∈lement≥≥≥";  TRY(str_trim_in(s, u8"≤≥"));  TEST_EQUAL(s, u8"€uro≥≥≥ ≤≤≤∈lement");
+    s = "";                          TRY(str_trim_in(s));          TEST_EQUAL(s, "");
+    s = "Hello";                     TRY(str_trim_in(s));          TEST_EQUAL(s, "Hello");
+    s = "Hello world";               TRY(str_trim_in(s));          TEST_EQUAL(s, "Hello world");
+    s = "";                          TRY(str_trim_in(s, ""));    TEST_EQUAL(s, "");
+    s = "Hello";                     TRY(str_trim_in(s, ""));    TEST_EQUAL(s, "Hello");
+    s = "<<<>>>";                    TRY(str_trim_in(s, "<>"));  TEST_EQUAL(s, "");
+    s = "<<<Hello>>>";               TRY(str_trim_in(s, "<>"));  TEST_EQUAL(s, "Hello");
+    s = "<<<Hello>>> <<<world>>>";   TRY(str_trim_in(s, "<>"));  TEST_EQUAL(s, "Hello>>> <<<world");
+    s = "≤≤≤≥≥≥";                    TRY(str_trim_in(s, "≤≥"));  TEST_EQUAL(s, "");
+    s = "≤≤≤€uro≥≥≥";                TRY(str_trim_in(s, "≤≥"));  TEST_EQUAL(s, "€uro");
+    s = "≤≤≤€uro≥≥≥ ≤≤≤∈lement≥≥≥";  TRY(str_trim_in(s, "≤≥"));  TEST_EQUAL(s, "€uro≥≥≥ ≤≤≤∈lement");
 
-    TEST_EQUAL(str_trim_left(u8""s), u8"");
-    TEST_EQUAL(str_trim_left(u8"Hello"s), u8"Hello");
-    TEST_EQUAL(str_trim_left(u8"Hello world"s), u8"Hello world");
-    TEST_EQUAL(str_trim_left(u8""s, u8""), u8"");
-    TEST_EQUAL(str_trim_left(u8"Hello"s, u8""), u8"Hello");
-    TEST_EQUAL(str_trim_left(u8"<<<>>>"s, u8"<>"), u8"");
-    TEST_EQUAL(str_trim_left(u8"<<<Hello>>>"s, u8"<>"), u8"Hello>>>");
-    TEST_EQUAL(str_trim_left(u8"<<<Hello>>> <<<world>>>"s, u8"<>"), u8"Hello>>> <<<world>>>");
-    TEST_EQUAL(str_trim_left(u8"≤≤≤≥≥≥"s, u8"≤≥"), u8"");
-    TEST_EQUAL(str_trim_left(u8"≤≤≤€uro≥≥≥"s, u8"≤≥"), u8"€uro≥≥≥");
-    TEST_EQUAL(str_trim_left(u8"≤≤≤€uro≥≥≥ ≤≤≤∈lement≥≥≥"s, u8"≤≥"), u8"€uro≥≥≥ ≤≤≤∈lement≥≥≥");
+    TEST_EQUAL(str_trim_left(""s), "");
+    TEST_EQUAL(str_trim_left("Hello"s), "Hello");
+    TEST_EQUAL(str_trim_left("Hello world"s), "Hello world");
+    TEST_EQUAL(str_trim_left(""s, ""), "");
+    TEST_EQUAL(str_trim_left("Hello"s, ""), "Hello");
+    TEST_EQUAL(str_trim_left("<<<>>>"s, "<>"), "");
+    TEST_EQUAL(str_trim_left("<<<Hello>>>"s, "<>"), "Hello>>>");
+    TEST_EQUAL(str_trim_left("<<<Hello>>> <<<world>>>"s, "<>"), "Hello>>> <<<world>>>");
+    TEST_EQUAL(str_trim_left("≤≤≤≥≥≥"s, "≤≥"), "");
+    TEST_EQUAL(str_trim_left("≤≤≤€uro≥≥≥"s, "≤≥"), "€uro≥≥≥");
+    TEST_EQUAL(str_trim_left("≤≤≤€uro≥≥≥ ≤≤≤∈lement≥≥≥"s, "≤≥"), "€uro≥≥≥ ≤≤≤∈lement≥≥≥");
 
-    s = u8"";                          TRY(str_trim_left_in(s));          TEST_EQUAL(s, u8"");
-    s = u8"Hello";                     TRY(str_trim_left_in(s));          TEST_EQUAL(s, u8"Hello");
-    s = u8"Hello world";               TRY(str_trim_left_in(s));          TEST_EQUAL(s, u8"Hello world");
-    s = u8"";                          TRY(str_trim_left_in(s, u8""));    TEST_EQUAL(s, u8"");
-    s = u8"Hello";                     TRY(str_trim_left_in(s, u8""));    TEST_EQUAL(s, u8"Hello");
-    s = u8"<<<>>>";                    TRY(str_trim_left_in(s, u8"<>"));  TEST_EQUAL(s, u8"");
-    s = u8"<<<Hello>>>";               TRY(str_trim_left_in(s, u8"<>"));  TEST_EQUAL(s, u8"Hello>>>");
-    s = u8"<<<Hello>>> <<<world>>>";   TRY(str_trim_left_in(s, u8"<>"));  TEST_EQUAL(s, u8"Hello>>> <<<world>>>");
-    s = u8"≤≤≤≥≥≥";                    TRY(str_trim_left_in(s, u8"≤≥"));  TEST_EQUAL(s, u8"");
-    s = u8"≤≤≤€uro≥≥≥";                TRY(str_trim_left_in(s, u8"≤≥"));  TEST_EQUAL(s, u8"€uro≥≥≥");
-    s = u8"≤≤≤€uro≥≥≥ ≤≤≤∈lement≥≥≥";  TRY(str_trim_left_in(s, u8"≤≥"));  TEST_EQUAL(s, u8"€uro≥≥≥ ≤≤≤∈lement≥≥≥");
+    s = "";                          TRY(str_trim_left_in(s));          TEST_EQUAL(s, "");
+    s = "Hello";                     TRY(str_trim_left_in(s));          TEST_EQUAL(s, "Hello");
+    s = "Hello world";               TRY(str_trim_left_in(s));          TEST_EQUAL(s, "Hello world");
+    s = "";                          TRY(str_trim_left_in(s, ""));    TEST_EQUAL(s, "");
+    s = "Hello";                     TRY(str_trim_left_in(s, ""));    TEST_EQUAL(s, "Hello");
+    s = "<<<>>>";                    TRY(str_trim_left_in(s, "<>"));  TEST_EQUAL(s, "");
+    s = "<<<Hello>>>";               TRY(str_trim_left_in(s, "<>"));  TEST_EQUAL(s, "Hello>>>");
+    s = "<<<Hello>>> <<<world>>>";   TRY(str_trim_left_in(s, "<>"));  TEST_EQUAL(s, "Hello>>> <<<world>>>");
+    s = "≤≤≤≥≥≥";                    TRY(str_trim_left_in(s, "≤≥"));  TEST_EQUAL(s, "");
+    s = "≤≤≤€uro≥≥≥";                TRY(str_trim_left_in(s, "≤≥"));  TEST_EQUAL(s, "€uro≥≥≥");
+    s = "≤≤≤€uro≥≥≥ ≤≤≤∈lement≥≥≥";  TRY(str_trim_left_in(s, "≤≥"));  TEST_EQUAL(s, "€uro≥≥≥ ≤≤≤∈lement≥≥≥");
 
-    TEST_EQUAL(str_trim_right(u8""s), u8"");
-    TEST_EQUAL(str_trim_right(u8"Hello"s), u8"Hello");
-    TEST_EQUAL(str_trim_right(u8"Hello world"s), u8"Hello world");
-    TEST_EQUAL(str_trim_right(u8""s, u8""), u8"");
-    TEST_EQUAL(str_trim_right(u8"Hello"s, u8""), u8"Hello");
-    TEST_EQUAL(str_trim_right(u8"<<<>>>"s, u8"<>"), u8"");
-    TEST_EQUAL(str_trim_right(u8"<<<Hello>>>"s, u8"<>"), u8"<<<Hello");
-    TEST_EQUAL(str_trim_right(u8"<<<Hello>>> <<<world>>>"s, u8"<>"), u8"<<<Hello>>> <<<world");
-    TEST_EQUAL(str_trim_right(u8"≤≤≤≥≥≥"s, u8"≤≥"), u8"");
-    TEST_EQUAL(str_trim_right(u8"≤≤≤€uro≥≥≥"s, u8"≤≥"), u8"≤≤≤€uro");
-    TEST_EQUAL(str_trim_right(u8"≤≤≤€uro≥≥≥ ≤≤≤∈lement≥≥≥"s, u8"≤≥"), u8"≤≤≤€uro≥≥≥ ≤≤≤∈lement");
+    TEST_EQUAL(str_trim_right(""s), "");
+    TEST_EQUAL(str_trim_right("Hello"s), "Hello");
+    TEST_EQUAL(str_trim_right("Hello world"s), "Hello world");
+    TEST_EQUAL(str_trim_right(""s, ""), "");
+    TEST_EQUAL(str_trim_right("Hello"s, ""), "Hello");
+    TEST_EQUAL(str_trim_right("<<<>>>"s, "<>"), "");
+    TEST_EQUAL(str_trim_right("<<<Hello>>>"s, "<>"), "<<<Hello");
+    TEST_EQUAL(str_trim_right("<<<Hello>>> <<<world>>>"s, "<>"), "<<<Hello>>> <<<world");
+    TEST_EQUAL(str_trim_right("≤≤≤≥≥≥"s, "≤≥"), "");
+    TEST_EQUAL(str_trim_right("≤≤≤€uro≥≥≥"s, "≤≥"), "≤≤≤€uro");
+    TEST_EQUAL(str_trim_right("≤≤≤€uro≥≥≥ ≤≤≤∈lement≥≥≥"s, "≤≥"), "≤≤≤€uro≥≥≥ ≤≤≤∈lement");
 
-    s = u8"";                          TRY(str_trim_right_in(s));          TEST_EQUAL(s, u8"");
-    s = u8"Hello";                     TRY(str_trim_right_in(s));          TEST_EQUAL(s, u8"Hello");
-    s = u8"Hello world";               TRY(str_trim_right_in(s));          TEST_EQUAL(s, u8"Hello world");
-    s = u8"";                          TRY(str_trim_right_in(s, u8""));    TEST_EQUAL(s, u8"");
-    s = u8"Hello";                     TRY(str_trim_right_in(s, u8""));    TEST_EQUAL(s, u8"Hello");
-    s = u8"<<<>>>";                    TRY(str_trim_right_in(s, u8"<>"));  TEST_EQUAL(s, u8"");
-    s = u8"<<<Hello>>>";               TRY(str_trim_right_in(s, u8"<>"));  TEST_EQUAL(s, u8"<<<Hello");
-    s = u8"<<<Hello>>> <<<world>>>";   TRY(str_trim_right_in(s, u8"<>"));  TEST_EQUAL(s, u8"<<<Hello>>> <<<world");
-    s = u8"≤≤≤≥≥≥";                    TRY(str_trim_right_in(s, u8"≤≥"));  TEST_EQUAL(s, u8"");
-    s = u8"≤≤≤€uro≥≥≥";                TRY(str_trim_right_in(s, u8"≤≥"));  TEST_EQUAL(s, u8"≤≤≤€uro");
-    s = u8"≤≤≤€uro≥≥≥ ≤≤≤∈lement≥≥≥";  TRY(str_trim_right_in(s, u8"≤≥"));  TEST_EQUAL(s, u8"≤≤≤€uro≥≥≥ ≤≤≤∈lement");
+    s = "";                          TRY(str_trim_right_in(s));          TEST_EQUAL(s, "");
+    s = "Hello";                     TRY(str_trim_right_in(s));          TEST_EQUAL(s, "Hello");
+    s = "Hello world";               TRY(str_trim_right_in(s));          TEST_EQUAL(s, "Hello world");
+    s = "";                          TRY(str_trim_right_in(s, ""));    TEST_EQUAL(s, "");
+    s = "Hello";                     TRY(str_trim_right_in(s, ""));    TEST_EQUAL(s, "Hello");
+    s = "<<<>>>";                    TRY(str_trim_right_in(s, "<>"));  TEST_EQUAL(s, "");
+    s = "<<<Hello>>>";               TRY(str_trim_right_in(s, "<>"));  TEST_EQUAL(s, "<<<Hello");
+    s = "<<<Hello>>> <<<world>>>";   TRY(str_trim_right_in(s, "<>"));  TEST_EQUAL(s, "<<<Hello>>> <<<world");
+    s = "≤≤≤≥≥≥";                    TRY(str_trim_right_in(s, "≤≥"));  TEST_EQUAL(s, "");
+    s = "≤≤≤€uro≥≥≥";                TRY(str_trim_right_in(s, "≤≥"));  TEST_EQUAL(s, "≤≤≤€uro");
+    s = "≤≤≤€uro≥≥≥ ≤≤≤∈lement≥≥≥";  TRY(str_trim_right_in(s, "≤≥"));  TEST_EQUAL(s, "≤≤≤€uro≥≥≥ ≤≤≤∈lement");
 
 }
 
@@ -367,43 +367,43 @@ void test_unicorn_string_manip_trim_if() {
 
     Ustring s;
 
-    TEST_EQUAL(str_trim_if(u8""s, char_is_line_break), u8"");
-    TEST_EQUAL(str_trim_if(u8"Hello"s, char_is_line_break), u8"Hello");
-    TEST_EQUAL(str_trim_if(u8"\r\nHello\r\n"s, char_is_line_break), u8"Hello");
-    TEST_EQUAL(str_trim_left_if(u8""s, char_is_line_break), u8"");
-    TEST_EQUAL(str_trim_left_if(u8"Hello"s, char_is_line_break), u8"Hello");
-    TEST_EQUAL(str_trim_left_if(u8"\r\nHello\r\n"s, char_is_line_break), u8"Hello\r\n");
-    TEST_EQUAL(str_trim_right_if(u8""s, char_is_line_break), u8"");
-    TEST_EQUAL(str_trim_right_if(u8"Hello"s, char_is_line_break), u8"Hello");
-    TEST_EQUAL(str_trim_right_if(u8"\r\nHello\r\n"s, char_is_line_break), u8"\r\nHello");
-    TEST_EQUAL(str_trim_if_not(u8""s, char_is_line_break), u8"");
-    TEST_EQUAL(str_trim_if_not(u8"Hello\r\nworld"s, char_is_line_break), u8"\r\n");
-    TEST_EQUAL(str_trim_if_not(u8"\r\nHello world\r\n"s, char_is_line_break), u8"\r\nHello world\r\n");
-    TEST_EQUAL(str_trim_left_if_not(u8""s, char_is_line_break), u8"");
-    TEST_EQUAL(str_trim_left_if_not(u8"Hello\r\nworld"s, char_is_line_break), u8"\r\nworld");
-    TEST_EQUAL(str_trim_left_if_not(u8"\r\nHello world\r\n"s, char_is_line_break), u8"\r\nHello world\r\n");
-    TEST_EQUAL(str_trim_right_if_not(u8""s, char_is_line_break), u8"");
-    TEST_EQUAL(str_trim_right_if_not(u8"Hello\r\nworld"s, char_is_line_break), u8"Hello\r\n");
-    TEST_EQUAL(str_trim_right_if_not(u8"\r\nHello world\r\n"s, char_is_line_break), u8"\r\nHello world\r\n");
+    TEST_EQUAL(str_trim_if(""s, char_is_line_break), "");
+    TEST_EQUAL(str_trim_if("Hello"s, char_is_line_break), "Hello");
+    TEST_EQUAL(str_trim_if("\r\nHello\r\n"s, char_is_line_break), "Hello");
+    TEST_EQUAL(str_trim_left_if(""s, char_is_line_break), "");
+    TEST_EQUAL(str_trim_left_if("Hello"s, char_is_line_break), "Hello");
+    TEST_EQUAL(str_trim_left_if("\r\nHello\r\n"s, char_is_line_break), "Hello\r\n");
+    TEST_EQUAL(str_trim_right_if(""s, char_is_line_break), "");
+    TEST_EQUAL(str_trim_right_if("Hello"s, char_is_line_break), "Hello");
+    TEST_EQUAL(str_trim_right_if("\r\nHello\r\n"s, char_is_line_break), "\r\nHello");
+    TEST_EQUAL(str_trim_if_not(""s, char_is_line_break), "");
+    TEST_EQUAL(str_trim_if_not("Hello\r\nworld"s, char_is_line_break), "\r\n");
+    TEST_EQUAL(str_trim_if_not("\r\nHello world\r\n"s, char_is_line_break), "\r\nHello world\r\n");
+    TEST_EQUAL(str_trim_left_if_not(""s, char_is_line_break), "");
+    TEST_EQUAL(str_trim_left_if_not("Hello\r\nworld"s, char_is_line_break), "\r\nworld");
+    TEST_EQUAL(str_trim_left_if_not("\r\nHello world\r\n"s, char_is_line_break), "\r\nHello world\r\n");
+    TEST_EQUAL(str_trim_right_if_not(""s, char_is_line_break), "");
+    TEST_EQUAL(str_trim_right_if_not("Hello\r\nworld"s, char_is_line_break), "Hello\r\n");
+    TEST_EQUAL(str_trim_right_if_not("\r\nHello world\r\n"s, char_is_line_break), "\r\nHello world\r\n");
 
-    s = u8"";                     TRY(str_trim_in_if(s, char_is_line_break));            TEST_EQUAL(s, u8"");
-    s = u8"Hello";                TRY(str_trim_in_if(s, char_is_line_break));            TEST_EQUAL(s, u8"Hello");
-    s = u8"\r\nHello\r\n";        TRY(str_trim_in_if(s, char_is_line_break));            TEST_EQUAL(s, u8"Hello");
-    s = u8"";                     TRY(str_trim_left_in_if(s, char_is_line_break));       TEST_EQUAL(s, u8"");
-    s = u8"Hello";                TRY(str_trim_left_in_if(s, char_is_line_break));       TEST_EQUAL(s, u8"Hello");
-    s = u8"\r\nHello\r\n";        TRY(str_trim_left_in_if(s, char_is_line_break));       TEST_EQUAL(s, u8"Hello\r\n");
-    s = u8"";                     TRY(str_trim_right_in_if(s, char_is_line_break));      TEST_EQUAL(s, u8"");
-    s = u8"Hello";                TRY(str_trim_right_in_if(s, char_is_line_break));      TEST_EQUAL(s, u8"Hello");
-    s = u8"\r\nHello\r\n";        TRY(str_trim_right_in_if(s, char_is_line_break));      TEST_EQUAL(s, u8"\r\nHello");
-    s = u8"";                     TRY(str_trim_in_if_not(s, char_is_line_break));        TEST_EQUAL(s, u8"");
-    s = u8"Hello\r\nworld";       TRY(str_trim_in_if_not(s, char_is_line_break));        TEST_EQUAL(s, u8"\r\n");
-    s = u8"\r\nHello world\r\n";  TRY(str_trim_in_if_not(s, char_is_line_break));        TEST_EQUAL(s, u8"\r\nHello world\r\n");
-    s = u8"";                     TRY(str_trim_left_in_if_not(s, char_is_line_break));   TEST_EQUAL(s, u8"");
-    s = u8"Hello\r\nworld";       TRY(str_trim_left_in_if_not(s, char_is_line_break));   TEST_EQUAL(s, u8"\r\nworld");
-    s = u8"\r\nHello world\r\n";  TRY(str_trim_left_in_if_not(s, char_is_line_break));   TEST_EQUAL(s, u8"\r\nHello world\r\n");
-    s = u8"";                     TRY(str_trim_right_in_if_not(s, char_is_line_break));  TEST_EQUAL(s, u8"");
-    s = u8"Hello\r\nworld";       TRY(str_trim_right_in_if_not(s, char_is_line_break));  TEST_EQUAL(s, u8"Hello\r\n");
-    s = u8"\r\nHello world\r\n";  TRY(str_trim_right_in_if_not(s, char_is_line_break));  TEST_EQUAL(s, u8"\r\nHello world\r\n");
+    s = "";                     TRY(str_trim_in_if(s, char_is_line_break));            TEST_EQUAL(s, "");
+    s = "Hello";                TRY(str_trim_in_if(s, char_is_line_break));            TEST_EQUAL(s, "Hello");
+    s = "\r\nHello\r\n";        TRY(str_trim_in_if(s, char_is_line_break));            TEST_EQUAL(s, "Hello");
+    s = "";                     TRY(str_trim_left_in_if(s, char_is_line_break));       TEST_EQUAL(s, "");
+    s = "Hello";                TRY(str_trim_left_in_if(s, char_is_line_break));       TEST_EQUAL(s, "Hello");
+    s = "\r\nHello\r\n";        TRY(str_trim_left_in_if(s, char_is_line_break));       TEST_EQUAL(s, "Hello\r\n");
+    s = "";                     TRY(str_trim_right_in_if(s, char_is_line_break));      TEST_EQUAL(s, "");
+    s = "Hello";                TRY(str_trim_right_in_if(s, char_is_line_break));      TEST_EQUAL(s, "Hello");
+    s = "\r\nHello\r\n";        TRY(str_trim_right_in_if(s, char_is_line_break));      TEST_EQUAL(s, "\r\nHello");
+    s = "";                     TRY(str_trim_in_if_not(s, char_is_line_break));        TEST_EQUAL(s, "");
+    s = "Hello\r\nworld";       TRY(str_trim_in_if_not(s, char_is_line_break));        TEST_EQUAL(s, "\r\n");
+    s = "\r\nHello world\r\n";  TRY(str_trim_in_if_not(s, char_is_line_break));        TEST_EQUAL(s, "\r\nHello world\r\n");
+    s = "";                     TRY(str_trim_left_in_if_not(s, char_is_line_break));   TEST_EQUAL(s, "");
+    s = "Hello\r\nworld";       TRY(str_trim_left_in_if_not(s, char_is_line_break));   TEST_EQUAL(s, "\r\nworld");
+    s = "\r\nHello world\r\n";  TRY(str_trim_left_in_if_not(s, char_is_line_break));   TEST_EQUAL(s, "\r\nHello world\r\n");
+    s = "";                     TRY(str_trim_right_in_if_not(s, char_is_line_break));  TEST_EQUAL(s, "");
+    s = "Hello\r\nworld";       TRY(str_trim_right_in_if_not(s, char_is_line_break));  TEST_EQUAL(s, "Hello\r\n");
+    s = "\r\nHello world\r\n";  TRY(str_trim_right_in_if_not(s, char_is_line_break));  TEST_EQUAL(s, "\r\nHello world\r\n");
 
 }
 
@@ -411,26 +411,26 @@ void test_unicorn_string_manip_unify() {
 
     Ustring s;
 
-    TEST_EQUAL(str_unify_lines(u8""s), u8"");
-    TEST_EQUAL(str_unify_lines(u8"Hello world\nGoodbye\n"s), u8"Hello world\nGoodbye\n");
-    TEST_EQUAL(str_unify_lines(u8"Hello world\nGoodbye"s), u8"Hello world\nGoodbye\n");
-    TEST_EQUAL(str_unify_lines(u8"Hello world\nGoodbye\n"s, u8"\r\n"), u8"Hello world\r\nGoodbye\r\n");
-    TEST_EQUAL(str_unify_lines(u8"Hello world\nGoodbye\n"s, U'*'), u8"Hello world*Goodbye*");
-    TEST_EQUAL(str_unify_lines(u8"Hello world\r\nGoodbye\r\n"s), u8"Hello world\nGoodbye\n");
-    TEST_EQUAL(str_unify_lines(u8"Hello world\r\nGoodbye\r\n"s, u8"\r\n"), u8"Hello world\r\nGoodbye\r\n");
-    TEST_EQUAL(str_unify_lines(u8"Hello world\r\nGoodbye\r\n"s, U'*'), u8"Hello world*Goodbye*");
-    TEST_EQUAL(str_unify_lines(u8"Hello world\u2028Goodbye\u2029"s), u8"Hello world\nGoodbye\n");
-    TEST_EQUAL(str_unify_lines(u8"Hello world\u2028Goodbye\u2029"s, u8"\r\n"), u8"Hello world\r\nGoodbye\r\n");
-    TEST_EQUAL(str_unify_lines(u8"Hello world\u2028Goodbye\u2029"s, U'*'), u8"Hello world*Goodbye*");
+    TEST_EQUAL(str_unify_lines(""s), "");
+    TEST_EQUAL(str_unify_lines("Hello world\nGoodbye\n"s), "Hello world\nGoodbye\n");
+    TEST_EQUAL(str_unify_lines("Hello world\nGoodbye"s), "Hello world\nGoodbye\n");
+    TEST_EQUAL(str_unify_lines("Hello world\nGoodbye\n"s, "\r\n"), "Hello world\r\nGoodbye\r\n");
+    TEST_EQUAL(str_unify_lines("Hello world\nGoodbye\n"s, U'*'), "Hello world*Goodbye*");
+    TEST_EQUAL(str_unify_lines("Hello world\r\nGoodbye\r\n"s), "Hello world\nGoodbye\n");
+    TEST_EQUAL(str_unify_lines("Hello world\r\nGoodbye\r\n"s, "\r\n"), "Hello world\r\nGoodbye\r\n");
+    TEST_EQUAL(str_unify_lines("Hello world\r\nGoodbye\r\n"s, U'*'), "Hello world*Goodbye*");
+    TEST_EQUAL(str_unify_lines("Hello world\u2028Goodbye\u2029"s), "Hello world\nGoodbye\n");
+    TEST_EQUAL(str_unify_lines("Hello world\u2028Goodbye\u2029"s, "\r\n"), "Hello world\r\nGoodbye\r\n");
+    TEST_EQUAL(str_unify_lines("Hello world\u2028Goodbye\u2029"s, U'*'), "Hello world*Goodbye*");
 
-    s = u8"";                                TRY(str_unify_lines_in(s));            TEST_EQUAL(s, u8"");
-    s = u8"Hello world\nGoodbye\n";          TRY(str_unify_lines_in(s));            TEST_EQUAL(s, u8"Hello world\nGoodbye\n");
-    s = u8"Hello world\nGoodbye";            TRY(str_unify_lines_in(s));            TEST_EQUAL(s, u8"Hello world\nGoodbye\n");
-    s = u8"Hello world\nGoodbye\n";          TRY(str_unify_lines_in(s, u8"\r\n"));  TEST_EQUAL(s, u8"Hello world\r\nGoodbye\r\n");
-    s = u8"Hello world\r\nGoodbye\r\n";      TRY(str_unify_lines_in(s));            TEST_EQUAL(s, u8"Hello world\nGoodbye\n");
-    s = u8"Hello world\r\nGoodbye\r\n";      TRY(str_unify_lines_in(s, u8"\r\n"));  TEST_EQUAL(s, u8"Hello world\r\nGoodbye\r\n");
-    s = u8"Hello world\u2028Goodbye\u2029";  TRY(str_unify_lines_in(s));            TEST_EQUAL(s, u8"Hello world\nGoodbye\n");
-    s = u8"Hello world\u2028Goodbye\u2029";  TRY(str_unify_lines_in(s, u8"\r\n"));  TEST_EQUAL(s, u8"Hello world\r\nGoodbye\r\n");
+    s = "";                                TRY(str_unify_lines_in(s));          TEST_EQUAL(s, "");
+    s = "Hello world\nGoodbye\n";          TRY(str_unify_lines_in(s));          TEST_EQUAL(s, "Hello world\nGoodbye\n");
+    s = "Hello world\nGoodbye";            TRY(str_unify_lines_in(s));          TEST_EQUAL(s, "Hello world\nGoodbye\n");
+    s = "Hello world\nGoodbye\n";          TRY(str_unify_lines_in(s, "\r\n"));  TEST_EQUAL(s, "Hello world\r\nGoodbye\r\n");
+    s = "Hello world\r\nGoodbye\r\n";      TRY(str_unify_lines_in(s));          TEST_EQUAL(s, "Hello world\nGoodbye\n");
+    s = "Hello world\r\nGoodbye\r\n";      TRY(str_unify_lines_in(s, "\r\n"));  TEST_EQUAL(s, "Hello world\r\nGoodbye\r\n");
+    s = "Hello world\u2028Goodbye\u2029";  TRY(str_unify_lines_in(s));          TEST_EQUAL(s, "Hello world\nGoodbye\n");
+    s = "Hello world\u2028Goodbye\u2029";  TRY(str_unify_lines_in(s, "\r\n"));  TEST_EQUAL(s, "Hello world\r\nGoodbye\r\n");
 
 }
 

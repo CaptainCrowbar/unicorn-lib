@@ -1341,13 +1341,13 @@ void test_unicorn_utility_string_functions() {
 
     std::string s;
 
-    TRY(s = quote(""s));                      TEST_EQUAL(s, "\"\""s);
-    TRY(s = quote("\"\""s));                  TEST_EQUAL(s, "\"\\\"\\\"\""s);
-    TRY(s = quote("Hello world"s));           TEST_EQUAL(s, "\"Hello world\""s);
-    TRY(s = quote("\\Hello\\world\\"s));      TEST_EQUAL(s, "\"\\\\Hello\\\\world\\\\\""s);
-    TRY(s = quote("\"Hello\" \"world\""s));   TEST_EQUAL(s, "\"\\\"Hello\\\" \\\"world\\\"\""s);
-    TRY(s = quote("\t\n\f\r"s));              TEST_EQUAL(s, "\"\\t\\n\\f\\r\""s);
-    TRY(s = quote(u8"åß∂ƒ"s));                TEST_EQUAL(s, u8"\"åß∂ƒ\""s);
+    TRY(s = quote(""s));                     TEST_EQUAL(s, "\"\""s);
+    TRY(s = quote("\"\""s));                 TEST_EQUAL(s, "\"\\\"\\\"\""s);
+    TRY(s = quote("Hello world"s));          TEST_EQUAL(s, "\"Hello world\""s);
+    TRY(s = quote("\\Hello\\world\\"s));     TEST_EQUAL(s, "\"\\\\Hello\\\\world\\\\\""s);
+    TRY(s = quote("\"Hello\" \"world\""s));  TEST_EQUAL(s, "\"\\\"Hello\\\" \\\"world\\\"\""s);
+    TRY(s = quote("\t\n\f\r"s));             TEST_EQUAL(s, "\"\\t\\n\\f\\r\""s);
+    TRY(s = quote("åß∂ƒ"s));                 TEST_EQUAL(s, "\"åß∂ƒ\""s);
 
     TRY(s = bquote(""s));                      TEST_EQUAL(s, "\"\""s);
     TRY(s = bquote("\"\""s));                  TEST_EQUAL(s, "\"\\\"\\\"\""s);
@@ -1355,7 +1355,7 @@ void test_unicorn_utility_string_functions() {
     TRY(s = bquote("\\Hello\\world\\"s));      TEST_EQUAL(s, "\"\\\\Hello\\\\world\\\\\""s);
     TRY(s = bquote("\"Hello\" \"world\""s));   TEST_EQUAL(s, "\"\\\"Hello\\\" \\\"world\\\"\""s);
     TRY(s = bquote("\t\n\f\r"s));              TEST_EQUAL(s, "\"\\t\\n\\f\\r\""s);
-    TRY(s = bquote(u8"åß∂ƒ"s));                TEST_EQUAL(s, "\"\\xc3\\xa5\\xc3\\x9f\\xe2\\x88\\x82\\xc6\\x92\""s);
+    TRY(s = bquote("åß∂ƒ"s));                  TEST_EQUAL(s, "\"\\xc3\\xa5\\xc3\\x9f\\xe2\\x88\\x82\\xc6\\x92\""s);
     TRY(s = bquote("\x00\x01\x7f\x80\xff"s));  TEST_EQUAL(s, "\"\\0\\x01\\x7f\\x80\\xff\""s);
 
     TEST_EQUAL(roman(0), "");

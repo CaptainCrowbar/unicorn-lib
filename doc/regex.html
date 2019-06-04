@@ -83,9 +83,9 @@ multi-unit UTF-8 characters (the encoding will be the same in the regex and
 the subject string, so they will match unit for unit), but makes it impossible
 to match multi-unit characters to non-literal regex elements; for example,
 even if the system encoding is UTF-8, <code>std::regex(".")</code> will still not match
-<code>u8"€"</code> (which is three bytes long). For the same reason, it is impossible to
+<code>"€"</code> (which is three bytes long). For the same reason, it is impossible to
 specify a character range that includes multibyte characters; for example,
-<code>std::regex(u8"[à-ÿ]")</code> will not do what you probably expected, regardless of
+<code>std::regex("[à-ÿ]")</code> will not do what you probably expected, regardless of
 encoding.</p>
 <p>Finally, standard regexes don't support the <code>\p{...}</code> and <code>\P{...}</code> character
 classes, which match on Unicode properties. This may be a minor obstacle

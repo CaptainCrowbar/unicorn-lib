@@ -26,7 +26,7 @@ void test_unicorn_string_algorithm_common() {
     // "αβγδ" = Unicode 3b1 3b1 3b1 3c4 = UTF-8 ce b1 ce b2 ce b3 ce b4
     // "αβδε" = Unicode 3b1 3b1 3c4 3c5 = UTF-8 ce b1 ce b2 ce b4 ce b5
 
-    Ustring x = u8"αβγδ", y = u8"αβδε";
+    Ustring x = "αβγδ", y = "αβδε";
 
     TRY(n = str_common(x, y));      TEST_EQUAL(n, 5);
     TRY(n = str_common_utf(x, y));  TEST_EQUAL(n, 4);
@@ -35,24 +35,24 @@ void test_unicorn_string_algorithm_common() {
 
 void test_unicorn_string_algorithm_expect() {
 
-    Ustring a, b = u8"Hello world", c = u8"€uro ∈lement";
+    Ustring a, b = "Hello world", c = "€uro ∈lement";
     Utf8Iterator i;
 
-    TRY(i = utf_begin(a));  TEST(! str_expect(i, u8""s));                TEST_EQUAL(std::distance(utf_begin(a), i), 0);
-    TRY(i = utf_begin(a));  TEST(! str_expect(i, u8"Hello"s));           TEST_EQUAL(std::distance(utf_begin(a), i), 0);
-    TRY(i = utf_begin(a));  TEST(! str_expect(i, u8"€uro"s));            TEST_EQUAL(std::distance(utf_begin(a), i), 0);
-    TRY(i = utf_begin(b));  TEST(! str_expect(i, u8""s));                TEST_EQUAL(std::distance(utf_begin(b), i), 0);
-    TRY(i = utf_begin(b));  TEST(str_expect(i, u8"Hello"s));             TEST_EQUAL(std::distance(utf_begin(b), i), 5);
-    TRY(i = utf_begin(b));  TEST(str_expect(i, u8"Hello world"s));       TEST_EQUAL(std::distance(utf_begin(b), i), 11);
-    TRY(i = utf_begin(b));  TEST(! str_expect(i, u8"Hello world 2"s));   TEST_EQUAL(std::distance(utf_begin(b), i), 0);
-    TRY(i = utf_begin(b));  TEST(! str_expect(i, u8"world"s));           TEST_EQUAL(std::distance(utf_begin(b), i), 0);
-    TRY(i = utf_begin(b));  TEST(! str_expect(i, u8"€uro"s));            TEST_EQUAL(std::distance(utf_begin(b), i), 0);
-    TRY(i = utf_begin(c));  TEST(! str_expect(i, u8""s));                TEST_EQUAL(std::distance(utf_begin(c), i), 0);
-    TRY(i = utf_begin(c));  TEST(! str_expect(i, u8"Hello"s));           TEST_EQUAL(std::distance(utf_begin(c), i), 0);
-    TRY(i = utf_begin(c));  TEST(str_expect(i, u8"€uro"s));              TEST_EQUAL(std::distance(utf_begin(c), i), 4);
-    TRY(i = utf_begin(c));  TEST(str_expect(i, u8"€uro ∈lement"s));      TEST_EQUAL(std::distance(utf_begin(c), i), 12);
-    TRY(i = utf_begin(c));  TEST(! str_expect(i, u8"€uro ∈lement 2"s));  TEST_EQUAL(std::distance(utf_begin(c), i), 0);
-    TRY(i = utf_begin(c));  TEST(! str_expect(i, u8"∈lement"s));         TEST_EQUAL(std::distance(utf_begin(c), i), 0);
+    TRY(i = utf_begin(a));  TEST(! str_expect(i, ""s));                TEST_EQUAL(std::distance(utf_begin(a), i), 0);
+    TRY(i = utf_begin(a));  TEST(! str_expect(i, "Hello"s));           TEST_EQUAL(std::distance(utf_begin(a), i), 0);
+    TRY(i = utf_begin(a));  TEST(! str_expect(i, "€uro"s));            TEST_EQUAL(std::distance(utf_begin(a), i), 0);
+    TRY(i = utf_begin(b));  TEST(! str_expect(i, ""s));                TEST_EQUAL(std::distance(utf_begin(b), i), 0);
+    TRY(i = utf_begin(b));  TEST(str_expect(i, "Hello"s));             TEST_EQUAL(std::distance(utf_begin(b), i), 5);
+    TRY(i = utf_begin(b));  TEST(str_expect(i, "Hello world"s));       TEST_EQUAL(std::distance(utf_begin(b), i), 11);
+    TRY(i = utf_begin(b));  TEST(! str_expect(i, "Hello world 2"s));   TEST_EQUAL(std::distance(utf_begin(b), i), 0);
+    TRY(i = utf_begin(b));  TEST(! str_expect(i, "world"s));           TEST_EQUAL(std::distance(utf_begin(b), i), 0);
+    TRY(i = utf_begin(b));  TEST(! str_expect(i, "€uro"s));            TEST_EQUAL(std::distance(utf_begin(b), i), 0);
+    TRY(i = utf_begin(c));  TEST(! str_expect(i, ""s));                TEST_EQUAL(std::distance(utf_begin(c), i), 0);
+    TRY(i = utf_begin(c));  TEST(! str_expect(i, "Hello"s));           TEST_EQUAL(std::distance(utf_begin(c), i), 0);
+    TRY(i = utf_begin(c));  TEST(str_expect(i, "€uro"s));              TEST_EQUAL(std::distance(utf_begin(c), i), 4);
+    TRY(i = utf_begin(c));  TEST(str_expect(i, "€uro ∈lement"s));      TEST_EQUAL(std::distance(utf_begin(c), i), 12);
+    TRY(i = utf_begin(c));  TEST(! str_expect(i, "€uro ∈lement 2"s));  TEST_EQUAL(std::distance(utf_begin(c), i), 0);
+    TRY(i = utf_begin(c));  TEST(! str_expect(i, "∈lement"s));         TEST_EQUAL(std::distance(utf_begin(c), i), 0);
 
 }
 
@@ -61,7 +61,7 @@ void test_unicorn_string_algorithm_find_char() {
     Ustring s;
     Utf8Iterator i;
 
-    s = u8"€uro €uro €uro";
+    s = "€uro €uro €uro";
     TRY(i = str_find_char(s, U'€'));                  TEST_EQUAL(std::distance(utf_begin(s), i), 0);
     TRY(i = str_find_char(s, U'o'));                  TEST_EQUAL(std::distance(utf_begin(s), i), 3);
     TRY(i = str_find_char(s, U'z'));                  TEST_EQUAL(std::distance(utf_begin(s), i), 14);
@@ -86,31 +86,31 @@ void test_unicorn_string_algorithm_find_first() {
     Ustring s;
     Utf8Iterator i;
 
-    s = u8"€uro ∈lement";
-    TRY(i = str_find_first_of(s, u8"€∈"));                           TEST_EQUAL(std::distance(utf_begin(s), i), 0);
-    TRY(i = str_find_first_of(s, u8"jklmn"));                        TEST_EQUAL(std::distance(utf_begin(s), i), 6);
-    TRY(i = str_find_first_of(s, u8"vwxyz"));                        TEST_EQUAL(std::distance(utf_begin(s), i), 12);
-    TRY(i = str_find_first_of(utf_range(s), u8"€∈"));                TEST_EQUAL(std::distance(utf_begin(s), i), 0);
-    TRY(i = str_find_first_of(utf_range(s), u8"jklmn"));             TEST_EQUAL(std::distance(utf_begin(s), i), 6);
-    TRY(i = str_find_first_of(utf_range(s), u8"vwxyz"));             TEST_EQUAL(std::distance(utf_begin(s), i), 12);
-    TRY(i = str_find_first_not_of(s, u8"abcde"));                    TEST_EQUAL(std::distance(utf_begin(s), i), 0);
-    TRY(i = str_find_first_not_of(s, u8"€uro"));                     TEST_EQUAL(std::distance(utf_begin(s), i), 4);
-    TRY(i = str_find_first_not_of(s, u8"€uro ∈lement"));             TEST_EQUAL(std::distance(utf_begin(s), i), 12);
-    TRY(i = str_find_first_not_of(utf_range(s), u8"abcde"));         TEST_EQUAL(std::distance(utf_begin(s), i), 0);
-    TRY(i = str_find_first_not_of(utf_range(s), u8"€uro"));          TEST_EQUAL(std::distance(utf_begin(s), i), 4);
-    TRY(i = str_find_first_not_of(utf_range(s), u8"€uro ∈lement"));  TEST_EQUAL(std::distance(utf_begin(s), i), 12);
-    TRY(i = str_find_last_of(s, u8"€∈"));                            TEST_EQUAL(std::distance(utf_begin(s), i), 5);
-    TRY(i = str_find_last_of(s, u8"jklmn"));                         TEST_EQUAL(std::distance(utf_begin(s), i), 10);
-    TRY(i = str_find_last_of(s, u8"vwxyz"));                         TEST_EQUAL(std::distance(utf_begin(s), i), 12);
-    TRY(i = str_find_last_of(utf_range(s), u8"€∈"));                 TEST_EQUAL(std::distance(utf_begin(s), i), 5);
-    TRY(i = str_find_last_of(utf_range(s), u8"jklmn"));              TEST_EQUAL(std::distance(utf_begin(s), i), 10);
-    TRY(i = str_find_last_of(utf_range(s), u8"vwxyz"));              TEST_EQUAL(std::distance(utf_begin(s), i), 12);
-    TRY(i = str_find_last_not_of(s, u8"abcde"));                     TEST_EQUAL(std::distance(utf_begin(s), i), 11);
-    TRY(i = str_find_last_not_of(s, u8"∈lement"));                   TEST_EQUAL(std::distance(utf_begin(s), i), 4);
-    TRY(i = str_find_last_not_of(s, u8"€uro ∈lement"));              TEST_EQUAL(std::distance(utf_begin(s), i), 12);
-    TRY(i = str_find_last_not_of(utf_range(s), u8"abcde"));          TEST_EQUAL(std::distance(utf_begin(s), i), 11);
-    TRY(i = str_find_last_not_of(utf_range(s), u8"∈lement"));        TEST_EQUAL(std::distance(utf_begin(s), i), 4);
-    TRY(i = str_find_last_not_of(utf_range(s), u8"€uro ∈lement"));   TEST_EQUAL(std::distance(utf_begin(s), i), 12);
+    s = "€uro ∈lement";
+    TRY(i = str_find_first_of(s, "€∈"));                           TEST_EQUAL(std::distance(utf_begin(s), i), 0);
+    TRY(i = str_find_first_of(s, "jklmn"));                        TEST_EQUAL(std::distance(utf_begin(s), i), 6);
+    TRY(i = str_find_first_of(s, "vwxyz"));                        TEST_EQUAL(std::distance(utf_begin(s), i), 12);
+    TRY(i = str_find_first_of(utf_range(s), "€∈"));                TEST_EQUAL(std::distance(utf_begin(s), i), 0);
+    TRY(i = str_find_first_of(utf_range(s), "jklmn"));             TEST_EQUAL(std::distance(utf_begin(s), i), 6);
+    TRY(i = str_find_first_of(utf_range(s), "vwxyz"));             TEST_EQUAL(std::distance(utf_begin(s), i), 12);
+    TRY(i = str_find_first_not_of(s, "abcde"));                    TEST_EQUAL(std::distance(utf_begin(s), i), 0);
+    TRY(i = str_find_first_not_of(s, "€uro"));                     TEST_EQUAL(std::distance(utf_begin(s), i), 4);
+    TRY(i = str_find_first_not_of(s, "€uro ∈lement"));             TEST_EQUAL(std::distance(utf_begin(s), i), 12);
+    TRY(i = str_find_first_not_of(utf_range(s), "abcde"));         TEST_EQUAL(std::distance(utf_begin(s), i), 0);
+    TRY(i = str_find_first_not_of(utf_range(s), "€uro"));          TEST_EQUAL(std::distance(utf_begin(s), i), 4);
+    TRY(i = str_find_first_not_of(utf_range(s), "€uro ∈lement"));  TEST_EQUAL(std::distance(utf_begin(s), i), 12);
+    TRY(i = str_find_last_of(s, "€∈"));                            TEST_EQUAL(std::distance(utf_begin(s), i), 5);
+    TRY(i = str_find_last_of(s, "jklmn"));                         TEST_EQUAL(std::distance(utf_begin(s), i), 10);
+    TRY(i = str_find_last_of(s, "vwxyz"));                         TEST_EQUAL(std::distance(utf_begin(s), i), 12);
+    TRY(i = str_find_last_of(utf_range(s), "€∈"));                 TEST_EQUAL(std::distance(utf_begin(s), i), 5);
+    TRY(i = str_find_last_of(utf_range(s), "jklmn"));              TEST_EQUAL(std::distance(utf_begin(s), i), 10);
+    TRY(i = str_find_last_of(utf_range(s), "vwxyz"));              TEST_EQUAL(std::distance(utf_begin(s), i), 12);
+    TRY(i = str_find_last_not_of(s, "abcde"));                     TEST_EQUAL(std::distance(utf_begin(s), i), 11);
+    TRY(i = str_find_last_not_of(s, "∈lement"));                   TEST_EQUAL(std::distance(utf_begin(s), i), 4);
+    TRY(i = str_find_last_not_of(s, "€uro ∈lement"));              TEST_EQUAL(std::distance(utf_begin(s), i), 12);
+    TRY(i = str_find_last_not_of(utf_range(s), "abcde"));          TEST_EQUAL(std::distance(utf_begin(s), i), 11);
+    TRY(i = str_find_last_not_of(utf_range(s), "∈lement"));        TEST_EQUAL(std::distance(utf_begin(s), i), 4);
+    TRY(i = str_find_last_not_of(utf_range(s), "€uro ∈lement"));   TEST_EQUAL(std::distance(utf_begin(s), i), 12);
 
 }
 
@@ -152,17 +152,17 @@ void test_unicorn_string_algorithm_line_column() {
 
 void test_unicorn_string_algorithm_search() {
 
-    Ustring s = u8"€uro ∈lement";
+    Ustring s = "€uro ∈lement";
     Irange<Utf8Iterator> r;
 
-    TRY(r = str_search(s, u8""));                    TEST_EQUAL(std::distance(utf_begin(s), r.first), 0);   TEST_EQUAL(std::distance(r.first, r.second), 0);
-    TRY(r = str_search(s, u8"€uro"));                TEST_EQUAL(std::distance(utf_begin(s), r.first), 0);   TEST_EQUAL(std::distance(r.first, r.second), 4);
-    TRY(r = str_search(s, u8"∈lement"));             TEST_EQUAL(std::distance(utf_begin(s), r.first), 5);   TEST_EQUAL(std::distance(r.first, r.second), 7);
-    TRY(r = str_search(s, u8"Hello"));               TEST_EQUAL(std::distance(utf_begin(s), r.first), 12);  TEST_EQUAL(std::distance(r.first, r.second), 0);
-    TRY(r = str_search(utf_range(s), u8""));         TEST_EQUAL(std::distance(utf_begin(s), r.first), 0);   TEST_EQUAL(std::distance(r.first, r.second), 0);
-    TRY(r = str_search(utf_range(s), u8"€uro"));     TEST_EQUAL(std::distance(utf_begin(s), r.first), 0);   TEST_EQUAL(std::distance(r.first, r.second), 4);
-    TRY(r = str_search(utf_range(s), u8"∈lement"));  TEST_EQUAL(std::distance(utf_begin(s), r.first), 5);   TEST_EQUAL(std::distance(r.first, r.second), 7);
-    TRY(r = str_search(utf_range(s), u8"Hello"));    TEST_EQUAL(std::distance(utf_begin(s), r.first), 12);  TEST_EQUAL(std::distance(r.first, r.second), 0);
+    TRY(r = str_search(s, ""));                    TEST_EQUAL(std::distance(utf_begin(s), r.first), 0);   TEST_EQUAL(std::distance(r.first, r.second), 0);
+    TRY(r = str_search(s, "€uro"));                TEST_EQUAL(std::distance(utf_begin(s), r.first), 0);   TEST_EQUAL(std::distance(r.first, r.second), 4);
+    TRY(r = str_search(s, "∈lement"));             TEST_EQUAL(std::distance(utf_begin(s), r.first), 5);   TEST_EQUAL(std::distance(r.first, r.second), 7);
+    TRY(r = str_search(s, "Hello"));               TEST_EQUAL(std::distance(utf_begin(s), r.first), 12);  TEST_EQUAL(std::distance(r.first, r.second), 0);
+    TRY(r = str_search(utf_range(s), ""));         TEST_EQUAL(std::distance(utf_begin(s), r.first), 0);   TEST_EQUAL(std::distance(r.first, r.second), 0);
+    TRY(r = str_search(utf_range(s), "€uro"));     TEST_EQUAL(std::distance(utf_begin(s), r.first), 0);   TEST_EQUAL(std::distance(r.first, r.second), 4);
+    TRY(r = str_search(utf_range(s), "∈lement"));  TEST_EQUAL(std::distance(utf_begin(s), r.first), 5);   TEST_EQUAL(std::distance(r.first, r.second), 7);
+    TRY(r = str_search(utf_range(s), "Hello"));    TEST_EQUAL(std::distance(utf_begin(s), r.first), 12);  TEST_EQUAL(std::distance(r.first, r.second), 0);
 
 }
 
@@ -171,12 +171,12 @@ void test_unicorn_string_algorithm_skipws() {
     Ustring s;
     Utf8Iterator i;
 
-    s = u8""s;                   TRY(i = utf_begin(s));  TEST_EQUAL(str_skipws(i), 0);  TEST_EQUAL(std::distance(utf_begin(s), i), 0);
-    s = u8"Hello world"s;        TRY(i = utf_begin(s));  TEST_EQUAL(str_skipws(i), 0);  TEST_EQUAL(std::distance(utf_begin(s), i), 0);
-    s = u8" Hello "s;            TRY(i = utf_begin(s));  TEST_EQUAL(str_skipws(i), 1);  TEST_EQUAL(std::distance(utf_begin(s), i), 1);
-    s = u8" \r\n Hello \r\n "s;  TRY(i = utf_begin(s));  TEST_EQUAL(str_skipws(i), 4);  TEST_EQUAL(std::distance(utf_begin(s), i), 4);
-    s = u8"€uro ∈lement"s;       TRY(i = utf_begin(s));  TEST_EQUAL(str_skipws(i), 0);  TEST_EQUAL(std::distance(utf_begin(s), i), 0);
-    s = u8" €uro "s;             TRY(i = utf_begin(s));  TEST_EQUAL(str_skipws(i), 1);  TEST_EQUAL(std::distance(utf_begin(s), i), 1);
-    s = u8" \r\n €uro \r\n "s;   TRY(i = utf_begin(s));  TEST_EQUAL(str_skipws(i), 4);  TEST_EQUAL(std::distance(utf_begin(s), i), 4);
+    s = ""s;                   TRY(i = utf_begin(s));  TEST_EQUAL(str_skipws(i), 0);  TEST_EQUAL(std::distance(utf_begin(s), i), 0);
+    s = "Hello world"s;        TRY(i = utf_begin(s));  TEST_EQUAL(str_skipws(i), 0);  TEST_EQUAL(std::distance(utf_begin(s), i), 0);
+    s = " Hello "s;            TRY(i = utf_begin(s));  TEST_EQUAL(str_skipws(i), 1);  TEST_EQUAL(std::distance(utf_begin(s), i), 1);
+    s = " \r\n Hello \r\n "s;  TRY(i = utf_begin(s));  TEST_EQUAL(str_skipws(i), 4);  TEST_EQUAL(std::distance(utf_begin(s), i), 4);
+    s = "€uro ∈lement"s;       TRY(i = utf_begin(s));  TEST_EQUAL(str_skipws(i), 0);  TEST_EQUAL(std::distance(utf_begin(s), i), 0);
+    s = " €uro "s;             TRY(i = utf_begin(s));  TEST_EQUAL(str_skipws(i), 1);  TEST_EQUAL(std::distance(utf_begin(s), i), 1);
+    s = " \r\n €uro \r\n "s;   TRY(i = utf_begin(s));  TEST_EQUAL(str_skipws(i), 4);  TEST_EQUAL(std::distance(utf_begin(s), i), 4);
 
 }

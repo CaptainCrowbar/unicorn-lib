@@ -82,9 +82,9 @@ void test_unicorn_io_file_reader() {
     TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
     TEST_EQUAL(vec.size(), 3);
     TEST_EQUAL_RANGE(vec, (Strings{
-        u8"Dollar\n",
-        u8"€uro\n",
-        u8"Pound\n",
+        "Dollar\n",
+        "€uro\n",
+        "Pound\n",
     }));
 
     TRY(testfile.save(
@@ -96,9 +96,9 @@ void test_unicorn_io_file_reader() {
     TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
     TEST_EQUAL(vec.size(), 3);
     TEST_EQUAL_RANGE(vec, (Strings{
-        u8"Dollar\n",
-        u8"\ufffduro\n",
-        u8"Pound\n",
+        "Dollar\n",
+        "\ufffduro\n",
+        "Pound\n",
     }));
 
     TRY(testfile.save(
@@ -115,7 +115,7 @@ void test_unicorn_io_file_reader() {
     TEST_EQUAL(vec.size(), 2);
     TEST_EQUAL_RANGE(vec, (Strings{"Hello world\n", "Goodbye\n"}));
 
-    TRY(testfile.save(u8"\ufeffHello world\nGoodbye\n"));
+    TRY(testfile.save("\ufeffHello world\nGoodbye\n"));
     TRY(range = read_lines(testfile, IO::bom));
     TRY(std::copy(range.begin(), range.end(), overwrite(vec)));
     TEST_EQUAL(vec.size(), 2);
@@ -312,16 +312,16 @@ void test_unicorn_io_file_writer() {
     TRY(testfile.load(s));
     TEST_EQUAL(s, "Hello world\r\nGoodbye\r\n");
 
-    vec = {u8"Hello €urope\n", "Goodbye\n"};
+    vec = {"Hello €urope\n", "Goodbye\n"};
     TRY(writer = FileWriter(testfile));
     TRY(std::copy(vec.begin(), vec.end(), writer));
     TRY(writer.flush());
     TRY(testfile.load(s));
-    TEST_EQUAL(s, u8"Hello €urope\nGoodbye\n");
+    TEST_EQUAL(s, "Hello €urope\nGoodbye\n");
 
     // Error detection is not reliable on Windows
     #ifdef _XOPEN_SOURCE
-        vec = {u8"Hello €urope\n", "Goodbye\n"};
+        vec = {"Hello €urope\n", "Goodbye\n"};
         TRY(writer = FileWriter(testfile, Utf::throws, "ascii"s));
         TEST_THROW(std::copy(vec.begin(), vec.end(), writer), EncodingError);
     #endif
@@ -331,14 +331,14 @@ void test_unicorn_io_file_writer() {
     TRY(std::copy(vec.begin(), vec.end(), writer));
     TRY(writer.flush());
     TRY(testfile.load(s));
-    TEST_EQUAL(s, u8"\ufeffHello world\nGoodbye\n");
+    TEST_EQUAL(s, "\ufeffHello world\nGoodbye\n");
 
-    vec = {u8"\ufeffHello world\n", "Goodbye\n"};
+    vec = {"\ufeffHello world\n", "Goodbye\n"};
     TRY(writer = FileWriter(testfile, IO::bom));
     TRY(std::copy(vec.begin(), vec.end(), writer));
     TRY(writer.flush());
     TRY(testfile.load(s));
-    TEST_EQUAL(s, u8"\ufeffHello world\nGoodbye\n");
+    TEST_EQUAL(s, "\ufeffHello world\nGoodbye\n");
 
     TRY(writer = FileWriter(testfile));
     TRY(*writer++ = "Hello world\n");

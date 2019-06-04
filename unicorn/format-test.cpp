@@ -345,10 +345,10 @@ void test_unicorn_format_characters() {
     TEST_EQUAL(format_str(u'A', "v"), "0041");
     TEST_EQUAL(format_str(u'A', "x"), "41");
 
-    TEST_EQUAL(format_str(u'€'), u8"€");
-    TEST_EQUAL(format_str(u'€', "e"), u8"€");
+    TEST_EQUAL(format_str(u'€'), "€");
+    TEST_EQUAL(format_str(u'€', "e"), "€");
     TEST_EQUAL(format_str(u'€', "a"), "\\x{20ac}");
-    TEST_EQUAL(format_str(u'€', "q"), u8"\"€\"");
+    TEST_EQUAL(format_str(u'€', "q"), "\"€\"");
     TEST_EQUAL(format_str(u'€', "Q"), "\"\\x{20ac}\"");
     TEST_EQUAL(format_str(u'€', "n"), "8364");
     TEST_EQUAL(format_str(u'€', "u"), "e2 82 ac");
@@ -375,10 +375,10 @@ void test_unicorn_format_characters() {
     TEST_EQUAL(format_str(U'A', "v"), "0041");
     TEST_EQUAL(format_str(U'A', "x"), "41");
 
-    TEST_EQUAL(format_str(U'€'), u8"€");
-    TEST_EQUAL(format_str(U'€', "e"), u8"€");
+    TEST_EQUAL(format_str(U'€'), "€");
+    TEST_EQUAL(format_str(U'€', "e"), "€");
     TEST_EQUAL(format_str(U'€', "a"), "\\x{20ac}");
-    TEST_EQUAL(format_str(U'€', "q"), u8"\"€\"");
+    TEST_EQUAL(format_str(U'€', "q"), "\"€\"");
     TEST_EQUAL(format_str(U'€', "Q"), "\"\\x{20ac}\"");
     TEST_EQUAL(format_str(U'€', "n"), "8364");
     TEST_EQUAL(format_str(U'€', "u"), "e2 82 ac");
@@ -428,15 +428,15 @@ void test_unicorn_format_strings() {
     TEST_EQUAL(format_str("Hello"s, "v"), "0048 0065 006c 006c 006f");
     TEST_EQUAL(format_str("Hello"s, "x"), "48 65 6c 6c 6f");
 
-    TEST_EQUAL(format_str(u8"§€ αβγ\n"s), u8"§€ αβγ\n");
-    TEST_EQUAL(format_str(u8"§€ αβγ\n"s, "e"), u8"§€ αβγ\\n");
-    TEST_EQUAL(format_str(u8"§€ αβγ\n"s, "a"), "\\xa7\\x{20ac} \\x{3b1}\\x{3b2}\\x{3b3}\\n");
-    TEST_EQUAL(format_str(u8"§€ αβγ\n"s, "q"), u8"\"§€ αβγ\\n\"");
-    TEST_EQUAL(format_str(u8"§€ αβγ\n"s, "Q"), "\"\\xa7\\x{20ac} \\x{3b1}\\x{3b2}\\x{3b3}\\n\"");
-    TEST_EQUAL(format_str(u8"§€ αβγ\n"s, "n"), "167 8364 32 945 946 947 10");
-    TEST_EQUAL(format_str(u8"§€ αβγ\n"s, "u"), "c2 a7 e2 82 ac 20 ce b1 ce b2 ce b3 0a");
-    TEST_EQUAL(format_str(u8"§€ αβγ\n"s, "v"), "00a7 20ac 0020 03b1 03b2 03b3 000a");
-    TEST_EQUAL(format_str(u8"§€ αβγ\n"s, "x"), "a7 20ac 20 3b1 3b2 3b3 a");
+    TEST_EQUAL(format_str("§€ αβγ\n"s), "§€ αβγ\n");
+    TEST_EQUAL(format_str("§€ αβγ\n"s, "e"), "§€ αβγ\\n");
+    TEST_EQUAL(format_str("§€ αβγ\n"s, "a"), "\\xa7\\x{20ac} \\x{3b1}\\x{3b2}\\x{3b3}\\n");
+    TEST_EQUAL(format_str("§€ αβγ\n"s, "q"), "\"§€ αβγ\\n\"");
+    TEST_EQUAL(format_str("§€ αβγ\n"s, "Q"), "\"\\xa7\\x{20ac} \\x{3b1}\\x{3b2}\\x{3b3}\\n\"");
+    TEST_EQUAL(format_str("§€ αβγ\n"s, "n"), "167 8364 32 945 946 947 10");
+    TEST_EQUAL(format_str("§€ αβγ\n"s, "u"), "c2 a7 e2 82 ac 20 ce b1 ce b2 ce b3 0a");
+    TEST_EQUAL(format_str("§€ αβγ\n"s, "v"), "00a7 20ac 0020 03b1 03b2 03b3 000a");
+    TEST_EQUAL(format_str("§€ αβγ\n"s, "x"), "a7 20ac 20 3b1 3b2 3b3 a");
 
     TEST_EQUAL(format_str(u""s), "");
     TEST_EQUAL(format_str(u""s, "e"), "");
@@ -458,10 +458,10 @@ void test_unicorn_format_strings() {
     TEST_EQUAL(format_str(u"Hello"s, "v"), "0048 0065 006c 006c 006f");
     TEST_EQUAL(format_str(u"Hello"s, "x"), "48 65 6c 6c 6f");
 
-    TEST_EQUAL(format_str(u"§€ αβγ\n"s), u8"§€ αβγ\n");
-    TEST_EQUAL(format_str(u"§€ αβγ\n"s, "e"), u8"§€ αβγ\\n");
+    TEST_EQUAL(format_str(u"§€ αβγ\n"s), "§€ αβγ\n");
+    TEST_EQUAL(format_str(u"§€ αβγ\n"s, "e"), "§€ αβγ\\n");
     TEST_EQUAL(format_str(u"§€ αβγ\n"s, "a"), "\\xa7\\x{20ac} \\x{3b1}\\x{3b2}\\x{3b3}\\n");
-    TEST_EQUAL(format_str(u"§€ αβγ\n"s, "q"), u8"\"§€ αβγ\\n\"");
+    TEST_EQUAL(format_str(u"§€ αβγ\n"s, "q"), "\"§€ αβγ\\n\"");
     TEST_EQUAL(format_str(u"§€ αβγ\n"s, "Q"), "\"\\xa7\\x{20ac} \\x{3b1}\\x{3b2}\\x{3b3}\\n\"");
     TEST_EQUAL(format_str(u"§€ αβγ\n"s, "n"), "167 8364 32 945 946 947 10");
     TEST_EQUAL(format_str(u"§€ αβγ\n"s, "u"), "c2 a7 e2 82 ac 20 ce b1 ce b2 ce b3 0a");
@@ -488,10 +488,10 @@ void test_unicorn_format_strings() {
     TEST_EQUAL(format_str(U"Hello"s, "v"), "0048 0065 006c 006c 006f");
     TEST_EQUAL(format_str(U"Hello"s, "x"), "48 65 6c 6c 6f");
 
-    TEST_EQUAL(format_str(U"§€ αβγ\n"s), u8"§€ αβγ\n");
-    TEST_EQUAL(format_str(U"§€ αβγ\n"s, "e"), u8"§€ αβγ\\n");
+    TEST_EQUAL(format_str(U"§€ αβγ\n"s), "§€ αβγ\n");
+    TEST_EQUAL(format_str(U"§€ αβγ\n"s, "e"), "§€ αβγ\\n");
     TEST_EQUAL(format_str(U"§€ αβγ\n"s, "a"), "\\xa7\\x{20ac} \\x{3b1}\\x{3b2}\\x{3b3}\\n");
-    TEST_EQUAL(format_str(U"§€ αβγ\n"s, "q"), u8"\"§€ αβγ\\n\"");
+    TEST_EQUAL(format_str(U"§€ αβγ\n"s, "q"), "\"§€ αβγ\\n\"");
     TEST_EQUAL(format_str(U"§€ αβγ\n"s, "Q"), "\"\\xa7\\x{20ac} \\x{3b1}\\x{3b2}\\x{3b3}\\n\"");
     TEST_EQUAL(format_str(U"§€ αβγ\n"s, "n"), "167 8364 32 945 946 947 10");
     TEST_EQUAL(format_str(U"§€ αβγ\n"s, "u"), "c2 a7 e2 82 ac 20 ce b1 ce b2 ce b3 0a");
