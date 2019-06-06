@@ -38,7 +38,7 @@ BUILD := build/$(build_target)
 LIBTAG := $(cross_target)
 CXX := g++
 common_flags := -march=ivybridge -mfpmath=sse
-diagnostic_flags := -fdiagnostics-color=always -Wall -Wextra -Werror
+diagnostic_flags := -fdiagnostics-color=always -finput-charset=UTF-8 -Wall -Wextra -Werror
 cc_specific_flags :=
 cxx_specific_flags :=
 objc_specific_flags :=
