@@ -722,8 +722,14 @@ method.</p>
 <tr>
 <td><code>Wrap::</code><strong><code>newline</code></strong></td>
 <td><code>Ustring</code></td>
-<td>Line break</td>
+<td>Line break on output</td>
 <td><code>"\n"</code></td>
+</tr>
+<tr>
+<td><code>Wrap::</code><strong><code>newpara</code></strong></td>
+<td><code>Ustring</code></td>
+<td>Paragraph break on output</td>
+<td>two <code>newline</code></td>
 </tr>
 </tbody>
 </table>
@@ -743,12 +749,12 @@ used to indent the first and subsequent lines, respectively, of a paragraph
 (the width includes the indentation); if <code>margin2</code> is not supplied, it
 defaults to the same value as <code>margin</code>. The function will throw
 <code>std::length_error</code> if either margin is greater than or equal to the width.</p>
-<p>The <code>newline</code> value is used for all line breaks on output; any line breaking
-already present in the input text is discarded. Paragraph breaks are replaced
-with two line breaks, regardless of their original spelling; a single line
-break is inserted at the end of the output. If the <code>preserve</code> flag is used,
-any paragraphs that start with an indented line are left in their original
-layout.</p>
+<p>The <code>newline</code> value is used for all line breaks in the output; any line
+breaking already present in the input text is discarded. The <code>newpara</code> value
+is used for paragraph breaks in the output; the default is two line breaks. A
+single line break is inserted at the end of the output. If the <code>preserve</code> flag
+is used, any paragraphs that start with an indented line are left in their
+original layout.</p>
 <p>If a single word is too long to fit on one line, the default behaviour is to
 allow it to violate the right margin. If the <code>enforce</code> flag is used, this will
 cause the function to throw <code>std::length_error</code> instead.</p>

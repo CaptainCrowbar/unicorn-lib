@@ -789,10 +789,11 @@ namespace RS::Unicorn {
             check_whitespace(i, j, linebreaks, tailspaces);
             if (! dst.empty() && linebreaks >= pbreak_) {
                 if (words > 0) {
-                    dst += newline_;
+                    dst += newpara_;
                     words = linewidth = 0;
+                } else {
+                    dst += newline_;
                 }
-                dst += newline_;
                 spaces = margin_;
             }
             i = j;

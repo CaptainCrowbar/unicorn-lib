@@ -580,7 +580,8 @@ Keyword                 | Type        | Description                             
 `Wrap::`**`margin`**    | `size_t`    | Margin for first line                      | 0
 `Wrap::`**`margin2`**   | `size_t`    | Margin for subsequent lines                | same as `margin`
 `Wrap::`**`width`**     | `size_t`    | Wrap width                                 | see below
-`Wrap::`**`newline`**   | `Ustring`   | Line break                                 | `"\n"`
+`Wrap::`**`newline`**   | `Ustring`   | Line break on output                       | `"\n"`
+`Wrap::`**`newpara`**   | `Ustring`   | Paragraph break on output                  | two `newline`
 
 Wrapping is done separately for each paragraph. Words are simply delimited by
 whitespace, which may not be appropriate for all languages; no attempt is made
@@ -601,12 +602,12 @@ used to indent the first and subsequent lines, respectively, of a paragraph
 defaults to the same value as `margin`. The function will throw
 `std::length_error` if either margin is greater than or equal to the width.
 
-The `newline` value is used for all line breaks on output; any line breaking
-already present in the input text is discarded. Paragraph breaks are replaced
-with two line breaks, regardless of their original spelling; a single line
-break is inserted at the end of the output. If the `preserve` flag is used,
-any paragraphs that start with an indented line are left in their original
-layout.
+The `newline` value is used for all line breaks in the output; any line
+breaking already present in the input text is discarded. The `newpara` value
+is used for paragraph breaks in the output; the default is two line breaks. A
+single line break is inserted at the end of the output. If the `preserve` flag
+is used, any paragraphs that start with an indented line are left in their
+original layout.
 
 If a single word is too long to fit on one line, the default behaviour is to
 allow it to violate the right margin. If the `enforce` flag is used, this will

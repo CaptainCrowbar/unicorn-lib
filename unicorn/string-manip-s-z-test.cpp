@@ -550,6 +550,27 @@ void test_unicorn_string_manip_wrap() {
     TRY(str_wrap_in(s, Wrap::width=50, Wrap::margin=20, Wrap::margin2=10));
     TEST_EQUAL(s, t);
 
+    t =
+        //...:....1....:....2....:....3....:....4....:....5
+        "          Lorem ipsum dolor sit amet,\n"
+        "consectetur adipisicing elit, sed do\n"
+        "eiusmod tempor incididunt ut labore et\n"
+        "dolore magna aliqua.\n"
+        "*****\n"
+        "          Lorem ipsum dolor sit amet,\n"
+        "consectetur adipisicing elit, sed do\n"
+        "eiusmod tempor incididunt ut labore et\n"
+        "dolore magna aliqua. Ut enim ad minim\n"
+        "veniam, quis nostrud exercitation\n"
+        "ullamco laboris nisi ut aliquip ex ea\n"
+        "commodo consequat.\n"
+        "*****\n"
+        "          Lorem ipsum dolor sit amet,\n"
+        "consectetur adipisicing elit.\n";
+    TEST_EQUAL(str_wrap(s, Wrap::width=40, Wrap::margin=10, Wrap::margin2=0, Wrap::newpara="\n*****\n"), t);
+    TRY(str_wrap_in(s, Wrap::width=40, Wrap::margin=10, Wrap::margin2=0, Wrap::newpara="\n*****\n"));
+    TEST_EQUAL(s, t);
+
     s =
         "Lorem ipsum dolor sit amet,\r\n"
         "consectetur adipisicing elit,\r\n"

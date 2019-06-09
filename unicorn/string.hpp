@@ -505,14 +505,15 @@ namespace RS::Unicorn {
 
     class Wrap {
     public:
-        static constexpr Kwarg<bool, 1> enforce = {};    // Enforce right margin strictly (default false)
-        static constexpr Kwarg<bool, 2> lines = {};      // Treat every line as a paragraph (default false)
-        static constexpr Kwarg<bool, 3> preserve = {};   // Preserve layout on already indented lines (default false)
-        static constexpr Kwarg<uint32_t> flags = {};     // Flags for string length (default 0)
-        static constexpr Kwarg<size_t, 1> margin = {};   // Margin for first line (default 0)
-        static constexpr Kwarg<size_t, 2> margin2 = {};  // Margin for subsequent lines (default same as margin)
-        static constexpr Kwarg<size_t, 3> width = {};    // Wrap width (default COLUMNS-2)
-        static constexpr Kwarg<Ustring> newline = {};    // Line break (default "\n")
+        static constexpr Kwarg<bool, 1> enforce = {};     // Enforce right margin strictly (default false)
+        static constexpr Kwarg<bool, 2> lines = {};       // Treat every line as a paragraph (default false)
+        static constexpr Kwarg<bool, 3> preserve = {};    // Preserve layout on already indented lines (default false)
+        static constexpr Kwarg<uint32_t> flags = {};      // Flags for string length (default 0)
+        static constexpr Kwarg<size_t, 1> margin = {};    // Margin for first line (default 0)
+        static constexpr Kwarg<size_t, 2> margin2 = {};   // Margin for subsequent lines (default is same as margin)
+        static constexpr Kwarg<size_t, 3> width = {};     // Wrap width (default is $COLUMNS-2)
+        static constexpr Kwarg<Ustring, 1> newline = {};  // Line break (default LF)
+        static constexpr Kwarg<Ustring, 2> newpara = {};  // Paragraph break (default is two line breaks)
         Wrap() { init(); }
         template <typename... Args> Wrap(Args... args);
         Ustring wrap(const Ustring& src) const { Ustring dst; do_wrap(src, dst); return dst; }
@@ -527,6 +528,7 @@ namespace RS::Unicorn {
         size_t margin2_ = npos;
         size_t width_ = npos;
         Ustring newline_ = "\n";
+        Ustring newpara_ = "\n\n";
         size_t pbreak_ = 2;
         size_t spacing_ = 1;
         void do_wrap(const Ustring& src, Ustring& dst) const;
@@ -544,6 +546,7 @@ namespace RS::Unicorn {
             margin2_ = kwget(margin2, npos, args...);
             width_ = kwget(width, npos, args...);
             newline_ = kwget(newline, "\n"s, args...);
+            newpara_ = kwget(newpara, newline_ + newline_, args...);
             init();
         }
 
