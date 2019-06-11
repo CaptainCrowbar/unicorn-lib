@@ -209,19 +209,25 @@ namespace RS::Unicorn {
 
     // Case folding properties
 
+    RS_ENUM_CLASS(Case, uint32_t, 0, none, fold, lower, title, upper);
+
+    Case char_case(char32_t c) noexcept;
+    bool char_is_case(char32_t c, Case k) noexcept;
+    bool char_is_cased(char32_t c) noexcept;
+    bool char_is_case_ignorable(char32_t c) noexcept;
     bool char_is_uppercase(char32_t c) noexcept;
     bool char_is_lowercase(char32_t c) noexcept;
     inline bool char_is_titlecase(char32_t c) noexcept { return char_general_category(c) == GC::Lt; }
-    bool char_is_cased(char32_t c) noexcept;
-    bool char_is_case_ignorable(char32_t c) noexcept;
     char32_t char_to_simple_uppercase(char32_t c) noexcept;
     char32_t char_to_simple_lowercase(char32_t c) noexcept;
     char32_t char_to_simple_titlecase(char32_t c) noexcept;
     char32_t char_to_simple_casefold(char32_t c) noexcept;
+    char32_t char_to_simple_case(char32_t c, Case k) noexcept;
     size_t char_to_full_uppercase(char32_t c, char32_t* dst) noexcept;
     size_t char_to_full_lowercase(char32_t c, char32_t* dst) noexcept;
     size_t char_to_full_titlecase(char32_t c, char32_t* dst) noexcept;
     size_t char_to_full_casefold(char32_t c, char32_t* dst) noexcept;
+    size_t char_to_full_case(char32_t c, char32_t* dst, Case k) noexcept;
 
     // Character names
 

@@ -278,12 +278,26 @@ namespace RS::Unicorn {
 
     // Case folding properties
 
-    bool char_is_uppercase(char32_t c) noexcept {
-        return sparse_set_lookup(UnicornDetail::other_uppercase_table, c) || char_general_category(c) == GC::Lu;
+    Case char_case(char32_t c) noexcept {
+        if (sparse_set_lookup(UnicornDetail::other_uppercase_table, c))
+            return Case::upper;
+        else if (sparse_set_lookup(UnicornDetail::other_lowercase_table, c))
+            return Case::lower;
+        switch (char_general_category(c)) {
+            case GC::Ll: return Case::lower;
+            case GC::Lt: return Case::title;
+            case GC::Lu: return Case::upper;
+            default:     return Case::none;
+        }
     }
 
-    bool char_is_lowercase(char32_t c) noexcept {
-        return sparse_set_lookup(UnicornDetail::other_lowercase_table, c) || char_general_category(c) == GC::Ll;
+    bool char_is_case(char32_t c, Case k) noexcept {
+        switch (k) {
+            case Case::lower:  return char_is_lowercase(c);
+            case Case::title:  return char_is_titlecase(c);
+            case Case::upper:  return char_is_uppercase(c);
+            default:           return false;
+        }
     }
 
     bool char_is_cased(char32_t c) noexcept {
@@ -302,6 +316,14 @@ namespace RS::Unicorn {
             return true;
         auto gc = char_general_category(c);
         return gc == GC::Cf || gc == GC::Lm || gc == GC::Me || gc == GC::Mn || gc == GC::Sk;
+    }
+
+    bool char_is_uppercase(char32_t c) noexcept {
+        return sparse_set_lookup(UnicornDetail::other_uppercase_table, c) || char_general_category(c) == GC::Lu;
+    }
+
+    bool char_is_lowercase(char32_t c) noexcept {
+        return sparse_set_lookup(UnicornDetail::other_lowercase_table, c) || char_general_category(c) == GC::Ll;
     }
 
     char32_t char_to_simple_uppercase(char32_t c) noexcept {
@@ -324,6 +346,16 @@ namespace RS::Unicorn {
         return t == not_found ? char_to_simple_lowercase(c) : t;
     }
 
+    char32_t char_to_simple_case(char32_t c, Case k) noexcept {
+        switch (k) {
+            case Case::fold:   return char_to_simple_casefold(c);
+            case Case::lower:  return char_to_simple_lowercase(c);
+            case Case::title:  return char_to_simple_titlecase(c);
+            case Case::upper:  return char_to_simple_uppercase(c);
+            default:           return c;
+        }
+    }
+
     size_t char_to_full_uppercase(char32_t c, char32_t* dst) noexcept {
         return extended_table_lookup(c, dst, UnicornDetail::full_uppercase_table, char_to_simple_uppercase);
     }
@@ -338,6 +370,16 @@ namespace RS::Unicorn {
 
     size_t char_to_full_casefold(char32_t c, char32_t* dst) noexcept {
         return extended_table_lookup(c, dst, UnicornDetail::full_casefold_table, char_to_simple_casefold);
+    }
+
+    size_t char_to_full_case(char32_t c, char32_t* dst, Case k) noexcept {
+        switch (k) {
+            case Case::fold:   return char_to_full_casefold(c, dst);
+            case Case::lower:  return char_to_full_lowercase(c, dst);
+            case Case::title:  return char_to_full_titlecase(c, dst);
+            case Case::upper:  return char_to_full_uppercase(c, dst);
+            default:           *dst = c; return 1;
+        }
     }
 
     // Character names

@@ -842,11 +842,13 @@ namespace RS::Unicorn {
     Ustring str_lowercase(const Ustring& str);
     Ustring str_titlecase(const Ustring& str);
     Ustring str_casefold(const Ustring& str);
+    Ustring str_case(const Ustring& str, Case c);
     Ustring str_initial_titlecase(const Ustring& str);
     void str_uppercase_in(Ustring& str);
     void str_lowercase_in(Ustring& str);
     void str_titlecase_in(Ustring& str);
     void str_casefold_in(Ustring& str);
+    void str_case_in(Ustring& str, Case c);
     void str_initial_titlecase_in(Ustring& str);
 
     // Escaping and quoting functions

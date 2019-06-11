@@ -362,6 +362,24 @@ blocks (in code point order).</p>
 <h2 id="case-folding-properties">Case folding properties</h2>
 <div class="defns">
 <ul>
+<li><code>enum class</code> <strong><code>Case</code></strong><code>: uint32_t</code><ul>
+<li><code>Case::</code><strong><code>none</code></strong></li>
+<li><code>Case::</code><strong><code>fold</code></strong></li>
+<li><code>Case::</code><strong><code>lower</code></strong></li>
+<li><code>Case::</code><strong><code>title</code></strong></li>
+<li><code>Case::</code><strong><code>upper</code></strong></li>
+</ul>
+</li>
+</ul>
+<p>Enumeration values for character casing. When used as a query parameter,
+<code>Case::none</code> is reported for characters that have no associated case;
+<code>Case::fold</code> is never returned. When used as a transformation argument,
+<code>Case::none</code> returns the input unchanged.</p>
+</div>
+<div class="defns">
+<ul>
+<li><code>Case</code> <strong><code>char_case</code></strong><code>(char32_t c) noexcept</code></li>
+<li><code>bool</code> <strong><code>char_is_case</code></strong><code>(char32_t c, Case k) noexcept</code></li>
 <li><code>bool</code> <strong><code>char_is_cased</code></strong><code>(char32_t c) noexcept</code></li>
 <li><code>bool</code> <strong><code>char_is_case_ignorable</code></strong><code>(char32_t c) noexcept</code></li>
 <li><code>bool</code> <strong><code>char_is_uppercase</code></strong><code>(char32_t c) noexcept</code></li>
@@ -376,10 +394,12 @@ blocks (in code point order).</p>
 <li><code>char32_t</code> <strong><code>char_to_simple_lowercase</code></strong><code>(char32_t c) noexcept</code></li>
 <li><code>char32_t</code> <strong><code>char_to_simple_titlecase</code></strong><code>(char32_t c) noexcept</code></li>
 <li><code>char32_t</code> <strong><code>char_to_simple_casefold</code></strong><code>(char32_t c) noexcept</code></li>
+<li><code>char32_t</code> <strong><code>char_to_simple_case</code></strong><code>(char32_t c, Case k) noexcept</code></li>
 <li><code>size_t</code> <strong><code>char_to_full_uppercase</code></strong><code>(char32_t c, char32_t* dst) noexcept</code></li>
 <li><code>size_t</code> <strong><code>char_to_full_lowercase</code></strong><code>(char32_t c, char32_t* dst) noexcept</code></li>
 <li><code>size_t</code> <strong><code>char_to_full_titlecase</code></strong><code>(char32_t c, char32_t* dst) noexcept</code></li>
 <li><code>size_t</code> <strong><code>char_to_full_casefold</code></strong><code>(char32_t c, char32_t* dst) noexcept</code></li>
+<li><code>size_t</code> <strong><code>char_to_full_case</code></strong><code>(char32_t c, char32_t* dst, Case k) noexcept</code></li>
 </ul>
 <p>Single-character case conversion functions. The simple case mapping functions
 cover only one-to-one case conversions, while the full case mapping functions

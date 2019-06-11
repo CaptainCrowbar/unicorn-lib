@@ -83,6 +83,16 @@ namespace RS::Unicorn {
         return casemap_helper(str, char_to_full_casefold);
     }
 
+    Ustring str_case(const Ustring& str, Case c) {
+        switch (c) {
+            case Case::fold:   return str_casefold(str);
+            case Case::lower:  return str_lowercase(str);
+            case Case::title:  return str_titlecase(str);
+            case Case::upper:  return str_uppercase(str);
+            default:           return str;
+        }
+    }
+
     Ustring str_initial_titlecase(const Ustring& str) {
         if (str.empty())
             return {};
@@ -97,27 +107,32 @@ namespace RS::Unicorn {
 
     void str_uppercase_in(Ustring& str) {
         auto result = str_uppercase(str);
-        str.swap(result);
+        str = std::move(result);
     }
 
     void str_lowercase_in(Ustring& str) {
         auto result = str_lowercase(str);
-        str.swap(result);
+        str = std::move(result);
     }
 
     void str_titlecase_in(Ustring& str) {
         auto result = str_titlecase(str);
-        str.swap(result);
+        str = std::move(result);
     }
 
     void str_casefold_in(Ustring& str) {
         auto result = str_casefold(str);
-        str.swap(result);
+        str = std::move(result);
+    }
+
+    void str_case_in(Ustring& str, Case c) {
+        auto result = str_case(str, c);
+        str = std::move(result);
     }
 
     void str_initial_titlecase_in(Ustring& str) {
         auto result = str_initial_titlecase(str);
-        str.swap(result);
+        str = std::move(result);
     }
 
 }

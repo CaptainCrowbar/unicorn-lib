@@ -279,6 +279,20 @@ blocks (in code point order).
 
 ## Case folding properties ##
 
+* `enum class` **`Case`**`: uint32_t`
+    * `Case::`**`none`**
+    * `Case::`**`fold`**
+    * `Case::`**`lower`**
+    * `Case::`**`title`**
+    * `Case::`**`upper`**
+
+Enumeration values for character casing. When used as a query parameter,
+`Case::none` is reported for characters that have no associated case;
+`Case::fold` is never returned. When used as a transformation argument,
+`Case::none` returns the input unchanged.
+
+* `Case` **`char_case`**`(char32_t c) noexcept`
+* `bool` **`char_is_case`**`(char32_t c, Case k) noexcept`
 * `bool` **`char_is_cased`**`(char32_t c) noexcept`
 * `bool` **`char_is_case_ignorable`**`(char32_t c) noexcept`
 * `bool` **`char_is_uppercase`**`(char32_t c) noexcept`
@@ -291,10 +305,12 @@ Boolean Unicode properties related to case conversion.
 * `char32_t` **`char_to_simple_lowercase`**`(char32_t c) noexcept`
 * `char32_t` **`char_to_simple_titlecase`**`(char32_t c) noexcept`
 * `char32_t` **`char_to_simple_casefold`**`(char32_t c) noexcept`
+* `char32_t` **`char_to_simple_case`**`(char32_t c, Case k) noexcept`
 * `size_t` **`char_to_full_uppercase`**`(char32_t c, char32_t* dst) noexcept`
 * `size_t` **`char_to_full_lowercase`**`(char32_t c, char32_t* dst) noexcept`
 * `size_t` **`char_to_full_titlecase`**`(char32_t c, char32_t* dst) noexcept`
 * `size_t` **`char_to_full_casefold`**`(char32_t c, char32_t* dst) noexcept`
+* `size_t` **`char_to_full_case`**`(char32_t c, char32_t* dst, Case k) noexcept`
 
 Single-character case conversion functions. The simple case mapping functions
 cover only one-to-one case conversions, while the full case mapping functions

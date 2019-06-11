@@ -623,6 +623,8 @@ cause the function to throw `std::length_error` instead.
 * `void` **`str_titlecase_in`**`(Ustring& str)`
 * `Ustring` **`str_casefold`**`(const Ustring& str)`
 * `void` **`str_casefold_in`**`(Ustring& str)`
+* `Ustring` **`str_case`**`(const Ustring& str, Case c)`
+* `void` **`str_case_in`**`(Ustring& str, Case c)`
 
 These convert a string to upper case, lower case, title case, or the case
 folded form (the form recommended by Unicode for case insensitive string

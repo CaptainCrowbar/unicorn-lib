@@ -1131,6 +1131,50 @@ void test_unicorn_character_case_folding_properties() {
     TEST(char_is_titlecase(0x1f2));   // latin capital letter d with small letter z
     TEST(char_is_titlecase(0x1f88));  // greek capital letter alpha with psili and prosgegrammeni
 
+    TEST_EQUAL(char_case('\''), Case::none);      // apostrophe
+    TEST_EQUAL(char_case('A'), Case::upper);      // latin capital letter a
+    TEST_EQUAL(char_case('a'), Case::lower);      // latin small letter a
+    TEST_EQUAL(char_case(0xc0), Case::upper);     // latin capital letter a with grave
+    TEST_EQUAL(char_case(0xdf), Case::lower);     // latin small letter sharp s
+    TEST_EQUAL(char_case(0x1c5), Case::title);    // latin capital letter d with small letter z with caron
+    TEST_EQUAL(char_case(0x1c8), Case::title);    // latin capital letter l with small letter j
+    TEST_EQUAL(char_case(0x1cb), Case::title);    // latin capital letter n with small letter j
+    TEST_EQUAL(char_case(0x1f2), Case::title);    // latin capital letter d with small letter z
+    TEST_EQUAL(char_case(0x391), Case::upper);    // greek capital letter alpha
+    TEST_EQUAL(char_case(0x3b1), Case::lower);    // greek small letter alpha
+    TEST_EQUAL(char_case(0x1f88), Case::title);   // greek capital letter alpha with psili and prosgegrammeni
+    TEST_EQUAL(char_case(0x2071), Case::lower);   // superscript latin small letter i
+    TEST_EQUAL(char_case(0x2102), Case::upper);   // double-struck capital c
+    TEST_EQUAL(char_case(0x1d7ca), Case::upper);  // mathematical bold capital digamma
+    TEST_EQUAL(char_case(0x1d7cb), Case::lower);  // mathematical bold small digamma
+
+    TEST(! char_is_case('\'', Case::upper));   // apostrophe
+    TEST(char_is_case('A', Case::upper));      // latin capital letter a
+    TEST(! char_is_case('a', Case::upper));    // latin small letter a
+    TEST(char_is_case(0xc0, Case::upper));     // latin capital letter a with grave
+    TEST(! char_is_case(0x1c5, Case::upper));  // latin capital letter d with small letter z with caron
+    TEST(char_is_case(0x391, Case::upper));    // greek capital letter alpha
+    TEST(char_is_case(0x2102, Case::upper));   // double-struck capital c
+    TEST(char_is_case(0x1d7ca, Case::upper));  // mathematical bold capital digamma
+
+    TEST(! char_is_case('\'', Case::lower));   // apostrophe
+    TEST(! char_is_case('A', Case::lower));    // latin capital letter a
+    TEST(char_is_case('a', Case::lower));      // latin small letter a
+    TEST(char_is_case(0xdf, Case::lower));     // latin small letter sharp s
+    TEST(! char_is_case(0x1c5, Case::lower));  // latin capital letter d with small letter z with caron
+    TEST(char_is_case(0x3b1, Case::lower));    // greek small letter alpha
+    TEST(char_is_case(0x2071, Case::lower));   // superscript latin small letter i
+    TEST(char_is_case(0x1d7cb, Case::lower));  // mathematical bold small digamma
+
+    TEST(! char_is_case('\'', Case::title));  // apostrophe
+    TEST(! char_is_case('A', Case::title));   // latin capital letter a
+    TEST(! char_is_case('a', Case::title));   // latin small letter a
+    TEST(char_is_case(0x1c5, Case::title));   // latin capital letter d with small letter z with caron
+    TEST(char_is_case(0x1c8, Case::title));   // latin capital letter l with small letter j
+    TEST(char_is_case(0x1cb, Case::title));   // latin capital letter n with small letter j
+    TEST(char_is_case(0x1f2, Case::title));   // latin capital letter d with small letter z
+    TEST(char_is_case(0x1f88, Case::title));  // greek capital letter alpha with psili and prosgegrammeni
+
     TEST(! char_is_cased(0));        // null
     TEST(! char_is_cased('\''));     // apostrophe
     TEST(! char_is_cased('0'));      // digit zero
@@ -1221,47 +1265,117 @@ void test_unicorn_character_case_folding_properties() {
     TEST_EQUAL(char_to_simple_casefold(0xb5), 0x3bc);   // micro sign
     TEST_EQUAL(char_to_simple_casefold(0x130), 0x130);  // latin capital letter i with dot above
 
+    TEST_EQUAL(char_to_simple_case('@', Case::upper), '@');      // ampersand
+    TEST_EQUAL(char_to_simple_case('A', Case::upper), 'A');      // latin capital letter a
+    TEST_EQUAL(char_to_simple_case('a', Case::upper), 'A');      // latin small letter a
+    TEST_EQUAL(char_to_simple_case(0xa7, Case::upper), 0xa7);    // section sign
+    TEST_EQUAL(char_to_simple_case(0xc0, Case::upper), 0xc0);    // latin capital letter a with grave
+    TEST_EQUAL(char_to_simple_case(0xe0, Case::upper), 0xc0);    // latin small letter a with grave
+    TEST_EQUAL(char_to_simple_case(0xff, Case::upper), 0x178);   // latin small letter y with diaeresis
+    TEST_EQUAL(char_to_simple_case(0x178, Case::upper), 0x178);  // latin capital letter y with diaeresis
+    TEST_EQUAL(char_to_simple_case(0x1c4, Case::upper), 0x1c4);  // latin capital letter dz with caron
+    TEST_EQUAL(char_to_simple_case(0x1c5, Case::upper), 0x1c4);  // latin capital letter d with small letter z with caron
+    TEST_EQUAL(char_to_simple_case(0x1c6, Case::upper), 0x1c4);  // latin small letter dz with caron
+    TEST_EQUAL(char_to_simple_case(0xb5, Case::upper), 0x39c);   // micro sign
+    TEST_EQUAL(char_to_simple_case(0x130, Case::upper), 0x130);  // latin capital letter i with dot above
+
+    TEST_EQUAL(char_to_simple_case('@', Case::lower), '@');      // ampersand
+    TEST_EQUAL(char_to_simple_case('A', Case::lower), 'a');      // latin capital letter a
+    TEST_EQUAL(char_to_simple_case('a', Case::lower), 'a');      // latin small letter a
+    TEST_EQUAL(char_to_simple_case(0xa7, Case::lower), 0xa7);    // section sign
+    TEST_EQUAL(char_to_simple_case(0xc0, Case::lower), 0xe0);    // latin capital letter a with grave
+    TEST_EQUAL(char_to_simple_case(0xe0, Case::lower), 0xe0);    // latin small letter a with grave
+    TEST_EQUAL(char_to_simple_case(0xff, Case::lower), 0xff);    // latin small letter y with diaeresis
+    TEST_EQUAL(char_to_simple_case(0x178, Case::lower), 0xff);   // latin capital letter y with diaeresis
+    TEST_EQUAL(char_to_simple_case(0x1c4, Case::lower), 0x1c6);  // latin capital letter dz with caron
+    TEST_EQUAL(char_to_simple_case(0x1c5, Case::lower), 0x1c6);  // latin capital letter d with small letter z with caron
+    TEST_EQUAL(char_to_simple_case(0x1c6, Case::lower), 0x1c6);  // latin small letter dz with caron
+    TEST_EQUAL(char_to_simple_case(0xb5, Case::lower), 0xb5);    // micro sign
+    TEST_EQUAL(char_to_simple_case(0x130, Case::lower), 0x69);   // latin capital letter i with dot above
+
+    TEST_EQUAL(char_to_simple_case('@', Case::title), '@');      // ampersand
+    TEST_EQUAL(char_to_simple_case('A', Case::title), 'A');      // latin capital letter a
+    TEST_EQUAL(char_to_simple_case('a', Case::title), 'A');      // latin small letter a
+    TEST_EQUAL(char_to_simple_case(0xa7, Case::title), 0xa7);    // section sign
+    TEST_EQUAL(char_to_simple_case(0xc0, Case::title), 0xc0);    // latin capital letter a with grave
+    TEST_EQUAL(char_to_simple_case(0xe0, Case::title), 0xc0);    // latin small letter a with grave
+    TEST_EQUAL(char_to_simple_case(0xff, Case::title), 0x178);   // latin small letter y with diaeresis
+    TEST_EQUAL(char_to_simple_case(0x178, Case::title), 0x178);  // latin capital letter y with diaeresis
+    TEST_EQUAL(char_to_simple_case(0x1c4, Case::title), 0x1c5);  // latin capital letter dz with caron
+    TEST_EQUAL(char_to_simple_case(0x1c5, Case::title), 0x1c5);  // latin capital letter d with small letter z with caron
+    TEST_EQUAL(char_to_simple_case(0x1c6, Case::title), 0x1c5);  // latin small letter dz with caron
+    TEST_EQUAL(char_to_simple_case(0xb5, Case::title), 0x39c);   // micro sign
+    TEST_EQUAL(char_to_simple_case(0x130, Case::title), 0x130);  // latin capital letter i with dot above
+
+    TEST_EQUAL(char_to_simple_case('@', Case::fold), '@');      // ampersand
+    TEST_EQUAL(char_to_simple_case('A', Case::fold), 'a');      // latin capital letter a
+    TEST_EQUAL(char_to_simple_case('a', Case::fold), 'a');      // latin small letter a
+    TEST_EQUAL(char_to_simple_case(0xa7, Case::fold), 0xa7);    // section sign
+    TEST_EQUAL(char_to_simple_case(0xc0, Case::fold), 0xe0);    // latin capital letter a with grave
+    TEST_EQUAL(char_to_simple_case(0xe0, Case::fold), 0xe0);    // latin small letter a with grave
+    TEST_EQUAL(char_to_simple_case(0xff, Case::fold), 0xff);    // latin small letter y with diaeresis
+    TEST_EQUAL(char_to_simple_case(0x178, Case::fold), 0xff);   // latin capital letter y with diaeresis
+    TEST_EQUAL(char_to_simple_case(0x1c4, Case::fold), 0x1c6);  // latin capital letter dz with caron
+    TEST_EQUAL(char_to_simple_case(0x1c5, Case::fold), 0x1c6);  // latin capital letter d with small letter z with caron
+    TEST_EQUAL(char_to_simple_case(0x1c6, Case::fold), 0x1c6);  // latin small letter dz with caron
+    TEST_EQUAL(char_to_simple_case(0xb5, Case::fold), 0x3bc);   // micro sign
+    TEST_EQUAL(char_to_simple_case(0x130, Case::fold), 0x130);  // latin capital letter i with dot above
+
     char32_t buf[100];
 
-    TEST_EQUAL(char_to_full_uppercase('@', buf), 1); TEST_EQUAL(buf[0], '@');
-    TEST_EQUAL(char_to_full_uppercase('A', buf), 1); TEST_EQUAL(buf[0], 'A');
-    TEST_EQUAL(char_to_full_uppercase('a', buf), 1); TEST_EQUAL(buf[0], 'A');
-    TEST_EQUAL(char_to_full_uppercase(0xdf, buf), 2); // latin small letter sharp s
-        TEST_EQUAL(buf[0], 0x53); TEST_EQUAL(buf[1], 0x53);
-    TEST_EQUAL(char_to_full_uppercase(0x130, buf), 1); // latin capital letter i with dot above
-        TEST_EQUAL(buf[0], 0x130);
-    TEST_EQUAL(char_to_full_uppercase(0xfb03, buf), 3); // latin small ligature ffi
-        TEST_EQUAL(buf[0], 0x46); TEST_EQUAL(buf[1], 0x46); TEST_EQUAL(buf[2], 0x49);
+    // U+00DF = latin small letter sharp s
+    // U+0130 = latin capital letter i with dot above
+    // U+FB03 = latin small ligature ffi
 
-    TEST_EQUAL(char_to_full_lowercase('@', buf), 1); TEST_EQUAL(buf[0], '@');
-    TEST_EQUAL(char_to_full_lowercase('A', buf), 1); TEST_EQUAL(buf[0], 'a');
-    TEST_EQUAL(char_to_full_lowercase('a', buf), 1); TEST_EQUAL(buf[0], 'a');
-    TEST_EQUAL(char_to_full_lowercase(0xdf, buf), 1); // latin small letter sharp s
-        TEST_EQUAL(buf[0], 0xdf);
-    TEST_EQUAL(char_to_full_lowercase(0x130, buf), 2); // latin capital letter i with dot above
-        TEST_EQUAL(buf[0], 0x69); TEST_EQUAL(buf[1], 0x307);
-    TEST_EQUAL(char_to_full_lowercase(0xfb03, buf), 1); // latin small ligature ffi
-        TEST_EQUAL(buf[0], 0xfb03);
+    TEST_EQUAL(char_to_full_uppercase('@', buf), 1);     TEST_EQUAL(buf[0], '@');
+    TEST_EQUAL(char_to_full_uppercase('A', buf), 1);     TEST_EQUAL(buf[0], 'A');
+    TEST_EQUAL(char_to_full_uppercase('a', buf), 1);     TEST_EQUAL(buf[0], 'A');
+    TEST_EQUAL(char_to_full_uppercase(0xdf, buf), 2);    TEST_EQUAL(buf[0], 0x53); TEST_EQUAL(buf[1], 0x53);
+    TEST_EQUAL(char_to_full_uppercase(0x130, buf), 1);   TEST_EQUAL(buf[0], 0x130);
+    TEST_EQUAL(char_to_full_uppercase(0xfb03, buf), 3);  TEST_EQUAL(buf[0], 0x46); TEST_EQUAL(buf[1], 0x46); TEST_EQUAL(buf[2], 0x49);
+    TEST_EQUAL(char_to_full_lowercase('@', buf), 1);     TEST_EQUAL(buf[0], '@');
+    TEST_EQUAL(char_to_full_lowercase('A', buf), 1);     TEST_EQUAL(buf[0], 'a');
+    TEST_EQUAL(char_to_full_lowercase('a', buf), 1);     TEST_EQUAL(buf[0], 'a');
+    TEST_EQUAL(char_to_full_lowercase(0xdf, buf), 1);    TEST_EQUAL(buf[0], 0xdf);
+    TEST_EQUAL(char_to_full_lowercase(0x130, buf), 2);   TEST_EQUAL(buf[0], 0x69); TEST_EQUAL(buf[1], 0x307);
+    TEST_EQUAL(char_to_full_lowercase(0xfb03, buf), 1);  TEST_EQUAL(buf[0], 0xfb03);
+    TEST_EQUAL(char_to_full_titlecase('@', buf), 1);     TEST_EQUAL(buf[0], '@');
+    TEST_EQUAL(char_to_full_titlecase('A', buf), 1);     TEST_EQUAL(buf[0], 'A');
+    TEST_EQUAL(char_to_full_titlecase('a', buf), 1);     TEST_EQUAL(buf[0], 'A');
+    TEST_EQUAL(char_to_full_titlecase(0xdf, buf), 2);    TEST_EQUAL(buf[0], 0x53); TEST_EQUAL(buf[1], 0x73);
+    TEST_EQUAL(char_to_full_titlecase(0x130, buf), 1);   TEST_EQUAL(buf[0], 0x130);
+    TEST_EQUAL(char_to_full_titlecase(0xfb03, buf), 3);  TEST_EQUAL(buf[0], 0x46); TEST_EQUAL(buf[1], 0x66); TEST_EQUAL(buf[2], 0x69);
+    TEST_EQUAL(char_to_full_casefold('@', buf), 1);      TEST_EQUAL(buf[0], '@');
+    TEST_EQUAL(char_to_full_casefold('A', buf), 1);      TEST_EQUAL(buf[0], 'a');
+    TEST_EQUAL(char_to_full_casefold('a', buf), 1);      TEST_EQUAL(buf[0], 'a');
+    TEST_EQUAL(char_to_full_casefold(0xdf, buf), 2);     TEST_EQUAL(buf[0], 0x73); TEST_EQUAL(buf[1], 0x73);
+    TEST_EQUAL(char_to_full_casefold(0x130, buf), 2);    TEST_EQUAL(buf[0], 0x69); TEST_EQUAL(buf[1], 0x307);
+    TEST_EQUAL(char_to_full_casefold(0xfb03, buf), 3);   TEST_EQUAL(buf[0], 0x66); TEST_EQUAL(buf[1], 0x66); TEST_EQUAL(buf[2], 0x69);
 
-    TEST_EQUAL(char_to_full_titlecase('@', buf), 1); TEST_EQUAL(buf[0], '@');
-    TEST_EQUAL(char_to_full_titlecase('A', buf), 1); TEST_EQUAL(buf[0], 'A');
-    TEST_EQUAL(char_to_full_titlecase('a', buf), 1); TEST_EQUAL(buf[0], 'A');
-    TEST_EQUAL(char_to_full_titlecase(0xdf, buf), 2); // latin small letter sharp s
-        TEST_EQUAL(buf[0], 0x53); TEST_EQUAL(buf[1], 0x73);
-    TEST_EQUAL(char_to_full_titlecase(0x130, buf), 1); // latin capital letter i with dot above
-        TEST_EQUAL(buf[0], 0x130);
-    TEST_EQUAL(char_to_full_titlecase(0xfb03, buf), 3); // latin small ligature ffi
-        TEST_EQUAL(buf[0], 0x46); TEST_EQUAL(buf[1], 0x66); TEST_EQUAL(buf[2], 0x69);
-
-    TEST_EQUAL(char_to_full_casefold('@', buf), 1); TEST_EQUAL(buf[0], '@');
-    TEST_EQUAL(char_to_full_casefold('A', buf), 1); TEST_EQUAL(buf[0], 'a');
-    TEST_EQUAL(char_to_full_casefold('a', buf), 1); TEST_EQUAL(buf[0], 'a');
-    TEST_EQUAL(char_to_full_casefold(0xdf, buf), 2); // latin small letter sharp s
-        TEST_EQUAL(buf[0], 0x73); TEST_EQUAL(buf[1], 0x73);
-    TEST_EQUAL(char_to_full_casefold(0x130, buf), 2); // latin capital letter i with dot above
-        TEST_EQUAL(buf[0], 0x69); TEST_EQUAL(buf[1], 0x307);
-    TEST_EQUAL(char_to_full_casefold(0xfb03, buf), 3); // latin small ligature ffi
-        TEST_EQUAL(buf[0], 0x66); TEST_EQUAL(buf[1], 0x66); TEST_EQUAL(buf[2], 0x69);
+    TEST_EQUAL(char_to_full_case('@', buf, Case::upper), 1);     TEST_EQUAL(buf[0], '@');
+    TEST_EQUAL(char_to_full_case('A', buf, Case::upper), 1);     TEST_EQUAL(buf[0], 'A');
+    TEST_EQUAL(char_to_full_case('a', buf, Case::upper), 1);     TEST_EQUAL(buf[0], 'A');
+    TEST_EQUAL(char_to_full_case(0xdf, buf, Case::upper), 2);    TEST_EQUAL(buf[0], 0x53); TEST_EQUAL(buf[1], 0x53);
+    TEST_EQUAL(char_to_full_case(0x130, buf, Case::upper), 1);   TEST_EQUAL(buf[0], 0x130);
+    TEST_EQUAL(char_to_full_case(0xfb03, buf, Case::upper), 3);  TEST_EQUAL(buf[0], 0x46); TEST_EQUAL(buf[1], 0x46); TEST_EQUAL(buf[2], 0x49);
+    TEST_EQUAL(char_to_full_case('@', buf, Case::lower), 1);     TEST_EQUAL(buf[0], '@');
+    TEST_EQUAL(char_to_full_case('A', buf, Case::lower), 1);     TEST_EQUAL(buf[0], 'a');
+    TEST_EQUAL(char_to_full_case('a', buf, Case::lower), 1);     TEST_EQUAL(buf[0], 'a');
+    TEST_EQUAL(char_to_full_case(0xdf, buf, Case::lower), 1);    TEST_EQUAL(buf[0], 0xdf);
+    TEST_EQUAL(char_to_full_case(0x130, buf, Case::lower), 2);   TEST_EQUAL(buf[0], 0x69); TEST_EQUAL(buf[1], 0x307);
+    TEST_EQUAL(char_to_full_case(0xfb03, buf, Case::lower), 1);  TEST_EQUAL(buf[0], 0xfb03);
+    TEST_EQUAL(char_to_full_case('@', buf, Case::title), 1);     TEST_EQUAL(buf[0], '@');
+    TEST_EQUAL(char_to_full_case('A', buf, Case::title), 1);     TEST_EQUAL(buf[0], 'A');
+    TEST_EQUAL(char_to_full_case('a', buf, Case::title), 1);     TEST_EQUAL(buf[0], 'A');
+    TEST_EQUAL(char_to_full_case(0xdf, buf, Case::title), 2);    TEST_EQUAL(buf[0], 0x53); TEST_EQUAL(buf[1], 0x73);
+    TEST_EQUAL(char_to_full_case(0x130, buf, Case::title), 1);   TEST_EQUAL(buf[0], 0x130);
+    TEST_EQUAL(char_to_full_case(0xfb03, buf, Case::title), 3);  TEST_EQUAL(buf[0], 0x46); TEST_EQUAL(buf[1], 0x66); TEST_EQUAL(buf[2], 0x69);
+    TEST_EQUAL(char_to_full_case('@', buf, Case::fold), 1);      TEST_EQUAL(buf[0], '@');
+    TEST_EQUAL(char_to_full_case('A', buf, Case::fold), 1);      TEST_EQUAL(buf[0], 'a');
+    TEST_EQUAL(char_to_full_case('a', buf, Case::fold), 1);      TEST_EQUAL(buf[0], 'a');
+    TEST_EQUAL(char_to_full_case(0xdf, buf, Case::fold), 2);     TEST_EQUAL(buf[0], 0x73); TEST_EQUAL(buf[1], 0x73);
+    TEST_EQUAL(char_to_full_case(0x130, buf, Case::fold), 2);    TEST_EQUAL(buf[0], 0x69); TEST_EQUAL(buf[1], 0x307);
+    TEST_EQUAL(char_to_full_case(0xfb03, buf, Case::fold), 3);   TEST_EQUAL(buf[0], 0x66); TEST_EQUAL(buf[1], 0x66); TEST_EQUAL(buf[2], 0x69);
 
 }
 
