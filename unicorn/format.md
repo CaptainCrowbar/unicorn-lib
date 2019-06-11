@@ -40,7 +40,8 @@ listed here; their behaviour is described in more detail below.
 * `signed char`, `unsigned char`, `short`, `unsigned short`, `int`, `unsigned`, `long`, `unsigned long`, `long long`, `unsigned long long`
 * `float`, `double`, `long double`
 * `[const] char*`, `[const] char16_t*`, `[const] char32_t*`, `[const] wchar_t*`
-* `Ustring`, `u16string`, `u32string`, `wstring`
+* `std::string`, `std::u16string`, `std::u32string`, `std::wstring`
+* `std::string_view`, `std::u16string_view`, `std::u32string_view`, `std::wstring_view`
 * `std::chrono::duration<R, P>`, `std::chrono::system_clock::time_point`
 
 * <!-- DEFN --> `template <typename T> Ustring` **`format_str`**`(const T& t, uint64_t flags = 0, int prec = -1, size_t width = 0, char32_t pad = U' ')`

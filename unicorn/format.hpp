@@ -11,6 +11,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <string_view>
 #include <type_traits>
 #include <utility>
 #include <vector>
@@ -87,8 +88,7 @@ namespace RS::Unicorn {
         // Reserved global flags
 
         constexpr uint64_t format_length_flags = Length::characters | Length::graphemes | Length::narrow | Length::wide;
-        constexpr uint64_t top_level_format_flags = format_length_flags | Format::left | Format::centre | Format::right | Format::lower | Format::title | Format::upper;
-        constexpr uint64_t global_format_flags = format_length_flags | top_level_format_flags;
+        constexpr uint64_t global_format_flags = format_length_flags | Format::left | Format::centre | Format::right | Format::lower | Format::title | Format::upper;
 
         // Formatting for specific types
 
@@ -162,6 +162,8 @@ namespace RS::Unicorn {
     Ustring format_type(const Ustring& t, uint64_t flags, int prec);
     Ustring format_type(std::chrono::system_clock::time_point t, uint64_t flags, int prec);
     template <typename C> inline Ustring format_type(const std::basic_string<C>& t, uint64_t flags, int prec) { return format_type(to_utf8(t), flags, prec); }
+    template <typename C> inline Ustring format_type(const std::basic_string_view<C>& t, uint64_t flags, int prec)
+        { return format_type(to_utf8(std::basic_string<C>(t)), flags, prec); }
     template <typename C> inline Ustring format_type(C* t, uint64_t flags, int prec) { return format_type(cstr(t), flags, prec); }
     template <typename C> inline Ustring format_type(const C* t, uint64_t flags, int prec) { return format_type(cstr(t), flags, prec); }
     template <typename R, typename P> inline Ustring format_type(std::chrono::duration<R, P> t, uint64_t /*flags*/, int prec) { return format_time(t, prec); }
