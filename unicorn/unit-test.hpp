@@ -355,36 +355,44 @@ namespace RS {
     template <typename T, bool Copy = true>
     class Accountable {
     public:
-        Accountable(): value() { ++number(); }
-        Accountable(const T& t): value(t) { ++number(); }
-        Accountable(const Accountable& a): value(a.value) { ++number(); }
-        Accountable(Accountable&& a) noexcept: value(std::exchange(a.value, T())) { ++number(); }
+        Accountable(): value_() { ++number(); }
+        Accountable(const T& t): value_(t) { ++number(); }
+        Accountable(const Accountable& a): value_(a.value_) { ++number(); }
+        Accountable(Accountable&& a) noexcept: value_(std::exchange(a.value_, T())) { ++number(); }
         ~Accountable() noexcept { --number(); }
-        Accountable& operator=(const Accountable& a) { value = a.value; return *this; }
-        Accountable& operator=(Accountable&& a) noexcept { if (&a != this) value = std::exchange(a.value, T()); return *this; }
-        const T& get() const noexcept { return value; }
+        Accountable& operator=(const Accountable& a) { value_ = a.value_; return *this; }
+        Accountable& operator=(Accountable&& a) noexcept { if (&a != this) value_ = std::exchange(a.value_, T()); return *this; }
+        const T& get() const noexcept { return value_; }
+        void set(const T& t) { value_ = t; }
         static int count() noexcept { return number(); }
         static void reset() noexcept { number() = 0; }
+        friend bool operator==(const Accountable& lhs, const Accountable& rhs) { return lhs.value_ == rhs.value_; }
+        friend bool operator!=(const Accountable& lhs, const Accountable& rhs) { return ! (lhs == rhs); }
+        friend std::ostream& operator<<(std::ostream& out, const Accountable& a) { return out << a.value_; }
     private:
-        T value;
+        T value_;
         static std::atomic<int>& number() noexcept { static std::atomic<int> n(0); return n; }
     };
 
     template <typename T>
     class Accountable<T, false> {
     public:
-        Accountable(): value() { ++number(); }
-        Accountable(const T& t): value(t) { ++number(); }
+        Accountable(): value_() { ++number(); }
+        Accountable(const T& t): value_(t) { ++number(); }
         Accountable(const Accountable& a) = delete;
-        Accountable(Accountable&& a) noexcept: value(std::exchange(a.value, T())) { ++number(); }
+        Accountable(Accountable&& a) noexcept: value_(std::exchange(a.value_, T())) { ++number(); }
         ~Accountable() noexcept { --number(); }
         Accountable& operator=(const Accountable& a) = delete;
-        Accountable& operator=(Accountable&& a) noexcept { if (&a != this) value = std::exchange(a.value, T()); return *this; }
-        const T& get() const noexcept { return value; }
+        Accountable& operator=(Accountable&& a) noexcept { if (&a != this) value_ = std::exchange(a.value_, T()); return *this; }
+        const T& get() const noexcept { return value_; }
+        void set(const T& t) { value_ = t; }
         static int count() noexcept { return number(); }
         static void reset() noexcept { number() = 0; }
+        friend bool operator==(const Accountable& lhs, const Accountable& rhs) { return lhs.value_ == rhs.value_; }
+        friend bool operator!=(const Accountable& lhs, const Accountable& rhs) { return ! (lhs == rhs); }
+        friend std::ostream& operator<<(std::ostream& out, const Accountable& a) { return out << a.value_; }
     private:
-        T value;
+        T value_;
         static std::atomic<int>& number() noexcept { static std::atomic<int> n(0); return n; }
     };
 
