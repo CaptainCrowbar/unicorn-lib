@@ -925,6 +925,7 @@ that matches the type:</p>
 <li>An empty string yields a default constructed <code>T</code></li>
 <li>If <code>T</code> is <code>bool</code>, check for the strings <code>"true"</code> or <code>"false"</code>, otherwise treat as numeric</li>
 <li>If <code>T</code> is a primitive integer or floating point type, call the appropriate <code>strto*()</code> function</li>
+<li>If <code>T</code> is an enumeration defined with <code>RS_ENUM[_CLASS]()</code>, call its <code>str_to_enum()</code> function</li>
 <li>Try a <code>static_cast</code> from <code>std::string_view</code>, <code>std::string</code>, or <code>const char*</code> to <code>T</code></li>
 <li>Read a <code>T</code> from a <code>std::istringstream</code> using <code>operator&gt;&gt;</code></li>
 <li>Otherwise fail</li>

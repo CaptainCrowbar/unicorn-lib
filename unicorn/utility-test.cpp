@@ -1585,6 +1585,19 @@ void test_unicorn_utility_conversion_from_string() {
     TEST(from_str<bool>("true"));
     TEST_THROW(from_str<bool>("hello"), std::invalid_argument);
 
+    TEST_EQUAL(from_str<FooEnum>("alpha"), alpha);
+    TEST_EQUAL(from_str<FooEnum>("FooEnum::alpha"), alpha);
+    TEST_EQUAL(from_str<BarEnum>("delta"), delta);
+    TEST_EQUAL(from_str<BarEnum>("BarEnum::delta"), delta);
+    TEST_EQUAL(from_str<ZapEnum>("golf"), ZapEnum::golf);
+    TEST_EQUAL(from_str<ZapEnum>("ZapEnum::golf"), ZapEnum::golf);
+    TEST_EQUAL(from_str<ThogEnum>("golf"), ThogEnum::golf);
+    TEST_EQUAL(from_str<ThogEnum>("ThogEnum::golf"), ThogEnum::golf);
+    TEST_THROW(from_str<FooEnum>("ALPHA"), std::invalid_argument);
+    TEST_THROW(from_str<BarEnum>("DELTA"), std::invalid_argument);
+    TEST_THROW(from_str<ZapEnum>("GOLF"), std::invalid_argument);
+    TEST_THROW(from_str<ThogEnum>("GOLF"), std::invalid_argument);
+
 }
 
 namespace {

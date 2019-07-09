@@ -1320,6 +1320,7 @@ namespace RS {
         template <typename T> using StrMethodArchetype = decltype(std::declval<T>().str());
         template <typename T> using AdlToStringArchetype = decltype(to_string(std::declval<T>()));
         template <typename T> using StdToStringArchetype = decltype(std::to_string(std::declval<T>()));
+        template <typename T> using StrToEnumArchetype = decltype(str_to_enum(std::string_view(), std::declval<T&>()));
 
         template <typename T> struct IsByteArray: public std::false_type {};
         template <typename A> struct IsByteArray<std::vector<unsigned char, A>>: public std::true_type {};
@@ -1408,6 +1409,8 @@ namespace RS {
                     return false;
                 t = rc;
                 return true;
+            } else if constexpr (Meta::is_detected<StrToEnumArchetype, T>) {
+                return str_to_enum(view, t);
             } else if constexpr (std::is_constructible_v<T, std::string_view>) {
                 t = static_cast<T>(view);
                 return true;

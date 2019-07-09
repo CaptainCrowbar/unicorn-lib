@@ -671,6 +671,7 @@ that matches the type:
 * An empty string yields a default constructed `T`
 * If `T` is `bool`, check for the strings `"true"` or `"false"`, otherwise treat as numeric
 * If `T` is a primitive integer or floating point type, call the appropriate `strto*()` function
+* If `T` is an enumeration defined with `RS_ENUM[_CLASS]()`, call its `str_to_enum()` function
 * Try a `static_cast` from `std::string_view`, `std::string`, or `const char*` to `T`
 * Read a `T` from a `std::istringstream` using `operator>>`
 * Otherwise fail
