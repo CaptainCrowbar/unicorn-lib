@@ -75,7 +75,24 @@
     #include <cxxabi.h>
 #endif
 
+// GNU brain damage
+
+#ifdef major
+    #undef major
+#endif
+#ifdef minor
+    #undef minor
+#endif
+
+// Microsoft brain damage
+
+#ifdef pascal
+    #undef pascal
+#endif
+
 #ifdef _MSC_VER
+    #pragma warning(disable: 4127) // Conditional expression is constant
+    #pragma warning(disable: 4310) // Cast truncates constant value
     #pragma warning(disable: 4459) // Declaration hides global declaration
 #endif
 
