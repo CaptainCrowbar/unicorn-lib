@@ -1170,7 +1170,14 @@ namespace RS::Unicorn {
         while (impl) {
             #ifdef _XOPEN_SOURCE
                 dirent* entptr = nullptr;
+                #ifdef __GNUC__
+                    #pragma GCC diagnostic push
+                    #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+                #endif
                 int rc = readdir_r(impl->dirptr, &impl->entry, &entptr);
+                #ifdef __GNUC__
+                    #pragma GCC diagnostic pop
+                #endif
                 bool ok = rc == 0 && entptr;
                 if (ok)
                     impl->leaf = impl->entry.d_name;

@@ -8,6 +8,8 @@
 # otherwise, if any application modules exist, the application is installable;
 # otherwise, nothing is installable.
 
+SHELL=bash
+
 # Project identity
 
 LIBROOT ?= ..
