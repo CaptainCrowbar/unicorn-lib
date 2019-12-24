@@ -24,7 +24,7 @@ scripts_dir = $(LIBROOT)/unicorn-lib/scripts
 build_host := $(shell uname | tr A-Z a-z | sed -E 's/[^a-z].*//')
 
 ifeq ($(TOOLS),msvc)
-	build_target := $(shell cl 2>&1 | head -n 1 | sed -E 's/^.*Version ([0-9]+)\.([0-9]+)\.[0-9.]+ for (.+)$$/msvc-\1\2-\3/')
+	build_target := $(shell cl.exe 2>&1 | head -n 1 | sed -E 's/^.*Version ([0-9]+)\.([0-9]+)\.[0-9.]+ for (.+)$$/msvc-\1\2-\3/')
 	cross_target := msvc
 else
 	build_target := $(shell gcc -v 2>&1 | grep '^Target:' | sed -E -e 's/^Target: //' -e 's/[.].*$$//' | tr A-Z a-z)
@@ -65,10 +65,11 @@ ifeq ($(build_host),cygwin)
 endif
 
 ifeq ($(cross_target),msvc)
-	install_prefix := $(HOME)/Dropbox/Lib/msvc
-	windows_prefix := $(shell cygpath -aw $(install_prefix))
+	install_subpath := /Dropbox/Lib/msvc
+	install_prefix := $(HOME)$(install_subpath)
+	windows_prefix := $(WINDOWS_PROFILE)$(install_subpath)
 	vcpkg_prefix := $(VCPKG_ROOT)/installed/x64-windows
-	CXX := cl
+	CXX := cl.exe
 	common_flags := /EHc /EHs /fp:precise /Gy /MD /MP /nologo /sdl /utf-8 /Y-
 	diagnostic_flags := /W4 /WX
 	cc_specific_flags :=
@@ -78,17 +79,17 @@ ifeq ($(cross_target),msvc)
 	opt_test := /Od
 	cc_output := /Fo
 	include_path := /I. /I$(windows_prefix)/include /I$(vcpkg_prefix)/include
-	AR := lib
+	AR := lib.exe
 	ar_specific_flags := /NOLOGO
 	ar_output := /OUT:
-	LD := link
+	LD := link.exe
 	LDLIBS :=
 	ld_specific_flags := /CGTHREADS:4 /MACHINE:X64 /NOLOGO /NXCOMPAT /SUBSYSTEM:CONSOLE
 	ld_output := /OUT:
 	library_path := /LIBPATH:$(BUILD) /LIBPATH:$(windows_prefix)/lib /LIBPATH:$(vcpkg_prefix)/lib
 	lib_prefix :=
 	lib_suffix := .lib
-	RC := rc
+	RC := rc.exe
 	RCFLAGS :=
 	rc_output := /fo
 endif
