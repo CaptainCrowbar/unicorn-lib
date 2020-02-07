@@ -89,6 +89,7 @@
 #include <cstddef>
 #include <cstdlib>
 #include <exception>
+#include <functional>
 #include <iostream>
 #include <iterator>
 #include <map>
@@ -645,6 +646,24 @@ namespace RS {
             return test_failures() > 0;
         }
 
+    };
+
+}
+
+namespace std {
+
+    template <typename T, bool Copy>
+    struct hash<RS::Accountable<T, Copy>> {
+        size_t operator()(const RS::Accountable<T, Copy>& a) const noexcept {
+            return std::hash<T>()(a.get());
+        }
+    };
+
+    template <bool Copy>
+    struct hash<RS::Accountable<void, Copy>> {
+        size_t operator()(const RS::Accountable<void, Copy>&) const noexcept {
+            return 1;
+        }
     };
 
 }
