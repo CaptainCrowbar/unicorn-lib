@@ -1,6 +1,7 @@
 #include "unicorn/options.hpp"
 #include "unicorn/format.hpp"
 #include "unicorn/mbcs.hpp"
+#include <cstdlib>
 #include <iterator>
 
 #ifdef _XOPEN_SOURCE
@@ -335,23 +336,24 @@ namespace RS::Unicorn {
         parse_initial_cleanup(args, flags);
         if (args.empty() && help_flag == help::automatic) {
             out << help_text(hflags);
-            return true;
-        }
-        auto anon_args = parse_explicit_anonymous(args);
-        parse_attached_arguments(args);
-        parse_named_options(args);
-        parse_remaining_anonymous(args, anon_args);
-        if (get<bool>("help")) {
-            out << help_text(hflags);
-            return true;
-        } else if (get<bool>("version")) {
-            out << app_info << '\n';
-            return true;
         } else {
-            parse_check_conditions();
-            parse_supply_defaults();
-            return false;
+            auto anon_args = parse_explicit_anonymous(args);
+            parse_attached_arguments(args);
+            parse_named_options(args);
+            parse_remaining_anonymous(args, anon_args);
+            if (get<bool>("help")) {
+                out << help_text(hflags);
+            } else if (get<bool>("version")) {
+                out << app_info << '\n';
+            } else {
+                parse_check_conditions();
+                parse_supply_defaults();
+                return false;
+            }
         }
+        if (flags & exit)
+            std::exit(0);
+        return true;
     }
 
     void Options::parse_initial_cleanup(Strings& args, uint32_t flags) {

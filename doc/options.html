@@ -315,7 +315,8 @@ situation should normally be part of a mutual exclusion group.</p>
 output stream (standard output by default). The <code>parse()</code> function will return
 true if all requested processing has already been handled (i.e. if help or
 version information has been presented to the user); the caller should check
-the return value from <code>parse()</code> and end the program if it is true.</p>
+the return value from <code>parse()</code> and end the program if it is true, or use the
+<code>exit</code> flag.</p>
 <p>The <code>flags</code> argument can be any combination of these:</p>
 <table>
 <thead>
@@ -332,6 +333,10 @@ the return value from <code>parse()</code> and end the program if it is true.</p
 <tr>
 <td><code>Options::</code><strong><code>nocolour</code></strong></td>
 <td>Do not colourize the help text</td>
+</tr>
+<tr>
+<td><code>Options::</code><strong><code>exit</code></strong></td>
+<td>Call <code>exit()</code> instead of returning true</td>
 </tr>
 <tr>
 <td><code>Options::</code><strong><code>locale</code></strong></td>

@@ -42,11 +42,12 @@ namespace RS::Unicorn {
 
         enum class help { unset, std, automatic };
 
-        static constexpr uint32_t colour = 1;                // Always colourize help text
-        static constexpr uint32_t nocolour = 2;              // Do not colourize help text
-        static constexpr uint32_t locale = 4;                // Argument list is in local encoding
-        static constexpr uint32_t noprefix = 8;              // First argument is not the command name
-        static constexpr uint32_t quoted = 16;               // Allow arguments to be quoted
+        static constexpr uint32_t colour = setbit<0>;        // Always colourize help text
+        static constexpr uint32_t nocolour = setbit<1>;      // Do not colourize help text
+        static constexpr uint32_t exit = setbit<2>;          // Call exit() instead of returning true
+        static constexpr uint32_t locale = setbit<3>;        // Argument list is in local encoding
+        static constexpr uint32_t noprefix = setbit<4>;      // First argument is not the command name
+        static constexpr uint32_t quoted = setbit<5>;        // Allow arguments to be quoted
         static constexpr Kwarg<bool, 1> anon = {};           // Assign anonymous arguments to this option
         static constexpr Kwarg<bool, 2> boolean = {};        // Boolean option
         static constexpr Kwarg<bool, 3> file = {};           // Argument is expected to be a file path

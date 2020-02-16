@@ -210,7 +210,8 @@ If help or version information is requested, it will be written to the given
 output stream (standard output by default). The `parse()` function will return
 true if all requested processing has already been handled (i.e. if help or
 version information has been presented to the user); the caller should check
-the return value from `parse()` and end the program if it is true.
+the return value from `parse()` and end the program if it is true, or use the
+`exit` flag.
 
 The `flags` argument can be any combination of these:
 
@@ -218,6 +219,7 @@ Flag                       | Description
 ----                       | -----------
 `Options::`**`colour`**    | Always colourize the help text
 `Options::`**`nocolour`**  | Do not colourize the help text
+`Options::`**`exit`**      | Call `exit()` instead of returning true
 `Options::`**`locale`**    | The argument list is in the local encoding
 `Options::`**`noprefix`**  | The first argument is not the command name
 `Options::`**`quoted`**    | Allow arguments to be quoted
