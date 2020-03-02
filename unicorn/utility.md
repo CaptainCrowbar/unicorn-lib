@@ -193,9 +193,10 @@ zero if they are equal, and +1 if the first range is greater.
 
 ## Arithmetic functions ##
 
-For the bit manipulation functions (`ifloor2()`, `iceil2()`, `ilog2p1()`,
-`ispow2()`, `popcount()` `rotl()`, and `rotr()`), behaviour is undefined if
-`T` is not an integer, or if `T` is signed and the argument is negative.
+For the bit manipulation functions (`bit_floor()`, `bit_ceil()`,
+`bit_width()`, `has_single_bit()`, `popcount()` `rotl()`, and `rotr()`),
+behaviour is undefined if `T` is not an integer, or if `T` is signed and the
+argument is negative.
 
 * `template <typename T> constexpr std::make_signed_t<T>` **`as_signed`**`(T t) noexcept`
 * `template <typename T> constexpr std::make_unsigned_t<T>` **`as_unsigned`**`(T t) noexcept`
@@ -205,19 +206,19 @@ same size (the argument is returned unchanged if `T` already had the desired
 signedness). Behaviour is undefined if `T` is not an integer or enumeration
 type.
 
-* `template <typename T> constexpr T` **`ifloor2`**`(T t) noexcept`
-* `template <typename T> constexpr T` **`iceil2`**`(T t) noexcept`
+* `template <typename T> constexpr T` **`bit_floor`**`(T t) noexcept`
+* `template <typename T> constexpr T` **`bit_ceil`**`(T t) noexcept`
 
-Return the argument rounded down or up to a power of 2. For `iceil2()`,
+Return the argument rounded down or up to a power of 2. For `bit_ceil()`,
 behaviour is undefined if the argument is large enough that the correct answer
 is not representable.
 
-* `template <typename T> constexpr int` **`ilog2p1`**`(T t) noexcept`
+* `template <typename T> constexpr int` **`bit_width`**`(T t) noexcept`
 
 Returns `floor(log2(t))+1`, equal to the number of significant bits in `t`,
 or zero if `t` is zero.
 
-* `template <typename T> constexpr bool` **`ispow2`**`(T t) noexcept`
+* `template <typename T> constexpr bool` **`has_single_bit`**`(T t) noexcept`
 
 True if the argument is an exact power of 2.
 

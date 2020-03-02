@@ -592,7 +592,7 @@ namespace RS {
         }
 
         template <typename T>
-        constexpr int ilog2p1(T t) noexcept {
+        constexpr int bit_width(T t) noexcept {
             return t ? 64 - __builtin_clzll(uint64_t(t)) : 0;
         }
 
@@ -607,7 +607,7 @@ namespace RS {
         }
 
         template <typename T>
-        constexpr int ilog2p1(T t) noexcept {
+        constexpr int bit_width(T t) noexcept {
             int n = 0;
             for (; t > 0xff; t >>= 8) { n += 8; }
             for (; t; t >>= 1) { ++n; }
@@ -617,17 +617,17 @@ namespace RS {
     #endif
 
     template <typename T>
-    constexpr T ifloor2(T t) noexcept {
-        return t ? T(1) << (ilog2p1(t) - 1) : 0;
+    constexpr T bit_floor(T t) noexcept {
+        return t ? T(1) << (bit_width(t) - 1) : 0;
     }
 
     template <typename T>
-    constexpr T iceil2(T t) noexcept {
-        return t > 1 ? T(1) << (ilog2p1(t - 1) - 1) << 1 : t;
+    constexpr T bit_ceil(T t) noexcept {
+        return t > 1 ? T(1) << (bit_width(t - 1) - 1) << 1 : t;
     }
 
     template <typename T>
-    constexpr bool ispow2(T t) noexcept {
+    constexpr bool has_single_bit(T t) noexcept {
         return popcount(t) == 1;
     }
 
