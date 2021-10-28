@@ -3,7 +3,7 @@
 Unicode Normalization Algorithm:
 
 References:
-Unicode Standard 7.0, chapter 3.11, "Normalization Forms"
+Unicode Standard 13.0, chapter 3.11, "Normalization Forms"
 Unicode Standard Annex #15, "Unicode Normalization Forms"
 
 Step 1: Decompose any decomposable characters. For NFC and NFD, apply only
