@@ -51,8 +51,13 @@ namespace RS::Unicorn {
                     continue;
                 // Do not break between regional indicator symbols.
                 // GB8a. Regional_Indicator × Regional_Indicator
-                if (prev == P::Regional_Indicator && next == P::Regional_Indicator)
-                    continue;
+                if (prev == P::Regional_Indicator && next == P::Regional_Indicator){
+                    if (i >= 2) {
+                        return i;
+                    } else {
+                        continue;
+                    }
+                }
                 // Do not break before extending characters.
                 // GB9. × Extend
                 // Do not break before SpacingMarks, or after Prepend characters.
